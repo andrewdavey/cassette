@@ -1,6 +1,5 @@
 ﻿using Should;
 using Xunit;
-using System;
 
 namespace Knapsack
 {
@@ -35,4 +34,5 @@ namespace Knapsack
             script.References.ShouldEqual(new[] { @"scripts\other.js" });
         }
     }
+
 }

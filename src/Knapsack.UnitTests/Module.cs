@@ -1,8 +1,7 @@
-﻿using Should;
-using Xunit;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Cryptography;
+using Should;
+using Xunit;
 
 namespace Knapsack
 {
@@ -53,4 +52,30 @@ namespace Knapsack
         }
     }
 
+    public class Module_equality
+    {
+        [Fact]
+        public void Modules_equal_when_same_path_and_hash()
+        {
+            var module1 = new Module("module-a", new[] { new Script("module-a\test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0]);
+            var module2 = new Module("module-a", new[] { new Script("module-a\test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0]);
+            Assert.Equal(module1, module2);
+        }
+
+        [Fact]
+        public void Modules_not_equal_when_different_path()
+        {
+            var module1 = new Module("module-a", new[] { new Script("module-a\test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0]);
+            var module2 = new Module("module-XX", new[] { new Script("module-a\test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0]);
+            Assert.NotEqual(module1, module2);
+        }
+
+        [Fact]
+        public void Modules_not_equal_when_different_hash()
+        {
+            var module1 = new Module("module-a", new[] { new Script("module-a\test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0]);
+            var module2 = new Module("module-a", new[] { new Script("module-a\test.js", new byte[] { 9, 9, 9 }, new string[0]) }, new string[0]);
+            Assert.NotEqual(module1, module2);
+        }
+    }
 }

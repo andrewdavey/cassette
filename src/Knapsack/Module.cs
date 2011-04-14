@@ -40,12 +40,34 @@ namespace Knapsack
             get { return hash; }
         }
 
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Module);
+        }
+
+        public bool Equals(Module other)
+        {
+            return other != null
+                && other.path == path
+                && HashEqual(other.hash);
+        }
+
+        public override int GetHashCode()
+        {
+            return path.GetHashCode() ^ hash.GetHashCode();
+        }
+
         byte[] HashScriptHashes(Script[] scripts)
         {
             using (var sha1 = SHA1.Create())
             {
                 return sha1.ComputeHash(scripts.SelectMany(script => script.Hash).ToArray());
             }
+        }
+
+        bool HashEqual(byte[] otherHash)
+        {
+            return otherHash.Zip(hash, (x, y) => x == y).All(equal => equal);
         }
     }
 }

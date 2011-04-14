@@ -37,5 +37,6 @@ namespace Knapsack
             var externalReferences = references.Where(r => !isInternalPath(r)).ToArray();
             return Tuple.Create(newScript, externalReferences);
         }
+
     }
 }
