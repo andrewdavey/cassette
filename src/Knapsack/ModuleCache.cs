@@ -35,7 +35,7 @@ namespace Knapsack
 
         public Stream OpenModuleFile(Module module)
         {
-            storage.OpenFile(module.Path, FileMode.Open, FileAccess.Read);
+            return storage.OpenFile(module.Path, FileMode.Open, FileAccess.Read);
         }
 
         void ApplyDifferencesToCache(ModuleDifference[] differences)
