@@ -43,8 +43,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Module.cs" />
+    <Compile Include="ModuleContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Script.cs" />
+    <Compile Include="ScriptParser.cs" />
+    <Compile Include="UnresolvedModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Knapsack\Knapsack.csproj">

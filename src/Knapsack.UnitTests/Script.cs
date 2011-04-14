@@ -1,5 +1,6 @@
 ﻿using Should;
 using Xunit;
+using System;
 
 namespace Knapsack
 {
@@ -32,6 +33,18 @@ namespace Knapsack
         public void has_References_property()
         {
             script.References.ShouldEqual(new[] { @"c:\scripts\other.js" });
+        }
+    }
+
+    public class Script_creation_contracts
+    {
+        [Fact]
+        public void Absolute_path_required()
+        {
+            Assert.Throws<ArgumentException>(delegate
+            {
+                new Script("test.js", new byte[0], new string[0]);
+            });
         }
     }
 }
