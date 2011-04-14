@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knapsack", "Knapsack\Knapsack.csproj", "{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knapsack.UnitTests", "Knapsack.UnitTests\Knapsack.UnitTests.csproj", "{F200A67A-D7B5-441B-AB36-69AA5C87577E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F200A67A-D7B5-441B-AB36-69AA5C87577E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F200A67A-D7B5-441B-AB36-69AA5C87577E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F200A67A-D7B5-441B-AB36-69AA5C87577E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F200A67A-D7B5-441B-AB36-69AA5C87577E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
