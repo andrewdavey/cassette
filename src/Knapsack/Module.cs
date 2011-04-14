@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace Knapsack
 {

@@ -38,6 +38,21 @@ namespace Knapsack
             return new Module(path, scripts, moduleReferences);
         }
 
+        public static IEnumerable<Module> ResolveAll(IEnumerable<UnresolvedModule> unresolvedModules)
+        {
+            var modulesByScriptPath = (
+                from module in unresolvedModules
+                from script in module.scripts
+                select new { script.Path, module }
+            ).ToDictionary(x => x.Path, x => x.module.path);
+
+            var modules = unresolvedModules.Select(
+                m => m.Resolve(scriptPath => modulesByScriptPath[scriptPath])
+            );
+
+            return modules;
+        }
+
         Tuple<Script, string[]>[] PartitionScriptReferences(Script[] scripts, HashSet<string> pathsInModule)
         {
             return scripts.Select(

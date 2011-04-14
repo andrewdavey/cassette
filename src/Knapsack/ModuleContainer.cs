@@ -10,9 +10,9 @@ namespace Knapsack
         readonly Module[] modules;
         readonly Dictionary<string, Module> modulesByScriptPath;
 
-        public ModuleContainer(Module[] modules)
+        public ModuleContainer(IEnumerable<Module> modules)
         {
-            this.modules = modules;
+            this.modules = modules.ToArray();
 
             modulesByScriptPath = (
                 from module in modules
@@ -35,6 +35,11 @@ namespace Knapsack
         public bool Contains(string modulePath)
         {
             return modules.Any(m => m.Path == modulePath);
+        }
+
+        public Module GetModule(string modulePath)
+        {
+            return modules.First(m => m.Path == modulePath);
         }
 
         public ModuleDifference[] CompareTo(ModuleContainer oldModuleContainer)

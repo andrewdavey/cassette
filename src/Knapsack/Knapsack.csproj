@@ -33,21 +33,24 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Graph.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
+    <Compile Include="ModuleContainerBuilder.cs" />
     <Compile Include="ModuleDifference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="ScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
+    <Compile Include="Web\KnapsackVirtualFile.cs" />
+    <Compile Include="Web\KnapsackVirtualPathProvider.cs" />
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
