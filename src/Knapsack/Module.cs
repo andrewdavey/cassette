@@ -13,11 +13,6 @@ namespace Knapsack
 
         public Module(string path, Script[] scripts, string[] moduleReferences)
         {
-            if (System.IO.Path.IsPathRooted(path) == false) 
-                throw new ArgumentException("Absolute path required.", "path");
-            if (moduleReferences.All(System.IO.Path.IsPathRooted) == false) 
-                throw new ArgumentException("Module references must be absolute paths.", "moduleReferences");
-
             this.path = path;
             this.scripts = scripts;
             this.moduleReferences = moduleReferences;

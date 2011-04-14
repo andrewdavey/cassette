@@ -11,8 +11,6 @@ namespace Knapsack
 
         public Script(string path, byte[] hash, string[] references)
         {
-            if (System.IO.Path.IsPathRooted(path) == false) throw new ArgumentException("Absolute path required.", "path");
-
             this.path = path;
             this.hash = hash;
             this.references = references;

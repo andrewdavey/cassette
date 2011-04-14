@@ -14,19 +14,19 @@ namespace Knapsack
 
         public Given_a_new_Module()
         {
-            scriptA = new Script(@"c:\scripts\module-a\test-a.js", new byte[] { 1, 1, 1 }, new string[0]);
-            scriptB = new Script(@"c:\scripts\module-a\test-b.js", new byte[] { 2, 2, 2 }, new string[0]);
+            scriptA = new Script(@"scripts\module-a\test-a.js", new byte[] { 1, 1, 1 }, new string[0]);
+            scriptB = new Script(@"scripts\module-a\test-b.js", new byte[] { 2, 2, 2 }, new string[0]);
             module = new Module(
-                @"c:\scripts\module-a", // source path
+                @"scripts\module-a", // source path
                 new[] { scriptA, scriptB }, // scripts
-                new[] { @"c:\scripts\module-b" } // references
+                new[] { @"scripts\module-b" } // references
             );
         }
 
         [Fact]
         public void has_Path_property()
         {
-            module.Path.ShouldEqual(@"c:\scripts\module-a");
+            module.Path.ShouldEqual(@"scripts\module-a");
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Knapsack
         [Fact]
         public void has_References_property()
         {
-            module.References.ShouldEqual(new[] { @"c:\scripts\module-b" });
+            module.References.ShouldEqual(new[] { @"scripts\module-b" });
         }
 
         [Fact]
@@ -53,16 +53,4 @@ namespace Knapsack
         }
     }
 
-    public class Module_creation_contracts
-    {
-        [Fact]
-        public void Absolute_path_required()
-        {
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new Module("test.js", new Script[0], new string[0]);
-            });
-        }
-
-    }
 }

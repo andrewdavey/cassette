@@ -20,7 +20,7 @@ namespace Knapsack
             // Dependency chain: b <- c <- a 
 
             unresolvedModule = new UnresolvedModule(
-                @"c:\scripts\module-a",
+                @"scripts\module-a",
                 new[] { scriptA, scriptB, scriptC }
             );
 
@@ -45,15 +45,15 @@ namespace Knapsack
         [Fact]
         public void Module_Path_is_set()
         {
-            module.Path.ShouldEqual(@"c:\scripts\module-a");
+            module.Path.ShouldEqual(@"scripts\module-a");
         }
 
         Script CreateScript(string name, params string[] references)
         {
             return new Script(
-                @"c:\scripts\module-a\" + name + ".js",
+                @"scripts\module-a\" + name + ".js",
                 new byte[0],
-                references.Select(r => @"c:\scripts\module-a\" + r + ".js").ToArray()
+                references.Select(r => @"scripts\module-a\" + r + ".js").ToArray()
             );
         }
     }
@@ -66,23 +66,23 @@ namespace Knapsack
         public Resolve_a_UnresolvedModule_with_script_having_an_external_reference()
         {
             var script = new Script(
-                @"c:\scripts\module-a\test.js",
+                @"scripts\module-a\test.js",
                 new byte[0],
-                new[] { @"c:\scripts\module-b\lib.js" }
+                new[] { @"scripts\module-b\lib.js" }
             );
 
             unresolvedModule = new UnresolvedModule(
-                @"c:\scripts\module-a",
+                @"scripts\module-a",
                 new[] { script }
             );
 
-            module = unresolvedModule.Resolve(s => @"c:\scripts\module-b");
+            module = unresolvedModule.Resolve(s => @"scripts\module-b");
         }
 
         [Fact]
         public void Module_has_reference_to_module_b()
         {
-            module.References.ShouldEqual(new[] { @"c:\scripts\module-b" });
+            module.References.ShouldEqual(new[] { @"scripts\module-b" });
         }
 
         [Fact]

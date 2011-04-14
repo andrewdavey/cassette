@@ -8,7 +8,7 @@ namespace Knapsack
     public class Given_a_ScriptParser_When_Parse_source_with_two_references
     {
         readonly ScriptParser parser;
-        readonly string sourcePath = @"c:\scripts\test.js";
+        readonly string sourcePath = @"scripts\test.js";
         readonly string source = @"/// <reference path=""other-1.js""/>
 /// <reference path=""../lib/other-2.js""/>";
         readonly Script script;
@@ -58,8 +58,8 @@ namespace Knapsack
         {
             script.References.ShouldEqual(new[] 
             {
-                @"c:\scripts\other-1.js",
-                @"c:\lib\other-2.js"
+                @"scripts\other-1.js",
+                @"lib\other-2.js"
             });
         }
 

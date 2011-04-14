@@ -16,7 +16,6 @@ namespace Knapsack
 
         public UnresolvedModule(string path, Script[] scripts)
         {
-            if (System.IO.Path.IsPathRooted(path) == false) throw new ArgumentException("Absolute path required.", "path");
             this.path = path;
 
             var pathsInModule = new HashSet<string>(scripts.Select(s => s.Path));
