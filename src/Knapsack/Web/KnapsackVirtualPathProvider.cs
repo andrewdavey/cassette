@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO.IsolatedStorage;
 using System.Web.Hosting;
-using System.IO.IsolatedStorage;
-using System.IO;
 
 namespace Knapsack.Web
 {
     public class KnapsackVirtualPathProvider : VirtualPathProvider
     {
         readonly ModuleContainer moduleContainer;
-        readonly IsolatedStorageFile storage;
+        readonly ModuleCache moduleCache;
 
-        public KnapsackVirtualPathProvider(ModuleContainer moduleContainer, IsolatedStorageFile storage)
+        public KnapsackVirtualPathProvider(ModuleContainer moduleContainer, ModuleCache moduleCache)
         {
             this.moduleContainer = moduleContainer;
-            this.storage = storage;
+            this.moduleCache = moduleCache;
         }
 
         public override bool FileExists(string virtualPath)
@@ -27,7 +22,7 @@ namespace Knapsack.Web
         public override VirtualFile GetFile(string virtualPath)
         {
             var module = moduleContainer.FindModuleContainingScript(virtualPath);
-            return new KnapsackVirtualFile(module, storage);
+            return new KnapsackVirtualFile(module, moduleCache);
         }
     }
 }

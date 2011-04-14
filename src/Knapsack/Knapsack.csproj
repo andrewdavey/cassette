@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -39,8 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteArrayExtensions.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Module.cs" />
+    <Compile Include="ModuleCache.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ModuleContainerBuilder.cs" />
     <Compile Include="ModuleDifference.cs" />
@@ -50,8 +53,10 @@
     <Compile Include="Script.cs" />
     <Compile Include="ScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
+    <Compile Include="Web\KnapsackHttpModule.cs" />
     <Compile Include="Web\KnapsackVirtualFile.cs" />
     <Compile Include="Web\KnapsackVirtualPathProvider.cs" />
+    <Compile Include="Web\Start.cs" />
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,18 +7,18 @@ namespace Knapsack.Web
     class KnapsackVirtualFile : VirtualFile
     {
         readonly Module module;
-        readonly IsolatedStorageFile storage;
+        readonly ModuleCache moduleCache;
 
-        public KnapsackVirtualFile(Module module, IsolatedStorageFile storage)
+        public KnapsackVirtualFile(Module module, ModuleCache moduleCache)
             : base(module.Path)
         {
             this.module = module;
-            this.storage = storage;
+            this.moduleCache = moduleCache;
         }
 
-        public override System.IO.Stream Open()
+        public override Stream Open()
         {
-            return storage.OpenFile(module.Path, FileMode.Open, FileAccess.Read);
+            return moduleCache.OpenModuleFile(module);
         }
     }
 }

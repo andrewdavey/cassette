@@ -2,3 +2,4 @@
 depends: openwrap anchored content
 depends: Should
 depends: AjaxMin
+depends: WebActivator

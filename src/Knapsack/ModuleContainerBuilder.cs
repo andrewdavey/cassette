@@ -19,7 +19,7 @@ namespace Knapsack
             relativeModuleDirectories.Add(relativeDirectory);
         }
 
-        public void AddModuleForEachSubdirectory(string directory)
+        public void AddModuleForEachSubdirectoryOf(string directory)
         {
             foreach (var path in Directory.GetDirectories(Path.Combine(rootDirectory, directory)))
             {

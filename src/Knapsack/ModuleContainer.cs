@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Knapsack
 {
@@ -19,6 +17,11 @@ namespace Knapsack
                 from script in module.Scripts
                 select new { script.Path, module }
             ).ToDictionary(x => x.Path, x => x.module);
+        }
+
+        public IEnumerable<Module> Modules
+        {
+            get { return modules; }
         }
 
         public Module FindModuleContainingScript(string scriptPath)
@@ -73,6 +76,5 @@ namespace Knapsack
                 return module.Path.GetHashCode();
             }
         }
-
     }
 }
