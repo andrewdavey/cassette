@@ -13,7 +13,7 @@ namespace Knapsack
             return new UnresolvedScript(
                 sourcePath, 
                 Hash(source), 
-                ExpandPaths(ParseReferences(source), sourcePath).ToArray()
+                ParseReferences(source).ToArray()
             );
         }
 
@@ -21,7 +21,6 @@ namespace Knapsack
             @"/// \s* \<reference \s+ path \s* = \s* [""'](.*)[""'] \s* />", 
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
-        readonly Regex pathSplitter = new Regex(@"\\|/");
 
         byte[] Hash(Stream source)
         {
@@ -29,38 +28,6 @@ namespace Knapsack
             {
                 return sha1.ComputeHash(source);
             }
-        }
-
-        IEnumerable<string> ExpandPaths(IEnumerable<string> relativePaths, string sourcePath)
-        {
-            var currentDirectory = Path.GetDirectoryName(sourcePath);
-            var currentDirectoryNames = pathSplitter.Split(currentDirectory);
-            foreach (var path in relativePaths)
-            {
-                yield return NormalizePath(currentDirectoryNames, path);
-            }
-        }
-
-        string NormalizePath(string[] currentDirectory, string path)
-        {
-            // ("app", "~/foo/bar.js") -> "foo/bar.js" 
-            if (path.StartsWith("~")) return path.Substring(2);
-
-            // ("app/sub", "../foo/bar.js") -> "app/foo/bar.js"
-            var names = currentDirectory.Concat(pathSplitter.Split(path));
-            var stack = new Stack<string>();
-            foreach (var name in names)
-            {
-                if (name == "..")
-                {
-                    stack.Pop();
-                }
-                else
-                {
-                    stack.Push(name);
-                }
-            }
-            return string.Join("\\", stack.Reverse());
         }
 
         IEnumerable<string> ParseReferences(Stream source)

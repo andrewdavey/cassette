@@ -90,6 +90,12 @@ namespace Knapsack
         }
 
         [Fact]
+        public void script_1_has_resolved_reference_to_script_1()
+        {
+            module.Scripts[1].References[0].ShouldEqual(@"scripts\module-a\sub\test-2.js");
+        }
+
+        [Fact]
         public void no_external_references()
         {
             module.References.ShouldBeEmpty();

@@ -58,8 +58,8 @@ namespace Knapsack
         {
             script.References.ShouldEqual(new[] 
             {
-                @"scripts\other-1.js",
-                @"lib\other-2.js"
+                @"other-1.js",
+                @"../lib/other-2.js"
             });
         }
 
