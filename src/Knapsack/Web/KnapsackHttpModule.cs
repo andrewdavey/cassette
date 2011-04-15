@@ -33,8 +33,6 @@ namespace Knapsack.Web
 
                 // Our module script files will be served from isolated storage.
                 storage = IsolatedStorageFile.GetUserStoreForDomain();
-                storage.Remove();
-                storage = IsolatedStorageFile.GetUserStoreForDomain();
 
                 moduleContainer = BuildModuleContainer();
 
