@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteArrayExtensions.cs" />
+    <Compile Include="UnresolvedScript.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleCache.cs" />

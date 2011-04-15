@@ -41,7 +41,7 @@ namespace Knapsack
             return new UnresolvedModule(relativeDirectory, filenames.Select(LoadScript).ToArray());
         }
 
-        Script LoadScript(string filename)
+        UnresolvedScript LoadScript(string filename)
         {
             var parser = new ScriptParser();
             using (var fileStream = File.OpenRead(filename))

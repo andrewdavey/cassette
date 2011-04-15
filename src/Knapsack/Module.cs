@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Collections.Generic;
 
 namespace Knapsack
 {
@@ -14,11 +13,13 @@ namespace Knapsack
 
         public Module(string path, Script[] scripts, string[] moduleReferences)
         {
+            if (!scripts.All(s => s.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase)))
+                throw new ArgumentException("Script paths in module must start with module path (" + path + ")");
+
             this.path = path.ToLower();
             this.scripts = scripts;
-            this.moduleReferences = moduleReferences.Select(r => r.ToLower()).ToArray();
-
             this.hash = HashScriptHashes(scripts);
+            this.moduleReferences = moduleReferences.Select(r => r.ToLower()).ToArray();
         }
 
         public string Path

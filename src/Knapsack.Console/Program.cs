@@ -27,7 +27,7 @@ namespace Knapsack
             writer.Write(module);
         }
 
-        static Script LoadScript(string filename)
+        static UnresolvedScript LoadScript(string filename)
         {
             var scriptParser = new ScriptParser();
             using (var stream = File.OpenRead(filename))

@@ -48,13 +48,51 @@ namespace Knapsack
             module.Path.ShouldEqual(@"scripts\module-a");
         }
 
-        Script CreateScript(string name, params string[] references)
+        UnresolvedScript CreateScript(string name, params string[] references)
         {
-            return new Script(
+            return new UnresolvedScript(
                 @"scripts\module-a\" + name + ".js",
                 new byte[0],
-                references.Select(r => @"scripts\module-a\" + r + ".js").ToArray()
+                references.Select(r => r + ".js").ToArray()
             );
+        }
+    }
+
+    public class Resolve_an_UnresolvedModule_with_scripts_in_subdirectory
+    {
+        readonly UnresolvedModule unresolvedModule;
+        readonly Module module;
+
+        public Resolve_an_UnresolvedModule_with_scripts_in_subdirectory()
+        {
+            var script1 = new UnresolvedScript(
+                @"scripts\module-a\sub\test-1.js",
+                new byte[0],
+                new[] { @"test-2.js" }
+            );
+            var script2 = new UnresolvedScript(
+                @"scripts\module-a\sub\test-2.js",
+                new byte[0],
+                new string[] { }
+            );
+            unresolvedModule = new UnresolvedModule(@"scripts\module-a",
+                new[] { script1, script2 }
+            );
+
+            module = unresolvedModule.Resolve(s => @"scripts\module-a");
+        }
+
+        [Fact]
+        public void script_2_before_script_1()
+        {
+            module.Scripts[0].Path.ShouldEqual(@"scripts\module-a\sub\test-2.js");
+            module.Scripts[1].Path.ShouldEqual(@"scripts\module-a\sub\test-1.js");
+        }
+
+        [Fact]
+        public void no_external_references()
+        {
+            module.References.ShouldBeEmpty();
         }
     }
 
@@ -65,7 +103,7 @@ namespace Knapsack
 
         public Resolve_a_UnresolvedModule_with_script_having_an_external_reference()
         {
-            var script = new Script(
+            var script = new UnresolvedScript(
                 @"scripts\module-a\test.js",
                 new byte[0],
                 new[] { @"scripts\module-b\lib.js" }

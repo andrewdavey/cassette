@@ -14,7 +14,7 @@ namespace Knapsack
         readonly Script[] scripts;
         readonly string[] externalScriptReferences;
 
-        public UnresolvedModule(string path, Script[] scripts)
+        public UnresolvedModule(string path, UnresolvedScript[] scripts)
         {
             this.path = path.ToLower();
 
@@ -53,10 +53,10 @@ namespace Knapsack
             return modules;
         }
 
-        Tuple<Script, string[]>[] PartitionScriptReferences(Script[] scripts, HashSet<string> pathsInModule)
+        Tuple<Script, string[]>[] PartitionScriptReferences(UnresolvedScript[] scripts, HashSet<string> pathsInModule)
         {
             return scripts.Select(
-                s => s.ExtractExternalReferences(pathsInModule.Contains)
+                s => s.Resolve(pathsInModule.Contains)
             ).ToArray();
         }
 

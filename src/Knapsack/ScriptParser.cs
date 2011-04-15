@@ -8,9 +8,9 @@ namespace Knapsack
 {
     public class ScriptParser
     {
-        public Script Parse(Stream source, string sourcePath)
+        public UnresolvedScript Parse(Stream source, string sourcePath)
         {
-            return new Script(
+            return new UnresolvedScript(
                 sourcePath, 
                 Hash(source), 
                 ExpandPaths(ParseReferences(source), sourcePath).ToArray()
@@ -22,7 +22,6 @@ namespace Knapsack
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
         readonly Regex pathSplitter = new Regex(@"\\|/");
-        readonly string rootDirectory;
 
         byte[] Hash(Stream source)
         {

@@ -23,7 +23,7 @@ namespace Knapsack
                 moduleWriter.Write(module);
 
                 var output = textWriter.GetStringBuilder().ToString();
-                output.ShouldEqual("function test1(){}\r\nfunction test2(){}");
+                output.ShouldEqual("function test1(){}function test2(){}");
             }
         }
 
