@@ -35,6 +35,10 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies\System.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -53,9 +57,11 @@
     <Compile Include="Script.cs" />
     <Compile Include="ScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
+    <Compile Include="Web\KnapsackHttpHandler.cs" />
     <Compile Include="Web\KnapsackHttpModule.cs" />
     <Compile Include="Web\KnapsackVirtualFile.cs" />
     <Compile Include="Web\KnapsackVirtualPathProvider.cs" />
+    <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
     <Compile Include="Web\Start.cs" />
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />

@@ -16,7 +16,7 @@ namespace Knapsack
 
         public UnresolvedModule(string path, Script[] scripts)
         {
-            this.path = path;
+            this.path = path.ToLower();
 
             var pathsInModule = new HashSet<string>(scripts.Select(s => s.Path));
             var partition = PartitionScriptReferences(scripts, pathsInModule);

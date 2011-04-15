@@ -14,9 +14,9 @@ namespace Knapsack
 
         public Module(string path, Script[] scripts, string[] moduleReferences)
         {
-            this.path = path;
+            this.path = path.ToLower();
             this.scripts = scripts;
-            this.moduleReferences = moduleReferences;
+            this.moduleReferences = moduleReferences.Select(r => r.ToLower()).ToArray();
 
             this.hash = HashScriptHashes(scripts);
         }

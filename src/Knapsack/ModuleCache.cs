@@ -22,7 +22,7 @@ namespace Knapsack
 
         public void UpdateFrom(ModuleContainer moduleContainer)
         {
-            ModuleContainer cachedContainer = LoadCachedContainer();
+            ModuleContainer cachedContainer = ReadManifest();
 
             var differences = moduleContainer.CompareTo(cachedContainer);
 
@@ -35,7 +35,7 @@ namespace Knapsack
 
         public Stream OpenModuleFile(Module module)
         {
-            return storage.OpenFile(module.Path, FileMode.Open, FileAccess.Read);
+            return storage.OpenFile(module.Path + ".js", FileMode.Open, FileAccess.Read);
         }
 
         void ApplyDifferencesToCache(ModuleDifference[] differences)
@@ -58,7 +58,9 @@ namespace Knapsack
 
         void WriteModule(Module module)
         {
-            using (var stream = storage.OpenFile(module.Path, FileMode.Create, FileAccess.Write))
+            var filename = module.Path + ".js";
+            storage.CreateDirectory(Path.GetDirectoryName(filename));
+            using (var stream = storage.OpenFile(filename, FileMode.Create, FileAccess.Write))
             using (var textWriter = new StreamWriter(stream))
             {
                 var writer = new ModuleWriter(textWriter, LoadSourceFromFile);
@@ -137,11 +139,6 @@ namespace Knapsack
                     )
                 )
             );
-        }
-
-        ModuleContainer LoadCachedContainer()
-        {
-            throw new NotImplementedException();
         }
 
     }

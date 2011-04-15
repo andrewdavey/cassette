@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using Microsoft.Ajax.Utilities;
 
@@ -18,16 +19,15 @@ namespace Knapsack
         public void Write(Module module)
         {
             var minifier = new Minifier();
-            var first = true;
-            foreach (var script in module.Scripts)
-            {
-                if (!first) textWriter.WriteLine();
-                first = false;
 
-                var source = loadSourceFromFile(script.Path);
-                var minifiedSource = minifier.MinifyJavaScript(source);
-                textWriter.Write(minifiedSource);
-            }
+            textWriter.Write(
+                minifier.MinifyJavaScript(
+                    string.Join(
+                        "\r\n",
+                        module.Scripts.Select(s => loadSourceFromFile(s.Path))
+                    )
+                )
+            );
         }
     }
 }

@@ -40,9 +40,9 @@ namespace Knapsack
             return modules.Any(m => m.Path == modulePath);
         }
 
-        public Module GetModule(string modulePath)
+        public Module FindModule(string modulePath)
         {
-            return modules.First(m => m.Path == modulePath);
+            return modules.FirstOrDefault(m => m.Path == modulePath);
         }
 
         public ModuleDifference[] CompareTo(ModuleContainer oldModuleContainer)

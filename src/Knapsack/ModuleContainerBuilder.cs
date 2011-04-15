@@ -21,9 +21,10 @@ namespace Knapsack
 
         public void AddModuleForEachSubdirectoryOf(string directory)
         {
+            directory = directory.ToLower();
             foreach (var path in Directory.GetDirectories(Path.Combine(rootDirectory, directory)))
             {
-                AddModule(path.Substring(rootDirectory.Length + 1));
+                AddModule(path.Substring(rootDirectory.Length));
             }
         }
 
@@ -36,7 +37,7 @@ namespace Knapsack
         UnresolvedModule LoadUnresolvedModule(string relativeDirectory)
         {
             var path = Path.Combine(rootDirectory, relativeDirectory);
-            var filenames = Directory.GetFiles(path, "*.js");
+            var filenames = Directory.GetFiles(path, "*.js").Where(f => !f.EndsWith("-vsdoc.js"));
             return new UnresolvedModule(relativeDirectory, filenames.Select(LoadScript).ToArray());
         }
 
@@ -45,7 +46,7 @@ namespace Knapsack
             var parser = new ScriptParser();
             using (var fileStream = File.OpenRead(filename))
             {
-                return parser.Parse(fileStream, filename.Substring(rootDirectory.Length + 1));
+                return parser.Parse(fileStream, filename.Substring(rootDirectory.Length));
             }
         }
     }
