@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace Knapsack
 {
@@ -7,7 +8,8 @@ namespace Knapsack
     {
         readonly Module[] modules;
         readonly Dictionary<string, Module> modulesByScriptPath;
-
+        readonly StringComparer pathComparer = StringComparer.OrdinalIgnoreCase;
+        
         public ModuleContainer(IEnumerable<Module> modules)
         {
             this.modules = modules.ToArray();
@@ -16,7 +18,7 @@ namespace Knapsack
                 from module in modules
                 from script in module.Scripts
                 select new { script.Path, module }
-            ).ToDictionary(x => x.Path, x => x.module);
+            ).ToDictionary(x => x.Path, x => x.module, pathComparer);
         }
 
         public IEnumerable<Module> Modules
@@ -37,24 +39,24 @@ namespace Knapsack
 
         public bool Contains(string modulePath)
         {
-            return modules.Any(m => m.Path == modulePath);
+            return modules.Any(m => pathComparer.Equals(m.Path, modulePath));
         }
 
         public Module FindModule(string modulePath)
         {
-            return modules.FirstOrDefault(m => m.Path == modulePath);
+            return modules.FirstOrDefault(m => pathComparer.Equals(m.Path, modulePath));
         }
 
         public ModuleDifference[] CompareTo(ModuleContainer oldModuleContainer)
         {
-            var pathComparer = new ModulePathComparer();
-            var currentModules = new HashSet<Module>(modules, new ModulePathComparer());
-            var oldModules = new HashSet<Module>(oldModuleContainer.modules, new ModulePathComparer());
+            var modulePathComparer = new ModulePathComparer(pathComparer);
+            var currentModules = new HashSet<Module>(modules, modulePathComparer);
+            var oldModules = new HashSet<Module>(oldModuleContainer.modules, modulePathComparer);
 
-            var addedModules = currentModules.Except(oldModules, pathComparer);
-            var deletedModules = oldModules.Except(currentModules, pathComparer);
+            var addedModules = currentModules.Except(oldModules, modulePathComparer);
+            var deletedModules = oldModules.Except(currentModules, modulePathComparer);
             var changedModules = oldModules.Zip(currentModules, (old, current) => new { old, current })
-                .Where(x => pathComparer.Equals(x.old, x.current))
+                .Where(x => modulePathComparer.Equals(x.old, x.current))
                 .Where(x => x.old.Equals(x.current) == false)
                 .Select(c => c.current);
 
@@ -66,9 +68,16 @@ namespace Knapsack
 
         class ModulePathComparer : IEqualityComparer<Module>
         {
+            public ModulePathComparer(StringComparer pathComparer)
+            {
+                this.pathComparer = pathComparer;
+            }
+
+            readonly StringComparer pathComparer;
+
             public bool Equals(Module x, Module y)
             {
-                return x.Path == y.Path;
+                return pathComparer.Equals(x.Path, y.Path);
             }
 
             public int GetHashCode(Module module)
