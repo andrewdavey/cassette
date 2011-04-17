@@ -15,41 +15,41 @@ namespace Knapsack
             moduleContainer = new ModuleContainer(new[] 
             {
                 new Module(
-                    @"c:\scripts\module-a",
+                    @"c:/scripts/module-a",
                     new Script[]
                     {
-                        new Script(@"c:\scripts\module-a\test.js", new byte[0], new string[0])
+                        new Script(@"c:/scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0]
                 ),
-                new Module(@"c:\scripts\module-b", new Script[0], new string[0])
+                new Module(@"c:/scripts/module-b", new Script[0], new string[0])
             });
         }
 
         [Fact]
         public void FindModuleContainingScript_with_known_path_returns_the_Module()
         {
-            var module = moduleContainer.FindModuleContainingScript(@"c:\scripts\module-a\test.js");
-            module.Path.ShouldEqual(@"c:\scripts\module-a");
+            var module = moduleContainer.FindModuleContainingScript(@"c:/scripts/module-a/test.js");
+            module.Path.ShouldEqual(@"c:/scripts/module-a");
         }
 
         [Fact]
         public void FindModuleContainingScript_with_unknown_path_returns_null()
         {
-            var module = moduleContainer.FindModuleContainingScript(@"c:\scripts\module-X\XXX.js");
+            var module = moduleContainer.FindModuleContainingScript(@"c:/scripts/module-X/XXX.js");
             module.ShouldBeNull();
         }
 
         [Fact]
         public void Contains_known_path_returns_True()
         {
-            moduleContainer.Contains(@"c:\scripts\module-a").ShouldBeTrue();
+            moduleContainer.Contains(@"c:/scripts/module-a").ShouldBeTrue();
         }
 
         [Fact]
         public void Contains_unknown_path_returns_False()
         {
-            moduleContainer.Contains(@"c:\scripts\module-X").ShouldBeFalse();
+            moduleContainer.Contains(@"c:/scripts/module-X").ShouldBeFalse();
         }
     }
 
@@ -61,27 +61,27 @@ namespace Knapsack
             var oldModuleContainer = new ModuleContainer(new[] 
             {
                 new Module(
-                    @"c:\scripts\module-a",
+                    @"c:/scripts/module-a",
                     new Script[]
                     {
-                        new Script(@"c:\scripts\module-a\test.js", new byte[0], new string[0])
+                        new Script(@"c:/scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0]
                 ),
-                new Module(@"c:\scripts\module-b", new Script[0], new string[0])
+                new Module(@"c:/scripts/module-b", new Script[0], new string[0])
             });
 
             var newModuleContainer = new ModuleContainer(new[] 
             {
                 new Module(
-                    @"c:\scripts\module-a",
+                    @"c:/scripts/module-a",
                     new Script[]
                     {
-                        new Script(@"c:\scripts\module-a\test.js", new byte[0], new string[0])
+                        new Script(@"c:/scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0]
                 ),
-                new Module(@"c:\scripts\module-b", new Script[0], new string[0])
+                new Module(@"c:/scripts/module-b", new Script[0], new string[0])
             });
 
             var differences = newModuleContainer.CompareTo(oldModuleContainer);
@@ -94,10 +94,10 @@ namespace Knapsack
             var oldModuleContainer = new ModuleContainer(new[] 
             {
                 new Module(
-                    @"c:\scripts\module-a",
+                    @"c:/scripts/module-a",
                     new Script[]
                     {
-                        new Script(@"c:\scripts\module-a\test.js", new byte[] { 1 }, new string[0])
+                        new Script(@"c:/scripts/module-a/test.js", new byte[] { 1 }, new string[0])
                     }, 
                     new string[0]
                 )
@@ -107,10 +107,10 @@ namespace Knapsack
             var newModuleContainer = new ModuleContainer(new[] 
             {
                 changedModule = new Module(
-                    @"c:\scripts\module-a",
+                    @"c:/scripts/module-a",
                     new Script[]
                     {
-                        new Script(@"c:\scripts\module-a\test.js", new byte[] { 2 }, new string[0])
+                        new Script(@"c:/scripts/module-a/test.js", new byte[] { 2 }, new string[0])
                     }, 
                     new string[0]
                 )
@@ -129,10 +129,10 @@ namespace Knapsack
             var oldModuleContainer = new ModuleContainer(new[] 
             {
                 module = new Module(
-                    @"c:\scripts\module-a",
+                    @"c:/scripts/module-a",
                     new Script[]
                     {
-                        new Script(@"c:\scripts\module-a\test.js", new byte[0], new string[0])
+                        new Script(@"c:/scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0]
                 )
@@ -155,7 +155,7 @@ namespace Knapsack
             var newModuleContainer = new ModuleContainer(new[] 
             {
                 module = new Module(
-                    @"c:\scripts\module-a",
+                    @"c:/scripts/module-a",
                     new Script[0], 
                     new string[0]
                 )

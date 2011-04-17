@@ -16,7 +16,6 @@ namespace Knapsack
 
         public void AddReference(string scriptPath)
         {
-            scriptPath = scriptPath.Replace('/', '\\');
             var module = moduleContainer.FindModuleContainingScript(scriptPath);
             if (module == null) throw new ArgumentException("Script not found: " + scriptPath);
             modules.Add(module);

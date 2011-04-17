@@ -15,7 +15,7 @@ namespace Knapsack.Web
 
         public void ProcessRequest(HttpContext context)
         {
-            var modulePath = context.Request.PathInfo.Substring(1).Replace('/','\\');
+            var modulePath = context.Request.PathInfo.Substring(1);
             var module = KnapsackHttpModule.Instance.ModuleContainer.FindModule(modulePath);
             if (module != null)
             {

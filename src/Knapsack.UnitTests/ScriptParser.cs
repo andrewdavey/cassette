@@ -8,7 +8,7 @@ namespace Knapsack
     public class Given_a_ScriptParser_When_Parse_source_with_two_references
     {
         readonly ScriptParser parser;
-        readonly string sourcePath = @"scripts\test.js";
+        readonly string sourcePath = @"scripts/test.js";
         readonly string source = @"/// <reference path=""other-1.js""/>
 /// <reference path=""../lib/other-2.js""/>";
         readonly UnresolvedScript script;

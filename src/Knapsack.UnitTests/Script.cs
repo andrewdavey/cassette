@@ -10,16 +10,16 @@ namespace Knapsack
         public Given_a_new_Script()
         {
             script = new Script(
-                @"scripts\test.js",
+                @"scripts/test.js",
                 new byte[] { 1, 2, 3 },
-                new string[] { @"scripts\other.js" }
+                new string[] { @"scripts/other.js" }
             );
         }
 
         [Fact]
         public void has_Path_property()
         {
-            script.Path.ShouldEqual(@"scripts\test.js");
+            script.Path.ShouldEqual(@"scripts/test.js");
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace Knapsack
         [Fact]
         public void has_References_property()
         {
-            script.References.ShouldEqual(new[] { @"scripts\other.js" });
+            script.References.ShouldEqual(new[] { @"scripts/other.js" });
         }
     }
 

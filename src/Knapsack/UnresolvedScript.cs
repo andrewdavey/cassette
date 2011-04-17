@@ -14,8 +14,6 @@ namespace Knapsack
         readonly byte[] hash;
         readonly string[] references;
 
-        readonly Regex pathSplitter = new Regex(@"\\|/");
-
         public UnresolvedScript(string path, byte[] hash, string[] references)
         {
             this.path = path.ToLower();
@@ -65,8 +63,8 @@ namespace Knapsack
 
         IEnumerable<string> ExpandPaths(IEnumerable<string> relativePaths, string sourcePath)
         {
-            var currentDirectory = System.IO.Path.GetDirectoryName(sourcePath);
-            var currentDirectoryNames = pathSplitter.Split(currentDirectory);
+            var parts = sourcePath.Split('/');
+            var currentDirectoryNames = parts.Take(parts.Length - 1).ToArray();
             foreach (var path in relativePaths)
             {
                 yield return NormalizePath(currentDirectoryNames, path);
@@ -79,7 +77,7 @@ namespace Knapsack
             if (path.StartsWith("~")) return path.Substring(2);
 
             // ("app/sub", "../foo/bar.js") -> "app/foo/bar.js"
-            var names = currentDirectoryNames.Concat(pathSplitter.Split(path));
+            var names = currentDirectoryNames.Concat(path.Split('/'));
             var stack = new Stack<string>();
             foreach (var name in names)
             {
@@ -93,7 +91,7 @@ namespace Knapsack
                     stack.Push(name);
                 }
             }
-            return string.Join("\\", stack.Reverse());
+            return string.Join("/", stack.Reverse());
         }
 
 

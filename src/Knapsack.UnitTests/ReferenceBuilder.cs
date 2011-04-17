@@ -13,7 +13,7 @@ namespace Knapsack
 
         public ReferenceBuilder_with_modules()
         {
-            // 'b\4.js' <- 'a\1.js' <- 'a\3.js' <- 'b\2.js'
+            // 'b/4.js' <- 'a/1.js' <- 'a/3.js' <- 'b/2.js'
             builder = new ReferenceBuilder(
                 new ModuleContainer(new[]
                 {
@@ -21,9 +21,9 @@ namespace Knapsack
                         "a",
                         new[]
                         {
-                            CreateScript("1", "a", "b\\4.js"),
-                            CreateScript("2", "a", "a\\3.js"),
-                            CreateScript("3", "a", "a\\1.js")
+                            CreateScript("1", "a", "b/4.js"),
+                            CreateScript("2", "a", "a/3.js"),
+                            CreateScript("3", "a", "a/1.js")
                         },
                         new [] { "b" }
                     ),
@@ -41,13 +41,13 @@ namespace Knapsack
 
         Script CreateScript(string name, string module, params string[] references)
         {
-            return new Script(module + "\\" + name + ".js", new byte[0], references);
+            return new Script(module + "/" + name + ".js", new byte[0], references);
         }
 
         [Fact]
         public void AddReference_b_4_loads_only_module_b()
         {
-            builder.AddReference("b\\4.js");
+            builder.AddReference("b/4.js");
             var modules = builder.GetRequiredModules().ToArray();
             modules.Length.ShouldEqual(1);
             modules[0].Path.ShouldEqual("b");
@@ -56,7 +56,7 @@ namespace Knapsack
         [Fact]
         public void AddReference_a_1_loads_module_a_and_b()
         {
-            builder.AddReference("a\\1.js");
+            builder.AddReference("a/1.js");
             var modules = builder.GetRequiredModules().ToArray();
             modules.Length.ShouldEqual(2);
             modules[0].Path.ShouldEqual("b");

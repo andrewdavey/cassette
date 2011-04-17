@@ -15,8 +15,8 @@ namespace Knapsack
                 var module = new Module("a", new[] { CreateScript("1"), CreateScript("2") }, new string[0]);
                 var sources = new Dictionary<string, string>
                 {
-                    { "a\\1.js", "function test1 () { }" },
-                    { "a\\2.js", "function test2 () { }" }
+                    { "a//1.js", "function test1 () { }" },
+                    { "a//2.js", "function test2 () { }" }
                 };
                 var moduleWriter = new ModuleWriter(textWriter, path => sources[path]);
 
@@ -29,7 +29,7 @@ namespace Knapsack
 
         Script CreateScript(string name)
         {
-            return new Script("a\\" + name + ".js", new byte[0], new string[0]);
+            return new Script("a//" + name + ".js", new byte[0], new string[0]);
         }
     }
 }
