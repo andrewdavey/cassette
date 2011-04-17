@@ -9,6 +9,12 @@ namespace Knapsack
         public ModuleContainerBuilder(string rootDirectory)
         {
             this.rootDirectory = rootDirectory;
+
+            var last = rootDirectory.Last();
+            if (last != Path.DirectorySeparatorChar && last != Path.AltDirectorySeparatorChar)
+            {
+                rootDirectory += "/";
+            }
         }
 
         readonly string rootDirectory;
@@ -16,13 +22,13 @@ namespace Knapsack
 
         public void AddModule(string relativeDirectory)
         {
-            relativeModuleDirectories.Add(relativeDirectory);
+            relativeModuleDirectories.Add(relativeDirectory.Replace('\\', '/'));
         }
 
         public void AddModuleForEachSubdirectoryOf(string directory)
         {
-            directory = directory.ToLower();
-            foreach (var path in Directory.GetDirectories(Path.Combine(rootDirectory, directory)))
+            var fullPath = rootDirectory + directory;
+            foreach (var path in Directory.GetDirectories(fullPath))
             {
                 AddModule(path.Substring(rootDirectory.Length));
             }
@@ -36,8 +42,10 @@ namespace Knapsack
 
         UnresolvedModule LoadUnresolvedModule(string relativeDirectory)
         {
-            var path = Path.Combine(rootDirectory, relativeDirectory);
-            var filenames = Directory.GetFiles(path, "*.js").Where(f => !f.EndsWith("-vsdoc.js"));
+            var path = rootDirectory + relativeDirectory;
+            var filenames = Directory.GetFiles(path, "*.js")
+                .Where(f => !f.EndsWith("-vsdoc.js"))
+                .Select(f => f.Replace('\\', '/'));
             return new UnresolvedModule(relativeDirectory, filenames.Select(LoadScript).ToArray());
         }
 

@@ -6,8 +6,8 @@ namespace Knapsack.Web
 {
     public class KnapsackHttpModule : IHttpModule
     {
-        static bool created = false;
-        static readonly object createdSync = new object();
+        static bool firstInit = true;
+        static readonly object firstInitSync = new object();
         internal static KnapsackHttpModule Instance;
 
         IsolatedStorageFile storage;
@@ -26,29 +26,26 @@ namespace Knapsack.Web
 
         public void Init(HttpApplication context)
         {
-            lock (createdSync)
+            context.BeginRequest += context_BeginRequest;
+
+            if (firstInit)
             {
-                if (created) return;
-                created = true;
+                lock (firstInitSync)
+                {
+                    if (!firstInit) return;
+                    firstInit = false;
 
-                // Our module script files will be served from isolated storage.
-                storage = IsolatedStorageFile.GetUserStoreForDomain();
+                    // Module script files will be served from isolated storage.
+                    storage = IsolatedStorageFile.GetUserStoreForDomain();
 
-                moduleContainer = BuildModuleContainer();
+                    moduleContainer = BuildModuleContainer();
 
-                cache = new ModuleCache(storage, HttpRuntime.AppDomainAppPath);
-                cache.UpdateFrom(moduleContainer);
+                    cache = new ModuleCache(storage, HttpRuntime.AppDomainAppPath);
+                    cache.UpdateFrom(moduleContainer);
 
-                Instance = this;
-
-                // We need a custom virtual path provider to tell ASP.NET how
-                // to load modules, which are saved in isolated storage.
-                //HostingEnvironment.RegisterVirtualPathProvider(
-                //    new KnapsackVirtualPathProvider(moduleContainer, cache)
-                //);
+                    Instance = this;
+                }
             }
-
-            context.BeginRequest += new System.EventHandler(context_BeginRequest);
         }
 
         void context_BeginRequest(object sender, System.EventArgs e)

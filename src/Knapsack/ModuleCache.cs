@@ -76,7 +76,10 @@ namespace Knapsack
 
         void DeleteModule(Module module)
         {
-            storage.DeleteDirectory(module.Path);
+            if (storage.DirectoryExists(module.Path))
+            {
+                storage.DeleteDirectory(module.Path);
+            }
         }
 
         void WriteManifest(ModuleContainer moduleContainer)

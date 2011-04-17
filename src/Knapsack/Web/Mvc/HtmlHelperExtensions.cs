@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Web.Mvc;
 using System.Web;
+using System.Web.Mvc;
+using System;
 
 namespace Knapsack.Web.Mvc
 {
@@ -15,46 +14,44 @@ namespace Knapsack.Web.Mvc
             builder.AddReference(scriptPath);
         }
 
-        private static ReferenceBuilder GetReferenceBuilder(HtmlHelper html)
-        {
-            return (ReferenceBuilder)html.ViewContext.HttpContext.Items["Knapsack.ReferenceBuilder"];
-        }
-
         public static IHtmlString RenderScripts(this HtmlHelper html)
         {
-            if (html.ViewContext.HttpContext.IsDebuggingEnabled)
-            {
-                return RenderDebugScripts(html);
-            }
-            else
-            {
-                return RenderReleaseScripts(html);
-            }
+            var builder = GetReferenceBuilder(html);
+            var scriptUrls = html.ViewContext.HttpContext.IsDebuggingEnabled
+                ? DebugScriptUrls(builder) 
+                : ReleaseScriptUrls(builder);
+
+            var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
+            var scriptElements = scriptUrls
+                .Select(VirtualPathUtility.ToAbsolute)
+                .Select(HttpUtility.HtmlAttributeEncode)
+                .Select(src => string.Format(template, src));
+
+            var allHtml = string.Join("\r\n", scriptElements);
+            return new HtmlString(allHtml);
         }
 
-        private static IHtmlString RenderDebugScripts(HtmlHelper html)
+        static ReferenceBuilder GetReferenceBuilder(HtmlHelper html)
         {
-            var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
-            var builder = GetReferenceBuilder(html);
-            var scripts = builder.GetRequiredModules()
+            var builder = (ReferenceBuilder)html.ViewContext.HttpContext.Items["Knapsack.ReferenceBuilder"];
+            if (builder == null)
+            {
+                throw new InvalidOperationException("Knapsack.ReferenceBuilder has not been added to the current HttpContext Items.");
+            }
+            return builder;
+        }
+
+        static IEnumerable<string> DebugScriptUrls(ReferenceBuilder builder)
+        {
+            return builder.GetRequiredModules()
                 .SelectMany(m => m.Scripts)
-                .Select(s => "~/" + s.Path)
-                .Select(VirtualPathUtility.ToAbsolute)
-                .Select(src => string.Format(template, src));
-
-            return new HtmlString(string.Join("\r\n", scripts));
+                .Select(s => "~/" + s.Path);
         }
 
-        private static IHtmlString RenderReleaseScripts(HtmlHelper html)
+        static IEnumerable<string> ReleaseScriptUrls(ReferenceBuilder builder)
         {
-            var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
-            var builder = GetReferenceBuilder(html);
-            var scripts = builder.GetRequiredModules()
-                .Select(m => "~/knapsack.axd/" + m.Path)
-                .Select(VirtualPathUtility.ToAbsolute)
-                .Select(src => string.Format(template, src));
-
-            return new HtmlString(string.Join("\r\n", scripts));
+            return builder.GetRequiredModules()
+                 .Select(m => "~/knapsack.axd/" + m.Path);
         }
     }
 }

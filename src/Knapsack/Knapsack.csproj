@@ -60,8 +60,6 @@
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Web\KnapsackHttpHandler.cs" />
     <Compile Include="Web\KnapsackHttpModule.cs" />
-    <Compile Include="Web\KnapsackVirtualFile.cs" />
-    <Compile Include="Web\KnapsackVirtualPathProvider.cs" />
     <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
     <Compile Include="Web\Start.cs" />
   </ItemGroup>
