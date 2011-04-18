@@ -43,15 +43,22 @@ namespace Knapsack.Web.Mvc
 
         static IEnumerable<string> DebugScriptUrls(ReferenceBuilder builder)
         {
+            var cacheBreaker = "nocache=" + DateTime.Now.Ticks.ToString();
             return builder.GetRequiredModules()
                 .SelectMany(m => m.Scripts)
-                .Select(s => "~/" + s.Path);
+                .Select(s => "~/" + s.Path)
+                .Select(url => url + (url.Contains('?') ? "&" : "?") + cacheBreaker);
         }
 
+        /// <summary>
+        /// Returns the application relative URL for each required module.
+        /// The hash of each module is appended to enable long-lived caching that
+        /// is broken when a module changes.
+        /// </summary>
         static IEnumerable<string> ReleaseScriptUrls(ReferenceBuilder builder)
         {
             return builder.GetRequiredModules()
-                 .Select(m => "~/knapsack.axd/" + m.Path);
+                 .Select(m => "~/knapsack.axd/" + m.Path + "_" + m.Hash.ToHexString());
         }
     }
 }

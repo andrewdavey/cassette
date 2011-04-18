@@ -4,3 +4,5 @@
 Example.showMessage = function (message) {
     $("#message").text(message);
 };
+
+//test
