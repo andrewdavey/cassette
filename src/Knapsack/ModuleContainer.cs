@@ -1,29 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
-using System;
 
 namespace Knapsack
 {
     public class ModuleContainer
     {
         readonly Module[] modules;
+        readonly ModuleManifest manifest;
+        readonly IsolatedStorageFile storage;
+        readonly string rootDirectory;
         readonly Dictionary<string, Module> modulesByScriptPath;
         readonly StringComparer pathComparer = StringComparer.OrdinalIgnoreCase;
         
-        public ModuleContainer(IEnumerable<Module> modules)
+        public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, string rootDirectory)
         {
             this.modules = modules.ToArray();
+            this.manifest = new ModuleManifest(this.modules);
+            this.storage = storage;
+            this.rootDirectory = rootDirectory;
 
             modulesByScriptPath = (
                 from module in modules
                 from script in module.Scripts
                 select new { script.Path, module }
             ).ToDictionary(x => x.Path, x => x.module, pathComparer);
-        }
-
-        public IEnumerable<Module> Modules
-        {
-            get { return modules; }
         }
 
         public Module FindModuleContainingScript(string scriptPath)
@@ -47,43 +50,84 @@ namespace Knapsack
             return modules.FirstOrDefault(m => pathComparer.Equals(m.Path, modulePath));
         }
 
-        public ModuleDifference[] CompareTo(ModuleContainer oldModuleContainer)
+        public Stream OpenModuleFile(Module module)
         {
-            var modulePathComparer = new ModulePathComparer(pathComparer);
-            var currentModules = new HashSet<Module>(modules, modulePathComparer);
-            var oldModules = new HashSet<Module>(oldModuleContainer.modules, modulePathComparer);
-
-            var addedModules = currentModules.Except(oldModules, modulePathComparer);
-            var deletedModules = oldModules.Except(currentModules, modulePathComparer);
-            var changedModules = oldModules.Zip(currentModules, (old, current) => new { old, current })
-                .Where(x => modulePathComparer.Equals(x.old, x.current))
-                .Where(x => x.old.Equals(x.current) == false)
-                .Select(c => c.current);
-
-            var added = addedModules.Select(m => new ModuleDifference(m, ModuleDifferenceType.Added));
-            var deleted = deletedModules.Select(m => new ModuleDifference(m, ModuleDifferenceType.Deleted));
-            var changed = changedModules.Select(m => new ModuleDifference(m, ModuleDifferenceType.Changed));
-            return added.Concat(deleted).Concat(changed).ToArray();
+            return storage.OpenFile(module.Path + ".js", FileMode.Open, FileAccess.Read);
         }
 
-        class ModulePathComparer : IEqualityComparer<Module>
+        public void UpdateStorage()
         {
-            public ModulePathComparer(StringComparer pathComparer)
-            {
-                this.pathComparer = pathComparer;
-            }
+            var cachedManifest = ReadManifestFromStorage();
+            var differences = manifest.CompareTo(cachedManifest);
 
-            readonly StringComparer pathComparer;
-
-            public bool Equals(Module x, Module y)
+            if (differences.Any())
             {
-                return pathComparer.Equals(x.Path, y.Path);
-            }
-
-            public int GetHashCode(Module module)
-            {
-                return module.Path.GetHashCode();
+                ApplyDifferencesToStorage(differences);
+                WriteManifestToStorage();
             }
         }
+
+        ModuleManifest ReadManifestFromStorage()
+        {
+            using (var stream = storage.OpenFile("manifest.xml", FileMode.Open, FileAccess.Read))
+            {
+                var reader = new ModuleManifestReader(stream);
+                return reader.Read();
+            }
+        }
+
+        void WriteManifestToStorage()
+        {
+            using (var stream = storage.OpenFile("manifest.xml", FileMode.Create, FileAccess.Read))
+            {
+                var writer = new ModuleManifestWriter(stream);
+                writer.Write(manifest);
+            }
+        }
+
+        void ApplyDifferencesToStorage(ModuleDifference[] differences)
+        {
+            foreach (var difference in differences)
+            {
+                switch (difference.Type)
+                {
+                    case ModuleDifferenceType.Changed:
+                    case ModuleDifferenceType.Added:
+                        WriteModuleToStorage(difference.Module);
+                        break;
+
+                    case ModuleDifferenceType.Deleted:
+                        DeleteModuleFromStorage(difference.Module);
+                        break;
+                }
+            }
+        }
+
+        void WriteModuleToStorage(Module module)
+        {
+            var filename = module.Path + ".js";
+            storage.CreateDirectory(Path.GetDirectoryName(filename));
+            using (var stream = storage.OpenFile(filename, FileMode.Create, FileAccess.Write))
+            using (var textWriter = new StreamWriter(stream))
+            {
+                var writer = new ModuleWriter(textWriter, LoadSourceFromFile);
+                writer.Write(module);
+            }
+        }
+
+        void DeleteModuleFromStorage(Module module)
+        {
+            if (storage.DirectoryExists(module.Path))
+            {
+                storage.DeleteDirectory(module.Path);
+            }
+        }
+
+        string LoadSourceFromFile(string relativeFilename)
+        {
+            var fullPath = Path.Combine(rootDirectory, relativeFilename);
+            return File.ReadAllText(fullPath);
+        }
+
     }
 }

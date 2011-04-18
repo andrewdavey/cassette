@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO.IsolatedStorage;
 using System.Linq;
-using System.Text;
-using Xunit;
 using Should;
+using Xunit;
 
 namespace Knapsack
 {
-    public class ReferenceBuilder_with_modules
+    public class ReferenceBuilder_with_modules : IDisposable
     {
-        ReferenceBuilder builder;
+        readonly ReferenceBuilder builder;
+        readonly IsolatedStorageFile storage;
 
         public ReferenceBuilder_with_modules()
         {
+            storage = IsolatedStorageFile.GetUserStoreForDomain();
             // 'b/4.js' <- 'a/1.js' <- 'a/3.js' <- 'b/2.js'
             builder = new ReferenceBuilder(
                 new ModuleContainer(new[]
@@ -35,8 +36,13 @@ namespace Knapsack
                         }, 
                         new string[0]
                     )
-                })
+                }, storage, "c:\\")
             );
+        }
+
+        public void Dispose()
+        {
+            storage.Dispose();
         }
 
         Script CreateScript(string name, string module, params string[] references)

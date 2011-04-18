@@ -45,10 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteArrayExtensions.cs" />
+    <Compile Include="ModuleManifestReader.cs" />
+    <Compile Include="ModuleManifestWriter.cs" />
+    <Compile Include="ModuleManifest.cs" />
     <Compile Include="UnresolvedScript.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Module.cs" />
-    <Compile Include="ModuleCache.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ModuleContainerBuilder.cs" />
     <Compile Include="ModuleDifference.cs" />

@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
+using System.IO.IsolatedStorage;
 using Should;
+using Xunit;
 
 namespace Knapsack
 {
-    public class ModuleContainer_facts
+    public class ModuleContainer_facts : IDisposable
     {
         readonly ModuleContainer moduleContainer;
+        readonly IsolatedStorageFile storage;
 
         public ModuleContainer_facts()
         {
+            storage = IsolatedStorageFile.GetUserStoreForDomain();
             moduleContainer = new ModuleContainer(new[] 
             {
                 new Module(
@@ -23,7 +24,12 @@ namespace Knapsack
                     new string[0]
                 ),
                 new Module(@"scripts/module-b", new Script[0], new string[0])
-            });
+            }, storage, "c:\\");
+        }
+
+        public void Dispose()
+        {
+            storage.Dispose();
         }
 
         [Fact]
@@ -66,119 +72,19 @@ namespace Knapsack
         }
     }
 
-    public class ModuleContainer_differencing
+    public class ModuleContainer_differencing : IDisposable
     {
-        [Fact]
-        public void Identical_ModuleContainers_have_no_differences()
+        readonly IsolatedStorageFile storage;
+
+        public ModuleContainer_differencing()
         {
-            var oldModuleContainer = new ModuleContainer(new[] 
-            {
-                new Module(
-                    @"scripts/module-a",
-                    new Script[]
-                    {
-                        new Script(@"scripts/module-a/test.js", new byte[0], new string[0])
-                    }, 
-                    new string[0]
-                ),
-                new Module(@"scripts/module-b", new Script[0], new string[0])
-            });
-
-            var newModuleContainer = new ModuleContainer(new[] 
-            {
-                new Module(
-                    @"scripts/module-a",
-                    new Script[]
-                    {
-                        new Script(@"scripts/module-a/test.js", new byte[0], new string[0])
-                    }, 
-                    new string[0]
-                ),
-                new Module(@"scripts/module-b", new Script[0], new string[0])
-            });
-
-            var differences = newModuleContainer.CompareTo(oldModuleContainer);
-            differences.Length.ShouldEqual(0);
+            storage = IsolatedStorageFile.GetUserStoreForDomain();
         }
 
-        [Fact]
-        public void Compare_ModuleContainer_with_changed_module_to_old_returns_difference()
+        public void Dispose()
         {
-            var oldModuleContainer = new ModuleContainer(new[] 
-            {
-                new Module(
-                    @"scripts/module-a",
-                    new Script[]
-                    {
-                        new Script(@"scripts/module-a/test.js", new byte[] { 1 }, new string[0])
-                    }, 
-                    new string[0]
-                )
-            });
-
-            Module changedModule;
-            var newModuleContainer = new ModuleContainer(new[] 
-            {
-                changedModule = new Module(
-                    @"scripts/module-a",
-                    new Script[]
-                    {
-                        new Script(@"scripts/module-a/test.js", new byte[] { 2 }, new string[0])
-                    }, 
-                    new string[0]
-                )
-            });
-
-            var differences = newModuleContainer.CompareTo(oldModuleContainer);
-            differences.Length.ShouldEqual(1);
-            differences[0].Type.ShouldEqual(ModuleDifferenceType.Changed);
-            differences[0].Module.ShouldEqual(changedModule);
+            storage.Dispose();
         }
 
-        [Fact]
-        public void Compare_ModuleContainer_with_deleted_module_to_old_returns_difference()
-        {
-            Module module;
-            var oldModuleContainer = new ModuleContainer(new[] 
-            {
-                module = new Module(
-                    @"scripts/module-a",
-                    new Script[]
-                    {
-                        new Script(@"scripts/module-a/test.js", new byte[0], new string[0])
-                    }, 
-                    new string[0]
-                )
-            });
-
-            var newModuleContainer = new ModuleContainer(new Module[0]);
-
-            var differences = newModuleContainer.CompareTo(oldModuleContainer);
-            differences.Length.ShouldEqual(1);
-            differences[0].Type.ShouldEqual(ModuleDifferenceType.Deleted);
-            differences[0].Module.ShouldEqual(module);
-        }
-
-        [Fact]
-        public void Compare_ModuleContainer_with_added_module_to_old_returns_difference()
-        {
-            var oldModuleContainer = new ModuleContainer(new Module[0]);
-
-            Module module;
-            var newModuleContainer = new ModuleContainer(new[] 
-            {
-                module = new Module(
-                    @"scripts/module-a",
-                    new Script[0], 
-                    new string[0]
-                )
-            });
-
-
-            var differences = newModuleContainer.CompareTo(oldModuleContainer);
-            differences.Length.ShouldEqual(1);
-            differences[0].Type.ShouldEqual(ModuleDifferenceType.Added);
-            differences[0].Module.ShouldEqual(module);
-        }
     }
 }

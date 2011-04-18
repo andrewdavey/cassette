@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 
 namespace Knapsack
 {
     public class ModuleContainerBuilder
     {
-        public ModuleContainerBuilder(string rootDirectory)
+        public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory)
         {
+            this.storage = storage;
             this.rootDirectory = rootDirectory;
 
             var last = rootDirectory.Last();
@@ -17,6 +19,7 @@ namespace Knapsack
             }
         }
 
+        readonly IsolatedStorageFile storage;
         readonly string rootDirectory;
         readonly List<string> relativeModuleDirectories = new List<string>();
 
@@ -37,7 +40,7 @@ namespace Knapsack
         public ModuleContainer Build()
         {
             var modules = relativeModuleDirectories.Select(LoadUnresolvedModule);
-            return new ModuleContainer(UnresolvedModule.ResolveAll(modules));
+            return new ModuleContainer(UnresolvedModule.ResolveAll(modules), storage, rootDirectory);
         }
 
         UnresolvedModule LoadUnresolvedModule(string relativeDirectory)

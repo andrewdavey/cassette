@@ -11,17 +11,11 @@ namespace Knapsack.Web
         internal static KnapsackHttpModule Instance;
 
         IsolatedStorageFile storage;
-        ModuleCache cache;
         ModuleContainer moduleContainer;
 
         public ModuleContainer ModuleContainer
         {
             get { return moduleContainer; }
-        }
-
-        public ModuleCache Cache
-        {
-            get { return cache; }
         }
 
         public void Init(HttpApplication context)
@@ -39,9 +33,7 @@ namespace Knapsack.Web
                     storage = IsolatedStorageFile.GetUserStoreForDomain();
 
                     moduleContainer = BuildModuleContainer();
-
-                    cache = new ModuleCache(storage, HttpRuntime.AppDomainAppPath);
-                    cache.UpdateFrom(moduleContainer);
+                    moduleContainer.UpdateStorage();
 
                     Instance = this;
                 }
@@ -56,7 +48,7 @@ namespace Knapsack.Web
 
         ModuleContainer BuildModuleContainer()
         {
-            var builder = new ModuleContainerBuilder(HttpRuntime.AppDomainAppPath);
+            var builder = new ModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath);
             builder.AddModuleForEachSubdirectoryOf("scripts");
             // TODO: expose configuration point here to allow specific modules to be added.
             return builder.Build();

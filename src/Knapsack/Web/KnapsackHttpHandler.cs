@@ -65,7 +65,7 @@ namespace Knapsack.Web
 
         void WriteModuleContentToResponse(Module module, HttpResponse response)
         {
-            using (var stream = KnapsackHttpModule.Instance.Cache.OpenModuleFile(module))
+            using (var stream = KnapsackHttpModule.Instance.ModuleContainer.OpenModuleFile(module))
             {
                 stream.CopyTo(response.OutputStream);
             }
