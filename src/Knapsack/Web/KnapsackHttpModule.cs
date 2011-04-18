@@ -32,7 +32,7 @@ namespace Knapsack.Web
                     // Module script files will be served from isolated storage.
                     storage = IsolatedStorageFile.GetUserStoreForDomain();
 
-                    moduleContainer = BuildModuleContainer();
+                    moduleContainer = BuildModuleContainer(storage);
                     moduleContainer.UpdateStorage();
 
                     Instance = this;
@@ -46,7 +46,7 @@ namespace Knapsack.Web
                 new ReferenceBuilder(Instance.moduleContainer);
         }
 
-        ModuleContainer BuildModuleContainer()
+        ModuleContainer BuildModuleContainer(IsolatedStorageFile storage)
         {
             var builder = new ModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath);
             builder.AddModuleForEachSubdirectoryOf("scripts");
