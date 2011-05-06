@@ -1,8 +1,10 @@
 ﻿using System.IO.IsolatedStorage;
 using System.Web;
 using System.Web.Hosting;
+using System;
+using System.IO;
 
-namespace Knapsack.Web
+namespace Knapsack.Integration.Web
 {
     public class KnapsackHttpModule : IHttpModule
     {
@@ -12,10 +14,16 @@ namespace Knapsack.Web
 
         IsolatedStorageFile storage;
         ModuleContainer moduleContainer;
+        ICoffeeScriptCompiler coffeeScriptCompiler;
 
         public ModuleContainer ModuleContainer
         {
             get { return moduleContainer; }
+        }
+
+        public ICoffeeScriptCompiler CoffeeScriptCompiler
+        {
+            get { return coffeeScriptCompiler; }
         }
 
         public void Init(HttpApplication context)
@@ -31,6 +39,7 @@ namespace Knapsack.Web
 
                     // Module script files will be served from isolated storage.
                     storage = IsolatedStorageFile.GetUserStoreForDomain();
+                    coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
 
                     moduleContainer = BuildModuleContainer(storage);
                     moduleContainer.UpdateStorage();
@@ -48,7 +57,7 @@ namespace Knapsack.Web
 
         ModuleContainer BuildModuleContainer(IsolatedStorageFile storage)
         {
-            var builder = new ModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath);
+            var builder = new ModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, coffeeScriptCompiler);
             builder.AddModuleForEachSubdirectoryOf("scripts");
             // TODO: expose configuration point here to allow specific modules to be added.
             return builder.Build();

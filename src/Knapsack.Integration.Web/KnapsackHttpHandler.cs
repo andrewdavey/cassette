@@ -1,17 +1,46 @@
 ﻿using System;
+using System.IO;
 using System.Web;
-using System.Web.Caching;
 
-namespace Knapsack.Web
+namespace Knapsack.Integration.Web
 {
     public class KnapsackHttpHandler : IHttpHandler
     {
+        readonly ModuleContainer moduleContainer;
+        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
+
+        public KnapsackHttpHandler()
+            : this(KnapsackHttpModule.Instance.ModuleContainer, KnapsackHttpModule.Instance.CoffeeScriptCompiler)
+        {
+        }
+
+        public KnapsackHttpHandler(ModuleContainer moduleContainer, ICoffeeScriptCompiler coffeeScriptCompiler)
+        {
+            this.moduleContainer = moduleContainer;
+            this.coffeeScriptCompiler = coffeeScriptCompiler;
+        }
+
         public bool IsReusable
         {
             get { return true; }
         }
 
         public void ProcessRequest(HttpContext context)
+        {
+            // PathInfo starts with a '/'
+            var pathInfo = context.Request.PathInfo.Split('/');
+            if (pathInfo.Length < 2) return;
+            if (pathInfo[1] == "modules")
+            {
+                ProcessModuleRequest(context);
+            }
+            else if (pathInfo[1] == "coffee")
+            {
+                ProcessCoffeeRequest(context);
+            }
+        }
+
+        void ProcessModuleRequest(HttpContext context)
         {
             var module = FindModule(context.Request);
 
@@ -35,19 +64,29 @@ namespace Knapsack.Web
             }
         }
 
+        void ProcessCoffeeRequest(HttpContext context)
+        {
+            var path = context.Server.MapPath("~" + context.Request.PathInfo.Substring("/coffee".Length) + ".coffee");
+            var javaScript = coffeeScriptCompiler.CompileCoffeeScript(path);
+
+            context.Response.ContentType = "text/javascript";
+            context.Response.Write(javaScript);
+        }
+
         Module FindModule(HttpRequest request)
         {
             var modulePath = GetModulePath(request);
-            var module = KnapsackHttpModule.Instance.ModuleContainer.FindModule(modulePath);
+            var module = moduleContainer.FindModule(modulePath);
             return module;
         }
 
         string GetModulePath(HttpRequest request)
         {
-            // Path info looks like "/module-a/foo_hash".
+            // Path info looks like "/modules/module-a/foo_hash".
             var path = request.PathInfo;
             // We want "module-a/foo".
-            return path.Substring(1, path.LastIndexOf('_') - 1);
+            var prefixLength = "/modules/".Length;
+            return path.Substring(prefixLength, path.LastIndexOf('_') - prefixLength);
         }
 
         bool ClientHasCurrentVersion(HttpRequest request, string serverETag)
@@ -65,7 +104,7 @@ namespace Knapsack.Web
 
         void WriteModuleContentToResponse(Module module, HttpResponse response)
         {
-            using (var stream = KnapsackHttpModule.Instance.ModuleContainer.OpenModuleFile(module))
+            using (var stream = moduleContainer.OpenModuleFile(module))
             {
                 stream.CopyTo(response.OutputStream);
             }

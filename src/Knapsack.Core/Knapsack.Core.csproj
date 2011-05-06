@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Jurassic">
+      <HintPath>..\..\lib\Jurassic.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,9 +48,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteArrayExtensions.cs" />
+    <Compile Include="CoffeeScriptCompiler.cs" />
+    <Compile Include="ICoffeeScriptCompiler.cs" />
     <Compile Include="ModuleManifestReader.cs" />
     <Compile Include="ModuleManifestWriter.cs" />
     <Compile Include="ModuleManifest.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UnresolvedScript.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Module.cs" />
@@ -60,6 +70,15 @@
     <Compile Include="Script.cs" />
     <Compile Include="ScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\coffeescript.js" />
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

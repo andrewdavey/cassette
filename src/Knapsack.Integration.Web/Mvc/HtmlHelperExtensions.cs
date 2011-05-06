@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System;
 
-namespace Knapsack.Web.Mvc
+namespace Knapsack.Integration.Web.Mvc
 {
     public static class HtmlHelperExtensions
     {
@@ -46,8 +46,27 @@ namespace Knapsack.Web.Mvc
             var cacheBreaker = "nocache=" + DateTime.Now.Ticks.ToString();
             return builder.GetRequiredModules()
                 .SelectMany(m => m.Scripts)
-                .Select(s => "~/" + s.Path)
+                .Select(s => {
+                    if (s.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return CoffeeScriptUrl(s.Path);
+                    }
+                    else
+                    {
+                        return "~/" + s.Path;
+                    }
+                })
                 .Select(url => url + (url.Contains('?') ? "&" : "?") + cacheBreaker);
+        }
+
+        static string CoffeeScriptUrl(string path)
+        {
+            // Must remove the file extension from the path, 
+            // otherwise the knapsack.axd handler is not called.
+            // I guess asp.net favours the last file extension it finds.
+            var pathWithoutExtension = path.Substring(0, path.Length - ".coffee".Length);
+            // Return the URL that will invoke the CoffeeScript compiler to return JavaScript.
+            return "~/knapsack.axd/coffee/" + pathWithoutExtension;
         }
 
         /// <summary>
@@ -58,7 +77,7 @@ namespace Knapsack.Web.Mvc
         static IEnumerable<string> ReleaseScriptUrls(ReferenceBuilder builder)
         {
             return builder.GetRequiredModules()
-                 .Select(m => "~/knapsack.axd/" + m.Path + "_" + m.Hash.ToHexString());
+                 .Select(m => "~/knapsack.axd/modules/" + m.Path + "_" + m.Hash.ToHexString());
         }
     }
 }

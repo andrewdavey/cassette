@@ -23,7 +23,7 @@ namespace Knapsack
             var unresolvedModule = new UnresolvedModule("", scripts.ToArray());
             var module = unresolvedModule.Resolve(_ => "");
 
-            var writer = new ModuleWriter(Console.Out, p => File.ReadAllText(Path.Combine(path, p)));
+            var writer = new ModuleWriter(Console.Out, p => File.ReadAllText(Path.Combine(path, p)), new CoffeeScriptCompiler(File.ReadAllText));
             writer.Write(module);
         }
 

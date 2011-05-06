@@ -36,7 +36,7 @@ namespace Knapsack
                         }, 
                         new string[0]
                     )
-                }, storage, "c:\\")
+                }, storage, "c:\\", null)
             );
         }
 

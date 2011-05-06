@@ -14,13 +14,15 @@ namespace Knapsack
         readonly string rootDirectory;
         readonly Dictionary<string, Module> modulesByScriptPath;
         readonly StringComparer pathComparer = StringComparer.OrdinalIgnoreCase;
-        
-        public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, string rootDirectory)
+        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
+
+        public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.modules = modules.ToArray();
             this.manifest = new ModuleManifest(this.modules);
             this.storage = storage;
             this.rootDirectory = rootDirectory;
+            this.coffeeScriptCompiler = coffeeScriptCompiler;
 
             modulesByScriptPath = (
                 from module in modules
@@ -57,7 +59,7 @@ namespace Knapsack
 
         public void UpdateStorage()
         {
-            var cachedManifest = ReadManifestFromStorage();
+            var cachedManifest = ReadManifestFromStorage() ?? CreateEmptyManifest();
             var differences = manifest.CompareTo(cachedManifest);
 
             if (differences.Any())
@@ -69,6 +71,8 @@ namespace Knapsack
 
         ModuleManifest ReadManifestFromStorage()
         {
+            if (!storage.FileExists("manifest.xml")) return null;
+
             using (var stream = storage.OpenFile("manifest.xml", FileMode.Open, FileAccess.Read))
             {
                 var reader = new ModuleManifestReader(stream);
@@ -76,9 +80,15 @@ namespace Knapsack
             }
         }
 
+        ModuleManifest CreateEmptyManifest()
+        {
+            return new ModuleManifest(Enumerable.Empty<Module>());
+        }
+
+
         void WriteManifestToStorage()
         {
-            using (var stream = storage.OpenFile("manifest.xml", FileMode.Create, FileAccess.Read))
+            using (var stream = storage.OpenFile("manifest.xml", FileMode.Create, FileAccess.Write))
             {
                 var writer = new ModuleManifestWriter(stream);
                 writer.Write(manifest);
@@ -110,7 +120,7 @@ namespace Knapsack
             using (var stream = storage.OpenFile(filename, FileMode.Create, FileAccess.Write))
             using (var textWriter = new StreamWriter(stream))
             {
-                var writer = new ModuleWriter(textWriter, LoadSourceFromFile);
+                var writer = new ModuleWriter(textWriter, LoadSourceFromFile, coffeeScriptCompiler);
                 writer.Write(module);
             }
         }

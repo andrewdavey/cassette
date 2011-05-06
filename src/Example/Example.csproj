@@ -89,9 +89,21 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Knapsack.Core\Knapsack.Core.csproj">
+      <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
+      <Name>Knapsack.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Knapsack.Integration.Web\Knapsack.Integration.Web.csproj">
+      <Project>{47AA0DFC-0501-4468-AF06-2732F2A60064}</Project>
+      <Name>Knapsack.Integration.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\util\test.coffee" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

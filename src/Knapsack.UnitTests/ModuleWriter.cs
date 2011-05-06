@@ -18,7 +18,7 @@ namespace Knapsack
                     { "a//1.js", "function test1 () { }" },
                     { "a//2.js", "function test2 () { }" }
                 };
-                var moduleWriter = new ModuleWriter(textWriter, path => sources[path]);
+                var moduleWriter = new ModuleWriter(textWriter, path => sources[path], null);
 
                 moduleWriter.Write(module);
 

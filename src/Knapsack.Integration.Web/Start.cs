@@ -1,8 +1,8 @@
 ﻿using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(Knapsack.Web.Start), "AddHttpModule")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(Knapsack.Integration.Web.Start), "AddHttpModule")]
 
-namespace Knapsack.Web
+namespace Knapsack.Integration.Web
 {
     public static class Start
     {

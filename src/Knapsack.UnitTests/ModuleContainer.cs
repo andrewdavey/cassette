@@ -24,7 +24,7 @@ namespace Knapsack
                     new string[0]
                 ),
                 new Module(@"scripts/module-b", new Script[0], new string[0])
-            }, storage, "c:\\");
+            }, storage, "c:\\", null);
         }
 
         public void Dispose()

@@ -2,15 +2,17 @@
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System;
 
 namespace Knapsack
 {
     public class ModuleContainerBuilder
     {
-        public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory)
+        public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.storage = storage;
             this.rootDirectory = rootDirectory;
+            this.coffeeScriptCompiler = coffeeScriptCompiler;
 
             var last = rootDirectory.Last();
             if (last != Path.DirectorySeparatorChar && last != Path.AltDirectorySeparatorChar)
@@ -22,6 +24,7 @@ namespace Knapsack
         readonly IsolatedStorageFile storage;
         readonly string rootDirectory;
         readonly List<string> relativeModuleDirectories = new List<string>();
+        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
         public void AddModule(string relativeDirectory)
         {
@@ -40,13 +43,13 @@ namespace Knapsack
         public ModuleContainer Build()
         {
             var modules = relativeModuleDirectories.Select(LoadUnresolvedModule);
-            return new ModuleContainer(UnresolvedModule.ResolveAll(modules), storage, rootDirectory);
+            return new ModuleContainer(UnresolvedModule.ResolveAll(modules), storage, rootDirectory, coffeeScriptCompiler);
         }
 
         UnresolvedModule LoadUnresolvedModule(string relativeDirectory)
         {
             var path = rootDirectory + relativeDirectory;
-            var filenames = Directory.GetFiles(path, "*.js")
+            var filenames = Directory.GetFiles(path, "*.js").Concat(Directory.GetFiles(path, "*.coffee"))
                 .Where(f => !f.EndsWith("-vsdoc.js"))
                 .Select(f => f.Replace('\\', '/'));
             return new UnresolvedModule(relativeDirectory, filenames.Select(LoadScript).ToArray());
