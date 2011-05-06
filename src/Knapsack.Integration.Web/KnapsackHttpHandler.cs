@@ -2,16 +2,22 @@
 using System.IO;
 using System.Web;
 using Knapsack.CoffeeScript;
+using Knapsack.Utilities;
 
 namespace Knapsack.Integration.Web
 {
+    /// <summary>
+    /// This handler can return javascript module requests and compile CoffeeScript files into JavaScript.
+    /// </summary>
     public class KnapsackHttpHandler : IHttpHandler
     {
         readonly ModuleContainer moduleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
-        public KnapsackHttpHandler()
-            : this(KnapsackHttpModule.Instance.ModuleContainer, KnapsackHttpModule.Instance.CoffeeScriptCompiler)
+        public KnapsackHttpHandler() : this(
+            KnapsackHttpModule.Instance.ModuleContainer, 
+            KnapsackHttpModule.Instance.CoffeeScriptCompiler
+        )
         {
         }
 

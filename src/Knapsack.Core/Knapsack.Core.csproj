@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ByteArrayExtensions.cs" />
+    <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
     <Compile Include="CoffeeScript\ICoffeeScriptCompiler.cs" />
@@ -56,7 +56,7 @@
     <Compile Include="Configuration\ModuleElement.cs" />
     <Compile Include="Configuration\ModuleCollection.cs" />
     <Compile Include="Configuration\ModuleMode.cs" />
-    <Compile Include="JavaScriptUtilities.cs" />
+    <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="ModuleManifestReader.cs" />
     <Compile Include="ModuleManifestWriter.cs" />
     <Compile Include="ModuleManifest.cs" />
@@ -67,7 +67,7 @@
     </Compile>
     <Compile Include="UnresolvedModuleBuilder.cs" />
     <Compile Include="UnresolvedScript.cs" />
-    <Compile Include="Graph.cs" />
+    <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ModuleContainerBuilder.cs" />

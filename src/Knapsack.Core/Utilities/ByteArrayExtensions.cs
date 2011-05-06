@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Knapsack
+namespace Knapsack.Utilities
 {
     public static class ByteArrayExtensions
     {

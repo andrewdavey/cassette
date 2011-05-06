@@ -18,7 +18,7 @@ namespace Knapsack
             var path = Path.GetFullPath(args[0]);
 
             var builder = new UnresolvedModuleBuilder(path);
-            var unresolvedModule = builder.Build(""); // path is the module, so extra path is required.
+            var unresolvedModule = builder.Build(""); // path is the module, so no extra path is required.
             var module = UnresolvedModule.ResolveAll(new[] { unresolvedModule }).First();
 
             var writer = new ModuleWriter(Console.Out, path, File.ReadAllText, new CoffeeScriptCompiler(File.ReadAllText));

@@ -93,7 +93,5 @@ namespace Knapsack
             }
             return string.Join("/", stack.Reverse());
         }
-
-
     }
 }

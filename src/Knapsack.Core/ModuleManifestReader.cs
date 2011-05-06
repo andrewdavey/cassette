@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 using System.IO.IsolatedStorage;
+using Knapsack.Utilities;
 
 namespace Knapsack
 {

@@ -14,7 +14,7 @@ namespace Knapsack
         public Module(string path, Script[] scripts, string[] moduleReferences)
         {
             if (!scripts.All(s => s.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase)))
-                throw new ArgumentException("Script paths in module must start with module path (" + path + ")");
+                throw new ArgumentException("Script paths in this module must start with the path \"" + path + "\".");
 
             this.path = path.ToLower();
             this.scripts = scripts;

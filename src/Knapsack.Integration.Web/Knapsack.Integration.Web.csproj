@@ -50,6 +50,7 @@
     <Compile Include="KnapsackHttpHandler.cs" />
     <Compile Include="KnapsackHttpModule.cs" />
     <Compile Include="Mvc\HtmlHelperExtensions.cs" />
+    <Compile Include="PageHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Start.cs" />
   </ItemGroup>

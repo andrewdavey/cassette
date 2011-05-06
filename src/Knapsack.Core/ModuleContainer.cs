@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using Knapsack.CoffeeScript;
+using Knapsack.Utilities;
 
 namespace Knapsack
 {

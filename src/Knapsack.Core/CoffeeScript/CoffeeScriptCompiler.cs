@@ -1,6 +1,7 @@
 ﻿using System;
 using Jurassic;
 using Jurassic.Library;
+using Knapsack.Utilities;
 
 namespace Knapsack.CoffeeScript
 {

@@ -1,4 +1,4 @@
-﻿namespace Knapsack
+﻿namespace Knapsack.Utilities
 {
     public static class JavaScriptUtilities
     {

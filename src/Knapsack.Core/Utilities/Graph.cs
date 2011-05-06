@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Knapsack
+namespace Knapsack.Utilities
 {
     class Graph<T>
     {
