@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Knapsack</RootNamespace>
-    <AssemblyName>Knapsack</AssemblyName>
+    <AssemblyName>Knapsack.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -60,10 +60,6 @@
     <Compile Include="Script.cs" />
     <Compile Include="ScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
-    <Compile Include="Web\KnapsackHttpHandler.cs" />
-    <Compile Include="Web\KnapsackHttpModule.cs" />
-    <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
-    <Compile Include="Web\Start.cs" />
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

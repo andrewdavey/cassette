@@ -10,7 +10,7 @@ namespace Knapsack
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage: knap {path}");
+                Console.WriteLine("Usage: knapsack {path}");
                 return;
             }
 

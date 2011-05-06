@@ -54,9 +54,9 @@
     <Compile Include="UnresolvedModule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Knapsack\Knapsack.csproj">
+    <ProjectReference Include="..\Knapsack.Core\Knapsack.Core.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
-      <Name>Knapsack</Name>
+      <Name>Knapsack.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />

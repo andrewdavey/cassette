@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Knapsack
 {
-    static class ByteArrayExtensions
+    public static class ByteArrayExtensions
     {
         public static string ToHexString(this byte[] bytes)
         {
