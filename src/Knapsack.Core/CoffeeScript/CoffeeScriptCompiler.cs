@@ -1,9 +1,8 @@
 ﻿using System;
 using Jurassic;
-using System.IO;
 using Jurassic.Library;
 
-namespace Knapsack
+namespace Knapsack.CoffeeScript
 {
     public class CoffeeScriptCompiler : ICoffeeScriptCompiler
     {
@@ -27,12 +26,12 @@ namespace Knapsack
             return scriptEngine;
         }
 
-        public string CompileCoffeeScript(string path)
+        public string CompileFile(string path)
         {
             var script = loadSourceFromFile(path);
             var callCoffeeCompile =
                 "(function() { try { return CoffeeScript.compile('"
-                + EscapeJavaScriptString(script)
+                + JavaScriptUtilities.EscapeJavaScriptString(script)
                 + "'); } catch (e) { return e; } })()";
             
             object result;
@@ -41,40 +40,23 @@ namespace Knapsack
                 result = ScriptEngine.Evaluate(callCoffeeCompile);
             }
             var javascript = result as string;
-            if (javascript == null)
+            if (javascript != null)
+            {
+                return javascript;
+            }
+            else
             {
                 var error = result as ErrorInstance;
                 if (error != null)
                 {
-                    return "alert('CoffeeScript compile error in "
-                        + EscapeJavaScriptString(path)
-                        + "\\r\\n"
-                        + EscapeJavaScriptString(error.Message)
-                        + "');";
-                    // TODO: Configure how to handle the compile error. For example:
-                    // throw new Exception("Cannot compile coffeescript.");
+                    throw new CompileException(error.Message, path);
                 }
                 else
                 {
-                    return "alert('CoffeeScript compile error in "
-                        + EscapeJavaScriptString(path);
+                    throw new CompileException("Unknown CoffeeScript compilation failure.", path);
                 }
             }
-            else
-            {
-                return javascript;
-            }
         }
-
-        string EscapeJavaScriptString(string sourceCode)
-        {
-            return sourceCode
-                    .Replace(@"\", @"\\")
-                    .Replace("'", @"\'")
-                    .Replace("\r", "\\r")
-                    .Replace("\n", "\\n");
-        }
-
 
         ScriptEngine ScriptEngine
         {

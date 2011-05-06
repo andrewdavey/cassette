@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Web;
+using Knapsack.CoffeeScript;
 
 namespace Knapsack.Integration.Web
 {
@@ -67,10 +68,28 @@ namespace Knapsack.Integration.Web
         void ProcessCoffeeRequest(HttpContext context)
         {
             var path = context.Server.MapPath("~" + context.Request.PathInfo.Substring("/coffee".Length) + ".coffee");
-            var javaScript = coffeeScriptCompiler.CompileCoffeeScript(path);
+            string javaScript;
+
+            try
+            {
+                javaScript = coffeeScriptCompiler.CompileFile(path);
+            }
+            catch (CoffeeScript.CompileException ex)
+            {
+                javaScript = JavaScriptErrorAlert(ex);
+            }
 
             context.Response.ContentType = "text/javascript";
             context.Response.Write(javaScript);
+        }
+
+        string JavaScriptErrorAlert(CompileException ex)
+        {
+            return "alert('CoffeeScript compile error in "
+                    + JavaScriptUtilities.EscapeJavaScriptString(ex.SourcePath)
+                    + "\\r\\n"
+                    + JavaScriptUtilities.EscapeJavaScriptString(ex.Message)
+                    + "');";
         }
 
         Module FindModule(HttpRequest request)

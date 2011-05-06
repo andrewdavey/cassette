@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using Knapsack.CoffeeScript;
 
 namespace Knapsack
 {
@@ -25,7 +26,7 @@ namespace Knapsack
             this.coffeeScriptCompiler = coffeeScriptCompiler;
 
             modulesByScriptPath = (
-                from module in modules
+                from module in this.modules
                 from script in module.Scripts
                 select new { script.Path, module }
             ).ToDictionary(x => x.Path, x => x.module, pathComparer);
@@ -54,7 +55,7 @@ namespace Knapsack
 
         public Stream OpenModuleFile(Module module)
         {
-            return storage.OpenFile(module.Path + ".js", FileMode.Open, FileAccess.Read);
+            return storage.OpenFile(module.Hash.ToHexString() + ".js", FileMode.Open, FileAccess.Read);
         }
 
         public void UpdateStorage()
@@ -115,7 +116,7 @@ namespace Knapsack
 
         void WriteModuleToStorage(Module module)
         {
-            var filename = module.Path + ".js";
+            var filename = module.Hash.ToHexString() + ".js";
             storage.CreateDirectory(Path.GetDirectoryName(filename));
             using (var stream = storage.OpenFile(filename, FileMode.Create, FileAccess.Write))
             using (var textWriter = new StreamWriter(stream))
@@ -129,7 +130,20 @@ namespace Knapsack
         {
             if (storage.DirectoryExists(module.Path))
             {
+                DeleteAllFilesInStorageDirectory(module.Path);
                 storage.DeleteDirectory(module.Path);
+            }
+        }
+
+        void DeleteAllFilesInStorageDirectory(string path)
+        {
+            foreach (var filename in storage.GetFileNames(path + "/*"))
+            {
+                storage.DeleteFile(filename);
+            }
+            foreach (var dir in storage.GetDirectoryNames(path + "/*"))
+            {
+                DeleteAllFilesInStorageDirectory(dir);
             }
         }
 

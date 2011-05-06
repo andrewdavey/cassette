@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
+using Knapsack.CoffeeScript;
 using Microsoft.Ajax.Utilities;
-using Jurassic;
-using Jurassic.Library;
 
 namespace Knapsack
 {
@@ -28,19 +27,19 @@ namespace Knapsack
                 minifier.MinifyJavaScript(
                     string.Join(
                         "\r\n",
-                        module.Scripts.Select(s => Process(s.Path))
+                        module.Scripts.Select(s => GetJavaScript(s.Path))
                     )
                 )
             );
         }
 
-        string Process(string scriptPath)
+        string GetJavaScript(string scriptPath)
         {
             if (scriptPath.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
             {
-                return coffeeScriptCompiler.CompileCoffeeScript(scriptPath);
+                return coffeeScriptCompiler.CompileFile(scriptPath);
             }
-            else
+            else // assume it's a regular ".js" file
             {
                 return loadSourceFromFile(scriptPath);
             }

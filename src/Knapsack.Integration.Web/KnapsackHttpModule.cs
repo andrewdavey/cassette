@@ -1,8 +1,10 @@
-﻿using System.IO.IsolatedStorage;
+﻿using System.IO;
+using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Web;
-using System.Web.Hosting;
-using System;
-using System.IO;
+using System.Web.Configuration;
+using Knapsack.CoffeeScript;
+using Knapsack.Configuration;
 
 namespace Knapsack.Integration.Web
 {
@@ -12,9 +14,15 @@ namespace Knapsack.Integration.Web
         static readonly object firstInitSync = new object();
         internal static KnapsackHttpModule Instance;
 
-        IsolatedStorageFile storage;
+        KnapsackSection configuration;
         ModuleContainer moduleContainer;
         ICoffeeScriptCompiler coffeeScriptCompiler;
+        IsolatedStorageFile storage;
+
+        public KnapsackSection Configuration
+        {
+            get { return configuration; }
+        }
 
         public ModuleContainer ModuleContainer
         {
@@ -37,16 +45,25 @@ namespace Knapsack.Integration.Web
                     if (!firstInit) return;
                     firstInit = false;
 
-                    // Module script files will be served from isolated storage.
-                    storage = IsolatedStorageFile.GetUserStoreForDomain();
-                    coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
+                    configuration = LoadConfigurationFromWebConfig();
 
-                    moduleContainer = BuildModuleContainer(storage);
+                    // Module script files will be cached in isolated storage.
+                    storage = IsolatedStorageFile.GetUserStoreForDomain();
+                    coffeeScriptCompiler = new CoffeeScriptCompiler(path => File.ReadAllText(HttpContext.Current.Server.MapPath(path)));
+                    moduleContainer = BuildModuleContainer(storage, configuration);
+                    
                     moduleContainer.UpdateStorage();
 
                     Instance = this;
                 }
             }
+        }
+
+        KnapsackSection LoadConfigurationFromWebConfig()
+        {
+            var webConfig = WebConfigurationManager.OpenWebConfiguration("~/web.config");
+            return webConfig.Sections.OfType<KnapsackSection>().FirstOrDefault() 
+                   ?? new KnapsackSection(); // Create default config is none defined.
         }
 
         void context_BeginRequest(object sender, System.EventArgs e)
@@ -55,10 +72,27 @@ namespace Knapsack.Integration.Web
                 new ReferenceBuilder(Instance.moduleContainer);
         }
 
-        ModuleContainer BuildModuleContainer(IsolatedStorageFile storage)
+        ModuleContainer BuildModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
         {
             var builder = new ModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, coffeeScriptCompiler);
-            builder.AddModuleForEachSubdirectoryOf("scripts");
+            if (config.Modules.Count == 0)
+            {
+                builder.AddModuleForEachSubdirectoryOf("scripts");
+            }
+            else
+            {
+                foreach (ModuleElement module in config.Modules)
+                {
+                    if (module.Path.EndsWith("*"))
+                    {
+                        builder.AddModuleForEachSubdirectoryOf(module.Path.Substring(module.Path.Length - 2));
+                    }
+                    else
+                    {
+                        builder.AddModule(module.Path);
+                    }
+                }
+            }
             // TODO: expose configuration point here to allow specific modules to be added.
             return builder.Build();
         }

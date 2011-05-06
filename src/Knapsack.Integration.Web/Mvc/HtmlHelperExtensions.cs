@@ -17,9 +17,9 @@ namespace Knapsack.Integration.Web.Mvc
         public static IHtmlString RenderScripts(this HtmlHelper html)
         {
             var builder = GetReferenceBuilder(html);
-            var scriptUrls = html.ViewContext.HttpContext.IsDebuggingEnabled
-                ? DebugScriptUrls(builder) 
-                : ReleaseScriptUrls(builder);
+            var scriptUrls = KnapsackHttpModule.Instance.Configuration.ShouldUseModules(html.ViewContext.HttpContext)
+                ? ReleaseScriptUrls(builder)
+                : DebugScriptUrls(builder);
 
             var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
             var scriptElements = scriptUrls

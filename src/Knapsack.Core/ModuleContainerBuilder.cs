@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System;
+using Knapsack.CoffeeScript;
 
 namespace Knapsack
 {
@@ -49,7 +50,11 @@ namespace Knapsack
         UnresolvedModule LoadUnresolvedModule(string relativeDirectory)
         {
             var path = rootDirectory + relativeDirectory;
-            var filenames = Directory.GetFiles(path, "*.js").Concat(Directory.GetFiles(path, "*.coffee"))
+            var extensions = new[] { "js", "coffee" };
+            var filenames = extensions
+                .SelectMany(
+                    extension => Directory.GetFiles(path, "*." + extension, SearchOption.AllDirectories)
+                )
                 .Where(f => !f.EndsWith("-vsdoc.js"))
                 .Select(f => f.Replace('\\', '/'));
             return new UnresolvedModule(relativeDirectory, filenames.Select(LoadScript).ToArray());

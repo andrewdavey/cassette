@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -48,8 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteArrayExtensions.cs" />
-    <Compile Include="CoffeeScriptCompiler.cs" />
-    <Compile Include="ICoffeeScriptCompiler.cs" />
+    <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
+    <Compile Include="CoffeeScript\CompileException.cs" />
+    <Compile Include="CoffeeScript\ICoffeeScriptCompiler.cs" />
+    <Compile Include="Configuration\KnapsackSection.cs" />
+    <Compile Include="Configuration\ModuleElement.cs" />
+    <Compile Include="Configuration\ModuleCollection.cs" />
+    <Compile Include="Configuration\ModuleMode.cs" />
+    <Compile Include="JavaScriptUtilities.cs" />
     <Compile Include="ModuleManifestReader.cs" />
     <Compile Include="ModuleManifestWriter.cs" />
     <Compile Include="ModuleManifest.cs" />
