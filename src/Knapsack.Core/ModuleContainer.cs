@@ -55,7 +55,7 @@ namespace Knapsack
 
         public Stream OpenModuleFile(Module module)
         {
-            return storage.OpenFile(module.Hash.ToHexString() + ".js", FileMode.Open, FileAccess.Read);
+            return storage.OpenFile(ModuleFilename(module), FileMode.Open, FileAccess.Read);
         }
 
         public void UpdateStorage()
@@ -63,7 +63,7 @@ namespace Knapsack
             var cachedManifest = ReadManifestFromStorage() ?? CreateEmptyManifest();
             var differences = manifest.CompareTo(cachedManifest);
 
-            if (differences.Any())
+            if (differences.Length > 0)
             {
                 ApplyDifferencesToStorage(differences);
                 WriteManifestToStorage();
@@ -85,7 +85,6 @@ namespace Knapsack
         {
             return new ModuleManifest(Enumerable.Empty<Module>());
         }
-
 
         void WriteManifestToStorage()
         {
@@ -116,8 +115,7 @@ namespace Knapsack
 
         void WriteModuleToStorage(Module module)
         {
-            var filename = module.Hash.ToHexString() + ".js";
-            storage.CreateDirectory(Path.GetDirectoryName(filename));
+            var filename = ModuleFilename(module);
             using (var stream = storage.OpenFile(filename, FileMode.Create, FileAccess.Write))
             using (var textWriter = new StreamWriter(stream))
             {
@@ -128,11 +126,16 @@ namespace Knapsack
 
         void DeleteModuleFromStorage(Module module)
         {
-            var filename = module.Hash.ToHexString() + ".js";
+            var filename = ModuleFilename(module);
             if (storage.FileExists(filename))
             {
                 storage.DeleteFile(filename);
             }
+        }
+
+        string ModuleFilename(Module module)
+        {
+            return module.Hash.ToHexString() + ".js";
         }
 
         string LoadSourceFromFile(string relativeFilename)
