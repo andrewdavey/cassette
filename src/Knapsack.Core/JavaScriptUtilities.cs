@@ -2,15 +2,13 @@
 {
     public static class JavaScriptUtilities
     {
-        public static string EscapeJavaScriptString(string sourceCode)
+        public static string EscapeJavaScriptString(string s)
         {
-            return sourceCode
-                    .Replace(@"\", @"\\")
+            return s.Replace(@"\", @"\\")
                     .Replace("'", @"\'")
                     .Replace("\"", @"\""")
                     .Replace("\r", @"\r")
                     .Replace("\n", @"\n");
         }
-
     }
 }

@@ -56,6 +56,7 @@
     <Compile Include="Configuration\ModuleElement.cs" />
     <Compile Include="Configuration\ModuleCollection.cs" />
     <Compile Include="Configuration\ModuleMode.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="JavaScriptUtilities.cs" />
     <Compile Include="ModuleManifestReader.cs" />
     <Compile Include="ModuleManifestWriter.cs" />
@@ -65,6 +66,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UnresolvedModuleBuilder.cs" />
     <Compile Include="UnresolvedScript.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Module.cs" />

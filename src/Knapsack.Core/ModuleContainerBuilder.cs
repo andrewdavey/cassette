@@ -9,27 +9,33 @@ namespace Knapsack
 {
     public class ModuleContainerBuilder
     {
+        readonly IsolatedStorageFile storage;
+        readonly string rootDirectory;
+        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
+        readonly List<string> relativeModuleDirectories = new List<string>();
+
         public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.storage = storage;
             this.rootDirectory = rootDirectory;
             this.coffeeScriptCompiler = coffeeScriptCompiler;
 
+            rootDirectory = EnsureRootDirectoryEndsWithSlash(rootDirectory);
+        }
+
+        string EnsureRootDirectoryEndsWithSlash(string rootDirectory)
+        {
             var last = rootDirectory.Last();
             if (last != Path.DirectorySeparatorChar && last != Path.AltDirectorySeparatorChar)
             {
                 rootDirectory += "/";
             }
+            return rootDirectory;
         }
 
-        readonly IsolatedStorageFile storage;
-        readonly string rootDirectory;
-        readonly List<string> relativeModuleDirectories = new List<string>();
-        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
-
-        public void AddModule(string relativeDirectory)
+        public void AddModule(string relativeModuleDirectory)
         {
-            relativeModuleDirectories.Add(relativeDirectory.Replace('\\', '/'));
+            relativeModuleDirectories.Add(relativeModuleDirectory.Replace('\\', '/'));
         }
 
         public void AddModuleForEachSubdirectoryOf(string directory)
@@ -43,30 +49,10 @@ namespace Knapsack
 
         public ModuleContainer Build()
         {
-            var modules = relativeModuleDirectories.Select(LoadUnresolvedModule);
-            return new ModuleContainer(UnresolvedModule.ResolveAll(modules), storage, rootDirectory, coffeeScriptCompiler);
-        }
-
-        UnresolvedModule LoadUnresolvedModule(string relativeDirectory)
-        {
-            var path = rootDirectory + relativeDirectory;
-            var extensions = new[] { "js", "coffee" };
-            var filenames = extensions
-                .SelectMany(
-                    extension => Directory.GetFiles(path, "*." + extension, SearchOption.AllDirectories)
-                )
-                .Where(f => !f.EndsWith("-vsdoc.js"))
-                .Select(f => f.Replace('\\', '/'));
-            return new UnresolvedModule(relativeDirectory, filenames.Select(LoadScript).ToArray());
-        }
-
-        UnresolvedScript LoadScript(string filename)
-        {
-            var parser = new ScriptParser();
-            using (var fileStream = File.OpenRead(filename))
-            {
-                return parser.Parse(fileStream, filename.Substring(rootDirectory.Length));
-            }
+            var moduleBuilder = new UnresolvedModuleBuilder(rootDirectory);
+            var unresolvedModules = relativeModuleDirectories.Select(moduleBuilder.Build);
+            var modules = UnresolvedModule.ResolveAll(unresolvedModules);
+            return new ModuleContainer(modules, storage, rootDirectory, coffeeScriptCompiler);
         }
     }
 }

@@ -68,5 +68,14 @@ namespace Knapsack
             modules[0].Path.ShouldEqual("b");
             modules[1].Path.ShouldEqual("a");
         }
+
+        [Fact]
+        public void AddReference_to_module_that_does_not_exist_throws_ArgumentException()
+        {
+            Assert.Throws<ArgumentException>(delegate
+            {
+                builder.AddReference("a/fail.js");
+            });
+        }
     }
 }

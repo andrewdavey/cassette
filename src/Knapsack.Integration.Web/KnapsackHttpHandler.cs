@@ -28,10 +28,15 @@ namespace Knapsack.Integration.Web
 
         public void ProcessRequest(HttpContext context)
         {
-            // PathInfo starts with a '/'
             var pathInfo = context.Request.PathInfo.Split('/');
-            if (pathInfo.Length < 2) return;
-            if (pathInfo[1] == "modules")
+            // PathInfo starts with a '/', so first string in array is empty string.
+            // Second string will determine what kind of request this is.
+
+            if (pathInfo.Length < 2) 
+            {
+                BadRequest(context); 
+            } 
+            else if (pathInfo[1] == "modules")
             {
                 ProcessModuleRequest(context);
             }
@@ -39,6 +44,15 @@ namespace Knapsack.Integration.Web
             {
                 ProcessCoffeeRequest(context);
             }
+            else
+            {
+                BadRequest(context);
+            }
+        }
+
+        void BadRequest(HttpContext context)
+        {
+            context.Response.StatusCode = 400;
         }
 
         void ProcessModuleRequest(HttpContext context)
@@ -67,15 +81,27 @@ namespace Knapsack.Integration.Web
 
         void ProcessCoffeeRequest(HttpContext context)
         {
-            var path = context.Server.MapPath("~" + context.Request.PathInfo.Substring("/coffee".Length) + ".coffee");
-            string javaScript;
+            // Request PathInfo contains the coffeescript file.
+            // (After we remove the "/coffee" prefix.)
+            var appRelativePath = "~" + context.Request.PathInfo.Substring("/coffee".Length) + ".coffee";
+            var path = context.Server.MapPath(appRelativePath);
+            
+            if (!File.Exists(path))
+            {
+                context.Response.StatusCode = 404;
+                return;
+            }
 
+            string javaScript;
             try
             {
                 javaScript = coffeeScriptCompiler.CompileFile(path);
             }
-            catch (CoffeeScript.CompileException ex)
+            catch (CompileException ex)
             {
+                // Since we treat this type of request as "debug" only,
+                // return javascript that "alerts" the compilation error.
+                // I think it's good to "fail loud"!
                 javaScript = JavaScriptErrorAlert(ex);
             }
 

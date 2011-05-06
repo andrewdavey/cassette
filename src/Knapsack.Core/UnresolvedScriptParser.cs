@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Knapsack
 {
-    public class ScriptParser
+    public class UnresolvedScriptParser
     {
         public UnresolvedScript Parse(Stream source, string sourcePath)
         {

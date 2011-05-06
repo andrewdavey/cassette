@@ -7,7 +7,7 @@ namespace Knapsack
 {
     public class Given_a_ScriptParser_When_Parse_source_with_two_references
     {
-        readonly ScriptParser parser;
+        readonly UnresolvedScriptParser parser;
         readonly string sourcePath = @"scripts/test.js";
         readonly string source = @"/// <reference path=""other-1.js""/>
 /// <reference path=""../lib/other-2.js""/>";
@@ -17,7 +17,7 @@ namespace Knapsack
         {
             using (var sourceStream = CreateSourceStream())
             {
-                parser = new ScriptParser();
+                parser = new UnresolvedScriptParser();
                 script = parser.Parse(sourceStream, sourcePath);
             }
         }

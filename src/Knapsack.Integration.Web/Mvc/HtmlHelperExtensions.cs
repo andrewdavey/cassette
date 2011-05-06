@@ -8,12 +8,20 @@ namespace Knapsack.Integration.Web.Mvc
 {
     public static class HtmlHelperExtensions
     {
+        /// <summary>
+        /// Records that the calling view requires the given script path. This does not render any
+        /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
+        /// </summary>
+        /// <param name="scriptPath">The application relative path to the script file.</param>
         public static void AddScriptReference(this HtmlHelper html, string scriptPath)
         {
             var builder = GetReferenceBuilder(html);
             builder.AddReference(scriptPath);
         }
 
+        /// <summary>
+        /// Creates HTML script elements for all required scripts and their dependencies.
+        /// </summary>
         public static IHtmlString RenderScripts(this HtmlHelper html)
         {
             var builder = GetReferenceBuilder(html);
@@ -25,7 +33,7 @@ namespace Knapsack.Integration.Web.Mvc
             var scriptElements = scriptUrls
                 .Select(VirtualPathUtility.ToAbsolute)
                 .Select(HttpUtility.HtmlAttributeEncode)
-                .Select(src => string.Format(template, src));
+                .Select(src => string.Format(template, html.AttributeEncode(src)));
 
             var allHtml = string.Join("\r\n", scriptElements);
             return new HtmlString(allHtml);
@@ -47,16 +55,21 @@ namespace Knapsack.Integration.Web.Mvc
             return builder.GetRequiredModules()
                 .SelectMany(m => m.Scripts)
                 .Select(s => {
-                    if (s.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return CoffeeScriptUrl(s.Path);
-                    }
-                    else
-                    {
-                        return "~/" + s.Path;
-                    }
+                    return AppRelativeScriptUrl(s);
                 })
                 .Select(url => url + (url.Contains('?') ? "&" : "?") + cacheBreaker);
+        }
+
+        static string AppRelativeScriptUrl(Script s)
+        {
+            if (s.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
+            {
+                return CoffeeScriptUrl(s.Path);
+            }
+            else
+            {
+                return "~/" + s.Path;
+            }
         }
 
         static string CoffeeScriptUrl(string path)

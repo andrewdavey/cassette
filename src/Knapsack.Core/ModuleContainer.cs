@@ -12,10 +12,10 @@ namespace Knapsack
         readonly Module[] modules;
         readonly ModuleManifest manifest;
         readonly IsolatedStorageFile storage;
+        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
         readonly string rootDirectory;
         readonly Dictionary<string, Module> modulesByScriptPath;
         readonly StringComparer pathComparer = StringComparer.OrdinalIgnoreCase;
-        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
         public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
@@ -121,7 +121,7 @@ namespace Knapsack
             using (var stream = storage.OpenFile(filename, FileMode.Create, FileAccess.Write))
             using (var textWriter = new StreamWriter(stream))
             {
-                var writer = new ModuleWriter(textWriter, LoadSourceFromFile, coffeeScriptCompiler);
+                var writer = new ModuleWriter(textWriter, rootDirectory, LoadSourceFromFile, coffeeScriptCompiler);
                 writer.Write(module);
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Web;
@@ -34,9 +35,9 @@ namespace Knapsack.Integration.Web
             get { return coffeeScriptCompiler; }
         }
 
-        public void Init(HttpApplication context)
+        public void Init(HttpApplication application)
         {
-            context.BeginRequest += context_BeginRequest;
+            application.BeginRequest += HandleBeginRequest;
 
             if (firstInit)
             {
@@ -49,7 +50,7 @@ namespace Knapsack.Integration.Web
 
                     // Module script files will be cached in isolated storage.
                     storage = IsolatedStorageFile.GetUserStoreForDomain();
-                    coffeeScriptCompiler = new CoffeeScriptCompiler(path => File.ReadAllText(HttpContext.Current.Server.MapPath(path)));
+                    coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
                     moduleContainer = BuildModuleContainer(storage, configuration);
                     
                     moduleContainer.UpdateStorage();
@@ -66,7 +67,12 @@ namespace Knapsack.Integration.Web
                    ?? new KnapsackSection(); // Create default config is none defined.
         }
 
-        void context_BeginRequest(object sender, System.EventArgs e)
+        void HandleBeginRequest(object sender, EventArgs e)
+        {
+            StoreReferenceBuilderInHttpContextItems();
+        }
+
+        void StoreReferenceBuilderInHttpContextItems()
         {
             HttpContext.Current.Items["Knapsack.ReferenceBuilder"] =
                 new ReferenceBuilder(Instance.moduleContainer);
@@ -77,24 +83,31 @@ namespace Knapsack.Integration.Web
             var builder = new ModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, coffeeScriptCompiler);
             if (config.Modules.Count == 0)
             {
+                // By convention, each subdirectory of "~/scripts" is a module.
                 builder.AddModuleForEachSubdirectoryOf("scripts");
             }
             else
             {
-                foreach (ModuleElement module in config.Modules)
+                AddModulesFromConfig(config, builder);
+            }
+            return builder.Build();
+        }
+
+        void AddModulesFromConfig(KnapsackSection config, ModuleContainerBuilder builder)
+        {
+            foreach (ModuleElement module in config.Modules)
+            {
+                // "foo/*" implies each sub-directory of "~/foo" is a module.
+                if (module.Path.EndsWith("*"))
                 {
-                    if (module.Path.EndsWith("*"))
-                    {
-                        builder.AddModuleForEachSubdirectoryOf(module.Path.Substring(module.Path.Length - 2));
-                    }
-                    else
-                    {
-                        builder.AddModule(module.Path);
-                    }
+                    var path = module.Path.Substring(module.Path.Length - 2);
+                    builder.AddModuleForEachSubdirectoryOf(path);
+                }
+                else // the given path is the module itself.
+                {
+                    builder.AddModule(module.Path);
                 }
             }
-            // TODO: expose configuration point here to allow specific modules to be added.
-            return builder.Build();
         }
 
         public void Dispose()

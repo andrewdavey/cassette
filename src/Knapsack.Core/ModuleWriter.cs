@@ -9,12 +9,14 @@ namespace Knapsack
     public class ModuleWriter
     {
         readonly TextWriter textWriter;
+        readonly string rootDirectory;
         readonly Func<string, string> loadSourceFromFile;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
-        public ModuleWriter(TextWriter textWriter, Func<string, string> loadSourceFromFile, ICoffeeScriptCompiler coffeeScriptCompiler)
+        public ModuleWriter(TextWriter textWriter, string rootDirectory, Func<string, string> loadSourceFromFile, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.textWriter = textWriter;
+            this.rootDirectory = rootDirectory;
             this.loadSourceFromFile = loadSourceFromFile;
             this.coffeeScriptCompiler = coffeeScriptCompiler;
         }
@@ -27,7 +29,7 @@ namespace Knapsack
                 minifier.MinifyJavaScript(
                     string.Join(
                         "\r\n",
-                        module.Scripts.Select(s => GetJavaScript(s.Path))
+                        module.Scripts.Select(s => GetJavaScript(rootDirectory + s.Path))
                     )
                 )
             );
