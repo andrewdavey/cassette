@@ -68,6 +68,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\base\namespace.js" />
+    <Content Include="Scripts\lib\module.txt" />
     <Content Include="Scripts\util\message.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

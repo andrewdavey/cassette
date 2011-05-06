@@ -1,0 +1,5 @@
+﻿jquery.js
+jquery-ui.js
+jquery.unobtrusive-ajax.js
+jquery.validate.js
+jquery.validate.unobtrusive.js

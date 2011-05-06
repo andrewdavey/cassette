@@ -16,6 +16,7 @@ namespace Knapsack
         readonly string rootDirectory;
         readonly Dictionary<string, Module> modulesByScriptPath;
         readonly StringComparer pathComparer = StringComparer.OrdinalIgnoreCase;
+        readonly string manifestFilename = "manifest.xml";
 
         public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
@@ -72,9 +73,9 @@ namespace Knapsack
 
         ModuleManifest ReadManifestFromStorage()
         {
-            if (!storage.FileExists("manifest.xml")) return null;
+            if (!storage.FileExists(manifestFilename)) return null;
 
-            using (var stream = storage.OpenFile("manifest.xml", FileMode.Open, FileAccess.Read))
+            using (var stream = storage.OpenFile(manifestFilename, FileMode.Open, FileAccess.Read))
             {
                 var reader = new ModuleManifestReader(stream);
                 return reader.Read();
@@ -88,7 +89,7 @@ namespace Knapsack
 
         void WriteManifestToStorage()
         {
-            using (var stream = storage.OpenFile("manifest.xml", FileMode.Create, FileAccess.Write))
+            using (var stream = storage.OpenFile(manifestFilename, FileMode.Create, FileAccess.Write))
             {
                 var writer = new ModuleManifestWriter(stream);
                 writer.Write(manifest);
@@ -143,6 +144,5 @@ namespace Knapsack
             var fullPath = Path.Combine(rootDirectory, relativeFilename);
             return File.ReadAllText(fullPath);
         }
-
     }
 }
