@@ -128,22 +128,10 @@ namespace Knapsack
 
         void DeleteModuleFromStorage(Module module)
         {
-            if (storage.DirectoryExists(module.Path))
-            {
-                DeleteAllFilesInStorageDirectory(module.Path);
-                storage.DeleteDirectory(module.Path);
-            }
-        }
-
-        void DeleteAllFilesInStorageDirectory(string path)
-        {
-            foreach (var filename in storage.GetFileNames(path + "/*"))
+            var filename = module.Hash.ToHexString() + ".js";
+            if (storage.FileExists(filename))
             {
                 storage.DeleteFile(filename);
-            }
-            foreach (var dir in storage.GetDirectoryNames(path + "/*"))
-            {
-                DeleteAllFilesInStorageDirectory(dir);
             }
         }
 
