@@ -21,4 +21,4 @@ There currently exist partial solutions, but nothing handles all the following:
 ## Install into your web application using Nuget
 Install-Package Knapsack
 
-This will add the assemblies references and Knapsack HTTP module and handler to Web.config. 
+This will add the assembly references and Knapsack HTTP module and handler to Web.config. 
