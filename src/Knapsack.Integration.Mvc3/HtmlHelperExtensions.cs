@@ -27,7 +27,7 @@ namespace Knapsack.Integration.Web.Mvc
         static PageHelper CreatePageHelper(HtmlHelper html)
         {
             var httpContext = html.ViewContext.HttpContext;
-            var useModules = KnapsackHttpModule.Instance.Configuration.ShouldUseModules(httpContext);
+            var useModules = KnapsackHttpModule.Manager.Configuration.ShouldUseModules(httpContext);
             var referenceBuilder = httpContext.Items["Knapsack.ReferenceBuilder"] as ReferenceBuilder;
             if (referenceBuilder == null)
             {

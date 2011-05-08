@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="KnapsackHttpHandler.cs" />
     <Compile Include="KnapsackHttpModule.cs" />
+    <Compile Include="Manager.cs" />
     <Compile Include="PageHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Start.cs" />

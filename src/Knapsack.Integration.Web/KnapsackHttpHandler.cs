@@ -15,8 +15,8 @@ namespace Knapsack.Integration.Web
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
         public KnapsackHttpHandler() : this(
-            KnapsackHttpModule.Instance.ModuleContainer, 
-            KnapsackHttpModule.Instance.CoffeeScriptCompiler
+            KnapsackHttpModule.Manager.ModuleContainer, 
+            KnapsackHttpModule.Manager.CoffeeScriptCompiler
         )
         {
         }
