@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Knapsack.Web</id>
+    <version>0.1</version>
+    <authors>Andrew Davey</authors>
+    <owners>Andrew Davey</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>https://github.com/andrewdavey/knapsack</projectUrl>
+    <description>Automatically build JavaScript modules based on the dependencies between files. CoffeeScript is also supported. This package contains an HTTP module and handler to support runtime use of Knapsack in an ASP.NET web application.</description>
+    <tags>web javascript coffeescript</tags>
+    <dependencies>
+      <dependency id="Knapsack"/>
+    </dependencies>
+  </metadata>
+</package>

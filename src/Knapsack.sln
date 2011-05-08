@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knapsack.Integration.Web", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knapsack.Core", "Knapsack.Core\Knapsack.Core.csproj", "{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knapsack.Integration.Mvc3", "Knapsack.Integration.Mvc3\Knapsack.Integration.Mvc3.csproj", "{B90607F1-EF50-4D51-8BAB-D7A52D46593C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,16 @@ Global
 		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Release|x86.ActiveCfg = Release|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B90607F1-EF50-4D51-8BAB-D7A52D46593C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

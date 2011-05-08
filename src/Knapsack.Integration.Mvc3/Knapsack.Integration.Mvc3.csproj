@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{47AA0DFC-0501-4468-AF06-2732F2A60064}</ProjectGuid>
+    <ProjectGuid>{B90607F1-EF50-4D51-8BAB-D7A52D46593C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Knapsack.Integration.Web</RootNamespace>
-    <AssemblyName>Knapsack.Integration.Web</AssemblyName>
+    <RootNamespace>Knapsack.Integration.Mvc3</RootNamespace>
+    <AssemblyName>Knapsack.Integration.Mvc3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,7 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -47,19 +46,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KnapsackHttpHandler.cs" />
-    <Compile Include="KnapsackHttpModule.cs" />
-    <Compile Include="PageHelper.cs" />
+    <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Start.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Knapsack.Core\Knapsack.Core.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
       <Name>Knapsack.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Knapsack.Integration.Web\Knapsack.Integration.Web.csproj">
+      <Project>{47AA0DFC-0501-4468-AF06-2732F2A60064}</Project>
+      <Name>Knapsack.Integration.Web</Name>
+    </ProjectReference>
   </ItemGroup>
-  <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

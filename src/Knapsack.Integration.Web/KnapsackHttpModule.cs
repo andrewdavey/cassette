@@ -13,7 +13,16 @@ namespace Knapsack.Integration.Web
     {
         static bool firstInit = true;
         static readonly object firstInitSync = new object();
-        internal static KnapsackHttpModule Instance;
+        static KnapsackHttpModule instance;
+
+        public static KnapsackHttpModule Instance
+        {
+            get 
+            {
+                if (instance == null) throw new InvalidOperationException("KnapsackHttpModule has not been initialized.");
+                return instance; 
+            }
+        }
 
         KnapsackSection configuration;
         ModuleContainer moduleContainer;
@@ -55,7 +64,7 @@ namespace Knapsack.Integration.Web
                     
                     moduleContainer.UpdateStorage();
 
-                    Instance = this;
+                    instance = this;
                 }
             }
         }
