@@ -3,3 +3,4 @@
 *.user
 *.suo
 *.cache
+build/
