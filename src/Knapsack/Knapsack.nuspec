@@ -18,5 +18,6 @@
         <file src="..\..\lib\Jurassic.dll" target="lib\net40"/>
         <file src="..\..\lib\Jurassic-License.txt" target="lib\net40"/>
         <file src="Web.config.transform" target="content"/>
+        <file src="Views\Web.config.transform" target="content\Views"/>
     </files>
 </package>

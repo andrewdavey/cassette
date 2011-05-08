@@ -94,6 +94,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Views-Web.config.transform" />
     <None Include="Knapsack.nuspec">
       <SubType>Designer</SubType>
     </None>
