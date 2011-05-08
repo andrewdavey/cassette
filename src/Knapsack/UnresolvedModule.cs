@@ -17,7 +17,7 @@ namespace Knapsack
 
         public UnresolvedModule(string path, UnresolvedScript[] scripts)
         {
-            this.path = path.ToLower();
+            this.path = path;
 
             var pathsInModule = new HashSet<string>(scripts.Select(s => s.Path));
             var partition = PartitionScriptReferences(scripts, pathsInModule);
@@ -45,7 +45,7 @@ namespace Knapsack
                 from module in unresolvedModules
                 from script in module.scripts
                 select new { script.Path, module }
-            ).ToDictionary(x => x.Path, x => x.module.path);
+            ).ToDictionary(x => x.Path, x => x.module.path, StringComparer.OrdinalIgnoreCase);
 
             var modules = unresolvedModules.Select(
                 m => m.Resolve(scriptPath => modulesByScriptPath[scriptPath])
@@ -63,7 +63,7 @@ namespace Knapsack
 
         Script[] OrderScriptsByDependency(Script[] scripts)
         {
-            var scriptsByPath = scripts.ToDictionary(s => s.Path);
+            var scriptsByPath = scripts.ToDictionary(s => s.Path, StringComparer.OrdinalIgnoreCase);
             // Create a graph where each node is a script path
             // and directed edges represent references between scripts.
             var graph = new Graph<string>(

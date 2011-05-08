@@ -16,10 +16,10 @@ namespace Knapsack
             if (!scripts.All(s => s.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase)))
                 throw new ArgumentException("Script paths in this module must start with the path \"" + path + "\".");
 
-            this.path = path.ToLower();
+            this.path = path;
             this.scripts = scripts;
             this.hash = HashScriptHashes(scripts);
-            this.moduleReferences = moduleReferences.Select(r => r.ToLower()).ToArray();
+            this.moduleReferences = moduleReferences.Select(r => r).ToArray();
         }
 
         public string Path

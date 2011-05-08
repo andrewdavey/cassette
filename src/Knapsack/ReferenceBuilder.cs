@@ -49,7 +49,7 @@ namespace Knapsack
 
         IEnumerable<Module> OrderModulesByDependency(IEnumerable<Module> modules)
         {
-            var modulesByPath = modules.ToDictionary(m => m.Path);
+            var modulesByPath = modules.ToDictionary(m => m.Path, StringComparer.OrdinalIgnoreCase);
 
             var graph = new Graph<string>(
                 modules.Select(m => m.Path),

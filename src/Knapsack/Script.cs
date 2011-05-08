@@ -11,7 +11,7 @@ namespace Knapsack
 
         public Script(string path, byte[] hash, string[] references)
         {
-            this.path = path.ToLower();
+            this.path = path;
             this.hash = hash;
             this.references = references;
         }
