@@ -1,7 +1,10 @@
 # Knapsack
 Web applications are using much more JavaScript. As a result structuring these files is becoming an problem. You would not put all your C# classes within a single .cs file, so why do that with JavaScript?
+
 Creating lots of smaller .js files is good development practice. However, downloading a hundred individual files will make YSlow very unhappy! We must concantenate and minify the files into logical "modules" for use in production.
+
 There currently exist partial solutions, but nothing handles all the following:
+
 * Parse the dependencies between scripts and correctly order the files.
   Using JavaScript 'reference' comments already gives you VS intellisense, now they also give automatic build dependency ordering!
 * No change in view code between debug and release.
