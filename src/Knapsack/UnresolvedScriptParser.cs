@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System;
 
 namespace Knapsack
 {
@@ -10,16 +11,21 @@ namespace Knapsack
     {
         public UnresolvedScript Parse(Stream source, string sourcePath)
         {
+            var isCoffeeScript = sourcePath.EndsWith(".coffee", StringComparison.InvariantCulture);
             return new UnresolvedScript(
                 sourcePath, 
                 Hash(source), 
-                ParseReferences(source).ToArray()
+                ParseReferences(source, isCoffeeScript).ToArray()
             );
         }
 
         readonly Regex referenceRegex = new Regex(
             @"/// \s* \<reference \s+ path \s* = \s* [""'](.*)[""'] \s* />", 
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
+        );
+        readonly Regex coffeeReferenceRegex = new Regex(
+            @"#\s*reference\s+[""'](.*)[""']",
+            RegexOptions.IgnoreCase
         );
 
         byte[] Hash(Stream source)
@@ -30,8 +36,9 @@ namespace Knapsack
             }
         }
 
-        IEnumerable<string> ParseReferences(Stream source)
+        IEnumerable<string> ParseReferences(Stream source, bool isCoffeeScript)
         {
+            var regex = isCoffeeScript ? coffeeReferenceRegex : referenceRegex;
             source.Position = 0;
             using (var reader = new StreamReader(source))
             {
@@ -39,7 +46,7 @@ namespace Knapsack
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
-                    var match = referenceRegex.Match(line);
+                    var match = regex.Match(line);
                     if (match.Success)
                     {
                         var path = match.Groups[1].Value;

@@ -3,6 +3,6 @@
 /// <reference path="test.coffee" />
 
 Example.showMessage = function (message) {
-    var t = new Test();
+    var t = new Example.Test();
     $("#message").text(message + t.hello);
 };

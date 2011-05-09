@@ -1,7 +1,9 @@
-﻿class Test
+﻿# reference "../base/namespace.js"
+
+class Test
 	
 	constructor: ->
 		@hello = 123
 
 
-this.Test = Test
+this.Example.Test = Test
