@@ -5,8 +5,8 @@ namespace Knapsack.Web
 {
     public class KnapsackHttpModule : IHttpModule
     {
-        // Using Lazy<T> means we get a singleton Manager which is created in a thread-safe manner.
-        static Lazy<IManager> manager = new Lazy<IManager>();
+        // Using a static Lazy<T> means we get a singleton Manager which is created in a thread-safe manner.
+        static Lazy<Manager> manager = new Lazy<Manager>();
         
         public static IManager Manager
         {
@@ -14,20 +14,14 @@ namespace Knapsack.Web
             {
                 return manager.Value;
             }
-            internal set // for unit tests
-            {
-                manager = new Lazy<IManager>(() => value);
-            }
         }
 
         public void Init(HttpApplication application)
         {
-            application.BeginRequest += HandleBeginRequest;
-        }
-
-        void HandleBeginRequest(object sender, EventArgs e)
-        {
-            StorePageHelperInHttpContextItems();
+            application.BeginRequest += (sender, e) =>
+            {
+                StorePageHelperInHttpContextItems();
+            };
         }
 
         void StorePageHelperInHttpContextItems()
@@ -41,6 +35,16 @@ namespace Knapsack.Web
             var referenceBuilder = new ReferenceBuilder(Manager.ModuleContainer);
             var useModules = Manager.Configuration.ShouldUseModules(httpContext);
             return new PageHelper(useModules, referenceBuilder, VirtualPathUtility.ToAbsolute);
+        }
+
+        public static IPageHelper GetPageHelper(HttpContextBase httpContext)
+        {
+            var helper = httpContext.Items["Knapsack.PageHelper"] as IPageHelper;
+            if (helper == null)
+            {
+                throw new InvalidOperationException("Knapsack.PageHelper has not been added to the current HttpContext Items. Make sure the KnapsackHttpModule has been added to Web.config.");
+            }
+            return helper;
         }
 
         public void Dispose()

@@ -30,13 +30,7 @@ namespace Knapsack.Web.Mvc
         internal static IPageHelper CreatePageHelperImpl(HtmlHelper html)
         {
             var httpContext = html.ViewContext.HttpContext;
-            var helper = httpContext.Items["Knapsack.PageHelper"] as IPageHelper;
-            if (helper == null)
-            {
-                throw new InvalidOperationException("Knapsack.PageHelper has not been added to the current HttpContext Items. Make sure the KnapsackHttpModule has been added to Web.config.");
-            }
-
-            return helper;
+            return KnapsackHttpModule.GetPageHelper(httpContext);
         }
     }
 }
