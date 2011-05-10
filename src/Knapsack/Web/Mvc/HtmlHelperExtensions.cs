@@ -24,17 +24,19 @@ namespace Knapsack.Web.Mvc
            return CreatePageHelper(html).RenderScripts();
         }
 
-        static PageHelper CreatePageHelper(HtmlHelper html)
+        // Allow unit tests to change this implementation.
+        internal static Func<HtmlHelper, IPageHelper> CreatePageHelper = CreatePageHelperImpl;
+
+        internal static IPageHelper CreatePageHelperImpl(HtmlHelper html)
         {
             var httpContext = html.ViewContext.HttpContext;
-            var useModules = KnapsackHttpModule.Manager.Configuration.ShouldUseModules(httpContext);
-            var referenceBuilder = httpContext.Items["Knapsack.ReferenceBuilder"] as ReferenceBuilder;
-            if (referenceBuilder == null)
+            var helper = httpContext.Items["Knapsack.PageHelper"] as IPageHelper;
+            if (helper == null)
             {
-                throw new InvalidOperationException("Knapsack.ReferenceBuilder has not been added to the current HttpContext Items. Make sure the KnapsackHttpModule has been added to Web.config.");
+                throw new InvalidOperationException("Knapsack.PageHelper has not been added to the current HttpContext Items. Make sure the KnapsackHttpModule has been added to Web.config.");
             }
 
-            return new PageHelper(useModules, referenceBuilder);
+            return helper;
         }
     }
 }

@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
@@ -81,6 +82,8 @@
     <Compile Include="Script.cs" />
     <Compile Include="UnresolvedScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
+    <Compile Include="Web\IManager.cs" />
+    <Compile Include="Web\IPageHelper.cs" />
     <Compile Include="Web\KnapsackHttpHandler.cs" />
     <Compile Include="Web\KnapsackHttpModule.cs" />
     <Compile Include="Web\Manager.cs" />

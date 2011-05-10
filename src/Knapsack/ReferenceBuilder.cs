@@ -5,7 +5,7 @@ using Knapsack.Utilities;
 
 namespace Knapsack
 {
-    public class ReferenceBuilder
+    public class ReferenceBuilder : IReferenceBuilder
     {
         readonly ModuleContainer moduleContainer;
         readonly HashSet<Module> modules = new HashSet<Module>();

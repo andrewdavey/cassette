@@ -13,7 +13,7 @@ namespace Knapsack.Web
     /// A single Manager object is created for the web application and contains all the top-level
     /// objects used by Knapsack.
     /// </summary>
-    public class Manager : IDisposable
+    public class Manager : IManager, IDisposable
     {
         readonly KnapsackSection configuration;
         readonly ModuleContainer moduleContainer;
