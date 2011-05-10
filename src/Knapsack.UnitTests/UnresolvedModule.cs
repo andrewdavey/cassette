@@ -135,4 +135,30 @@ namespace Knapsack
             module.Scripts[0].References.ShouldBeEmpty();
         }
     }
+
+    public class UnresolvedModule_ResolveAll
+    {
+        [Fact]
+        public void Returns_resolved_modules()
+        {
+            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") });
+            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/foo") });
+            
+            var modules = UnresolvedModule.ResolveAll(new[] { moduleA, moduleB }).ToArray();
+
+            modules[0].Path.ShouldEqual("module-a");
+            modules[1].Path.ShouldEqual("module-b");
+            modules[1].References[0].ShouldEqual("module-a");
+        }
+
+
+        UnresolvedScript CreateScript(string module, string name, params string[] references)
+        {
+            return new UnresolvedScript(
+                module + "/" + name + ".js",
+                new byte[0],
+                references.Select(r => r + ".js").ToArray()
+            );
+        }
+    }
 }
