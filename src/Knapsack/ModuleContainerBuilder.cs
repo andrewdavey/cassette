@@ -2,7 +2,6 @@
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
-using System;
 using Knapsack.CoffeeScript;
 
 namespace Knapsack
@@ -17,10 +16,8 @@ namespace Knapsack
         public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.storage = storage;
-            this.rootDirectory = rootDirectory;
+            this.rootDirectory = EnsureRootDirectoryEndsWithSlash(rootDirectory);
             this.coffeeScriptCompiler = coffeeScriptCompiler;
-
-            rootDirectory = EnsureRootDirectoryEndsWithSlash(rootDirectory);
         }
 
         string EnsureRootDirectoryEndsWithSlash(string rootDirectory)
@@ -33,14 +30,14 @@ namespace Knapsack
             return rootDirectory;
         }
 
-        public void AddModule(string relativeModuleDirectory)
+        public void AddModule(string directoryRelativeToRootDirectory)
         {
-            relativeModuleDirectories.Add(relativeModuleDirectory.Replace('\\', '/'));
+            relativeModuleDirectories.Add(directoryRelativeToRootDirectory.Replace('\\', '/'));
         }
 
-        public void AddModuleForEachSubdirectoryOf(string directory)
+        public void AddModuleForEachSubdirectoryOf(string directoryRelativeToRootDirectory)
         {
-            var fullPath = rootDirectory + directory;
+            var fullPath = rootDirectory + directoryRelativeToRootDirectory;
             foreach (var path in Directory.GetDirectories(fullPath))
             {
                 AddModule(path.Substring(rootDirectory.Length));

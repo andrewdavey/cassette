@@ -56,6 +56,7 @@
     <Compile Include="Configuration\KnapsackSection.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
+    <Compile Include="ModuleContainerBuilder.cs" />
     <Compile Include="ModuleManifest.cs" />
     <Compile Include="ModuleWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
