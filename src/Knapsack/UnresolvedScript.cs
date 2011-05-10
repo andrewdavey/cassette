@@ -73,8 +73,14 @@ namespace Knapsack
 
         string NormalizePath(string[] currentDirectoryNames, string path)
         {
+            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("The path cannot be empty.", "path");
+
             // ("app", "~/foo/bar.js") -> "foo/bar.js" 
-            if (path.StartsWith("~")) return path.Substring(2);
+            if (path.StartsWith("~"))
+            {
+                if (path.Length == 1) throw new ArgumentException("The path \"~\" is missing a file name.", "path");
+                path = path.Substring(2);
+            }
 
             // ("app/sub", "../foo/bar.js") -> "app/foo/bar.js"
             var names = currentDirectoryNames.Concat(path.Split('/'));
@@ -83,7 +89,7 @@ namespace Knapsack
             {
                 if (name == "..")
                 {
-                    if (stack.Count == 0) throw new Exception("Path cannot ascend above the website's root directory.");
+                    if (stack.Count == 0) throw new ArgumentException("The path cannot ascend above the website's root directory. Too many \"..\" in the path \"" + path + "\".", "path");
                     stack.Pop();
                 }
                 else

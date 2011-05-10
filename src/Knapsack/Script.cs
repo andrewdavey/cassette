@@ -30,13 +30,5 @@ namespace Knapsack
         {
             get { return references; }
         }
-
-        public Tuple<Script, string[]> ExtractExternalReferences(Func<string, bool> isInternalPath)
-        {
-            var newScript = new Script(path, hash, references.Where(isInternalPath).ToArray());
-            var externalReferences = references.Where(r => !isInternalPath(r)).ToArray();
-            return Tuple.Create(newScript, externalReferences);
-        }
-
     }
 }
