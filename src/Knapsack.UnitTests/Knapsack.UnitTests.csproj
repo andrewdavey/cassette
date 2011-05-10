@@ -60,6 +60,8 @@
     <Compile Include="UnresolvedScript.cs" />
     <Compile Include="UnresolvedScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
+    <Compile Include="Utilities\ByteArrayExtensions.cs" />
+    <Compile Include="Utilities\JavaScriptUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Knapsack\Knapsack.csproj">
