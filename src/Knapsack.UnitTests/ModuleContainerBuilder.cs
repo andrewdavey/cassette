@@ -77,6 +77,65 @@ namespace Knapsack
         }
     }
 
+    public class ModuleContainerBuilder_Build_when_already_cached_in_storage : IDisposable
+    {
+        IsolatedStorageFile storage;
+        string rootDirectory;
+        ModuleContainer container;
+
+        public ModuleContainerBuilder_Build_when_already_cached_in_storage()
+        {
+            storage = IsolatedStorageFile.GetUserStoreForAssembly();
+            rootDirectory = Path.GetFullPath(Guid.NewGuid().ToString());
+
+            // Create a fake set of scripts in modules.
+            Directory.CreateDirectory(Path.Combine(rootDirectory, "junk"));
+            File.WriteAllText(Path.Combine(rootDirectory, "junk", "test.js"), 
+                "function junk(){}");
+            Directory.CreateDirectory(Path.Combine(rootDirectory, "lib"));
+            File.WriteAllText(Path.Combine(rootDirectory, "lib", "jquery.js"), 
+                "function jQuery(){}");
+            Directory.CreateDirectory(Path.Combine(rootDirectory, "app"));
+            File.WriteAllText(Path.Combine(rootDirectory, "app", "widgets.js"), 
+                "/// <reference path=\"../lib/jquery.js\"/>\r\nfunction widgets(){}");
+            File.WriteAllText(Path.Combine(rootDirectory, "app", "main.js"), 
+                "/// <reference path=\"widgets.js\"/>\r\nfunction main() {}");
+
+            // Create the "old" continer.
+            var builder = new ModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
+            builder.AddModule("lib");
+            builder.AddModule("app");
+            var oldContainer = builder.Build();
+            oldContainer.UpdateStorage();
+
+            // Now simulate changes to the modules.
+            File.WriteAllText(Path.Combine(rootDirectory, "lib", "knockout.js"), 
+                "function knockout(){}");
+            File.WriteAllText(Path.Combine(rootDirectory, "app", "widgets.js"), 
+                "/// <reference path=\"../lib/jquery.js\"/>\r\n/// <reference path=\"../lib/knockout.js\"/>\r\nfunction widgets(){}");
+            // Build the updated container to excerise container manifest loading and differencing.
+            container = builder.Build();
+            container.UpdateStorage();
+        }
+
+        [Fact]
+        public void modules_that_are_no_longer_used_are_removed()
+        {
+            container.Contains("junk").ShouldBeFalse();
+        }
+
+        public void Dispose()
+        {
+            Directory.Delete(rootDirectory, true);
+
+            if (storage != null)
+            {
+                storage.Remove();
+                storage.Dispose();
+            }
+        }
+    }
+
     public class ModuleContainerBuilder_AddModuleForEachSubdirectoryOf : IDisposable
     {
         readonly IsolatedStorageFile storage;
