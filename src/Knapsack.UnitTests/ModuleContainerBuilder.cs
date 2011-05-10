@@ -77,7 +77,7 @@ namespace Knapsack
         }
     }
 
-    public class ModuleContainerBuilder_AddModuleForEachSubdirectoryOf
+    public class ModuleContainerBuilder_AddModuleForEachSubdirectoryOf : IDisposable
     {
         readonly IsolatedStorageFile storage;
         readonly string rootDirectory;
@@ -111,6 +111,17 @@ namespace Knapsack
         {
             container.Contains("lib").ShouldBeTrue();
             container.Contains("app").ShouldBeTrue();
+        }
+
+        public void Dispose()
+        {
+            Directory.Delete(rootDirectory, true);
+
+            if (storage != null)
+            {
+                storage.Remove();
+                storage.Dispose();
+            }
         }
     }
 }

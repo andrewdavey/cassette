@@ -32,7 +32,13 @@ namespace Knapsack.Web
             get { return true; }
         }
 
-        public void ProcessRequest(HttpContext context)
+        void IHttpHandler.ProcessRequest(HttpContext context)
+        {
+            var contextWrapper = new HttpContextWrapper(context);
+            ProcessRequest(contextWrapper);
+        }
+
+        public void ProcessRequest(HttpContextBase context)
         {
             var pathInfo = context.Request.PathInfo.Split('/');
             // PathInfo starts with a '/', so first string in array is empty string.
@@ -56,12 +62,12 @@ namespace Knapsack.Web
             }
         }
 
-        void BadRequest(HttpContext context)
+        void BadRequest(HttpContextBase context)
         {
             context.Response.StatusCode = 400;
         }
 
-        void ProcessModuleRequest(HttpContext context)
+        void ProcessModuleRequest(HttpContextBase context)
         {
             var module = FindModule(context.Request);
 
@@ -85,7 +91,7 @@ namespace Knapsack.Web
             }
         }
 
-        void ProcessCoffeeRequest(HttpContext context)
+        void ProcessCoffeeRequest(HttpContextBase context)
         {
             // Request PathInfo contains the coffeescript file.
             // (After we remove the "/coffee" prefix.)
@@ -124,36 +130,44 @@ namespace Knapsack.Web
                     + "');";
         }
 
-        Module FindModule(HttpRequest request)
+        Module FindModule(HttpRequestBase request)
         {
             var modulePath = GetModulePath(request);
             var module = moduleContainer.FindModule(modulePath);
             return module;
         }
 
-        string GetModulePath(HttpRequest request)
+        string GetModulePath(HttpRequestBase request)
         {
             // Path info looks like "/modules/module-a/foo_hash".
             var path = request.PathInfo;
             // We want "module-a/foo".
             var prefixLength = "/modules/".Length;
-            return path.Substring(prefixLength, path.LastIndexOf('_') - prefixLength);
+            var index = path.LastIndexOf('_');
+            if (index >= 0)
+            {
+                return path.Substring(prefixLength, index - prefixLength);
+            }
+            else
+            {
+                return path.Substring(prefixLength);
+            }
         }
 
-        bool ClientHasCurrentVersion(HttpRequest request, string serverETag)
+        bool ClientHasCurrentVersion(HttpRequestBase request, string serverETag)
         {
             var clientETag = request.Headers["If-None-Match"];
             return clientETag == serverETag;
         }
 
-        void SetLongLivedCacheHeaders(HttpCachePolicy cache, string serverETag)
+        void SetLongLivedCacheHeaders(HttpCachePolicyBase cache, string serverETag)
         {
             cache.SetCacheability(HttpCacheability.Public);
             cache.SetETag(serverETag);
             cache.SetExpires(DateTime.UtcNow.AddYears(1));
         }
 
-        void WriteModuleContentToResponse(Module module, HttpResponse response)
+        void WriteModuleContentToResponse(Module module, HttpResponseBase response)
         {
             using (var stream = moduleContainer.OpenModuleFile(module))
             {
