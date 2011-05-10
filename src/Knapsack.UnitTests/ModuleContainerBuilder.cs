@@ -105,6 +105,7 @@ namespace Knapsack
             var builder = new ModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
             builder.AddModule("lib");
             builder.AddModule("app");
+            builder.AddModule("junk");
             var oldContainer = builder.Build();
             oldContainer.UpdateStorage();
 
@@ -114,6 +115,9 @@ namespace Knapsack
             File.WriteAllText(Path.Combine(rootDirectory, "app", "widgets.js"), 
                 "/// <reference path=\"../lib/jquery.js\"/>\r\n/// <reference path=\"../lib/knockout.js\"/>\r\nfunction widgets(){}");
             // Build the updated container to excerise container manifest loading and differencing.
+            builder = new ModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
+            builder.AddModule("lib");
+            builder.AddModule("app");
             container = builder.Build();
             container.UpdateStorage();
         }
