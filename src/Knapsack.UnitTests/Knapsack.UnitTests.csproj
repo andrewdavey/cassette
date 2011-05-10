@@ -35,7 +35,9 @@
       <HintPath>..\packages\Should.1.1.12.0\lib\Should.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
+    <Compile Include="Configuration\KnapsackSection.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ModuleManifest.cs" />
