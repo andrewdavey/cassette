@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using Should;
 using Xunit;
+using System;
 
 namespace Knapsack
 {
@@ -76,6 +77,18 @@ namespace Knapsack
             var module1 = new Module("module-a", new[] { new Script(@"module-a/test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0]);
             var module2 = new Module("module-a", new[] { new Script(@"module-a/test.js", new byte[] { 9, 9, 9 }, new string[0]) }, new string[0]);
             Assert.NotEqual(module1, module2);
+        }
+    }
+
+    public class Module_constructor
+    {
+        [Fact]
+        public void Cannot_create_Module_with_script_having_path_not_in_module()
+        {
+            Assert.Throws<ArgumentException>(delegate
+            {
+                new Module("module-a", new[] { new Script("module-b/test.js", new byte[0], new string[0]) }, new string[0]);
+            });
         }
     }
 }
