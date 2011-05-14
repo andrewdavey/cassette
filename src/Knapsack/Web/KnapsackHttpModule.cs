@@ -32,9 +32,10 @@ namespace Knapsack.Web
 
         static PageHelper CreatePageHelper(HttpContextBase httpContext)
         {
-            var referenceBuilder = new ReferenceBuilder(Manager.ModuleContainer);
+            var scriptReferenceBuilder = new ReferenceBuilder(Manager.ScriptModuleContainer);
+            var stylesheetReferenceBuilder = new ReferenceBuilder(Manager.StylesheetModuleContainer);
             var useModules = Manager.Configuration.ShouldUseModules(httpContext);
-            return new PageHelper(useModules, referenceBuilder, VirtualPathUtility.ToAbsolute);
+            return new PageHelper(useModules, scriptReferenceBuilder, stylesheetReferenceBuilder, VirtualPathUtility.ToAbsolute);
         }
 
         public static IPageHelper GetPageHelper(HttpContextBase httpContext)

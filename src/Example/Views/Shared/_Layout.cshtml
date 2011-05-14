@@ -1,8 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Html.AddStylesheet("styles/base/reset.css");
+    Html.AddStylesheet("styles/base/typography.css");
+    Html.AddStylesheet("styles/app/site.css");
+}
+<!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
-    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    @Html.RenderStyleLinks()
 </head>
 
 <body>

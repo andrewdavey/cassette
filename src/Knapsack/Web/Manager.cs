@@ -16,7 +16,8 @@ namespace Knapsack.Web
     public class Manager : IManager, IDisposable
     {
         readonly KnapsackSection configuration;
-        readonly ModuleContainer moduleContainer;
+        readonly ModuleContainer scriptModuleContainer;
+        readonly ModuleContainer stylesheetModuleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
         readonly IsolatedStorageFile storage;
 
@@ -24,12 +25,14 @@ namespace Knapsack.Web
         {
             configuration = LoadConfigurationFromWebConfig();
 
-            // Module script files will be cached in isolated storage.
+            // Module files will be cached in isolated storage.
             storage = IsolatedStorageFile.GetUserStoreForDomain();
             coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
-            moduleContainer = BuildModuleContainer(storage, configuration);
+            scriptModuleContainer = BuildScriptModuleContainer(storage, configuration);
+            stylesheetModuleContainer = BuildStylesheetModuleContainer(storage, configuration);
 
-            moduleContainer.UpdateStorage();
+            scriptModuleContainer.UpdateStorage();
+            stylesheetModuleContainer.UpdateStorage();
         }
 
         public KnapsackSection Configuration
@@ -37,9 +40,14 @@ namespace Knapsack.Web
             get { return configuration; }
         }
 
-        public ModuleContainer ModuleContainer
+        public ModuleContainer ScriptModuleContainer
         {
-            get { return moduleContainer; }
+            get { return scriptModuleContainer; }
+        }
+
+        public ModuleContainer StylesheetModuleContainer
+        {
+            get { return stylesheetModuleContainer; }
         }
 
         public ICoffeeScriptCompiler CoffeeScriptCompiler
@@ -54,24 +62,39 @@ namespace Knapsack.Web
                    ?? new KnapsackSection(); // Create default config is none defined.
         }
 
-        ModuleContainer BuildModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
+        ModuleContainer BuildScriptModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
         {
-            var builder = new ModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, coffeeScriptCompiler);
-            if (config.Modules.Count == 0)
+            var builder = new ScriptModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, coffeeScriptCompiler);
+            if (config.Scripts.Count == 0)
             {
                 // By convention, each subdirectory of "~/scripts" is a module.
                 builder.AddModuleForEachSubdirectoryOf("scripts");
             }
             else
             {
-                AddModulesFromConfig(config, builder);
+                AddModulesFromConfig(config.Scripts, builder);
             }
             return builder.Build();
         }
 
-        void AddModulesFromConfig(KnapsackSection config, ModuleContainerBuilder builder)
+        ModuleContainer BuildStylesheetModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
         {
-            foreach (ModuleElement module in config.Modules)
+            var builder = new StylesheetModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath);
+            if (config.Styles.Count == 0)
+            {
+                // By convention, each subdirectory of "~/styles" is a module.
+                builder.AddModuleForEachSubdirectoryOf("styles");
+            }
+            else
+            {
+                AddModulesFromConfig(config.Styles, builder);
+            }
+            return builder.Build();
+        }
+
+        void AddModulesFromConfig(ModuleCollection moduleElements, ModuleContainerBuilder builder)
+        {
+            foreach (ModuleElement module in moduleElements)
             {
                 // "foo/*" implies each sub-directory of "~/foo" is a module.
                 if (module.Path.EndsWith("*"))

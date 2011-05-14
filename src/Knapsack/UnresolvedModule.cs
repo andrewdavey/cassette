@@ -12,10 +12,10 @@ namespace Knapsack
     public class UnresolvedModule
     {
         readonly string path;
-        readonly Script[] scripts;
+        readonly Resource[] scripts;
         readonly string[] externalScriptReferences;
 
-        public UnresolvedModule(string path, UnresolvedScript[] scripts)
+        public UnresolvedModule(string path, UnresolvedResource[] scripts)
         {
             this.path = path;
 
@@ -54,14 +54,14 @@ namespace Knapsack
             return modules;
         }
 
-        Tuple<Script, string[]>[] PartitionScriptReferences(UnresolvedScript[] scripts, HashSet<string> pathsInModule)
+        Tuple<Resource, string[]>[] PartitionScriptReferences(UnresolvedResource[] scripts, HashSet<string> pathsInModule)
         {
             return scripts.Select(
                 s => s.Resolve(pathsInModule.Contains)
             ).ToArray();
         }
 
-        Script[] OrderScriptsByDependency(Script[] scripts)
+        Resource[] OrderScriptsByDependency(Resource[] scripts)
         {
             var scriptsByPath = scripts.ToDictionary(s => s.Path, StringComparer.OrdinalIgnoreCase);
             // Create a graph where each node is a script path

@@ -13,31 +13,29 @@ namespace Knapsack
         readonly Module[] modules;
         readonly ModuleManifest manifest;
         readonly IsolatedStorageFile storage;
-        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
-        readonly string rootDirectory;
+        readonly Func<TextWriter, IModuleWriter> createModuleWriter;
         readonly Dictionary<string, Module> modulesByScriptPath;
         readonly StringComparer pathComparer = StringComparer.OrdinalIgnoreCase;
         readonly string manifestFilename = "manifest.xml";
 
-        public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
+        public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, Func<TextWriter, IModuleWriter> createModuleWriter)
         {
             this.modules = modules.ToArray();
             this.manifest = new ModuleManifest(this.modules);
             this.storage = storage;
-            this.rootDirectory = rootDirectory;
-            this.coffeeScriptCompiler = coffeeScriptCompiler;
+            this.createModuleWriter = createModuleWriter;
 
             modulesByScriptPath = (
                 from module in this.modules
-                from script in module.Scripts
+                from script in module.Resources
                 select new { script.Path, module }
             ).ToDictionary(x => x.Path, x => x.module, pathComparer);
         }
 
-        public Module FindModuleContainingScript(string scriptPath)
+        public Module FindModuleContainingResource(string resourcePath)
         {
             Module module;
-            if (modulesByScriptPath.TryGetValue(scriptPath, out module))
+            if (modulesByScriptPath.TryGetValue(resourcePath, out module))
             {
                 return module;
             }
@@ -121,7 +119,7 @@ namespace Knapsack
             using (var stream = storage.OpenFile(filename, FileMode.Create, FileAccess.Write))
             using (var textWriter = new StreamWriter(stream))
             {
-                var writer = new ModuleWriter(textWriter, rootDirectory, LoadSourceFromFile, coffeeScriptCompiler);
+                var writer = createModuleWriter(textWriter);
                 writer.Write(module);
             }
         }
@@ -137,13 +135,7 @@ namespace Knapsack
 
         string ModuleFilename(Module module)
         {
-            return module.Hash.ToHexString() + ".js";
-        }
-
-        string LoadSourceFromFile(string relativeFilename)
-        {
-            var fullPath = Path.Combine(rootDirectory, relativeFilename);
-            return File.ReadAllText(fullPath);
+            return module.Hash.ToHexString();
         }
     }
 }

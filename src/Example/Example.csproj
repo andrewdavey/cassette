@@ -66,10 +66,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Styles\app\site.css" />
     <Content Include="Scripts\base\namespace.js" />
     <Content Include="Scripts\lib\module.txt" />
     <Content Include="Scripts\util\message.js" />
+    <Content Include="Styles\base\reset.css" />
+    <Content Include="Styles\base\typography.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -104,6 +106,7 @@
       <Name>Knapsack</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

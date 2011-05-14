@@ -17,7 +17,7 @@ namespace Knapsack
 
         public void AddReference(string scriptPath)
         {
-            var module = moduleContainer.FindModuleContainingScript(scriptPath);
+            var module = moduleContainer.FindModuleContainingResource(scriptPath);
             if (module == null) throw new ArgumentException("Script not found: " + scriptPath);
             modules.Add(module);
         }

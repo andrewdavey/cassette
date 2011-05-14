@@ -16,12 +16,22 @@ namespace Knapsack.Web.Mvc
             CreatePageHelper(html).AddScriptReference(scriptPath);
         }
 
+        public static void AddStylesheet(this HtmlHelper html, string cssPath)
+        {
+            CreatePageHelper(html).AddStylesheet(cssPath);
+        }
+
         /// <summary>
         /// Creates HTML script elements for all required scripts and their dependencies.
         /// </summary>
         public static IHtmlString RenderScripts(this HtmlHelper html)
         {
            return CreatePageHelper(html).RenderScripts();
+        }
+
+        public static IHtmlString RenderStyleLinks(this HtmlHelper html)
+        {
+            return CreatePageHelper(html).RenderStyleLinks();
         }
 
         // Allow unit tests to change this implementation.

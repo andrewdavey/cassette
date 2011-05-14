@@ -64,8 +64,8 @@
     <Compile Include="ModuleWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="Script.cs" />
-    <Compile Include="UnresolvedScript.cs" />
+    <Compile Include="Resource.cs" />
+    <Compile Include="UnresolvedResource.cs" />
     <Compile Include="UnresolvedScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />

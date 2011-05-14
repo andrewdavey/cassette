@@ -7,13 +7,13 @@ namespace Knapsack
     /// <summary>
     /// An unresolved script's references are as they appear in the script source.
     /// </summary>
-    public class UnresolvedScript
+    public class UnresolvedResource
     {
         readonly string path;
         readonly byte[] hash;
         readonly string[] references;
 
-        public UnresolvedScript(string path, byte[] hash, string[] references)
+        public UnresolvedResource(string path, byte[] hash, string[] references)
         {
             this.path = path;
             this.hash = hash;
@@ -39,11 +39,11 @@ namespace Knapsack
         /// Creates a new Script with only module-internal, application relative script references.
         /// The tuple also contains any module-external references used by the script.
         /// </summary>
-        public Tuple<Script, string[]> Resolve(Func<string, bool> isInternalPath)
+        public Tuple<Resource, string[]> Resolve(Func<string, bool> isInternalPath)
         {
             var applicationRelativeReferences = CreateApplicationRelativeReferences().ToArray();
 
-            var newScript = new Script(
+            var newScript = new Resource(
                 path,
                 hash,
                 applicationRelativeReferences.Where(isInternalPath).ToArray()

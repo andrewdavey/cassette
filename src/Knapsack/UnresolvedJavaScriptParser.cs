@@ -4,18 +4,18 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System;
+using Knapsack.Utilities;
 
 namespace Knapsack
 {
-    public class UnresolvedScriptParser
+    public class UnresolvedJavaScriptParser : IUnresolvedResourceParser
     {
-        public UnresolvedScript Parse(Stream source, string sourcePath)
+        public UnresolvedResource Parse(Stream source, string sourcePath)
         {
-            var isCoffeeScript = sourcePath.EndsWith(".coffee", StringComparison.InvariantCulture);
-            return new UnresolvedScript(
+            return new UnresolvedResource(
                 sourcePath, 
-                Hash(source), 
-                ParseReferences(source, isCoffeeScript).ToArray()
+                source.ComputeSHA1Hash(), 
+                ParseReferences(source).ToArray()
             );
         }
 
@@ -23,22 +23,9 @@ namespace Knapsack
             @"/// \s* \<reference \s+ path \s* = \s* [""'](.*)[""'] \s* />", 
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
-        readonly Regex coffeeReferenceRegex = new Regex(
-            @"#\s*reference\s+[""'](.*)[""']",
-            RegexOptions.IgnoreCase
-        );
 
-        byte[] Hash(Stream source)
+        IEnumerable<string> ParseReferences(Stream source)
         {
-            using (var sha1 = SHA1.Create())
-            {
-                return sha1.ComputeHash(source);
-            }
-        }
-
-        IEnumerable<string> ParseReferences(Stream source, bool isCoffeeScript)
-        {
-            var regex = isCoffeeScript ? coffeeReferenceRegex : referenceRegex;
             source.Position = 0;
             using (var reader = new StreamReader(source))
             {
@@ -46,7 +33,7 @@ namespace Knapsack
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
-                    var match = regex.Match(line);
+                    var match = referenceRegex.Match(line);
                     if (match.Success)
                     {
                         var path = match.Groups[1].Value;

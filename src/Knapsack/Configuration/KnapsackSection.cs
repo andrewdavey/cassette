@@ -13,10 +13,17 @@ namespace Knapsack.Configuration
         }
 
         [ConfigurationCollection(typeof(ModuleElement))]
-        [ConfigurationProperty("modules")]
-        public ModuleCollection Modules
+        [ConfigurationProperty("scripts")]
+        public ModuleCollection Scripts
         {
-            get { return (ModuleCollection)this["modules"]; }
+            get { return (ModuleCollection)this["scripts"]; }
+        }
+
+        [ConfigurationCollection(typeof(ModuleElement))]
+        [ConfigurationProperty("styles")]
+        public ModuleCollection Styles
+        {
+            get { return (ModuleCollection)this["styles"]; }
         }
 
         public bool ShouldUseModules(HttpContextBase context)

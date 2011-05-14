@@ -7,17 +7,17 @@ namespace Knapsack
 {
     public class Given_a_ScriptParser_When_Parse_source_with_two_references
     {
-        readonly UnresolvedScriptParser parser;
+        readonly UnresolvedJavaScriptParser parser;
         readonly string sourcePath = @"scripts/test.js";
         readonly string source = @"/// <reference path=""other-1.js""/>
 /// <reference path=""../lib/other-2.js""/>";
-        readonly UnresolvedScript script;
+        readonly UnresolvedResource script;
 
         public Given_a_ScriptParser_When_Parse_source_with_two_references()
         {
             using (var sourceStream = CreateSourceStream())
             {
-                parser = new UnresolvedScriptParser();
+                parser = new UnresolvedJavaScriptParser();
                 script = parser.Parse(sourceStream, sourcePath);
             }
         }
@@ -71,7 +71,7 @@ namespace Knapsack
         public void Can_parse_CoffeeScript_reference_comments()
         {
             var source = "# reference \"lib.js\"";
-            var parser = new UnresolvedScriptParser();
+            var parser = new UnresolvedCoffeeScriptParser();
             var unresolvedScript = parser.Parse(CreateSourceStream(source), "test.coffee");
             unresolvedScript.References[0].ShouldEqual("lib.js");
         }
@@ -80,7 +80,7 @@ namespace Knapsack
         public void Can_parse_CoffeeScript_reference_comments_with_single_quotes()
         {
             var source = "# reference 'lib.js'";
-            var parser = new UnresolvedScriptParser();
+            var parser = new UnresolvedCoffeeScriptParser();
             var unresolvedScript = parser.Parse(CreateSourceStream(source), "test.coffee");
             unresolvedScript.References[0].ShouldEqual("lib.js");
         }

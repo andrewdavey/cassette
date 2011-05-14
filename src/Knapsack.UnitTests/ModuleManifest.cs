@@ -12,26 +12,26 @@ namespace Knapsack
             {
                 new Module(
                     @"scripts/module-a",
-                    new Script[]
+                    new Resource[]
                     {
-                        new Script(@"scripts/module-a/test.js", new byte[0], new string[0])
+                        new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0]
                 ),
-                new Module(@"scripts/module-b", new Script[0], new string[0])
+                new Module(@"scripts/module-b", new Resource[0], new string[0])
             });
 
             var newModuleManifest = new ModuleManifest(new[] 
             {
                 new Module(
                     @"scripts/module-a",
-                    new Script[]
+                    new Resource[]
                     {
-                        new Script(@"scripts/module-a/test.js", new byte[0], new string[0])
+                        new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0]
                 ),
-                new Module(@"scripts/module-b", new Script[0], new string[0])
+                new Module(@"scripts/module-b", new Resource[0], new string[0])
             });
 
             var differences = newModuleManifest.CompareTo(oldModuleManifest);
@@ -45,9 +45,9 @@ namespace Knapsack
             {
                 new Module(
                     @"scripts/module-a",
-                    new Script[]
+                    new Resource[]
                     {
-                        new Script(@"scripts/module-a/test.js", new byte[] { 1 }, new string[0])
+                        new Resource(@"scripts/module-a/test.js", new byte[] { 1 }, new string[0])
                     }, 
                     new string[0]
                 )
@@ -58,9 +58,9 @@ namespace Knapsack
             {
                 changedModule = new Module(
                     @"scripts/module-a",
-                    new Script[]
+                    new Resource[]
                     {
-                        new Script(@"scripts/module-a/test.js", new byte[] { 2 }, new string[0])
+                        new Resource(@"scripts/module-a/test.js", new byte[] { 2 }, new string[0])
                     }, 
                     new string[0]
                 )
@@ -80,9 +80,9 @@ namespace Knapsack
             {
                 module = new Module(
                     @"scripts/module-a",
-                    new Script[]
+                    new Resource[]
                     {
-                        new Script(@"scripts/module-a/test.js", new byte[0], new string[0])
+                        new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0]
                 )
@@ -106,7 +106,7 @@ namespace Knapsack
             {
                 module = new Module(
                     @"scripts/module-a",
-                    new Script[0], 
+                    new Resource[0], 
                     new string[0]
                 )
             });

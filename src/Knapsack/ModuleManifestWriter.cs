@@ -26,7 +26,7 @@ namespace Knapsack
                     from module in moduleContainer.Modules
                     select new XElement("module",
                         new XAttribute("path", module.Path),
-                        from script in module.Scripts
+                        from script in module.Resources
                         select new XElement("script",
                             new XAttribute("path", script.Path),
                             new XAttribute("hash", script.Hash.ToHexString())

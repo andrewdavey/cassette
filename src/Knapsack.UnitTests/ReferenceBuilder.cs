@@ -36,7 +36,7 @@ namespace Knapsack
                         }, 
                         new string[0]
                     )
-                }, storage, "c:\\", null)
+                }, storage, tw => null)
             );
         }
 
@@ -45,9 +45,9 @@ namespace Knapsack
             storage.Dispose();
         }
 
-        Script CreateScript(string name, string module, params string[] references)
+        Resource CreateScript(string name, string module, params string[] references)
         {
-            return new Script(module + "/" + name + ".js", new byte[0], references);
+            return new Resource(module + "/" + name + ".js", new byte[0], references);
         }
 
         [Fact]

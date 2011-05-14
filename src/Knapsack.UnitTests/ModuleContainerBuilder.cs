@@ -35,7 +35,7 @@ namespace Knapsack
             File.WriteAllText(Path.Combine(rootDirectory, "app", "main.js"), 
                 "/// <reference path=\"widgets.js\"/>\r\nfunction main() {}");
 
-            var builder = new ModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
+            var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
             builder.AddModule("lib");
             builder.AddModule("app");
             container = builder.Build();
@@ -56,7 +56,7 @@ namespace Knapsack
         [Fact]
         public void Module_lib_has_2_scripts()
         {
-            container.FindModule("lib").Scripts.Length.ShouldEqual(2);
+            container.FindModule("lib").Resources.Length.ShouldEqual(2);
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace Knapsack
                 "/// <reference path=\"widgets.js\"/>\r\nfunction main() {}");
 
             // Create the "old" continer.
-            var builder = new ModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
+            var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
             builder.AddModule("lib");
             builder.AddModule("app");
             builder.AddModule("junk");
@@ -115,7 +115,7 @@ namespace Knapsack
             File.WriteAllText(Path.Combine(rootDirectory, "app", "widgets.js"), 
                 "/// <reference path=\"../lib/jquery.js\"/>\r\n/// <reference path=\"../lib/knockout.js\"/>\r\nfunction widgets(){}");
             // Build the updated container to excerise container manifest loading and differencing.
-            builder = new ModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
+            builder = new ScriptModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
             builder.AddModule("lib");
             builder.AddModule("app");
             container = builder.Build();
@@ -164,7 +164,7 @@ namespace Knapsack
             File.WriteAllText(Path.Combine(rootDirectory, "app", "main.js"),
                 "/// <reference path=\"widgets.js\"/>\r\nfunction main() {}");
 
-            var builder = new ModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
+            var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
             builder.AddModuleForEachSubdirectoryOf("");
             container = builder.Build();
         }

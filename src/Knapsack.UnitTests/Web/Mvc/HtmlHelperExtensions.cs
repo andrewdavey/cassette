@@ -36,6 +36,17 @@ namespace Knapsack.Web.Mvc
         }
 
         [Fact]
+        public void AddStylesheet_calls_page_helper()
+        {
+            string calledWithFilename = null;
+            pageHelper.AddStylesheet = filename => calledWithFilename = filename;
+
+            htmlHelper.AddStylesheet("test.css");
+
+            calledWithFilename.ShouldEqual("test.css");
+        }
+
+        [Fact]
         public void RenderScripts_calls_page_helper()
         {
             pageHelper.RenderScripts = () => new HtmlString("html");
@@ -70,16 +81,29 @@ namespace Knapsack.Web.Mvc
         class MockPageHelper : IPageHelper
         {
             public Action<string> AddScriptReference;
+            public Action<string> AddStylesheet;
             public Func<IHtmlString> RenderScripts;
+            public Func<IHtmlString> RenderStylesheet;
 
             void IPageHelper.AddScriptReference(string scriptPath)
             {
                 AddScriptReference(scriptPath);
             }
 
+            void IPageHelper.AddStylesheet(string cssPath)
+            {
+                AddStylesheet(cssPath);
+            }
+
             IHtmlString IPageHelper.RenderScripts()
             {
                 return RenderScripts();
+            }
+
+
+            IHtmlString IPageHelper.RenderStyleLinks()
+            {
+                return RenderStylesheet();
             }
         }
 

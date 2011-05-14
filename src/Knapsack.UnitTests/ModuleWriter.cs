@@ -19,7 +19,7 @@ namespace Knapsack
                     { "a/1.js", "function test1 () { }" },
                     { "a/2.js", "function test2 () { }" }
                 };
-                var moduleWriter = new ModuleWriter(textWriter, "", path => sources[path], null);
+                var moduleWriter = new ScriptModuleWriter(textWriter, "", path => sources[path], null);
 
                 moduleWriter.Write(module);
 
@@ -33,12 +33,12 @@ namespace Knapsack
         {
             using (var textWriter = new StringWriter())
             {
-                var module = new Module("a", new[] { new Script("a/test.coffee", new byte[0], new string[0]) }, new string[0]);
+                var module = new Module("a", new[] { new Resource("a/test.coffee", new byte[0], new string[0]) }, new string[0]);
                 var sources = new Dictionary<string, string>
                 {
                     { "a/test.coffee", "x = 1" }
                 };
-                var moduleWriter = new ModuleWriter(textWriter, "", path => sources[path], new FakeCompiler());
+                var moduleWriter = new ScriptModuleWriter(textWriter, "", path => sources[path], new FakeCompiler());
 
                 moduleWriter.Write(module);
 
@@ -47,9 +47,9 @@ namespace Knapsack
             }
         }
 
-        Script CreateScript(string name)
+        Resource CreateScript(string name)
         {
-            return new Script("a/" + name + ".js", new byte[0], new string[0]);
+            return new Resource("a/" + name + ".js", new byte[0], new string[0]);
         }
 
         class FakeCompiler : ICoffeeScriptCompiler

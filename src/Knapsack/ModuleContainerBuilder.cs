@@ -2,22 +2,19 @@
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
-using Knapsack.CoffeeScript;
 
 namespace Knapsack
 {
-    public class ModuleContainerBuilder
+    public abstract class ModuleContainerBuilder
     {
-        readonly IsolatedStorageFile storage;
-        readonly string rootDirectory;
-        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
-        readonly List<string> relativeModuleDirectories = new List<string>();
+        protected readonly IsolatedStorageFile storage;
+        protected readonly string rootDirectory;
+        protected readonly List<string> relativeModuleDirectories = new List<string>();
 
-        public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory, ICoffeeScriptCompiler coffeeScriptCompiler)
+        public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory)
         {
             this.storage = storage;
             this.rootDirectory = EnsureRootDirectoryEndsWithSlash(rootDirectory);
-            this.coffeeScriptCompiler = coffeeScriptCompiler;
         }
 
         string EnsureRootDirectoryEndsWithSlash(string rootDirectory)
@@ -44,12 +41,9 @@ namespace Knapsack
             }
         }
 
-        public ModuleContainer Build()
+        protected string LoadFile(string relativeFilename)
         {
-            var moduleBuilder = new UnresolvedModuleBuilder(rootDirectory);
-            var unresolvedModules = relativeModuleDirectories.Select(moduleBuilder.Build);
-            var modules = UnresolvedModule.ResolveAll(unresolvedModules);
-            return new ModuleContainer(modules, storage, rootDirectory, coffeeScriptCompiler);
+            return File.ReadAllText(Path.Combine(rootDirectory, relativeFilename));
         }
     }
 }

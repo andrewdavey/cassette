@@ -33,9 +33,9 @@ namespace Knapsack
             );
         }
 
-        Script ReadScriptElement(XElement element)
+        Resource ReadScriptElement(XElement element)
         {
-            return new Script(
+            return new Resource(
                 element.Attribute("path").Value,
                 ByteArrayExtensions.FromHexString(element.Attribute("hash").Value),
                 new string[0]

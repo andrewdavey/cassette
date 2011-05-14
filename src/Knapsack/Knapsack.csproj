@@ -51,7 +51,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IModuleWriter.cs" />
+    <Compile Include="ModuleContainerBuilder.cs" />
+    <Compile Include="StylesheetModuleContainerBuilder.cs" />
+    <Compile Include="StylesheetModuleWriter.cs" />
+    <Compile Include="UnresolvedCoffeeScriptParser.cs" />
     <Compile Include="IReferenceBuilder.cs" />
+    <Compile Include="IUnresolvedResourceParser.cs" />
+    <Compile Include="UnresolvedCssParser.cs" />
+    <Compile Include="UnresolvedScriptModuleBuilder.cs" />
+    <Compile Include="UnresolvedStylesheetModuleBuilder.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
@@ -70,18 +79,19 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UnresolvedModuleBuilder.cs" />
-    <Compile Include="UnresolvedScript.cs" />
+    <Compile Include="UnresolvedResource.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="ModuleContainerBuilder.cs" />
+    <Compile Include="ScriptModuleContainerBuilder.cs" />
     <Compile Include="ModuleDifference.cs" />
-    <Compile Include="ModuleWriter.cs" />
+    <Compile Include="ScriptModuleWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="Script.cs" />
-    <Compile Include="UnresolvedScriptParser.cs" />
+    <Compile Include="Resource.cs" />
+    <Compile Include="UnresolvedJavaScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
+    <Compile Include="Utilities\StreamExtensions.cs" />
     <Compile Include="Web\IManager.cs" />
     <Compile Include="Web\IPageHelper.cs" />
     <Compile Include="Web\KnapsackHttpHandler.cs" />

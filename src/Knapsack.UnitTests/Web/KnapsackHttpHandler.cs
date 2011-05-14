@@ -25,7 +25,8 @@ namespace Knapsack.Web
         NameValueCollection requestHeaders;
         Mock<HttpCachePolicyBase> cache;
         Stream responseOutputStream;
-        ModuleContainer container;
+        ModuleContainer scriptModuleContainer;
+        ModuleContainer stylesheetModuleContainer;
         private Mock<HttpServerUtilityBase> server;
 
         public KnapsackHttpHandler_tests()
@@ -49,13 +50,15 @@ namespace Knapsack.Web
             File.WriteAllText(Path.Combine(rootDirectory, "app", "test.coffee"),
                 "x = 1");
 
-            var builder = new ModuleContainerBuilder(storage, rootDirectory, coffeeScriptCompiler);
+            var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, coffeeScriptCompiler);
             builder.AddModule("lib");
             builder.AddModule("app");
-            container = builder.Build();
-            container.UpdateStorage();
+            scriptModuleContainer = builder.Build();
+            scriptModuleContainer.UpdateStorage();
 
-            handler = new KnapsackHttpHandler(container, coffeeScriptCompiler);
+            var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory);
+
+            handler = new KnapsackHttpHandler(scriptModuleContainer, stylesheetModuleContainer, coffeeScriptCompiler);
 
             httpContext = new Mock<HttpContextBase>();
             httpRequest = new Mock<HttpRequestBase>();
@@ -139,7 +142,7 @@ namespace Knapsack.Web
         [Fact]
         public void Request_module_using_etag_returns_NotModified()
         {
-            var etag = container.FindModule("app").Hash.ToHexString();
+            var etag = scriptModuleContainer.FindModule("app").Hash.ToHexString();
             requestHeaders["If-Modified-Since"] = etag;
             httpRequest.ExpectGet(r => r.PathInfo).Returns("/modules/lib_" + etag);
             handler.ProcessRequest(httpContext.Object);

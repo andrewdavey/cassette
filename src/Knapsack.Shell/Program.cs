@@ -17,11 +17,11 @@ namespace Knapsack.Shell
 
             var path = Path.GetFullPath(args[0]);
 
-            var builder = new UnresolvedModuleBuilder(path);
+            var builder = new UnresolvedScriptModuleBuilder(path);
             var unresolvedModule = builder.Build(""); // path is the module, so no extra path is required.
             var module = UnresolvedModule.ResolveAll(new[] { unresolvedModule }).First();
 
-            var writer = new ModuleWriter(Console.Out, path, File.ReadAllText, new CoffeeScriptCompiler(File.ReadAllText));
+            var writer = new ScriptModuleWriter(Console.Out, path, File.ReadAllText, new CoffeeScriptCompiler(File.ReadAllText));
             writer.Write(module);
         }
 

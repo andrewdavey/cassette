@@ -11,19 +11,22 @@ namespace Knapsack.Web
     /// </summary>
     public class KnapsackHttpHandler : IHttpHandler
     {
-        readonly ModuleContainer moduleContainer;
+        readonly ModuleContainer scriptModuleContainer;
+        readonly ModuleContainer stylesheetModuleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
         public KnapsackHttpHandler() : this(
-            KnapsackHttpModule.Manager.ModuleContainer, 
+            KnapsackHttpModule.Manager.ScriptModuleContainer,
+            KnapsackHttpModule.Manager.StylesheetModuleContainer,
             KnapsackHttpModule.Manager.CoffeeScriptCompiler
         )
         {
         }
 
-        public KnapsackHttpHandler(ModuleContainer moduleContainer, ICoffeeScriptCompiler coffeeScriptCompiler)
+        public KnapsackHttpHandler(ModuleContainer scriptModuleContainer, ModuleContainer stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
-            this.moduleContainer = moduleContainer;
+            this.scriptModuleContainer = scriptModuleContainer;
+            this.stylesheetModuleContainer = stylesheetModuleContainer;
             this.coffeeScriptCompiler = coffeeScriptCompiler;
         }
 
@@ -48,9 +51,13 @@ namespace Knapsack.Web
             {
                 BadRequest(context); 
             } 
-            else if (pathInfo[1] == "modules")
+            else if (pathInfo[1] == "scripts")
             {
-                ProcessModuleRequest(context);
+                ProcessScriptModuleRequest(context);
+            }
+            else if (pathInfo[1] == "styles")
+            {
+                ProcessStylesheetModuleRequest(context);
             }
             else if (pathInfo[1] == "coffee")
             {
@@ -67,24 +74,44 @@ namespace Knapsack.Web
             context.Response.StatusCode = 400;
         }
 
-        void ProcessModuleRequest(HttpContextBase context)
+        void NotFound(HttpContextBase context)
         {
-            var module = FindModule(context.Request);
+            context.Response.StatusCode = 404;
+        }
+
+        void NotModified(HttpContextBase context)
+        {
+            context.Response.StatusCode = 304;
+        }
+
+        void ProcessScriptModuleRequest(HttpContextBase context)
+        {
+            ProcessModuleRequest(context, scriptModuleContainer, "text/javascript");
+        }
+
+        void ProcessStylesheetModuleRequest(HttpContextBase context)
+        {
+            ProcessModuleRequest(context, stylesheetModuleContainer, "text/css");
+        }
+
+        void ProcessModuleRequest(HttpContextBase context, ModuleContainer container, string contentType)
+        {
+            var module = FindModule(context.Request, container);
 
             if (module == null)
             {
-                context.Response.StatusCode = 404;
+                NotFound(context);
                 return;
             }
 
             var serverETag = module.Hash.ToHexString();
             if (ClientHasCurrentVersion(context.Request, serverETag))
             {
-                context.Response.StatusCode = 304; // Not Modified;
+                NotModified(context);
             }
             else
             {
-                context.Response.ContentType = "text/javascript";
+                context.Response.ContentType = contentType;
                 SetLongLivedCacheHeaders(context.Response.Cache, serverETag);
                 // NOTE: If people want compression then tell IIS to do it using config!
                 WriteModuleContentToResponse(module, context.Response);
@@ -100,7 +127,7 @@ namespace Knapsack.Web
             
             if (!File.Exists(path))
             {
-                context.Response.StatusCode = 404;
+                NotFound(context);
                 return;
             }
 
@@ -130,26 +157,30 @@ namespace Knapsack.Web
                     + "');";
         }
 
-        Module FindModule(HttpRequestBase request)
+        Module FindModule(HttpRequestBase request, ModuleContainer container)
         {
             var modulePath = GetModulePath(request);
-            var module = moduleContainer.FindModule(modulePath);
+            var module = container.FindModule(modulePath);
             return module;
         }
 
         string GetModulePath(HttpRequestBase request)
         {
-            // Path info looks like "/modules/module-a/foo_hash".
+            // Path info looks like "/{scripts-or-styles}/module-a/foo_hash".
             var path = request.PathInfo;
             // We want "module-a/foo".
-            var prefixLength = "/modules/".Length;
+            var indexOfSecondSlash = path.IndexOf('/', 1);
+            var prefixLength = indexOfSecondSlash + 1;
             var index = path.LastIndexOf('_');
             if (index >= 0)
             {
+                // Remove the prefix and hash suffix
                 return path.Substring(prefixLength, index - prefixLength);
             }
             else
             {
+                // No hash suffix.
+                // Just remove the prefix.
                 return path.Substring(prefixLength);
             }
         }
@@ -169,7 +200,7 @@ namespace Knapsack.Web
 
         void WriteModuleContentToResponse(Module module, HttpResponseBase response)
         {
-            using (var stream = moduleContainer.OpenModuleFile(module))
+            using (var stream = scriptModuleContainer.OpenModuleFile(module))
             {
                 stream.CopyTo(response.OutputStream);
             }

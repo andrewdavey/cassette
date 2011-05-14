@@ -4,52 +4,60 @@ using System.Linq;
 
 namespace Knapsack
 {
-    public class UnresolvedModuleBuilder
+    public abstract class UnresolvedModuleBuilder
     {
         readonly string rootDirectory;
-        readonly string[] scriptFileExtensions = new[] { "js", "coffee" };
+        readonly string[] fileExtensions;
         readonly string moduleManifestFilename = "module.txt";
 
-        public UnresolvedModuleBuilder(string rootDirectory)
+        public UnresolvedModuleBuilder(string rootDirectory, string[] fileExtensions)
         {
             this.rootDirectory = rootDirectory;
+            this.fileExtensions = fileExtensions;
         }
 
         public UnresolvedModule Build(string relativeModulePath)
         {
             var modulePath = rootDirectory + relativeModulePath;
             var manifestFilename = modulePath + "/" + moduleManifestFilename;
-            IEnumerable<UnresolvedScript> scripts;
+            IEnumerable<UnresolvedResource> resources;
             if (File.Exists(manifestFilename))
             {
-                scripts = LoadScriptsInManifest(manifestFilename, modulePath);
+                resources = LoadResourcesInManifest(manifestFilename, modulePath);
             }
             else
             {
-                scripts = LoadScriptsByFindingFiles(modulePath);
+                resources = LoadResourcesByFindingFiles(modulePath);
             }
 
-            return new UnresolvedModule(relativeModulePath, scripts.ToArray());
+            return new UnresolvedModule(relativeModulePath, resources.ToArray());
         }
 
-        IEnumerable<UnresolvedScript> LoadScriptsInManifest(string manifestFilename, string modulePath)
+        protected virtual bool ShouldNotIgnoreResource(string filename)
+        {
+            return true;
+        }
+
+        protected abstract IUnresolvedResourceParser CreateParser(string filename);
+
+        IEnumerable<UnresolvedResource> LoadResourcesInManifest(string manifestFilename, string modulePath)
         {
             return File.ReadAllLines(manifestFilename)
                 .Where(line => !string.IsNullOrWhiteSpace(line))
                 .Select(filename => modulePath + "/" + filename)
                 .Select(NormalizePathSlashes)
-                .Select(LoadScript);
+                .Select(LoadResource);
         }
 
-        IEnumerable<UnresolvedScript> LoadScriptsByFindingFiles(string modulePath)
+        IEnumerable<UnresolvedResource> LoadResourcesByFindingFiles(string modulePath)
         {
-            return scriptFileExtensions
+            return fileExtensions
                 .SelectMany(
                     extension => LoadAllFilesInModule(modulePath, extension)
                 )
-                .Where(ShouldNotIgnoreScript)
+                .Where(ShouldNotIgnoreResource)
                 .Select(NormalizePathSlashes)
-                .Select(LoadScript);
+                .Select(LoadResource);
         }
 
         IEnumerable<string> LoadAllFilesInModule(string modulePath, string extension)
@@ -61,20 +69,15 @@ namespace Knapsack
             );
         }
 
-        bool ShouldNotIgnoreScript(string filename)
-        {
-            return !filename.EndsWith("-vsdoc.js");
-        }
-
         string NormalizePathSlashes(string path)
         {
             // For sanity, Knapsack uses the convention of forward slashes everywhere.
             return path.Replace('\\', '/');
         }
 
-        UnresolvedScript LoadScript(string filename)
+        UnresolvedResource LoadResource(string filename)
         {
-            var parser = new UnresolvedScriptParser();
+            var parser = CreateParser(filename);
             using (var fileStream = File.OpenRead(filename))
             {
                 return parser.Parse(fileStream, filename.Substring(rootDirectory.Length));

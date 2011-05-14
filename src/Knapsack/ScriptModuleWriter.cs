@@ -6,14 +6,14 @@ using Microsoft.Ajax.Utilities;
 
 namespace Knapsack
 {
-    public class ModuleWriter
+    public class ScriptModuleWriter : IModuleWriter
     {
         readonly TextWriter textWriter;
         readonly string rootDirectory;
         readonly Func<string, string> loadSourceFromFile;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
-        public ModuleWriter(TextWriter textWriter, string rootDirectory, Func<string, string> loadSourceFromFile, ICoffeeScriptCompiler coffeeScriptCompiler)
+        public ScriptModuleWriter(TextWriter textWriter, string rootDirectory, Func<string, string> loadSourceFromFile, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.textWriter = textWriter;
             this.rootDirectory = rootDirectory;
@@ -29,7 +29,7 @@ namespace Knapsack
                 minifier.MinifyJavaScript(
                     string.Join(
                         "\r\n",
-                        module.Scripts.Select(s => GetJavaScript(rootDirectory + s.Path))
+                        module.Resources.Select(s => GetJavaScript(rootDirectory + s.Path))
                     )
                 )
             );

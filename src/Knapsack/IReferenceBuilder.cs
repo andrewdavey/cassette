@@ -5,7 +5,7 @@ namespace Knapsack
 {
     public interface IReferenceBuilder
     {
-        void AddReference(string scriptPath);
+        void AddReference(string filename);
         IEnumerable<Module> GetRequiredModules();
     }
 }

@@ -4,6 +4,7 @@
     {
         Knapsack.CoffeeScript.ICoffeeScriptCompiler CoffeeScriptCompiler { get; }
         Knapsack.Configuration.KnapsackSection Configuration { get; }
-        ModuleContainer ModuleContainer { get; }
+        ModuleContainer ScriptModuleContainer { get; }
+        ModuleContainer StylesheetModuleContainer { get; }
     }
 }
