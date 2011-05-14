@@ -86,7 +86,7 @@ namespace Knapsack.Web
         [Fact]
         public void Module_request_returns_module_from_storage()
         {
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/modules/lib_123");
+            httpRequest.ExpectGet(r => r.PathInfo).Returns("/scripts/lib_123");
             handler.ProcessRequest(httpContext.Object);
 
             var output = GetOutputString();
@@ -97,7 +97,7 @@ namespace Knapsack.Web
         public void Module_request_sets_cache_headers()
         {
             var nextYear = DateTime.UtcNow.AddYears(1);
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/modules/lib_123");
+            httpRequest.ExpectGet(r => r.PathInfo).Returns("/scripts/lib_123");
             handler.ProcessRequest(httpContext.Object);
 
             cache.Verify(c => c.SetCacheability(HttpCacheability.Public));

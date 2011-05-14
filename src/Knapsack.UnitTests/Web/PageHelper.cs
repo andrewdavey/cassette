@@ -48,7 +48,7 @@ namespace Knapsack.Web
             var html = pageHelper.RenderScripts();
 
             html.ToHtmlString().ShouldEqual(
-                "<script src=\"/knapsack.axd/modules/lib_" + module.Hash.ToHexString() + "\" type=\"text/javascript\"></script>"
+                "<script src=\"/knapsack.axd/scripts/lib_" + module.Hash.ToHexString() + "\" type=\"text/javascript\"></script>"
             );
         }
 
@@ -105,7 +105,7 @@ namespace Knapsack.Web
         }
 
         [Fact]
-        public void RenderStylesheets_returns_link_elements()
+        public void RenderStyleLinks_returns_link_elements()
         {
             var referenceBuilder = new FakeReferenceBuilder();
             var module = new Module(
@@ -124,7 +124,7 @@ namespace Knapsack.Web
             var html = pageHelper.RenderStyleLinks();
 
             html.ToHtmlString().ShouldEqual(
-                "<link href=\"/knapsack.axd/modules/theme_" + module.Hash.ToHexString() + "\" type=\"text/css\" rel=\"stylesheet\"/>"
+                "<link href=\"/knapsack.axd/styles/theme_" + module.Hash.ToHexString() + "\" type=\"text/css\" rel=\"stylesheet\"/>"
             );
         }
 
