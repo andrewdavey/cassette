@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.IO.IsolatedStorage;
 using System.Linq;
-using System.Text;
-using System.IO.IsolatedStorage;
 
 namespace Knapsack
 {
@@ -13,7 +10,7 @@ namespace Knapsack
         {
         }
 
-        public ModuleContainer Build()
+        public override ModuleContainer Build()
         {
             var moduleBuilder = new UnresolvedStylesheetModuleBuilder(rootDirectory);
             var unresolvedModules = relativeModuleDirectories.Select(moduleBuilder.Build);

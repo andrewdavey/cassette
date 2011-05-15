@@ -67,29 +67,25 @@ namespace Knapsack.Web
         ModuleContainer BuildScriptModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
         {
             var builder = new ScriptModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, coffeeScriptCompiler);
-            if (config.Scripts.Count == 0)
-            {
-                // By convention, each subdirectory of "~/scripts" is a module.
-                builder.AddModuleForEachSubdirectoryOf("scripts");
-            }
-            else
-            {
-                AddModulesFromConfig(config.Scripts, builder);
-            }
-            return builder.Build();
+            return BuildModuleContainer(builder, config.Scripts, "scripts");
         }
 
         ModuleContainer BuildStylesheetModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
         {
             var builder = new StylesheetModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath);
-            if (config.Styles.Count == 0)
+            return BuildModuleContainer(builder, config.Styles, "styles");
+        }
+
+        ModuleContainer BuildModuleContainer(ModuleContainerBuilder builder, ModuleCollection modules, string topLevelDirectoryNameConvention)
+        {
+            if (modules.Count == 0)
             {
-                // By convention, each subdirectory of "~/styles" is a module.
-                builder.AddModuleForEachSubdirectoryOf("styles");
+                // By convention, each subdirectory of topLevelDirectoryNameConvention is a module.
+                builder.AddModuleForEachSubdirectoryOf(topLevelDirectoryNameConvention);
             }
             else
             {
-                AddModulesFromConfig(config.Styles, builder);
+                AddModulesFromConfig(modules, builder);
             }
             return builder.Build();
         }
@@ -116,11 +112,19 @@ namespace Knapsack.Web
         /// </summary>
         public CacheDependency CreateCacheDependency()
         {
+            var scripts = GetDirectoriesToWatch(configuration.Scripts, "scripts");
+            var styles = GetDirectoriesToWatch(configuration.Styles, "styles");
+            var paths = scripts.Concat(styles).ToArray();
+            return new CacheDependency(paths);
+        }
+
+        IEnumerable<string> GetDirectoriesToWatch(ModuleCollection modules, string conventionalTopLevelDirectory)
+        {
             var paths = new List<string>();
-            if (Configuration.Modules.Count == 0)
+            if (modules.Count == 0)
             {
-                // Use conventional path: "scripts".
-                var scriptsPath = Path.Combine(HttpRuntime.AppDomainAppPath, "scripts");
+                // Use conventional directory e.g. "scripts".
+                var scriptsPath = Path.Combine(HttpRuntime.AppDomainAppPath, conventionalTopLevelDirectory);
                 if (Directory.Exists(scriptsPath))
                 {
                     paths.Add(scriptsPath);
@@ -132,9 +136,9 @@ namespace Knapsack.Web
             else
             {
                 var configPaths =
-                    from element in Configuration.Modules.Cast<ModuleElement>()
+                    from element in modules.Cast<ModuleElement>()
                     select Path.Combine(HttpRuntime.AppDomainAppPath, element.Path);
-                
+
                 foreach (var path in configPaths)
                 {
                     if (path.EndsWith("*")) // e.g. "scripts/*"
@@ -152,8 +156,7 @@ namespace Knapsack.Web
                     }
                 }
             }
-
-            return new CacheDependency(paths.ToArray());
+            return paths;
         }
 
         public void Dispose()

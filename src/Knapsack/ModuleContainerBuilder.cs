@@ -41,6 +41,8 @@ namespace Knapsack
             }
         }
 
+        public abstract ModuleContainer Build();
+
         protected string LoadFile(string relativeFilename)
         {
             return File.ReadAllText(Path.Combine(rootDirectory, relativeFilename));

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.IO.IsolatedStorage;
+﻿using System.IO.IsolatedStorage;
 using System.Linq;
 using Knapsack.CoffeeScript;
 
@@ -15,7 +14,7 @@ namespace Knapsack
             this.coffeeScriptCompiler = coffeeScriptCompiler;
         }
 
-        public ModuleContainer Build()
+        public override ModuleContainer Build()
         {
             var moduleBuilder = new UnresolvedScriptModuleBuilder(rootDirectory);
             var unresolvedModules = relativeModuleDirectories.Select(moduleBuilder.Build);
