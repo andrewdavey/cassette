@@ -1,13 +1,42 @@
 ﻿using System;
 using System.Web;
+using System.Web.Caching;
 
 namespace Knapsack.Web
 {
     public class KnapsackHttpModule : IHttpModule
     {
         // Using a static Lazy<T> means we get a singleton Manager which is created in a thread-safe manner.
-        static Lazy<Manager> manager = new Lazy<Manager>();
-        
+        static Lazy<Manager> manager = new Lazy<Manager>(CreateManager);
+
+        static Manager CreateManager()
+        {
+            var manager = new Manager();
+            CacheManagerWithDependency(manager);
+            return manager;
+        }
+
+        static void CacheManagerWithDependency(Manager manager)
+        {
+            var dependency = manager.CreateCacheDependency();
+            HttpRuntime.Cache.Insert(
+                "Knapsack.Manager",
+                manager,
+                dependency,
+                Cache.NoAbsoluteExpiration,
+                Cache.NoSlidingExpiration,
+                CacheItemPriority.Normal,
+                (key, value, reason) =>
+                {
+                    ((Manager)value).Dispose();
+                    // Manager is removed from cache when the file system is changed.
+                    // So we clear the old instance by reassigning the lazy object.
+                    // It'll be recreated next time someone requests it.
+                    KnapsackHttpModule.manager = new Lazy<Manager>(CreateManager);
+                }
+            );
+        }
+
         public static IManager Manager
         {
             get 

@@ -1,1 +1,1 @@
-﻿var Example = {}
+﻿var Example = {};

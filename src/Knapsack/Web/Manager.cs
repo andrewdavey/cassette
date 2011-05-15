@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Configuration;
 using Knapsack.CoffeeScript;
 using Knapsack.Configuration;
@@ -99,7 +101,7 @@ namespace Knapsack.Web
                 // "foo/*" implies each sub-directory of "~/foo" is a module.
                 if (module.Path.EndsWith("*"))
                 {
-                    var path = module.Path.Substring(module.Path.Length - 2);
+                    var path = module.Path.Substring(0, module.Path.Length - 2);
                     builder.AddModuleForEachSubdirectoryOf(path);
                 }
                 else // the given path is the module itself.
@@ -107,6 +109,51 @@ namespace Knapsack.Web
                     builder.AddModule(module.Path);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns a CacheDependency object that watches all module source directories for changes.
+        /// </summary>
+        public CacheDependency CreateCacheDependency()
+        {
+            var paths = new List<string>();
+            if (Configuration.Modules.Count == 0)
+            {
+                // Use conventional path: "scripts".
+                var scriptsPath = Path.Combine(HttpRuntime.AppDomainAppPath, "scripts");
+                if (Directory.Exists(scriptsPath))
+                {
+                    paths.Add(scriptsPath);
+                    // HACK: CacheDependency does not seem to monitor file changes within subdirectories
+                    // so manually watch each subdirectory of "scripts" as well.
+                    paths.AddRange(Directory.GetDirectories(scriptsPath));
+                }
+            }
+            else
+            {
+                var configPaths =
+                    from element in Configuration.Modules.Cast<ModuleElement>()
+                    select Path.Combine(HttpRuntime.AppDomainAppPath, element.Path);
+                
+                foreach (var path in configPaths)
+                {
+                    if (path.EndsWith("*")) // e.g. "scripts/*"
+                    {
+                        // So we watch all of "scripts".
+                        var topLevel = path.Substring(0, path.Length - 2);
+                        paths.Add(topLevel);
+                        // HACK: CacheDependency does not seem to monitor file changes within subdirectories
+                        // so manually watch each subdirectory of "scripts" as well.
+                        paths.AddRange(Directory.GetDirectories(topLevel));
+                    }
+                    else
+                    {
+                        paths.Add(path);
+                    }
+                }
+            }
+
+            return new CacheDependency(paths.ToArray());
         }
 
         public void Dispose()
