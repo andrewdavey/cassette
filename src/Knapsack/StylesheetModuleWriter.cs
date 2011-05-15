@@ -9,13 +9,13 @@ namespace Knapsack
     {
         readonly TextWriter textWriter;
         readonly string rootDirectory;
-        readonly Func<string, string> loadSourceFromFile;
+        readonly Func<string, string> readFileText;
 
-        public StylesheetModuleWriter(TextWriter textWriter, string rootDirectory, Func<string, string> loadSourceFromFile)
+        public StylesheetModuleWriter(TextWriter textWriter, string rootDirectory, Func<string, string> readFileText)
         {
             this.textWriter = textWriter;
             this.rootDirectory = rootDirectory;
-            this.loadSourceFromFile = loadSourceFromFile;
+            this.readFileText = readFileText;
         }
 
         public void Write(Module module)
@@ -26,10 +26,16 @@ namespace Knapsack
                 minifier.MinifyStyleSheet(
                     string.Join(
                         "\r\n",
-                        module.Resources.Select(s => loadSourceFromFile(rootDirectory + s.Path))
+                        module.Resources.Select(ReadCss)
                     )
                 )
             );
+        }
+
+        string ReadCss(Resource resource)
+        {
+            var css = readFileText(rootDirectory + resource.Path);
+            return css;
         }
     }
 }

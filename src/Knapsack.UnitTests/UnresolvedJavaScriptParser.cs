@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Knapsack
 {
-    public class Given_a_ScriptParser_When_Parse_source_with_two_references
+    public class Given_a_UnresolvedJavaScriptParser_When_Parse_source_with_two_references
     {
         readonly UnresolvedJavaScriptParser parser;
         readonly string sourcePath = @"scripts/test.js";
@@ -13,7 +13,7 @@ namespace Knapsack
 /// <reference path=""../lib/other-2.js""/>";
         readonly UnresolvedResource script;
 
-        public Given_a_ScriptParser_When_Parse_source_with_two_references()
+        public Given_a_UnresolvedJavaScriptParser_When_Parse_source_with_two_references()
         {
             using (var sourceStream = CreateSourceStream())
             {
@@ -63,36 +63,5 @@ namespace Knapsack
             });
         }
 
-    }
-
-    public class Parsing_CoffeeScript_facts
-    {
-        [Fact]
-        public void Can_parse_CoffeeScript_reference_comments()
-        {
-            var source = "# reference \"lib.js\"";
-            var parser = new UnresolvedCoffeeScriptParser();
-            var unresolvedScript = parser.Parse(CreateSourceStream(source), "test.coffee");
-            unresolvedScript.References[0].ShouldEqual("lib.js");
-        }
-
-        [Fact]
-        public void Can_parse_CoffeeScript_reference_comments_with_single_quotes()
-        {
-            var source = "# reference 'lib.js'";
-            var parser = new UnresolvedCoffeeScriptParser();
-            var unresolvedScript = parser.Parse(CreateSourceStream(source), "test.coffee");
-            unresolvedScript.References[0].ShouldEqual("lib.js");
-        }
-
-        Stream CreateSourceStream(string source)
-        {
-            var sourceStream = new MemoryStream();
-            var writer = new StreamWriter(sourceStream);
-            writer.Write(source);
-            writer.Flush();
-            sourceStream.Position = 0;
-            return sourceStream;
-        }
     }
 }

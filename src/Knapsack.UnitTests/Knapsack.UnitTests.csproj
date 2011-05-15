@@ -65,8 +65,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Resource.cs" />
+    <Compile Include="UnresolvedCoffeeScriptParser.cs" />
+    <Compile Include="UnresolvedCssParser.cs" />
     <Compile Include="UnresolvedResource.cs" />
-    <Compile Include="UnresolvedScriptParser.cs" />
+    <Compile Include="UnresolvedJavaScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
