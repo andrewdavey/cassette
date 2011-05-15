@@ -1,3 +1,8 @@
+/*
+@reference "../base/reset.css";
+@reference "../base/typography.css";
+*/
+
 body
 {
     font-size: 75%;
