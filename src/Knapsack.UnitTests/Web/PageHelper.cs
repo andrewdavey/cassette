@@ -17,7 +17,7 @@ namespace Knapsack.Web
             referenceBuilder.AddReference = path => scriptPath = path;
             
             var pageHelper = new PageHelper(true, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
-            pageHelper.AddScriptReference("test.js");
+            pageHelper.ReferenceScript("test.js");
             
             scriptPath.ShouldEqual("test.js");
         }
@@ -30,7 +30,7 @@ namespace Knapsack.Web
             referenceBuilder.AddReference = path => scriptPath = path;
 
             var pageHelper = new PageHelper(true, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
-            pageHelper.AddStylesheet("test.css");
+            pageHelper.ReferenceStylesheet("test.css");
 
             scriptPath.ShouldEqual("test.css");
         }
@@ -105,7 +105,7 @@ namespace Knapsack.Web
         }
 
         [Fact]
-        public void RenderStyleLinks_returns_link_elements()
+        public void RenderStylesheetLinks_returns_link_elements()
         {
             var referenceBuilder = new FakeReferenceBuilder();
             var module = new Module(
@@ -121,7 +121,7 @@ namespace Knapsack.Web
             var useModules = true;
 
             var pageHelper = new PageHelper(useModules, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
-            var html = pageHelper.RenderStyleLinks();
+            var html = pageHelper.RenderStylesheetLinks();
 
             html.ToHtmlString().ShouldEqual(
                 "<link href=\"/knapsack.axd/styles/theme_" + module.Hash.ToHexString() + "\" type=\"text/css\" rel=\"stylesheet\"/>"

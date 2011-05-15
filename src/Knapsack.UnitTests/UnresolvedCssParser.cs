@@ -9,12 +9,10 @@ namespace Knapsack
     {
         readonly UnresolvedCssParser parser;
         readonly string sourcePath = @"styles/test.css";
-        // These are the different css @import syntaxes:
-        readonly string source = @"@import 'test-1.css' ;
-@import ""test-2.css"" ;
-@import url ( 'test-3.css' );
-@import url ( ""test-4.css"" ) ;
-@import url ( test-5.css );";
+        readonly string source = @"/*
+@reference 'test-1.css';
+@reference ""test-2.css"";
+*/";
         readonly UnresolvedResource stylesheet;
 
         public Given_a_UnresolvedCssParser_When_Parse_source_with_two_references()
@@ -58,15 +56,12 @@ namespace Knapsack
         }
 
         [Fact]
-        public void stylesheet_has_five_references()
+        public void stylesheet_has_two_references()
         {
             stylesheet.References.ShouldEqual(new[] 
             {
                 "test-1.css",
-                "test-2.css",
-                "test-3.css",
-                "test-4.css",
-                "test-5.css",
+                "test-2.css"
             });
         }
     }

@@ -25,23 +25,23 @@ namespace Knapsack.Web.Mvc
         }
 
         [Fact]
-        public void AddScriptReference_calls_page_helper()
+        public void ReferenceScript_calls_page_helper()
         {
             string calledWithScript = null;
-            pageHelper.AddScriptReference = script => calledWithScript = script;
+            pageHelper.ReferenceScript = script => calledWithScript = script;
 
-            htmlHelper.AddScriptReference("test.js");
+            htmlHelper.ReferenceScript("test.js");
 
             calledWithScript.ShouldEqual("test.js");
         }
 
         [Fact]
-        public void AddStylesheet_calls_page_helper()
+        public void ReferenceStylesheet_calls_page_helper()
         {
             string calledWithFilename = null;
-            pageHelper.AddStylesheet = filename => calledWithFilename = filename;
+            pageHelper.ReferenceStylesheet = filename => calledWithFilename = filename;
 
-            htmlHelper.AddStylesheet("test.css");
+            htmlHelper.ReferenceStylesheet("test.css");
 
             calledWithFilename.ShouldEqual("test.css");
         }
@@ -80,19 +80,19 @@ namespace Knapsack.Web.Mvc
 
         class MockPageHelper : IPageHelper
         {
-            public Action<string> AddScriptReference;
-            public Action<string> AddStylesheet;
+            public Action<string> ReferenceScript;
+            public Action<string> ReferenceStylesheet;
             public Func<IHtmlString> RenderScripts;
             public Func<IHtmlString> RenderStylesheet;
 
-            void IPageHelper.AddScriptReference(string scriptPath)
+            void IPageHelper.ReferenceScript(string scriptPath)
             {
-                AddScriptReference(scriptPath);
+                ReferenceScript(scriptPath);
             }
 
-            void IPageHelper.AddStylesheet(string cssPath)
+            void IPageHelper.ReferenceStylesheet(string cssPath)
             {
-                AddStylesheet(cssPath);
+                ReferenceStylesheet(cssPath);
             }
 
             IHtmlString IPageHelper.RenderScripts()
@@ -101,7 +101,7 @@ namespace Knapsack.Web.Mvc
             }
 
 
-            IHtmlString IPageHelper.RenderStyleLinks()
+            IHtmlString IPageHelper.RenderStylesheetLinks()
             {
                 return RenderStylesheet();
             }

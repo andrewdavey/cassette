@@ -59,11 +59,11 @@ namespace Knapsack
             return path.GetHashCode() ^ hash.GetHashCode();
         }
 
-        byte[] HashScriptHashes(Resource[] scripts)
+        byte[] HashScriptHashes(Resource[] resources)
         {
             using (var sha1 = SHA1.Create())
             {
-                return sha1.ComputeHash(scripts.SelectMany(script => script.Hash).ToArray());
+                return sha1.ComputeHash(resources.SelectMany(resource => resource.Hash).ToArray());
             }
         }
 

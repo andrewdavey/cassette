@@ -26,10 +26,16 @@ namespace Knapsack
                     from module in moduleContainer.Modules
                     select new XElement("module",
                         new XAttribute("path", module.Path),
-                        from script in module.Resources
-                        select new XElement("script",
-                            new XAttribute("path", script.Path),
-                            new XAttribute("hash", script.Hash.ToHexString())
+
+                        from resource in module.Resources
+                        select new XElement("resource",
+                            new XAttribute("path", resource.Path),
+                            new XAttribute("hash", resource.Hash.ToHexString())
+                        ),
+
+                        from reference in module.References
+                        select new XElement("reference",
+                            new XAttribute("path", reference)
                         )
                     )
                 )

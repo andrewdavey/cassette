@@ -27,8 +27,8 @@ namespace Knapsack
 
             modulesByScriptPath = (
                 from module in this.modules
-                from script in module.Resources
-                select new { script.Path, module }
+                from resource in module.Resources
+                select new { resource.Path, module }
             ).ToDictionary(x => x.Path, x => x.module, pathComparer);
         }
 

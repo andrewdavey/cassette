@@ -7,7 +7,8 @@ using Knapsack.Utilities;
 namespace Knapsack.Web
 {
     /// <summary>
-    /// Enables a page to reference client scripts and generates all the required script elements.
+    /// Enables a page to reference client scripts and stylesheets.
+    /// The required script and link elements can then be generated.
     /// </summary>
     public class PageHelper : IPageHelper
     {
@@ -29,7 +30,7 @@ namespace Knapsack.Web
         /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
         /// </summary>
         /// <param name="scriptPath">The application relative path to the script file.</param>
-        public void AddScriptReference(string scriptPath)
+        public void ReferenceScript(string scriptPath)
         {
             scriptReferenceBuilder.AddReference(scriptPath);
         }
@@ -38,10 +39,10 @@ namespace Knapsack.Web
         /// Records that the calling view requires the given stylesheet. This does not render any
         /// HTML. Call <see cref="RenderStylesheets"/> to actually output the link elements.
         /// </summary>
-        /// <param name="scriptPath">The application relative path to the stylesheet file.</param>
-        public void AddStylesheet(string cssPath)
+        /// <param name="stylesheetPath">The application relative path to the stylesheet file.</param>
+        public void ReferenceStylesheet(string stylesheetPath)
         {
-            stylesheetReferenceBuilder.AddReference(cssPath);
+            stylesheetReferenceBuilder.AddReference(stylesheetPath);
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace Knapsack.Web
         /// <summary>
         /// Creates HTML link elements for all required stylesheets and their dependencies.
         /// </summary>
-        public IHtmlString RenderStyleLinks()
+        public IHtmlString RenderStylesheetLinks()
         {
             var cssUrls = useModules
                 ? ReleaseStylesheetUrls()
@@ -148,10 +149,10 @@ namespace Knapsack.Web
                 .Select(m => "~/knapsack.axd/styles/" + m.Path + "_" + m.Hash.ToHexString());
         }
 
-        string AppRelativeStylesheetUrl(Resource script)
+        string AppRelativeStylesheetUrl(Resource stylesheet)
         {
-            // TODO: Check for .less and .sass files COMMENT: THIS MAKES THE PROGRAM MORE SASSY
-            return "~/" + script.Path;
+            // TODO: Check for .less and .sass files
+            return "~/" + stylesheet.Path;
         }
     }
 }

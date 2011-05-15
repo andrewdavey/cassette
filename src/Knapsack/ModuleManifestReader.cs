@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using System.IO.IsolatedStorage;
 using Knapsack.Utilities;
 
 namespace Knapsack
@@ -28,7 +27,7 @@ namespace Knapsack
         {
             return new Module(
                 moduleElement.Attribute("path").Value,
-                moduleElement.Elements("script").Select(ReadScriptElement).ToArray(),
+                moduleElement.Elements("resource").Select(ReadScriptElement).ToArray(),
                 moduleElement.Elements("reference").Select(ReadReferenceElement).ToArray()
             );
         }

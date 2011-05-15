@@ -12,67 +12,67 @@ namespace Knapsack
     public class UnresolvedModule
     {
         readonly string path;
-        readonly Resource[] scripts;
-        readonly string[] externalScriptReferences;
+        readonly Resource[] resources;
+        readonly string[] externalReferences;
 
-        public UnresolvedModule(string path, UnresolvedResource[] scripts)
+        public UnresolvedModule(string path, UnresolvedResource[] resources)
         {
             this.path = path;
 
-            var pathsInModule = new HashSet<string>(scripts.Select(s => s.Path));
-            var partition = PartitionScriptReferences(scripts, pathsInModule);
+            var pathsInModule = new HashSet<string>(resources.Select(resource => resource.Path));
+            var partition = PartitionResourceReferences(resources, pathsInModule);
             // Store all the references to external scripts.
-            this.externalScriptReferences = partition.SelectMany(p => p.Item2).Distinct().ToArray();
+            this.externalReferences = partition.SelectMany(p => p.Item2).Distinct().ToArray();
             // The scripts now only contain references found in this module.
-            this.scripts = OrderScriptsByDependency(partition.Select(p => p.Item1).ToArray());
+            this.resources = OrderScriptsByDependency(partition.Select(p => p.Item1).ToArray());
         }
 
-        public Module Resolve(Func<string, string> getModulePathContainingScript)
+        public Module Resolve(Func<string, string> getModulePathContainingResource)
         {
-            var moduleReferences = externalScriptReferences
+            var moduleReferences = externalReferences
                 .Select(
-                    p => getModulePathContainingScript(p)
+                    externalPath => getModulePathContainingResource(externalPath)
                 )
                 .Distinct()
                 .ToArray();
 
-            return new Module(path, scripts, moduleReferences);
+            return new Module(path, resources, moduleReferences);
         }
 
         public static IEnumerable<Module> ResolveAll(IEnumerable<UnresolvedModule> unresolvedModules)
         {
-            var modulesByScriptPath = (
+            var modulesByResourcePath = (
                 from module in unresolvedModules
-                from script in module.scripts
-                select new { script.Path, module }
+                from resource in module.resources
+                select new { resource.Path, module }
             ).ToDictionary(x => x.Path, x => x.module.path, StringComparer.OrdinalIgnoreCase);
 
             var modules = unresolvedModules.Select(
-                m => m.Resolve(scriptPath => modulesByScriptPath[scriptPath])
+                m => m.Resolve(resourcePath => modulesByResourcePath[resourcePath])
             );
 
             return modules;
         }
 
-        Tuple<Resource, string[]>[] PartitionScriptReferences(UnresolvedResource[] scripts, HashSet<string> pathsInModule)
+        Tuple<Resource, string[]>[] PartitionResourceReferences(UnresolvedResource[] resources, HashSet<string> pathsInModule)
         {
-            return scripts.Select(
-                s => s.Resolve(pathsInModule.Contains)
+            return resources.Select(
+                resource => resource.Resolve(pathsInModule.Contains)
             ).ToArray();
         }
 
-        Resource[] OrderScriptsByDependency(Resource[] scripts)
+        Resource[] OrderScriptsByDependency(Resource[] resources)
         {
-            var scriptsByPath = scripts.ToDictionary(s => s.Path, StringComparer.OrdinalIgnoreCase);
-            // Create a graph where each node is a script path
-            // and directed edges represent references between scripts.
+            var resourcesByPath = resources.ToDictionary(resource => resource.Path, StringComparer.OrdinalIgnoreCase);
+            // Create a graph where each node is a resource path
+            // and directed edges represent references between resources.
             var graph = new Graph<string>(
-                scriptsByPath.Keys, 
-                path => scriptsByPath[path].References
+                resourcesByPath.Keys, 
+                path => resourcesByPath[path].References
             );
             var sortedPaths = graph.TopologicalSort();
 
-            return sortedPaths.Select(path => scriptsByPath[path]).ToArray();
+            return sortedPaths.Select(path => resourcesByPath[path]).ToArray();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 namespace Knapsack
 {
     /// <summary>
-    /// An unresolved script's references are as they appear in the script source.
+    /// An unresolved resources's references as they appear in the file.
     /// </summary>
     public class UnresolvedResource
     {
@@ -36,8 +36,8 @@ namespace Knapsack
         }
 
         /// <summary>
-        /// Creates a new Script with only module-internal, application relative script references.
-        /// The tuple also contains any module-external references used by the script.
+        /// Creates a new Resource with only module-internal, application relative references.
+        /// The tuple also contains any module-external references used by the resource.
         /// </summary>
         public Tuple<Resource, string[]> Resolve(Func<string, bool> isInternalPath)
         {

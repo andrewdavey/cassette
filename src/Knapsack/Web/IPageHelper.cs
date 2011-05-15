@@ -5,9 +5,9 @@ namespace Knapsack.Web
 {
     public interface IPageHelper
     {
-        void AddScriptReference(string scriptPath);
-        void AddStylesheet(string cssPath);
+        void ReferenceScript(string scriptPath);
+        void ReferenceStylesheet(string stylesheetPath);
         IHtmlString RenderScripts();
-        IHtmlString RenderStyleLinks();
+        IHtmlString RenderStylesheetLinks();
     }
 }

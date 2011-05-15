@@ -7,18 +7,23 @@ namespace Knapsack.Web.Mvc
     public static class HtmlHelperExtensions
     {
         /// <summary>
-        /// Records that the calling view requires the given script path. This does not render any
+        /// Records that the calling view requires the given script. This does not render any
         /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
         /// </summary>
         /// <param name="scriptPath">The application relative path to the script file.</param>
-        public static void AddScriptReference(this HtmlHelper html, string scriptPath)
+        public static void ReferenceScript(this HtmlHelper html, string scriptPath)
         {
-            CreatePageHelper(html).AddScriptReference(scriptPath);
+            CreatePageHelper(html).ReferenceScript(scriptPath);
         }
 
-        public static void AddStylesheet(this HtmlHelper html, string cssPath)
+        /// <summary>
+        /// Records that the calling view requires the given stylesheet. This does not render any
+        /// HTML. Call <see cref="RenderStylesheetLinks"/> to actually output the link elements.
+        /// </summary>
+        /// <param name="stylesheetPath">The application relative path to the stylesheet file.</param>
+        public static void ReferenceStylesheet(this HtmlHelper html, string stylesheetPath)
         {
-            CreatePageHelper(html).AddStylesheet(cssPath);
+            CreatePageHelper(html).ReferenceStylesheet(stylesheetPath);
         }
 
         /// <summary>
@@ -29,9 +34,12 @@ namespace Knapsack.Web.Mvc
            return CreatePageHelper(html).RenderScripts();
         }
 
-        public static IHtmlString RenderStyleLinks(this HtmlHelper html)
+        /// <summary>
+        /// Creates HTML link elements for all required stylesheets and their dependencies.
+        /// </summary>
+        public static IHtmlString RenderStylesheetLinks(this HtmlHelper html)
         {
-            return CreatePageHelper(html).RenderStyleLinks();
+            return CreatePageHelper(html).RenderStylesheetLinks();
         }
 
         // Allow unit tests to change this implementation.

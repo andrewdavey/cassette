@@ -1,18 +1,16 @@
 ﻿@{
-    Html.AddStylesheet("styles/base/reset.css");
-    Html.AddStylesheet("styles/base/typography.css");
-    Html.AddStylesheet("styles/app/site.css");
+    Html.ReferenceStylesheet("styles/base/reset.css");
+    Html.ReferenceStylesheet("styles/base/typography.css");
+    Html.ReferenceStylesheet("styles/app/site.css");
 }
 <!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
-    @Html.RenderStyleLinks()
+    @Html.RenderStylesheetLinks()
 </head>
-
 <body>
     @RenderBody()
-
     @Html.RenderScripts()
 </body>
 </html>

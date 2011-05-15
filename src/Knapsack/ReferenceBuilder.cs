@@ -15,10 +15,10 @@ namespace Knapsack
             this.moduleContainer = moduleContainer;
         }
 
-        public void AddReference(string scriptPath)
+        public void AddReference(string resourcePath)
         {
-            var module = moduleContainer.FindModuleContainingResource(scriptPath);
-            if (module == null) throw new ArgumentException("Script not found: " + scriptPath);
+            var module = moduleContainer.FindModuleContainingResource(resourcePath);
+            if (module == null) throw new ArgumentException("Resource not found: " + resourcePath);
             modules.Add(module);
         }
 
