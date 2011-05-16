@@ -35,9 +35,12 @@ namespace Knapsack
         public void AddModuleForEachSubdirectoryOf(string directoryRelativeToRootDirectory)
         {
             var fullPath = rootDirectory + directoryRelativeToRootDirectory;
-            foreach (var path in Directory.GetDirectories(fullPath))
+            if (Directory.Exists(fullPath))
             {
-                AddModule(path.Substring(rootDirectory.Length));
+                foreach (var path in Directory.GetDirectories(fullPath))
+                {
+                    AddModule(path.Substring(rootDirectory.Length));
+                }
             }
         }
 

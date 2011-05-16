@@ -10,7 +10,7 @@
                 On => Modules are always used
                 Off => Modules are not used
         -->
-        <modules>
+        <scripts>
             <!-- By default a module is created for each folder in "~/scripts/"
                  i.e. <add path="scripts/*"/>
             
@@ -19,7 +19,10 @@
                  <add path="scripts/libs"/>
                  <add path="scripts/widgets"/>
             -->
-        </modules>
+        </scripts>
+        <styles>
+            <!-- If empty, this convention is used: <add path="styles/*" />-->
+        </styles>
     </knapsack>
     
     <system.web>

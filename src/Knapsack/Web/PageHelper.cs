@@ -85,12 +85,11 @@ namespace Knapsack.Web
 
         IEnumerable<string> DebugScriptUrls()
         {
-            var cacheBreaker = "nocache=" + DateTime.Now.Ticks.ToString();
             return scriptReferenceBuilder
                 .GetRequiredModules()
                 .SelectMany(m => m.Resources)
-                .Select(AppRelativeScriptUrl)
-                .Select(url => url + (url.Contains('?') ? "&" : "?") + cacheBreaker);
+                .Select(r => new { url = AppRelativeScriptUrl(r), hash = r.Hash.ToHexString() })
+                .Select(r => r.url + (r.url.Contains('?') ? "&" : "?") + r.hash);
         }
 
         string AppRelativeScriptUrl(Resource script)
@@ -129,12 +128,11 @@ namespace Knapsack.Web
 
         IEnumerable<string> DebugStylesheetUrls()
         {
-            var cacheBreaker = "nocache=" + DateTime.Now.Ticks.ToString();
             return stylesheetReferenceBuilder
                 .GetRequiredModules()
                 .SelectMany(m => m.Resources)
-                .Select(AppRelativeStylesheetUrl)
-                .Select(url => url + (url.Contains('?') ? "&" : "?") + cacheBreaker);
+                .Select(r => new { url = AppRelativeStylesheetUrl(r), hash = r.Hash.ToHexString() })
+                .Select(r => r.url + (r.url.Contains('?') ? "&" : "?") + r.hash);
         }
 
         /// <summary>
