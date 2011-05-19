@@ -54,7 +54,7 @@ namespace Knapsack.Web
             builder.AddModule("lib");
             builder.AddModule("app");
             scriptModuleContainer = builder.Build();
-            scriptModuleContainer.UpdateStorage();
+            scriptModuleContainer.UpdateStorage("scripts.xml");
 
             var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory);
 

@@ -107,7 +107,7 @@ namespace Knapsack
             builder.AddModule("app");
             builder.AddModule("junk");
             var oldContainer = builder.Build();
-            oldContainer.UpdateStorage();
+            oldContainer.UpdateStorage("scripts.xml");
 
             // Now simulate changes to the modules.
             File.WriteAllText(Path.Combine(rootDirectory, "lib", "knockout.js"), 
@@ -119,7 +119,7 @@ namespace Knapsack
             builder.AddModule("lib");
             builder.AddModule("app");
             container = builder.Build();
-            container.UpdateStorage();
+            container.UpdateStorage("scripts.xml");
         }
 
         [Fact]

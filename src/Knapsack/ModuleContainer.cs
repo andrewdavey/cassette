@@ -8,7 +8,7 @@ using Knapsack.Utilities;
 
 namespace Knapsack
 {
-    public class ModuleContainer
+    public class ModuleContainer : IEnumerable<Module>
     {
         readonly Module[] modules;
         readonly ModuleManifest manifest;
@@ -16,7 +16,6 @@ namespace Knapsack
         readonly Func<TextWriter, IModuleWriter> createModuleWriter;
         readonly Dictionary<string, Module> modulesByScriptPath;
         readonly StringComparer pathComparer = StringComparer.OrdinalIgnoreCase;
-        readonly string manifestFilename = "manifest.xml";
 
         public ModuleContainer(IEnumerable<Module> modules, IsolatedStorageFile storage, Func<TextWriter, IModuleWriter> createModuleWriter)
         {
@@ -58,19 +57,19 @@ namespace Knapsack
             return storage.OpenFile(ModuleFilename(module), FileMode.Open, FileAccess.Read);
         }
 
-        public void UpdateStorage()
+        public void UpdateStorage(string manifestFilename)
         {
-            var cachedManifest = ReadManifestFromStorage() ?? CreateEmptyManifest();
+            var cachedManifest = ReadManifestFromStorage(manifestFilename) ?? CreateEmptyManifest();
             var differences = manifest.CompareTo(cachedManifest);
 
             if (differences.Length > 0)
             {
                 ApplyDifferencesToStorage(differences);
-                WriteManifestToStorage();
+                WriteManifestToStorage(manifestFilename);
             }
         }
 
-        ModuleManifest ReadManifestFromStorage()
+        ModuleManifest ReadManifestFromStorage(string manifestFilename)
         {
             if (!storage.FileExists(manifestFilename)) return null;
 
@@ -86,7 +85,7 @@ namespace Knapsack
             return new ModuleManifest(Enumerable.Empty<Module>());
         }
 
-        void WriteManifestToStorage()
+        void WriteManifestToStorage(string manifestFilename)
         {
             using (var stream = storage.OpenFile(manifestFilename, FileMode.Create, FileAccess.Write))
             {
@@ -136,6 +135,16 @@ namespace Knapsack
         string ModuleFilename(Module module)
         {
             return module.Hash.ToHexString();
+        }
+
+        public IEnumerator<Module> GetEnumerator()
+        {
+            foreach (var module in modules) yield return module;
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return modules.GetEnumerator();
         }
     }
 }

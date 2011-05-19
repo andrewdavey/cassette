@@ -60,8 +60,8 @@ namespace Knapsack.Web
                 "lib", 
                 new[] 
                 {
-                    new Resource("lib/test-1.js", new byte[] { }, new string[0]),
-                    new Resource("lib/test-2.js", new byte[] { }, new string[0]),
+                    new Resource("lib/test-1.js", new byte[] { 1,2,3 }, new string[0]),
+                    new Resource("lib/test-2.js", new byte[] { 4,5,6 }, new string[0]),
                 },
                 new string[0]
             );
@@ -74,8 +74,8 @@ namespace Knapsack.Web
 
             Regex.IsMatch(
                 html.ToHtmlString(), 
-                @"<script src=""/lib/test-1\.js\?nocache=\d+"" type=""text/javascript""></script>\r\n"+
-                @"<script src=""/lib/test-2\.js\?nocache=\d+"" type=""text/javascript""></script>"
+                @"<script src=""/lib/test-1\.js\?[a-z0-9]+"" type=""text/javascript""></script>\r\n"+
+                @"<script src=""/lib/test-2\.js\?[a-z0-9]+"" type=""text/javascript""></script>"
             ).ShouldBeTrue();
         }
 
@@ -87,7 +87,7 @@ namespace Knapsack.Web
                 "lib",
                 new[] 
                 {
-                    new Resource("lib/test.coffee", new byte[] { }, new string[0])
+                    new Resource("lib/test.coffee", new byte[] { 1,2,3 }, new string[0])
                 },
                 new string[0]
             );
@@ -100,7 +100,7 @@ namespace Knapsack.Web
 
             Regex.IsMatch(
                 html.ToHtmlString(),
-                @"<script src=""/knapsack.axd/coffee/lib/test\?nocache=\d+"" type=""text/javascript""></script>"
+                @"<script src=""/knapsack.axd/coffee/lib/test\?[a-z0-9]+"" type=""text/javascript""></script>"
             ).ShouldBeTrue();
         }
 

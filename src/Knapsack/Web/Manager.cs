@@ -33,8 +33,8 @@ namespace Knapsack.Web
             scriptModuleContainer = BuildScriptModuleContainer(storage, configuration);
             stylesheetModuleContainer = BuildStylesheetModuleContainer(storage, configuration);
 
-            scriptModuleContainer.UpdateStorage();
-            stylesheetModuleContainer.UpdateStorage();
+            scriptModuleContainer.UpdateStorage("scripts.xml");
+            stylesheetModuleContainer.UpdateStorage("stylesheets.xml");
         }
 
         public KnapsackSection Configuration
