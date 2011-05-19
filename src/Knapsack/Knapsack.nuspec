@@ -10,7 +10,7 @@
         <description>Automatically build JavaScript and CSS modules based on the dependencies between files. CoffeeScript is also supported.</description>
         <tags>web javascript coffeescript</tags>
         <dependencies>
-            <dependency id="AjaxMin"/>
+            <dependency id="AjaxMin" version="4.13" />
         </dependencies>
     </metadata>
     
