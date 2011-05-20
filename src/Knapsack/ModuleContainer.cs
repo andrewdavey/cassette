@@ -100,7 +100,6 @@ namespace Knapsack
             {
                 switch (difference.Type)
                 {
-                    case ModuleDifferenceType.Changed:
                     case ModuleDifferenceType.Added:
                         WriteModuleToStorage(difference.Module);
                         break;
@@ -134,7 +133,9 @@ namespace Knapsack
 
         string ModuleFilename(Module module)
         {
-            return module.Hash.ToHexString();
+            var name = module.Path.Replace('\\', '_').Replace('/', '_');
+            var hash = module.Hash.ToHexString();
+            return name + "_" + hash;
         }
 
         public IEnumerator<Module> GetEnumerator()

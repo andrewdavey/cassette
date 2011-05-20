@@ -58,7 +58,7 @@ namespace Knapsack.Web
 
             var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory);
 
-            handler = new KnapsackHttpHandler(scriptModuleContainer, stylesheetModuleContainer, coffeeScriptCompiler);
+            handler = new KnapsackHttpHandler(() => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler);
 
             httpContext = new Mock<HttpContextBase>();
             httpRequest = new Mock<HttpRequestBase>();

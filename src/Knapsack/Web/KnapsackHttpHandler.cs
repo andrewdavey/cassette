@@ -11,19 +11,19 @@ namespace Knapsack.Web
     /// </summary>
     public class KnapsackHttpHandler : IHttpHandler
     {
-        readonly ModuleContainer scriptModuleContainer;
-        readonly ModuleContainer stylesheetModuleContainer;
+        readonly Func<ModuleContainer> scriptModuleContainer;
+        readonly Func<ModuleContainer> stylesheetModuleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
         public KnapsackHttpHandler() : this(
-            KnapsackHttpModule.Manager.ScriptModuleContainer,
-            KnapsackHttpModule.Manager.StylesheetModuleContainer,
+            () => KnapsackHttpModule.Manager.ScriptModuleContainer,
+            () => KnapsackHttpModule.Manager.StylesheetModuleContainer,
             KnapsackHttpModule.Manager.CoffeeScriptCompiler
         )
         {
         }
 
-        public KnapsackHttpHandler(ModuleContainer scriptModuleContainer, ModuleContainer stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler)
+        public KnapsackHttpHandler(Func<ModuleContainer> scriptModuleContainer, Func<ModuleContainer> stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.scriptModuleContainer = scriptModuleContainer;
             this.stylesheetModuleContainer = stylesheetModuleContainer;
@@ -86,12 +86,12 @@ namespace Knapsack.Web
 
         void ProcessScriptModuleRequest(HttpContextBase context)
         {
-            ProcessModuleRequest(context, scriptModuleContainer, "text/javascript");
+            ProcessModuleRequest(context, scriptModuleContainer(), "text/javascript");
         }
 
         void ProcessStylesheetModuleRequest(HttpContextBase context)
         {
-            ProcessModuleRequest(context, stylesheetModuleContainer, "text/css");
+            ProcessModuleRequest(context, stylesheetModuleContainer(), "text/css");
         }
 
         void ProcessModuleRequest(HttpContextBase context, ModuleContainer container, string contentType)
@@ -114,7 +114,7 @@ namespace Knapsack.Web
                 context.Response.ContentType = contentType;
                 SetLongLivedCacheHeaders(context.Response.Cache, serverETag);
                 // NOTE: If people want compression then tell IIS to do it using config!
-                WriteModuleContentToResponse(module, context.Response);
+                WriteModuleContentToResponse(module, container, context.Response);
             }
         }
 
@@ -198,9 +198,9 @@ namespace Knapsack.Web
             cache.SetExpires(DateTime.UtcNow.AddYears(1));
         }
 
-        void WriteModuleContentToResponse(Module module, HttpResponseBase response)
+        void WriteModuleContentToResponse(Module module, ModuleContainer moduleContainer, HttpResponseBase response)
         {
-            using (var stream = scriptModuleContainer.OpenModuleFile(module))
+            using (var stream = moduleContainer.OpenModuleFile(module))
             {
                 stream.CopyTo(response.OutputStream);
             }

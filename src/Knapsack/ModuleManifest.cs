@@ -26,17 +26,25 @@ namespace Knapsack
             var oldModules = new HashSet<Module>(other.Modules, modulePathComparer);
 
             var addedModules = currentModules.Except(oldModules, modulePathComparer);
-            var deletedModules = oldModules.Except(currentModules, modulePathComparer);
-            var changedModules = oldModules.Zip(currentModules, (old, current) => new { old, current })
-                .Where(x => modulePathComparer.Equals(x.old, x.current))
-                .Where(x => x.old.Equals(x.current) == false)
-                .Select(c => c.current);
-
             var added = addedModules.Select(m => new ModuleDifference(m, ModuleDifferenceType.Added));
+
+            var deletedModules = oldModules.Except(currentModules, modulePathComparer);            
             var deleted = deletedModules.Select(m => new ModuleDifference(m, ModuleDifferenceType.Deleted));
-            var changed = changedModules.Select(m => new ModuleDifference(m, ModuleDifferenceType.Changed));
-            
-            return added.Concat(deleted).Concat(changed).ToArray();
+
+            // Changed module means old and current have the same path, but different hash.
+            // Use Join to pair up the modules by path.
+            // Then use Where to filter out those with same hash.
+            var changedModules = oldModules.Join(currentModules, m => m.Path, m => m.Path, (old, current) => new { old, current })
+                .Where(c => c.current.Equals(c.old) == false);
+            // So deleted the old modules and add the current modules.
+            var changes = changedModules.SelectMany(c => new[] 
+                { 
+                    new ModuleDifference(c.old, ModuleDifferenceType.Deleted), 
+                    new ModuleDifference(c.current, ModuleDifferenceType.Added) 
+                }
+            );
+
+            return added.Concat(deleted).Concat(changes).ToArray();
         }
 
         class ModulePathComparer : IEqualityComparer<Module>

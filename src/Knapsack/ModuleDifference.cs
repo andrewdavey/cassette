@@ -28,7 +28,6 @@ namespace Knapsack
 
     public enum ModuleDifferenceType
     {
-        Changed,
         Added,
         Deleted
     }

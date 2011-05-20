@@ -18,7 +18,7 @@ namespace Knapsack
 
             this.path = path;
             this.resources = resources;
-            this.hash = HashScriptHashes(resources);
+            this.hash = HashResourceHashes(resources);
             this.moduleReferences = moduleReferences.Select(r => r).ToArray();
         }
 
@@ -59,7 +59,7 @@ namespace Knapsack
             return path.GetHashCode() ^ hash.GetHashCode();
         }
 
-        byte[] HashScriptHashes(Resource[] resources)
+        byte[] HashResourceHashes(Resource[] resources)
         {
             using (var sha1 = SHA1.Create())
             {
