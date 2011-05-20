@@ -24,13 +24,13 @@ namespace Knapsack
             if (File.Exists(manifestFilename))
             {
                 resources = LoadResourcesInManifest(manifestFilename, modulePath);
+                return new UnresolvedModule(relativeModulePath, resources.ToArray(), isResourceOrderFixed: true);
             }
             else
             {
                 resources = LoadResourcesByFindingFiles(modulePath);
+                return new UnresolvedModule(relativeModulePath, resources.ToArray(), isResourceOrderFixed: false);
             }
-
-            return new UnresolvedModule(relativeModulePath, resources.ToArray());
         }
 
         protected virtual bool ShouldNotIgnoreResource(string filename)

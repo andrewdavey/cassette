@@ -15,16 +15,27 @@ namespace Knapsack
         readonly Resource[] resources;
         readonly string[] externalReferences;
 
-        public UnresolvedModule(string path, UnresolvedResource[] resources)
+        /// <param name="path">Application relative path to the module directory.</param>
+        /// <param name="resources">All the unresolved resources found in the module.</param>
+        /// <param name="isResourceOrderFixed">When true, the resources will not be sorted by their dependency ordering.</param>
+        public UnresolvedModule(string path, UnresolvedResource[] resources, bool isResourceOrderFixed)
         {
             this.path = path;
 
             var pathsInModule = new HashSet<string>(resources.Select(resource => resource.Path));
             var partition = PartitionResourceReferences(resources, pathsInModule);
-            // Store all the references to external scripts.
+            // Store all the references to external resources.
             this.externalReferences = partition.SelectMany(p => p.Item2).Distinct().ToArray();
-            // The scripts now only contain references found in this module.
-            this.resources = OrderScriptsByDependency(partition.Select(p => p.Item1).ToArray());
+            // The resources now only contain references found in this module.
+            var resolvedResources = partition.Select(p => p.Item1).ToArray();
+            if (isResourceOrderFixed)
+            {
+                this.resources = resolvedResources;
+            }
+            else
+            {
+                this.resources = OrderScriptsByDependency(resolvedResources);
+            }
         }
 
         public Module Resolve(Func<string, string> getModulePathContainingResource)

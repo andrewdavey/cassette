@@ -21,7 +21,8 @@ namespace Knapsack
 
             unresolvedModule = new UnresolvedModule(
                 @"scripts/module-a",
-                new[] { scriptA, scriptB, scriptC }
+                new[] { scriptA, scriptB, scriptC },
+                false
             );
 
             module = unresolvedModule.Resolve(s => null);
@@ -75,8 +76,10 @@ namespace Knapsack
                 new byte[0],
                 new string[] { }
             );
-            unresolvedModule = new UnresolvedModule(@"scripts/module-a",
-                new[] { script1, script2 }
+            unresolvedModule = new UnresolvedModule(
+                @"scripts/module-a",
+                new[] { script1, script2 },
+                false
             );
 
             module = unresolvedModule.Resolve(s => @"scripts/module-a");
@@ -117,7 +120,8 @@ namespace Knapsack
 
             unresolvedModule = new UnresolvedModule(
                 @"scripts/module-a",
-                new[] { script }
+                new[] { script },
+                false
             );
 
             module = unresolvedModule.Resolve(s => @"scripts/module-b");
@@ -136,13 +140,54 @@ namespace Knapsack
         }
     }
 
+    public class UnresolvedModule_with_fixed_resource_order
+    {
+        readonly UnresolvedModule unresolvedModule;
+        readonly Module module;
+
+        public UnresolvedModule_with_fixed_resource_order()
+        {
+            // Create scripts with some dependencies declared.
+            var scriptA = CreateScript("a", "c");
+            var scriptB = CreateScript("b");
+            var scriptC = CreateScript("c", "b");
+            // Declared dependency chain: b <- c <- a 
+
+            unresolvedModule = new UnresolvedModule(
+                @"scripts/module-a",
+                new[] { scriptA, scriptB, scriptC },
+                isResourceOrderFixed: true
+            );
+
+            module = unresolvedModule.Resolve(s => null);
+        }
+
+        [Fact]
+        public void Original_resource_ordering_is_maintained()
+        {
+            module.Resources
+                .Select(r => r.Path)
+                .SequenceEqual(new[] { "scripts/module-a/a.js", "scripts/module-a/b.js", "scripts/module-a/c.js" })
+                .ShouldBeTrue();
+        }
+
+        UnresolvedResource CreateScript(string name, params string[] references)
+        {
+            return new UnresolvedResource(
+                @"scripts/module-a/" + name + ".js",
+                new byte[0],
+                references.Select(r => r + ".js").ToArray()
+            );
+        }
+    }
+
     public class UnresolvedModule_ResolveAll
     {
         [Fact]
         public void Returns_resolved_modules()
         {
-            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") });
-            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/foo") });
+            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") }, false);
+            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/foo") }, false);
             
             var modules = UnresolvedModule.ResolveAll(new[] { moduleA, moduleB }).ToArray();
 
