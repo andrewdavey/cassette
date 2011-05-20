@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using Should;
 using Xunit;
+using System.Text;
 
 namespace Knapsack
 {
@@ -19,7 +20,7 @@ namespace Knapsack
         {
             using (var sourceStream = CreateSourceStream())
             {
-                parser = new UnresolvedCssParser();
+                parser = new UnresolvedCssParser("/");
                 stylesheet = parser.Parse(sourceStream, sourcePath);
             }
         }
@@ -34,6 +35,13 @@ namespace Knapsack
             return sourceStream;
         }
 
+        void AddApplicationRootBytesToEndOfStream(Stream stream)
+        {
+            stream.Seek(0, SeekOrigin.End);
+            var bytes = Encoding.Unicode.GetBytes("/");
+            stream.Write(bytes, 0, bytes.Length);
+        }
+
         [Fact]
         public void stylesheet_Path_is_sourcePath()
         {
@@ -41,13 +49,15 @@ namespace Knapsack
         }
 
         [Fact]
-        public void stylesheet_Hash_is_SHA1_of_source()
+        public void stylesheet_Hash_is_SHA1_of_source_and_application_root()
         {
             byte[] expectedHash;
             using (var sha1 = SHA1.Create())
             {
                 using (var stream = CreateSourceStream())
                 {
+                    AddApplicationRootBytesToEndOfStream(stream);
+                    stream.Position = 0;
                     expectedHash = sha1.ComputeHash(stream);
                 }
             }

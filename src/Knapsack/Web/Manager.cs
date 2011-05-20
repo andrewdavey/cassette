@@ -29,6 +29,7 @@ namespace Knapsack.Web
 
             // Module files will be cached in isolated storage.
             storage = IsolatedStorageFile.GetUserStoreForDomain();
+            
             coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
             scriptModuleContainer = BuildScriptModuleContainer(storage, configuration);
             stylesheetModuleContainer = BuildStylesheetModuleContainer(storage, configuration);
@@ -60,7 +61,7 @@ namespace Knapsack.Web
         KnapsackSection LoadConfigurationFromWebConfig()
         {
             return (KnapsackSection)WebConfigurationManager.GetSection("knapsack")
-                   ?? new KnapsackSection(); // Create default config is none defined.
+                   ?? new KnapsackSection(); // Create default config if none defined.
         }
 
         ModuleContainer BuildScriptModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
