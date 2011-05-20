@@ -56,7 +56,7 @@ namespace Knapsack.Web
             scriptModuleContainer = builder.Build();
             scriptModuleContainer.UpdateStorage("scripts.xml");
 
-            var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory);
+            var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory, "/");
 
             handler = new KnapsackHttpHandler(() => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler);
 

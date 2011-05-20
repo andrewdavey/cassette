@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Styles\app\images\accept.png" />
     <Content Include="Styles\app\site.css" />
     <Content Include="Scripts\base\namespace.js" />
     <Content Include="Scripts\lib\module.txt" />

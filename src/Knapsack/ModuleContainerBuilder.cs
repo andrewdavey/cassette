@@ -14,17 +14,17 @@ namespace Knapsack
         public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory)
         {
             this.storage = storage;
-            this.rootDirectory = EnsureRootDirectoryEndsWithSlash(rootDirectory);
+            this.rootDirectory = EnsureDirectoryEndsWithSlash(rootDirectory);
         }
 
-        string EnsureRootDirectoryEndsWithSlash(string rootDirectory)
+        protected string EnsureDirectoryEndsWithSlash(string directory)
         {
-            var last = rootDirectory.Last();
+            var last = directory.Last();
             if (last != Path.DirectorySeparatorChar && last != Path.AltDirectorySeparatorChar)
             {
-                rootDirectory += "/";
+                directory += "/";
             }
-            return rootDirectory;
+            return directory;
         }
 
         public void AddModule(string directoryRelativeToRootDirectory)

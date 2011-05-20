@@ -5,9 +5,12 @@ namespace Knapsack
 {
     public class StylesheetModuleContainerBuilder : ModuleContainerBuilder
     {
-        public StylesheetModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory)
+        readonly string applicationRoot;
+
+        public StylesheetModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory, string applicationRoot)
             : base(storage, rootDirectory)
         {
+            this.applicationRoot = EnsureDirectoryEndsWithSlash(applicationRoot);
         }
 
         public override ModuleContainer Build()
@@ -18,7 +21,7 @@ namespace Knapsack
             return new ModuleContainer(
                 modules, 
                 storage, 
-                textWriter => new StylesheetModuleWriter(textWriter, rootDirectory, LoadFile)
+                textWriter => new StylesheetModuleWriter(textWriter, rootDirectory, applicationRoot, LoadFile)
             );
         }
     }

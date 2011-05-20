@@ -59,8 +59,7 @@ namespace Knapsack.Web
 
         KnapsackSection LoadConfigurationFromWebConfig()
         {
-            var webConfig = WebConfigurationManager.OpenWebConfiguration("~/web.config");
-            return webConfig.Sections.OfType<KnapsackSection>().FirstOrDefault()
+            return (KnapsackSection)WebConfigurationManager.GetSection("knapsack")
                    ?? new KnapsackSection(); // Create default config is none defined.
         }
 
@@ -72,7 +71,7 @@ namespace Knapsack.Web
 
         ModuleContainer BuildStylesheetModuleContainer(IsolatedStorageFile storage, KnapsackSection config)
         {
-            var builder = new StylesheetModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath);
+            var builder = new StylesheetModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, HttpRuntime.AppDomainAppVirtualPath);
             return BuildModuleContainer(builder, config.Styles, "styles");
         }
 

@@ -9,6 +9,14 @@ body
     font-family: Verdana, Tahoma, Arial, "Helvetica Neue", Helvetica, Sans-Serif;
     color: #232323;
     background-color: #fff;
+    padding: 40px;
+}
+
+#message {
+    background-image: url(images/accept.png);
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    min-height: 16px;
 }
 
 /* Styles for basic forms
