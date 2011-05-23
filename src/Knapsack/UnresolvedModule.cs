@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Knapsack.Utilities;
+using System.IO;
 
 namespace Knapsack
 {
@@ -12,6 +13,7 @@ namespace Knapsack
     public class UnresolvedModule
     {
         readonly string path;
+        readonly Tuple<Resource, string[]>[] partition;
         readonly Resource[] resources;
         readonly string[] externalReferences;
 
@@ -23,7 +25,7 @@ namespace Knapsack
             this.path = path;
 
             var pathsInModule = new HashSet<string>(resources.Select(resource => resource.Path));
-            var partition = PartitionResourceReferences(resources, pathsInModule);
+            partition = PartitionResourceReferences(resources, pathsInModule);
             // Store all the references to external resources.
             this.externalReferences = partition.SelectMany(p => p.Item2).Distinct().ToArray();
             // The resources now only contain references found in this module.
@@ -52,7 +54,7 @@ namespace Knapsack
 
         public static IEnumerable<Module> ResolveAll(IEnumerable<UnresolvedModule> unresolvedModules)
         {
-            unresolvedModules = unresolvedModules.Where(m => m.resources.Length > 0);
+            unresolvedModules = unresolvedModules.Where(m => m.resources.Length > 0).ToArray();
 
             var modulesByResourcePath = (
                 from module in unresolvedModules
@@ -61,10 +63,44 @@ namespace Knapsack
             ).ToDictionary(x => x.Path, x => x.module.path, StringComparer.OrdinalIgnoreCase);
 
             var modules = unresolvedModules.Select(
-                m => m.Resolve(resourcePath => modulesByResourcePath[resourcePath])
+                m => m.Resolve(
+                    resourcePath => FindModulePathOrThrow(modulesByResourcePath, m, resourcePath)
+                )
             );
 
             return modules;
+        }
+
+        static string FindModulePathOrThrow(Dictionary<string, string> modulesByResourcePath, UnresolvedModule m, string resourcePath)
+        {
+            string module;
+            if (modulesByResourcePath.TryGetValue(resourcePath, out module))
+            {
+                return module;
+            }
+            else
+            {
+                var referencers = string.Join(
+                    "\", \"",
+                    m.GetResourcePathsThatReferencePath(resourcePath)
+                );
+                throw new FileNotFoundException(
+                    string.Format(
+                        "The file \"{0}\" is referenced by \"{1}\", but cannot be found. " + 
+                        "Either add \"{0}\" or change the reference(s) to a file that exists.", 
+                        resourcePath, 
+                        referencers
+                    ), 
+                    resourcePath
+                );
+            }
+        }
+
+        IEnumerable<string> GetResourcePathsThatReferencePath(string resourcePath)
+        {
+            return partition
+                .Where(p => p.Item2.Contains(resourcePath))
+                .Select(p => p.Item1.Path);
         }
 
         Tuple<Resource, string[]>[] PartitionResourceReferences(UnresolvedResource[] resources, HashSet<string> pathsInModule)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 using Should;
+using System.IO;
 
 namespace Knapsack
 {
@@ -196,6 +197,21 @@ namespace Knapsack
             modules[1].References[0].ShouldEqual("module-a");
         }
 
+        [Fact]
+        public void Throws_useful_exception_when_resource_not_found()
+        {
+            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") }, false);
+            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/missing") }, false);
+
+            var exception = Assert.Throws<FileNotFoundException>(delegate
+            {
+                UnresolvedModule.ResolveAll(new[] { moduleA, moduleB }).ToArray();
+            });
+            exception.FileName.ShouldEqual("module-a/missing.js");
+            exception.Message.ShouldEqual(
+                "The file \"module-a/missing.js\" is referenced by \"module-b/bar.js\", but cannot be found. " +
+                "Either add \"module-a/missing.js\" or change the reference(s) to a file that exists.");
+        }
 
         UnresolvedResource CreateScript(string module, string name, params string[] references)
         {

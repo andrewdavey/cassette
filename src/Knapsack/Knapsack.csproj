@@ -98,6 +98,7 @@
     <Compile Include="Web\KnapsackHttpModule.cs" />
     <Compile Include="Web\Manager.cs" />
     <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
+    <Compile Include="Web\ExceptionCachedManager.cs" />
     <Compile Include="Web\PageHelper.cs" />
   </ItemGroup>
   <ItemGroup>

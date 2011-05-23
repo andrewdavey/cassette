@@ -6,5 +6,6 @@
         Knapsack.Configuration.KnapsackSection Configuration { get; }
         ModuleContainer ScriptModuleContainer { get; }
         ModuleContainer StylesheetModuleContainer { get; }
+        System.Web.Caching.CacheDependency CreateCacheDependency();
     }
 }
