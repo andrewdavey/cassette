@@ -23,6 +23,7 @@ namespace Knapsack
             unresolvedModule = new UnresolvedModule(
                 @"scripts/module-a",
                 new[] { scriptA, scriptB, scriptC },
+                null,
                 false
             );
 
@@ -80,6 +81,7 @@ namespace Knapsack
             unresolvedModule = new UnresolvedModule(
                 @"scripts/module-a",
                 new[] { script1, script2 },
+                null,
                 false
             );
 
@@ -122,6 +124,7 @@ namespace Knapsack
             unresolvedModule = new UnresolvedModule(
                 @"scripts/module-a",
                 new[] { script },
+                null,
                 false
             );
 
@@ -157,6 +160,7 @@ namespace Knapsack
             unresolvedModule = new UnresolvedModule(
                 @"scripts/module-a",
                 new[] { scriptA, scriptB, scriptC },
+                null,
                 isResourceOrderFixed: true
             );
 
@@ -187,8 +191,8 @@ namespace Knapsack
         [Fact]
         public void Returns_resolved_modules()
         {
-            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") }, false);
-            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/foo") }, false);
+            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") }, null, false);
+            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/foo") }, null, false);
             
             var modules = UnresolvedModule.ResolveAll(new[] { moduleA, moduleB }).ToArray();
 
@@ -200,8 +204,8 @@ namespace Knapsack
         [Fact]
         public void Throws_useful_exception_when_resource_not_found()
         {
-            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") }, false);
-            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/missing") }, false);
+            var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") }, null, false);
+            var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/missing") }, null, false);
 
             var exception = Assert.Throws<FileNotFoundException>(delegate
             {

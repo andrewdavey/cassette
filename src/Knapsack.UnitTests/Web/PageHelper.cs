@@ -39,13 +39,13 @@ namespace Knapsack.Web
         public void RenderScripts_for_single_module_when_using_modules_returns_single_script_element()
         {
             var referenceBuilder = new FakeReferenceBuilder();
-            var module = new Module("lib", new[] { new Resource("lib/test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0]);
+            var module = new Module("lib", new[] { new Resource("lib/test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0], null);
             referenceBuilder.GetRequiredModules = () => new[] { module };
             
             var useModules = true;
 
             var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
-            var html = pageHelper.RenderScripts();
+            var html = pageHelper.RenderScripts(null);
 
             html.ToHtmlString().ShouldEqual(
                 "<script src=\"/knapsack.axd/scripts/lib_" + module.Hash.ToHexString() + "\" type=\"text/javascript\"></script>"
@@ -63,14 +63,15 @@ namespace Knapsack.Web
                     new Resource("lib/test-1.js", new byte[] { 1,2,3 }, new string[0]),
                     new Resource("lib/test-2.js", new byte[] { 4,5,6 }, new string[0]),
                 },
-                new string[0]
+                new string[0],
+                null
             );
             referenceBuilder.GetRequiredModules = () => new[] { module };
             
             var useModules = false;
 
             var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
-            var html = pageHelper.RenderScripts();
+            var html = pageHelper.RenderScripts(null);
 
             Regex.IsMatch(
                 html.ToHtmlString(), 
@@ -89,14 +90,15 @@ namespace Knapsack.Web
                 {
                     new Resource("lib/test.coffee", new byte[] { 1,2,3 }, new string[0])
                 },
-                new string[0]
+                new string[0],
+                null
             );
             referenceBuilder.GetRequiredModules = () => new[] { module };
 
             var useModules = false;
 
             var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
-            var html = pageHelper.RenderScripts();
+            var html = pageHelper.RenderScripts(null);
 
             Regex.IsMatch(
                 html.ToHtmlString(),
@@ -114,7 +116,8 @@ namespace Knapsack.Web
                 { 
                     new Resource("theme/test.css", new byte[] { 1, 2, 3 }, new string[0])
                 },
-                new string[0]
+                new string[0],
+                null
             );
             referenceBuilder.GetRequiredModules = () => new[] { module };
 

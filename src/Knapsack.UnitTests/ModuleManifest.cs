@@ -16,9 +16,10 @@ namespace Knapsack
                     {
                         new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
-                    new string[0]
+                    new string[0],
+                    null
                 ),
-                new Module(@"scripts/module-b", new Resource[0], new string[0])
+                new Module(@"scripts/module-b", new Resource[0], new string[0], null)
             });
 
             var newModuleManifest = new ModuleManifest(new[] 
@@ -29,9 +30,10 @@ namespace Knapsack
                     {
                         new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
-                    new string[0]
+                    new string[0],
+                    null
                 ),
-                new Module(@"scripts/module-b", new Resource[0], new string[0])
+                new Module(@"scripts/module-b", new Resource[0], new string[0], null)
             });
 
             var differences = newModuleManifest.CompareTo(oldModuleManifest);
@@ -50,7 +52,8 @@ namespace Knapsack
                     {
                         new Resource(@"scripts/module-a/test.js", new byte[] { 1 }, new string[0])
                     }, 
-                    new string[0]
+                    new string[0],
+                    null
                 )
             });
 
@@ -63,7 +66,8 @@ namespace Knapsack
                     {
                         new Resource(@"scripts/module-a/test.js", new byte[] { 2 }, new string[0])
                     }, 
-                    new string[0]
+                    new string[0],
+                    null
                 )
             });
 
@@ -87,7 +91,8 @@ namespace Knapsack
                     {
                         new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
-                    new string[0]
+                    new string[0],
+                    null
                 )
             });
 
@@ -110,7 +115,8 @@ namespace Knapsack
                 module = new Module(
                     @"scripts/module-a",
                     new Resource[0], 
-                    new string[0]
+                    new string[0],
+                    null
                 )
             });
 

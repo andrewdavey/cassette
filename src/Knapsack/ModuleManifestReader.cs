@@ -25,10 +25,12 @@ namespace Knapsack
 
         Module ReadModuleElement(XElement moduleElement)
         {
+            var location = moduleElement.Attribute("location");
             return new Module(
                 moduleElement.Attribute("path").Value,
                 moduleElement.Elements("resource").Select(ReadScriptElement).ToArray(),
-                moduleElement.Elements("reference").Select(ReadReferenceElement).ToArray()
+                moduleElement.Elements("reference").Select(ReadReferenceElement).ToArray(),
+                location == null ? null : location.Value
             );
         }
 

@@ -9,15 +9,17 @@ namespace Knapsack
         readonly string path;
         readonly Resource[] resources;
         readonly string[] moduleReferences;
+        readonly string location;
         readonly byte[] hash;
 
-        public Module(string path, Resource[] resources, string[] moduleReferences)
+        public Module(string path, Resource[] resources, string[] moduleReferences, string location)
         {
             if (!resources.All(s => s.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase)))
                 throw new ArgumentException("Resource paths in this module must start with the path \"" + path + "\".");
 
             this.path = path;
             this.resources = resources;
+            this.location = location;
             this.hash = HashResourceHashes(resources);
             this.moduleReferences = moduleReferences.Select(r => r).ToArray();
         }
@@ -35,6 +37,11 @@ namespace Knapsack
         public string[] References
         {
             get { return moduleReferences; }
+        }
+
+        public string Location
+        {
+            get { return location; }
         }
 
         public byte[] Hash

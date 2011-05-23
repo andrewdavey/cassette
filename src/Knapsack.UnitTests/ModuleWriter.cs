@@ -13,7 +13,7 @@ namespace Knapsack
         {
             using (var textWriter = new StringWriter())
             {
-                var module = new Module("a", new[] { CreateScript("1"), CreateScript("2") }, new string[0]);
+                var module = new Module("a", new[] { CreateScript("1"), CreateScript("2") }, new string[0], null);
                 var sources = new Dictionary<string, string>
                 {
                     { "a/1.js", "function test1 () { }" },
@@ -33,7 +33,7 @@ namespace Knapsack
         {
             using (var textWriter = new StringWriter())
             {
-                var module = new Module("a", new[] { new Resource("a/test.coffee", new byte[0], new string[0]) }, new string[0]);
+                var module = new Module("a", new[] { new Resource("a/test.coffee", new byte[0], new string[0]) }, new string[0], null);
                 var sources = new Dictionary<string, string>
                 {
                     { "a/test.coffee", "x = 1" }

@@ -29,9 +29,9 @@ namespace Knapsack.Web.Mvc
         /// <summary>
         /// Creates HTML script elements for all required scripts and their dependencies.
         /// </summary>
-        public static IHtmlString RenderScripts(this HtmlHelper html)
+        public static IHtmlString RenderScripts(this HtmlHelper html, string location = null)
         {
-           return CreatePageHelper(html).RenderScripts();
+           return CreatePageHelper(html).RenderScripts(location);
         }
 
         /// <summary>

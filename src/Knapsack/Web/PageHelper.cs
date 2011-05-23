@@ -56,11 +56,11 @@ namespace Knapsack.Web
         /// <summary>
         /// Creates HTML script elements for all required scripts and their dependencies.
         /// </summary>
-        public IHtmlString RenderScripts()
+        public IHtmlString RenderScripts(string location)
         {
             var scriptUrls = useModules
-                ? ReleaseScriptUrls()
-                : DebugScriptUrls();
+                ? ReleaseScriptUrls(location)
+                : DebugScriptUrls(location);
 
             var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
             var scriptElements = scriptUrls
@@ -117,10 +117,11 @@ namespace Knapsack.Web
             return allHtml;
         }
 
-        IEnumerable<string> DebugScriptUrls()
+        IEnumerable<string> DebugScriptUrls(string location)
         {
             return scriptReferenceBuilder
                 .GetRequiredModules()
+                .Where(m => m.Location == location)
                 .SelectMany(m => m.Resources)
                 .Select(r => new { url = AppRelativeScriptUrl(r), hash = r.Hash.ToHexString() })
                 .Select(r => r.url + (r.url.Contains('?') ? "&" : "?") + r.hash);
@@ -153,10 +154,11 @@ namespace Knapsack.Web
         /// The hash of each module is appended to enable long-lived caching that
         /// is broken when a module changes.
         /// </summary>
-        IEnumerable<string> ReleaseScriptUrls()
+        IEnumerable<string> ReleaseScriptUrls(string location)
         {
             return scriptReferenceBuilder
                 .GetRequiredModules()
+                .Where(m => m.Location == location)
                 .Select(m => "~/knapsack.axd/scripts/" + m.Path + "_" + m.Hash.ToHexString());
         }
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System;
 
 namespace Knapsack
 {
@@ -9,7 +10,7 @@ namespace Knapsack
     {
         protected readonly IsolatedStorageFile storage;
         protected readonly string rootDirectory;
-        protected readonly List<string> relativeModuleDirectories = new List<string>();
+        protected readonly List<Tuple<string, string>> relativeModuleDirectories = new List<Tuple<string, string>>();
 
         public ModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory)
         {
@@ -27,9 +28,9 @@ namespace Knapsack
             return directory;
         }
 
-        public void AddModule(string directoryRelativeToRootDirectory)
+        public void AddModule(string directoryRelativeToRootDirectory, string location)
         {
-            relativeModuleDirectories.Add(directoryRelativeToRootDirectory.Replace('\\', '/'));
+            relativeModuleDirectories.Add(Tuple.Create(directoryRelativeToRootDirectory.Replace('\\', '/'), location));
         }
 
         public void AddModuleForEachSubdirectoryOf(string directoryRelativeToRootDirectory)
@@ -42,7 +43,7 @@ namespace Knapsack
                     var info = new DirectoryInfo(path);
                     if (!info.Attributes.HasFlag(FileAttributes.Hidden))
                     {
-                        AddModule(path.Substring(rootDirectory.Length));
+                        AddModule(path.Substring(rootDirectory.Length), null);
                     }
                 }
             }

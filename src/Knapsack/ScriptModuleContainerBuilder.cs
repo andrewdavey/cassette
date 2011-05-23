@@ -17,7 +17,7 @@ namespace Knapsack
         public override ModuleContainer Build()
         {
             var moduleBuilder = new UnresolvedScriptModuleBuilder(rootDirectory);
-            var unresolvedModules = relativeModuleDirectories.Select(moduleBuilder.Build);
+            var unresolvedModules = relativeModuleDirectories.Select(x => moduleBuilder.Build(x.Item1, x.Item2));
             var modules = UnresolvedModule.ResolveAll(unresolvedModules);
             return new ModuleContainer(
                 modules, 

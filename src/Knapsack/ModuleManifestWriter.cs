@@ -26,6 +26,7 @@ namespace Knapsack
                     from module in moduleContainer.Modules
                     select new XElement("module",
                         new XAttribute("path", module.Path),
+                        module.Location != null ? new XAttribute("location", module.Location) : null,
 
                         from resource in module.Resources
                         select new XElement("resource",

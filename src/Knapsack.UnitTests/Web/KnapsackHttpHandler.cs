@@ -28,7 +28,7 @@ namespace Knapsack.Web
         Stream responseOutputStream;
         ModuleContainer scriptModuleContainer;
         ModuleContainer stylesheetModuleContainer;
-        private Mock<HttpServerUtilityBase> server;
+        Mock<HttpServerUtilityBase> server;
 
         public KnapsackHttpHandler_tests()
         {
@@ -52,8 +52,8 @@ namespace Knapsack.Web
                 "x = 1");
 
             var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, coffeeScriptCompiler);
-            builder.AddModule("lib");
-            builder.AddModule("app");
+            builder.AddModule("lib", null);
+            builder.AddModule("app", null);
             scriptModuleContainer = builder.Build();
             scriptModuleContainer.UpdateStorage("scripts.xml");
 

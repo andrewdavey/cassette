@@ -87,10 +87,17 @@ namespace Knapsack
 
         void WriteManifestToStorage(string manifestFilename)
         {
-            using (var stream = storage.OpenFile(manifestFilename, FileMode.Create, FileAccess.Write))
+            try
             {
-                var writer = new ModuleManifestWriter(stream);
-                writer.Write(manifest);
+                using (var stream = storage.OpenFile(manifestFilename, FileMode.Create, FileAccess.Write))
+                {
+                    var writer = new ModuleManifestWriter(stream);
+                    writer.Write(manifest);
+                }
+            }
+            catch (IOException)
+            {
+                storage.CreateFile(manifestFilename);
             }
         }
 

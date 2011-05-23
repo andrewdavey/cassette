@@ -10,5 +10,12 @@ namespace Knapsack.Configuration
             get { return (string)this["path"]; }
             set { this["path"] = value; }
         }
+
+        [ConfigurationProperty("location", DefaultValue = null)]
+        public string Location
+        {
+            get { return (string)this["location"]; }
+            set { this["location"] = value; }
+        }
     }
 }

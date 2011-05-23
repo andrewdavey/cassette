@@ -26,7 +26,8 @@ namespace Knapsack
                             CreateScript("2", "a", "a/3.js"),
                             CreateScript("3", "a", "a/1.js")
                         },
-                        new [] { "b" }
+                        new [] { "b" },
+                        null
                     ),
                     new Module(
                         "b", 
@@ -34,7 +35,8 @@ namespace Knapsack
                         { 
                             CreateScript("4", "b")
                         }, 
-                        new string[0]
+                        new string[0],
+                        null
                     )
                 }, storage, tw => null)
             );

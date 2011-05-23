@@ -95,7 +95,7 @@ namespace Knapsack.Web.Mvc
                 ReferenceStylesheet(cssPath);
             }
 
-            IHtmlString IPageHelper.RenderScripts()
+            IHtmlString IPageHelper.RenderScripts(string location)
             {
                 return RenderScripts();
             }

@@ -7,7 +7,7 @@ namespace Knapsack.Web
     {
         void ReferenceScript(string scriptPath);
         void ReferenceStylesheet(string stylesheetPath);
-        IHtmlString RenderScripts();
+        IHtmlString RenderScripts(string location);
         string GetStylesheetLinks();
         IHtmlString RenderStylesheetLinks();
         string StylesheetsPlaceholder { get; }

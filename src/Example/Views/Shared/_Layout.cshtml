@@ -2,16 +2,18 @@
     Html.ReferenceStylesheet("styles/base/reset.css");
     Html.ReferenceStylesheet("styles/base/typography.css");
     Html.ReferenceStylesheet("styles/app/site.css");
+    Html.ReferenceScript("scripts/social/twitter.js");
 }
 <!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
     @Html.RenderStylesheetLinks()
+    @Html.RenderScripts("head")
 </head>
 <body>
     @RenderBody()
     @Html.Partial("Test")
-    @Html.RenderScripts()
+    @Html.RenderScripts("body")
 </body>
 </html>

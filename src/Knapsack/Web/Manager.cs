@@ -102,7 +102,7 @@ namespace Knapsack.Web
                 }
                 else // the given path is the module itself.
                 {
-                    builder.AddModule(module.Path);
+                    builder.AddModule(module.Path, module.Location);
                 }
             }
         }

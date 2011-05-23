@@ -16,7 +16,7 @@ namespace Knapsack
             this.fileExtensions = fileExtensions;
         }
 
-        public UnresolvedModule Build(string relativeModulePath)
+        public UnresolvedModule Build(string relativeModulePath, string location)
         {
             var modulePath = rootDirectory + relativeModulePath;
             var manifestFilename = modulePath + "/" + moduleManifestFilename;
@@ -24,12 +24,12 @@ namespace Knapsack
             if (File.Exists(manifestFilename))
             {
                 resources = LoadResourcesInManifest(manifestFilename, modulePath);
-                return new UnresolvedModule(relativeModulePath, resources.ToArray(), isResourceOrderFixed: true);
+                return new UnresolvedModule(relativeModulePath, resources.ToArray(), location, isResourceOrderFixed: true);
             }
             else
             {
                 resources = LoadResourcesByFindingFiles(modulePath);
-                return new UnresolvedModule(relativeModulePath, resources.ToArray(), isResourceOrderFixed: false);
+                return new UnresolvedModule(relativeModulePath, resources.ToArray(), location, isResourceOrderFixed: false);
             }
         }
 

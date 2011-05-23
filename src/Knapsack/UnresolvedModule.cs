@@ -16,13 +16,15 @@ namespace Knapsack
         readonly Tuple<Resource, string[]>[] partition;
         readonly Resource[] resources;
         readonly string[] externalReferences;
+        readonly string location;
 
         /// <param name="path">Application relative path to the module directory.</param>
         /// <param name="resources">All the unresolved resources found in the module.</param>
         /// <param name="isResourceOrderFixed">When true, the resources will not be sorted by their dependency ordering.</param>
-        public UnresolvedModule(string path, UnresolvedResource[] resources, bool isResourceOrderFixed)
+        public UnresolvedModule(string path, UnresolvedResource[] resources, string location, bool isResourceOrderFixed)
         {
             this.path = path;
+            this.location = location;
 
             var pathsInModule = new HashSet<string>(resources.Select(resource => resource.Path));
             partition = PartitionResourceReferences(resources, pathsInModule);
@@ -49,7 +51,7 @@ namespace Knapsack
                 .Distinct()
                 .ToArray();
 
-            return new Module(path, resources, moduleReferences);
+            return new Module(path, resources, moduleReferences, location);
         }
 
         public static IEnumerable<Module> ResolveAll(IEnumerable<UnresolvedModule> unresolvedModules)
