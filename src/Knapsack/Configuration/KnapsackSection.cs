@@ -26,6 +26,13 @@ namespace Knapsack.Configuration
             get { return (ModuleCollection)this["styles"]; }
         }
 
+        [ConfigurationProperty("bufferHtmlOutput", DefaultValue=true)]
+        public bool BufferHtmlOutput
+        {
+            get { return (bool)this["bufferHtmlOutput"]; }
+            set { this["bufferHtmlOutput"] = value; }
+        }
+
         public bool ShouldUseModules(HttpContextBase context)
         {
             return ModuleMode == ModuleMode.On

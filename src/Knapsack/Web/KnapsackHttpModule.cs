@@ -65,14 +65,24 @@ namespace Knapsack.Web
         {
             application.BeginRequest += (sender, e) =>
             {
-                StorePageHelperInHttpContextItems();
+                var httpContext = new HttpContextWrapper(HttpContext.Current);
+                var pageHelper = CreatePageHelper(httpContext);
+                StorePageHelperInHttpContextItems(pageHelper, httpContext);
+                if (Manager.Configuration.BufferHtmlOutput)
+                {
+                    InstallResponseFilter(pageHelper, httpContext);
+                }
             };
         }
 
-        void StorePageHelperInHttpContextItems()
+        void StorePageHelperInHttpContextItems(IPageHelper pageHelper, HttpContextBase httpContext)
         {
-            var httpContext = new HttpContextWrapper(HttpContext.Current);
-            httpContext.Items["Knapsack.PageHelper"] = CreatePageHelper(httpContext);
+            httpContext.Items["Knapsack.PageHelper"] = pageHelper;
+        }
+
+        void InstallResponseFilter(IPageHelper pageHelper, HttpContextBase context)
+        {
+            context.Response.Filter = new BufferStream(context.Response.Filter, context, pageHelper);
         }
 
         static PageHelper CreatePageHelper(HttpContextBase httpContext)
@@ -80,7 +90,7 @@ namespace Knapsack.Web
             var scriptReferenceBuilder = new ReferenceBuilder(Manager.ScriptModuleContainer);
             var stylesheetReferenceBuilder = new ReferenceBuilder(Manager.StylesheetModuleContainer);
             var useModules = Manager.Configuration.ShouldUseModules(httpContext);
-            return new PageHelper(useModules, scriptReferenceBuilder, stylesheetReferenceBuilder, VirtualPathUtility.ToAbsolute);
+            return new PageHelper(useModules, Manager.Configuration.BufferHtmlOutput, scriptReferenceBuilder, stylesheetReferenceBuilder, VirtualPathUtility.ToAbsolute);
         }
 
         public static IPageHelper GetPageHelper(HttpContextBase httpContext)

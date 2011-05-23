@@ -13,16 +13,24 @@ namespace Knapsack.Web
     public class PageHelper : IPageHelper
     {
         readonly bool useModules;
+        readonly bool bufferHtmlOutput;
         readonly IReferenceBuilder scriptReferenceBuilder;
         readonly IReferenceBuilder stylesheetReferenceBuilder;
         readonly Func<string, string> virtualPathToAbsolute;
+        readonly string stylesheetsPlaceholder;
 
-        public PageHelper(bool useModules, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, Func<string, string> virtualPathToAbsolute)
+        public PageHelper(bool useModules, bool bufferHtmlOutput, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, Func<string, string> virtualPathToAbsolute)
         {
             this.useModules = useModules;
+            this.bufferHtmlOutput = bufferHtmlOutput;
             this.scriptReferenceBuilder = scriptReferenceBuilder;
             this.stylesheetReferenceBuilder = stylesheetReferenceBuilder;
             this.virtualPathToAbsolute = virtualPathToAbsolute;
+
+            if (bufferHtmlOutput)
+            {
+                stylesheetsPlaceholder = "$Knapsack-Stylesheets-" + Guid.NewGuid().ToString();
+            }
         }
 
         /// <summary>
@@ -64,10 +72,36 @@ namespace Knapsack.Web
             return new HtmlString(allHtml);
         }
 
+        public string StylesheetsPlaceholder
+        {
+            get
+            {
+                return stylesheetsPlaceholder;
+            }
+        }
+
         /// <summary>
         /// Creates HTML link elements for all required stylesheets and their dependencies.
         /// </summary>
         public IHtmlString RenderStylesheetLinks()
+        {
+            if (bufferHtmlOutput)
+            {
+                // Only output a placeholder for now. The BufferStream will insert the links later,
+                // to give partial views a chance to add stylesheet references.
+                return new HtmlString(
+                    Environment.NewLine +
+                    StylesheetsPlaceholder +
+                    Environment.NewLine
+                );
+            }
+            else
+            {
+                return new HtmlString(GetStylesheetLinks());
+            }
+        }
+
+        public string GetStylesheetLinks()
         {
             var cssUrls = useModules
                 ? ReleaseStylesheetUrls()
@@ -80,7 +114,7 @@ namespace Knapsack.Web
                 .Select(src => string.Format(template, HttpUtility.HtmlAttributeEncode(src)));
 
             var allHtml = string.Join("\r\n", linkElements);
-            return new HtmlString(allHtml);
+            return allHtml;
         }
 
         IEnumerable<string> DebugScriptUrls()

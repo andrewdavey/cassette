@@ -100,10 +100,22 @@ namespace Knapsack.Web.Mvc
                 return RenderScripts();
             }
 
-
             IHtmlString IPageHelper.RenderStylesheetLinks()
             {
                 return RenderStylesheet();
+            }
+
+            string IPageHelper.GetStylesheetLinks()
+            {
+                return "";
+            }
+
+            string IPageHelper.StylesheetsPlaceholder
+            {
+                get
+                {
+                    return "$stylesheet$";
+                }
             }
         }
 

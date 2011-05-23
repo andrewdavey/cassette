@@ -16,7 +16,7 @@ namespace Knapsack.Web
             var referenceBuilder = new FakeReferenceBuilder();
             referenceBuilder.AddReference = path => scriptPath = path;
             
-            var pageHelper = new PageHelper(true, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(true, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             pageHelper.ReferenceScript("test.js");
             
             scriptPath.ShouldEqual("test.js");
@@ -29,7 +29,7 @@ namespace Knapsack.Web
             var referenceBuilder = new FakeReferenceBuilder();
             referenceBuilder.AddReference = path => scriptPath = path;
 
-            var pageHelper = new PageHelper(true, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(true, false, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
             pageHelper.ReferenceStylesheet("test.css");
 
             scriptPath.ShouldEqual("test.css");
@@ -44,7 +44,7 @@ namespace Knapsack.Web
             
             var useModules = true;
 
-            var pageHelper = new PageHelper(useModules, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts();
 
             html.ToHtmlString().ShouldEqual(
@@ -69,7 +69,7 @@ namespace Knapsack.Web
             
             var useModules = false;
 
-            var pageHelper = new PageHelper(useModules, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts();
 
             Regex.IsMatch(
@@ -95,7 +95,7 @@ namespace Knapsack.Web
 
             var useModules = false;
 
-            var pageHelper = new PageHelper(useModules, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts();
 
             Regex.IsMatch(
@@ -120,7 +120,7 @@ namespace Knapsack.Web
 
             var useModules = true;
 
-            var pageHelper = new PageHelper(useModules, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
             var html = pageHelper.RenderStylesheetLinks();
 
             html.ToHtmlString().ShouldEqual(

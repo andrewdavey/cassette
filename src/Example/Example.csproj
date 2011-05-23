@@ -73,6 +73,7 @@
     <Content Include="Scripts\util\message.js" />
     <Content Include="Styles\base\reset.css" />
     <Content Include="Styles\base\typography.css" />
+    <Content Include="Styles\widgets\test.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -100,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\util\test.coffee" />
+    <Content Include="Views\Home\Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Knapsack\Knapsack.csproj">
