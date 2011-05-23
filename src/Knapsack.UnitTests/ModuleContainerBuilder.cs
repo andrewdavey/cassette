@@ -35,22 +35,40 @@ namespace Knapsack
             File.WriteAllText(Path.Combine(rootDirectory, "app", "main.js"), 
                 "/// <reference path=\"widgets.js\"/>\r\nfunction main() {}");
 
+            var svn = new DirectoryInfo(Path.Combine(rootDirectory, ".svn"));
+            svn.Create();
+            svn.Attributes |= FileAttributes.Hidden;
+
+            Directory.CreateDirectory(Path.Combine(rootDirectory, "nojs"));
+            File.WriteAllText(Path.Combine(rootDirectory, "nojs", "foo.txt"), "foo");
+
             var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
-            builder.AddModule("lib");
-            builder.AddModule("app");
+            builder.AddModuleForEachSubdirectoryOf("");
             container = builder.Build();
         }
 
         [Fact]
         public void Container_contains_lib()
         {
-            container.Contains("lib");
+            container.Contains("lib").ShouldBeTrue();
         }
 
         [Fact]
         public void Container_contains_app()
         {
-            container.Contains("app");
+            container.Contains("app").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Hidden_directory_is_not_added()
+        {
+            container.Contains(".svn").ShouldBeFalse();
+        }
+
+        [Fact]
+        public void Directory_with_no_resource_files_is_not_added()
+        {
+            container.Contains("nojs").ShouldBeFalse();
         }
 
         [Fact]

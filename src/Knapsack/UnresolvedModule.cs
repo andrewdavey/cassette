@@ -52,6 +52,8 @@ namespace Knapsack
 
         public static IEnumerable<Module> ResolveAll(IEnumerable<UnresolvedModule> unresolvedModules)
         {
+            unresolvedModules = unresolvedModules.Where(m => m.resources.Length > 0);
+
             var modulesByResourcePath = (
                 from module in unresolvedModules
                 from resource in module.resources

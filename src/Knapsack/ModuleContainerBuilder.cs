@@ -39,7 +39,11 @@ namespace Knapsack
             {
                 foreach (var path in Directory.GetDirectories(fullPath))
                 {
-                    AddModule(path.Substring(rootDirectory.Length));
+                    var info = new DirectoryInfo(path);
+                    if (!info.Attributes.HasFlag(FileAttributes.Hidden))
+                    {
+                        AddModule(path.Substring(rootDirectory.Length));
+                    }
                 }
             }
         }
