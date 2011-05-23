@@ -131,6 +131,20 @@ namespace Knapsack.Web
                 return;
             }
 
+            var lastModified = File.GetLastWriteTimeUtc(path);
+            DateTime clientLastModified;
+            if (DateTime.TryParse(context.Request.Headers["If-Modified-Since"], out clientLastModified))
+            {
+                // If-Modified-Since header is only to the nearest second.
+                // So must ignore any fractional difference from file write time.
+                // Thus the cast to int.
+                if ((int)(clientLastModified.Subtract(lastModified)).TotalSeconds >= 0)
+                {
+                    NotModified(context);
+                    return;
+                }
+            }
+
             string javaScript;
             try
             {
@@ -145,6 +159,7 @@ namespace Knapsack.Web
             }
 
             context.Response.ContentType = "text/javascript";
+            context.Response.Cache.SetLastModified(lastModified);
             context.Response.Write(javaScript);
         }
 

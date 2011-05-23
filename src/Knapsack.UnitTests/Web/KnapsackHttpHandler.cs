@@ -23,6 +23,7 @@ namespace Knapsack.Web
         Mock<HttpResponseBase> httpResponse;
         IsolatedStorageFile storage;
         NameValueCollection requestHeaders;
+        NameValueCollection responseHeaders;
         Mock<HttpCachePolicyBase> cache;
         Stream responseOutputStream;
         ModuleContainer scriptModuleContainer;
@@ -63,12 +64,14 @@ namespace Knapsack.Web
             httpContext = new Mock<HttpContextBase>();
             httpRequest = new Mock<HttpRequestBase>();
             requestHeaders = new NameValueCollection();
+            responseHeaders = new NameValueCollection();
             httpResponse = new Mock<HttpResponseBase>();
             responseOutputStream = new MemoryStream();
             cache = new Mock<HttpCachePolicyBase>();
             server = new Mock<HttpServerUtilityBase>();
 
             httpRequest.ExpectGet(r => r.Headers).Returns(requestHeaders);
+            httpResponse.ExpectGet(r => r.Headers).Returns(responseHeaders);
             httpResponse.ExpectGet(r => r.OutputStream).Returns(responseOutputStream);
             httpResponse.ExpectGet(r => r.Cache).Returns(cache.Object);
             httpContext.ExpectGet(c => c.Request).Returns(httpRequest.Object);
@@ -158,6 +161,22 @@ namespace Knapsack.Web
 
             httpResponse.VerifySet(r => r.ContentType, "text/javascript");
             GetOutputString().ShouldEqual("(function() {\n  var x;\n  x = 1;\n}).call(this);\n");
+            var time = File.GetLastWriteTimeUtc(Path.Combine(rootDirectory, "app", "test.coffee"));
+            cache.Verify(c => c.SetLastModified(time));
+        }
+
+        [Fact]
+        public void Coffee_request_with_update_to_date_If_Modified_Since_header_returns_not_modified()
+        {
+            var time = File.GetLastWriteTimeUtc(Path.Combine(rootDirectory, "app", "test.coffee"));
+            requestHeaders.Add("If-Modified-Since", time.ToString("r"));
+            
+            httpRequest.ExpectGet(r => r.PathInfo).Returns("/coffee/app/test");
+            server.Expect(s => s.MapPath("~/app/test.coffee")).Returns(rootDirectory + "/app/test.coffee");
+            
+            handler.ProcessRequest(httpContext.Object);
+
+            httpResponse.VerifySet(r => r.StatusCode, 304);
         }
 
         string GetOutputString()
