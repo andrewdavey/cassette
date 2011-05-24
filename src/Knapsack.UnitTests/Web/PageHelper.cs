@@ -53,6 +53,55 @@ namespace Knapsack.Web
         }
 
         [Fact]
+        public void When_buffering_RenderScripts_returns_placeholder()
+        {
+            var referenceBuilder = new FakeReferenceBuilder();
+            var module = new Module(
+                "lib",
+                new[]
+                { 
+                    new Resource("lib/test.js", new byte[] { 1, 2, 3 }, new string[0])
+                },
+                new string[0],
+                null
+            );
+            referenceBuilder.GetRequiredModules = () => new[] { module };
+
+            var pageHelper = new PageHelper(false, true, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var html = pageHelper.RenderScripts("");
+
+            Assert.True(
+                Regex.IsMatch(
+                    html.ToHtmlString(),
+                    // Placeholder is some text surrounded by newlines.
+                    Regex.Escape(Environment.NewLine) + "[^\r\n]+" + Regex.Escape(Environment.NewLine)
+                )
+            );
+        }
+
+        [Fact]
+        public void When_buffering_ReplacePlaceholders_replaces_script_placeholder()
+        {
+            var referenceBuilder = new FakeReferenceBuilder();
+            var module = new Module(
+                "lib",
+                new[]
+                { 
+                    new Resource("lib/test.js", new byte[] { 1, 2, 3 }, new string[0])
+                },
+                new string[0],
+                null
+            );
+            referenceBuilder.GetRequiredModules = () => new[] { module };
+
+            var pageHelper = new PageHelper(false, true, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var html = pageHelper.RenderScripts("").ToHtmlString().Trim();
+
+            var scripts = pageHelper.ReplacePlaceholders(html);
+            Assert.True(Regex.IsMatch(scripts, @"<script src=""/lib/test\.js\?[a-z0-9]+"" type=""text/javascript""></script>"));
+        }
+
+        [Fact]
         public void RenderScripts_for_single_module_when_not_using_modules_returns_script_element_for_each_source_script()
         {
             var referenceBuilder = new FakeReferenceBuilder();
@@ -107,6 +156,28 @@ namespace Knapsack.Web
         }
 
         [Fact]
+        public void When_has_absolute_reference_and_in_module_mode_RenderScripts_returns_script_element_with_the_url()
+        {
+            var referenceBuilder = new FakeReferenceBuilder();
+            var module = Module.CreateExternalModule("http://test.com/test.js", "");
+            referenceBuilder.GetRequiredModules = () => new[] { module };
+            var pageHelper = new PageHelper(true, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var html = pageHelper.RenderScripts("").ToHtmlString();
+            html.ShouldEqual("<script src=\"http://test.com/test.js\" type=\"text/javascript\"></script>");
+        }
+
+        [Fact]
+        public void When_has_absolute_reference_and_not_in_module_mode_RenderScripts_returns_script_element_with_the_url()
+        {
+            var referenceBuilder = new FakeReferenceBuilder();
+            var module = Module.CreateExternalModule("http://test.com/test.js", "");
+            referenceBuilder.GetRequiredModules = () => new[] { module };
+            var pageHelper = new PageHelper(false, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var html = pageHelper.RenderScripts("").ToHtmlString();
+            html.ShouldEqual("<script src=\"http://test.com/test.js\" type=\"text/javascript\"></script>");
+        }
+
+        [Fact]
         public void RenderStylesheetLinks_returns_link_elements()
         {
             var referenceBuilder = new FakeReferenceBuilder();
@@ -128,6 +199,33 @@ namespace Knapsack.Web
 
             html.ToHtmlString().ShouldEqual(
                 "<link href=\"/knapsack.axd/styles/theme_" + module.Hash.ToHexString() + "\" type=\"text/css\" rel=\"stylesheet\"/>"
+            );
+        }
+
+        [Fact]
+        public void When_buffering_RenderStylesheetLinks_returns_placeholder()
+        {
+            var referenceBuilder = new FakeReferenceBuilder();
+            var module = new Module(
+                "theme",
+                new[]
+                { 
+                    new Resource("theme/test.css", new byte[] { 1, 2, 3 }, new string[0])
+                },
+                new string[0],
+                null
+            );
+            referenceBuilder.GetRequiredModules = () => new[] { module };
+
+            var pageHelper = new PageHelper(false, true, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var html = pageHelper.RenderStylesheetLinks();
+
+            Assert.True(
+                Regex.IsMatch(
+                    html.ToHtmlString(),
+                    // Placeholder is some text surrounded by newlines.
+                    Regex.Escape(Environment.NewLine) + "[^\r\n]+" + Regex.Escape(Environment.NewLine)
+                )
             );
         }
 
