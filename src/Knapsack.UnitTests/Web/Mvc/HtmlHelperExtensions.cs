@@ -105,17 +105,9 @@ namespace Knapsack.Web.Mvc
                 return RenderStylesheet();
             }
 
-            string IPageHelper.GetStylesheetLinks()
+            string IPageHelper.ReplacePlaceholders(string line)
             {
-                return "";
-            }
-
-            string IPageHelper.StylesheetsPlaceholder
-            {
-                get
-                {
-                    return "$stylesheet$";
-                }
+                return line;
             }
         }
 

@@ -18,6 +18,8 @@ namespace Knapsack.Web
         readonly IReferenceBuilder stylesheetReferenceBuilder;
         readonly Func<string, string> virtualPathToAbsolute;
         readonly string stylesheetsPlaceholder;
+        readonly string scriptsPlaceholderPrefix;
+        readonly Dictionary<string, string> scriptPlaceholders;
 
         public PageHelper(bool useModules, bool bufferHtmlOutput, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, Func<string, string> virtualPathToAbsolute)
         {
@@ -29,7 +31,10 @@ namespace Knapsack.Web
 
             if (bufferHtmlOutput)
             {
-                stylesheetsPlaceholder = "$Knapsack-Stylesheets-" + Guid.NewGuid().ToString();
+                var unique = Guid.NewGuid().ToString();
+                stylesheetsPlaceholder = "$Knapsack-Stylesheets-" + unique;
+                scriptsPlaceholderPrefix = "$Knapsack-Scripts-" + unique + "-";
+                scriptPlaceholders = new Dictionary<string, string>();
             }
         }
 
@@ -44,6 +49,40 @@ namespace Knapsack.Web
         }
 
         /// <summary>
+        /// Creates HTML script elements for all required scripts and their dependencies.
+        /// When buffering HTML output, a placeholder is returned instead.
+        /// </summary>
+        public IHtmlString RenderScripts(string location)
+        {
+            // Treat null location as empty string since config seems to create empty strings
+            // even though the default value is meant to be null.
+            location = location ?? "";
+
+            if (bufferHtmlOutput)
+            {
+                // Only output a placeholder for now. ReplacePlaceholders is used later to insert
+                // the actual HTML. This means partial views can have their references inserted
+                // into the <head> even after it's been rendered.
+                var placeholder = GetScriptsPlaceholder(location);
+                // Keep track of the placeholder we've generated for each location.
+                if (!scriptPlaceholders.ContainsKey(placeholder))
+                {
+                    scriptPlaceholders.Add(placeholder, location);
+                }
+                return new HtmlString(
+                    Environment.NewLine +
+                    placeholder +
+                    Environment.NewLine
+                );
+            }
+            else
+            {
+                var html = CreateScriptsHtml(location);
+                return new HtmlString(html);
+            }
+        }
+
+        /// <summary>
         /// Records that the calling view requires the given stylesheet. This does not render any
         /// HTML. Call <see cref="RenderStylesheets"/> to actually output the link elements.
         /// </summary>
@@ -54,34 +93,8 @@ namespace Knapsack.Web
         }
 
         /// <summary>
-        /// Creates HTML script elements for all required scripts and their dependencies.
-        /// </summary>
-        public IHtmlString RenderScripts(string location)
-        {
-            var scriptUrls = useModules
-                ? ReleaseScriptUrls(location)
-                : DebugScriptUrls(location);
-
-            var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
-            var scriptElements = scriptUrls
-                .Select(virtualPathToAbsolute)
-                .Select(HttpUtility.HtmlAttributeEncode)
-                .Select(src => string.Format(template, HttpUtility.HtmlAttributeEncode(src)));
-            
-            var allHtml = string.Join("\r\n", scriptElements);
-            return new HtmlString(allHtml);
-        }
-
-        public string StylesheetsPlaceholder
-        {
-            get
-            {
-                return stylesheetsPlaceholder;
-            }
-        }
-
-        /// <summary>
         /// Creates HTML link elements for all required stylesheets and their dependencies.
+        /// When buffering HTML output, a placeholder is returned instead.
         /// </summary>
         public IHtmlString RenderStylesheetLinks()
         {
@@ -91,30 +104,84 @@ namespace Knapsack.Web
                 // to give partial views a chance to add stylesheet references.
                 return new HtmlString(
                     Environment.NewLine +
-                    StylesheetsPlaceholder +
+                    stylesheetsPlaceholder +
                     Environment.NewLine
                 );
             }
             else
             {
-                return new HtmlString(GetStylesheetLinks());
+                return new HtmlString(CreateStylesheetsHtml());
             }
         }
 
-        public string GetStylesheetLinks()
+        /// <summary>
+        /// When buffering HTML output, the line is checked for known script and stylesheet placeholders.
+        /// They are replaced with the relevant HTML.
+        /// </summary>
+        /// <param name="line">The line to check for placeholders.</param>
+        /// <returns>The line, but with placeholders replaced with their respective HTML.</returns>
+        public string ReplacePlaceholders(string line)
+        {
+            if (!bufferHtmlOutput) throw new InvalidOperationException("Cannot replace placeholders when HTML output buffering is disabled.");
+
+            if (line == null)
+            {
+                return line;
+            }
+            else if (line == stylesheetsPlaceholder)
+            {
+                return CreateStylesheetsHtml();
+            }
+            else if (line.StartsWith(scriptsPlaceholderPrefix))
+            {
+                string location;
+                if (scriptPlaceholders.TryGetValue(line, out location))
+                {
+                    return CreateScriptsHtml(location);
+                }
+            }
+
+            // Otherwise, do not change the line
+            return line;
+        }
+
+        string GetScriptsPlaceholder(string location)
+        {
+            return scriptsPlaceholderPrefix + (location ?? "");
+        }
+
+        string CreateScriptsHtml(string location)
+        {
+            var scriptUrls = useModules
+                ? ReleaseScriptUrls(location)
+                : DebugScriptUrls(location);
+
+            var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
+            var scriptElements = BuildHtmlElements(scriptUrls, template);
+
+            var allHtml = string.Join("\r\n", scriptElements);
+            return allHtml;
+        }
+
+        string CreateStylesheetsHtml()
         {
             var cssUrls = useModules
                 ? ReleaseStylesheetUrls()
                 : DebugStylesheetUrls();
 
             var template = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
-            var linkElements = cssUrls
-                .Select(virtualPathToAbsolute)
-                .Select(HttpUtility.HtmlAttributeEncode)
-                .Select(src => string.Format(template, HttpUtility.HtmlAttributeEncode(src)));
+            var linkElements = BuildHtmlElements(cssUrls, template);
 
             var allHtml = string.Join("\r\n", linkElements);
             return allHtml;
+        }
+
+        IEnumerable<string> BuildHtmlElements(IEnumerable<string> urls, string template)
+        {
+            return urls
+                .Select(virtualPathToAbsolute)
+                .Select(HttpUtility.HtmlAttributeEncode)
+                .Select(src => string.Format(template, src));
         }
 
         IEnumerable<string> DebugScriptUrls(string location)

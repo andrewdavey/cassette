@@ -6,10 +6,11 @@ namespace Knapsack.Web
     public interface IPageHelper
     {
         void ReferenceScript(string scriptPath);
-        void ReferenceStylesheet(string stylesheetPath);
         IHtmlString RenderScripts(string location);
-        string GetStylesheetLinks();
+
+        void ReferenceStylesheet(string stylesheetPath);
         IHtmlString RenderStylesheetLinks();
-        string StylesheetsPlaceholder { get; }
+
+        string ReplacePlaceholders(string line);
     }
 }

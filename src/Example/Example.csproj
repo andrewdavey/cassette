@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Scripts\social\facebook.js" />
     <Content Include="Scripts\social\twitter.js" />
     <Content Include="Styles\app\images\accept.png" />
     <Content Include="Styles\app\site.css" />

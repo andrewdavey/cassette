@@ -17,43 +17,41 @@ namespace Knapsack.Web
         readonly HttpContextBase context;
         readonly IPageHelper pageHelper;
         readonly MemoryStream buffer;
+        long nextFlushStartPosition;
 
         public override void Flush()
         {
-            buffer.Position = 0;
+            buffer.Position = nextFlushStartPosition;
+            // Next time we flush, skip over the bytes we've already sent.
+            nextFlushStartPosition = buffer.Length;
+
             if (IsHtmlResponse)
             {
                 SendHtmlResponse();
             }
             else
             {
+                // Don't interfere with non-html output.
                 buffer.CopyTo(outputStream);
             }
+
             outputStream.Flush();
         }
 
         void SendHtmlResponse()
         {
-            var placeholder = pageHelper.StylesheetsPlaceholder;
             var encoding = context.Response.Output.Encoding;
 
-            // Spin through the buffer looking for the placeholder.
-            // Replace it with the actual stylesheet links.
+            // Spin through the buffer looking for the placeholders.
+            // Replace with the actual HTML elements.
             using (var reader = new StreamReader(buffer, encoding))
             using (var writer = new StreamWriter(outputStream, encoding))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    if (line == placeholder)
-                    {
-                        var html = pageHelper.GetStylesheetLinks();
-                        writer.WriteLine(html);
-                    }
-                    else
-                    {
-                        writer.WriteLine(line);
-                    }
+                    line = pageHelper.ReplacePlaceholders(line);
+                    writer.WriteLine(line);
                 }
             }
         }
