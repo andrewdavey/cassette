@@ -10,12 +10,18 @@ namespace Knapsack.Web.Mvc
         /// Records that the calling view requires the given script. This does not render any
         /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
         /// </summary>
-        /// <param name="scriptPath">The application relative path to the script file or an absolute external script URL.</param>
-        public static void ReferenceScript(this HtmlHelper html, string scriptPath)
+        /// <param name="scriptPathOrUrl">The application relative path to the script file or an absolute external script URL.</param>
+        public static void ReferenceScript(this HtmlHelper html, string scriptPathOrUrl)
         {
-            CreatePageHelper(html).ReferenceScript(scriptPath);
+            CreatePageHelper(html).ReferenceScript(scriptPathOrUrl);
         }
-
+        
+        /// <summary>
+        /// Records that the calling view requires the given script. This does not render any
+        /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
+        /// </summary>
+        /// <param name="scriptPath">The absolute external script URL.</param>
+        /// <param name="location">The location identifier for this script e.g. "head" or "body".</param>
         public static void ReferenceScript(this HtmlHelper html, string externalScriptUrl, string location)
         {
             CreatePageHelper(html).ReferenceExternalScript(externalScriptUrl, location);

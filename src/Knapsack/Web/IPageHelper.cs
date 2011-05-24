@@ -5,7 +5,7 @@ namespace Knapsack.Web
 {
     public interface IPageHelper
     {
-        void ReferenceScript(string scriptPath);
+        void ReferenceScript(string scriptPathOrUrl);
         void ReferenceExternalScript(string externalScriptUrl, string location);
         IHtmlString RenderScripts(string location);
 

@@ -39,24 +39,31 @@ namespace Knapsack.Web
         }
 
         /// <summary>
-        /// Records that the calling view requires the given script path. This does not render any
+        /// Records that the calling view requires the given script. This does not render any
         /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
         /// </summary>
-        /// <param name="scriptPath">The application relative path to the script file.</param>
-        public void ReferenceScript(string scriptPath)
+        /// <param name="scriptPathOrUrl">The application relative path to the script file or an absolute external script URL.</param>
+        public void ReferenceScript(string scriptPathOrUrl)
         {
-            scriptReferenceBuilder.AddReference(scriptPath);
+            scriptReferenceBuilder.AddReference(scriptPathOrUrl);
         }
 
+        /// <summary>
+        /// Records that the calling view requires the given script. This does not render any
+        /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
+        /// </summary>
+        /// <param name="scriptPath">The absolute external script URL.</param>
+        /// <param name="location">The location identifier for this script e.g. "head" or "body".</param>
         public void ReferenceExternalScript(string externalScriptUrl, string location)
         {
             scriptReferenceBuilder.AddExternalReference(externalScriptUrl, location);
         }
 
         /// <summary>
-        /// Creates HTML script elements for all required scripts and their dependencies.
+        /// Creates HTML script elements for all required scripts (tagged as having the given location) and their dependencies.
         /// When buffering HTML output, a placeholder is returned instead.
         /// </summary>
+        /// <param name="location">The location being rendered.</param>
         public IHtmlString RenderScripts(string location)
         {
             // Treat null location as empty string since config seems to create empty strings
