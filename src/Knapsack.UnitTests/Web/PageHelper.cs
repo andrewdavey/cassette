@@ -150,6 +150,11 @@ namespace Knapsack.Web
             {
                 return GetRequiredModules();
             }
+
+            void IReferenceBuilder.AddExternalReference(string externalUrl, string location)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

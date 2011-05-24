@@ -48,6 +48,11 @@ namespace Knapsack.Web
             scriptReferenceBuilder.AddReference(scriptPath);
         }
 
+        public void ReferenceExternalScript(string externalScriptUrl, string location)
+        {
+            scriptReferenceBuilder.AddExternalReference(externalScriptUrl, location);
+        }
+
         /// <summary>
         /// Creates HTML script elements for all required scripts and their dependencies.
         /// When buffering HTML output, a placeholder is returned instead.
@@ -179,7 +184,7 @@ namespace Knapsack.Web
         IEnumerable<string> BuildHtmlElements(IEnumerable<string> urls, string template)
         {
             return urls
-                .Select(virtualPathToAbsolute)
+                .Select(url => url.StartsWith("http:") || url.StartsWith("https:") ? url : virtualPathToAbsolute(url))
                 .Select(HttpUtility.HtmlAttributeEncode)
                 .Select(src => string.Format(template, src));
         }
@@ -190,8 +195,21 @@ namespace Knapsack.Web
                 .GetRequiredModules()
                 .Where(m => m.Location == location)
                 .SelectMany(m => m.Resources)
-                .Select(r => new { url = AppRelativeScriptUrl(r), hash = r.Hash.ToHexString() })
-                .Select(r => r.url + (r.url.Contains('?') ? "&" : "?") + r.hash);
+                .Select(DebugScriptUrl);
+        }
+
+        string DebugScriptUrl(Resource resource)
+        {
+            if (resource.Path.StartsWith("http:") || resource.Path.StartsWith("https:"))
+            {
+                return resource.Path;
+            }
+            else
+            {
+                var url = AppRelativeScriptUrl(resource);
+                var hash = resource.Hash.ToHexString();
+                return url + (url.Contains('?') ? "&" : "?") + hash;
+            }
         }
 
         string AppRelativeScriptUrl(Resource script)
@@ -226,7 +244,19 @@ namespace Knapsack.Web
             return scriptReferenceBuilder
                 .GetRequiredModules()
                 .Where(m => m.Location == location)
-                .Select(m => "~/knapsack.axd/scripts/" + m.Path + "_" + m.Hash.ToHexString());
+                .Select(m => ReleaseScriptUrl(m));
+        }
+
+        string ReleaseScriptUrl(Module m)
+        {
+            if (m.Path.StartsWith("http:") || m.Path.StartsWith("https:"))
+            {
+                return m.Path;
+            }
+            else
+            {
+                return "~/knapsack.axd/scripts/" + m.Path + "_" + m.Hash.ToHexString();
+            }
         }
 
         IEnumerable<string> DebugStylesheetUrls()

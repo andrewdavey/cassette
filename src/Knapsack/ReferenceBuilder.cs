@@ -18,8 +18,36 @@ namespace Knapsack
         public void AddReference(string resourcePath)
         {
             var module = moduleContainer.FindModuleContainingResource(resourcePath);
-            if (module == null) throw new ArgumentException("Resource not found: " + resourcePath);
-            modules.Add(module);
+            if (module == null)
+            {
+                // The resourcePath may be an external URL.
+                Uri url;
+                if (Uri.TryCreate(resourcePath, UriKind.Absolute, out url))
+                {
+                    modules.Add(Module.CreateExternalModule(resourcePath, location: ""));
+                }
+                else
+                {
+                    throw new ArgumentException("Resource not found: " + resourcePath);
+                }
+            }
+            else
+            {
+                modules.Add(module);
+            }
+        }
+
+        public void AddExternalReference(string externalUrl, string location)
+        {
+            Uri url;
+            if (Uri.TryCreate(externalUrl, UriKind.Absolute, out url))
+            {
+                modules.Add(Module.CreateExternalModule(externalUrl, location));
+            }
+            else
+            {
+                throw new ArgumentException("External URL must be an absolute URI.", "externalUrl");
+            }
         }
 
         public IEnumerable<Module> GetRequiredModules()

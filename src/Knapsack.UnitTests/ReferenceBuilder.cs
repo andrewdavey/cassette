@@ -79,5 +79,13 @@ namespace Knapsack
                 builder.AddReference("a/fail.js");
             });
         }
+
+        [Fact]
+        public void AddReference_to_external_url_Then_GetRequiredModules_returns_it_last()
+        {
+            builder.AddReference("http://example.com/api.js");
+            var module = builder.GetRequiredModules().Last();
+            module.Path.ShouldEqual("http://example.com/api.js");
+        }
     }
 }

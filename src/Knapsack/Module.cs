@@ -66,6 +66,17 @@ namespace Knapsack
             return path.GetHashCode() ^ hash.GetHashCode();
         }
 
+        internal static Module CreateExternalModule(string urlString, string location)
+        {
+            // External module has only one resource (the given url) and no references.
+            return new Module(
+                urlString,
+                new[] { new Resource(urlString, new byte[0], new string[0]) },
+                new string[0],
+                location
+            );
+        }
+
         byte[] HashResourceHashes(Resource[] resources)
         {
             using (var sha1 = SHA1.Create())

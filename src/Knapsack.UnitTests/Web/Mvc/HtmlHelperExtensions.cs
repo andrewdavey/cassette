@@ -109,6 +109,11 @@ namespace Knapsack.Web.Mvc
             {
                 return line;
             }
+
+            void IPageHelper.ReferenceExternalScript(string externalScriptUrl, string location)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         class FakeViewDataContainer : IViewDataContainer

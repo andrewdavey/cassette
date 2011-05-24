@@ -10,5 +10,9 @@
 </head>
 <body>
     @RenderBody()
+
+    @* Some scripts progressively enhance the page and are non-essential, 
+       so we can delay loading them until the end of the page. *@
+    @Html.RenderScripts("body")
 </body>
 </html>
