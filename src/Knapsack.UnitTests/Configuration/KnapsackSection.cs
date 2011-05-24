@@ -75,7 +75,6 @@ namespace Knapsack.Configuration
         }
     }
 
-
     public class Given_KnapsackSection_where_ModuleMode_is_OffInDebug : Given_KnapsackSection
     {
         public Given_KnapsackSection_where_ModuleMode_is_OffInDebug()
@@ -91,6 +90,21 @@ namespace Knapsack.Configuration
         public void When_web_app_not_in_debug_mode_ShouldUseModules_returns_false()
         {
             section.ShouldUseModules(DebugMode()).ShouldBeFalse();
+        }
+    }
+
+    public class KnapsackSection_defaults
+    {
+        [Fact]
+        public void BufferHtmlOutput_is_true()
+        {
+            new KnapsackSection().BufferHtmlOutput.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void ModuleMode_is_OffInDebug()
+        {
+            new KnapsackSection().ModuleMode.ShouldEqual(ModuleMode.OffInDebug);
         }
     }
 }
