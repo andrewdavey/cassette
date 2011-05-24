@@ -81,7 +81,7 @@ namespace Knapsack.Web
             if (modules.Count == 0)
             {
                 // By convention, each subdirectory of topLevelDirectoryNameConvention is a module.
-                builder.AddModuleForEachSubdirectoryOf(topLevelDirectoryNameConvention);
+                builder.AddModuleForEachSubdirectoryOf(topLevelDirectoryNameConvention, "");
             }
             else
             {
@@ -98,7 +98,7 @@ namespace Knapsack.Web
                 if (module.Path.EndsWith("*"))
                 {
                     var path = module.Path.Substring(0, module.Path.Length - 2);
-                    builder.AddModuleForEachSubdirectoryOf(path);
+                    builder.AddModuleForEachSubdirectoryOf(path, module.Location);
                 }
                 else // the given path is the module itself.
                 {

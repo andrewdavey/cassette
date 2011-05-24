@@ -19,7 +19,7 @@ namespace Knapsack.Shell
             {
                 path = Path.GetFullPath(path.Substring(0, path.Length - 2)) + "\\";
                 var builder = new ScriptModuleContainerBuilder(null, path, new CoffeeScriptCompiler(File.ReadAllText));
-                builder.AddModuleForEachSubdirectoryOf("");
+                builder.AddModuleForEachSubdirectoryOf("", "");
                 var container = builder.Build();
                 foreach (var module in container)
                 {

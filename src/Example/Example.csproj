@@ -66,16 +66,35 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Scripts\social\facebook.js" />
-    <Content Include="Scripts\social\twitter.js" />
-    <Content Include="Styles\app\images\accept.png" />
+    <Content Include="Scripts\color-picker\ColorPickerViewModel.js" />
+    <Content Include="Scripts\color-picker\init.js" />
+    <Content Include="Scripts\color-picker\slider.js" />
+    <Content Include="Scripts\lib\Class.js" />
+    <Content Include="Scripts\lib\jquery.tmpl.js" />
+    <Content Include="Scripts\lib\knockout.js" />
+    <Content Include="Styles\color-picker\images\color_swatch.png" />
     <Content Include="Styles\app\site.css" />
     <Content Include="Scripts\base\namespace.js" />
     <Content Include="Scripts\lib\module.txt" />
-    <Content Include="Scripts\util\message.js" />
+    <Content Include="Styles\base\forms.css" />
     <Content Include="Styles\base\reset.css" />
     <Content Include="Styles\base\typography.css" />
-    <Content Include="Styles\widgets\test.css" />
+    <Content Include="Styles\base\validation.css" />
+    <Content Include="Styles\color-picker\ui.css" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Styles\jquery-ui\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Styles\jquery-ui\images\ui-icons_222222_256x240.png" />
+    <Content Include="Styles\jquery-ui\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Styles\jquery-ui\images\ui-icons_454545_256x240.png" />
+    <Content Include="Styles\jquery-ui\images\ui-icons_888888_256x240.png" />
+    <Content Include="Styles\jquery-ui\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Styles\jquery-ui\jquery-ui.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -102,8 +121,7 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\util\test.coffee" />
-    <Content Include="Views\Home\Test.cshtml" />
+    <Content Include="Views\Home\ColorPicker.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Knapsack\Knapsack.csproj">

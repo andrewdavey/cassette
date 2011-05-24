@@ -33,7 +33,7 @@ namespace Knapsack
             relativeModuleDirectories.Add(Tuple.Create(directoryRelativeToRootDirectory.Replace('\\', '/'), location));
         }
 
-        public void AddModuleForEachSubdirectoryOf(string directoryRelativeToRootDirectory)
+        public void AddModuleForEachSubdirectoryOf(string directoryRelativeToRootDirectory, string location)
         {
             var fullPath = rootDirectory + directoryRelativeToRootDirectory;
             if (Directory.Exists(fullPath))
@@ -43,7 +43,7 @@ namespace Knapsack
                     var info = new DirectoryInfo(path);
                     if (!info.Attributes.HasFlag(FileAttributes.Hidden))
                     {
-                        AddModule(path.Substring(rootDirectory.Length), null);
+                        AddModule(path.Substring(rootDirectory.Length), location);
                     }
                 }
             }

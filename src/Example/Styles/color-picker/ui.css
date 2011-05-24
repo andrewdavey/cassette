@@ -1,0 +1,42 @@
+﻿/* @reference "../jquery-ui/jquery-ui.css"; */
+
+.color-picker h2 {
+    background-image: url(images/color_swatch.png);
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}
+
+.color-picker tr {
+    height: 30px;
+}
+
+.color-picker th {
+    text-align: left;
+}
+
+.color-sliders {
+    height: 120px;
+    padding: 10px;
+}
+
+.color-slider {
+    width: 255px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.chosen-color {
+    width: 50px;
+    height: 50px;
+    border: solid 1px #000;
+    margin: 10px;
+    float: left;
+}
+
+.chosen-color-hex {
+    float: left;
+    height: 50px;
+    margin: 10px;
+    line-height: 50px;
+}

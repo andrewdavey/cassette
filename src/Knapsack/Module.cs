@@ -19,7 +19,7 @@ namespace Knapsack
 
             this.path = path;
             this.resources = resources;
-            this.location = location;
+            this.location = location ?? "";
             this.hash = HashResourceHashes(resources);
             this.moduleReferences = moduleReferences.Select(r => r).ToArray();
         }

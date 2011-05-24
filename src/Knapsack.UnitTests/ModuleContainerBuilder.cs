@@ -43,7 +43,7 @@ namespace Knapsack
             File.WriteAllText(Path.Combine(rootDirectory, "nojs", "foo.txt"), "foo");
 
             var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
-            builder.AddModuleForEachSubdirectoryOf("");
+            builder.AddModuleForEachSubdirectoryOf("", "");
             container = builder.Build();
         }
 
@@ -183,7 +183,7 @@ namespace Knapsack
                 "/// <reference path=\"widgets.js\"/>\r\nfunction main() {}");
 
             var builder = new ScriptModuleContainerBuilder(storage, rootDirectory, new CoffeeScriptCompiler(File.ReadAllText));
-            builder.AddModuleForEachSubdirectoryOf("");
+            builder.AddModuleForEachSubdirectoryOf("", "");
             container = builder.Build();
         }
 
