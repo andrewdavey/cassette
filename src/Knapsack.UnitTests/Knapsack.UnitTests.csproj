@@ -72,6 +72,7 @@
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
+    <Compile Include="Web\BufferStream.cs" />
     <Compile Include="Web\KnapsackHttpHandler.cs" />
     <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
     <Compile Include="Web\PageHelper.cs" />

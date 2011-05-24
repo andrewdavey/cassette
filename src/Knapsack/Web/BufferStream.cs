@@ -45,14 +45,16 @@ namespace Knapsack.Web
             // Spin through the buffer looking for the placeholders.
             // Replace with the actual HTML elements.
             using (var reader = new StreamReader(buffer, encoding))
-            using (var writer = new StreamWriter(outputStream, encoding))
             {
+                var writer = new StreamWriter(outputStream, encoding);
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     line = pageHelper.ReplacePlaceholders(line);
                     writer.WriteLine(line);
                 }
+                writer.Flush();
+                // Do not dispose the writer because that will also dispose the outputStream!
             }
         }
 
