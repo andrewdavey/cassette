@@ -111,6 +111,7 @@ namespace Knapsack.Web
             }
             else
             {
+                context.Response.StatusCode = 200;
                 context.Response.ContentType = contentType;
                 SetLongLivedCacheHeaders(context.Response.Cache, serverETag);
                 // NOTE: If people want compression then tell IIS to do it using config!

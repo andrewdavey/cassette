@@ -4,6 +4,7 @@ using System.Web;
 using Moq;
 using Should;
 using Xunit;
+using System.Linq;
 
 namespace Knapsack.Web
 {
@@ -20,11 +21,11 @@ namespace Knapsack.Web
             context = new Mock<HttpContextBase>();
             pageHelper = new Mock<IPageHelper>();
 
-            pageHelper.Expect(h => h.ReplacePlaceholders(It.IsAny<string>()))
+            pageHelper.Setup(h => h.ReplacePlaceholders(It.IsAny<string>()))
                       .Returns<string>(s => s);
 
-            context.ExpectGet(c => c.Response.ContentType).Returns("text/html");
-            context.ExpectGet(c => c.Response.Output.Encoding).Returns(Encoding.ASCII);
+            context.SetupGet(c => c.Response.ContentType).Returns("text/html");
+            context.SetupGet(c => c.Response.Output.Encoding).Returns(Encoding.ASCII);
 
             buffer = new BufferStream(outputStream, context.Object, pageHelper.Object);
         }
@@ -43,7 +44,7 @@ namespace Knapsack.Web
         [Fact]
         public void XHtml_has_placeholders_replaced()
         {
-            context.ExpectGet(c => c.Response.ContentType).Returns("application/xhtml+xml");
+            context.SetupGet(c => c.Response.ContentType).Returns("application/xhtml+xml");
 
             buffer.Write(Encoding.ASCII.GetBytes("<html/>"), 0, 7);
             buffer.Flush();
@@ -54,14 +55,12 @@ namespace Knapsack.Web
         [Fact]
         public void Non_html_output_does_not_have_placeholders_replaced()
         {
-            context.ExpectGet(c => c.Response.ContentType).Returns("text/plain");
-            pageHelper.Expect(h => h.ReplacePlaceholders(It.IsAny<string>()))
-                      .Never();
-
+            context.SetupGet(c => c.Response.ContentType).Returns("text/plain");
+            
             buffer.Write(Encoding.ASCII.GetBytes("test"), 0, 4);
             buffer.Flush();
 
-            pageHelper.VerifyAll();
+            outputStream.GetBuffer().SequenceEqual(Encoding.ASCII.GetBytes("test"));
         }
     }
 }

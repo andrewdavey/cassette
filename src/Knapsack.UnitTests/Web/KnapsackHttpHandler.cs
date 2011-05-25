@@ -70,15 +70,15 @@ namespace Knapsack.Web
             cache = new Mock<HttpCachePolicyBase>();
             server = new Mock<HttpServerUtilityBase>();
 
-            httpRequest.ExpectGet(r => r.Headers).Returns(requestHeaders);
-            httpResponse.ExpectGet(r => r.Headers).Returns(responseHeaders);
-            httpResponse.ExpectGet(r => r.OutputStream).Returns(responseOutputStream);
-            httpResponse.ExpectGet(r => r.Cache).Returns(cache.Object);
-            httpContext.ExpectGet(c => c.Request).Returns(httpRequest.Object);
-            httpContext.ExpectGet(c => c.Response).Returns(httpResponse.Object);
-            httpContext.ExpectGet(c => c.Server).Returns(server.Object);
+            httpRequest.SetupGet(r => r.Headers).Returns(requestHeaders);
+            httpResponse.SetupGet(r => r.Headers).Returns(responseHeaders);
+            httpResponse.SetupGet(r => r.OutputStream).Returns(responseOutputStream);
+            httpResponse.SetupGet(r => r.Cache).Returns(cache.Object);
+            httpContext.SetupGet(c => c.Request).Returns(httpRequest.Object);
+            httpContext.SetupGet(c => c.Response).Returns(httpResponse.Object);
+            httpContext.SetupGet(c => c.Server).Returns(server.Object);
 
-            httpResponse.Expect(r => r.Write(It.IsAny<string>())).Callback<string>(data =>
+            httpResponse.Setup(r => r.Write(It.IsAny<string>())).Callback<string>(data =>
             {
                 var writer = new StreamWriter(responseOutputStream);
                 writer.Write(data);
@@ -89,7 +89,7 @@ namespace Knapsack.Web
         [Fact]
         public void Module_request_returns_module_from_storage()
         {
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/scripts/lib_123");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/scripts/lib_123");
             handler.ProcessRequest(httpContext.Object);
 
             var output = GetOutputString();
@@ -100,7 +100,7 @@ namespace Knapsack.Web
         public void Module_request_sets_cache_headers()
         {
             var nextYear = DateTime.UtcNow.AddYears(1);
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/scripts/lib_123");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/scripts/lib_123");
             handler.ProcessRequest(httpContext.Object);
 
             cache.Verify(c => c.SetCacheability(HttpCacheability.Public));
@@ -111,25 +111,25 @@ namespace Knapsack.Web
         [Fact]
         public void Request_missing_path_info_returns_BadRequest()
         {
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("");
             handler.ProcessRequest(httpContext.Object);
-            httpResponse.ExpectSet(r => r.StatusCode, 400);
+            httpResponse.VerifySet(r => r.StatusCode = 400);
         }
 
         [Fact]
         public void Request_incomplete_path_info_returns_BadRequest()
         {
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/");
             handler.ProcessRequest(httpContext.Object);
-            httpResponse.ExpectSet(r => r.StatusCode, 400);
+            httpResponse.VerifySet(r => r.StatusCode = 400);
         }
 
         [Fact]
         public void Request_nonexistent_module_returns_NotFound()
         {
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/modules/fail_123");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/scripts/fail_123");
             handler.ProcessRequest(httpContext.Object);
-            httpResponse.ExpectSet(r => r.StatusCode, 404);
+            httpResponse.VerifySet(r => r.StatusCode = 404);
         }
 
         [Fact]
@@ -137,29 +137,29 @@ namespace Knapsack.Web
         {
             // Knapsack won't generate URLs without the hash, but it's better to avoid
             // throwing an exception if we can help it!
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/modules/lib");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/scripts/lib");
             handler.ProcessRequest(httpContext.Object);
-            httpResponse.ExpectSet(r => r.StatusCode, 200);
+            httpResponse.VerifySet(r => r.StatusCode = 200);
         }
 
         [Fact]
         public void Request_module_using_etag_returns_NotModified()
         {
             var etag = scriptModuleContainer.FindModule("app").Hash.ToHexString();
-            requestHeaders["If-Modified-Since"] = etag;
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/modules/lib_" + etag);
+            requestHeaders["If-None-Match"] = etag;
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/scripts/app_" + etag);
             handler.ProcessRequest(httpContext.Object);
-            httpResponse.ExpectSet(r => r.StatusCode, 304);
+            httpResponse.VerifySet(r => r.StatusCode = 304);
         }
 
         [Fact]
         public void Coffee_request_compiles_coffee_file_and_returns_javascript()
         {
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/coffee/app/test");
-            server.Expect(s => s.MapPath("~/app/test.coffee")).Returns(rootDirectory + "/app/test.coffee");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/coffee/app/test");
+            server.Setup(s => s.MapPath("~/app/test.coffee")).Returns(rootDirectory + "/app/test.coffee");
             handler.ProcessRequest(httpContext.Object);
 
-            httpResponse.VerifySet(r => r.ContentType, "text/javascript");
+            httpResponse.VerifySet(r => r.ContentType = "text/javascript");
             GetOutputString().ShouldEqual("(function() {\n  var x;\n  x = 1;\n}).call(this);\n");
             var time = File.GetLastWriteTimeUtc(Path.Combine(rootDirectory, "app", "test.coffee"));
             cache.Verify(c => c.SetLastModified(time));
@@ -171,12 +171,12 @@ namespace Knapsack.Web
             var time = File.GetLastWriteTimeUtc(Path.Combine(rootDirectory, "app", "test.coffee"));
             requestHeaders.Add("If-Modified-Since", time.ToString("r"));
             
-            httpRequest.ExpectGet(r => r.PathInfo).Returns("/coffee/app/test");
-            server.Expect(s => s.MapPath("~/app/test.coffee")).Returns(rootDirectory + "/app/test.coffee");
+            httpRequest.SetupGet(r => r.PathInfo).Returns("/coffee/app/test");
+            server.Setup(s => s.MapPath("~/app/test.coffee")).Returns(rootDirectory + "/app/test.coffee");
             
             handler.ProcessRequest(httpContext.Object);
 
-            httpResponse.VerifySet(r => r.StatusCode, 304);
+            httpResponse.VerifySet(r => r.StatusCode = 304);
         }
 
         string GetOutputString()
