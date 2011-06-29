@@ -137,7 +137,10 @@ namespace Knapsack.Web
             {
                 var configPaths =
                     from element in modules.Cast<ModuleElement>()
-                    select Path.Combine(HttpRuntime.AppDomainAppPath, element.Path);
+                    let endsWithStar = element.Path.EndsWith("*")
+                    select endsWithStar // Path.Combine does not like paths with a "*" in them.
+                        ? Path.Combine(HttpRuntime.AppDomainAppPath, element.Path.Substring(0, element.Path.Length - 1)) + "*"
+                        : Path.Combine(HttpRuntime.AppDomainAppPath, element.Path);
 
                 foreach (var path in configPaths)
                 {
