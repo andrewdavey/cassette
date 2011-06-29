@@ -1,4 +1,5 @@
-﻿@{
+﻿@model object
+@{
     ViewBag.Title = "Example Web App";
 }
 
@@ -14,9 +15,4 @@
 @* Take a look at _ColorPicker.cshtml to see more of Knapsack in action. *@
 @Html.Partial("_ColorPicker")
 
-@Html.Partial("_Fork")
-@Html.Partial("_Tweet")
-
-<script type="text/javascript">
-window.viewData = @Html.ToJson((object)Model);
-</script>
+@Html.AssignPageViewData(Model)

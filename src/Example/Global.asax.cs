@@ -20,8 +20,17 @@ namespace Example
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            routes.IgnoreRoute("scripts/{list}.aspx");
 
+            routes.MapRoute(
+                "Color",
+                "colors/{id}",
+                new { controller = "Color", action = "item" }
+            );
+            routes.MapRoute(
+                "Colors",
+                "colors",
+                new { controller = "Color", action = "list" }
+            );
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters

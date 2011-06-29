@@ -6,28 +6,10 @@ namespace Example.Controllers
     {
         public ActionResult Index()
         {
-            return View(new
-            {
-                FavoriteColor = new
-                {
-                    Red = DB.Red,
-                    Green = DB.Green,
-                    Blue = DB.Blue
-                }
+            return View(new 
+            { 
+                colorsUrl = Url.RouteUrl("Colors") 
             });
         }
-
-        [HttpPost]
-        public void Save(byte red, byte green, byte blue)
-        {
-            DB.Red = red;
-            DB.Green = green;
-            DB.Blue = blue;
-        }
-    }
-
-    static class DB
-    {
-        public static byte Red, Green, Blue;
     }
 }

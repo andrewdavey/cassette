@@ -6,10 +6,16 @@ namespace Example
 {
     public static class Helpers
     {
-        public static IHtmlString ToJson(this HtmlHelper html, object obj)
+        public static IHtmlString AssignPageViewData(this HtmlHelper html, object obj)
         {
             var serializer = new JavaScriptSerializer();
-            return new HtmlString(serializer.Serialize(obj));
+            var json = serializer.Serialize(obj);
+
+            return new HtmlString(
+                "<script type=\"text/javascript\">" +
+                "window.pageViewData = " + json +
+                "</script>"
+            );
         }
     }
 }

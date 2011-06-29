@@ -13,3 +13,8 @@ body {
     width: 40em;
     margin-bottom: 2em;
 }
+
+#footer {
+    padding-top: 40px;
+    clear: left;
+}

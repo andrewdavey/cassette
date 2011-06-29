@@ -39,3 +39,18 @@
         </tr>
     </table>
 </div>
+<div class="saved-colors">
+    <h2>Saved Colors</h2>
+    <p data-bind="visible: savedColors().length === 0">
+        Choose some colors...
+    </p>
+    <ul data-bind="template: { foreach: savedColors, name: 'ColorListItem' }"></ul>
+</div>
+
+<script id="ColorListItem" type="text/x-jquery-tmpl">
+<li>
+    <span class="color-box" data-bind="style: { backgroundColor: color }"></span>
+    <span data-bind="text: color"></span>
+    <a href="#" data-bind="click: deleteColor">Delete</a>
+</li>
+</script>

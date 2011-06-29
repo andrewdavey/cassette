@@ -1,45 +1,80 @@
-﻿/// <reference path="../base/namespace.js" />
+﻿/// <reference path="../app/namespace.js" />
 /// <reference path="../lib/Class.js" />
 /// <reference path="../lib/knockout.js" />
 /// <reference path="../lib/jquery.js" />
+/// <reference path="ColorViewModel.js" />
+/// <reference path="helpers.js" />
 
-Example.ColorPickerViewModel = Class.extend({
+(function () {
+    var helpers = this.Example.helpers;
 
-    // Constructor of the view model object
-    init: function (viewData) {
-        this.red = ko.observable(viewData.FavoriteColor.Red);
-        this.green = ko.observable(viewData.FavoriteColor.Green);
-        this.blue = ko.observable(viewData.FavoriteColor.Blue);
+    this.Example.ColorPickerViewModel = Class.extend({
 
-        this.color = ko.dependentObservable(this.getCurrentColorHex, this);
-    },
+        // Constructor of the view model object
+        init: function (pageViewData) {
+            this.colorsUrl = pageViewData.colorsUrl;
 
-    getCurrentColorHex: function () {
-        return "#" +
-                this.convertNumberToHexString(this.red()) +
-                this.convertNumberToHexString(this.green()) +
-                this.convertNumberToHexString(this.blue());
-    },
+            this.red = ko.observable(0);
+            this.green = ko.observable(0);
+            this.blue = ko.observable(0);
+            this.color = ko.dependentObservable(this.getCurrentColorHex, this);
+            this.savedColors = ko.observableArray([]);
 
-    convertNumberToHexString: function (number) {
-        return ('0' + number.toString(16)).substr(-2);
-    },
+            this.downloadColors();
+        },
 
-    random: function () {
-        this.red(Math.floor(Math.random() * 255));
-        this.green(Math.floor(Math.random() * 255));
-        this.blue(Math.floor(Math.random() * 255));
-    },
+        downloadColors: function () {
+            var colorPicker = this;
+            $.get(this.colorsUrl, function (colors) {
+                colors.forEach(function (colorData) {
+                    colorPicker.addColor(colorData);
+                });
+            });
+        },
 
-    save: function () {
-        $.post(
-            "/home/save",
-            {
+        getCurrentColorHex: function () {
+            return helpers.getColorHexString(
+                this.red(),
+                this.green(),
+                this.blue()
+            );
+        },
+
+        random: function () {
+            var color = helpers.randomColor();
+
+            this.red(color.red);
+            this.green(color.green);
+            this.blue(color.blue);
+        },
+
+        save: function () {
+            var data = {
                 red: this.red(),
                 blue: this.blue(),
                 green: this.green()
-            }
-        );
-    }
+            };
+            $.ajax({
+                type: "post",
+                url: this.colorsUrl,
+                data: data,
+                complete: function (xhr) {
+                    data.url = xhr.getResponseHeader("Location");
+                    this.addColor(data);
+                } .bind(this)
+            });
+        },
 
-});
+        addColor: function (colorData) {
+            var viewModel = new Example.ColorViewModel(colorData);
+            viewModel.onDeleted.addHandler(this.onColorDeleted.bind(this));
+            this.savedColors.push(viewModel);
+        },
+
+        onColorDeleted: function (colorViewModel) {
+            this.savedColors.remove(colorViewModel);
+        }
+
+    });
+
+}).call(this);
