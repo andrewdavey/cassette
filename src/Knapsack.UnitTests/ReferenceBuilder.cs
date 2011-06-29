@@ -72,6 +72,33 @@ namespace Knapsack
         }
 
         [Fact]
+        public void AddReference_to_module_b_path_loads_module_b()
+        {
+            builder.AddReference("b");
+            var modules = builder.GetRequiredModules().ToArray();
+            modules.Length.ShouldEqual(1);
+            modules[0].Path.ShouldEqual("b");
+        }
+
+        [Fact]
+        public void AddReference_to_module_b_path_with_trailing_slash_loads_module_b()
+        {
+            builder.AddReference("b/");
+            var modules = builder.GetRequiredModules().ToArray();
+            modules.Length.ShouldEqual(1);
+            modules[0].Path.ShouldEqual("b");
+        }
+
+        [Fact]
+        public void AddReference_to_module_b_path_with_trailing_slash_star_loads_module_b()
+        {
+            builder.AddReference("b/*");
+            var modules = builder.GetRequiredModules().ToArray();
+            modules.Length.ShouldEqual(1);
+            modules[0].Path.ShouldEqual("b");
+        }
+
+        [Fact]
         public void AddReference_to_module_that_does_not_exist_throws_ArgumentException()
         {
             Assert.Throws<ArgumentException>(delegate

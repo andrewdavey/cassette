@@ -17,7 +17,8 @@ namespace Knapsack
 
         public void AddReference(string resourcePath)
         {
-            var module = moduleContainer.FindModuleContainingResource(resourcePath);
+            var module = moduleContainer.FindModuleContainingResource(resourcePath)
+                      ?? moduleContainer.FindModule(resourcePath.TrimEnd('/', '*'));
             if (module == null)
             {
                 // The resourcePath may be an external URL.
