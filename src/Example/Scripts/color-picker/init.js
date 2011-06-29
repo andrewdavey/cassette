@@ -3,5 +3,5 @@
 /// <reference path="slider.js" />
 
 $(function () {
-    ko.applyBindings(new Example.ColorPickerViewModel());
+    ko.applyBindings(new Example.ColorPickerViewModel(window.viewData));
 });

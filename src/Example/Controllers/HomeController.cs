@@ -1,20 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace Example.Controllers
 {
     public class HomeController : Controller
     {
-        //
-        // GET: /Home/
-
         public ActionResult Index()
         {
-            return View();
+            return View(new
+            {
+                FavoriteColor = new
+                {
+                    Red = DB.Red,
+                    Green = DB.Green,
+                    Blue = DB.Blue
+                }
+            });
         }
 
+        [HttpPost]
+        public void Save(byte red, byte green, byte blue)
+        {
+            DB.Red = red;
+            DB.Green = green;
+            DB.Blue = blue;
+        }
+    }
+
+    static class DB
+    {
+        public static byte Red, Green, Blue;
     }
 }

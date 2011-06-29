@@ -16,3 +16,7 @@
 
 @Html.Partial("_Fork")
 @Html.Partial("_Tweet")
+
+<script type="text/javascript">
+window.viewData = @Html.ToJson((object)Model);
+</script>
