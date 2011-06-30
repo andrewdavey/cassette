@@ -50,7 +50,7 @@ namespace Knapsack.CoffeeScript
                 var error = result as ErrorInstance;
                 if (error != null)
                 {
-                    throw new CompileException(error.Message, path);
+                    throw new CompileException(error.Message + " in " + path, path);
                 }
                 else
                 {

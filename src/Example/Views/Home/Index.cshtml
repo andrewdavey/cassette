@@ -1,18 +1,58 @@
 ﻿@model object
 @{
     ViewBag.Title = "Example Web App";
+    
+    Html.ReferenceScript("scripts/color-picker");
+    Html.ReferenceStylesheet("styles/color-picker");
 }
-
-<h1>Example Web App</h1>
-
-<div class="about">
-    <p>This simple web application uses <a href="http://jquery.com/">jQuery</a>, <a href="http://jqueryui.com">jQuery UI</a>, <a href="http://knockoutjs.com/">Knockout</a> and some other JavaScript libraries.</p>
-    <p>The dependencies between these libraries and the application's own JavaScript is handled by <a href="http://aboutcode.net/knapsack">Knapsack</a>.</p>
-    <p>As a result, the code is easy to maintain and debug, but also very efficient in production.
-    Try toggling debug mode in Web.config and then view the page source to see the different output.</p>
+<div class="color-picker">
+    <h2>Color Picker</h2>
+    <table>
+        <tr>
+            <th>Red</th>
+            <td><div class="color-slider" data-bind="slider: red"></div></td>
+            <td data-bind="text: red" style="width: 50px"></td>
+        </tr>
+        <tr>
+            <th>Green</th>
+            <td><div class="color-slider" data-bind="slider: green"></div></td>
+            <td data-bind="text: green"></td>
+        </tr>
+        <tr>
+            <th>Blue</th>
+            <td><div class="color-slider" data-bind="slider: blue"></div></td>
+            <td data-bind="text: blue"></td>
+        </tr>
+        <tr>
+            <th>Color</th>
+            <td colspan="2">
+                <div class="chosen-color" data-bind="style: { backgroundColor: color }"></div>
+                <div class="chosen-color-hex" data-bind="text: color"></div>
+            </td>
+        </tr>
+        <tr>
+            <th> </th>
+            <td>
+                <button data-bind="click: random">Random</button>
+                <button data-bind="click: save">Save Color</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="saved-colors">
+    <h2>Saved Colors</h2>
+    <p data-bind="visible: savedColors().length === 0">
+        Choose some colors...
+    </p>
+    <ul data-bind="template: { foreach: savedColors, name: 'ColorListItem' }"></ul>
 </div>
 
-@* Take a look at _ColorPicker.cshtml to see more of Knapsack in action. *@
-@Html.Partial("_ColorPicker")
+<script id="ColorListItem" type="text/x-jquery-tmpl">
+<li>
+    <span class="color-box" data-bind="style: { backgroundColor: color }"></span>
+    <span data-bind="text: color"></span>
+    <a href="#" data-bind="click: deleteColor">Delete</a>
+</li>
+</script>
 
 @Html.AssignPageViewData(Model)
