@@ -14,6 +14,7 @@ namespace Knapsack.Web
     {
         readonly bool useModules;
         readonly bool bufferHtmlOutput;
+        readonly string handler;
         readonly IReferenceBuilder scriptReferenceBuilder;
         readonly IReferenceBuilder stylesheetReferenceBuilder;
         readonly Func<string, string> virtualPathToAbsolute;
@@ -21,10 +22,11 @@ namespace Knapsack.Web
         readonly string scriptsPlaceholderPrefix;
         readonly Dictionary<string, string> scriptPlaceholders;
 
-        public PageHelper(bool useModules, bool bufferHtmlOutput, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, Func<string, string> virtualPathToAbsolute)
+        public PageHelper(bool useModules, bool bufferHtmlOutput, string handler, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, Func<string, string> virtualPathToAbsolute)
         {
             this.useModules = useModules;
             this.bufferHtmlOutput = bufferHtmlOutput;
+            this.handler = handler;
             this.scriptReferenceBuilder = scriptReferenceBuilder;
             this.stylesheetReferenceBuilder = stylesheetReferenceBuilder;
             this.virtualPathToAbsolute = virtualPathToAbsolute;
@@ -238,7 +240,7 @@ namespace Knapsack.Web
             // I guess asp.net favours the last file extension it finds.
             var pathWithoutExtension = path.Substring(0, path.Length - ".coffee".Length);
             // Return the URL that will invoke the CoffeeScript compiler to return JavaScript.
-            return "~/knapsack.axd/coffee/" + pathWithoutExtension;
+            return handler + "/coffee/" + pathWithoutExtension;
         }
 
         /// <summary>
@@ -262,7 +264,7 @@ namespace Knapsack.Web
             }
             else
             {
-                return "~/knapsack.axd/scripts/" + m.Path + "_" + m.Hash.ToHexString();
+                return handler + "/scripts/" + m.Path + "_" + m.Hash.ToHexString();
             }
         }
 
@@ -284,7 +286,7 @@ namespace Knapsack.Web
         {
             return stylesheetReferenceBuilder
                 .GetRequiredModules()
-                .Select(m => "~/knapsack.axd/styles/" + m.Path + "_" + m.Hash.ToHexString());
+                .Select(m => handler + "/styles/" + m.Path + "_" + m.Hash.ToHexString());
         }
 
         string AppRelativeStylesheetUrl(Resource stylesheet)

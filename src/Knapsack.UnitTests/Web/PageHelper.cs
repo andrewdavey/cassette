@@ -16,7 +16,7 @@ namespace Knapsack.Web
             var referenceBuilder = new FakeReferenceBuilder();
             referenceBuilder.AddReference = path => scriptPath = path;
             
-            var pageHelper = new PageHelper(true, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(true, false, "~/knapsack.axd", referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             pageHelper.ReferenceScript("test.js");
             
             scriptPath.ShouldEqual("test.js");
@@ -29,7 +29,7 @@ namespace Knapsack.Web
             var referenceBuilder = new FakeReferenceBuilder();
             referenceBuilder.AddReference = path => scriptPath = path;
 
-            var pageHelper = new PageHelper(true, false, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(true, false, "~/knapsack.axd", new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
             pageHelper.ReferenceStylesheet("test.css");
 
             scriptPath.ShouldEqual("test.css");
@@ -44,7 +44,7 @@ namespace Knapsack.Web
             
             var useModules = true;
 
-            var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, "~/knapsack.axd", referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts(null);
 
             html.ToHtmlString().ShouldEqual(
@@ -67,7 +67,7 @@ namespace Knapsack.Web
             );
             referenceBuilder.GetRequiredModules = () => new[] { module };
 
-            var pageHelper = new PageHelper(false, true, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(false, true, "~/knapsack.axd", new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts("");
 
             Assert.True(
@@ -94,7 +94,7 @@ namespace Knapsack.Web
             );
             referenceBuilder.GetRequiredModules = () => new[] { module };
 
-            var pageHelper = new PageHelper(false, true, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(false, true, "~/knapsack.axd", referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts("").ToHtmlString().Trim();
 
             var scripts = pageHelper.ReplacePlaceholders(html);
@@ -119,7 +119,7 @@ namespace Knapsack.Web
             
             var useModules = false;
 
-            var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, "~/knapsack.axd", referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts(null);
 
             Regex.IsMatch(
@@ -146,7 +146,7 @@ namespace Knapsack.Web
 
             var useModules = false;
 
-            var pageHelper = new PageHelper(useModules, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, "~/knapsack.axd", referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts(null);
 
             Regex.IsMatch(
@@ -161,7 +161,7 @@ namespace Knapsack.Web
             var referenceBuilder = new FakeReferenceBuilder();
             var module = Module.CreateExternalModule("http://test.com/test.js", "");
             referenceBuilder.GetRequiredModules = () => new[] { module };
-            var pageHelper = new PageHelper(true, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(true, false, "~/knapsack.axd", referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts("").ToHtmlString();
             html.ShouldEqual("<script src=\"http://test.com/test.js\" type=\"text/javascript\"></script>");
         }
@@ -172,7 +172,7 @@ namespace Knapsack.Web
             var referenceBuilder = new FakeReferenceBuilder();
             var module = Module.CreateExternalModule("http://test.com/test.js", "");
             referenceBuilder.GetRequiredModules = () => new[] { module };
-            var pageHelper = new PageHelper(false, false, referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(false, false, "~/knapsack.axd", referenceBuilder, new FakeReferenceBuilder(), VirtualPathToAbsolute);
             var html = pageHelper.RenderScripts("").ToHtmlString();
             html.ShouldEqual("<script src=\"http://test.com/test.js\" type=\"text/javascript\"></script>");
         }
@@ -194,7 +194,7 @@ namespace Knapsack.Web
 
             var useModules = true;
 
-            var pageHelper = new PageHelper(useModules, false, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(useModules, false, "~/knapsack.axd", new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
             var html = pageHelper.RenderStylesheetLinks();
 
             html.ToHtmlString().ShouldEqual(
@@ -217,7 +217,7 @@ namespace Knapsack.Web
             );
             referenceBuilder.GetRequiredModules = () => new[] { module };
 
-            var pageHelper = new PageHelper(false, true, new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
+            var pageHelper = new PageHelper(false, true, "~/knapsack.axd", new FakeReferenceBuilder(), referenceBuilder, VirtualPathToAbsolute);
             var html = pageHelper.RenderStylesheetLinks();
 
             Assert.True(

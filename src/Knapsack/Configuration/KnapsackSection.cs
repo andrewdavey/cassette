@@ -33,6 +33,13 @@ namespace Knapsack.Configuration
             set { this["bufferHtmlOutput"] = value; }
         }
 
+        [ConfigurationProperty("handler", DefaultValue="~/knapsack.axd")]
+        public string Handler
+        {
+            get { return (string)this["handler"]; }
+            set { this["handler"] = value; }
+        }
+
         public bool ShouldUseModules(HttpContextBase context)
         {
             return ModuleMode == ModuleMode.On

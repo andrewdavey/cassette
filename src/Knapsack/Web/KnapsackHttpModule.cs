@@ -90,7 +90,7 @@ namespace Knapsack.Web
             var scriptReferenceBuilder = new ReferenceBuilder(Manager.ScriptModuleContainer);
             var stylesheetReferenceBuilder = new ReferenceBuilder(Manager.StylesheetModuleContainer);
             var useModules = Manager.Configuration.ShouldUseModules(httpContext);
-            return new PageHelper(useModules, Manager.Configuration.BufferHtmlOutput, scriptReferenceBuilder, stylesheetReferenceBuilder, VirtualPathUtility.ToAbsolute);
+            return new PageHelper(useModules, Manager.Configuration.BufferHtmlOutput, Manager.Configuration.Handler, scriptReferenceBuilder, stylesheetReferenceBuilder, VirtualPathUtility.ToAbsolute);
         }
 
         public static IPageHelper GetPageHelper(HttpContextBase httpContext)
