@@ -114,5 +114,13 @@ namespace Knapsack
             var module = builder.GetRequiredModules().Last();
             module.Path.ShouldEqual("http://example.com/api.js");
         }
+
+        [Fact]
+        public void AddReference_to_external_protocol_relative_url_Then_GetRequiredModules_returns_it_last()
+        {
+            builder.AddReference("//example.com/api.js");
+            var module = builder.GetRequiredModules().Last();
+            module.Path.ShouldEqual("//example.com/api.js");
+        }
     }
 }
