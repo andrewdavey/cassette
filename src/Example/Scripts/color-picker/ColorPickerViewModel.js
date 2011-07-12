@@ -5,15 +5,21 @@
 /// <reference path="ColorViewModel.js" />
 /// <reference path="helpers.js" />
 
+// Immediate anonymous function wraps entire file to prevent code leaking into global scope.
 (function () {
-    var helpers = this.Example.helpers;
 
+    // Locally reference external objects and functions. (Optional, but can save on lots of typing!)
+    var helpers = this.Example.helpers;
+    var ColorViewModel = this.Example.ColorViewModel;
+
+    // Add a new class to the application's global namespace
     this.Example.ColorPickerViewModel = Class.extend({
 
         // Constructor of the view model object
         init: function (pageViewData) {
             this.colorsUrl = pageViewData.colorsUrl;
 
+            // Observable properties
             this.red = ko.observable(0);
             this.green = ko.observable(0);
             this.blue = ko.observable(0);
@@ -25,11 +31,14 @@
 
         downloadColors: function () {
             var colorPicker = this;
-            $.get(this.colorsUrl, function (colors) {
-                colors.forEach(function (colorData) {
-                    colorPicker.addColor(colorData);
-                });
-            });
+            $.get(
+                this.colorsUrl,
+                function (colors) {
+                    colors.forEach(function (colorData) {
+                        colorPicker.addColor(colorData);
+                    });
+                }
+            );
         },
 
         getCurrentColorHex: function () {
@@ -59,6 +68,8 @@
                 url: this.colorsUrl,
                 data: data,
                 complete: function (xhr) {
+                    // Expect the server to return with status code 201 Created
+                    // and a URL for the new color resource.
                     data.url = xhr.getResponseHeader("Location");
                     this.addColor(data);
                 } .bind(this)
@@ -66,7 +77,7 @@
         },
 
         addColor: function (colorData) {
-            var viewModel = new Example.ColorViewModel(colorData);
+            var viewModel = new ColorViewModel(colorData);
             viewModel.onDeleted.addHandler(this.onColorDeleted.bind(this));
             this.savedColors.push(viewModel);
         },

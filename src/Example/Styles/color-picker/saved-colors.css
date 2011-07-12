@@ -1,0 +1,18 @@
+﻿.saved-colors {
+    float: left;
+    margin-right: 30px;
+}
+
+.saved-colors li {
+    list-style-type: none;
+    line-height: 20px;
+    height: 20px;
+    margin-bottom: 2px;
+}
+
+.saved-colors .color-box {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: top;
+}

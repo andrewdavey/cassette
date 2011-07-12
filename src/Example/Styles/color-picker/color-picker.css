@@ -1,6 +1,6 @@
 ﻿/* @reference "../jquery-ui/jquery-ui.css"; */
 
-.color-picker, .saved-colors {
+.color-picker {
     float: left;
     margin-right: 30px;
 }
@@ -44,17 +44,4 @@
     height: 50px;
     margin: 10px;
     line-height: 50px;
-}
-
-.saved-colors li {
-    list-style-type: none;
-    line-height: 20px;
-    height: 20px;
-    margin-bottom: 2px;
-}
-.saved-colors .color-box {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    vertical-align: top;
 }

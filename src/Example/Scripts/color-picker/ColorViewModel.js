@@ -5,12 +5,13 @@
 /// <reference path="helpers.js" />
 
 (function () {
+
     var helpers = this.Example.helpers;
     var Event = this.Example.Event;
 
     this.Example.ColorViewModel = Class.extend({
 
-        init: function (viewData, parentViewModel) {
+        init: function (viewData) {
             this.url = viewData.url;
             this.color = helpers.getColorHexString(
                 viewData.red,

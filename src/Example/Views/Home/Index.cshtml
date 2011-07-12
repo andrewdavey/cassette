@@ -10,8 +10,11 @@
     <table>
         <tr>
             <th>Red</th>
+            @* We've added a 'slider' binding to Knockout's built-in object. See slider.js *@
             <td><div class="color-slider" data-bind="slider: red"></div></td>
-            <td data-bind="text: red" style="width: 50px"></td>
+            <td style="width: 50px">
+                <span data-bind="text: red"></span>
+            </td>
         </tr>
         <tr>
             <th>Green</th>
@@ -47,6 +50,7 @@
     <ul data-bind="template: { foreach: savedColors, name: 'ColorListItem' }"></ul>
 </div>
 
+<!-- HTML Templates -->
 <script id="ColorListItem" type="text/x-jquery-tmpl">
 <li>
     <span class="color-box" data-bind="style: { backgroundColor: color }"></span>
@@ -54,5 +58,6 @@
     <a href="#" data-bind="click: deleteColor">Delete</a>
 </li>
 </script>
+
 
 @Html.AssignPageViewData(Model)

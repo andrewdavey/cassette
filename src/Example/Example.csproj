@@ -73,7 +73,7 @@
     <Content Include="Scripts\app\Event.js" />
     <Content Include="Scripts\color-picker\helpers.js" />
     <Content Include="Scripts\color-picker\ColorPickerViewModel.js" />
-    <Content Include="Scripts\color-picker\init.js" />
+    <Content Include="Scripts\color-picker\page.js" />
     <Content Include="Scripts\color-picker\ColorViewModel.js" />
     <Content Include="Scripts\color-picker\slider.js" />
     <Content Include="Scripts\lib\Class.js" />
@@ -87,7 +87,8 @@
     <Content Include="Styles\base\reset.css" />
     <Content Include="Styles\base\typography.css" />
     <Content Include="Styles\base\validation.css" />
-    <Content Include="Styles\color-picker\ui.css" />
+    <Content Include="Styles\color-picker\saved-colors.css" />
+    <Content Include="Styles\color-picker\color-picker.css" />
     <Content Include="Styles\jquery-ui\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Styles\jquery-ui\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Styles\jquery-ui\images\ui-bg_glass_55_fbf9ee_1x400.png" />
