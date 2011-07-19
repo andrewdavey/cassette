@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
-    <Compile Include="Configuration\KnapsackSection.cs" />
+    <Compile Include="Configuration\CassetteSection.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ModuleContainerBuilder.cs" />
@@ -74,8 +74,8 @@
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Web\BufferStream.cs" />
+    <Compile Include="Web\CassetteHttpHandler.cs" />
     <Compile Include="Web\ExceptionCachedManager.cs" />
-    <Compile Include="Web\KnapsackHttpHandler.cs" />
     <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
     <Compile Include="Web\PageHelper.cs" />
   </ItemGroup>

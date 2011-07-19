@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\CassetteSection.cs" />
     <Compile Include="IModuleWriter.cs" />
     <Compile Include="ModuleContainerBuilder.cs" />
     <Compile Include="StylesheetModuleContainerBuilder.cs" />
@@ -65,7 +66,6 @@
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
     <Compile Include="CoffeeScript\ICoffeeScriptCompiler.cs" />
-    <Compile Include="Configuration\KnapsackSection.cs" />
     <Compile Include="Configuration\ModuleElement.cs" />
     <Compile Include="Configuration\ModuleCollection.cs" />
     <Compile Include="Configuration\ModuleMode.cs" />
@@ -93,10 +93,10 @@
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Utilities\StreamExtensions.cs" />
     <Compile Include="Web\BufferStream.cs" />
+    <Compile Include="Web\CassetteHttpHandler.cs" />
+    <Compile Include="Web\CassetteHttpModule.cs" />
     <Compile Include="Web\IManager.cs" />
     <Compile Include="Web\IPageHelper.cs" />
-    <Compile Include="Web\KnapsackHttpHandler.cs" />
-    <Compile Include="Web\KnapsackHttpModule.cs" />
     <Compile Include="Web\Manager.cs" />
     <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
     <Compile Include="Web\ExceptionCachedManager.cs" />
