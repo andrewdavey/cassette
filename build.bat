@@ -3,9 +3,9 @@ del /S /Q build\*
 
 
 mkdir build\nuget
-nuget pack -Symbols src\Knapsack\Knapsack.csproj -OutputDirectory build\nuget
+nuget pack -Symbols src\Cassette\Cassette.csproj -OutputDirectory build\nuget
 
 
 mkdir build\shell
-msbuild /p:Configuration=Release src\Knapsack.Shell\Knapsack.Shell.csproj
-tools\ilrepack.exe /out:build\shell\knapsack.exe src\Knapsack.Shell\bin\Release\Knapsack.Shell.exe src\Knapsack\bin\Release\Knapsack.dll src\Knapsack\bin\Release\AjaxMin.dll src\Knapsack\bin\Release\Jurassic.dll
+msbuild /p:Configuration=Release src\Cassette.Shell\Cassette.Shell.csproj
+tools\ilrepack.exe /out:build\shell\cassette.exe src\Cassette.Shell\bin\Release\Cassette.Shell.exe src\Cassette\bin\Release\Cassette.dll src\Cassette\bin\Release\AjaxMin.dll src\Cassette\bin\Release\Jurassic.dll
