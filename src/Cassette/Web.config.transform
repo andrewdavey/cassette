@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <section name="cassette" type="Cassette.Configuration.CassetteSection, Cassette"/>
+    </configSections>
+
+    <cassette moduleMode="OffInDebug">
+        <!-- moduleMode options:
+                OffInDebug => Modules are used when web application is not in debug mode
+                On => Modules are always used
+                Off => Modules are not used
+        -->
+        <scripts>
+            <!-- By default a module is created for each folder in "~/scripts/"
+                 i.e. <add path="scripts/*"/>
+            
+                 Individual modules can be specified if required:
+                 e.g.
+                 <add path="scripts/libs"/>
+                 <add path="scripts/widgets"/>
+            -->
+        </scripts>
+        <styles>
+            <!-- If empty, this convention is used: <add path="styles/*" />-->
+        </styles>
+    </cassette>
+    
+    <system.web>
+        <httpModules>
+            <add name="Cassette"
+                 type="Cassette.Web.CassetteHttpModule, Cassette"/>
+        </httpModules>
+        <httpHandlers>
+            <add verb="GET" path="cassette.axd"
+                 type="Cassette.Web.CassetteHttpHandler, Cassette"/>
+        </httpHandlers>
+    </system.web>
+
+    <system.webServer>
+        <modules>
+            <add name="Cassette"
+                 type="Cassette.Web.CassetteHttpModule, Cassette"
+                 preCondition="managedHandler"/>
+        </modules>
+        <handlers>
+            <add name="Cassette" verb="GET" path="cassette.axd"
+                 type="Cassette.Web.CassetteHttpHandler, Cassette"/>
+        </handlers>
+    </system.webServer>
+
+</configuration>
