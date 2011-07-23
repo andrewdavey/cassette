@@ -59,6 +59,15 @@ namespace Cassette.Web
             }
         }
 
+        public ModuleContainer HtmlTemplateModuleContainer
+        {
+            get
+            {
+                cacheClearer.Clear();
+                throw exception;
+            }
+        }
+
         public CacheDependency CreateCacheDependency()
         {
             return cacheClearer;

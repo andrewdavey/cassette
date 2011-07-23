@@ -89,8 +89,9 @@ namespace Cassette.Web
         {
             var scriptReferenceBuilder = new ReferenceBuilder(Manager.ScriptModuleContainer);
             var stylesheetReferenceBuilder = new ReferenceBuilder(Manager.StylesheetModuleContainer);
+            var htmlTemplateReferenceBuilder = new ReferenceBuilder(Manager.HtmlTemplateModuleContainer);
             var useModules = Manager.Configuration.ShouldUseModules(httpContext);
-            return new PageHelper(useModules, Manager.Configuration.BufferHtmlOutput, Manager.Configuration.Handler, scriptReferenceBuilder, stylesheetReferenceBuilder, VirtualPathUtility.ToAbsolute);
+            return new PageHelper(useModules, Manager.Configuration.BufferHtmlOutput, Manager.Configuration.Handler, scriptReferenceBuilder, stylesheetReferenceBuilder, htmlTemplateReferenceBuilder, VirtualPathUtility.ToAbsolute);
         }
 
         public static IPageHelper GetPageHelper(HttpContextBase httpContext)

@@ -15,6 +15,11 @@ namespace Cassette
             this.moduleContainer = moduleContainer;
         }
 
+        public ModuleContainer ModuleContainer
+        {
+            get { return moduleContainer; }
+        }
+
         public void AddReference(string assetPath)
         {
             var module = moduleContainer.FindModuleContainingAsset(assetPath)

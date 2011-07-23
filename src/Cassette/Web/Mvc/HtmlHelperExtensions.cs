@@ -37,6 +37,11 @@ namespace Cassette.Web.Mvc
             CreatePageHelper(html).ReferenceStylesheet(stylesheetPath);
         }
 
+        public static void ReferenceHtmlTemplate(this HtmlHelper html, string htmlTemplatePath)
+        {
+            CreatePageHelper(html).ReferenceHtmlTemplate(htmlTemplatePath);
+        }
+
         /// <summary>
         /// Creates HTML script elements for all required scripts and their dependencies.
         /// </summary>
@@ -51,6 +56,11 @@ namespace Cassette.Web.Mvc
         public static IHtmlString RenderStylesheetLinks(this HtmlHelper html)
         {
             return CreatePageHelper(html).RenderStylesheetLinks();
+        }
+
+        public static IHtmlString RenderHtmlTemplates(this HtmlHelper html)
+        {
+            return CreatePageHelper(html).RenderHtmlTemplates();
         }
 
         // Allow unit tests to change this implementation.

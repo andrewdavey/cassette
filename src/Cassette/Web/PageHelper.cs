@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using Cassette.Utilities;
 
@@ -17,20 +19,24 @@ namespace Cassette.Web
         readonly string handler;
         readonly IReferenceBuilder scriptReferenceBuilder;
         readonly IReferenceBuilder stylesheetReferenceBuilder;
+        readonly IReferenceBuilder htmlTemplateReferenceBuilder;
+        readonly ModuleContainer htmlTemplateModuleContainer;
         readonly Func<string, string> virtualPathToAbsolute;
         readonly string stylesheetsPlaceholder;
         readonly string scriptsPlaceholderPrefix;
         readonly Dictionary<string, string> scriptPlaceholders;
 
-        public PageHelper(bool useModules, bool bufferHtmlOutput, string handler, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, Func<string, string> virtualPathToAbsolute)
+        public PageHelper(bool useModules, bool bufferHtmlOutput, string handler, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, IReferenceBuilder htmlTemplateReferenceBuilder, Func<string, string> virtualPathToAbsolute)
         {
             this.useModules = useModules;
             this.bufferHtmlOutput = bufferHtmlOutput;
             this.handler = handler;
             this.scriptReferenceBuilder = scriptReferenceBuilder;
             this.stylesheetReferenceBuilder = stylesheetReferenceBuilder;
+            this.htmlTemplateReferenceBuilder = htmlTemplateReferenceBuilder;
+            this.htmlTemplateModuleContainer = htmlTemplateReferenceBuilder.ModuleContainer;
             this.virtualPathToAbsolute = virtualPathToAbsolute;
-
+            
             if (bufferHtmlOutput)
             {
                 var unique = Guid.NewGuid().ToString();
@@ -128,6 +134,16 @@ namespace Cassette.Web
             }
         }
 
+        public void ReferenceHtmlTemplate(string filenameRelativeToApp)
+        {
+            htmlTemplateReferenceBuilder.AddReference(filenameRelativeToApp);
+        }
+
+        public IHtmlString RenderHtmlTemplates()
+        {
+            return new HtmlString(CreateHtmlTemplatesHtml());
+        }
+
         /// <summary>
         /// When buffering HTML output, the line is checked for known script and stylesheet placeholders.
         /// They are replaced with the relevant HTML.
@@ -188,6 +204,20 @@ namespace Cassette.Web
 
             var allHtml = string.Join("\r\n", linkElements);
             return allHtml;
+        }
+
+        string CreateHtmlTemplatesHtml()
+        {
+            var builder = new StringBuilder();
+            foreach (var module in htmlTemplateReferenceBuilder.GetRequiredModules())
+            {
+                using (var stream = htmlTemplateModuleContainer.OpenModuleFile(module))
+                using (var reader = new StreamReader(stream))
+                {
+                    builder.AppendLine(reader.ReadToEnd());
+                }
+            }
+            return builder.ToString();
         }
 
         IEnumerable<string> BuildHtmlElements(IEnumerable<string> urls, string template)

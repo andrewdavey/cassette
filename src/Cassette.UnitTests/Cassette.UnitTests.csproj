@@ -68,6 +68,7 @@
     <Compile Include="Asset.cs" />
     <Compile Include="UnresolvedCoffeeScriptParser.cs" />
     <Compile Include="UnresolvedCssParser.cs" />
+    <Compile Include="UnresolvedHtmlTemplateParser.cs" />
     <Compile Include="UnresolvedResource.cs" />
     <Compile Include="UnresolvedJavaScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />

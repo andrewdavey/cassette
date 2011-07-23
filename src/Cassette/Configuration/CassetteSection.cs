@@ -26,6 +26,13 @@ namespace Cassette.Configuration
             get { return (ModuleCollection)this["styles"]; }
         }
 
+        [ConfigurationCollection(typeof(ModuleElement))]
+        [ConfigurationProperty("htmlTemplates")]
+        public ModuleCollection HtmlTemplates
+        {
+            get { return (ModuleCollection)this["htmlTemplates"]; }
+        }
+
         [ConfigurationProperty("bufferHtmlOutput", DefaultValue=true)]
         public bool BufferHtmlOutput
         {

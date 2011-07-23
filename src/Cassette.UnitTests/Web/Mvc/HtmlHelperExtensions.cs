@@ -114,6 +114,17 @@ namespace Cassette.Web.Mvc
             {
                 throw new NotImplementedException();
             }
+
+
+            void IPageHelper.ReferenceHtmlTemplate(string htmlTemplatePath)
+            {
+                throw new NotImplementedException();
+            }
+
+            IHtmlString IPageHelper.RenderHtmlTemplates()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         class FakeViewDataContainer : IViewDataContainer

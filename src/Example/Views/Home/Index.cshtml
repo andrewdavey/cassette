@@ -4,6 +4,7 @@
     
     Html.ReferenceScript("scripts/color-picker");
     Html.ReferenceStylesheet("styles/color-picker");
+    Html.ReferenceHtmlTemplate("htmlTemplates/color-picker");
 }
 <div class="color-picker">
     <h2>Color Picker</h2>
@@ -49,15 +50,5 @@
     </p>
     <ul data-bind="template: { foreach: savedColors, name: 'ColorListItem' }"></ul>
 </div>
-
-<!-- HTML Templates -->
-<script id="ColorListItem" type="text/x-jquery-tmpl">
-<li>
-    <span class="color-box" data-bind="style: { backgroundColor: color }"></span>
-    <span data-bind="text: color"></span>
-    <a href="#" data-bind="click: deleteColor">Delete</a>
-</li>
-</script>
-
 
 @Html.AssignPageViewData(Model)

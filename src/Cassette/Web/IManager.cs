@@ -6,6 +6,7 @@
         Cassette.Configuration.CassetteSection Configuration { get; }
         ModuleContainer ScriptModuleContainer { get; }
         ModuleContainer StylesheetModuleContainer { get; }
+        ModuleContainer HtmlTemplateModuleContainer { get; }
         System.Web.Caching.CacheDependency CreateCacheDependency();
     }
 }

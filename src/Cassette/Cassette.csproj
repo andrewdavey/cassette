@@ -52,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\CassetteSection.cs" />
+    <Compile Include="HtmlTemplateModuleContainerBuilder.cs" />
+    <Compile Include="HtmlTemplateModuleWriter.cs" />
     <Compile Include="IModuleWriter.cs" />
     <Compile Include="ModuleContainerBuilder.cs" />
     <Compile Include="StylesheetModuleContainerBuilder.cs" />
@@ -60,8 +62,10 @@
     <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="IUnresolvedAssetParser.cs" />
     <Compile Include="UnresolvedCssParser.cs" />
+    <Compile Include="UnresolvedHtmlTemplateParser.cs" />
     <Compile Include="UnresolvedScriptModuleBuilder.cs" />
     <Compile Include="UnresolvedStylesheetModuleBuilder.cs" />
+    <Compile Include="UnresolveHtmlTemplateModuleBuilder.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />

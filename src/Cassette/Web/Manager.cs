@@ -20,6 +20,7 @@ namespace Cassette.Web
         readonly CassetteSection configuration;
         readonly ModuleContainer scriptModuleContainer;
         readonly ModuleContainer stylesheetModuleContainer;
+        readonly ModuleContainer htmlTemplateModuleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
         readonly IsolatedStorageFile storage;
 
@@ -33,9 +34,11 @@ namespace Cassette.Web
             coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
             scriptModuleContainer = BuildScriptModuleContainer(storage, configuration);
             stylesheetModuleContainer = BuildStylesheetModuleContainer(storage, configuration);
+            htmlTemplateModuleContainer = BuildHtmlTemplateModuleContainer(storage, configuration);
 
             scriptModuleContainer.UpdateStorage("scripts.xml");
             stylesheetModuleContainer.UpdateStorage("stylesheets.xml");
+            htmlTemplateModuleContainer.UpdateStorage("htmlTemplates.xml");
         }
 
         public CassetteSection Configuration
@@ -51,6 +54,11 @@ namespace Cassette.Web
         public ModuleContainer StylesheetModuleContainer
         {
             get { return stylesheetModuleContainer; }
+        }
+
+        public ModuleContainer HtmlTemplateModuleContainer
+        {
+            get { return htmlTemplateModuleContainer; }
         }
 
         public ICoffeeScriptCompiler CoffeeScriptCompiler
@@ -74,6 +82,12 @@ namespace Cassette.Web
         {
             var builder = new StylesheetModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, HttpRuntime.AppDomainAppVirtualPath);
             return BuildModuleContainer(builder, config.Styles, "styles");
+        }
+
+        ModuleContainer BuildHtmlTemplateModuleContainer(IsolatedStorageFile storage, CassetteSection config)
+        {
+            var builder = new HtmlTemplateModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, HttpRuntime.AppDomainAppVirtualPath);
+            return BuildModuleContainer(builder, config.HtmlTemplates, "htmlTemplates");
         }
 
         ModuleContainer BuildModuleContainer(ModuleContainerBuilder builder, ModuleCollection modules, string topLevelDirectoryNameConvention)

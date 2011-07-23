@@ -8,5 +8,6 @@ namespace Cassette
         void AddReference(string filename);
         void AddExternalReference(string externalUrl, string location);
         IEnumerable<Module> GetRequiredModules();
+        ModuleContainer ModuleContainer { get; }
     }
 }
