@@ -6,7 +6,7 @@ using System.IO.IsolatedStorage;
 
 namespace Cassette
 {
-    class HtmlTemplateModuleContainerBuilder : ModuleContainerBuilder
+    public class HtmlTemplateModuleContainerBuilder : ModuleContainerBuilder
     {
         readonly string applicationRoot;
 
