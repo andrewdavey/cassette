@@ -1,12 +1,12 @@
 ﻿@{
-    Html.ReferenceStylesheet("styles/app/site.css");
+    Assets.Stylesheets.Reference("styles/app/site.css");
 }
 <!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
-    @Html.RenderStylesheetLinks()
-    @Html.RenderScripts()
+    @Assets.Stylesheets.Render()
+    @Assets.Scripts.Render()
 </head>
 <body>
 
@@ -28,7 +28,7 @@
 
     @* Some scripts progressively enhance the page and are non-essential, 
        so we can delay loading them until the end of the page. *@
-    @Html.RenderScripts("body")
-    @Html.RenderHtmlTemplates()
+    @Assets.Scripts.Render("body")
+    @Assets.HtmlTemplates.Render()
 </body>
 </html>

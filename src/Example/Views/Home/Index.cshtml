@@ -1,10 +1,10 @@
 ﻿@model object
 @{
     ViewBag.Title = "Example Web App";
-    
-    Html.ReferenceScript("scripts/color-picker");
-    Html.ReferenceStylesheet("styles/color-picker");
-    Html.ReferenceHtmlTemplate("htmlTemplates/color-picker");
+
+    Assets.Scripts.Reference("scripts/color-picker");
+    Assets.Stylesheets.Reference("styles/color-picker");
+    Assets.HtmlTemplates.Reference("htmlTemplates/color-picker");
 }
 <div class="color-picker">
     <h2>Color Picker</h2>

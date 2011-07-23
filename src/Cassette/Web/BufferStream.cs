@@ -5,17 +5,17 @@ namespace Cassette.Web
 {
     class BufferStream : Stream
     {
-        public BufferStream(Stream outputStream, HttpContextBase context, IPageHelper pageHelper)
+        public BufferStream(Stream outputStream, HttpContextBase context, IPlaceholderTracker placeholderTracker)
         {
             this.outputStream = outputStream;
             this.context = context;
-            this.pageHelper = pageHelper;
+            this.placeholderTracker = placeholderTracker;
             buffer = new MemoryStream();
         }
 
         readonly Stream outputStream;
         readonly HttpContextBase context;
-        readonly IPageHelper pageHelper;
+        readonly IPlaceholderTracker placeholderTracker;
         readonly MemoryStream buffer;
         long nextFlushStartPosition;
 
@@ -50,7 +50,7 @@ namespace Cassette.Web
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    line = pageHelper.ReplacePlaceholders(line);
+                    line = placeholderTracker.ReplacePlaceholders(line);
                     writer.WriteLine(line);
                 }
                 writer.Flush();

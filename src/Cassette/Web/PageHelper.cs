@@ -1,328 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
-using Cassette.Utilities;
+﻿using System.Web;
+using Cassette.Configuration;
 
 namespace Cassette.Web
 {
     /// <summary>
-    /// Enables a page to reference client scripts and stylesheets.
-    /// The required script and link elements can then be generated.
+    /// A single PageHelper is created for the lifetime of each HTTP request. So all view pages and
+    /// partials share this and use it to reference assets and then render the required HTML.
     /// </summary>
     public class PageHelper : IPageHelper
     {
-        readonly bool useModules;
-        readonly bool bufferHtmlOutput;
-        readonly string handler;
-        readonly IReferenceBuilder scriptReferenceBuilder;
-        readonly IReferenceBuilder stylesheetReferenceBuilder;
-        readonly IReferenceBuilder htmlTemplateReferenceBuilder;
-        readonly ModuleContainer htmlTemplateModuleContainer;
-        readonly Func<string, string> virtualPathToAbsolute;
-        readonly string stylesheetsPlaceholder;
-        readonly string scriptsPlaceholderPrefix;
-        readonly Dictionary<string, string> scriptPlaceholders;
-
-        public PageHelper(bool useModules, bool bufferHtmlOutput, string handler, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, IReferenceBuilder htmlTemplateReferenceBuilder, Func<string, string> virtualPathToAbsolute)
+        public PageHelper(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker, CassetteSection configuration, IReferenceBuilder scriptReferenceBuilder, IReferenceBuilder stylesheetReferenceBuilder, IReferenceBuilder htmlTemplateReferenceBuilder)
         {
-            this.useModules = useModules;
-            this.bufferHtmlOutput = bufferHtmlOutput;
-            this.handler = handler;
-            this.scriptReferenceBuilder = scriptReferenceBuilder;
-            this.stylesheetReferenceBuilder = stylesheetReferenceBuilder;
-            this.htmlTemplateReferenceBuilder = htmlTemplateReferenceBuilder;
-            this.htmlTemplateModuleContainer = htmlTemplateReferenceBuilder.ModuleContainer;
-            this.virtualPathToAbsolute = virtualPathToAbsolute;
-            
-            if (bufferHtmlOutput)
-            {
-                var unique = Guid.NewGuid().ToString();
-                stylesheetsPlaceholder = "$Cassette-Stylesheets-" + unique;
-                scriptsPlaceholderPrefix = "$Cassette-Scripts-" + unique + "-";
-                scriptPlaceholders = new Dictionary<string, string>();
-            }
+            ScriptAssetManager = CreateScriptAssetManager(httpContext, placeholderTracker, configuration, scriptReferenceBuilder);
+            StylesheetAssetManager = CreateStylesheetAssetManager(httpContext, placeholderTracker, configuration, stylesheetReferenceBuilder);
+            HtmlTemplateAssetManager = CreateHtmlTemplateAssetManager(httpContext, placeholderTracker, configuration, htmlTemplateReferenceBuilder);
         }
 
-        /// <summary>
-        /// Records that the calling view requires the given script. This does not render any
-        /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
-        /// </summary>
-        /// <param name="scriptPathOrUrl">The application relative path to the script file or an absolute external script URL.</param>
-        public void ReferenceScript(string scriptPathOrUrl)
+        public ScriptAssetManager ScriptAssetManager { get; private set; }
+        public StylesheetAssetManager StylesheetAssetManager { get; private set; }
+        public HtmlTemplateAssetManager HtmlTemplateAssetManager { get; private set; }
+
+        ScriptAssetManager CreateScriptAssetManager(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker, CassetteSection configuration, IReferenceBuilder scriptReferenceBuilder)
         {
-            scriptReferenceBuilder.AddReference(scriptPathOrUrl);
+            return new ScriptAssetManager(
+                scriptReferenceBuilder,
+                configuration.ShouldUseModules(httpContext),
+                placeholderTracker,
+                configuration.Handler,
+                VirtualPathUtility.ToAbsolute
+            );
         }
 
-        /// <summary>
-        /// Records that the calling view requires the given script. This does not render any
-        /// HTML. Call <see cref="RenderScripts"/> to actually output the script elements.
-        /// </summary>
-        /// <param name="scriptPath">The absolute external script URL.</param>
-        /// <param name="location">The location identifier for this script e.g. "head" or "body".</param>
-        public void ReferenceExternalScript(string externalScriptUrl, string location)
+        StylesheetAssetManager CreateStylesheetAssetManager(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker, CassetteSection configuration, IReferenceBuilder stylesheetReferenceBuilder)
         {
-            scriptReferenceBuilder.AddExternalReference(externalScriptUrl, location);
+            return new StylesheetAssetManager(
+                stylesheetReferenceBuilder,
+                placeholderTracker,
+                configuration.Handler,
+                configuration.ShouldUseModules(httpContext),
+                VirtualPathUtility.ToAbsolute
+            );
         }
 
-        /// <summary>
-        /// Creates HTML script elements for all required scripts (tagged as having the given location) and their dependencies.
-        /// When buffering HTML output, a placeholder is returned instead.
-        /// </summary>
-        /// <param name="location">The location being rendered.</param>
-        public IHtmlString RenderScripts(string location)
+        HtmlTemplateAssetManager CreateHtmlTemplateAssetManager(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker, CassetteSection configuration, IReferenceBuilder htmlTemplateReferenceBuilder)
         {
-            // Treat null location as empty string since config seems to create empty strings
-            // even though the default value is meant to be null.
-            location = location ?? "";
-
-            if (bufferHtmlOutput)
-            {
-                // Only output a placeholder for now. ReplacePlaceholders is used later to insert
-                // the actual HTML. This means partial views can have their references inserted
-                // into the <head> even after it's been rendered.
-                var placeholder = GetScriptsPlaceholder(location);
-                // Keep track of the placeholder we've generated for each location.
-                if (!scriptPlaceholders.ContainsKey(placeholder))
-                {
-                    scriptPlaceholders.Add(placeholder, location);
-                }
-                return new HtmlString(
-                    Environment.NewLine +
-                    placeholder +
-                    Environment.NewLine
-                );
-            }
-            else
-            {
-                var html = CreateScriptsHtml(location);
-                return new HtmlString(html);
-            }
-        }
-
-        /// <summary>
-        /// Records that the calling view requires the given stylesheet. This does not render any
-        /// HTML. Call <see cref="RenderStylesheets"/> to actually output the link elements.
-        /// </summary>
-        /// <param name="stylesheetPath">The application relative path to the stylesheet file.</param>
-        public void ReferenceStylesheet(string stylesheetPath)
-        {
-            stylesheetReferenceBuilder.AddReference(stylesheetPath);
-        }
-
-        /// <summary>
-        /// Creates HTML link elements for all required stylesheets and their dependencies.
-        /// When buffering HTML output, a placeholder is returned instead.
-        /// </summary>
-        public IHtmlString RenderStylesheetLinks()
-        {
-            if (bufferHtmlOutput)
-            {
-                // Only output a placeholder for now. The BufferStream will insert the links later,
-                // to give partial views a chance to add stylesheet references.
-                return new HtmlString(
-                    Environment.NewLine +
-                    stylesheetsPlaceholder +
-                    Environment.NewLine
-                );
-            }
-            else
-            {
-                return new HtmlString(CreateStylesheetsHtml());
-            }
-        }
-
-        public void ReferenceHtmlTemplate(string filenameRelativeToApp)
-        {
-            htmlTemplateReferenceBuilder.AddReference(filenameRelativeToApp);
-        }
-
-        public IHtmlString RenderHtmlTemplates()
-        {
-            return new HtmlString(CreateHtmlTemplatesHtml());
-        }
-
-        /// <summary>
-        /// When buffering HTML output, the line is checked for known script and stylesheet placeholders.
-        /// They are replaced with the relevant HTML.
-        /// </summary>
-        /// <param name="line">The line to check for placeholders.</param>
-        /// <returns>The line, but with placeholders replaced with their respective HTML.</returns>
-        public string ReplacePlaceholders(string line)
-        {
-            if (!bufferHtmlOutput) throw new InvalidOperationException("Cannot replace placeholders when HTML output buffering is disabled.");
-
-            if (line == null)
-            {
-                return line;
-            }
-            else if (line == stylesheetsPlaceholder)
-            {
-                return CreateStylesheetsHtml();
-            }
-            else if (line.StartsWith(scriptsPlaceholderPrefix))
-            {
-                string location;
-                if (scriptPlaceholders.TryGetValue(line, out location))
-                {
-                    return CreateScriptsHtml(location);
-                }
-            }
-
-            // Otherwise, do not change the line
-            return line;
-        }
-
-        string GetScriptsPlaceholder(string location)
-        {
-            return scriptsPlaceholderPrefix + (location ?? "");
-        }
-
-        string CreateScriptsHtml(string location)
-        {
-            var scriptUrls = useModules
-                ? ReleaseScriptUrls(location)
-                : DebugScriptUrls(location);
-
-            var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
-            var scriptElements = BuildHtmlElements(scriptUrls, template);
-
-            var allHtml = string.Join("\r\n", scriptElements);
-            return allHtml;
-        }
-
-        string CreateStylesheetsHtml()
-        {
-            var cssUrls = useModules
-                ? ReleaseStylesheetUrls()
-                : DebugStylesheetUrls();
-
-            var template = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
-            var linkElements = BuildHtmlElements(cssUrls, template);
-
-            var allHtml = string.Join("\r\n", linkElements);
-            return allHtml;
-        }
-
-        string CreateHtmlTemplatesHtml()
-        {
-            var builder = new StringBuilder();
-            foreach (var module in htmlTemplateReferenceBuilder.GetRequiredModules())
-            {
-                using (var stream = htmlTemplateModuleContainer.OpenModuleFile(module))
-                using (var reader = new StreamReader(stream))
-                {
-                    builder.AppendLine(reader.ReadToEnd());
-                }
-            }
-            return builder.ToString();
-        }
-
-        IEnumerable<string> BuildHtmlElements(IEnumerable<string> urls, string template)
-        {
-            return urls
-                .Select(url => url.StartsWith("http:") || url.StartsWith("https:") ? url : virtualPathToAbsolute(url))
-                .Select(HttpUtility.HtmlAttributeEncode)
-                .Select(src => string.Format(template, src));
-        }
-
-        IEnumerable<string> DebugScriptUrls(string location)
-        {
-            return scriptReferenceBuilder
-                .GetRequiredModules()
-                .Where(m => m.Location == location)
-                .SelectMany(m => m.Assets)
-                .Select(DebugScriptUrl);
-        }
-
-        string DebugScriptUrl(Asset asset)
-        {
-            if (asset.Path.StartsWith("http:") || asset.Path.StartsWith("https:"))
-            {
-                return asset.Path;
-            }
-            else
-            {
-                var url = AppRelativeScriptUrl(asset);
-                var hash = asset.Hash.ToHexString();
-                return url + (url.Contains('?') ? "&" : "?") + hash;
-            }
-        }
-
-        string AppRelativeScriptUrl(Asset script)
-        {
-            if (script.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
-            {
-                return CoffeeScriptUrl(script.Path);
-            }
-            else
-            {
-                return "~/" + script.Path;
-            }
-        }
-
-        string CoffeeScriptUrl(string path)
-        {
-            // Must remove the file extension from the path, 
-            // otherwise the cassette.axd handler is not called.
-            // I guess asp.net favours the last file extension it finds.
-            var pathWithoutExtension = path.Substring(0, path.Length - ".coffee".Length);
-            // Return the URL that will invoke the CoffeeScript compiler to return JavaScript.
-            return handler + "/coffee/" + pathWithoutExtension;
-        }
-
-        /// <summary>
-        /// Returns the application relative URL for each required script module.
-        /// The hash of each module is appended to enable long-lived caching that
-        /// is broken when a module changes.
-        /// </summary>
-        IEnumerable<string> ReleaseScriptUrls(string location)
-        {
-            return scriptReferenceBuilder
-                .GetRequiredModules()
-                .Where(m => m.Location == location)
-                .Select(m => ReleaseScriptUrl(m));
-        }
-
-        string ReleaseScriptUrl(Module m)
-        {
-            if (m.Path.StartsWith("http:") || m.Path.StartsWith("https:"))
-            {
-                return m.Path;
-            }
-            else
-            {
-                return handler + "/scripts/" + m.Path + "_" + m.Hash.ToHexString();
-            }
-        }
-
-        IEnumerable<string> DebugStylesheetUrls()
-        {
-            return stylesheetReferenceBuilder
-                .GetRequiredModules()
-                .SelectMany(m => m.Assets)
-                .Select(r => new { url = AppRelativeStylesheetUrl(r), hash = r.Hash.ToHexString() })
-                .Select(r => r.url + (r.url.Contains('?') ? "&" : "?") + r.hash);
-        }
-
-        /// <summary>
-        /// Returns the application relative URL for each required stylesheet module.
-        /// The hash of each module is appended to enable long-lived caching that
-        /// is broken when a module changes.
-        /// </summary>
-        IEnumerable<string> ReleaseStylesheetUrls()
-        {
-            return stylesheetReferenceBuilder
-                .GetRequiredModules()
-                .Select(m => handler + "/styles/" + m.Path + "_" + m.Hash.ToHexString());
-        }
-
-        string AppRelativeStylesheetUrl(Asset stylesheet)
-        {
-            // TODO: Check for .less and .sass files
-            return "~/" + stylesheet.Path;
+            return new HtmlTemplateAssetManager(htmlTemplateReferenceBuilder);
         }
     }
 }

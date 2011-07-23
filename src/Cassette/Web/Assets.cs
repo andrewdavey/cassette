@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Cassette.Web
+﻿namespace Cassette.Web
 {
     /// <summary>
     /// Global entry point for all view page helpers.
@@ -9,17 +7,26 @@ namespace Cassette.Web
     {
         public static ScriptAssetManager Scripts
         {
-            get { return null; }
+            get
+            {
+                return CassetteHttpModule.GetPageHelper().ScriptAssetManager;
+            }
         }
 
         public static StylesheetAssetManager Stylesheets
         {
-            get { return null; }
+            get
+            {
+                return CassetteHttpModule.GetPageHelper().StylesheetAssetManager;
+            }
         }
 
         public static HtmlTemplateAssetManager HtmlTemplates
         {
-            get { return null; }
+            get
+            {
+                return CassetteHttpModule.GetPageHelper().HtmlTemplateAssetManager;
+            }
         }
     }
 }

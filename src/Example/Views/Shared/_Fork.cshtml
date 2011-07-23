@@ -2,7 +2,7 @@
     // This is an example of an external script reference. Cassette will generate the <script>
     // tag for us. In this example, we've set the location to be "body" so it'll appear at the
     // end of the page, just before </body>. (See _Layout.cshtml for the rendering calls.)
-    Html.ReferenceScript("http://gitforked.com/api/1.1/button.js", location: "body");
+    Assets.Scripts.ExternalReference("http://gitforked.com/api/1.1/button.js", "body");
 }
 <p>Cassette is free, open source, software: 
 <a href="https://github.com/andrewdavey/cassette" class="gitforked-button gitforked-forks gitforked-watchers">Fork</a>

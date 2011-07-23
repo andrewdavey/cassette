@@ -66,13 +66,25 @@ namespace Cassette.Web
             application.BeginRequest += (sender, e) =>
             {
                 var httpContext = new HttpContextWrapper(HttpContext.Current);
-                var pageHelper = CreatePageHelper(httpContext);
+                
+                var placeholderTracker = MaybeCreatePlaceholderTracker();
+
+                var pageHelper = CreatePageHelper(httpContext, placeholderTracker, Manager);
                 StorePageHelperInHttpContextItems(pageHelper, httpContext);
                 if (Manager.Configuration.BufferHtmlOutput)
                 {
-                    InstallResponseFilter(pageHelper, httpContext);
+                    InstallResponseFilter(placeholderTracker, httpContext);
                 }
             };
+        }
+
+        IPlaceholderTracker MaybeCreatePlaceholderTracker()
+        {
+            if (Manager.Configuration.BufferHtmlOutput)
+            {
+                return new PlaceholderTracker();
+            }
+            return null;
         }
 
         void StorePageHelperInHttpContextItems(IPageHelper pageHelper, HttpContextBase httpContext)
@@ -80,22 +92,30 @@ namespace Cassette.Web
             httpContext.Items["Cassette.PageHelper"] = pageHelper;
         }
 
-        void InstallResponseFilter(IPageHelper pageHelper, HttpContextBase context)
+        void InstallResponseFilter(IPlaceholderTracker placeholderTracker, HttpContextBase context)
         {
-            context.Response.Filter = new BufferStream(context.Response.Filter, context, pageHelper);
+            context.Response.Filter = new BufferStream(context.Response.Filter, context, placeholderTracker);
         }
 
-        static PageHelper CreatePageHelper(HttpContextBase httpContext)
+        static PageHelper CreatePageHelper(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker, IManager manager)
         {
-            var scriptReferenceBuilder = new ReferenceBuilder(Manager.ScriptModuleContainer);
-            var stylesheetReferenceBuilder = new ReferenceBuilder(Manager.StylesheetModuleContainer);
-            var htmlTemplateReferenceBuilder = new ReferenceBuilder(Manager.HtmlTemplateModuleContainer);
-            var useModules = Manager.Configuration.ShouldUseModules(httpContext);
-            return new PageHelper(useModules, Manager.Configuration.BufferHtmlOutput, Manager.Configuration.Handler, scriptReferenceBuilder, stylesheetReferenceBuilder, htmlTemplateReferenceBuilder, VirtualPathUtility.ToAbsolute);
+            var scriptReferenceBuilder = new ReferenceBuilder(manager.ScriptModuleContainer);
+            var stylesheetReferenceBuilder = new ReferenceBuilder(manager.StylesheetModuleContainer);
+            var htmlTemplateReferenceBuilder = new ReferenceBuilder(manager.HtmlTemplateModuleContainer);
+            return new PageHelper(
+                httpContext,
+                placeholderTracker,
+                manager.Configuration,
+                scriptReferenceBuilder,
+                stylesheetReferenceBuilder,
+                htmlTemplateReferenceBuilder
+            );
         }
 
-        public static IPageHelper GetPageHelper(HttpContextBase httpContext)
+        public static IPageHelper GetPageHelper(HttpContextBase httpContext = null)
         {
+            if (httpContext == null) httpContext = new HttpContextWrapper(HttpContext.Current);
+
             var helper = httpContext.Items["Cassette.PageHelper"] as IPageHelper;
             if (helper == null)
             {

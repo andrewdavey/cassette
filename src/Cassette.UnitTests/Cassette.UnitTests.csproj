@@ -77,8 +77,6 @@
     <Compile Include="Web\BufferStream.cs" />
     <Compile Include="Web\CassetteHttpHandler.cs" />
     <Compile Include="Web\ExceptionCachedManager.cs" />
-    <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
-    <Compile Include="Web\PageHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

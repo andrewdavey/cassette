@@ -12,22 +12,22 @@ namespace Cassette.Web
     {
         MemoryStream outputStream;
         Mock<HttpContextBase> context;
-        Mock<IPageHelper> pageHelper;
+        Mock<IPlaceholderTracker> placeholderTracker;
         BufferStream buffer;
 
         public BufferStream_tests()
         {
             outputStream = new MemoryStream();
             context = new Mock<HttpContextBase>();
-            pageHelper = new Mock<IPageHelper>();
+            placeholderTracker = new Mock<IPlaceholderTracker>();
 
-            pageHelper.Setup(h => h.ReplacePlaceholders(It.IsAny<string>()))
+            placeholderTracker.Setup(h => h.ReplacePlaceholders(It.IsAny<string>()))
                       .Returns<string>(s => s);
 
             context.SetupGet(c => c.Response.ContentType).Returns("text/html");
             context.SetupGet(c => c.Response.Output.Encoding).Returns(Encoding.ASCII);
 
-            buffer = new BufferStream(outputStream, context.Object, pageHelper.Object);
+            buffer = new BufferStream(outputStream, context.Object, placeholderTracker.Object);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace Cassette.Web
             buffer.Write(Encoding.ASCII.GetBytes("<html/>"), 0, 7);
             buffer.Flush();
 
-            pageHelper.VerifyAll();
+            placeholderTracker.VerifyAll();
         }
 
         [Fact]
