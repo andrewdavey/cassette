@@ -5,7 +5,7 @@ using System.Text;
 using System.Web;
 using Cassette.Utilities;
 
-namespace Cassette.Web
+namespace Cassette.Assets.Stylesheets
 {
     public class StylesheetAssetManager
     {

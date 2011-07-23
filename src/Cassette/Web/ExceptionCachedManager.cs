@@ -2,6 +2,7 @@
 using System.Web.Caching;
 using Cassette.CoffeeScript;
 using Cassette.Configuration;
+using System.Web;
 
 namespace Cassette.Web
 {
@@ -23,49 +24,16 @@ namespace Cassette.Web
         readonly Exception exception;
         readonly CacheClearer cacheClearer;
 
-        public ICoffeeScriptCompiler CoffeeScriptCompiler
+        public IPageHelper CreatePageHelper(HttpContextBase httpContext)
         {
-            get
-            {
-                cacheClearer.Clear();
-                throw exception;
-            }
+            cacheClearer.Clear();
+            throw exception;
         }
 
-        public CassetteSection Configuration
+        public IHttpHandler CreateHttpHandler()
         {
-            get 
-            {
-                cacheClearer.Clear();
-                throw exception;
-            }
-        }
-
-        public ModuleContainer ScriptModuleContainer
-        {
-            get
-            {
-                cacheClearer.Clear();
-                throw exception;
-            }
-        }
-
-        public ModuleContainer StylesheetModuleContainer
-        {
-            get
-            {
-                cacheClearer.Clear();
-                throw exception;
-            }
-        }
-
-        public ModuleContainer HtmlTemplateModuleContainer
-        {
-            get
-            {
-                cacheClearer.Clear();
-                throw exception;
-            }
+            cacheClearer.Clear();
+            throw exception;
         }
 
         public CacheDependency CreateCacheDependency()

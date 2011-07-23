@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace Cassette.Web
+namespace Cassette
 {
     public class PlaceholderTracker : IPlaceholderTracker
     {

@@ -15,14 +15,6 @@ namespace Cassette.Web
         readonly Func<ModuleContainer> stylesheetModuleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
-        public CassetteHttpHandler() : this(
-            () => CassetteHttpModule.Manager.ScriptModuleContainer,
-            () => CassetteHttpModule.Manager.StylesheetModuleContainer,
-            CassetteHttpModule.Manager.CoffeeScriptCompiler
-        )
-        {
-        }
-
         public CassetteHttpHandler(Func<ModuleContainer> scriptModuleContainer, Func<ModuleContainer> stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler)
         {
             this.scriptModuleContainer = scriptModuleContainer;

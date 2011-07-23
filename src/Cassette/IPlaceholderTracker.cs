@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 
-namespace Cassette.Web
+namespace Cassette
 {
     public interface IPlaceholderTracker
     {

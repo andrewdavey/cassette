@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Cassette.CoffeeScript;
+using Cassette.Assets.Scripts;
 
 namespace Cassette.Shell
 {

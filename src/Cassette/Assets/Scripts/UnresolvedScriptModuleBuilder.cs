@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class UnresolvedScriptModuleBuilder : UnresolvedModuleBuilder
     {

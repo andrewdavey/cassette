@@ -4,7 +4,7 @@ using Should;
 using Xunit;
 using Cassette.CoffeeScript;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class ModuleWriter_facts
     {

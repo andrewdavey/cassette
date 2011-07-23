@@ -4,7 +4,7 @@ using System.Linq;
 using Cassette.CoffeeScript;
 using Microsoft.Ajax.Utilities;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class ScriptModuleWriter : IModuleWriter
     {

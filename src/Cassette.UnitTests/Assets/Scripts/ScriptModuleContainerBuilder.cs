@@ -5,7 +5,7 @@ using Cassette.CoffeeScript;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     // Warning: These are not strictly "unit" tests given the real file system access!
     // However, they still run fast and creating a whole separate project for them seems

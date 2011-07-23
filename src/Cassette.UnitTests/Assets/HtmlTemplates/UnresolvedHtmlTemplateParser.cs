@@ -4,7 +4,7 @@ using Cassette.Utilities;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Assets.HtmlTemplates
 {
     public class UnresolvedHtmlTemplateParser_Parse
     {

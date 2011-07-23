@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Microsoft.Ajax.Utilities;
-using System.Text.RegularExpressions;
 using System.Text;
+using System.Text.RegularExpressions;
+using Microsoft.Ajax.Utilities;
 
-namespace Cassette
+namespace Cassette.Assets.Stylesheets
 {
     public class StylesheetModuleWriter : IModuleWriter
     {

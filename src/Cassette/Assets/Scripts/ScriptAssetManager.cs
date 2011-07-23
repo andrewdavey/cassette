@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Cassette.Utilities;
 
-namespace Cassette.Web
+namespace Cassette.Assets.Scripts
 {
     public class ScriptAssetManager
     {

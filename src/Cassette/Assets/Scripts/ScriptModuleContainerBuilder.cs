@@ -2,7 +2,7 @@
 using System.Linq;
 using Cassette.CoffeeScript;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class ScriptModuleContainerBuilder : ModuleContainerBuilder
     {

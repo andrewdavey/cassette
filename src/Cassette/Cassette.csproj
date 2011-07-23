@@ -52,20 +52,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\CassetteSection.cs" />
-    <Compile Include="HtmlTemplateModuleContainerBuilder.cs" />
-    <Compile Include="HtmlTemplateModuleWriter.cs" />
+    <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleContainerBuilder.cs" />
+    <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleWriter.cs" />
     <Compile Include="IModuleWriter.cs" />
     <Compile Include="ModuleContainerBuilder.cs" />
-    <Compile Include="StylesheetModuleContainerBuilder.cs" />
-    <Compile Include="StylesheetModuleWriter.cs" />
-    <Compile Include="UnresolvedCoffeeScriptParser.cs" />
+    <Compile Include="Assets\Stylesheets\StylesheetModuleContainerBuilder.cs" />
+    <Compile Include="Assets\Stylesheets\StylesheetModuleWriter.cs" />
+    <Compile Include="Assets\Scripts\UnresolvedCoffeeScriptParser.cs" />
     <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="IUnresolvedAssetParser.cs" />
-    <Compile Include="UnresolvedCssParser.cs" />
-    <Compile Include="UnresolvedHtmlTemplateParser.cs" />
-    <Compile Include="UnresolvedScriptModuleBuilder.cs" />
-    <Compile Include="UnresolvedStylesheetModuleBuilder.cs" />
-    <Compile Include="UnresolveHtmlTemplateModuleBuilder.cs" />
+    <Compile Include="Assets\Stylesheets\UnresolvedCssParser.cs" />
+    <Compile Include="Assets\HtmlTemplates\UnresolvedHtmlTemplateParser.cs" />
+    <Compile Include="Assets\Scripts\UnresolvedScriptModuleBuilder.cs" />
+    <Compile Include="Assets\Stylesheets\UnresolvedStylesheetModuleBuilder.cs" />
+    <Compile Include="Assets\HtmlTemplates\UnresolvedHtmlTemplateModuleBuilder.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
@@ -87,29 +87,31 @@
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="ScriptModuleContainerBuilder.cs" />
+    <Compile Include="Assets\Scripts\ScriptModuleContainerBuilder.cs" />
     <Compile Include="ModuleDifference.cs" />
-    <Compile Include="ScriptModuleWriter.cs" />
+    <Compile Include="Assets\Scripts\ScriptModuleWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Asset.cs" />
-    <Compile Include="UnresolvedJavaScriptParser.cs" />
+    <Compile Include="Assets\Scripts\UnresolvedJavaScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Utilities\StreamExtensions.cs" />
     <Compile Include="Web\Assets.cs" />
     <Compile Include="Web\BufferStream.cs" />
     <Compile Include="Web\CassetteHttpHandler.cs" />
+    <Compile Include="Web\CassetteHttpHandlerFactory.cs" />
     <Compile Include="Web\CassetteHttpModule.cs" />
-    <Compile Include="Web\HtmlTemplateAssetManager.cs" />
+    <Compile Include="Assets\HtmlTemplates\HtmlTemplateAssetManager.cs" />
     <Compile Include="Web\IManager.cs" />
     <Compile Include="Web\IPageHelper.cs" />
-    <Compile Include="Web\IPlaceholderTracker.cs" />
+    <Compile Include="IPlaceholderTracker.cs" />
     <Compile Include="Web\Manager.cs" />
     <Compile Include="Web\ExceptionCachedManager.cs" />
     <Compile Include="Web\PageHelper.cs" />
-    <Compile Include="Web\PlaceholderTracker.cs" />
-    <Compile Include="Web\ScriptAssetManager.cs" />
-    <Compile Include="Web\StylesheetAssetManager.cs" />
+    <Compile Include="PlaceholderTracker.cs" />
+    <Compile Include="Assets\Scripts\ScriptAssetManager.cs" />
+    <Compile Include="Assets\Stylesheets\StylesheetAssetManager.cs" />
+    <Compile Include="Web\SingleManagerContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -127,6 +129,7 @@
     <None Include="Resources\coffeescript.js" />
     <None Include="Web.config.transform" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

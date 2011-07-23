@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO.IsolatedStorage;
 
-namespace Cassette
+namespace Cassette.Assets.HtmlTemplates
 {
     public class HtmlTemplateModuleContainerBuilder : ModuleContainerBuilder
     {
@@ -18,7 +18,7 @@ namespace Cassette
 
         public override ModuleContainer Build()
         {
-            var moduleBuilder = new UnresolveHtmlTemplateModuleBuilder(rootDirectory);
+            var moduleBuilder = new UnresolvedHtmlTemplateModuleBuilder(rootDirectory);
             var unresolvedModules = relativeModuleDirectories.Select(x => moduleBuilder.Build(x.Item1, x.Item2));
             var modules = UnresolvedModule.ResolveAll(unresolvedModules);
             return new ModuleContainer(

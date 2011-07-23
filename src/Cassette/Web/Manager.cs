@@ -6,6 +6,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Configuration;
+using Cassette.Assets.HtmlTemplates;
+using Cassette.Assets.Scripts;
+using Cassette.Assets.Stylesheets;
 using Cassette.CoffeeScript;
 using Cassette.Configuration;
 
@@ -41,29 +44,54 @@ namespace Cassette.Web
             htmlTemplateModuleContainer.UpdateStorage("htmlTemplates.xml");
         }
 
-        public CassetteSection Configuration
+        public IPageHelper CreatePageHelper(HttpContextBase httpContext)
         {
-            get { return configuration; }
+            var placeholderTracker = MaybeCreatePlaceholderTracker();
+
+            var pageHelper = CreatePageHelper(httpContext, placeholderTracker);
+            if (configuration.BufferHtmlOutput)
+            {
+                InstallResponseFilter(placeholderTracker, httpContext);
+            }
+            return pageHelper;
         }
 
-        public ModuleContainer ScriptModuleContainer
+        public IHttpHandler CreateHttpHandler()
         {
-            get { return scriptModuleContainer; }
+            return new CassetteHttpHandler(
+                () => scriptModuleContainer,
+                () => stylesheetModuleContainer,
+                coffeeScriptCompiler
+            );
+        }
+        
+        IPlaceholderTracker MaybeCreatePlaceholderTracker()
+        {
+            if (configuration.BufferHtmlOutput)
+            {
+                return new PlaceholderTracker();
+            }
+            return null;
         }
 
-        public ModuleContainer StylesheetModuleContainer
+        void InstallResponseFilter(IPlaceholderTracker placeholderTracker, HttpContextBase context)
         {
-            get { return stylesheetModuleContainer; }
+            context.Response.Filter = new BufferStream(context.Response.Filter, context, placeholderTracker);
         }
 
-        public ModuleContainer HtmlTemplateModuleContainer
+        PageHelper CreatePageHelper(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker)
         {
-            get { return htmlTemplateModuleContainer; }
-        }
-
-        public ICoffeeScriptCompiler CoffeeScriptCompiler
-        {
-            get { return coffeeScriptCompiler; }
+            var scriptReferenceBuilder = new ReferenceBuilder(scriptModuleContainer);
+            var stylesheetReferenceBuilder = new ReferenceBuilder(stylesheetModuleContainer);
+            var htmlTemplateReferenceBuilder = new ReferenceBuilder(htmlTemplateModuleContainer);
+            return new PageHelper(
+                httpContext,
+                placeholderTracker,
+                configuration,
+                scriptReferenceBuilder,
+                stylesheetReferenceBuilder,
+                htmlTemplateReferenceBuilder
+            );
         }
 
         CassetteSection LoadConfigurationFromWebConfig()

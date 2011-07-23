@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace Cassette
+namespace Cassette.Assets.HtmlTemplates
 {
     public class HtmlTemplateModuleWriter : IModuleWriter
     {

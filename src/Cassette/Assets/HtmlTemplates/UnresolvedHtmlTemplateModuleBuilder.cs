@@ -1,8 +1,8 @@
-﻿namespace Cassette
+﻿namespace Cassette.Assets.HtmlTemplates
 {
-    public class UnresolveHtmlTemplateModuleBuilder : UnresolvedModuleBuilder
+    public class UnresolvedHtmlTemplateModuleBuilder : UnresolvedModuleBuilder
     {
-        public UnresolveHtmlTemplateModuleBuilder(string rootDirectory)
+        public UnresolvedHtmlTemplateModuleBuilder(string rootDirectory)
             : base (rootDirectory, new[] { "htm", "html" })
         {
         }

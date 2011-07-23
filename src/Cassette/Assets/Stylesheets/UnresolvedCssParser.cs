@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Assets.Stylesheets
 {
     public class UnresolvedCssParser : IUnresolvedAssetParser
     {

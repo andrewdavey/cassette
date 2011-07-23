@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Assets.HtmlTemplates
 {
     public class UnresolvedHtmlTemplateParser : IUnresolvedAssetParser
     {

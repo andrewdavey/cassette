@@ -2,7 +2,7 @@
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class Parsing_CoffeeScript_facts
     {

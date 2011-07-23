@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using System;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class UnresolvedJavaScriptParser : IUnresolvedAssetParser
     {

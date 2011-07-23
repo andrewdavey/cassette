@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class UnresolvedCoffeeScriptParser : IUnresolvedAssetParser
     {

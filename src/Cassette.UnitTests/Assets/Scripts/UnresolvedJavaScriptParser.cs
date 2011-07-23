@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Assets.Scripts
 {
     public class Given_a_UnresolvedJavaScriptParser_When_Parse_source_with_two_references
     {

@@ -8,6 +8,8 @@ using Moq;
 using Should;
 using Xunit;
 using Cassette.Utilities;
+using Cassette.Assets.Scripts;
+using Cassette.Assets.Stylesheets;
 
 namespace Cassette.Web
 {

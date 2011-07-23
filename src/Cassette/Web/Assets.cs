@@ -1,4 +1,8 @@
-﻿namespace Cassette.Web
+﻿using Cassette.Assets.Scripts;
+using Cassette.Assets.Stylesheets;
+using Cassette.Assets.HtmlTemplates;
+
+namespace Cassette.Web
 {
     /// <summary>
     /// Global entry point for all view page helpers.

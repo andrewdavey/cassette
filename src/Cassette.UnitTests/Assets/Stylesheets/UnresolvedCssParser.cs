@@ -4,7 +4,7 @@ using Should;
 using Xunit;
 using System.Text;
 
-namespace Cassette
+namespace Cassette.Assets.Stylesheets
 {
     public class Given_a_UnresolvedCssParser_When_Parse_source_with_two_references
     {

@@ -1,4 +1,4 @@
-﻿namespace Cassette
+﻿namespace Cassette.Assets.Stylesheets
 {
     public class UnresolvedStylesheetModuleBuilder : UnresolvedModuleBuilder
     {

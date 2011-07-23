@@ -4,7 +4,7 @@ using System.Text;
 using System.Web;
 using System.Collections.Generic;
 
-namespace Cassette.Web
+namespace Cassette.Assets.HtmlTemplates
 {
     public class HtmlTemplateAssetManager
     {

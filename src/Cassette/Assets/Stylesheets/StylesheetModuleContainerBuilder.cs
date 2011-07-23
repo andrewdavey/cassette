@@ -1,7 +1,7 @@
 ﻿using System.IO.IsolatedStorage;
 using System.Linq;
 
-namespace Cassette
+namespace Cassette.Assets.Stylesheets
 {
     public class StylesheetModuleContainerBuilder : ModuleContainerBuilder
     {
