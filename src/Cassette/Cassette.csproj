@@ -96,6 +96,7 @@
     <Compile Include="UnresolvedJavaScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Utilities\StreamExtensions.cs" />
+    <Compile Include="Web\Assets.cs" />
     <Compile Include="Web\BufferStream.cs" />
     <Compile Include="Web\CassetteHttpHandler.cs" />
     <Compile Include="Web\CassetteHttpModule.cs" />
