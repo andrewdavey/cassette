@@ -7,17 +7,17 @@ namespace Cassette.Web
     /// </summary>
     public static class Assets
     {
-        public static object Scripts
+        public static ScriptAssetManager Scripts
         {
             get { return null; }
         }
 
-        public static object Stylesheets
+        public static StylesheetAssetManager Stylesheets
         {
             get { return null; }
         }
 
-        public static object HtmlTemplates
+        public static HtmlTemplateAssetManager HtmlTemplates
         {
             get { return null; }
         }

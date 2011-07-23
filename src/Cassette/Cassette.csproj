@@ -96,16 +96,20 @@
     <Compile Include="UnresolvedJavaScriptParser.cs" />
     <Compile Include="UnresolvedModule.cs" />
     <Compile Include="Utilities\StreamExtensions.cs" />
+    <Compile Include="Web\AssetLocator.cs" />
     <Compile Include="Web\Assets.cs" />
     <Compile Include="Web\BufferStream.cs" />
     <Compile Include="Web\CassetteHttpHandler.cs" />
     <Compile Include="Web\CassetteHttpModule.cs" />
+    <Compile Include="Web\HtmlTemplateAssetManager.cs" />
     <Compile Include="Web\IManager.cs" />
     <Compile Include="Web\IPageHelper.cs" />
     <Compile Include="Web\Manager.cs" />
     <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
     <Compile Include="Web\ExceptionCachedManager.cs" />
     <Compile Include="Web\PageHelper.cs" />
+    <Compile Include="Web\ScriptAssetManager.cs" />
+    <Compile Include="Web\StylesheetAssetManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
