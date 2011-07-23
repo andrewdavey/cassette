@@ -7,9 +7,9 @@ namespace Cassette.Web
     class SingleManagerContainer
     {
         // Using a static Lazy<T> means we get a singleton Manager which is created in a thread-safe manner.
-        static Lazy<IManager> managerContainer = new Lazy<IManager>(CreateManager);
+        static Lazy<ICassetteApplication> managerContainer = new Lazy<ICassetteApplication>(CreateManager);
 
-        public static IManager Manager
+        public static ICassetteApplication Manager
         {
             get
             {
@@ -17,12 +17,12 @@ namespace Cassette.Web
             }
         }
 
-        static IManager CreateManager()
+        static ICassetteApplication CreateManager()
         {
-            IManager manager;
+            ICassetteApplication manager;
             try
             {
-                manager = new Manager();
+                manager = new CassetteApplication();
             }
             catch (Exception ex)
             {
@@ -39,7 +39,7 @@ namespace Cassette.Web
             return manager;
         }
 
-        static void CacheManagerWithDependency(IManager manager)
+        static void CacheManagerWithDependency(ICassetteApplication manager)
         {
             var dependency = manager.CreateCacheDependency();
             HttpRuntime.Cache.Insert(
@@ -56,7 +56,7 @@ namespace Cassette.Web
                     // Manager is removed from cache when the file system is changed.
                     // So we clear the old instance by reassigning the lazy object.
                     // It'll be recreated next time someone requests it.
-                    managerContainer = new Lazy<IManager>(CreateManager);
+                    managerContainer = new Lazy<ICassetteApplication>(CreateManager);
                 }
             );
         }

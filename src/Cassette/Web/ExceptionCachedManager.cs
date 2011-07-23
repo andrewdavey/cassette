@@ -13,7 +13,7 @@ namespace Cassette.Web
     // method creates a special dependency that will be triggered just before 
     // the exception is thrown. This provides us with a chance to re-create the
     // lazy object with fixed (we hope!) files.
-    public class ExceptionCachedManager : IManager
+    public class ExceptionCachedManager : ICassetteApplication
     {
         public ExceptionCachedManager(Exception exception)
         {
@@ -24,7 +24,7 @@ namespace Cassette.Web
         readonly Exception exception;
         readonly CacheClearer cacheClearer;
 
-        public IPageHelper CreatePageHelper(HttpContextBase httpContext)
+        public IPageAssetManager CreatePageHelper(HttpContextBase httpContext)
         {
             cacheClearer.Clear();
             throw exception;

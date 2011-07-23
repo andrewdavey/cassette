@@ -19,7 +19,7 @@ namespace Cassette.Web
     /// A single Manager object is created for the web application and contains all the top-level
     /// objects used by Cassette.
     /// </summary>
-    public class Manager : IManager, IDisposable
+    public class CassetteApplication : ICassetteApplication, IDisposable
     {
         readonly CassetteSection configuration;
         readonly ModuleContainer scriptModuleContainer;
@@ -28,7 +28,7 @@ namespace Cassette.Web
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
         readonly IsolatedStorageFile storage;
 
-        public Manager()
+        public CassetteApplication()
         {
             configuration = LoadConfigurationFromWebConfig();
 
@@ -45,7 +45,7 @@ namespace Cassette.Web
             htmlTemplateModuleContainer.UpdateStorage("htmlTemplates.xml");
         }
 
-        public IPageHelper CreatePageHelper(HttpContextBase httpContext)
+        public IPageAssetManager CreatePageHelper(HttpContextBase httpContext)
         {
             var placeholderTracker = MaybeCreatePlaceholderTracker();
 
@@ -80,13 +80,13 @@ namespace Cassette.Web
             context.Response.Filter = new BufferStream(context.Response.Filter, context, placeholderTracker);
         }
 
-        PageHelper CreatePageHelper(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker)
+        PageAssetManager CreatePageHelper(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker)
         {
             var scriptReferenceBuilder = new ReferenceBuilder(scriptModuleContainer);
             var stylesheetReferenceBuilder = new ReferenceBuilder(stylesheetModuleContainer);
             var htmlTemplateReferenceBuilder = new ReferenceBuilder(htmlTemplateModuleContainer);
-            return new PageHelper(
-                httpContext,
+            return new PageAssetManager(
+                configuration.ShouldUseModules(httpContext),
                 placeholderTracker,
                 configuration,
                 scriptReferenceBuilder,

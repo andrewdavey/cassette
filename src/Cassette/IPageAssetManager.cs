@@ -2,9 +2,9 @@
 using Cassette.Assets.Stylesheets;
 using Cassette.Assets.HtmlTemplates;
 
-namespace Cassette.Web
+namespace Cassette
 {
-    public interface IPageHelper
+    public interface IPageAssetManager
     {
         ScriptAssetManager ScriptAssetManager { get; }
         StylesheetAssetManager StylesheetAssetManager { get; }

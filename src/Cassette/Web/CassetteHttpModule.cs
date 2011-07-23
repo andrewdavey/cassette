@@ -16,16 +16,16 @@ namespace Cassette.Web
             };
         }
 
-        void StorePageHelperInHttpContextItems(IPageHelper pageHelper, HttpContextBase httpContext)
+        void StorePageHelperInHttpContextItems(IPageAssetManager pageHelper, HttpContextBase httpContext)
         {
             httpContext.Items["Cassette.PageHelper"] = pageHelper;
         }
 
-        public static IPageHelper GetPageHelper(HttpContextBase httpContext = null)
+        public static IPageAssetManager GetPageHelper(HttpContextBase httpContext = null)
         {
             if (httpContext == null) httpContext = new HttpContextWrapper(HttpContext.Current);
 
-            var helper = httpContext.Items["Cassette.PageHelper"] as IPageHelper;
+            var helper = httpContext.Items["Cassette.PageHelper"] as IPageAssetManager;
             if (helper == null)
             {
                 throw new InvalidOperationException("Cassette.PageHelper has not been added to the current HttpContext Items. Make sure the CassetteHttpModule has been added to Web.config.");

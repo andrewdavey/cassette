@@ -3,10 +3,10 @@ using System.Web.Caching;
 
 namespace Cassette.Web
 {
-    public interface IManager
+    public interface ICassetteApplication
     {
         CacheDependency CreateCacheDependency();
-        IPageHelper CreatePageHelper(HttpContextBase httpContext);
+        IPageAssetManager CreatePageHelper(HttpContextBase httpContext);
         IHttpHandler CreateHttpHandler();
     }
 }
