@@ -1,8 +1,9 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
+using System.Text;
+using Cassette.ModuleBuilding;
 using Should;
 using Xunit;
-using System.Text;
 
 namespace Cassette.Assets.Stylesheets
 {

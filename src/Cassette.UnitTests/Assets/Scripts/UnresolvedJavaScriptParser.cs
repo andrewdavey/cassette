@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
+using Cassette.ModuleBuilding;
 using Should;
 using Xunit;
 

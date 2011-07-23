@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
-using System;
 
-namespace Cassette
+namespace Cassette.ModuleBuilding
 {
     public abstract class ModuleContainerBuilder
     {

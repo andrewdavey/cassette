@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.Utilities;
+using Cassette.ModuleBuilding;
 
 namespace Cassette.Assets.Scripts
 {

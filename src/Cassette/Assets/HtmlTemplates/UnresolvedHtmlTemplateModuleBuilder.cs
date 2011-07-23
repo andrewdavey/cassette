@@ -1,4 +1,6 @@
-﻿namespace Cassette.Assets.HtmlTemplates
+﻿using Cassette.ModuleBuilding;
+
+namespace Cassette.Assets.HtmlTemplates
 {
     public class UnresolvedHtmlTemplateModuleBuilder : UnresolvedModuleBuilder
     {

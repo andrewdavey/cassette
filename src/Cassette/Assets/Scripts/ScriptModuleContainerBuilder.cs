@@ -1,6 +1,7 @@
 ﻿using System.IO.IsolatedStorage;
 using System.Linq;
 using Cassette.CoffeeScript;
+using Cassette.ModuleBuilding;
 
 namespace Cassette.Assets.Scripts
 {

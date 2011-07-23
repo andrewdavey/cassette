@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Cassette
+namespace Cassette.ModuleBuilding
 {
     public interface IUnresolvedAssetParser
     {

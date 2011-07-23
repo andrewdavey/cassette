@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.ModuleBuilding;
 
 namespace Cassette.Assets.Scripts
 {

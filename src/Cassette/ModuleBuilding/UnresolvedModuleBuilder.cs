@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Cassette
+namespace Cassette.ModuleBuilding
 {
     public abstract class UnresolvedModuleBuilder
     {

@@ -11,6 +11,7 @@ using Cassette.Assets.Scripts;
 using Cassette.Assets.Stylesheets;
 using Cassette.CoffeeScript;
 using Cassette.Configuration;
+using Cassette.ModuleBuilding;
 
 namespace Cassette.Web
 {

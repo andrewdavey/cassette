@@ -1,5 +1,6 @@
 ﻿using System.IO.IsolatedStorage;
 using System.Linq;
+using Cassette.ModuleBuilding;
 
 namespace Cassette.Assets.Stylesheets
 {

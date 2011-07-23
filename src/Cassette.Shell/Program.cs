@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Cassette.CoffeeScript;
 using Cassette.Assets.Scripts;
+using Cassette.CoffeeScript;
+using Cassette.ModuleBuilding;
 
 namespace Cassette.Shell
 {

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cassette.ModuleBuilding;
 using Cassette.Utilities;
 
 namespace Cassette.Assets.HtmlTemplates

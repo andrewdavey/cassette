@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using Xunit;
 using Should;
-using System.IO;
+using Xunit;
 
-namespace Cassette
+namespace Cassette.ModuleBuilding
 {
     public class UnresolvedModule_with_scripts_having_only_internal_references
     {

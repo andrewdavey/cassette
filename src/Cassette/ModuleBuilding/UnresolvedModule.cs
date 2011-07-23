@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Cassette.Utilities;
 using System.IO;
+using System.Linq;
+using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.ModuleBuilding
 {
     /// <summary>
     /// An unresolved module exists while the module dependency graph is being built.

@@ -55,12 +55,12 @@
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleContainerBuilder.cs" />
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleWriter.cs" />
     <Compile Include="IModuleWriter.cs" />
-    <Compile Include="ModuleContainerBuilder.cs" />
+    <Compile Include="ModuleBuilding\ModuleContainerBuilder.cs" />
     <Compile Include="Assets\Stylesheets\StylesheetModuleContainerBuilder.cs" />
     <Compile Include="Assets\Stylesheets\StylesheetModuleWriter.cs" />
     <Compile Include="Assets\Scripts\UnresolvedCoffeeScriptParser.cs" />
     <Compile Include="IReferenceBuilder.cs" />
-    <Compile Include="IUnresolvedAssetParser.cs" />
+    <Compile Include="ModuleBuilding\IUnresolvedAssetParser.cs" />
     <Compile Include="Assets\Stylesheets\UnresolvedCssParser.cs" />
     <Compile Include="Assets\HtmlTemplates\UnresolvedHtmlTemplateParser.cs" />
     <Compile Include="Assets\Scripts\UnresolvedScriptModuleBuilder.cs" />
@@ -82,8 +82,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UnresolvedModuleBuilder.cs" />
-    <Compile Include="UnresolvedAsset.cs" />
+    <Compile Include="ModuleBuilding\UnresolvedModuleBuilder.cs" />
+    <Compile Include="ModuleBuilding\UnresolvedAsset.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="Assets\Scripts\UnresolvedJavaScriptParser.cs" />
-    <Compile Include="UnresolvedModule.cs" />
+    <Compile Include="ModuleBuilding\UnresolvedModule.cs" />
     <Compile Include="Utilities\StreamExtensions.cs" />
     <Compile Include="Web\Assets.cs" />
     <Compile Include="Web\BufferStream.cs" />

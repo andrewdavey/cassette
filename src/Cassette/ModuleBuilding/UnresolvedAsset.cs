@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cassette
+namespace Cassette.ModuleBuilding
 {
     /// <summary>
     /// An unresolved asset has all the references as they appear in the file.
