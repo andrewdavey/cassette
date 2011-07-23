@@ -11,7 +11,7 @@ namespace Cassette
         readonly string sourcePath = @"scripts/test.js";
         readonly string source = @"/// <reference path=""other-1.js""/>
 /// <reference path=""../lib/other-2.js""/>";
-        readonly UnresolvedResource script;
+        readonly UnresolvedAsset script;
 
         public Given_a_UnresolvedJavaScriptParser_When_Parse_source_with_two_references()
         {

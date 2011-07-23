@@ -33,7 +33,7 @@ namespace Cassette
         {
             using (var textWriter = new StringWriter())
             {
-                var module = new Module("a", new[] { new Resource("a/test.coffee", new byte[0], new string[0]) }, new string[0], null);
+                var module = new Module("a", new[] { new Asset("a/test.coffee", new byte[0], new string[0]) }, new string[0], null);
                 var sources = new Dictionary<string, string>
                 {
                     { "a/test.coffee", "x = 1" }
@@ -47,9 +47,9 @@ namespace Cassette
             }
         }
 
-        Resource CreateScript(string name)
+        Asset CreateScript(string name)
         {
-            return new Resource("a/" + name + ".js", new byte[0], new string[0]);
+            return new Asset("a/" + name + ".js", new byte[0], new string[0]);
         }
 
         class FakeCompiler : ICoffeeScriptCompiler

@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace Cassette
 {
-    public class Resource
+    public class Asset
     {
         readonly string path;
         readonly byte[] hash;
         readonly string[] references;
 
-        public Resource(string path, byte[] hash, string[] references)
+        public Asset(string path, byte[] hash, string[] references)
         {
             this.path = path;
             this.hash = hash;

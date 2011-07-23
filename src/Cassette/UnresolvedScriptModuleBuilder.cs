@@ -9,12 +9,12 @@ namespace Cassette
         {
         }
 
-        protected override bool ShouldNotIgnoreResource(string filename)
+        protected override bool ShouldNotIgnoreAsset(string filename)
         {
             return !filename.EndsWith("-vsdoc.js");
         }
 
-        protected override IUnresolvedResourceParser CreateParser(string filename)
+        protected override IUnresolvedAssetParser CreateParser(string filename)
         {
             var isCoffeeScript = filename.EndsWith(".coffee", StringComparison.InvariantCulture);
             if (isCoffeeScript)

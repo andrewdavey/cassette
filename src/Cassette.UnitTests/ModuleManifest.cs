@@ -12,28 +12,28 @@ namespace Cassette
             {
                 new Module(
                     @"scripts/module-a",
-                    new Resource[]
+                    new Asset[]
                     {
-                        new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
+                        new Asset(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0],
                     null
                 ),
-                new Module(@"scripts/module-b", new Resource[0], new string[0], null)
+                new Module(@"scripts/module-b", new Asset[0], new string[0], null)
             });
 
             var newModuleManifest = new ModuleManifest(new[] 
             {
                 new Module(
                     @"scripts/module-a",
-                    new Resource[]
+                    new Asset[]
                     {
-                        new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
+                        new Asset(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0],
                     null
                 ),
-                new Module(@"scripts/module-b", new Resource[0], new string[0], null)
+                new Module(@"scripts/module-b", new Asset[0], new string[0], null)
             });
 
             var differences = newModuleManifest.CompareTo(oldModuleManifest);
@@ -48,9 +48,9 @@ namespace Cassette
             {
                 oldModule = new Module(
                     @"scripts/module-a",
-                    new Resource[]
+                    new Asset[]
                     {
-                        new Resource(@"scripts/module-a/test.js", new byte[] { 1 }, new string[0])
+                        new Asset(@"scripts/module-a/test.js", new byte[] { 1 }, new string[0])
                     }, 
                     new string[0],
                     null
@@ -62,9 +62,9 @@ namespace Cassette
             {
                 changedModule = new Module(
                     @"scripts/module-a",
-                    new Resource[]
+                    new Asset[]
                     {
-                        new Resource(@"scripts/module-a/test.js", new byte[] { 2 }, new string[0])
+                        new Asset(@"scripts/module-a/test.js", new byte[] { 2 }, new string[0])
                     }, 
                     new string[0],
                     null
@@ -87,9 +87,9 @@ namespace Cassette
             {
                 module = new Module(
                     @"scripts/module-a",
-                    new Resource[]
+                    new Asset[]
                     {
-                        new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
+                        new Asset(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0],
                     null
@@ -114,7 +114,7 @@ namespace Cassette
             {
                 module = new Module(
                     @"scripts/module-a",
-                    new Resource[0], 
+                    new Asset[0], 
                     new string[0],
                     null
                 )

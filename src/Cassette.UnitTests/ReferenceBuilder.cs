@@ -47,9 +47,9 @@ namespace Cassette
             storage.Dispose();
         }
 
-        Resource CreateScript(string name, string module, params string[] references)
+        Asset CreateScript(string name, string module, params string[] references)
         {
-            return new Resource(module + "/" + name + ".js", new byte[0], references);
+            return new Asset(module + "/" + name + ".js", new byte[0], references);
         }
 
         [Fact]

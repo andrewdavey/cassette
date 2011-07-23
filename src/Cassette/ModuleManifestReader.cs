@@ -28,15 +28,15 @@ namespace Cassette
             var location = moduleElement.Attribute("location");
             return new Module(
                 moduleElement.Attribute("path").Value,
-                moduleElement.Elements("resource").Select(ReadScriptElement).ToArray(),
+                moduleElement.Elements("asset").Select(ReadScriptElement).ToArray(),
                 moduleElement.Elements("reference").Select(ReadReferenceElement).ToArray(),
                 location == null ? null : location.Value
             );
         }
 
-        Resource ReadScriptElement(XElement element)
+        Asset ReadScriptElement(XElement element)
         {
-            return new Resource(
+            return new Asset(
                 element.Attribute("path").Value,
                 ByteArrayExtensions.FromHexString(element.Attribute("hash").Value),
                 new string[0]

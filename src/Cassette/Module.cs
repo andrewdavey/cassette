@@ -7,20 +7,20 @@ namespace Cassette
     public class Module
     {
         readonly string path;
-        readonly Resource[] resources;
+        readonly Asset[] assets;
         readonly string[] moduleReferences;
         readonly string location;
         readonly byte[] hash;
 
-        public Module(string path, Resource[] resources, string[] moduleReferences, string location)
+        public Module(string path, Asset[] assets, string[] moduleReferences, string location)
         {
-            if (!resources.All(s => s.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase)))
-                throw new ArgumentException("Resource paths in this module must start with the path \"" + path + "\".");
+            if (!assets.All(s => s.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase)))
+                throw new ArgumentException("Asset paths in this module must start with the path \"" + path + "\".");
 
             this.path = path;
-            this.resources = resources;
+            this.assets = assets;
             this.location = location ?? "";
-            this.hash = HashResourceHashes(resources);
+            this.hash = HashAssetHashes(assets);
             this.moduleReferences = moduleReferences.Select(r => r).ToArray();
         }
 
@@ -29,9 +29,9 @@ namespace Cassette
             get { return path; }
         }
 
-        public Resource[] Resources
+        public Asset[] Assets
         {
-            get { return resources; }
+            get { return assets; }
         }
 
         public string[] References
@@ -68,20 +68,20 @@ namespace Cassette
 
         internal static Module CreateExternalModule(string urlString, string location)
         {
-            // External module has only one resource (the given url) and no references.
+            // External module has only one asset (the given url) and no references.
             return new Module(
                 urlString,
-                new[] { new Resource(urlString, new byte[0], new string[0]) },
+                new[] { new Asset(urlString, new byte[0], new string[0]) },
                 new string[0],
                 location
             );
         }
 
-        byte[] HashResourceHashes(Resource[] resources)
+        byte[] HashAssetHashes(Asset[] assets)
         {
             using (var sha1 = SHA1.Create())
             {
-                return sha1.ComputeHash(resources.SelectMany(resource => resource.Hash).ToArray());
+                return sha1.ComputeHash(assets.SelectMany(asset => asset.Hash).ToArray());
             }
         }
 

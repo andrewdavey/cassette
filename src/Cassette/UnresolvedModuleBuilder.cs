@@ -20,44 +20,44 @@ namespace Cassette
         {
             var modulePath = rootDirectory + relativeModulePath;
             var manifestFilename = modulePath + "/" + moduleManifestFilename;
-            IEnumerable<UnresolvedResource> resources;
+            IEnumerable<UnresolvedAsset> assets;
             if (File.Exists(manifestFilename))
             {
-                resources = LoadResourcesInManifest(manifestFilename, modulePath);
-                return new UnresolvedModule(relativeModulePath, resources.ToArray(), location, isResourceOrderFixed: true);
+                assets = LoadAssetInManifest(manifestFilename, modulePath);
+                return new UnresolvedModule(relativeModulePath, assets.ToArray(), location, isAssetOrderFixed: true);
             }
             else
             {
-                resources = LoadResourcesByFindingFiles(modulePath);
-                return new UnresolvedModule(relativeModulePath, resources.ToArray(), location, isResourceOrderFixed: false);
+                assets = LoadAssetByFindingFiles(modulePath);
+                return new UnresolvedModule(relativeModulePath, assets.ToArray(), location, isAssetOrderFixed: false);
             }
         }
 
-        protected virtual bool ShouldNotIgnoreResource(string filename)
+        protected virtual bool ShouldNotIgnoreAsset(string filename)
         {
             return true;
         }
 
-        protected abstract IUnresolvedResourceParser CreateParser(string filename);
+        protected abstract IUnresolvedAssetParser CreateParser(string filename);
 
-        IEnumerable<UnresolvedResource> LoadResourcesInManifest(string manifestFilename, string modulePath)
+        IEnumerable<UnresolvedAsset> LoadAssetInManifest(string manifestFilename, string modulePath)
         {
             return File.ReadAllLines(manifestFilename)
                 .Where(line => !string.IsNullOrWhiteSpace(line))
                 .Select(filename => modulePath + "/" + filename)
                 .Select(NormalizePathSlashes)
-                .Select(LoadResource);
+                .Select(LoadAsset);
         }
 
-        IEnumerable<UnresolvedResource> LoadResourcesByFindingFiles(string modulePath)
+        IEnumerable<UnresolvedAsset> LoadAssetByFindingFiles(string modulePath)
         {
             return fileExtensions
                 .SelectMany(
                     extension => LoadAllFilesInModule(modulePath, extension)
                 )
-                .Where(ShouldNotIgnoreResource)
+                .Where(ShouldNotIgnoreAsset)
                 .Select(NormalizePathSlashes)
-                .Select(LoadResource);
+                .Select(LoadAsset);
         }
 
         IEnumerable<string> LoadAllFilesInModule(string modulePath, string extension)
@@ -75,7 +75,7 @@ namespace Cassette
             return path.Replace('\\', '/');
         }
 
-        UnresolvedResource LoadResource(string filename)
+        UnresolvedAsset LoadAsset(string filename)
         {
             var parser = CreateParser(filename);
             using (var fileStream = File.OpenRead(filename))

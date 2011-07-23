@@ -6,11 +6,11 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class UnresolvedCoffeeScriptParser : IUnresolvedResourceParser
+    public class UnresolvedCoffeeScriptParser : IUnresolvedAssetParser
     {
-        public UnresolvedResource Parse(Stream source, string sourcePath)
+        public UnresolvedAsset Parse(Stream source, string sourcePath)
         {
-            return new UnresolvedResource(
+            return new UnresolvedAsset(
                 sourcePath,
                 source.ComputeSHA1Hash(),
                 ParseReferences(source).ToArray()

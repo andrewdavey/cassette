@@ -28,10 +28,10 @@ namespace Cassette
                         new XAttribute("path", module.Path),
                         module.Location != null ? new XAttribute("location", module.Location) : null,
 
-                        from resource in module.Resources
-                        select new XElement("resource",
-                            new XAttribute("path", resource.Path),
-                            new XAttribute("hash", resource.Hash.ToHexString())
+                        from asset in module.Assets
+                        select new XElement("asset",
+                            new XAttribute("path", asset.Path),
+                            new XAttribute("hash", asset.Hash.ToHexString())
                         ),
 
                         from reference in module.References

@@ -10,7 +10,7 @@
             this.applicationRoot = applicationRoot;
         }
 
-        protected override IUnresolvedResourceParser CreateParser(string filename)
+        protected override IUnresolvedAssetParser CreateParser(string filename)
         {
             return new UnresolvedCssParser(applicationRoot);
         }

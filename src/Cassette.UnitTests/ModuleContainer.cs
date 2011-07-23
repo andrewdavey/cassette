@@ -17,14 +17,14 @@ namespace Cassette
             {
                 new Module(
                     @"scripts/module-a",
-                    new Resource[]
+                    new Asset[]
                     {
-                        new Resource(@"scripts/module-a/test.js", new byte[0], new string[0])
+                        new Asset(@"scripts/module-a/test.js", new byte[0], new string[0])
                     }, 
                     new string[0],
                     null
                 ),
-                new Module(@"scripts/module-b", new Resource[0], new string[0], null)
+                new Module(@"scripts/module-b", new Asset[0], new string[0], null)
             }, storage, tw => null);
         }
 
@@ -36,21 +36,21 @@ namespace Cassette
         [Fact]
         public void FindModuleContainingScript_with_known_path_returns_the_Module()
         {
-            var module = moduleContainer.FindModuleContainingResource(@"scripts/module-a/test.js");
+            var module = moduleContainer.FindModuleContainingAsset(@"scripts/module-a/test.js");
             module.Path.ShouldEqual(@"scripts/module-a");
         }
 
         [Fact]
         public void FindModuleContainingScript_with_known_path_different_case_returns_the_Module()
         {
-            var module = moduleContainer.FindModuleContainingResource(@"SCRIPTS/module-a/test.js");
+            var module = moduleContainer.FindModuleContainingAsset(@"SCRIPTS/module-a/test.js");
             module.Path.ShouldEqual(@"scripts/module-a");
         }
 
         [Fact]
         public void FindModuleContainingScript_with_unknown_path_returns_null()
         {
-            var module = moduleContainer.FindModuleContainingResource(@"scripts/module-X/XXX.js");
+            var module = moduleContainer.FindModuleContainingAsset(@"scripts/module-X/XXX.js");
             module.ShouldBeNull();
         }
 

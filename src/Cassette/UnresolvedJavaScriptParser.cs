@@ -8,11 +8,11 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class UnresolvedJavaScriptParser : IUnresolvedResourceParser
+    public class UnresolvedJavaScriptParser : IUnresolvedAssetParser
     {
-        public UnresolvedResource Parse(Stream source, string sourcePath)
+        public UnresolvedAsset Parse(Stream source, string sourcePath)
         {
-            return new UnresolvedResource(
+            return new UnresolvedAsset(
                 sourcePath, 
                 source.ComputeSHA1Hash(), 
                 ParseReferences(source).ToArray()

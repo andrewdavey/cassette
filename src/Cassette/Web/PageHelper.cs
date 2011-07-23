@@ -203,25 +203,25 @@ namespace Cassette.Web
             return scriptReferenceBuilder
                 .GetRequiredModules()
                 .Where(m => m.Location == location)
-                .SelectMany(m => m.Resources)
+                .SelectMany(m => m.Assets)
                 .Select(DebugScriptUrl);
         }
 
-        string DebugScriptUrl(Resource resource)
+        string DebugScriptUrl(Asset asset)
         {
-            if (resource.Path.StartsWith("http:") || resource.Path.StartsWith("https:"))
+            if (asset.Path.StartsWith("http:") || asset.Path.StartsWith("https:"))
             {
-                return resource.Path;
+                return asset.Path;
             }
             else
             {
-                var url = AppRelativeScriptUrl(resource);
-                var hash = resource.Hash.ToHexString();
+                var url = AppRelativeScriptUrl(asset);
+                var hash = asset.Hash.ToHexString();
                 return url + (url.Contains('?') ? "&" : "?") + hash;
             }
         }
 
-        string AppRelativeScriptUrl(Resource script)
+        string AppRelativeScriptUrl(Asset script)
         {
             if (script.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
             {
@@ -272,7 +272,7 @@ namespace Cassette.Web
         {
             return stylesheetReferenceBuilder
                 .GetRequiredModules()
-                .SelectMany(m => m.Resources)
+                .SelectMany(m => m.Assets)
                 .Select(r => new { url = AppRelativeStylesheetUrl(r), hash = r.Hash.ToHexString() })
                 .Select(r => r.url + (r.url.Contains('?') ? "&" : "?") + r.hash);
         }
@@ -289,7 +289,7 @@ namespace Cassette.Web
                 .Select(m => handler + "/styles/" + m.Path + "_" + m.Hash.ToHexString());
         }
 
-        string AppRelativeStylesheetUrl(Resource stylesheet)
+        string AppRelativeStylesheetUrl(Asset stylesheet)
         {
             // TODO: Check for .less and .sass files
             return "~/" + stylesheet.Path;

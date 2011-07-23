@@ -26,15 +26,15 @@ namespace Cassette
 
             modulesByScriptPath = (
                 from module in this.modules
-                from resource in module.Resources
-                select new { resource.Path, module }
+                from asset in module.Assets
+                select new { asset.Path, module }
             ).ToDictionary(x => x.Path, x => x.module, pathComparer);
         }
 
-        public Module FindModuleContainingResource(string resourcePath)
+        public Module FindModuleContainingAsset(string assetPath)
         {
             Module module;
-            if (modulesByScriptPath.TryGetValue(resourcePath, out module))
+            if (modulesByScriptPath.TryGetValue(assetPath, out module))
             {
                 return module;
             }

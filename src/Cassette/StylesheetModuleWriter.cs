@@ -32,16 +32,16 @@ namespace Cassette
                 minifier.MinifyStyleSheet(
                     string.Join(
                         "\r\n",
-                        module.Resources.Select(ReadCss)
+                        module.Assets.Select(ReadCss)
                     )
                 )
             );
         }
 
-        string ReadCss(Resource resource)
+        string ReadCss(Asset asset)
         {
-            var css = readFileText(rootDirectory + resource.Path);
-            var currentDirectory = applicationRoot + resource.Path.Substring(0, resource.Path.LastIndexOf('/') + 1);
+            var css = readFileText(rootDirectory + asset.Path);
+            var currentDirectory = applicationRoot + asset.Path.Substring(0, asset.Path.LastIndexOf('/') + 1);
             css = ExpandRelativeUrls(css, currentDirectory);
             return css;
         }

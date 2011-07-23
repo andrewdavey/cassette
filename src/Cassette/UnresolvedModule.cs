@@ -13,70 +13,70 @@ namespace Cassette
     public class UnresolvedModule
     {
         readonly string path;
-        readonly Tuple<Resource, string[]>[] partition;
-        readonly Resource[] resources;
+        readonly Tuple<Asset, string[]>[] partition;
+        readonly Asset[] assets;
         readonly string[] externalReferences;
         readonly string location;
 
         /// <param name="path">Application relative path to the module directory.</param>
-        /// <param name="resources">All the unresolved resources found in the module.</param>
-        /// <param name="isResourceOrderFixed">When true, the resources will not be sorted by their dependency ordering.</param>
-        public UnresolvedModule(string path, UnresolvedResource[] resources, string location, bool isResourceOrderFixed)
+        /// <param name="assets">All the unresolved assets found in the module.</param>
+        /// <param name="isAssetOrderFixed">When true, the assets will not be sorted by their dependency ordering.</param>
+        public UnresolvedModule(string path, UnresolvedAsset[] assets, string location, bool isAssetOrderFixed)
         {
             this.path = path;
             this.location = location;
 
-            var pathsInModule = new HashSet<string>(resources.Select(resource => resource.Path));
-            partition = PartitionResourceReferences(resources, pathsInModule);
-            // Store all the references to external resources.
+            var pathsInModule = new HashSet<string>(assets.Select(asset => asset.Path));
+            partition = PartitionAssetReferences(assets, pathsInModule);
+            // Store all the references to external assets.
             this.externalReferences = partition.SelectMany(p => p.Item2).Distinct().ToArray();
-            // The resources now only contain references found in this module.
-            var resolvedResources = partition.Select(p => p.Item1).ToArray();
-            if (isResourceOrderFixed)
+            // The assets now only contain references found in this module.
+            var resolvedAssets = partition.Select(p => p.Item1).ToArray();
+            if (isAssetOrderFixed)
             {
-                this.resources = resolvedResources;
+                this.assets = resolvedAssets;
             }
             else
             {
-                this.resources = OrderScriptsByDependency(resolvedResources);
+                this.assets = OrderScriptsByDependency(resolvedAssets);
             }
         }
 
-        public Module Resolve(Func<string, string> getModulePathContainingResource)
+        public Module Resolve(Func<string, string> getModulePathContainingAsset)
         {
             var moduleReferences = externalReferences
                 .Select(
-                    externalPath => getModulePathContainingResource(externalPath)
+                    externalPath => getModulePathContainingAsset(externalPath)
                 )
                 .Distinct()
                 .ToArray();
 
-            return new Module(path, resources, moduleReferences, location);
+            return new Module(path, assets, moduleReferences, location);
         }
 
         public static IEnumerable<Module> ResolveAll(IEnumerable<UnresolvedModule> unresolvedModules)
         {
-            unresolvedModules = unresolvedModules.Where(m => m.resources.Length > 0).ToArray();
+            unresolvedModules = unresolvedModules.Where(m => m.assets.Length > 0).ToArray();
 
-            var modulesByResourcePath = (
+            var modulesByAssetPath = (
                 from module in unresolvedModules
-                from resource in module.resources
-                select new { resource.Path, module }
+                from asset in module.assets
+                select new { asset.Path, module }
             ).ToDictionary(x => x.Path, x => x.module.path, StringComparer.OrdinalIgnoreCase);
 
             var modules = unresolvedModules.Select(
                 m => m.Resolve(
-                    resourcePath => FindModulePathOrThrow(modulesByResourcePath, m, resourcePath)
+                    assetPath => FindModulePathOrThrow(modulesByAssetPath, m, assetPath)
                 )
             );
 
             return modules;
         }
 
-        static string FindModulePathOrThrow(Dictionary<string, string> modulesByResourcePath, UnresolvedModule m, string resourcePath)
+        static string FindModulePathOrThrow(Dictionary<string, string> modulesByAssetPath, UnresolvedModule m, string assetPath)
         {
             string module;
-            if (modulesByResourcePath.TryGetValue(resourcePath, out module))
+            if (modulesByAssetPath.TryGetValue(assetPath, out module))
             {
                 return module;
             }
@@ -84,46 +84,46 @@ namespace Cassette
             {
                 var referencers = string.Join(
                     "\", \"",
-                    m.GetResourcePathsThatReferencePath(resourcePath)
+                    m.GetAssetPathsThatReferencePath(assetPath)
                 );
                 throw new FileNotFoundException(
                     string.Format(
                         "The file \"{0}\" is referenced by \"{1}\", but cannot be found. " + 
                         "Either add \"{0}\" or change the reference(s) to a file that exists.", 
-                        resourcePath, 
+                        assetPath, 
                         referencers
                     ), 
-                    resourcePath
+                    assetPath
                 );
             }
         }
 
-        IEnumerable<string> GetResourcePathsThatReferencePath(string resourcePath)
+        IEnumerable<string> GetAssetPathsThatReferencePath(string assetPath)
         {
             return partition
-                .Where(p => p.Item2.Contains(resourcePath))
+                .Where(p => p.Item2.Contains(assetPath))
                 .Select(p => p.Item1.Path);
         }
 
-        Tuple<Resource, string[]>[] PartitionResourceReferences(UnresolvedResource[] resources, HashSet<string> pathsInModule)
+        Tuple<Asset, string[]>[] PartitionAssetReferences(UnresolvedAsset[] assets, HashSet<string> pathsInModule)
         {
-            return resources.Select(
-                resource => resource.Resolve(pathsInModule.Contains)
+            return assets.Select(
+                asset => asset.Resolve(pathsInModule.Contains)
             ).ToArray();
         }
 
-        Resource[] OrderScriptsByDependency(Resource[] resources)
+        Asset[] OrderScriptsByDependency(Asset[] assets)
         {
-            var resourcesByPath = resources.ToDictionary(resource => resource.Path, StringComparer.OrdinalIgnoreCase);
-            // Create a graph where each node is a resource path
-            // and directed edges represent references between resources.
+            var assetsByPath = assets.ToDictionary(asset => asset.Path, StringComparer.OrdinalIgnoreCase);
+            // Create a graph where each node is a asset path
+            // and directed edges represent references between assets.
             var graph = new Graph<string>(
-                resourcesByPath.Keys, 
-                path => resourcesByPath[path].References
+                assetsByPath.Keys, 
+                path => assetsByPath[path].References
             );
             var sortedPaths = graph.TopologicalSort();
 
-            return sortedPaths.Select(path => resourcesByPath[path]).ToArray();
+            return sortedPaths.Select(path => assetsByPath[path]).ToArray();
         }
     }
 }

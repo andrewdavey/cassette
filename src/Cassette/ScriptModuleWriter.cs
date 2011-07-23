@@ -29,7 +29,7 @@ namespace Cassette
                 minifier.MinifyJavaScript(
                     string.Join(
                         "\r\n",
-                        module.Resources.Select(s => GetJavaScript(rootDirectory + s.Path))
+                        module.Assets.Select(s => GetJavaScript(rootDirectory + s.Path))
                     )
                 )
             );

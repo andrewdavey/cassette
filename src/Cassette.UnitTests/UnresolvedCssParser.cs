@@ -14,7 +14,7 @@ namespace Cassette
 @reference 'test-1.css';
 @reference ""test-2.css"";
 */";
-        readonly UnresolvedResource stylesheet;
+        readonly UnresolvedAsset stylesheet;
 
         public Given_a_UnresolvedCssParser_When_Parse_source_with_two_references()
         {

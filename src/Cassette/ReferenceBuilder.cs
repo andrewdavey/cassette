@@ -15,21 +15,21 @@ namespace Cassette
             this.moduleContainer = moduleContainer;
         }
 
-        public void AddReference(string resourcePath)
+        public void AddReference(string assetPath)
         {
-            var module = moduleContainer.FindModuleContainingResource(resourcePath)
-                      ?? moduleContainer.FindModule(resourcePath.TrimEnd('/', '*'));
+            var module = moduleContainer.FindModuleContainingAsset(assetPath)
+                      ?? moduleContainer.FindModule(assetPath.TrimEnd('/', '*'));
             if (module == null)
             {
-                // The resourcePath may be an external URL.
+                // The assetPath may be an external URL.
                 Uri url;
-                if (Uri.TryCreate(resourcePath, UriKind.Absolute, out url))
+                if (Uri.TryCreate(assetPath, UriKind.Absolute, out url))
                 {
-                    modules.Add(Module.CreateExternalModule(resourcePath, location: ""));
+                    modules.Add(Module.CreateExternalModule(assetPath, location: ""));
                 }
                 else
                 {
-                    throw new ArgumentException("Resource not found: " + resourcePath);
+                    throw new ArgumentException("Asset not found: " + assetPath);
                 }
             }
             else

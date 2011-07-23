@@ -66,7 +66,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void Directory_with_no_resource_files_is_not_added()
+        public void Directory_with_no_asset_files_is_not_added()
         {
             container.Contains("nojs").ShouldBeFalse();
         }
@@ -74,7 +74,7 @@ namespace Cassette
         [Fact]
         public void Module_lib_has_2_scripts()
         {
-            container.FindModule("lib").Resources.Length.ShouldEqual(2);
+            container.FindModule("lib").Assets.Length.ShouldEqual(2);
         }
 
         [Fact]

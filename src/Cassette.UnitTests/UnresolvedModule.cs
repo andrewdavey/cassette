@@ -39,7 +39,7 @@ namespace Cassette
         [Fact]
         public void Scripts_in_dependency_order()
         {
-            var scriptFilenames = module.Resources.Select(s => s.Path.Split('/').Last()).ToArray();
+            var scriptFilenames = module.Assets.Select(s => s.Path.Split('/').Last()).ToArray();
             scriptFilenames.ShouldEqual(
                 new[] { "b.js", "c.js", "a.js" }
             );
@@ -51,9 +51,9 @@ namespace Cassette
             module.Path.ShouldEqual(@"scripts/module-a");
         }
 
-        UnresolvedResource CreateScript(string name, params string[] references)
+        UnresolvedAsset CreateScript(string name, params string[] references)
         {
-            return new UnresolvedResource(
+            return new UnresolvedAsset(
                 @"scripts/module-a/" + name + ".js",
                 new byte[0],
                 references.Select(r => r + ".js").ToArray()
@@ -68,12 +68,12 @@ namespace Cassette
 
         public Resolve_an_UnresolvedModule_with_scripts_in_subdirectory()
         {
-            var script1 = new UnresolvedResource(
+            var script1 = new UnresolvedAsset(
                 @"scripts/module-a/sub/test-1.js",
                 new byte[0],
                 new[] { @"test-2.js" }
             );
-            var script2 = new UnresolvedResource(
+            var script2 = new UnresolvedAsset(
                 @"scripts/module-a/sub/test-2.js",
                 new byte[0],
                 new string[] { }
@@ -91,14 +91,14 @@ namespace Cassette
         [Fact]
         public void script_2_before_script_1()
         {
-            module.Resources[0].Path.ShouldEqual(@"scripts/module-a/sub/test-2.js");
-            module.Resources[1].Path.ShouldEqual(@"scripts/module-a/sub/test-1.js");
+            module.Assets[0].Path.ShouldEqual(@"scripts/module-a/sub/test-2.js");
+            module.Assets[1].Path.ShouldEqual(@"scripts/module-a/sub/test-1.js");
         }
 
         [Fact]
         public void script_1_has_resolved_reference_to_script_1()
         {
-            module.Resources[1].References[0].ShouldEqual(@"scripts/module-a/sub/test-2.js");
+            module.Assets[1].References[0].ShouldEqual(@"scripts/module-a/sub/test-2.js");
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace Cassette
 
         public Resolve_a_UnresolvedModule_with_script_having_an_external_reference()
         {
-            var script = new UnresolvedResource(
+            var script = new UnresolvedAsset(
                 @"scripts/module-a/test.js",
                 new byte[0],
                 new[] { @"scripts/module-b/lib.js" }
@@ -140,16 +140,16 @@ namespace Cassette
         [Fact]
         public void Module_Script_has_no_internal_references()
         {
-            module.Resources[0].References.ShouldBeEmpty();
+            module.Assets[0].References.ShouldBeEmpty();
         }
     }
 
-    public class UnresolvedModule_with_fixed_resource_order
+    public class UnresolvedModule_with_fixed_asset_order
     {
         readonly UnresolvedModule unresolvedModule;
         readonly Module module;
 
-        public UnresolvedModule_with_fixed_resource_order()
+        public UnresolvedModule_with_fixed_asset_order()
         {
             // Create scripts with some dependencies declared.
             var scriptA = CreateScript("a", "c");
@@ -161,24 +161,24 @@ namespace Cassette
                 @"scripts/module-a",
                 new[] { scriptA, scriptB, scriptC },
                 null,
-                isResourceOrderFixed: true
+                isAssetOrderFixed: true
             );
 
             module = unresolvedModule.Resolve(s => null);
         }
 
         [Fact]
-        public void Original_resource_ordering_is_maintained()
+        public void Original_asset_ordering_is_maintained()
         {
-            module.Resources
+            module.Assets
                 .Select(r => r.Path)
                 .SequenceEqual(new[] { "scripts/module-a/a.js", "scripts/module-a/b.js", "scripts/module-a/c.js" })
                 .ShouldBeTrue();
         }
 
-        UnresolvedResource CreateScript(string name, params string[] references)
+        UnresolvedAsset CreateScript(string name, params string[] references)
         {
-            return new UnresolvedResource(
+            return new UnresolvedAsset(
                 @"scripts/module-a/" + name + ".js",
                 new byte[0],
                 references.Select(r => r + ".js").ToArray()
@@ -202,7 +202,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void Throws_useful_exception_when_resource_not_found()
+        public void Throws_useful_exception_when_asset_not_found()
         {
             var moduleA = new UnresolvedModule("module-a", new[] { CreateScript("module-a", "foo") }, null, false);
             var moduleB = new UnresolvedModule("module-b", new[] { CreateScript("module-b", "bar", "../module-a/missing") }, null, false);
@@ -217,9 +217,9 @@ namespace Cassette
                 "Either add \"module-a/missing.js\" or change the reference(s) to a file that exists.");
         }
 
-        UnresolvedResource CreateScript(string module, string name, params string[] references)
+        UnresolvedAsset CreateScript(string module, string name, params string[] references)
         {
-            return new UnresolvedResource(
+            return new UnresolvedAsset(
                 module + "/" + name + ".js",
                 new byte[0],
                 references.Select(r => r + ".js").ToArray()

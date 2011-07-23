@@ -39,7 +39,7 @@ namespace Cassette.Web
         public void RenderScripts_for_single_module_when_using_modules_returns_single_script_element()
         {
             var referenceBuilder = new FakeReferenceBuilder();
-            var module = new Module("lib", new[] { new Resource("lib/test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0], null);
+            var module = new Module("lib", new[] { new Asset("lib/test.js", new byte[] { 1, 2, 3 }, new string[0]) }, new string[0], null);
             referenceBuilder.GetRequiredModules = () => new[] { module };
             
             var useModules = true;
@@ -60,7 +60,7 @@ namespace Cassette.Web
                 "lib",
                 new[]
                 { 
-                    new Resource("lib/test.js", new byte[] { 1, 2, 3 }, new string[0])
+                    new Asset("lib/test.js", new byte[] { 1, 2, 3 }, new string[0])
                 },
                 new string[0],
                 null
@@ -87,7 +87,7 @@ namespace Cassette.Web
                 "lib",
                 new[]
                 { 
-                    new Resource("lib/test.js", new byte[] { 1, 2, 3 }, new string[0])
+                    new Asset("lib/test.js", new byte[] { 1, 2, 3 }, new string[0])
                 },
                 new string[0],
                 null
@@ -109,8 +109,8 @@ namespace Cassette.Web
                 "lib", 
                 new[] 
                 {
-                    new Resource("lib/test-1.js", new byte[] { 1,2,3 }, new string[0]),
-                    new Resource("lib/test-2.js", new byte[] { 4,5,6 }, new string[0]),
+                    new Asset("lib/test-1.js", new byte[] { 1,2,3 }, new string[0]),
+                    new Asset("lib/test-2.js", new byte[] { 4,5,6 }, new string[0]),
                 },
                 new string[0],
                 null
@@ -137,7 +137,7 @@ namespace Cassette.Web
                 "lib",
                 new[] 
                 {
-                    new Resource("lib/test.coffee", new byte[] { 1,2,3 }, new string[0])
+                    new Asset("lib/test.coffee", new byte[] { 1,2,3 }, new string[0])
                 },
                 new string[0],
                 null
@@ -185,7 +185,7 @@ namespace Cassette.Web
                 "theme",
                 new[]
                 { 
-                    new Resource("theme/test.css", new byte[] { 1, 2, 3 }, new string[0])
+                    new Asset("theme/test.css", new byte[] { 1, 2, 3 }, new string[0])
                 },
                 new string[0],
                 null
@@ -210,7 +210,7 @@ namespace Cassette.Web
                 "theme",
                 new[]
                 { 
-                    new Resource("theme/test.css", new byte[] { 1, 2, 3 }, new string[0])
+                    new Asset("theme/test.css", new byte[] { 1, 2, 3 }, new string[0])
                 },
                 new string[0],
                 null

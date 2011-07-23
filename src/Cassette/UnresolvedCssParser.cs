@@ -7,7 +7,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class UnresolvedCssParser : IUnresolvedResourceParser
+    public class UnresolvedCssParser : IUnresolvedAssetParser
     {
         readonly string applicationRoot;
         readonly Regex cssCommentRegex = new Regex(
@@ -24,9 +24,9 @@ namespace Cassette
             this.applicationRoot = applicationRoot;
         }
 
-        public UnresolvedResource Parse(Stream source, string sourcePath)
+        public UnresolvedAsset Parse(Stream source, string sourcePath)
         {
-            return new UnresolvedResource(
+            return new UnresolvedAsset(
                 sourcePath,
                 Hash(source),
                 ParseReferences(source).ToArray()

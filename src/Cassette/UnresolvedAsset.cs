@@ -5,15 +5,15 @@ using System.Linq;
 namespace Cassette
 {
     /// <summary>
-    /// An unresolved resources's references as they appear in the file.
+    /// An unresolved asset has all the references as they appear in the file.
     /// </summary>
-    public class UnresolvedResource
+    public class UnresolvedAsset
     {
         readonly string path;
         readonly byte[] hash;
         readonly string[] references;
 
-        public UnresolvedResource(string path, byte[] hash, string[] references)
+        public UnresolvedAsset(string path, byte[] hash, string[] references)
         {
             this.path = path;
             this.hash = hash;
@@ -36,14 +36,14 @@ namespace Cassette
         }
 
         /// <summary>
-        /// Creates a new Resource with only module-internal, application relative references.
-        /// The tuple also contains any module-external references used by the resource.
+        /// Creates a new Asset with only module-internal, application relative references.
+        /// The tuple also contains any module-external references used by the asset.
         /// </summary>
-        public Tuple<Resource, string[]> Resolve(Func<string, bool> isInternalPath)
+        public Tuple<Asset, string[]> Resolve(Func<string, bool> isInternalPath)
         {
             var applicationRelativeReferences = CreateApplicationRelativeReferences().ToArray();
 
-            var newScript = new Resource(
+            var newScript = new Asset(
                 path,
                 hash,
                 applicationRelativeReferences.Where(isInternalPath).ToArray()
