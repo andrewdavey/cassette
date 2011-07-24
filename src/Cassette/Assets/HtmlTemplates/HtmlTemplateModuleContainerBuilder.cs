@@ -6,12 +6,9 @@ namespace Cassette.Assets.HtmlTemplates
 {
     public class HtmlTemplateModuleContainerBuilder : ModuleContainerBuilder
     {
-        readonly string applicationRoot;
-
         public HtmlTemplateModuleContainerBuilder(IsolatedStorageFile storage, string rootDirectory, string applicationRoot)
             : base(storage, rootDirectory)
         {
-            this.applicationRoot = EnsureDirectoryEndsWithSlash(applicationRoot);
         }
 
         public override ModuleContainer Build()
