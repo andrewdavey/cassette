@@ -51,6 +51,8 @@
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleContainerBuilder.cs" />
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleWriter.cs" />
     <Compile Include="IModuleWriter.cs" />
+    <Compile Include="Less\LessCompileException.cs" />
+    <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="ModuleBuilding\ModuleContainerBuilder.cs" />
     <Compile Include="Assets\Stylesheets\StylesheetModuleContainerBuilder.cs" />
     <Compile Include="Assets\Stylesheets\StylesheetModuleWriter.cs" />
@@ -114,7 +116,9 @@
     <None Include="packages.config" />
     <None Include="Resources\coffeescript.js" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\less.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

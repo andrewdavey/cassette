@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="Configuration\CassetteSection.cs" />
+    <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="Assets\Scripts\ScriptModuleContainerBuilder.cs" />

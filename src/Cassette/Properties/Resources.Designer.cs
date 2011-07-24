@@ -75,5 +75,37 @@ namespace Cassette.Properties {
                 return ResourceManager.GetString("coffeescript", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to //
+        ///// LESS - Leaner CSS v1.1.4
+        ///// http://lesscss.org
+        ///// 
+        ///// Copyright (c) 2009-2011, Alexis Sellier
+        ///// Licensed under the Apache 2.0 License.
+        /////
+        ///(function (window, undefined) {
+        ///    //
+        ///    // Stub out `require` in the browser
+        ///    //
+        ///    function require(arg) {
+        ///        return window.less[arg.split(&apos;/&apos;)[1]];
+        ///    };
+        ///
+        ///
+        ///    // ecma-5.js
+        ///    //
+        ///    // -- kriskowal Kris Kowal Copyright (C) 2009-2010 MIT License
+        ///    // -- tlrobinson Tom Robinson
+        ///    // dantman Daniel Friesen
+        ///
+        ///    //
+        ///    // Arr [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string less {
+            get {
+                return ResourceManager.GetString("less", resourceCulture);
+            }
+        }
     }
 }
