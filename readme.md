@@ -21,7 +21,8 @@ In ASP.NET there currently exist partial solutions, but nothing handles all the 
 Cassette does all this!
 
 ## Install into your web application using Nuget
-Install-Package Cassette
+
+    Install-Package Cassette.Web
 
 This will add the assembly references and Cassette HTTP module and handler to Web.config. 
 
