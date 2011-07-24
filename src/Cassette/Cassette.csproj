@@ -107,7 +107,7 @@
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="Assets\Scripts\ScriptAssetManager.cs" />
     <Compile Include="Assets\Stylesheets\StylesheetAssetManager.cs" />
-    <Compile Include="Web\SingleManagerContainer.cs" />
+    <Compile Include="Web\SingletonCassetteApplicationContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

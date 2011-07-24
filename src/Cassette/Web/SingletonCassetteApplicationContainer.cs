@@ -4,7 +4,7 @@ using System.Web.Caching;
 
 namespace Cassette.Web
 {
-    class SingleManagerContainer
+    class SingletonCassetteApplicationContainer
     {
         // Using a static Lazy<T> means we get a singleton Manager which is created in a thread-safe manner.
         static Lazy<ICassetteApplication> managerContainer = new Lazy<ICassetteApplication>(CreateManager);
@@ -14,6 +14,14 @@ namespace Cassette.Web
             get
             {
                 return managerContainer.Value;
+            }
+        }
+
+        public static void DisposeManagerIfCreated()
+        {
+            if (managerContainer.IsValueCreated)
+            {
+                managerContainer.Value.Dispose();
             }
         }
 

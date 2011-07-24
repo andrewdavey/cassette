@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web;
-using System.Web.Caching;
 
 namespace Cassette.Web
 {
@@ -11,7 +10,7 @@ namespace Cassette.Web
             application.BeginRequest += (sender, e) =>
             {
                 var httpContext = new HttpContextWrapper(HttpContext.Current);
-                var pageHelper = SingleManagerContainer.Manager.CreatePageHelper(httpContext);
+                var pageHelper = SingletonCassetteApplicationContainer.Manager.CreatePageHelper(httpContext);
                 StorePageHelperInHttpContextItems(pageHelper, httpContext);
             };
         }
@@ -35,6 +34,7 @@ namespace Cassette.Web
 
         public void Dispose()
         {
+            SingletonCassetteApplicationContainer.DisposeManagerIfCreated();
         }
     }
 }
