@@ -8,18 +8,18 @@ namespace Cassette.Less
         [Fact]
         public void Compile_converts_LESS_into_CSS()
         {
-            var compiler = new LessCompiler();
-            var css = compiler.Compile(@"@color: #4d926f; #header { color: @color; }");
+            var compiler = new LessCompiler(_ => @"@color: #4d926f; #header { color: @color; }");
+            var css = compiler.CompileFile("");
             css.ShouldEqual("#header {\n  color: #4d926f;\n}\n");
         }
 
         [Fact]
         public void Compile_invalid_LESS_throws_exception()
         {
-            var compiler = new LessCompiler();
+            var compiler = new LessCompiler(_ => "#unclosed_rule {");
             var exception = Assert.Throws<LessCompileException>(delegate
             {
-                compiler.Compile("#unclosed_rule {");
+                compiler.CompileFile("");
             });
             exception.Message.ShouldEqual("Missing closing `}`");
         }
@@ -27,10 +27,10 @@ namespace Cassette.Less
         [Fact]
         public void Compile_LESS_that_fails_parsing_throws_LessCompileException()
         {
-            var compiler = new LessCompiler();
+            var compiler = new LessCompiler(_ => "#fail { - }");
             var exception = Assert.Throws<LessCompileException>(delegate
             {
-                compiler.Compile("#fail { - }");
+                compiler.CompileFile("");
             });
             exception.Message.ShouldEqual("Syntax Error on line 1");
         }

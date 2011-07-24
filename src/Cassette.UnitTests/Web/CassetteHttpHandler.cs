@@ -60,9 +60,10 @@ namespace Cassette.Web
             scriptModuleContainer = builder.Build();
             scriptModuleContainer.UpdateStorage("scripts.xml");
 
-            var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory, "/", new LessCompiler());
+            var lessCompiler = new Mock<ILessCompiler>();
+            var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory, "/", lessCompiler.Object);
 
-            handler = new CassetteHttpHandler(() => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler, new LessCompiler());
+            handler = new CassetteHttpHandler(() => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler, lessCompiler.Object);
 
             httpContext = new Mock<HttpContextBase>();
             httpRequest = new Mock<HttpRequestBase>();

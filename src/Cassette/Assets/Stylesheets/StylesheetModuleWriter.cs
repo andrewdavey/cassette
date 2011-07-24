@@ -63,8 +63,7 @@ namespace Cassette.Assets.Stylesheets
 
         string ReadLess(Asset asset)
         {
-            var less = readFileText(rootDirectory + asset.Path);
-            return lessCompiler.Compile(less);
+            return lessCompiler.CompileFile(rootDirectory + asset.Path);
         }
 
         string ExpandRelativeUrls(string css, string currentDirectory)

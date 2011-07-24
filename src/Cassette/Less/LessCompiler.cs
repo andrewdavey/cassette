@@ -1,21 +1,25 @@
 ﻿using Jurassic;
 using Jurassic.Library;
+using System;
 
 namespace Cassette.Less
 {
     public class LessCompiler : ILessCompiler
     {
-        public LessCompiler()
+        public LessCompiler(Func<string, string> readTextFile)
         {
+            this.readTextFile = readTextFile;
             engine = new ScriptEngine();
             engine.Execute("window = {};");
             engine.Execute(Properties.Resources.less);
         }
 
+        readonly Func<string, string> readTextFile;
         readonly ScriptEngine engine;
 
-        public string Compile(string lessSource)
+        public string CompileFile(string lessFilename)
         {
+            var lessSource = readTextFile(lessFilename);
             lock (engine)
             {
                 var parser = (ObjectInstance)engine.Evaluate("(new window.less.Parser)");
@@ -27,7 +31,7 @@ namespace Cassette.Less
                 catch (JavaScriptException ex)
                 {
                     var message = ((ObjectInstance)ex.ErrorObject).GetPropertyValue("message").ToString();
-                    throw new LessCompileException(message);
+                    throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, message));
                 }
 
                 if (callback.Css != null)
@@ -36,7 +40,7 @@ namespace Cassette.Less
                 }
                 else
                 {
-                    throw new LessCompileException(callback.ErrorMessage);
+                    throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, callback.ErrorMessage));
                 }
             }
         }

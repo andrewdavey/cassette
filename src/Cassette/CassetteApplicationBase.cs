@@ -37,7 +37,7 @@ namespace Cassette
             this.storage = storage;
             
             coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
-            lessCompiler = new LessCompiler();
+            lessCompiler = new LessCompiler(File.ReadAllText);
 
             scriptModuleContainer = BuildScriptModuleContainer(storage, configuration);
             stylesheetModuleContainer = BuildStylesheetModuleContainer(storage, configuration);

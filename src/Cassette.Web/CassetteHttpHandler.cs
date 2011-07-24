@@ -193,7 +193,7 @@ namespace Cassette.Web
             string css;
             try
             {
-                css = lessCompiler.Compile(File.ReadAllText(path));
+                css = lessCompiler.CompileFile(path);
             }
             catch (LessCompileException ex)
             {
