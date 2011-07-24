@@ -3,13 +3,14 @@ using System.Collections.Specialized;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Web;
+using Cassette.Assets.Scripts;
+using Cassette.Assets.Stylesheets;
 using Cassette.CoffeeScript;
+using Cassette.Less;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Utilities;
-using Cassette.Assets.Scripts;
-using Cassette.Assets.Stylesheets;
 
 namespace Cassette.Web
 {
@@ -59,9 +60,9 @@ namespace Cassette.Web
             scriptModuleContainer = builder.Build();
             scriptModuleContainer.UpdateStorage("scripts.xml");
 
-            var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory, "/");
+            var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory, "/", new LessCompiler());
 
-            handler = new CassetteHttpHandler(() => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler);
+            handler = new CassetteHttpHandler(() => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler, new LessCompiler());
 
             httpContext = new Mock<HttpContextBase>();
             httpRequest = new Mock<HttpRequestBase>();

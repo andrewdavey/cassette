@@ -3,6 +3,7 @@ using System.IO;
 using System.Web;
 using Cassette.CoffeeScript;
 using Cassette.Utilities;
+using Cassette.Less;
 
 namespace Cassette.Web
 {
@@ -14,12 +15,14 @@ namespace Cassette.Web
         readonly Func<ModuleContainer> scriptModuleContainer;
         readonly Func<ModuleContainer> stylesheetModuleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
+        readonly ILessCompiler lessCompiler;
 
-        public CassetteHttpHandler(Func<ModuleContainer> scriptModuleContainer, Func<ModuleContainer> stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler)
+        public CassetteHttpHandler(Func<ModuleContainer> scriptModuleContainer, Func<ModuleContainer> stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler, ILessCompiler lessCompiler)
         {
             this.scriptModuleContainer = scriptModuleContainer;
             this.stylesheetModuleContainer = stylesheetModuleContainer;
             this.coffeeScriptCompiler = coffeeScriptCompiler;
+            this.lessCompiler = lessCompiler;
         }
 
         public bool IsReusable
@@ -54,6 +57,10 @@ namespace Cassette.Web
             else if (pathInfo[1] == "coffee")
             {
                 ProcessCoffeeRequest(context);
+            }
+            else if (pathInfo[1] == "less")
+            {
+                ProcessLessRequest(context);
             }
             else
             {
@@ -154,6 +161,48 @@ namespace Cassette.Web
             context.Response.ContentType = "text/javascript";
             context.Response.Cache.SetLastModified(lastModified);
             context.Response.Write(javaScript);
+        }
+
+        void ProcessLessRequest(HttpContextBase context)
+        {
+            // Request PathInfo contains the coffeescript file.
+            // (After we remove the "/less" prefix.)
+            var appRelativePath = "~" + context.Request.PathInfo.Substring("/less".Length) + ".less";
+            var path = context.Server.MapPath(appRelativePath);
+
+            if (!File.Exists(path))
+            {
+                NotFound(context);
+                return;
+            }
+
+            var lastModified = File.GetLastWriteTimeUtc(path);
+            DateTime clientLastModified;
+            if (DateTime.TryParse(context.Request.Headers["If-Modified-Since"], out clientLastModified))
+            {
+                // If-Modified-Since header is only to the nearest second.
+                // So must ignore any fractional difference from file write time.
+                // Thus the cast to int.
+                if ((int)(clientLastModified.Subtract(lastModified)).TotalSeconds >= 0)
+                {
+                    NotModified(context);
+                    return;
+                }
+            }
+
+            string css;
+            try
+            {
+                css = lessCompiler.Compile(File.ReadAllText(path));
+            }
+            catch (LessCompileException ex)
+            {
+                css = "/* Less compile error: " + ex.Message + "*/";
+            }
+
+            context.Response.ContentType = "text/css";
+            context.Response.Cache.SetLastModified(lastModified);
+            context.Response.Write(css);
         }
 
         string JavaScriptErrorAlert(CompileException ex)

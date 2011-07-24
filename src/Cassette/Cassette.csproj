@@ -46,11 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Stylesheets\UnresolvedLessParser.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Configuration\CassetteSection.cs" />
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleContainerBuilder.cs" />
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleWriter.cs" />
     <Compile Include="IModuleWriter.cs" />
+    <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="ModuleBuilding\ModuleContainerBuilder.cs" />

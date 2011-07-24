@@ -88,7 +88,7 @@
     <Content Include="Styles\base\reset.css" />
     <Content Include="Styles\base\typography.css" />
     <Content Include="Styles\base\validation.css" />
-    <Content Include="Styles\color-picker\saved-colors.css" />
+    <None Include="Styles\color-picker\saved-colors.less" />
     <Content Include="Styles\color-picker\color-picker.css" />
     <Content Include="Styles\jquery-ui\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Styles\jquery-ui\images\ui-bg_flat_75_ffffff_40x100.png" />

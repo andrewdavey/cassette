@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Ajax.Utilities;
+using Cassette.Less;
 
 namespace Cassette.Assets.Stylesheets
 {
@@ -13,15 +14,17 @@ namespace Cassette.Assets.Stylesheets
         readonly string rootDirectory;
         readonly string applicationRoot;
         readonly Func<string, string> readFileText;
+        readonly ILessCompiler lessCompiler;
         readonly Regex cssUrlRegex = new Regex(@"\b url \s* \( \s* (?<url>.*?) \s* \)", RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
         readonly Regex hasUriProtocolRegex = new Regex(@"^[^:/?#]+:");
 
-        public StylesheetModuleWriter(TextWriter textWriter, string rootDirectory, string applicationRoot, Func<string, string> readFileText)
+        public StylesheetModuleWriter(TextWriter textWriter, string rootDirectory, string applicationRoot, Func<string, string> readFileText, ILessCompiler lessCompiler)
         {
             this.textWriter = textWriter;
             this.rootDirectory = rootDirectory;
             this.applicationRoot = applicationRoot;
             this.readFileText = readFileText;
+            this.lessCompiler = lessCompiler;
         }
 
         public void Write(Module module)
@@ -32,10 +35,22 @@ namespace Cassette.Assets.Stylesheets
                 minifier.MinifyStyleSheet(
                     string.Join(
                         "\r\n",
-                        module.Assets.Select(ReadCss)
+                        module.Assets.Select(ReadStylesheet)
                     )
                 )
             );
+        }
+
+        string ReadStylesheet(Asset asset)
+        {
+            if (asset.Path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            {
+                return ReadCss(asset);
+            }
+            else // .less
+            {
+                return ReadLess(asset);
+            }
         }
 
         string ReadCss(Asset asset)
@@ -44,6 +59,12 @@ namespace Cassette.Assets.Stylesheets
             var currentDirectory = applicationRoot + asset.Path.Substring(0, asset.Path.LastIndexOf('/') + 1);
             css = ExpandRelativeUrls(css, currentDirectory);
             return css;
+        }
+
+        string ReadLess(Asset asset)
+        {
+            var less = readFileText(rootDirectory + asset.Path);
+            return lessCompiler.Compile(less);
         }
 
         string ExpandRelativeUrls(string css, string currentDirectory)

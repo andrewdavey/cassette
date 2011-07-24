@@ -9,6 +9,7 @@ using Cassette.Assets.Stylesheets;
 using Cassette.CoffeeScript;
 using Cassette.Configuration;
 using Cassette.ModuleBuilding;
+using Cassette.Less;
 
 namespace Cassette
 {
@@ -22,6 +23,7 @@ namespace Cassette
         readonly string appDomainAppVirtualPath;
         readonly IsolatedStorageFile storage;
         protected readonly ICoffeeScriptCompiler coffeeScriptCompiler;
+        protected readonly ILessCompiler lessCompiler;
         protected readonly CassetteSection configuration;
         protected readonly ModuleContainer scriptModuleContainer;
         protected readonly ModuleContainer stylesheetModuleContainer;
@@ -35,6 +37,7 @@ namespace Cassette
             this.storage = storage;
             
             coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
+            lessCompiler = new LessCompiler();
 
             scriptModuleContainer = BuildScriptModuleContainer(storage, configuration);
             stylesheetModuleContainer = BuildStylesheetModuleContainer(storage, configuration);
@@ -151,7 +154,7 @@ namespace Cassette
 
         ModuleContainer BuildStylesheetModuleContainer(IsolatedStorageFile storage, CassetteSection config)
         {
-            var builder = new StylesheetModuleContainerBuilder(storage, appDomainAppPath,appDomainAppVirtualPath);
+            var builder = new StylesheetModuleContainerBuilder(storage, appDomainAppPath, appDomainAppVirtualPath, lessCompiler);
             return BuildModuleContainer(builder, config.Styles, "styles");
         }
 

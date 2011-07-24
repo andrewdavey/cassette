@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Jurassic;
+﻿using Jurassic;
 using Jurassic.Library;
 
 namespace Cassette.Less
 {
-    public class LessCompiler
+    public class LessCompiler : ILessCompiler
     {
         public LessCompiler()
         {

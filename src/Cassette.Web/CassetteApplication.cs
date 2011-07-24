@@ -43,7 +43,8 @@ namespace Cassette.Web
             return new CassetteHttpHandler(
                 () => scriptModuleContainer,
                 () => stylesheetModuleContainer,
-                coffeeScriptCompiler
+                coffeeScriptCompiler,
+                lessCompiler
             );
         }
 

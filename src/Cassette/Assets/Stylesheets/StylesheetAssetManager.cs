@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
 using Cassette.Utilities;
 
@@ -68,8 +67,8 @@ namespace Cassette.Assets.Stylesheets
                 .GetRequiredModules()
                 .Where(m => m.Location == location)
                 .SelectMany(m => m.Assets)
-                .Select(r => new { url = AppRelativeStylesheetUrl(r), hash = r.Hash.ToHexString() })
-                .Select(r => r.url + (r.url.Contains('?') ? "&" : "?") + r.hash);
+                .Select(a => new { url = AppRelativeStylesheetUrl(a), hash = a.Hash.ToHexString() })
+                .Select(a => a.url + (a.url.Contains('?') ? "&" : "?") + a.hash);
         }
 
         /// <summary>
@@ -88,7 +87,24 @@ namespace Cassette.Assets.Stylesheets
         string AppRelativeStylesheetUrl(Asset stylesheet)
         {
             // TODO: Check for .less and .sass files
-            return "~/" + stylesheet.Path;
+            if (stylesheet.Path.EndsWith(".less", StringComparison.OrdinalIgnoreCase))
+            {
+                return LessUrl(stylesheet.Path);
+            }
+            else
+            {
+                return "~/" + stylesheet.Path;
+            }
+        }
+
+        string LessUrl(string path)
+        {
+            // Must remove the file extension from the path, 
+            // otherwise the cassette.axd handler is not called.
+            // I guess asp.net favours the last file extension it finds.
+            var pathWithoutExtension = path.Substring(0, path.Length - ".less".Length);
+            // Return the URL that will invoke the Less compiler to return CSS.
+            return httpHandlerPath + "/less/" + pathWithoutExtension;
         }
 
         IEnumerable<string> BuildHtmlElements(IEnumerable<string> urls, string template)
