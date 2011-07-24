@@ -46,12 +46,5 @@ namespace Cassette.Configuration
             get { return (string)this["handler"]; }
             set { this["handler"] = value; }
         }
-
-        public bool ShouldUseModules(HttpContextBase context)
-        {
-            return ModuleMode == ModuleMode.On
-                || (ModuleMode == ModuleMode.OffInDebug 
-                    && !context.IsDebuggingEnabled);
-        }
     }
 }

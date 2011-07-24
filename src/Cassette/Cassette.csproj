@@ -37,7 +37,6 @@
     <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jurassic.2.1.0\lib\net40\Jurassic.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -93,22 +92,13 @@
     <Compile Include="Assets\Scripts\UnresolvedJavaScriptParser.cs" />
     <Compile Include="ModuleBuilding\UnresolvedModule.cs" />
     <Compile Include="Utilities\StreamExtensions.cs" />
-    <Compile Include="Web\Assets.cs" />
-    <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
-    <Compile Include="Web\CassetteHttpHandler.cs" />
-    <Compile Include="Web\CassetteHttpHandlerFactory.cs" />
-    <Compile Include="Web\CassetteHttpModule.cs" />
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateAssetManager.cs" />
-    <Compile Include="Web\ICassetteApplication.cs" />
     <Compile Include="IPageAssetManager.cs" />
     <Compile Include="IPlaceholderTracker.cs" />
-    <Compile Include="Web\CassetteApplication.cs" />
-    <Compile Include="Web\ExceptionCachedManager.cs" />
     <Compile Include="PageAssetManager.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="Assets\Scripts\ScriptAssetManager.cs" />
     <Compile Include="Assets\Stylesheets\StylesheetAssetManager.cs" />
-    <Compile Include="Web\SingletonCassetteApplicationContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

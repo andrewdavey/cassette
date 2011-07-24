@@ -3,7 +3,7 @@ using System.Web;
 
 namespace Cassette.Web
 {
-    class PlaceholderReplacingResponseFilter : Stream
+    public class PlaceholderReplacingResponseFilter : Stream
     {
         public PlaceholderReplacingResponseFilter(HttpResponseBase response, IPlaceholderTracker placeholderTracker)
         {

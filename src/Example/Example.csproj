@@ -136,6 +136,10 @@
     <Content Include="Views\Shared\_Tweet.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cassette.Web\Cassette.Web.csproj">
+      <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>
+      <Name>Cassette.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
       <Name>Cassette</Name>

@@ -25,7 +25,7 @@ namespace Cassette.Web
 
         public IPageAssetManager CreatePageAssetManager(HttpContextBase httpContext)
         {
-            var useModules = configuration.ShouldUseModules(httpContext);
+            var useModules = ShouldUseModules(httpContext);
             if (configuration.BufferHtmlOutput)
             {
                 var placeholderTracker = new PlaceholderTracker();
@@ -56,6 +56,13 @@ namespace Cassette.Web
             var styles = GetDirectoriesToWatch(configuration.Styles, "styles");
             var paths = scripts.Concat(styles).ToArray();
             return new CacheDependency(paths);
+        }
+
+        bool ShouldUseModules(HttpContextBase context)
+        {
+            return configuration.ModuleMode == ModuleMode.On
+                || (configuration.ModuleMode == ModuleMode.OffInDebug
+                    && !context.IsDebuggingEnabled);
         }
 
         static CassetteSection GetConfiguration()
