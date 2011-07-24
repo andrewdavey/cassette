@@ -1,6 +1,8 @@
 ﻿using Jurassic;
 using Jurassic.Library;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Cassette.Less
 {
@@ -17,6 +19,7 @@ namespace Cassette.Less
 
         readonly Func<string, string> readTextFile;
         readonly ScriptEngine engine;
+        Stack<string> currentDirectories = new Stack<string>();
 
         public string CompileFile(string lessFilename)
         {
@@ -33,6 +36,7 @@ namespace Cassette.Less
 
         CompileResult CompileFileImpl(string lessFilename)
         {
+            currentDirectories.Push(Path.GetDirectoryName(lessFilename));
             var lessSource = readTextFile(lessFilename);
             lock (engine)
             {
@@ -48,6 +52,7 @@ namespace Cassette.Less
                     throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, message));
                 }
 
+                currentDirectories.Pop();
                 return callback;
             }
         }
@@ -55,7 +60,8 @@ namespace Cassette.Less
         void LoadStylesheet(ObjectInstance options, FunctionInstance callback)
         {
             var href = options.GetPropertyValue("href").ToString();
-            var result = CompileFileImpl(href);
+            var filename = Path.GetFullPath(Path.Combine(currentDirectories.Peek(), href));
+            var result = CompileFileImpl(filename);
             callback.Call(Null.Value, result.Root);
         }
 
