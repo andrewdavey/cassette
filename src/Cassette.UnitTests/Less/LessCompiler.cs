@@ -41,12 +41,26 @@ namespace Cassette.Less
         {
             var files = new Dictionary<string, string>
             {
-                { "test.less", "@import \"lib\";\nbody{ color: @color }"},
-                { "lib.less", "@color: red;" }
+                { @"c:\test.less", "@import \"lib\";\nbody{ color: @color }"},
+                { @"c:\lib.less", "@color: red;" }
             };
 
             var compiler = new LessCompiler(filename => files[filename]);
-            var css = compiler.CompileFile("test.less");
+            var css = compiler.CompileFile(@"c:\test.less");
+            css.ShouldEqual("body {\n  color: red;\n}\n");
+        }
+
+        [Fact]
+        public void Can_Compile_LESS_that_imports_another_LESS_file_from_different_directory()
+        {
+            var files = new Dictionary<string, string>
+            {
+                { @"c:\module-a\test.less", "@import \"../module-b/lib.less\";\nbody{ color: @color }"},
+                { @"c:\module-b\lib.less", "@color: red;" }
+            };
+
+            var compiler = new LessCompiler(filename => files[filename]);
+            var css = compiler.CompileFile(@"c:\module-a\test.less");
             css.ShouldEqual("body {\n  color: red;\n}\n");
         }
     }

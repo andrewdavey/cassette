@@ -23,14 +23,17 @@ namespace Cassette.Less
 
         public string CompileFile(string lessFilename)
         {
-            var result = CompileFileImpl(lessFilename);
-            if (result.Css != null)
+            lock (engine)
             {
-                return result.Css;
-            }
-            else
-            {
-                throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, result.ErrorMessage));
+                var result = CompileFileImpl(lessFilename);
+                if (result.Css != null)
+                {
+                    return result.Css;
+                }
+                else
+                {
+                    throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, result.ErrorMessage));
+                }
             }
         }
 
@@ -38,23 +41,21 @@ namespace Cassette.Less
         {
             currentDirectories.Push(Path.GetDirectoryName(lessFilename));
             var lessSource = readTextFile(lessFilename);
-            lock (engine)
+            
+            var parser = (ObjectInstance)engine.Evaluate("(new window.less.Parser)");
+            var callback = new CompileResult(engine);
+            try
             {
-                var parser = (ObjectInstance)engine.Evaluate("(new window.less.Parser)");
-                var callback = new CompileResult(engine);
-                try
-                {
-                    parser.CallMemberFunction("parse", lessSource, callback);
-                }
-                catch (JavaScriptException ex)
-                {
-                    var message = ((ObjectInstance)ex.ErrorObject).GetPropertyValue("message").ToString();
-                    throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, message));
-                }
-
-                currentDirectories.Pop();
-                return callback;
+                parser.CallMemberFunction("parse", lessSource, callback);
             }
+            catch (JavaScriptException ex)
+            {
+                var message = ((ObjectInstance)ex.ErrorObject).GetPropertyValue("message").ToString();
+                throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, message));
+            }
+
+            currentDirectories.Pop();
+            return callback;
         }
 
         void LoadStylesheet(ObjectInstance options, FunctionInstance callback)
