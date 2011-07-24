@@ -1,5 +1,6 @@
 ﻿using Should;
 using Xunit;
+using System.Collections.Generic;
 
 namespace Cassette.Less
 {
@@ -33,6 +34,20 @@ namespace Cassette.Less
                 compiler.CompileFile("test.less");
             });
             exception.Message.ShouldEqual("Less compile error in test.less:\r\nSyntax Error on line 1");
+        }
+
+        [Fact]
+        public void Can_Compile_LESS_that_imports_another_LESS_file()
+        {
+            var files = new Dictionary<string, string>
+            {
+                { "test.less", "@import \"lib\";\nbody{ color: @color }"},
+                { "lib.less", "@color: red;" }
+            };
+
+            var compiler = new LessCompiler(filename => files[filename]);
+            var css = compiler.CompileFile("test.less");
+            css.ShouldEqual("body {\n  color: red;\n}\n");
         }
     }
 }

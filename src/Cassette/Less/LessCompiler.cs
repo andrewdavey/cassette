@@ -11,6 +11,7 @@ namespace Cassette.Less
             this.readTextFile = readTextFile;
             engine = new ScriptEngine();
             engine.Execute("window = {};");
+            engine.SetGlobalFunction("loadStyleSheet", new Action<ObjectInstance, FunctionInstance>(LoadStylesheet));
             engine.Execute(Properties.Resources.less);
         }
 
@@ -19,11 +20,24 @@ namespace Cassette.Less
 
         public string CompileFile(string lessFilename)
         {
+            var result = CompileFileImpl(lessFilename);
+            if (result.Css != null)
+            {
+                return result.Css;
+            }
+            else
+            {
+                throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, result.ErrorMessage));
+            }
+        }
+
+        CompileResult CompileFileImpl(string lessFilename)
+        {
             var lessSource = readTextFile(lessFilename);
             lock (engine)
             {
                 var parser = (ObjectInstance)engine.Evaluate("(new window.less.Parser)");
-                var callback = new Callback(engine);
+                var callback = new CompileResult(engine);
                 try
                 {
                     parser.CallMemberFunction("parse", lessSource, callback);
@@ -34,23 +48,25 @@ namespace Cassette.Less
                     throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, message));
                 }
 
-                if (callback.Css != null)
-                {
-                    return callback.Css;
-                }
-                else
-                {
-                    throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", lessFilename, callback.ErrorMessage));
-                }
+                return callback;
             }
         }
 
-        class Callback : FunctionInstance
+        void LoadStylesheet(ObjectInstance options, FunctionInstance callback)
         {
-            public Callback(ScriptEngine engine) : base(engine.Function.InstancePrototype)
+            var href = options.GetPropertyValue("href").ToString();
+            var result = CompileFileImpl(href);
+            callback.Call(Null.Value, result.Root);
+        }
+
+        class CompileResult : FunctionInstance
+        {
+            public CompileResult(ScriptEngine engine)
+                : base(engine.Function.InstancePrototype)
             {
             }
 
+            public object Root { get; private set; }
             public string Css { get; private set; }
             public string ErrorMessage { get; private set; }
 
@@ -60,6 +76,7 @@ namespace Cassette.Less
                 if (error == Null.Value)
                 {
                     var tree = (ObjectInstance)argumentValues[1];
+                    Root = tree;
                     Css = tree.CallMemberFunction("toCSS").ToString();
                 }
                 else
