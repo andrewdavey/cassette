@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Web.Caching;
-using Cassette.CoffeeScript;
-using Cassette.Configuration;
 using System.Web;
+using System.Web.Caching;
 
 namespace Cassette.Web
 {
@@ -39,6 +37,10 @@ namespace Cassette.Web
         public CacheDependency CreateCacheDependency()
         {
             return cacheClearer;
+        }
+
+        public void Dispose()
+        {
         }
 
         class CacheClearer : CacheDependency
