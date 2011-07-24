@@ -13,7 +13,7 @@ namespace Cassette.Web
         MemoryStream outputStream;
         Mock<HttpResponseBase> response;
         Mock<IPlaceholderTracker> placeholderTracker;
-        PlaceholderReplacingResponseFilter buffer;
+        PlaceholderReplacingResponseFilter filter;
 
         public PlaceholderReplacingResponseFilter_tests()
         {
@@ -27,18 +27,25 @@ namespace Cassette.Web
             response.SetupGet(r => r.ContentType).Returns("text/html");
             response.SetupGet(r => r.Output.Encoding).Returns(Encoding.ASCII);
             response.SetupGet(r => r.Filter).Returns(outputStream);
-            buffer = new PlaceholderReplacingResponseFilter(response.Object, placeholderTracker.Object);
+            filter = new PlaceholderReplacingResponseFilter(response.Object, placeholderTracker.Object);
         }
 
         [Fact]
-        public void Write_is_buffered_until_Flush()
+        public void Write_sends_buffer_to_output_stream()
         {
             var html = "<html>\r\n";
-            buffer.Write(Encoding.ASCII.GetBytes(html), 0, html.Length);
-            outputStream.Length.ShouldEqual(0);
-
-            buffer.Flush();
+            filter.Write(Encoding.ASCII.GetBytes(html), 0, html.Length);
             outputStream.Length.ShouldEqual(html.Length);
+        }
+
+        [Fact]
+        public void Html_has_placeholders_replaced()
+        {
+            response.SetupGet(r => r.ContentType).Returns("text/html");
+
+            filter.Write(Encoding.ASCII.GetBytes("<html/>"), 0, 7);
+
+            placeholderTracker.Verify(t => t.ReplacePlaceholders("<html/>"));
         }
 
         [Fact]
@@ -46,10 +53,9 @@ namespace Cassette.Web
         {
             response.SetupGet(r => r.ContentType).Returns("application/xhtml+xml");
 
-            buffer.Write(Encoding.ASCII.GetBytes("<html/>"), 0, 7);
-            buffer.Flush();
+            filter.Write(Encoding.ASCII.GetBytes("<html/>"), 0, 7);
 
-            placeholderTracker.VerifyAll();
+            placeholderTracker.Verify(t => t.ReplacePlaceholders("<html/>"));
         }
 
         [Fact]
@@ -57,8 +63,7 @@ namespace Cassette.Web
         {
             response.SetupGet(r => r.ContentType).Returns("text/plain");
             
-            buffer.Write(Encoding.ASCII.GetBytes("test"), 0, 4);
-            buffer.Flush();
+            filter.Write(Encoding.ASCII.GetBytes("test"), 0, 4);
 
             outputStream.GetBuffer().SequenceEqual(Encoding.ASCII.GetBytes("test"));
         }
