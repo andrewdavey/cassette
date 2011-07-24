@@ -74,7 +74,7 @@
     <Compile Include="ModuleBuilding\UnresolvedModule.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
-    <Compile Include="Web\BufferStream.cs" />
+    <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="Web\CassetteHttpHandler.cs" />
     <Compile Include="Web\ExceptionCachedManager.cs" />
   </ItemGroup>

@@ -47,14 +47,16 @@ namespace Cassette.Web
 
         public IPageAssetManager CreatePageHelper(HttpContextBase httpContext)
         {
-            var placeholderTracker = MaybeCreatePlaceholderTracker();
-
-            var pageHelper = CreatePageHelper(httpContext, placeholderTracker);
             if (configuration.BufferHtmlOutput)
             {
+                var placeholderTracker = new PlaceholderTracker();
                 InstallResponseFilter(placeholderTracker, httpContext);
+                return CreatePageHelper(httpContext, placeholderTracker);
             }
-            return pageHelper;
+            else
+            {
+                return CreatePageHelper(httpContext, null);
+            }
         }
 
         public IHttpHandler CreateHttpHandler()
@@ -65,19 +67,10 @@ namespace Cassette.Web
                 coffeeScriptCompiler
             );
         }
-        
-        IPlaceholderTracker MaybeCreatePlaceholderTracker()
-        {
-            if (configuration.BufferHtmlOutput)
-            {
-                return new PlaceholderTracker();
-            }
-            return null;
-        }
 
         void InstallResponseFilter(IPlaceholderTracker placeholderTracker, HttpContextBase context)
         {
-            context.Response.Filter = new BufferStream(context.Response.Filter, context, placeholderTracker);
+            context.Response.Filter = new PlaceholderReplacingResponseFilter(context.Response, placeholderTracker);
         }
 
         PageAssetManager CreatePageHelper(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker)

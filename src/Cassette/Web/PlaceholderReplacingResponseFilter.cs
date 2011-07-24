@@ -3,18 +3,18 @@ using System.Web;
 
 namespace Cassette.Web
 {
-    class BufferStream : Stream
+    class PlaceholderReplacingResponseFilter : Stream
     {
-        public BufferStream(Stream outputStream, HttpContextBase context, IPlaceholderTracker placeholderTracker)
+        public PlaceholderReplacingResponseFilter(HttpResponseBase response, IPlaceholderTracker placeholderTracker)
         {
-            this.outputStream = outputStream;
-            this.context = context;
+            this.response = response;
             this.placeholderTracker = placeholderTracker;
+            this.outputStream = response.Filter;
             buffer = new MemoryStream();
         }
 
         readonly Stream outputStream;
-        readonly HttpContextBase context;
+        readonly HttpResponseBase response;
         readonly IPlaceholderTracker placeholderTracker;
         readonly MemoryStream buffer;
         long nextFlushStartPosition;
@@ -40,7 +40,7 @@ namespace Cassette.Web
 
         void SendHtmlResponse()
         {
-            var encoding = context.Response.Output.Encoding;
+            var encoding = response.Output.Encoding;
 
             // Spin through the buffer looking for the placeholders.
             // Replace with the actual HTML elements.
@@ -62,8 +62,8 @@ namespace Cassette.Web
         {
             get
             {
-                return context.Response.ContentType == "text/html" ||
-                       context.Response.ContentType == "application/xhtml+xml";
+                return response.ContentType == "text/html" ||
+                       response.ContentType == "application/xhtml+xml";
             }
         }
 
