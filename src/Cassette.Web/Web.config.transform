@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <configSections>
-        <section name="cassette" type="Cassette.Configuration.CassetteSection, Cassette"/>
+        <section name="cassette" type="Cassette.Configuration.CassetteSection, Cassette.Web"/>
     </configSections>
 
     <cassette moduleMode="OffInDebug">
@@ -11,7 +11,7 @@
                 Off => Modules are not used
         -->
         <scripts>
-            <!-- By default a module is created for each folder in "~/scripts/"
+            <!-- By default a module is created for each sub-folder of "scripts"
                  i.e. <add path="scripts/*"/>
             
                  Individual modules can be specified if required:
@@ -23,28 +23,31 @@
         <styles>
             <!-- If empty, this convention is used: <add path="styles/*" />-->
         </styles>
+        <htmlTemplates>
+            <!-- If empty, this convention is used: <add path="htmlTemplates/*" />-->
+        </htmlTemplates>
     </cassette>
     
     <system.web>
         <httpModules>
             <add name="Cassette"
-                 type="Cassette.Web.CassetteHttpModule, Cassette"/>
+                 type="Cassette.Web.CassetteHttpModule, Cassette.Web"/>
         </httpModules>
         <httpHandlers>
             <add verb="GET" path="cassette.axd"
-                 type="Cassette.Web.CassetteHttpHandler, Cassette"/>
+                 type="Cassette.Web.CassetteHttpHandler, Cassette.Web"/>
         </httpHandlers>
     </system.web>
 
     <system.webServer>
         <modules>
             <add name="Cassette"
-                 type="Cassette.Web.CassetteHttpModule, Cassette"
+                 type="Cassette.Web.CassetteHttpModule, Cassette.Web"
                  preCondition="managedHandler"/>
         </modules>
         <handlers>
             <add name="Cassette" verb="GET" path="cassette.axd"
-                 type="Cassette.Web.CassetteHttpHandler, Cassette"/>
+                 type="Cassette.Web.CassetteHttpHandler, Cassette.Web"/>
         </handlers>
     </system.webServer>
 

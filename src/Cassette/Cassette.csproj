@@ -108,13 +108,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\Web.config.transform" />
     <None Include="Cassette.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
     <None Include="Resources\coffeescript.js" />
-    <None Include="Web.config.transform" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

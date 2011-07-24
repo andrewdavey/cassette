@@ -3,6 +3,7 @@ del /S /Q build\*
 
 
 mkdir build\nuget
+nuget pack -Symbols src\Cassette.Web\Cassette.Web.csproj -OutputDirectory build\nuget
 nuget pack -Symbols src\Cassette\Cassette.csproj -OutputDirectory build\nuget
 
 
