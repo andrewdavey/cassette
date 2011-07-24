@@ -6,6 +6,6 @@ namespace Cassette
     public interface IPlaceholderTracker
     {
         IHtmlString InsertPlaceholder(string id, Func<IHtmlString> createHtml);
-        string ReplacePlaceholders(string lineOfHtml);
+        string ReplacePlaceholders(string html);
     }
 }

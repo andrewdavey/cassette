@@ -16,18 +16,14 @@ namespace Cassette
             return new HtmlString(Environment.NewLine + id + Environment.NewLine);
         }
 
-        public string ReplacePlaceholders(string lineOfHtml)
+        public string ReplacePlaceholders(string html)
         {
+            var builder = new StringBuilder(html);
             foreach (var item in creationFunctions)
             {
-                if (lineOfHtml.StartsWith(item.Key))
-                {
-                    return item.Value().ToHtmlString();
-                }
+                builder.Replace(item.Key, item.Value().ToHtmlString());
             }
-
-            // No replacements.
-            return lineOfHtml;
+            return builder.ToString();
         }
     }
 }
