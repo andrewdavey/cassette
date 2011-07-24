@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Configuration\CassetteSection.cs" />
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleContainerBuilder.cs" />
     <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleWriter.cs" />

@@ -25,7 +25,7 @@ namespace Cassette.Web
         {
             var actual = Assert.Throws<Exception>(delegate
             {
-                manager.CreatePageHelper(new Mock<HttpContextBase>().Object);
+                manager.CreatePageAssetManager(new Mock<HttpContextBase>().Object);
             });
             actual.ShouldBeSameAs(exception);
         }
@@ -35,7 +35,7 @@ namespace Cassette.Web
         {
             Assert.Throws<Exception>(delegate
             {
-                manager.CreatePageHelper(new Mock<HttpContextBase>().Object);
+                manager.CreatePageAssetManager(new Mock<HttpContextBase>().Object);
             });
             cacheDependency.HasChanged.ShouldBeTrue();
         }

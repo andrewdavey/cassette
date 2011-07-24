@@ -22,7 +22,7 @@ namespace Cassette.Web
         readonly Exception exception;
         readonly CacheClearer cacheClearer;
 
-        public IPageAssetManager CreatePageHelper(HttpContextBase httpContext)
+        public IPageAssetManager CreatePageAssetManager(HttpContextBase httpContext)
         {
             cacheClearer.Clear();
             throw exception;

@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.IsolatedStorage;
+﻿using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Configuration;
-using Cassette.Assets.HtmlTemplates;
-using Cassette.Assets.Scripts;
-using Cassette.Assets.Stylesheets;
-using Cassette.CoffeeScript;
 using Cassette.Configuration;
-using Cassette.ModuleBuilding;
 
 namespace Cassette.Web
 {
@@ -19,43 +11,30 @@ namespace Cassette.Web
     /// A single Manager object is created for the web application and contains all the top-level
     /// objects used by Cassette.
     /// </summary>
-    public class CassetteApplication : ICassetteApplication, IDisposable
+    public class CassetteApplication : CassetteApplicationBase, ICassetteApplication
     {
-        readonly CassetteSection configuration;
-        readonly ModuleContainer scriptModuleContainer;
-        readonly ModuleContainer stylesheetModuleContainer;
-        readonly ModuleContainer htmlTemplateModuleContainer;
-        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
-        readonly IsolatedStorageFile storage;
-
         public CassetteApplication()
+            : base(
+                GetConfiguration(), 
+                HttpRuntime.AppDomainAppPath, 
+                HttpRuntime.AppDomainAppVirtualPath, 
+                IsolatedStorageFile.GetUserStoreForDomain()
+            )
         {
-            configuration = LoadConfigurationFromWebConfig();
-
-            // Module files will be cached in isolated storage.
-            storage = IsolatedStorageFile.GetUserStoreForDomain();
-            
-            coffeeScriptCompiler = new CoffeeScriptCompiler(File.ReadAllText);
-            scriptModuleContainer = BuildScriptModuleContainer(storage, configuration);
-            stylesheetModuleContainer = BuildStylesheetModuleContainer(storage, configuration);
-            htmlTemplateModuleContainer = BuildHtmlTemplateModuleContainer(storage, configuration);
-
-            scriptModuleContainer.UpdateStorage("scripts.xml");
-            stylesheetModuleContainer.UpdateStorage("stylesheets.xml");
-            htmlTemplateModuleContainer.UpdateStorage("htmlTemplates.xml");
         }
 
-        public IPageAssetManager CreatePageHelper(HttpContextBase httpContext)
+        public IPageAssetManager CreatePageAssetManager(HttpContextBase httpContext)
         {
+            var useModules = configuration.ShouldUseModules(httpContext);
             if (configuration.BufferHtmlOutput)
             {
                 var placeholderTracker = new PlaceholderTracker();
                 InstallResponseFilter(placeholderTracker, httpContext);
-                return CreatePageHelper(httpContext, placeholderTracker);
+                return CreatePageAssetManager(useModules, placeholderTracker);
             }
             else
             {
-                return CreatePageHelper(httpContext, null);
+                return CreatePageAssetManager(useModules, null);
             }
         }
 
@@ -66,81 +45,6 @@ namespace Cassette.Web
                 () => stylesheetModuleContainer,
                 coffeeScriptCompiler
             );
-        }
-
-        void InstallResponseFilter(IPlaceholderTracker placeholderTracker, HttpContextBase context)
-        {
-            context.Response.Filter = new PlaceholderReplacingResponseFilter(context.Response, placeholderTracker);
-        }
-
-        PageAssetManager CreatePageHelper(HttpContextBase httpContext, IPlaceholderTracker placeholderTracker)
-        {
-            var scriptReferenceBuilder = new ReferenceBuilder(scriptModuleContainer);
-            var stylesheetReferenceBuilder = new ReferenceBuilder(stylesheetModuleContainer);
-            var htmlTemplateReferenceBuilder = new ReferenceBuilder(htmlTemplateModuleContainer);
-            return new PageAssetManager(
-                configuration.ShouldUseModules(httpContext),
-                placeholderTracker,
-                configuration,
-                scriptReferenceBuilder,
-                stylesheetReferenceBuilder,
-                htmlTemplateReferenceBuilder
-            );
-        }
-
-        CassetteSection LoadConfigurationFromWebConfig()
-        {
-            return (CassetteSection)WebConfigurationManager.GetSection("cassette")
-                   ?? new CassetteSection(); // Create default config if none defined.
-        }
-
-        ModuleContainer BuildScriptModuleContainer(IsolatedStorageFile storage, CassetteSection config)
-        {
-            var builder = new ScriptModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, coffeeScriptCompiler);
-            return BuildModuleContainer(builder, config.Scripts, "scripts");
-        }
-
-        ModuleContainer BuildStylesheetModuleContainer(IsolatedStorageFile storage, CassetteSection config)
-        {
-            var builder = new StylesheetModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, HttpRuntime.AppDomainAppVirtualPath);
-            return BuildModuleContainer(builder, config.Styles, "styles");
-        }
-
-        ModuleContainer BuildHtmlTemplateModuleContainer(IsolatedStorageFile storage, CassetteSection config)
-        {
-            var builder = new HtmlTemplateModuleContainerBuilder(storage, HttpRuntime.AppDomainAppPath, HttpRuntime.AppDomainAppVirtualPath);
-            return BuildModuleContainer(builder, config.HtmlTemplates, "htmlTemplates");
-        }
-
-        ModuleContainer BuildModuleContainer(ModuleContainerBuilder builder, ModuleCollection modules, string topLevelDirectoryNameConvention)
-        {
-            if (modules.Count == 0)
-            {
-                // By convention, each subdirectory of topLevelDirectoryNameConvention is a module.
-                builder.AddModuleForEachSubdirectoryOf(topLevelDirectoryNameConvention, "");
-            }
-            else
-            {
-                AddModulesFromConfig(modules, builder);
-            }
-            return builder.Build();
-        }
-
-        void AddModulesFromConfig(ModuleCollection moduleElements, ModuleContainerBuilder builder)
-        {
-            foreach (ModuleElement module in moduleElements)
-            {
-                // "foo/*" implies each sub-directory of "~/foo" is a module.
-                if (module.Path.EndsWith("*"))
-                {
-                    var path = module.Path.Substring(0, module.Path.Length - 2);
-                    builder.AddModuleForEachSubdirectoryOf(path, module.Location);
-                }
-                else // the given path is the module itself.
-                {
-                    builder.AddModule(module.Path, module.Location);
-                }
-            }
         }
 
         /// <summary>
@@ -154,56 +58,14 @@ namespace Cassette.Web
             return new CacheDependency(paths);
         }
 
-        IEnumerable<string> GetDirectoriesToWatch(ModuleCollection modules, string conventionalTopLevelDirectory)
+        static CassetteSection GetConfiguration()
         {
-            var paths = new List<string>();
-            if (modules.Count == 0)
-            {
-                // Use conventional directory e.g. "scripts".
-                var scriptsPath = Path.Combine(HttpRuntime.AppDomainAppPath, conventionalTopLevelDirectory);
-                if (Directory.Exists(scriptsPath))
-                {
-                    paths.Add(scriptsPath);
-                    // HACK: CacheDependency does not seem to monitor file changes within subdirectories
-                    // so manually watch each subdirectory of "scripts" as well.
-                    paths.AddRange(Directory.GetDirectories(scriptsPath));
-                }
-            }
-            else
-            {
-                var configPaths =
-                    from element in modules.Cast<ModuleElement>()
-                    let endsWithStar = element.Path.EndsWith("*")
-                    select endsWithStar // Path.Combine does not like paths with a "*" in them.
-                        ? Path.Combine(HttpRuntime.AppDomainAppPath, element.Path.Substring(0, element.Path.Length - 1)) + "*"
-                        : Path.Combine(HttpRuntime.AppDomainAppPath, element.Path);
-
-                foreach (var path in configPaths)
-                {
-                    if (path.EndsWith("*")) // e.g. "scripts/*"
-                    {
-                        // So we watch all of "scripts".
-                        var topLevel = path.Substring(0, path.Length - 2);
-                        paths.Add(topLevel);
-                        // HACK: CacheDependency does not seem to monitor file changes within subdirectories
-                        // so manually watch each subdirectory of "scripts" as well.
-                        paths.AddRange(Directory.GetDirectories(topLevel));
-                    }
-                    else
-                    {
-                        paths.Add(path);
-                    }
-                }
-            }
-            return paths;
+            return (CassetteSection)WebConfigurationManager.GetSection("cassette");
         }
 
-        public void Dispose()
+        void InstallResponseFilter(IPlaceholderTracker placeholderTracker, HttpContextBase context)
         {
-            if (storage != null)
-            {
-                storage.Dispose();
-            }
+            context.Response.Filter = new PlaceholderReplacingResponseFilter(context.Response, placeholderTracker);
         }
     }
 }

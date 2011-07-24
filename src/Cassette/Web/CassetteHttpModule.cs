@@ -10,7 +10,7 @@ namespace Cassette.Web
             application.BeginRequest += (sender, e) =>
             {
                 var httpContext = new HttpContextWrapper(HttpContext.Current);
-                var pageHelper = SingletonCassetteApplicationContainer.Manager.CreatePageHelper(httpContext);
+                var pageHelper = SingletonCassetteApplicationContainer.Manager.CreatePageAssetManager(httpContext);
                 StorePageHelperInHttpContextItems(pageHelper, httpContext);
             };
         }

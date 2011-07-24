@@ -7,7 +7,7 @@ namespace Cassette.Web
     public interface ICassetteApplication : IDisposable
     {
         CacheDependency CreateCacheDependency();
-        IPageAssetManager CreatePageHelper(HttpContextBase httpContext);
+        IPageAssetManager CreatePageAssetManager(HttpContextBase httpContext);
         IHttpHandler CreateHttpHandler();
     }
 }
