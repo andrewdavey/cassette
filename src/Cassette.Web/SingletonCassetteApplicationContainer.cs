@@ -22,6 +22,7 @@ namespace Cassette.Web
             if (managerContainer.IsValueCreated)
             {
                 managerContainer.Value.Dispose();
+                managerContainer = new Lazy<ICassetteApplication>(CreateManager);
             }
         }
 
