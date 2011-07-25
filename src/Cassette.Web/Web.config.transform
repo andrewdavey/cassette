@@ -35,7 +35,7 @@
         </httpModules>
         <httpHandlers>
             <add verb="GET" path="cassette.axd"
-                 type="Cassette.Web.CassetteHttpHandler, Cassette.Web"/>
+                 type="Cassette.Web.CassetteHttpHandlerFactory, Cassette.Web"/>
         </httpHandlers>
     </system.web>
 
@@ -47,7 +47,7 @@
         </modules>
         <handlers>
             <add name="Cassette" verb="GET" path="cassette.axd"
-                 type="Cassette.Web.CassetteHttpHandler, Cassette.Web"/>
+                 type="Cassette.Web.CassetteHttpHandlerFactory, Cassette.Web"/>
         </handlers>
     </system.webServer>
 
