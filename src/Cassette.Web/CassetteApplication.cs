@@ -18,7 +18,7 @@ namespace Cassette.Web
                 GetConfiguration(), 
                 HttpRuntime.AppDomainAppPath, 
                 HttpRuntime.AppDomainAppVirtualPath, 
-                IsolatedStorageFile.GetUserStoreForDomain()
+                IsolatedStorageFile.GetMachineStoreForDomain()
             )
         {
         }
