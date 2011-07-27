@@ -12,13 +12,15 @@ namespace Cassette.Web
     /// </summary>
     public class CassetteHttpHandler : IHttpHandler
     {
+        readonly CassetteApplication application;
         readonly Func<ModuleContainer> scriptModuleContainer;
         readonly Func<ModuleContainer> stylesheetModuleContainer;
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
         readonly ILessCompiler lessCompiler;
 
-        public CassetteHttpHandler(Func<ModuleContainer> scriptModuleContainer, Func<ModuleContainer> stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler, ILessCompiler lessCompiler)
+        public CassetteHttpHandler(CassetteApplication application, Func<ModuleContainer> scriptModuleContainer, Func<ModuleContainer> stylesheetModuleContainer, ICoffeeScriptCompiler coffeeScriptCompiler, ILessCompiler lessCompiler)
         {
+            this.application = application;
             this.scriptModuleContainer = scriptModuleContainer;
             this.stylesheetModuleContainer = stylesheetModuleContainer;
             this.coffeeScriptCompiler = coffeeScriptCompiler;
@@ -61,6 +63,11 @@ namespace Cassette.Web
             else if (pathInfo[1] == "less")
             {
                 ProcessLessRequest(context);
+            }
+            else if (pathInfo[1] == "reset")
+            {
+                SingletonCassetteApplicationContainer.ResetStorage();
+                context.Response.Write("Cassette module cache reset.");
             }
             else
             {

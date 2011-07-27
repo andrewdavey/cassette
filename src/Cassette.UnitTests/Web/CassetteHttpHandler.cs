@@ -63,7 +63,7 @@ namespace Cassette.Web
             var lessCompiler = new Mock<ILessCompiler>();
             var styleBuilder = new StylesheetModuleContainerBuilder(storage, rootDirectory, "/", lessCompiler.Object);
 
-            handler = new CassetteHttpHandler(() => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler, lessCompiler.Object);
+            handler = new CassetteHttpHandler(null, () => scriptModuleContainer, () => stylesheetModuleContainer, coffeeScriptCompiler, lessCompiler.Object);
 
             httpContext = new Mock<HttpContextBase>();
             httpRequest = new Mock<HttpRequestBase>();

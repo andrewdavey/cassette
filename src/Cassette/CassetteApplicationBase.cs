@@ -21,7 +21,7 @@ namespace Cassette
     {
         readonly string appDomainAppPath;
         readonly string appDomainAppVirtualPath;
-        readonly IsolatedStorageFile storage;
+        protected readonly IsolatedStorageFile storage;
         protected readonly ICoffeeScriptCompiler coffeeScriptCompiler;
         protected readonly ILessCompiler lessCompiler;
         protected readonly CassetteSection configuration;

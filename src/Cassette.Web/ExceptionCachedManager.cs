@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.Caching;
+using System.IO.IsolatedStorage;
 
 namespace Cassette.Web
 {
@@ -21,6 +22,15 @@ namespace Cassette.Web
 
         readonly Exception exception;
         readonly CacheClearer cacheClearer;
+
+        public IsolatedStorageFile Storage
+        {
+            get
+            {
+                cacheClearer.Clear();
+                throw exception;
+            }
+        }
 
         public IPageAssetManager CreatePageAssetManager(HttpContextBase httpContext)
         {
@@ -50,5 +60,6 @@ namespace Cassette.Web
                 NotifyDependencyChanged(this, EventArgs.Empty);
             }
         }
+
     }
 }

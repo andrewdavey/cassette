@@ -17,6 +17,12 @@ namespace Cassette.Web
             }
         }
 
+        public static void ResetStorage()
+        {
+            Manager.Storage.Remove();
+            DisposeManagerIfCreated();
+        }
+
         public static void DisposeManagerIfCreated()
         {
             if (managerContainer.IsValueCreated)

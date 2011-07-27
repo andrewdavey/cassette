@@ -23,6 +23,11 @@ namespace Cassette.Web
         {
         }
 
+        public IsolatedStorageFile Storage
+        {
+            get { return storage; }
+        }
+
         public IPageAssetManager CreatePageAssetManager(HttpContextBase httpContext)
         {
             var useModules = ShouldUseModules(httpContext);
@@ -41,6 +46,7 @@ namespace Cassette.Web
         public IHttpHandler CreateHttpHandler()
         {
             return new CassetteHttpHandler(
+                this,
                 () => scriptModuleContainer,
                 () => stylesheetModuleContainer,
                 coffeeScriptCompiler,
