@@ -43,6 +43,16 @@ namespace Cassette.Assets.Stylesheets
             }
         }
 
+        /// <summary>
+        /// Returns the URLs of the assets required by this page, for the given location.
+        /// </summary>
+        public IEnumerable<string> Urls(string location = "")
+        {
+            return useModules
+                ? ReleaseStylesheetUrls(location)
+                : DebugStylesheetUrls(location);
+        }
+
         string PlaceholderId(string location)
         {
             return "$$Cassette-Stylesheets-" + location + "$$";
@@ -50,9 +60,7 @@ namespace Cassette.Assets.Stylesheets
 
         IHtmlString CreateStylesheetsHtml(string location)
         {
-            var cssUrls = useModules
-                ? ReleaseStylesheetUrls(location)
-                : DebugStylesheetUrls(location);
+            var cssUrls = Urls(location);
 
             var template = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
             var linkElements = BuildHtmlElements(cssUrls, template);

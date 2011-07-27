@@ -51,6 +51,16 @@ namespace Cassette.Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// Returns the URLs of the assets required by this page, for the given location.
+        /// </summary>
+        public IEnumerable<string> Urls(string location = "")
+        {
+            return useModules
+                ? ReleaseScriptUrls(location)
+                : DebugScriptUrls(location);
+        }
+
         string PlaceholderId(string location)
         {
             return "$$Cassette-Scripts-" + location + "$$";
@@ -58,9 +68,7 @@ namespace Cassette.Assets.Scripts
 
         IHtmlString CreateScriptsHtml(string location)
         {
-            var scriptUrls = useModules
-                ? ReleaseScriptUrls(location)
-                : DebugScriptUrls(location);
+            var scriptUrls = Urls(location);
 
             var template = "<script src=\"{0}\" type=\"text/javascript\"></script>";
             var scriptElements = BuildHtmlElements(scriptUrls, template);
