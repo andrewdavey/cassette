@@ -58,14 +58,29 @@ namespace Cassette
 
         public IEnumerable<Module> GetRequiredModules()
         {
+            // By convention, if an application wide module has been configured
+            // then we always require it, even if no pages have explicitly added it
+            // as reference. This avoids a confusing call to Assets.Scripts.Reference("").
+            if (IsSingleApplicationWideModuleRequired())
+            {
+                return new[] { moduleContainer.FindModule("") };
+            }
+
             // Get current modules since we will add more to the set.
             // It's not valid to change a collection during enumeration.
-            var currentModules = modules.ToArray(); 
+            var currentModules = modules.ToArray();
             foreach (var module in currentModules)
             {
                 AddReferencedModules(module);
             }
+
             return OrderModulesByDependency(modules);
+        }
+
+        bool IsSingleApplicationWideModuleRequired()
+        {
+            return modules.Where(m => m.IsExternal == false).Any() == false
+                && moduleContainer.Contains("");
         }
 
         void AddReferencedModules(Module module)

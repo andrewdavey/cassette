@@ -47,6 +47,10 @@ namespace Cassette.ModuleBuilding
                     }
                 }
             }
+            else
+            {
+                throw new DirectoryNotFoundException("Directory not found: " + fullPath);
+            }
         }
 
         public abstract ModuleContainer Build();

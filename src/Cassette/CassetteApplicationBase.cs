@@ -149,27 +149,27 @@ namespace Cassette
         ModuleContainer BuildScriptModuleContainer(IsolatedStorageFile storage, CassetteSection config)
         {
             var builder = new ScriptModuleContainerBuilder(storage, appDomainAppPath, coffeeScriptCompiler);
-            return BuildModuleContainer(builder, config.Scripts, "scripts");
+            return BuildModuleContainer(builder, config.Scripts);
         }
 
         ModuleContainer BuildStylesheetModuleContainer(IsolatedStorageFile storage, CassetteSection config)
         {
             var builder = new StylesheetModuleContainerBuilder(storage, appDomainAppPath, appDomainAppVirtualPath, lessCompiler);
-            return BuildModuleContainer(builder, config.Styles, "styles");
+            return BuildModuleContainer(builder, config.Styles);
         }
 
         ModuleContainer BuildHtmlTemplateModuleContainer(IsolatedStorageFile storage, CassetteSection config)
         {
             var builder = new HtmlTemplateModuleContainerBuilder(storage, appDomainAppPath, appDomainAppVirtualPath);
-            return BuildModuleContainer(builder, config.HtmlTemplates, "htmlTemplates");
+            return BuildModuleContainer(builder, config.HtmlTemplates);
         }
 
-        ModuleContainer BuildModuleContainer(ModuleContainerBuilder builder, ModuleCollection modules, string topLevelDirectoryNameConvention)
+        ModuleContainer BuildModuleContainer(ModuleContainerBuilder builder, ModuleCollection modules)
         {
             if (modules.Count == 0)
             {
-                // By convention, each subdirectory of topLevelDirectoryNameConvention is a module.
-                builder.AddModuleForEachSubdirectoryOf(topLevelDirectoryNameConvention, "");
+                // By convention, the entire root directory of the web application forms a single module.
+                builder.AddModule("", "");
             }
             else
             {

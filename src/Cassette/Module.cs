@@ -49,6 +49,14 @@ namespace Cassette
             get { return hash; }
         }
 
+        public bool IsExternal
+        {
+            get
+            {
+                return assets.Length > 0 && path == assets[0].Path;
+            }
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as Module);
