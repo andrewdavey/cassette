@@ -66,8 +66,11 @@ namespace Cassette.Web
             }
             else if (pathInfo[1] == "reset")
             {
-                SingletonCassetteApplicationContainer.ResetStorage();
-                context.Response.Write("Cassette module cache reset.");
+                if (context.Request.IsLocal)
+                {
+                    SingletonCassetteApplicationContainer.ResetStorage();
+                    context.Response.Write("Cassette module cache reset.");
+                }
             }
             else
             {
