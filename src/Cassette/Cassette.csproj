@@ -31,11 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin, Version=4.13.4076.28499, Culture=neutral, PublicKeyToken=24297a69a7eae424, processorArchitecture=MSIL">
-      <HintPath>..\packages\AjaxMin.4.13.4076.28499\lib\AjaxMin.dll</HintPath>
+    <Reference Include="AjaxMin, Version=4.19.4141.18463, Culture=neutral, PublicKeyToken=24297a69a7eae424, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.19.4141.18463\lib\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jurassic.2.1.0\lib\net40\Jurassic.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

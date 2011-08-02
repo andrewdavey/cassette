@@ -55,6 +55,7 @@ namespace Cassette.ModuleBuilding
                 .SelectMany(
                     extension => LoadAllFilesInModule(modulePath, extension)
                 )
+                .Distinct()
                 .Where(ShouldNotIgnoreAsset)
                 .Select(NormalizePathSlashes)
                 .Select(LoadAsset);
