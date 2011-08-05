@@ -60,6 +60,7 @@
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />
+    <Compile Include="ParseCoffeeScriptReferences.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleSource.cs" />
