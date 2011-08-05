@@ -62,6 +62,7 @@
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleSource.cs" />
+    <Compile Include="ParseJavaScriptReferences.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
