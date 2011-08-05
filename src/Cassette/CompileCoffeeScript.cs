@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Cassette.CoffeeScript;
 
 namespace Cassette
@@ -20,7 +18,7 @@ namespace Cassette
             var coffeeScriptAssets = module.Assets.Where(IsCoffeeScriptAsset);
             foreach (var asset in coffeeScriptAssets)
             {
-                asset.AddAssetTransformer(new CompileCoffeeScriptAsset());
+                asset.AddAssetTransformer(new CompileCoffeeScriptAsset(coffeeScriptCompiler));
             }
         }
 

@@ -5,6 +5,6 @@ namespace Cassette
 {
     public interface IAssetTransformer
     {
-        Func<Stream> Transform(Func<Stream> content, IAsset asset);
+        Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset);
     }
 }

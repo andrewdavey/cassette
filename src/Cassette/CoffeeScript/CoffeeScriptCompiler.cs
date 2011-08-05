@@ -12,12 +12,10 @@ namespace Cassette.CoffeeScript
         /// so this is done lazily.
         /// </summary>
         readonly Lazy<ScriptEngine> scriptEngine;
-        readonly Func<string, string> loadSourceFromFile;
 
-        public CoffeeScriptCompiler(Func<string, string> loadSourceFromFile)
+        public CoffeeScriptCompiler()
         {
             scriptEngine = new Lazy<ScriptEngine>(CreateScriptEngineWithCoffeeScriptLoaded);
-            this.loadSourceFromFile = loadSourceFromFile;
         }
 
         ScriptEngine CreateScriptEngineWithCoffeeScriptLoaded()
@@ -27,12 +25,11 @@ namespace Cassette.CoffeeScript
             return scriptEngine;
         }
 
-        public string CompileFile(string path)
+        public string Compile(string coffeeScriptSource, string filename)
         {
-            var script = loadSourceFromFile(path);
             var callCoffeeCompile =
                 "(function() { try { return CoffeeScript.compile('"
-                + JavaScriptUtilities.EscapeJavaScriptString(script)
+                + JavaScriptUtilities.EscapeJavaScriptString(coffeeScriptSource)
                 + "'); } catch (e) { return e; } })()";
             
             object result;
@@ -50,11 +47,11 @@ namespace Cassette.CoffeeScript
                 var error = result as ErrorInstance;
                 if (error != null)
                 {
-                    throw new CompileException(error.Message + " in " + path, path);
+                    throw new CompileException(error.Message + " in " + filename, filename);
                 }
                 else
                 {
-                    throw new CompileException("Unknown CoffeeScript compilation failure.", path);
+                    throw new CompileException("Unknown CoffeeScript compilation failure.", filename);
                 }
             }
         }

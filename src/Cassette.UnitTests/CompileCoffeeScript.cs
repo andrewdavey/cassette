@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Cassette.CoffeeScript;
 using Moq;
-using Cassette.CoffeeScript;
 using Xunit;
-using System.IO;
 
 namespace Cassette
 {
@@ -20,7 +15,7 @@ namespace Cassette
         readonly CompileCoffeeScript step;
 
         [Fact]
-        public void WhenProcessModuleContainingCoffeeScriptAsset_ThenCoffeeScriptCompilerTransformIsAddedToAsset()
+        public void WhenProcessModuleContainingCoffeeScriptAsset_ThenCompileCoffeeScriptAssetTransformIsAddedToAsset()
         {
             var module = new Module("c:\\");
             var coffeeScriptAsset = new Mock<IAsset>();
@@ -38,5 +33,22 @@ namespace Cassette
             );
         }
 
+        [Fact]
+        public void WhenProcessModuleContainingJavaScriptAsset_ThenNoTransformsAreAddedToAsset()
+        {
+            var module = new Module("c:\\");
+            var coffeeScriptAsset = new Mock<IAsset>();
+            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("c:\\test.js");
+            module.Assets.Add(coffeeScriptAsset.Object);
+
+            step.Process(module);
+
+            coffeeScriptAsset.Verify(
+                a => a.AddAssetTransformer(
+                    It.IsAny<IAssetTransformer>()
+                ),
+                Times.Never()
+            );
+        }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface ICoffeeScriptCompiler
     {
-        string CompileFile(string path);
+        string Compile(string coffeeScriptSource, string filename);
     }
 }
