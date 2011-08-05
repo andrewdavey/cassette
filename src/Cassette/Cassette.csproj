@@ -48,63 +48,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Stylesheets\UnresolvedLessParser.cs" />
-    <Compile Include="CassetteApplicationBase.cs" />
-    <Compile Include="Configuration\CassetteSection.cs" />
-    <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleContainerBuilder.cs" />
-    <Compile Include="Assets\HtmlTemplates\HtmlTemplateModuleWriter.cs" />
-    <Compile Include="IModuleWriter.cs" />
     <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />
-    <Compile Include="ModuleBuilding\ModuleContainerBuilder.cs" />
-    <Compile Include="Assets\Stylesheets\StylesheetModuleContainerBuilder.cs" />
-    <Compile Include="Assets\Stylesheets\StylesheetModuleWriter.cs" />
-    <Compile Include="Assets\Scripts\UnresolvedCoffeeScriptParser.cs" />
-    <Compile Include="IReferenceBuilder.cs" />
-    <Compile Include="ModuleBuilding\IUnresolvedAssetParser.cs" />
-    <Compile Include="Assets\Stylesheets\UnresolvedCssParser.cs" />
-    <Compile Include="Assets\HtmlTemplates\UnresolvedHtmlTemplateParser.cs" />
-    <Compile Include="Assets\Scripts\UnresolvedScriptModuleBuilder.cs" />
-    <Compile Include="Assets\Stylesheets\UnresolvedStylesheetModuleBuilder.cs" />
-    <Compile Include="Assets\HtmlTemplates\UnresolvedHtmlTemplateModuleBuilder.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
     <Compile Include="CoffeeScript\ICoffeeScriptCompiler.cs" />
-    <Compile Include="Configuration\ModuleElement.cs" />
-    <Compile Include="Configuration\ModuleCollection.cs" />
-    <Compile Include="Configuration\ModuleMode.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
-    <Compile Include="ModuleManifestReader.cs" />
-    <Compile Include="ModuleManifestWriter.cs" />
-    <Compile Include="ModuleManifest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ModuleBuilding\UnresolvedModuleBuilder.cs" />
-    <Compile Include="ModuleBuilding\UnresolvedAsset.cs" />
     <Compile Include="Utilities\Graph.cs" />
-    <Compile Include="Module.cs" />
-    <Compile Include="ModuleContainer.cs" />
-    <Compile Include="Assets\Scripts\ScriptModuleContainerBuilder.cs" />
-    <Compile Include="ModuleDifference.cs" />
-    <Compile Include="Assets\Scripts\ScriptModuleWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="Asset.cs" />
-    <Compile Include="Assets\Scripts\UnresolvedJavaScriptParser.cs" />
-    <Compile Include="ModuleBuilding\UnresolvedModule.cs" />
     <Compile Include="Utilities\StreamExtensions.cs" />
-    <Compile Include="Assets\HtmlTemplates\HtmlTemplateAssetManager.cs" />
-    <Compile Include="IPageAssetManager.cs" />
-    <Compile Include="IPlaceholderTracker.cs" />
-    <Compile Include="PageAssetManager.cs" />
-    <Compile Include="PlaceholderTracker.cs" />
-    <Compile Include="Assets\Scripts\ScriptAssetManager.cs" />
-    <Compile Include="Assets\Stylesheets\StylesheetAssetManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
