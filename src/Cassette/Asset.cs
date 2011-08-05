@@ -6,7 +6,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class Asset
+    public class Asset : IAsset
     {
         public Asset(string filename, Module parentModule)
         {
@@ -18,7 +18,7 @@ namespace Cassette
         readonly string filename;
         readonly Module parentModule;
         readonly byte[] hash;
-        readonly List<Func<Stream, Stream>> streamWrappers = new List<Func<Stream,Stream>>();
+        readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
         readonly List<AssetReference> references = new List<AssetReference>();
 
         public void AddReference(string filename)
@@ -31,19 +31,22 @@ namespace Cassette
             references.Add(new AssetReference(absoluteFilename, type));
         }
 
-        public void AddStreamWrapper(Func<Stream, Stream> createWrapper)
+        public void AddAssetTransformer(IAssetTransformer transformer)
         {
-            streamWrappers.Add(createWrapper);
+            transformers.Add(transformer);
         }
 
         public Stream OpenStream()
         {
-            Stream stream = File.OpenRead(filename);
-            foreach (var wrap in streamWrappers)
+            // Passing an already created stream to the transformers would make deciding who has to 
+            // close the stream confusing. Use a Func<Stream> instead allows a transformer to 
+            // choose when to create the stream and also then close it.
+            Func<Stream> createStream = () => File.OpenRead(filename);
+            foreach (var transformer in transformers)
             {
-                stream = wrap(stream);
+                createStream = transformer.Transform(createStream, this);
             }
-            return stream;   
+            return createStream();
         }
 
         public string Filename

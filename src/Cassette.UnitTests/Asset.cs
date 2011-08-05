@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using Should;
 using Xunit;
+using Moq;
 
 namespace Cassette
 {
@@ -47,44 +48,43 @@ namespace Cassette
         }
 
         [Fact]
-        public void When_AddStreamWrapper_Then_OpenStream_ReturnsWrappedStream()
+        public void WhenAddAssetTransformer_ThenOpenStreamReturnsTransformedStream()
         {
-            Stream wrapper = null;
-            asset.AddStreamWrapper(input => 
-            {
-                // Use a BufferedStream as a stream wrapper stub.
-                wrapper = new BufferedStream(input); // Store the created stream, so we can check it is returned later.
-                return wrapper;
-            });
+            Stream transformedStream = null;
+            var transformer = new Mock<IAssetTransformer>();
+            transformer.Setup(t => t.Transform(It.IsAny<Func<Stream>>(), asset))
+                        .Returns(() => () => transformedStream = new MemoryStream());
+            
+            asset.AddAssetTransformer(transformer.Object);
 
             using (var stream = asset.OpenStream())
             {
-                stream.ShouldBeSameAs(wrapper);
+                stream.ShouldBeSameAs(transformedStream);
             }
         }
 
         [Fact]
-        public void When_AddStreamWrapperCalledTwice_Then_OpenStream_ReturnsDoubleWrappedStream()
+        public void WhenAddAssetTransformerCalledTwice_ThenOpenStreamReturnsTwiceTransformedStream()
         {
-            Stream wrapper1 = null, wrapper2 = null;
-            asset.AddStreamWrapper(input =>
-            {
-                // Use a BufferedStream as a stream wrapper stub.
-                wrapper1 = new BufferedStream(input); // Store the created stream, so we can check it is returned later.
-                return wrapper1;
-            });
-            asset.AddStreamWrapper(input =>
-            {
-                input.ShouldBeSameAs(wrapper1);
-                wrapper2 = new BufferedStream(input); // Store the created stream, so we can check it is returned later.
-                return wrapper2;
-            });
+            var transformer1 = new Mock<IAssetTransformer>();
+            var transformer2 = new Mock<IAssetTransformer>();
+            Func<Stream> openStream1 = () => Stream.Null;
+            var stream2 = Mock.Of<Stream>();
+            Func<Stream> openStream2 = () => stream2;
+            transformer1.Setup(t => t.Transform(It.IsAny<Func<Stream>>(), asset))
+                        .Returns(() => openStream1).Verifiable();
+            transformer2.Setup(t => t.Transform(openStream1, asset))
+                        .Returns(() => openStream2).Verifiable();
 
-            using (var stream = asset.OpenStream())
+            asset.AddAssetTransformer(transformer1.Object);
+            asset.AddAssetTransformer(transformer2.Object);
+            
+            using (var result = asset.OpenStream())
             {
-                stream.ShouldBeSameAs(wrapper2);
+                result.ShouldBeSameAs(stream2);
             }
         }
+
 
         [Fact]
         public void AddReferenceToSiblingFilename_ExpandsFilenameToAbsolutePath()
