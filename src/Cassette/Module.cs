@@ -14,9 +14,10 @@ namespace Cassette
 
         readonly string directory;
 
-        public bool Contains(string path)
+        public string Directory
         {
-            return path.StartsWith(directory, StringComparison.OrdinalIgnoreCase);
+            get { return directory; }
         }
+
     }
 }

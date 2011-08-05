@@ -27,7 +27,7 @@ namespace Cassette
                 Path.GetDirectoryName(this.filename),
                 filename
             );
-            var type = parentModule.Contains(absoluteFilename) ? AssetReferenceType.SameModule : AssetReferenceType.DifferentModule;
+            var type = ModuleCouldContain(absoluteFilename) ? AssetReferenceType.SameModule : AssetReferenceType.DifferentModule;
             references.Add(new AssetReference(absoluteFilename, type));
         }
 
@@ -63,6 +63,11 @@ namespace Cassette
             {
                 return sha1.ComputeHash(fileStream);
             }
+        }
+
+        bool ModuleCouldContain(string path)
+        {
+            return path.StartsWith(parentModule.Directory, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
