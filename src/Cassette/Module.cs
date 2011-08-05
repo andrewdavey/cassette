@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cassette
 {
-    public class Module
+    public class Module : IDisposable
     {
         public Module(string directory)
         {
@@ -23,6 +23,14 @@ namespace Cassette
         public IList<IAsset> Assets
         {
             get { return assets; }
+        }
+
+        public void Dispose()
+        {
+            foreach (var asset in assets.OfType<IDisposable>())
+            {
+                asset.Dispose();
+            }
         }
     }
 }
