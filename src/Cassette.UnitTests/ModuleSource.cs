@@ -217,8 +217,12 @@ namespace Cassette
                          .Returns(new Module(Path.Combine(root, "scripts")));
 
             var module = source.CreateModules(moduleFactory.Object).First();
+
             module.Assets.Count.ShouldEqual(1);
-            module.Assets[0].Filename.EndsWith("test-3.js");
+            using (var reader = new StreamReader(module.Assets[0].OpenStream()))
+            {
+                reader.ReadToEnd().ShouldEqual("test-3");
+            }
         }
 
         void IDisposable.Dispose()

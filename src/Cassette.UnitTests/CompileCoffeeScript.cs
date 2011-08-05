@@ -20,9 +20,22 @@ namespace Cassette
         readonly CompileCoffeeScript step;
 
         [Fact]
-        public void WhenProcessModule_CoffeeScriptAssetIsCompiled()
+        public void WhenProcessModuleContainingCoffeeScriptAsset_ThenCoffeeScriptCompilerTransformIsAddedToAsset()
         {
-            throw new NotImplementedException();
+            var module = new Module("c:\\");
+            var coffeeScriptAsset = new Mock<IAsset>();
+            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("c:\\test.coffee");
+            module.Assets.Add(coffeeScriptAsset.Object);
+
+            step.Process(module);
+
+            coffeeScriptAsset.Verify(
+                a => a.AddAssetTransformer(
+                    It.Is<IAssetTransformer>(
+                        t => t is CompileCoffeeScriptAsset
+                    )
+                )
+            );
         }
 
     }

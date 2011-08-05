@@ -52,6 +52,7 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
+    <Compile Include="CompileCoffeeScriptAsset.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />
     <Compile Include="IModuleFactory.cs" />

@@ -111,7 +111,10 @@ namespace Cassette
             var assets = FindAssetFilenamesInModuleDirectory(moduleDirectory).Select(
                 filename => new Asset(filename, module)
             );
-            module.Assets.AddRange(assets);
+            foreach (var asset in assets)
+            {
+                module.Assets.Add(asset);
+            }
             return module;
         }
 

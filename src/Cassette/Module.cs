@@ -13,14 +13,14 @@ namespace Cassette
         }
 
         readonly string directory;
-        readonly List<Asset> assets = new List<Asset>();
+        readonly List<IAsset> assets = new List<IAsset>();
 
         public string Directory
         {
             get { return directory; }
         }
 
-        public List<Asset> Assets
+        public IList<IAsset> Assets
         {
             get { return assets; }
         }

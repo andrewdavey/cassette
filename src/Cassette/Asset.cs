@@ -49,7 +49,7 @@ namespace Cassette
             return createStream();
         }
 
-        public string Filename
+        public string SourceFilename
         {
             get { return filename; }
         }
