@@ -60,5 +60,10 @@ namespace Cassette.Utilities
             }
             return string.Join(Path.DirectorySeparatorChar.ToString(), stack.Reverse());
         }
+
+        public static string EnsureConsistentDirectorySeparators(string path)
+        {
+            return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
     }
 }

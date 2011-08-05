@@ -46,6 +46,11 @@ namespace Cassette
             return stream;   
         }
 
+        public string Filename
+        {
+            get { return filename; }
+        }
+
         public byte[] Hash
         {
             get { return hash; }
