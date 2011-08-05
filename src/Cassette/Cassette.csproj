@@ -53,10 +53,12 @@
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />
+    <Compile Include="ConcatentateAssets.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />
     <Compile Include="IModuleFactory.cs" />
     <Compile Include="IModuleProcessor.cs" />
+    <Compile Include="InMemoryAsset.cs" />
     <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />

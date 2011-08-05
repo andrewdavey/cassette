@@ -20,7 +20,7 @@ namespace Cassette
 class Foo
 ";
             asset.Setup(a => a.OpenStream())
-                 .Returns(CreateStream(coffeeScriptSource));
+                 .Returns(coffeeScriptSource.AsStream());
             var module = new Module("c:\\");
             module.Assets.Add(asset.Object);
 
@@ -30,16 +30,6 @@ class Foo
             asset.Verify(a => a.AddReference("another1.js"));
             asset.Verify(a => a.AddReference("another2.coffee"));
             asset.Verify(a => a.AddReference("/another3.coffee"));
-        }
-
-        Stream CreateStream(string text)
-        {
-            var source = new MemoryStream();
-            var writer = new StreamWriter(source);
-            writer.Write(text);
-            writer.Flush();
-            source.Position = 0;
-            return source;
         }
     }
 }

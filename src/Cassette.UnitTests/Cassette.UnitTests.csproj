@@ -60,6 +60,7 @@
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />
+    <Compile Include="ConcatenateAssets.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />
+    <Compile Include="_Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

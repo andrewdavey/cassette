@@ -22,7 +22,7 @@ function dummy() {}
 /// <reference path=""ignored.js""/>
 ";
             asset.Setup(a => a.OpenStream())
-                 .Returns(CreateStream(javaScriptSource));
+                 .Returns(javaScriptSource.AsStream());
             var module = new Module("c:\\");
             module.Assets.Add(asset.Object);
 
@@ -33,16 +33,6 @@ function dummy() {}
             asset.Verify(a => a.AddReference("/another2.js"));
             asset.Verify(a => a.AddReference("../test/another3.js"));
             asset.Verify(a => a.AddReference("ignored.js"), Times.Never());
-        }
-
-        Stream CreateStream(string text)
-        {
-            var source = new MemoryStream();
-            var writer = new StreamWriter(source);
-            writer.Write(text);
-            writer.Flush();
-            source.Position = 0;
-            return source;
         }
     }
 }
