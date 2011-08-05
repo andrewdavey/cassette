@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Cassette.CoffeeScript;
 
@@ -30,6 +27,11 @@ namespace Cassette
                 var outputStream = new MemoryStream();
                 var writer = new StreamWriter(outputStream);
                 writer.Write(javaScript);
+                writer.Flush();
+                // Do not close writer, because this will also close the outputStream,
+                // which need to the caller return.
+
+                outputStream.Position = 0;
                 return outputStream;
             };
         }
