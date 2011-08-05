@@ -1,30 +1,20 @@
-﻿using System;
-using System.Linq;
-using Cassette.CoffeeScript;
+﻿using Cassette.CoffeeScript;
 
 namespace Cassette
 {
-    public class CompileCoffeeScript : IModuleProcessor<Module>
+    public class CompileCoffeeScript : ModuleProcessorOfAssetsMatchingFileExtension<Module>
     {
         public CompileCoffeeScript(ICoffeeScriptCompiler coffeeScriptCompiler)
+            : base("coffee")
         {
             this.coffeeScriptCompiler = coffeeScriptCompiler;
         }
 
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
-        public void Process(Module module)
+        protected override void Process(IAsset asset)
         {
-            var coffeeScriptAssets = module.Assets.Where(IsCoffeeScriptAsset);
-            foreach (var asset in coffeeScriptAssets)
-            {
-                asset.AddAssetTransformer(new CompileCoffeeScriptAsset(coffeeScriptCompiler));
-            }
-        }
-
-        bool IsCoffeeScriptAsset(IAsset asset)
-        {
-            return asset.SourceFilename.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase);
+            asset.AddAssetTransformer(new CompileCoffeeScriptAsset(coffeeScriptCompiler));
         }
     }
 }

@@ -61,6 +61,7 @@
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
+    <Compile Include="ModuleProcessorOfAssetsMatchingFileExtension.cs" />
     <Compile Include="ModuleSource.cs" />
     <Compile Include="ParseJavaScriptReferences.cs" />
     <Compile Include="Pipeline.cs" />

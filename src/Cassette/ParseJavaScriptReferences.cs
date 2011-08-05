@@ -1,26 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Cassette
 {
-    public class ParseJavaScriptReferences : IModuleProcessor<Module>
+    public class ParseJavaScriptReferences : ModuleProcessorOfAssetsMatchingFileExtension<Module>
     {
-        public void Process(Module module)
-        {
-            foreach (var asset in module.Assets.Where(IsJavaScript))
-            {
-                ParseAssetReferences(asset);
-            }
-        }
+        public ParseJavaScriptReferences() : base("js") { }
 
         readonly Regex referenceRegex = new Regex(
             @"/// \s* \<reference \s+ path \s* = \s* [""'](.*?)[""'] \s* /?>",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
-        void ParseAssetReferences(IAsset asset)
+        protected override void Process(IAsset asset)
         {
             using (var reader = new StreamReader(asset.OpenStream()))
             {
@@ -43,11 +35,6 @@ namespace Cassette
                     }
                 }
             }
-        }
-
-        bool IsJavaScript(IAsset asset)
-        {
-            return asset.SourceFilename.EndsWith(".js", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
