@@ -64,6 +64,8 @@
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="LineBasedAssetReferenceParser.cs" />
+    <Compile Include="MicrosoftJavaScriptMinifier.cs" />
+    <Compile Include="MinifyAssets.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ModuleProcessorOfAssetsMatchingFileExtension.cs" />
@@ -71,6 +73,8 @@
     <Compile Include="ParseCoffeeScriptReferences.cs" />
     <Compile Include="ParseJavaScriptReferences.cs" />
     <Compile Include="Pipeline.cs" />
+    <Compile Include="ScriptModule.cs" />
+    <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="SortAssetsByDependency.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
