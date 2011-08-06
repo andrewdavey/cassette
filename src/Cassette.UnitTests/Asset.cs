@@ -175,6 +175,15 @@ namespace Cassette
             asset.IsFrom("c:\\other.js").ShouldBeFalse();
         }
 
+        [Fact]
+        public void CreateManifestReturnsElementWithFilenameAndLastWriteTime()
+        {
+            var element = asset.CreateManifest().First();
+            element.Name.LocalName.ShouldEqual("asset");
+            element.Attribute("filename").Value.ShouldEqual(filename);
+            element.Attribute("lastwritetime").Value.ShouldEqual(File.GetLastWriteTimeUtc(filename).Ticks.ToString());
+        }
+
         void IDisposable.Dispose()
         {
             File.Delete(filename);

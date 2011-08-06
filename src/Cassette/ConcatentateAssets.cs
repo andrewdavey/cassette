@@ -8,11 +8,11 @@ namespace Cassette
     {
         public void Process(Module module)
         {
-            var filenames = GetAssetFilenames(module);
             var outputStream = CopyAssetsIntoSingleStream(module);
-            var references = MergeReferences(module);
-            module.Assets.Clear();
-            module.Assets.Add(new InMemoryAsset(filenames, outputStream, references));
+            module.Assets = new List<IAsset>(new[]
+            { 
+                new ConcatenatedAsset(module.Assets, outputStream)
+            });
         }
 
         string[] GetAssetFilenames(Module module)

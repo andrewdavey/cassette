@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Cassette
 {
-    class InMemoryAsset : AssetBase, IDisposable
+    public class ConcatenatedAsset : AssetBase, IDisposable
     {
-        readonly IEnumerable<string> sourceFilenames;
+        readonly IEnumerable<IAsset> children;
         readonly Stream stream;
         readonly IEnumerable<AssetReference> references;
 
-        public InMemoryAsset(IEnumerable<string> sourceFilenames, Stream stream, IEnumerable<AssetReference> references)
+        public ConcatenatedAsset(IEnumerable<IAsset> children, Stream stream)
         {
-            this.sourceFilenames = sourceFilenames;
+            this.children = children;
             this.stream = stream;
-            this.references = references;
         }
 
         public override string SourceFilename
         {
-            get { return string.Join(";", sourceFilenames); }
+            get { return string.Join(";", children.Select(c => c.SourceFilename)); }
         }
 
         public override IEnumerable<AssetReference> References
         {
-            get { return references; }
+            get { return children.SelectMany(c => c.References); }
         }
 
         public override void AddReference(string path, int lineNumber)
@@ -42,7 +41,12 @@ namespace Cassette
 
         public override bool IsFrom(string path)
         {
-            return sourceFilenames.Any(f => f.Equals(path, StringComparison.OrdinalIgnoreCase));
+            return children.Any(c => c.IsFrom(path));
+        }
+
+        public override IEnumerable<XElement> CreateManifest()
+        {
+            return children.SelectMany(c => c.CreateManifest());
         }
 
         public void Dispose()

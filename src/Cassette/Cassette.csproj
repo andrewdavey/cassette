@@ -61,7 +61,7 @@
     <Compile Include="IAssetTransformer.cs" />
     <Compile Include="IModuleFactory.cs" />
     <Compile Include="IModuleProcessor.cs" />
-    <Compile Include="InMemoryAsset.cs" />
+    <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />

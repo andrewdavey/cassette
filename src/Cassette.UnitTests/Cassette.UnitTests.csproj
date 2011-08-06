@@ -61,7 +61,7 @@
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />
     <Compile Include="ConcatenateAssets.cs" />
-    <Compile Include="InMemoryAsset.cs" />
+    <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />

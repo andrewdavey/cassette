@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using Cassette.Utilities;
+using System.Xml.Linq;
 
 namespace Cassette
 {
@@ -88,6 +89,14 @@ namespace Cassette
         public override bool IsFrom(string path)
         {
             return filename.Equals(path, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override IEnumerable<XElement> CreateManifest()
+        {
+            yield return new XElement("asset",
+                new XAttribute("filename", filename),
+                new XAttribute("lastwritetime", File.GetLastWriteTimeUtc(filename).Ticks)
+            );
         }
     }
 }

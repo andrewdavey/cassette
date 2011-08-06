@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Xml.Linq;
 
 namespace Cassette
 {
@@ -11,5 +12,6 @@ namespace Cassette
         void AddAssetTransformer(IAssetTransformer transformer);
         Stream OpenStream();
         bool IsFrom(string filename);
+        IEnumerable<XElement> CreateManifest();
     }
 }
