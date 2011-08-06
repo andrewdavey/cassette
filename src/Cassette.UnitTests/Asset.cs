@@ -110,7 +110,7 @@ namespace Cassette
             asset.AddReference("another.js", 1);
 
             var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
-            asset.References.First().ReferencingLineNumber.ShouldEqual(1);
+            asset.References.First().SourceLineNumber.ShouldEqual(1);
         }
 
         [Fact]

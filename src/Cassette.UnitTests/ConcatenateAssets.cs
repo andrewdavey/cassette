@@ -39,10 +39,10 @@ namespace Cassette
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
-            asset1.SetupGet(a => a.References).Returns(new[] { new AssetReference("c:\\other1.js", 0, AssetReferenceType.DifferentModule) });
+            asset1.SetupGet(a => a.References).Returns(new[] { new AssetReference("c:\\other1.js", asset1.Object, 0, AssetReferenceType.DifferentModule) });
             asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
-            asset2.SetupGet(a => a.References).Returns(new[] { new AssetReference("c:\\other1.js", 0, AssetReferenceType.DifferentModule) });
-            asset2.SetupGet(a => a.References).Returns(new[] { new AssetReference("c:\\other2.js", 0, AssetReferenceType.DifferentModule) });
+            asset2.SetupGet(a => a.References).Returns(new[] { new AssetReference("c:\\other1.js", asset2.Object, 0, AssetReferenceType.DifferentModule) });
+            asset2.SetupGet(a => a.References).Returns(new[] { new AssetReference("c:\\other2.js", asset2.Object, 0, AssetReferenceType.DifferentModule) });
             module.Assets.Add(asset1.Object);
             module.Assets.Add(asset2.Object);
 

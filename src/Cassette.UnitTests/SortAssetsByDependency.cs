@@ -17,7 +17,7 @@ namespace Cassette
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("c:\\test\\a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\b.js", 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("c:\\test\\b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("c:\\test\\b.js");
             module.Assets.Add(assetA.Object);
@@ -37,7 +37,7 @@ namespace Cassette
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("c:\\test\\a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\TEST\\B.js", 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("c:\\TEST\\B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("c:\\test\\b.js");
             module.Assets.Add(assetA.Object);

@@ -13,7 +13,7 @@ namespace Cassette
             var module1 = new Module("c:\\test\\module-1");
             var asset1 = new Mock<IAsset>();
             asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\module-2\\b.js", 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("c:\\test\\module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
             module1.Assets.Add(asset1.Object);
             var module2 = new Module("c:\\test\\module-2");
             var asset2 = new Mock<IAsset>();
@@ -34,7 +34,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("c:\\test\\module-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\fail\\fail.js", 0, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("c:\\test\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentModule) });
             module.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
@@ -51,7 +51,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("c:\\test\\module-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\fail\\fail.js", 42, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("c:\\test\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentModule) });
             module.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate

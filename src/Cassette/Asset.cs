@@ -36,7 +36,7 @@ namespace Cassette
             {
                 type = AssetReferenceType.DifferentModule;
             }
-            references.Add(new AssetReference(absoluteFilename, lineNumber, type));
+            references.Add(new AssetReference(absoluteFilename, this, lineNumber, type));
         }
 
         void RequireModuleContainsReference(int lineNumber, string absoluteFilename)

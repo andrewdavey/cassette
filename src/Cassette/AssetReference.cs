@@ -2,18 +2,23 @@
 {
     public class AssetReference
     {
-        public AssetReference(string referencedFilename, int referencingLineNumber, AssetReferenceType type)
+        public AssetReference(string referencedFilename, IAsset sourceAsset, int sourceLineNumber, AssetReferenceType type)
         {
             ReferencedFilename = referencedFilename;
-            ReferencingLineNumber = referencingLineNumber;
+            SourceAsset = sourceAsset;
+            SourceLineNumber = sourceLineNumber;
             Type = type;
         }
 
         public string ReferencedFilename { get; private set; }
         /// <summary>
+        /// The asset that made this reference.
+        /// </summary>
+        public IAsset SourceAsset { get; private set; }
+        /// <summary>
         /// The line number in the asset file that made this reference.
         /// </summary>
-        public int ReferencingLineNumber { get; private set; }
+        public int SourceLineNumber { get; private set; }
         public AssetReferenceType Type { get; private set; }
     }
 }
