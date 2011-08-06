@@ -53,7 +53,6 @@
     <Compile Include="AssetInfo.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />
-    <Compile Include="AssetReferenceFilenameEqualityComparer.cs" />
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="CachedAsset.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
