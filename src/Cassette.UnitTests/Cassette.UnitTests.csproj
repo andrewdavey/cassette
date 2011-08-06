@@ -64,6 +64,7 @@
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
+    <Compile Include="ModuleContainerDeserializer.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />

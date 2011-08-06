@@ -50,10 +50,12 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
+    <Compile Include="AssetInfo.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />
     <Compile Include="AssetReferenceFilenameEqualityComparer.cs" />
     <Compile Include="AssetReferenceType.cs" />
+    <Compile Include="CachedAsset.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />
     <Compile Include="ConcatentateAssets.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="MinifyAssets.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
+    <Compile Include="ModuleContainerDeserializer.cs" />
     <Compile Include="ModuleProcessorOfAssetsMatchingFileExtension.cs" />
     <Compile Include="ModuleSource.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />
