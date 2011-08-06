@@ -75,7 +75,7 @@
     <Compile Include="MinifyAssets.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="ModuleContainerDeserializer.cs" />
+    <Compile Include="ModuleContainerStore.cs" />
     <Compile Include="ModuleProcessorOfAssetsMatchingFileExtension.cs" />
     <Compile Include="ModuleSource.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />

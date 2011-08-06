@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Moq;
 using Should;
 using Xunit;
-using System;
 
 namespace Cassette
 {

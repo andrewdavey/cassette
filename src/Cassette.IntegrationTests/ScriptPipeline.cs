@@ -23,12 +23,10 @@ namespace Cassette.IntegrationTests
                 new MinifyAssets(new MicrosoftJavaScriptMinifier())
             );
 
-            var modules = source.CreateModules(new ScriptModuleFactory()).ToArray();
-            foreach (var module in modules)
-	        {
-                pipeline.Process(module);
-            }
-            var container = new ModuleContainer<ScriptModule>(modules, DateTime.UtcNow);
+            var moduleFactory = new ScriptModuleFactory();
+            Func<string, Stream> openFile = _ => null;
+            var initializer = new Initializer<ScriptModule>(moduleFactory, new ModuleContainerStore<ScriptModule>(openFile, moduleFactory));
+            var container = initializer.Initialize(source, pipeline);
 
             var result = container.ToArray();
             result[0].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset3(){}");
