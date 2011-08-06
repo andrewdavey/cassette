@@ -1,8 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Moq;
 using Should;
 using Xunit;
-using System;
 
 namespace Cassette
 {

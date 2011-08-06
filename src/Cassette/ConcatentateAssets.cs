@@ -15,11 +15,6 @@ namespace Cassette
             });
         }
 
-        string[] GetAssetFilenames(Module module)
-        {
-            return module.Assets.Select(a => a.SourceFilename).ToArray();
-        }
-
         MemoryStream CopyAssetsIntoSingleStream(Module module)
         {
             var outputStream = new MemoryStream();
@@ -41,14 +36,6 @@ namespace Cassette
             writer.Flush();
             outputStream.Position = 0;
             return outputStream;
-        }
-
-        AssetReference[] MergeReferences(Module module)
-        {
-            var all = from asset in module.Assets
-                      from reference in asset.References
-                      select reference;
-            return all.ToArray();
         }
 
         void WriteAsset(IAsset asset, StreamWriter writer)

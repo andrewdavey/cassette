@@ -16,8 +16,8 @@ namespace Cassette
             var module = new Module("c:\\");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
-            asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
-            asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
+            asset1.Setup(a => a.OpenStream()).Returns(() => ("asset1" + Environment.NewLine + "content").AsStream());
+            asset2.Setup(a => a.OpenStream()).Returns(() => ("asset2" + Environment.NewLine + "content").AsStream());
             module.Assets.Add(asset1.Object);
             module.Assets.Add(asset2.Object);
 
@@ -27,7 +27,7 @@ namespace Cassette
             module.Assets.Count.ShouldEqual(1);
             using (var reader = new StreamReader(module.Assets[0].OpenStream()))
             {
-                reader.ReadToEnd().ShouldEqual("asset1" + Environment.NewLine + "asset2");
+                reader.ReadToEnd().ShouldEqual("asset1" + Environment.NewLine + "content" + Environment.NewLine + "asset2" + Environment.NewLine + "content");
             }
             (module.Assets[0] as IDisposable).Dispose();
         }
