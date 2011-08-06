@@ -27,7 +27,7 @@ namespace Cassette
                            from asset in module.Assets
                            from reference in asset.References
                            where reference.Type == AssetReferenceType.DifferentModule
-                              && modules.Any(m => m.ContainsPath(reference.Filename)) == false
+                              && modules.Any(m => m.ContainsPath(reference.ReferencedFilename)) == false
                            select CreateAssetReferenceNotFoundMessage(asset, reference);
 
             var message = string.Join(Environment.NewLine, notFound);
@@ -39,18 +39,18 @@ namespace Cassette
 
         string CreateAssetReferenceNotFoundMessage(IAsset asset, AssetReference reference)
         {
-            if (reference.LineNumber > 0)
+            if (reference.ReferencingLineNumber > 0)
             {
                 return string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    asset.SourceFilename, reference.LineNumber, reference.Filename
+                    asset.SourceFilename, reference.ReferencingLineNumber, reference.ReferencedFilename
                 );
             }
             else
             {
                 return string.Format(
                     "Reference error in \"{0}\". Cannot find \"{1}\".",
-                    asset.SourceFilename, reference.Filename
+                    asset.SourceFilename, reference.ReferencedFilename
                 );
             }
         }
@@ -61,7 +61,7 @@ namespace Cassette
                 modules,
                 module => module.Assets.SelectMany(asset => asset.References)
                     .Where(r => r.Type == AssetReferenceType.DifferentModule)
-                    .Select(r => r.Filename)
+                    .Select(r => r.ReferencedFilename)
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .Select(GetModuleContainingPath)
             );

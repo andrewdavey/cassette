@@ -18,7 +18,7 @@ namespace Cassette
                 sortedByFilename,
                 asset => asset.References
                     .Where(reference => reference.Type == AssetReferenceType.SameModule)
-                    .Select(reference => assetsByFilename[reference.Filename])
+                    .Select(reference => assetsByFilename[reference.ReferencedFilename])
             );
             module.Assets = graph.TopologicalSort().ToList();
         }

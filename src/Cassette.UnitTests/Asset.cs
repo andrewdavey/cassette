@@ -92,7 +92,7 @@ namespace Cassette
             asset.AddReference("another.js", 1);
 
             var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
-            asset.References.First().Filename.ShouldEqual(expectedFilename);
+            asset.References.First().ReferencedFilename.ShouldEqual(expectedFilename);
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace Cassette
             asset.AddReference("another.js", 1);
 
             var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
-            asset.References.First().LineNumber.ShouldEqual(1);
+            asset.References.First().ReferencingLineNumber.ShouldEqual(1);
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace Cassette
             asset.AddReference("../another/test.js", 1);
 
             var expectedFilename = Path.Combine(new FileInfo(filename).Directory.Parent.FullName, "another", "test.js");
-            asset.References.First().Filename.ShouldEqual(expectedFilename);
+            asset.References.First().ReferencedFilename.ShouldEqual(expectedFilename);
         }
 
         [Fact]
