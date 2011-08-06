@@ -13,7 +13,7 @@ namespace Cassette.IntegrationTests
     public class ScriptPipeline
     {
         [Fact]
-        public void BuildPipeline()
+        public void CanBuildModuleSourceAndPipelineAndContainer()
         {
             var root = new DirectoryInfo("..\\..\\assets\\scripts").FullName;
 
@@ -35,7 +35,8 @@ namespace Cassette.IntegrationTests
             var container = new ModuleContainer<ScriptModule>(modules);
 
             var result = container.Modules.ToArray();
-            result[0].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset3() {}");
+            result[0].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset3(){}");
+            result[1].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset2(){}function asset1(){}");
         }
     }
 

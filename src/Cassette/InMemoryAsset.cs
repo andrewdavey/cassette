@@ -21,7 +21,7 @@ namespace Cassette
 
         public override string SourceFilename
         {
-            get { throw new NotImplementedException(); }
+            get { return string.Join(";", sourceFilenames); }
         }
 
         public override IEnumerable<AssetReference> References
