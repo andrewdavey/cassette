@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
-using Should;
 using Xunit;
+using Should;
 
 namespace Cassette.IntegrationTests
 {
@@ -27,9 +28,9 @@ namespace Cassette.IntegrationTests
 	        {
                 pipeline.Process(module);
             }
-            var container = new ModuleContainer<ScriptModule>(modules);
+            var container = new ModuleContainer<ScriptModule>(modules, DateTime.UtcNow);
 
-            var result = container.Modules.ToArray();
+            var result = container.ToArray();
             result[0].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset3(){}");
             result[1].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset2(){}function asset1(){}");
         }

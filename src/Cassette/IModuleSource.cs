@@ -6,6 +6,6 @@ namespace Cassette
     public interface IModuleSource<T>
         where T : Module
     {
-        IEnumerable<T> CreateModules(IModuleFactory<T> moduleFactory);
+        IModuleContainer<T> CreateModules(IModuleFactory<T> moduleFactory);
     }
 }

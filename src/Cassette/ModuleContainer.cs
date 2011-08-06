@@ -8,23 +8,25 @@ namespace Cassette
     public class ModuleContainer<T> : IModuleContainer<T>
         where T : Module
     {
-        IEnumerable<T> modules;
-
-        public ModuleContainer(IEnumerable<T> modules)
+        public ModuleContainer(IEnumerable<T> modules, DateTime lastWriteTime)
         {
             this.modules = modules;
+            this.lastWriteTime = lastWriteTime;
             ValidateAssetReferences();
             OrderModulesByDependency();
         }
 
-        public IEnumerable<T> Modules
+        IEnumerable<T> modules;
+        readonly DateTime lastWriteTime;
+
+        public IEnumerator<T> GetEnumerator()
         {
-            get { return modules; }
+            return modules.GetEnumerator();
         }
 
-        public bool IsUpToDate(IEnumerable<T> modules)
+        public DateTime LastWriteTime
         {
-            throw new NotImplementedException();
+            get { return lastWriteTime; }
         }
 
         void ValidateAssetReferences()
@@ -80,6 +82,11 @@ namespace Cassette
             if (module != null) return module;
             
             throw new AssetReferenceException("Cannot find an asset module containing the path \"" + path + "\".");
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

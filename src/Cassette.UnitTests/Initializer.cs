@@ -2,6 +2,7 @@
 using Moq;
 using Should;
 using Xunit;
+using System;
 
 namespace Cassette
 {
@@ -14,9 +15,14 @@ namespace Cassette
             source = new Mock<IModuleSource<Module>>();
             pipeline = new Mock<IModuleProcessor<Module>>();
             cachedContainer = new Mock<IModuleContainer<Module>>();
+            newContainer = new Mock<IModuleContainer<Module>>();
 
             store.Setup(s => s.Load())
                  .Returns(cachedContainer.Object);
+            source.Setup(s => s.CreateModules(moduleFactory.Object))
+                  .Returns(newContainer.Object);
+            newContainer.Setup(c => c.GetEnumerator())
+                        .Returns(() => new List<Module>(new[] { new Module("c:\\") }).GetEnumerator());
 
             initializer = new Initializer<Module>(moduleFactory.Object, store.Object);
         }
@@ -27,6 +33,7 @@ namespace Cassette
         readonly Mock<IModuleSource<Module>> source;
         readonly Mock<IModuleProcessor<Module>> pipeline;
         readonly Mock<IModuleContainer<Module>> cachedContainer;
+        readonly Mock<IModuleContainer<Module>> newContainer;
 
         [Fact]
         public void InitializeCreatesModulesFromSource()
@@ -39,19 +46,21 @@ namespace Cassette
         [Fact]
         public void GivenCacheIsUpToDate_ThenInitializeReturnsTheCacheContainer()
         {
-            cachedContainer.Setup(c => c.IsUpToDate(It.IsAny<IEnumerable<Module>>()))
-                           .Returns(true);
+            var now = DateTime.UtcNow;
+            cachedContainer.SetupGet(c => c.LastWriteTime).Returns(now);
+            newContainer.SetupGet(c => c.LastWriteTime).Returns(now);
             
-            var container = initializer.Initialize(source.Object, pipeline.Object);
+            var result = initializer.Initialize(source.Object, pipeline.Object);
 
-            container.ShouldBeSameAs(cachedContainer.Object);
+            result.ShouldBeSameAs(cachedContainer.Object);
         }
 
         [Fact]
         public void GivenCacheIsOutOfDate_ThenInitializeProcessesModulePipeline()
         {
-            source.Setup(s => s.CreateModules(moduleFactory.Object))
-                  .Returns(new[] { new Module("c:\\") });
+            var now = DateTime.UtcNow;
+            cachedContainer.SetupGet(c => c.LastWriteTime).Returns(now.AddDays(-1));
+            newContainer.SetupGet(c => c.LastWriteTime).Returns(now);
 
             initializer.Initialize(source.Object, pipeline.Object);
 
@@ -61,6 +70,10 @@ namespace Cassette
         [Fact]
         public void GivenCacheIsOutOfDate_ThenNewContainerIsSavedToStore()
         {
+            var now = DateTime.UtcNow;
+            cachedContainer.SetupGet(c => c.LastWriteTime).Returns(now.AddDays(-1));
+            newContainer.SetupGet(c => c.LastWriteTime).Returns(now);
+
             initializer.Initialize(source.Object, pipeline.Object);
 
             store.Verify(s => s.Save(It.IsAny<IModuleContainer<Module>>()));

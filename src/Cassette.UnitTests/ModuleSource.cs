@@ -225,6 +225,20 @@ namespace Cassette
             }
         }
 
+        [Fact]
+        public void CreateModulesReturnsModuleContainerThatIsUpToDateWithRecentAssetFileChange()
+        {
+            source.AsSingleModule();
+            var moduleFactory = new Mock<IModuleFactory<Module>>();
+            moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
+                         .Returns(new Module(Path.Combine(root, "scripts")));
+
+            var container = source.CreateModules(moduleFactory.Object);
+
+            var expected = File.GetLastWriteTimeUtc(Path.Combine(root, "scripts", "module-b", "test-3.js"));
+            container.LastWriteTime.ShouldEqual(expected);
+        }
+
         void IDisposable.Dispose()
         {
             Directory.Delete(root, true);

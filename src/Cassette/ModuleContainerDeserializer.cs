@@ -24,10 +24,11 @@ namespace Cassette
         {
             var containerElement = LoadContainerElement();
             var rootDirectory = containerElement.Attribute("rootDirectory").Value;
+            var lastWriteTime = new DateTime(long.Parse(containerElement.Attribute("lastWriteTime").Value));
             var moduleElements = containerElement.Elements("module");
             var modules = CreateModules(rootDirectory, moduleElements);
 
-            return new ModuleContainer<T>(modules);
+            return new ModuleContainer<T>(modules, lastWriteTime);
         }
 
         XElement LoadContainerElement()

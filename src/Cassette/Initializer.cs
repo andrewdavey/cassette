@@ -14,21 +14,20 @@
 
         public IModuleContainer<T> Initialize(IModuleSource<T> moduleSource, IModuleProcessor<T> moduleProcessorPipeline)
         {
-            var modules = moduleSource.CreateModules(moduleFactory);
+            var currentContainer = moduleSource.CreateModules(moduleFactory);
             var cachedModuleContainer = moduleContainerStore.Load();
-            if (cachedModuleContainer.IsUpToDate(modules))
+            if (cachedModuleContainer.LastWriteTime == currentContainer.LastWriteTime)
             {
                 return cachedModuleContainer;
             }
             else
             {
-                foreach (var module in modules)
+                foreach (var module in currentContainer)
                 {
                     moduleProcessorPipeline.Process(module);
                 }
-                var container = new ModuleContainer<T>(modules);
-                moduleContainerStore.Save(container);
-                return container;
+                moduleContainerStore.Save(currentContainer);
+                return currentContainer;
             }
         }
     }

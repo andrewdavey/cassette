@@ -38,6 +38,7 @@ namespace Cassette
         readonly List<string> moduleDirectories = new List<string>();
         readonly List<Regex> ignoreFilenameRegexs = new List<Regex>();
         bool isSingleModule;
+        DateTime lastWriteTime;
 
         public ModuleSource<T> AddDirectory(string relativePath)
         {
@@ -98,19 +99,27 @@ namespace Cassette
             return this;
         }
 
-        public IEnumerable<T> CreateModules(IModuleFactory<T> moduleFactory)
+        public IModuleContainer<T> CreateModules(IModuleFactory<T> moduleFactory)
         {
-            return moduleDirectories.Select(
+            var modules = moduleDirectories.Select(
                 moduleDirectory => CreateModule(moduleFactory, moduleDirectory)
             );
+            return new ModuleContainer<T>(modules.ToArray(), lastWriteTime);
         }
 
         T CreateModule(IModuleFactory<T> moduleFactory, string moduleDirectory)
         {
             var module = moduleFactory.CreateModule(moduleDirectory);
-            var assets = FindAssetFilenamesInModuleDirectory(moduleDirectory).Select(
-                filename => new Asset(filename, module)
-            );
+            var filenames = FindAssetFilenamesInModuleDirectory(moduleDirectory).ToArray();
+            if (filenames.Length == 0)
+            {
+                return module;
+            }
+
+            var max = filenames.Select(File.GetLastWriteTimeUtc).Max();
+            if (max > lastWriteTime) lastWriteTime = max;
+
+            var assets = filenames.Select(filename => new Asset(filename, module));
             foreach (var asset in assets)
             {
                 module.Assets.Add(asset);

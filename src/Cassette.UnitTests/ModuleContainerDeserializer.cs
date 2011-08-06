@@ -17,6 +17,7 @@ namespace Cassette
         {
             var containerXml = new XDocument(new XElement("container",
                 new XAttribute("rootDirectory", "c:\\test"),
+                new XAttribute("lastWriteTime", DateTime.UtcNow.Ticks),
                 new XElement("module",
                     new XAttribute("directory", "module-a"),
                     new XElement("asset",
@@ -51,14 +52,14 @@ namespace Cassette
             
             var container = deserializer.LoadModuleContainer();
 
-            var moduleA = container.Modules.First(m => m.Directory.EndsWith("module-a"));
+            var moduleA = container.First(m => m.Directory.EndsWith("module-a"));
             moduleA.Assets.Count.ShouldEqual(1);
             moduleA.Assets[0].References.Single().ReferencedFilename.ShouldEqual("c:\\test\\module-b");
             moduleA.ContainsPath("c:\\test\\module-a\\asset-1.js");
             moduleA.ContainsPath("c:\\test\\module-a\\asset-2.js");
             moduleA.ContainsPath("c:\\test\\module-a");
 
-            var moduleB = container.Modules.First(m => m.Directory.EndsWith("module-b"));
+            var moduleB = container.First(m => m.Directory.EndsWith("module-b"));
             moduleB.Assets.Count.ShouldEqual(1);
             moduleB.Assets[0].References.Count().ShouldEqual(0);
             moduleB.ContainsPath("c:\\test\\module-b\\asset-3.js");

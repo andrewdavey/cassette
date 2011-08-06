@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Cassette
 {
-    public interface IModuleContainer<T>
+    public interface IModuleContainer<T> : IEnumerable<T>
         where T : Module
     {
-        bool IsUpToDate(IEnumerable<T> currentModules);
+        DateTime LastWriteTime { get; }
     }
 }

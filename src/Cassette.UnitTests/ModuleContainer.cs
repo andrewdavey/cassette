@@ -2,6 +2,7 @@
 using Moq;
 using Should;
 using Xunit;
+using System;
 
 namespace Cassette
 {
@@ -20,9 +21,9 @@ namespace Cassette
             asset2.Setup(a => a.IsFrom("c:\\test\\module-2\\b.js")).Returns(true);
             module2.Assets.Add(asset2.Object);
 
-            var container = new ModuleContainer<Module>(new[] { module1, module2 });
+            var container = new ModuleContainer<Module>(new[] { module1, module2 }, DateTime.UtcNow);
 
-            var modules = container.Modules.ToArray();
+            var modules = container.ToArray();
             modules[0].ShouldBeSameAs(module2);
             modules[1].ShouldBeSameAs(module1);
         }
@@ -39,7 +40,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module });
+                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow);
             });
             exception.Message.ShouldEqual("Reference error in \"c:\\test\\module-1\\a.js\". Cannot find \"c:\\test\\fail\\fail.js\".");
         }
@@ -56,7 +57,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module });
+                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow);
             });
             exception.Message.ShouldEqual("Reference error in \"c:\\test\\module-1\\a.js\", line 42. Cannot find \"c:\\test\\fail\\fail.js\".");
         }
