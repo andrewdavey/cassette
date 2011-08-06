@@ -155,6 +155,24 @@ namespace Cassette
             });
         }
 
+        [Fact]
+        public void IsFrom_WhereFilenameMatches_ReturnsTrue()
+        {
+            asset.IsFrom(filename).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void IsFrom_WhereFilenameMatchesDifferentCase_ReturnsTrue()
+        {
+            asset.IsFrom(filename.ToUpper()).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void IsFrom_WhereFilenameDoesntMatch_ReturnsTrue()
+        {
+            asset.IsFrom("c:\\other.js").ShouldBeFalse();
+        }
+
         void IDisposable.Dispose()
         {
             File.Delete(filename);

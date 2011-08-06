@@ -49,8 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asset.cs" />
+    <Compile Include="AssetBase.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />
+    <Compile Include="AssetReferenceFilenameEqualityComparer.cs" />
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />

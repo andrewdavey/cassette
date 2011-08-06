@@ -17,24 +17,35 @@ namespace Cassette.IntegrationTests
         {
             var root = new DirectoryInfo("..\\..\\assets\\scripts").FullName;
 
-            var source = new ModuleSource<Module>(root, "*.js")
+            var source = new ModuleSource<ScriptModule>(root, "*.js")
                 .AddEachSubDirectory();
 
-            var pipeline = new Pipeline<Module>(
+            var pipeline = new Pipeline<ScriptModule>(
                 new ParseJavaScriptReferences(),
-                new SortAssetsByDependency<Module>(),
+                new SortAssetsByDependency<ScriptModule>(),
                 new ConcatentateAssets(),
                 new MinifyAssets(new MicrosoftJavaScriptMinifier())
             );
 
-            foreach (var module in source.CreateModules(new ScriptModuleFactory()))
+            var modules = source.CreateModules(new ScriptModuleFactory()).ToArray();
+            foreach (var module in modules)
 	        {
                 pipeline.Process(module);
+            }
+            var container = new ModuleContainer<ScriptModule>(modules);
 
-                using (var reader = new StreamReader(module.Assets[0].OpenStream()))
-                {
-                    reader.ReadToEnd().ShouldEqual("function asset3(){}function asset2(){}" + Environment.NewLine + "function asset1(){}");
-                }
+            var result = container.Modules.ToArray();
+            result[0].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset3() {}");
+        }
+    }
+
+    static class StreamHelpers
+    {
+        public static string ReadAsString(this Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Linq;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -6,10 +8,11 @@ namespace Cassette
     {
         public void Process(Module module)
         {
+            var filenames = module.Assets.Select(a => a.SourceFilename);
             var outputStream = CopyAssetsIntoSingleStream(module);
-            
+            var references = MergeReferences(module);
             module.Assets.Clear();
-            module.Assets.Add(new InMemoryAsset(outputStream));
+            module.Assets.Add(new InMemoryAsset(filenames, outputStream, references));
         }
 
         MemoryStream CopyAssetsIntoSingleStream(Module module)
@@ -33,6 +36,14 @@ namespace Cassette
             writer.Flush();
             outputStream.Position = 0;
             return outputStream;
+        }
+
+        AssetReference[] MergeReferences(Module module)
+        {
+            var all = from asset in module.Assets
+                      from reference in asset.References
+                      select reference;
+            return all.Distinct(new AssetReferenceFilenameEqualityComparer()).ToArray();
         }
 
         void WriteAsset(IAsset asset, StreamWriter writer)

@@ -6,46 +6,48 @@ using System.IO;
 
 namespace Cassette
 {
-    class InMemoryAsset : IAsset, IDisposable
+    class InMemoryAsset : AssetBase, IDisposable
     {
+        readonly IEnumerable<string> sourceFilenames;
         readonly Stream stream;
+        readonly IEnumerable<AssetReference> references;
 
-        public InMemoryAsset(Stream stream)
+        public InMemoryAsset(IEnumerable<string> sourceFilenames, Stream stream, IEnumerable<AssetReference> references)
         {
+            this.sourceFilenames = sourceFilenames;
             this.stream = stream;
+            this.references = references;
         }
 
-        public string SourceFilename
+        public override string SourceFilename
         {
             get { throw new NotImplementedException(); }
         }
 
-        public IEnumerable<AssetReference> References
+        public override IEnumerable<AssetReference> References
         {
-            get { throw new NotImplementedException(); }
+            get { return references; }
         }
 
-        public void AddReference(string path, int lineNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddAssetTransformer(IAssetTransformer transformer)
+        public override void AddReference(string path, int lineNumber)
         {
             throw new NotImplementedException();
         }
 
-        public System.IO.Stream OpenStream()
+        protected override Stream OpenStreamCore()
         {
             // TODO: Clone the stream and return...
             return stream;
+        }
+
+        public override bool IsFrom(string path)
+        {
+            return sourceFilenames.Any(f => f.Equals(path, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()
         {
             stream.Dispose();
         }
-
-
     }
 }

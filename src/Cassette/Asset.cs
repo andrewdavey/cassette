@@ -6,7 +6,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class Asset : IAsset
+    public class Asset : AssetBase
     {
         public Asset(string filename, Module parentModule)
         {
@@ -18,10 +18,9 @@ namespace Cassette
         readonly string filename;
         readonly Module parentModule;
         readonly byte[] hash;
-        readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
         readonly List<AssetReference> references = new List<AssetReference>();
 
-        public void AddReference(string filename, int lineNumber)
+        public override void AddReference(string filename, int lineNumber)
         {
             var absoluteFilename = PathUtilities.NormalizePath(
                 Path.GetDirectoryName(this.filename),
@@ -52,25 +51,7 @@ namespace Cassette
             );
         }
 
-        public void AddAssetTransformer(IAssetTransformer transformer)
-        {
-            transformers.Add(transformer);
-        }
-
-        public Stream OpenStream()
-        {
-            // Passing an already created stream to the transformers would make deciding who has to 
-            // close the stream confusing. Using a Func<Stream> instead allows a transformer to 
-            // choose when to create the stream and also then close it.
-            Func<Stream> createStream = () => File.OpenRead(filename);
-            foreach (var transformer in transformers)
-            {
-                createStream = transformer.Transform(createStream, this);
-            }
-            return createStream();
-        }
-
-        public string SourceFilename
+        public override string SourceFilename
         {
             get { return filename; }
         }
@@ -80,7 +61,7 @@ namespace Cassette
             get { return hash; }
         }
 
-        public IEnumerable<AssetReference> References
+        public override IEnumerable<AssetReference> References
         {
             get { return references; }
         }
@@ -97,6 +78,16 @@ namespace Cassette
         bool ModuleCouldContain(string path)
         {
             return path.StartsWith(parentModule.Directory, StringComparison.OrdinalIgnoreCase);
+        }
+
+        protected override Stream OpenStreamCore()
+        {
+            return File.OpenRead(filename);
+        }
+
+        public override bool IsFrom(string path)
+        {
+            return filename.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
