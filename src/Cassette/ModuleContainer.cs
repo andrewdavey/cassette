@@ -5,7 +5,8 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class ModuleContainer<T> where T : Module
+    public class ModuleContainer<T> : IModuleContainer<T>
+        where T : Module
     {
         IEnumerable<T> modules;
 
@@ -19,6 +20,11 @@ namespace Cassette
         public IEnumerable<T> Modules
         {
             get { return modules; }
+        }
+
+        public bool IsUpToDate(IEnumerable<T> modules)
+        {
+            throw new NotImplementedException();
         }
 
         void ValidateAssetReferences()

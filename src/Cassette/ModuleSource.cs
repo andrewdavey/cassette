@@ -7,7 +7,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class ModuleSource<T>
+    public class ModuleSource<T> : IModuleSource<T>
         where T : Module
     {
         public ModuleSource(string rootDirectory, params string[] assetFileExtensions)

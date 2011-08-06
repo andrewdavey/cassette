@@ -60,9 +60,13 @@
     <Compile Include="ConcatentateAssets.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />
+    <Compile Include="IModuleContainer.cs" />
+    <Compile Include="IModuleContainerStore.cs" />
     <Compile Include="IModuleFactory.cs" />
     <Compile Include="IModuleProcessor.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
+    <Compile Include="IModuleSource.cs" />
+    <Compile Include="Initializer.cs" />
     <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />
