@@ -75,6 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="SortAssetsByDependency.cs" />
+    <Compile Include="StubFileSystem.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />

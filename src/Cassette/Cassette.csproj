@@ -58,8 +58,10 @@
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />
     <Compile Include="ConcatentateAssets.cs" />
+    <Compile Include="FileSystem.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />
+    <Compile Include="IFileSystem.cs" />
     <Compile Include="IModuleContainer.cs" />
     <Compile Include="IModuleContainerStore.cs" />
     <Compile Include="IModuleFactory.cs" />

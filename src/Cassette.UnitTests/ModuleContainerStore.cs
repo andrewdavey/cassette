@@ -16,7 +16,6 @@ namespace Cassette
         public void ReadingXElementCreatesModuleContainerWithModulesAndAssets()
         {
             var containerXml = new XDocument(new XElement("container",
-                new XAttribute("rootDirectory", "c:\\test"),
                 new XAttribute("lastWriteTime", DateTime.UtcNow.Ticks),
                 new XElement("module",
                     new XAttribute("directory", "module-a"),
@@ -40,38 +39,37 @@ namespace Cassette
             ));
             var fileStreams = new Dictionary<string, Stream>
             {
-                { "ScriptModules\\container.xml", containerXml.ToString().AsStream() },
-                { "ScriptModules\\module-a", "module-a".AsStream() },
-                { "ScriptModules\\module-b", "module-b".AsStream() }
+                { "container.xml", containerXml.ToString().AsStream() },
+                { "module-a", "module-a".AsStream() },
+                { "module-b", "module-b".AsStream() }
             };
-            Func<string, Stream> openFile = s => fileStreams[s];
+            var fileSystem = new StubFileSystem(fileStreams);
             var moduleFactory = new Mock<IModuleFactory<ScriptModule>>();
-            moduleFactory.Setup(f => f.CreateModule("c:\\test\\module-a")).Returns(new ScriptModule("c:\\test\\module-a"));
-            moduleFactory.Setup(f => f.CreateModule("c:\\test\\module-b")).Returns(new ScriptModule("c:\\test\\module-b"));
-            var store = new ModuleContainerStore<ScriptModule>(openFile, moduleFactory.Object);
+            moduleFactory.Setup(f => f.CreateModule("module-a")).Returns(new ScriptModule("module-a"));
+            moduleFactory.Setup(f => f.CreateModule("module-b")).Returns(new ScriptModule("module-b"));
+            var store = new ModuleContainerStore<ScriptModule>(fileSystem, moduleFactory.Object);
             
             var container = store.Load();
 
             var moduleA = container.First(m => m.Directory.EndsWith("module-a"));
             moduleA.Assets.Count.ShouldEqual(1);
-            moduleA.Assets[0].References.Single().ReferencedFilename.ShouldEqual("c:\\test\\module-b");
-            moduleA.ContainsPath("c:\\test\\module-a\\asset-1.js");
-            moduleA.ContainsPath("c:\\test\\module-a\\asset-2.js");
-            moduleA.ContainsPath("c:\\test\\module-a");
+            moduleA.Assets[0].References.Single().ReferencedFilename.ShouldEqual("module-b");
+            moduleA.ContainsPath("module-a\\asset-1.js");
+            moduleA.ContainsPath("module-a\\asset-2.js");
+            moduleA.ContainsPath("module-a");
 
             var moduleB = container.First(m => m.Directory.EndsWith("module-b"));
             moduleB.Assets.Count.ShouldEqual(1);
             moduleB.Assets[0].References.Count().ShouldEqual(0);
-            moduleB.ContainsPath("c:\\test\\module-b\\asset-3.js");
-            moduleB.ContainsPath("c:\\test\\module-b\\asset-4.js");
-            moduleB.ContainsPath("c:\\test\\module-b");
+            moduleB.ContainsPath("module-b\\asset-3.js");
+            moduleB.ContainsPath("module-b\\asset-4.js");
+            moduleB.ContainsPath("module-b");
         }
 
         [Fact]
         public void GivenNoFilesExist_LoadReturnsEmptyModuleContainer()
         {
-            Func<string, Stream> openFile = _ => null;
-            var store = new ModuleContainerStore<ScriptModule>(openFile, Mock.Of<IModuleFactory<ScriptModule>>());
+            var store = new ModuleContainerStore<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
             var container = store.Load();
 
             container.ShouldBeEmpty();
@@ -80,11 +78,33 @@ namespace Cassette
         [Fact]
         public void GivenNoFilesExist_LoadReturnsModuleContainerWithMinLastWriteDate()
         {
-            Func<string, Stream> openFile = _ => null;
-            var store = new ModuleContainerStore<ScriptModule>(openFile, Mock.Of<IModuleFactory<ScriptModule>>());
+            var store = new ModuleContainerStore<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
             var container = store.Load();
 
             container.LastWriteTime.ShouldEqual(DateTime.MinValue);
+        }
+
+        [Fact]
+        public void SaveWritesContainerXmlFile()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(fs => fs.OpenWrite(It.IsAny<string>())).Returns(Stream.Null);
+
+            var now = DateTime.UtcNow;
+            var modules = new[] {
+                new ScriptModule("c:\\test")
+            };
+            var asset1 = new Mock<IAsset>();
+            asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
+            asset1.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            modules[0].Assets.Add(asset1.Object);
+            var container = new ModuleContainer<ScriptModule>(modules, now, "c:\\test");
+
+            var store = new ModuleContainerStore<ScriptModule>(fileSystem.Object, Mock.Of<IModuleFactory<ScriptModule>>());
+            store.Save(container);
+
+            fileSystem.Verify(fs => fs.OpenWrite("container.xml"));
+            fileSystem.Verify(fs => fs.OpenWrite(".module"));
         }
     }
 }

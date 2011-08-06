@@ -8,16 +8,22 @@ namespace Cassette
     public class ModuleContainer<T> : IModuleContainer<T>
         where T : Module
     {
-        public ModuleContainer(IEnumerable<T> modules, DateTime lastWriteTime)
+        public ModuleContainer(IEnumerable<T> modules, DateTime lastWriteTime, string rootDirectory)
         {
-            this.modules = modules;
+            this.modules = modules.ToArray(); // Force eval to prevent repeatedly generating new modules.
             this.lastWriteTime = lastWriteTime;
-            ValidateAssetReferences();
-            OrderModulesByDependency();
+            this.rootDirectory = rootDirectory;
         }
 
         IEnumerable<T> modules;
         readonly DateTime lastWriteTime;
+        readonly string rootDirectory;
+
+        public void ValidateAndSortModules()
+        {
+            ValidateAssetReferences();
+            OrderModulesByDependency();
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -27,6 +33,11 @@ namespace Cassette
         public DateTime LastWriteTime
         {
             get { return lastWriteTime; }
+        }
+
+        public string RootDirectory
+        {
+            get { return rootDirectory; }
         }
 
         void ValidateAssetReferences()

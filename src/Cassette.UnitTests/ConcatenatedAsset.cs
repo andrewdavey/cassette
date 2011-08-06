@@ -50,5 +50,15 @@ namespace Cassette
             var manifest = asset.CreateManifest().ToArray();
             manifest.Length.ShouldEqual(2);
         }
+
+        [Fact]
+        public void RepeatedOpenStreamCallsReturnNewStreams()
+        {
+            using (var stream1 = asset.OpenStream())
+            using (var stream2 = asset.OpenStream())
+            {
+                stream1.ShouldNotBeSameAs(stream2);
+            }
+        }
     }
 }

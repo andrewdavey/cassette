@@ -26,6 +26,7 @@
                 {
                     moduleProcessorPipeline.Process(module);
                 }
+                currentContainer.ValidateAndSortModules();
                 moduleContainerStore.Save(currentContainer);
                 return currentContainer;
             }

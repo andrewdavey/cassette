@@ -9,7 +9,7 @@ namespace Cassette
     public class ModuleContainer_Tests
     {
         [Fact]
-        public void ConstructorOrdersModulesByDependency()
+        public void ValidateAndSortModulesOrdersModulesByDependency()
         {
             var module1 = new Module("c:\\test\\module-1");
             var asset1 = new Mock<IAsset>();
@@ -21,7 +21,8 @@ namespace Cassette
             asset2.Setup(a => a.IsFrom("c:\\test\\module-2\\b.js")).Returns(true);
             module2.Assets.Add(asset2.Object);
 
-            var container = new ModuleContainer<Module>(new[] { module1, module2 }, DateTime.UtcNow);
+            var container = new ModuleContainer<Module>(new[] { module1, module2 }, DateTime.UtcNow, "c:\\test");
+            container.ValidateAndSortModules();
 
             var modules = container.ToArray();
             modules[0].ShouldBeSameAs(module2);
@@ -29,7 +30,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenAssetWithUnknownDifferentModuleReference_ThenConstructorThrowsAssetReferenceException()
+        public void GivenAssetWithUnknownDifferentModuleReference_ThenValidateAndSortModulesThrowsAssetReferenceException()
         {
             var module = new Module("c:\\test\\module-1");
             var asset = new Mock<IAsset>();
@@ -40,13 +41,13 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow);
+                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow, "c:\\test").ValidateAndSortModules();
             });
             exception.Message.ShouldEqual("Reference error in \"c:\\test\\module-1\\a.js\". Cannot find \"c:\\test\\fail\\fail.js\".");
         }
 
         [Fact]
-        public void GivenAssetWithUnknownDifferentModuleReferenceHavingLineNumber_ThenConstructorThrowsAssetReferenceException()
+        public void GivenAssetWithUnknownDifferentModuleReferenceHavingLineNumber_ThenValidateAndSortModulesThrowsAssetReferenceException()
         {
             var module = new Module("c:\\test\\module-1");
             var asset = new Mock<IAsset>();
@@ -57,7 +58,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow);
+                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow, "c:\\test").ValidateAndSortModules();
             });
             exception.Message.ShouldEqual("Reference error in \"c:\\test\\module-1\\a.js\", line 42. Cannot find \"c:\\test\\fail\\fail.js\".");
         }

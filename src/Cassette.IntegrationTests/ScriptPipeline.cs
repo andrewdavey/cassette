@@ -1,13 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Xunit;
 using Should;
+using Xunit;
 
 namespace Cassette.IntegrationTests
 {
-    public class ScriptPipeline
+    public class ScriptPipeline : IDisposable
     {
+        public ScriptPipeline()
+        {
+            cacheDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(cacheDirectory);
+        }
+
+        readonly string cacheDirectory;
+
         [Fact]
         public void CanBuildModuleSourceAndPipelineAndContainer()
         {
@@ -24,13 +32,20 @@ namespace Cassette.IntegrationTests
             );
 
             var moduleFactory = new ScriptModuleFactory();
-            Func<string, Stream> openFile = _ => null;
-            var initializer = new Initializer<ScriptModule>(moduleFactory, new ModuleContainerStore<ScriptModule>(openFile, moduleFactory));
+
+            var fileSystem = new FileSystem(cacheDirectory);
+
+            var initializer = new Initializer<ScriptModule>(moduleFactory, new ModuleContainerStore<ScriptModule>(fileSystem, moduleFactory));
             var container = initializer.Initialize(source, pipeline);
 
             var result = container.ToArray();
             result[0].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset3(){}");
             result[1].Assets[0].OpenStream().ReadAsString().ShouldEqual("function asset2(){}function asset1(){}");
+        }
+
+        public void Dispose()
+        {
+            Directory.Delete(cacheDirectory, true);
         }
     }
 

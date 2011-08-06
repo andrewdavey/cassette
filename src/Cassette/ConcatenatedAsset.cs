@@ -35,8 +35,11 @@ namespace Cassette
 
         protected override Stream OpenStreamCore()
         {
-            // TODO: Clone the stream and return...
-            return stream;
+            var newStream = new MemoryStream();
+            stream.Position = 0;
+            stream.CopyTo(newStream);
+            newStream.Position = 0;
+            return newStream;
         }
 
         public override bool IsFrom(string path)

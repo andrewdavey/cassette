@@ -16,7 +16,7 @@ namespace Cassette
 
         public string SourceFilename
         {
-            get { throw new NotImplementedException(); }
+            get { return filename; }
         }
 
         public IEnumerable<AssetReference> References
