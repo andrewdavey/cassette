@@ -27,8 +27,29 @@ namespace Cassette
                 Path.GetDirectoryName(this.filename),
                 filename
             );
-            var type = ModuleCouldContain(absoluteFilename) ? AssetReferenceType.SameModule : AssetReferenceType.DifferentModule;
+            AssetReferenceType type;
+            if (ModuleCouldContain(absoluteFilename))
+            {
+                RequireModuleContainsReference(lineNumber, absoluteFilename);
+                type = AssetReferenceType.SameModule;
+            }
+            else
+            {
+                type = AssetReferenceType.DifferentModule;
+            }
             references.Add(new AssetReference(absoluteFilename, lineNumber, type));
+        }
+
+        void RequireModuleContainsReference(int lineNumber, string absoluteFilename)
+        {
+            if (parentModule.ContainsPath(absoluteFilename)) return;
+            
+            throw new AssetReferenceException(
+                string.Format(
+                    "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
+                    SourceFilename, lineNumber, absoluteFilename
+                )
+            );
         }
 
         public void AddAssetTransformer(IAssetTransformer transformer)

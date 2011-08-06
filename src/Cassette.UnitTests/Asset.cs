@@ -16,7 +16,14 @@ namespace Cassette
             // Write some testable content to the file.
             File.WriteAllText(filename, "asset content");
 
-            asset = new Asset(filename, new Module(Path.GetDirectoryName(filename)));
+            var module = new Module(Path.GetDirectoryName(filename));
+            asset = new Asset(filename, module);
+            module.Assets.Add(asset);
+
+            var another = new Mock<IAsset>();
+            another.SetupGet(a => a.SourceFilename)
+                   .Returns(Path.Combine(module.Directory, "another.js"));
+            module.Assets.Add(another.Object);
         }
 
         readonly string filename;
@@ -137,6 +144,15 @@ namespace Cassette
             // Will need to know the web application's root directory to convert the filename
             // to a file system absolute path.
             throw new NotImplementedException();
+        }
+
+        [Fact]
+        public void AddReferenceToAssetThatIsNotInSameModuleThrowsAssetReferenceException()
+        {
+            Assert.Throws<AssetReferenceException>(delegate
+            {
+                asset.AddReference("not-in-module.js", 1);
+            });
         }
 
         void IDisposable.Dispose()
