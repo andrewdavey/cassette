@@ -39,7 +39,7 @@ namespace Cassette
         public Stream OpenStream()
         {
             // Passing an already created stream to the transformers would make deciding who has to 
-            // close the stream confusing. Use a Func<Stream> instead allows a transformer to 
+            // close the stream confusing. Using a Func<Stream> instead allows a transformer to 
             // choose when to create the stream and also then close it.
             Func<Stream> createStream = () => File.OpenRead(filename);
             foreach (var transformer in transformers)
