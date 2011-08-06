@@ -21,14 +21,14 @@ namespace Cassette
         readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
         readonly List<AssetReference> references = new List<AssetReference>();
 
-        public void AddReference(string filename)
+        public void AddReference(string filename, int lineNumber)
         {
             var absoluteFilename = PathUtilities.NormalizePath(
                 Path.GetDirectoryName(this.filename),
                 filename
             );
             var type = ModuleCouldContain(absoluteFilename) ? AssetReferenceType.SameModule : AssetReferenceType.DifferentModule;
-            references.Add(new AssetReference(absoluteFilename, type));
+            references.Add(new AssetReference(absoluteFilename, lineNumber, type));
         }
 
         public void AddAssetTransformer(IAssetTransformer transformer)

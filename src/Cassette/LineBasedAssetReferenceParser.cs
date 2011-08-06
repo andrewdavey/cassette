@@ -18,9 +18,11 @@ namespace Cassette
         {
             using (var reader = new StreamReader(asset.OpenStream()))
             {
+                int lineNumber = 0;
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
+                    lineNumber++;
                     if (string.IsNullOrWhiteSpace(line))
                     {
                         continue;
@@ -29,7 +31,7 @@ namespace Cassette
                     var match = referenceRegex.Match(line);
                     if (match.Success)
                     {
-                        asset.AddReference(match.Groups[1].Value);
+                        asset.AddReference(match.Groups[1].Value, lineNumber);
                     }
                     else
                     {

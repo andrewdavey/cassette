@@ -25,7 +25,7 @@ namespace Cassette
             get { throw new NotImplementedException(); }
         }
 
-        public void AddReference(string path)
+        public void AddReference(string path, int lineNumber)
         {
             throw new NotImplementedException();
         }

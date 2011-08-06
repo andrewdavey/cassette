@@ -2,12 +2,6 @@
 {
     public class AssetReference
     {
-        public AssetReference(string filename, AssetReferenceType type)
-        {
-            Filename = filename;
-            Type = type;
-        }
-
         public AssetReference(string filename, int lineNumber, AssetReferenceType type)
         {
             Filename = filename;
@@ -16,7 +10,7 @@
         }
 
         public string Filename { get; private set; }
-        public int? LineNumber { get; private set; }
+        public int LineNumber { get; private set; }
         public AssetReferenceType Type { get; private set; }
     }
 }

@@ -89,16 +89,25 @@ namespace Cassette
         [Fact]
         public void AddReferenceToSiblingFilename_ExpandsFilenameToAbsolutePath()
         {
-            asset.AddReference("another.js");
+            asset.AddReference("another.js", 1);
 
             var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
             asset.References.First().Filename.ShouldEqual(expectedFilename);
         }
 
         [Fact]
+        public void AddReferenceToSiblingFilename_AssignsLineNumber()
+        {
+            asset.AddReference("another.js", 1);
+
+            var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
+            asset.References.First().LineNumber.ShouldEqual(1);
+        }
+
+        [Fact]
         public void AddReferenceToSiblingFilename_CreatesSameModuleReference()
         {
-            asset.AddReference("another.js");
+            asset.AddReference("another.js", 1);
 
             var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
             asset.References.First().Type.ShouldEqual(AssetReferenceType.SameModule);
@@ -107,7 +116,7 @@ namespace Cassette
         [Fact]
         public void AddReferenceToAssetInAnotherModule_ExpandsFilenameToAbsolutePath()
         {
-            asset.AddReference("../another/test.js");
+            asset.AddReference("../another/test.js", 1);
 
             var expectedFilename = Path.Combine(new FileInfo(filename).Directory.Parent.FullName, "another", "test.js");
             asset.References.First().Filename.ShouldEqual(expectedFilename);
@@ -116,7 +125,7 @@ namespace Cassette
         [Fact]
         public void AddReferenceToAssetInAnotherModule_CreatesDifferentModuleReference()
         {
-            asset.AddReference("../another/test.js");
+            asset.AddReference("../another/test.js", 1);
 
             asset.References.First().Type.ShouldEqual(AssetReferenceType.DifferentModule);
         }

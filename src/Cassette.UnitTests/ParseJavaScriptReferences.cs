@@ -29,10 +29,10 @@ function dummy() {}
             var processor = new ParseJavaScriptReferences();
             processor.Process(module);
 
-            asset.Verify(a => a.AddReference("another1.js"));
-            asset.Verify(a => a.AddReference("/another2.js"));
-            asset.Verify(a => a.AddReference("../test/another3.js"));
-            asset.Verify(a => a.AddReference("ignored.js"), Times.Never());
+            asset.Verify(a => a.AddReference("another1.js", 2));
+            asset.Verify(a => a.AddReference("/another2.js", 3));
+            asset.Verify(a => a.AddReference("../test/another3.js", 4));
+            asset.Verify(a => a.AddReference("ignored.js", It.IsAny<int>()), Times.Never());
         }
     }
 }

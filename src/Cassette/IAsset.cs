@@ -7,7 +7,7 @@ namespace Cassette
     {
         string SourceFilename { get; }
         IEnumerable<AssetReference> References { get; }
-        void AddReference(string path);
+        void AddReference(string path, int lineNumber);
         void AddAssetTransformer(IAssetTransformer transformer);
         Stream OpenStream();
     }

@@ -27,9 +27,9 @@ class Foo
             var processor = new ParseCoffeeScriptReferences();
             processor.Process(module);
 
-            asset.Verify(a => a.AddReference("another1.js"));
-            asset.Verify(a => a.AddReference("another2.coffee"));
-            asset.Verify(a => a.AddReference("/another3.coffee"));
+            asset.Verify(a => a.AddReference("another1.js", 2));
+            asset.Verify(a => a.AddReference("another2.coffee", 3));
+            asset.Verify(a => a.AddReference("/another3.coffee", 4));
         }
     }
 }

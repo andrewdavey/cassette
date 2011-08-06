@@ -39,7 +39,7 @@ namespace Cassette
 
         string CreateAssetReferenceNotFoundMessage(IAsset asset, AssetReference reference)
         {
-            if (reference.LineNumber.HasValue)
+            if (reference.LineNumber > 0)
             {
                 return string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
