@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using Xunit;
-using System.IO;
-using System.Reflection;
-using Cassette;
 using Should;
+using Xunit;
 
 namespace Cassette.IntegrationTests
 {

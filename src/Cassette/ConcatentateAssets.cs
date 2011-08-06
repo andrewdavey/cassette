@@ -48,7 +48,7 @@ namespace Cassette
             var all = from asset in module.Assets
                       from reference in asset.References
                       select reference;
-            return all.Distinct(new AssetReferenceFilenameEqualityComparer()).ToArray();
+            return all.ToArray();
         }
 
         void WriteAsset(IAsset asset, StreamWriter writer)
