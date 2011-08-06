@@ -29,7 +29,7 @@ namespace Cassette
         public bool ContainsPath(string path)
         {
             if (IsModulePath(path)) return true;
-            return assets.Any(a => a.SourceFilename.Equals(path, StringComparison.OrdinalIgnoreCase));
+            return assets.Any(a => a.IsFrom(path));
         }
 
         bool IsModulePath(string path)

@@ -26,7 +26,7 @@ namespace Cassette
         {
             var module = new Module("c:\\test");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("c:\\test\\asset.js");
+            asset.Setup(a => a.IsFrom("c:\\test\\asset.js")).Returns(true);
             module.Assets.Add(asset.Object);
 
             module.ContainsPath("c:\\test\\asset.js").ShouldBeTrue();
@@ -37,7 +37,7 @@ namespace Cassette
         {
             var module = new Module("c:\\test");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("c:\\test\\asset.js");
+            asset.Setup(a => a.IsFrom("c:\\TEST\\ASSET.js")).Returns(true);
             module.Assets.Add(asset.Object);
 
             module.ContainsPath("c:\\TEST\\ASSET.js").ShouldBeTrue();

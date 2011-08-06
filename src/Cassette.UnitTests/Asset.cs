@@ -23,6 +23,8 @@ namespace Cassette
             var another = new Mock<IAsset>();
             another.SetupGet(a => a.SourceFilename)
                    .Returns(Path.Combine(module.Directory, "another.js"));
+            another.Setup(a => a.IsFrom(Path.Combine(module.Directory, "another.js")))
+                   .Returns(true);
             module.Assets.Add(another.Object);
         }
 

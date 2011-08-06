@@ -12,13 +12,12 @@ namespace Cassette
         {
             var module1 = new Module("c:\\test\\module-1");
             var asset1 = new Mock<IAsset>();
-            asset1.SetupGet(a => a.SourceFilename).Returns("c:\\test\\module-1\\a.js");
             asset1.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("c:\\test\\module-2\\b.js", 1, AssetReferenceType.DifferentModule) });
             module1.Assets.Add(asset1.Object);
             var module2 = new Module("c:\\test\\module-2");
             var asset2 = new Mock<IAsset>();
-            asset2.SetupGet(a => a.SourceFilename).Returns("c:\\test\\module-2\\b.js");
+            asset2.Setup(a => a.IsFrom("c:\\test\\module-2\\b.js")).Returns(true);
             module2.Assets.Add(asset2.Object);
 
             var container = new ModuleContainer<Module>(new[] { module1, module2 });
