@@ -13,7 +13,7 @@ namespace Cassette
         }
 
         readonly string directory;
-        readonly List<IAsset> assets = new List<IAsset>();
+        IList<IAsset> assets = new List<IAsset>();
 
         public string Directory
         {
@@ -23,6 +23,7 @@ namespace Cassette
         public IList<IAsset> Assets
         {
             get { return assets; }
+            set { assets = value; }
         }
 
         public bool ContainsPath(string path)

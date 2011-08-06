@@ -20,6 +20,11 @@ namespace Cassette
             get { throw new NotImplementedException(); }
         }
 
+        public IEnumerable<AssetReference> References
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public void AddReference(string path)
         {
             throw new NotImplementedException();
@@ -40,5 +45,7 @@ namespace Cassette
         {
             stream.Dispose();
         }
+
+
     }
 }

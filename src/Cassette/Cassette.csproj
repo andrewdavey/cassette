@@ -69,6 +69,7 @@
     <Compile Include="ParseCoffeeScriptReferences.cs" />
     <Compile Include="ParseJavaScriptReferences.cs" />
     <Compile Include="Pipeline.cs" />
+    <Compile Include="SortAssetsByDependency.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
