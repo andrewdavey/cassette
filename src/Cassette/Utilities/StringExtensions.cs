@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace Cassette
+namespace Cassette.Utilities
 {
-    static class _Helpers
+    public static class StringExtensions
     {
         public static Stream AsStream(this string s)
         {

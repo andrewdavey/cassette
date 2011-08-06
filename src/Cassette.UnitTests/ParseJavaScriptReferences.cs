@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using Cassette.Utilities;
 using Moq;
 using Xunit;
 

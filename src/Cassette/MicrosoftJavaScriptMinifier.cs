@@ -1,15 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
+using Cassette.Utilities;
+using Microsoft.Ajax.Utilities;
 
 namespace Cassette
 {
     public class MicrosoftJavaScriptMinifier : IAssetTransformer
     {
-        public Func<System.IO.Stream> Transform(Func<System.IO.Stream> openSourceStream, IAsset asset)
+        public MicrosoftJavaScriptMinifier() : this(new CodeSettings())
         {
-            throw new NotImplementedException();
+        }
+
+        public MicrosoftJavaScriptMinifier(CodeSettings codeSettings)
+        {
+            this.codeSettings = codeSettings;
+        }
+
+        readonly CodeSettings codeSettings;
+
+        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        {
+            return delegate
+            {
+                using (var reader = new StreamReader(openSourceStream()))
+                {
+                    var output = new Minifier().MinifyJavaScript(reader.ReadToEnd(), codeSettings);
+                    return output.AsStream();
+                }
+            };
         }
     }
 }

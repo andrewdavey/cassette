@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
