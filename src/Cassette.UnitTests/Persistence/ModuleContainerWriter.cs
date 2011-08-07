@@ -11,7 +11,7 @@ namespace Cassette.Persistence
         public ModuleContainerWriter_Tests()
         {
             fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(fs => fs.OpenWrite(It.IsAny<string>())).Returns(Stream.Null);
+            fileSystem.Setup(fs => fs.OpenFile(It.IsAny<string>(), FileMode.OpenOrCreate, FileAccess.Write)).Returns(Stream.Null);
         }
 
         readonly Mock<IFileSystem> fileSystem;
@@ -33,8 +33,8 @@ namespace Cassette.Persistence
             var writer = new ModuleContainerWriter<ScriptModule>(fileSystem.Object);
             writer.Save(container);
 
-            fileSystem.Verify(fs => fs.OpenWrite("container.xml"));
-            fileSystem.Verify(fs => fs.OpenWrite(".module"));
+            fileSystem.Verify(fs => fs.OpenFile("container.xml", FileMode.OpenOrCreate, FileAccess.Write));
+            fileSystem.Verify(fs => fs.OpenFile(".module", FileMode.OpenOrCreate, FileAccess.Write));
         }
 
         [Fact]

@@ -12,14 +12,9 @@ namespace Cassette
             this.fileStreams = fileStreams;
         }
 
-        public Stream OpenRead(string filename)
+        public Stream OpenFile(string filename, FileMode mode, FileAccess access)
         {
             return fileStreams[filename];
-        }
-
-        public Stream OpenWrite(string filename)
-        {
-            throw new System.NotImplementedException();
         }
 
         public bool FileExists(string filename)

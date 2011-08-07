@@ -36,7 +36,7 @@ namespace Cassette.Persistence
                     moduleContainer.Select(createManifestVisitor.CreateManifest)
                 )
             );
-            using (var fileStream = fileSystem.OpenWrite("container.xml"))
+            using (var fileStream = fileSystem.OpenFile("container.xml", FileMode.OpenOrCreate, FileAccess.Write))
             {
                 xml.Save(fileStream);
             }
@@ -49,7 +49,7 @@ namespace Cassette.Persistence
                 throw new InvalidOperationException("Cannot save a module when assets have not been concatenated into a single asset.");
             }
             var filename = module.Directory + ".module";
-            using (var fileStream = fileSystem.OpenWrite(filename))
+            using (var fileStream = fileSystem.OpenFile(filename, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 using (var dataStream = module.Assets[0].OpenStream())
                 {

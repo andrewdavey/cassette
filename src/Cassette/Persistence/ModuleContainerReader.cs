@@ -40,7 +40,7 @@ namespace Cassette.Persistence
 
         XElement LoadContainerElement()
         {
-            using (var containerFile = fileSystem.OpenRead("container.xml"))
+            using (var containerFile = fileSystem.OpenFile("container.xml", FileMode.Open, FileAccess.Read))
             {
                 return XDocument.Load(containerFile).Root;
             }
@@ -68,7 +68,7 @@ namespace Cassette.Persistence
         CachedAsset CreateSingleAssetForModule(XElement moduleElement, T module, string moduleFilename)
         {
             var assetInfos = CreateAssetInfos(moduleElement, module.Directory);
-            var asset = new CachedAsset(assetInfos, () => fileSystem.OpenRead(moduleFilename));
+            var asset = new CachedAsset(assetInfos, () => fileSystem.OpenFile(moduleFilename, FileMode.Open, FileAccess.Read));
             AddReferencesToAsset(asset, moduleElement);
             return asset;
         }

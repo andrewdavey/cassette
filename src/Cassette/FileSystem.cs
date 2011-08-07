@@ -11,14 +11,9 @@ namespace Cassette
 
         readonly string rootDirectory;
 
-        public Stream OpenRead(string filename)
+        public Stream OpenFile(string filename, FileMode mode, FileAccess access)
         {
-            return File.OpenRead(GetFullPath(filename));
-        }
-
-        public Stream OpenWrite(string filename)
-        {
-            return File.Open(GetFullPath(filename), FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            return File.Open(GetFullPath(filename), mode, access);
         }
 
         public bool FileExists(string filename)
