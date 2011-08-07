@@ -6,10 +6,10 @@ using System.Xml.Linq;
 
 namespace Cassette.Persistence
 {
-    public class ModuleContainerStore<T> : IModuleContainerStore<T>
+    public class ModuleContainerReader<T> : IModuleContainerReader<T>
         where T : Module
     {
-        public ModuleContainerStore(IFileSystem fileSystem, IModuleFactory<T> moduleFactory)
+        public ModuleContainerReader(IFileSystem fileSystem, IModuleFactory<T> moduleFactory)
         {
             this.fileSystem = fileSystem;
             this.moduleFactory = moduleFactory;
@@ -20,36 +20,30 @@ namespace Cassette.Persistence
 
         public IModuleContainer<T> Load()
         {
-            var containerXmlFilename = GetContainerXmlFilename();
-            if (fileSystem.FileExists(containerXmlFilename) == false)
+            if (fileSystem.FileExists("container.xml") == false)
             {
                 return EmptyContainer();
             }
 
-            var containerElement = LoadContainerElement(containerXmlFilename);
+            var containerElement = LoadContainerElement();
             var lastWriteTime = new DateTime(long.Parse(containerElement.Attribute("lastWriteTime").Value));
             var moduleElements = containerElement.Elements("module");
             var modules = CreateModules(moduleElements);
 
-            return new ModuleContainer<T>(modules, lastWriteTime, "");
+            return new ModuleContainer<T>(modules, lastWriteTime);
         }
 
         IModuleContainer<T> EmptyContainer()
         {
-            return new ModuleContainer<T>(Enumerable.Empty<T>(), DateTime.MinValue, "");
+            return new ModuleContainer<T>(Enumerable.Empty<T>(), DateTime.MinValue);
         }
 
-        XElement LoadContainerElement(string filename)
+        XElement LoadContainerElement()
         {
-            using (var containerFile = fileSystem.OpenRead(filename))
+            using (var containerFile = fileSystem.OpenRead("container.xml"))
             {
                 return XDocument.Load(containerFile).Root;
             }
-        }
-
-        string GetContainerXmlFilename()
-        {
-            return "container.xml";
         }
 
         T[] CreateModules(IEnumerable<XElement> moduleElements)
@@ -101,47 +95,6 @@ namespace Cassette.Persistence
             var relativeFilename = assetElement.Attribute("filename").Value;
             var absoluteFilename = Path.Combine(directory, relativeFilename);
             return new AssetInfo(absoluteFilename);
-        }
-
-        public void Save(IModuleContainer<T> moduleContainer)
-        {
-            SaveContainerXml(moduleContainer);
-            foreach (var module in moduleContainer)
-            {
-                SaveModule(module, moduleContainer);
-            }
-        }
-
-        void SaveContainerXml(IModuleContainer<T> moduleContainer)
-        {
-            var createManifestVisitor = new CreateManifestVisitor();
-            var xml = new XDocument(
-                new XElement("container",
-                    new XAttribute("lastWriteTime", moduleContainer.LastWriteTime.Ticks),
-                    moduleContainer.Select(createManifestVisitor.CreateManifest)
-                )
-            );
-            using (var fileStream = fileSystem.OpenWrite(GetContainerXmlFilename()))
-            {
-                xml.Save(fileStream);
-            }
-        }
-
-        void SaveModule(T module, IModuleContainer<T> moduleContainer)
-        {
-            if (module.Assets.Count > 1)
-            {
-                throw new InvalidOperationException("Cannot save a module when assets have not been concatenated into a single asset.");
-            }
-            var filename = module.Directory + ".module";
-            using (var fileStream = fileSystem.OpenWrite(filename))
-            {
-                using (var dataStream = module.Assets[0].OpenStream())
-                {
-                    dataStream.CopyTo(fileStream);
-                }
-                fileStream.Flush();
-            }
         }
     }
 }

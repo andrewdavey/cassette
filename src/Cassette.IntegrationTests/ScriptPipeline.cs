@@ -37,7 +37,11 @@ namespace Cassette.IntegrationTests
 
             var fileSystem = new FileSystem(cacheDirectory);
 
-            var initializer = new Initializer<ScriptModule>(moduleFactory, new ModuleContainerStore<ScriptModule>(fileSystem, moduleFactory));
+            var initializer = new Initializer<ScriptModule>(
+                moduleFactory, 
+                new ModuleContainerReader<ScriptModule>(fileSystem, moduleFactory), 
+                new ModuleContainerWriter<ScriptModule>(fileSystem)
+            );
             var container = initializer.Initialize(source, pipeline);
 
             var result = container.ToArray();

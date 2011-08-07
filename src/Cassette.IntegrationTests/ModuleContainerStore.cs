@@ -40,12 +40,13 @@ namespace Cassette.IntegrationTests
             try
             {
                 var fileSystem = new FileSystem(cacheDirectory);
-                var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
+                var writer = new ModuleContainerWriter<ScriptModule>(fileSystem);
+                var reader = new ModuleContainerReader<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
 
                 var container = StubModuleContainerWithRootedModule();
                 ConcatentateAssets(container);
-                store.Save(container);
-                var loadedContainer = store.Load();
+                writer.Save(container);
+                var loadedContainer = reader.Load();
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);
@@ -84,12 +85,13 @@ namespace Cassette.IntegrationTests
             try
             {
                 var fileSystem = new FileSystem(cacheDirectory);
-                var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
-
+                var writer = new ModuleContainerWriter<ScriptModule>(fileSystem);
+                var reader = new ModuleContainerReader<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
+                
                 var container = StubModuleContainerWithSubDirectoryModule();
                 ConcatentateAssets(container);
-                store.Save(container);
-                var loadedContainer = store.Load();
+                writer.Save(container);
+                var loadedContainer = reader.Load();
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);

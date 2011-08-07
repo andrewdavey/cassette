@@ -66,7 +66,7 @@
     <Compile Include="IAssetVisitor.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="IModuleContainer.cs" />
-    <Compile Include="Persistence\IModuleContainerStore.cs" />
+    <Compile Include="Persistence\IModuleContainerReader.cs" />
     <Compile Include="IModuleFactory.cs" />
     <Compile Include="ModuleProcessing\IModuleProcessor.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
@@ -80,12 +80,14 @@
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="Persistence\ModuleContainerStore.cs" />
+    <Compile Include="Persistence\IModuleContainerWriter.cs" />
+    <Compile Include="Persistence\ModuleContainerReader.cs" />
     <Compile Include="ModuleProcessing\ModuleProcessorOfAssetsMatchingFileExtension.cs" />
     <Compile Include="ModuleSource.cs" />
     <Compile Include="ModuleProcessing\ParseCoffeeScriptReferences.cs" />
     <Compile Include="ModuleProcessing\ParseJavaScriptReferences.cs" />
     <Compile Include="ModuleProcessing\Pipeline.cs" />
+    <Compile Include="Persistence\ModuleContainerWriter.cs" />
     <Compile Include="ScriptModule.cs" />
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />

@@ -19,7 +19,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(assetA.Object);
             module.Assets.Add(assetB.Object);
 
-            var sorter = new SortAssetsByDependency<Module>();
+            var sorter = new SortAssetsByDependency();
             sorter.Process(module);
 
             module.Assets[0].ShouldBeSameAs(assetB.Object);
@@ -39,7 +39,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(assetA.Object);
             module.Assets.Add(assetB.Object);
 
-            var sorter = new SortAssetsByDependency<Module>();
+            var sorter = new SortAssetsByDependency();
             sorter.Process(module);
 
             module.Assets[0].ShouldBeSameAs(assetB.Object);
@@ -61,7 +61,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(assetC.Object);
             module.Assets.Add(assetA.Object);
 
-            var sorter = new SortAssetsByDependency<Module>();
+            var sorter = new SortAssetsByDependency();
             sorter.Process(module);
 
             module.Assets[0].ShouldBeSameAs(assetA.Object);

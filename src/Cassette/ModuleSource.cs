@@ -104,7 +104,7 @@ namespace Cassette
             var modules = moduleDirectories.Select(
                 moduleDirectory => CreateModule(moduleFactory, moduleDirectory)
             );
-            return new ModuleContainer<T>(modules.ToArray(), lastWriteTime, rootDirectory);
+            return new ModuleContainer<T>(modules.ToArray(), lastWriteTime);
         }
 
         T CreateModule(IModuleFactory<T> moduleFactory, string moduleDirectory)

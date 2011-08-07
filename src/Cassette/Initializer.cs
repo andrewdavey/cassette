@@ -6,19 +6,21 @@ namespace Cassette
     public class Initializer<T>
         where T : Module
     {
-        public Initializer(IModuleFactory<T> moduleFactory, IModuleContainerStore<T> moduleContainerStore)
+        public Initializer(IModuleFactory<T> moduleFactory, IModuleContainerReader<T> moduleContainerReader, IModuleContainerWriter<T> moduleContainerWriter)
         {
             this.moduleFactory = moduleFactory;
-            this.moduleContainerStore = moduleContainerStore;
+            this.moduleContainerReader = moduleContainerReader;
+            this.moduleContainerWriter = moduleContainerWriter;
         }
 
         readonly IModuleFactory<T> moduleFactory;
-        readonly IModuleContainerStore<T> moduleContainerStore;
+        readonly IModuleContainerReader<T> moduleContainerReader;
+        readonly IModuleContainerWriter<T> moduleContainerWriter;
 
         public IModuleContainer<T> Initialize(IModuleContainerFactory<T> moduleSource, IModuleProcessor<T> moduleProcessorPipeline)
         {
             var currentContainer = moduleSource.CreateModuleContainer(moduleFactory);
-            var cachedModuleContainer = moduleContainerStore.Load();
+            var cachedModuleContainer = moduleContainerReader.Load();
             if (cachedModuleContainer.LastWriteTime == currentContainer.LastWriteTime)
             {
                 return cachedModuleContainer;
@@ -30,7 +32,7 @@ namespace Cassette
                     moduleProcessorPipeline.Process(module);
                 }
                 currentContainer.ValidateAndSortModules();
-                moduleContainerStore.Save(currentContainer);
+                moduleContainerWriter.Save(currentContainer);
                 return currentContainer;
             }
         }

@@ -23,7 +23,7 @@ namespace Cassette
             SetupAsset("b.js", asset2);
             module2.Assets.Add(asset2.Object);
 
-            var container = new ModuleContainer<Module>(new[] { module1, module2 }, DateTime.UtcNow, "c:\\test");
+            var container = new ModuleContainer<Module>(new[] { module1, module2 }, DateTime.UtcNow);
             container.ValidateAndSortModules();
 
             var modules = container.ToArray();
@@ -50,7 +50,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow, "c:\\test").ValidateAndSortModules();
+                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow).ValidateAndSortModules();
             });
             exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\". Cannot find \"fail\\fail.js\".");
         }
@@ -67,7 +67,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow, "c:\\test").ValidateAndSortModules();
+                new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow).ValidateAndSortModules();
             });
             exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\", line 42. Cannot find \"fail\\fail.js\".");
         }

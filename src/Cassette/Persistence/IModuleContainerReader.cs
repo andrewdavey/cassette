@@ -1,9 +1,8 @@
 ﻿namespace Cassette.Persistence
 {
-    public interface IModuleContainerStore<T>
+    public interface IModuleContainerReader<T>
         where T : Module
     {
-        void Save(IModuleContainer<T> moduleContainer);
         IModuleContainer<T> Load();
     }
 }

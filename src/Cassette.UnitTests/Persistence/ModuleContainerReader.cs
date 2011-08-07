@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Cassette.Persistence
 {
-    public class ModuleContainerStore_Tests
+    public class ModuleContainerReader_Tests
     {
         [Fact]
         public void ReadingXElementCreatesModuleContainerWithModulesAndAssets()
@@ -47,9 +47,9 @@ namespace Cassette.Persistence
             var moduleFactory = new Mock<IModuleFactory<ScriptModule>>();
             moduleFactory.Setup(f => f.CreateModule("module-a")).Returns(new ScriptModule("module-a", _ => null));
             moduleFactory.Setup(f => f.CreateModule("module-b")).Returns(new ScriptModule("module-b", _ => null));
-            var store = new ModuleContainerStore<ScriptModule>(fileSystem, moduleFactory.Object);
-            
-            var container = store.Load();
+            var reader = new ModuleContainerReader<ScriptModule>(fileSystem, moduleFactory.Object);
+
+            var container = reader.Load();
 
             var moduleA = container.First(m => m.Directory.EndsWith("module-a"));
             moduleA.Assets.Count.ShouldEqual(1);
@@ -69,8 +69,8 @@ namespace Cassette.Persistence
         [Fact]
         public void GivenNoFilesExist_LoadReturnsEmptyModuleContainer()
         {
-            var store = new ModuleContainerStore<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
-            var container = store.Load();
+            var reader = new ModuleContainerReader<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
+            var container = reader.Load();
 
             container.ShouldBeEmpty();
         }
@@ -78,33 +78,11 @@ namespace Cassette.Persistence
         [Fact]
         public void GivenNoFilesExist_LoadReturnsModuleContainerWithMinLastWriteDate()
         {
-            var store = new ModuleContainerStore<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
-            var container = store.Load();
+            var reader = new ModuleContainerReader<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
+            var container = reader.Load();
 
             container.LastWriteTime.ShouldEqual(DateTime.MinValue);
         }
 
-        [Fact]
-        public void SaveWritesContainerXmlFile()
-        {
-            var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(fs => fs.OpenWrite(It.IsAny<string>())).Returns(Stream.Null);
-
-            var now = DateTime.UtcNow;
-            var modules = new[] {
-                new ScriptModule("", _ => null)
-            };
-            var asset1 = new Mock<IAsset>();
-            asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            asset1.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            modules[0].Assets.Add(asset1.Object);
-            var container = new ModuleContainer<ScriptModule>(modules, now, "c:\\test");
-
-            var store = new ModuleContainerStore<ScriptModule>(fileSystem.Object, Mock.Of<IModuleFactory<ScriptModule>>());
-            store.Save(container);
-
-            fileSystem.Verify(fs => fs.OpenWrite("container.xml"));
-            fileSystem.Verify(fs => fs.OpenWrite(".module"));
-        }
     }
 }

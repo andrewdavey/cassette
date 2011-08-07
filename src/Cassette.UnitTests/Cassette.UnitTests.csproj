@@ -66,7 +66,8 @@
     <Compile Include="Initializer.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="Persistence\ModuleContainerStore.cs" />
+    <Compile Include="Persistence\ModuleContainerReader.cs" />
+    <Compile Include="Persistence\ModuleContainerWriter.cs" />
     <Compile Include="ModuleProcessing\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
