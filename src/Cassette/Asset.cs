@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using Cassette.Utilities;
-using System.Xml.Linq;
 
 namespace Cassette
 {

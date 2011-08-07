@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Cassette
+namespace Cassette.Persistence
 {
     public class ModuleContainerStore<T> : IModuleContainerStore<T>
         where T : Module

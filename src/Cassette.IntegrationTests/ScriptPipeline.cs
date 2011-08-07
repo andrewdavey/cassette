@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Should;
 using Xunit;
+using Cassette.Persistence;
 
 namespace Cassette.IntegrationTests
 {

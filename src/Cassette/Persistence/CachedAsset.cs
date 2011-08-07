@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Cassette
+namespace Cassette.Persistence
 {
     public class CachedAsset : IAsset
     {

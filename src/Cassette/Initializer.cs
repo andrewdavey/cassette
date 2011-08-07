@@ -1,4 +1,6 @@
-﻿namespace Cassette
+﻿using Cassette.Persistence;
+
+namespace Cassette
 {
     public class Initializer<T>
         where T : Module

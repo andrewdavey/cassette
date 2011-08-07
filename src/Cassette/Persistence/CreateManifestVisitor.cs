@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace Cassette
+namespace Cassette.Persistence
 {
     public class CreateManifestVisitor : IAssetVisitor
     {

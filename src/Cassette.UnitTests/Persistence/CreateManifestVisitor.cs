@@ -3,7 +3,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Persistence
 {
     public class CreateManifestVisitor_Tests
     {

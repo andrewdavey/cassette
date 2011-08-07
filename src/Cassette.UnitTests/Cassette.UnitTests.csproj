@@ -62,11 +62,11 @@
     <Compile Include="CompileCoffeeScriptAsset.cs" />
     <Compile Include="ConcatenateAssets.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <Compile Include="CreateManifestVisitor.cs" />
+    <Compile Include="Persistence\CreateManifestVisitor.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="ModuleContainerStore.cs" />
+    <Compile Include="Persistence\ModuleContainerStore.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cassette.Persistence;
 using Moq;
 using Should;
 using Xunit;

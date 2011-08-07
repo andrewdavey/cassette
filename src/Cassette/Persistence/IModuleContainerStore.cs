@@ -1,4 +1,4 @@
-﻿namespace Cassette
+﻿namespace Cassette.Persistence
 {
     public interface IModuleContainerStore<T>
         where T : Module

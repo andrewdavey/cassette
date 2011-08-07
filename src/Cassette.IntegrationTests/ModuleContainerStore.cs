@@ -5,6 +5,7 @@ using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Persistence;
 
 namespace Cassette.IntegrationTests
 {
