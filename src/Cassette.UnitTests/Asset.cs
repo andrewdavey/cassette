@@ -181,7 +181,6 @@ namespace Cassette
             var element = asset.CreateManifest().First();
             element.Name.LocalName.ShouldEqual("asset");
             element.Attribute("filename").Value.ShouldEqual(filename);
-            element.Attribute("lastwritetime").Value.ShouldEqual(File.GetLastWriteTimeUtc(filename).Ticks.ToString());
         }
 
         void IDisposable.Dispose()

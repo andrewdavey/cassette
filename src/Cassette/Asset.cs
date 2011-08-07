@@ -94,8 +94,7 @@ namespace Cassette
         public override IEnumerable<XElement> CreateManifest()
         {
             yield return new XElement("asset",
-                new XAttribute("filename", filename),
-                new XAttribute("lastwritetime", File.GetLastWriteTimeUtc(filename).Ticks)
+                new XAttribute("filename", filename)
             );
         }
     }

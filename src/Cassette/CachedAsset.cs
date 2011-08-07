@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Linq;
 
 namespace Cassette
 {
@@ -10,7 +9,7 @@ namespace Cassette
     {
         public CachedAsset(IEnumerable<IAsset> assetInfos, Func<Stream> openStream)
         {
-            this.assetInfos = assetInfos;
+            this.assetInfos = assetInfos.ToArray();
             this.openStream = openStream;
         }
 

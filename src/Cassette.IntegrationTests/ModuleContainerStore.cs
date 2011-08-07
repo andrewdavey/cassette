@@ -8,9 +8,24 @@ using Xunit;
 
 namespace Cassette.IntegrationTests
 {
-    public class ModuleContainerStore_Tests
+    public class ModuleContainerStore_Tests : IDisposable
     {
-        readonly DateTime now = DateTime.UtcNow;
+        public ModuleContainerStore_Tests()
+        {
+            // Create a basic set of directories and files.
+            root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(Path.Combine(root, "scripts"));
+                Directory.CreateDirectory(Path.Combine(root, "scripts", "module-a"));
+                    File.WriteAllText(Path.Combine(root, "scripts", "module-a", "test-1.js"), "test-1");
+                    File.WriteAllText(Path.Combine(root, "scripts", "module-a", "test-2.js"), "test-2");
+                Directory.CreateDirectory(Path.Combine(root, "scripts", "module-b"));
+                    File.WriteAllText(Path.Combine(root, "scripts", "module-b", "test-3.js"), "test-3");
+
+            now = File.GetLastWriteTimeUtc(Path.Combine(root, "scripts", "module-b", "test-3.js"));
+        }
+
+        readonly DateTime now;
+        readonly string root;
 
         [Fact]
         public void CanRoundTripInStoreModuleContainerWithRootedModule()
@@ -28,7 +43,8 @@ namespace Cassette.IntegrationTests
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);
-                loadedContainer.First().Assets[0].OpenStream().ReadAsString().ShouldEqual("asset-content");
+                loadedContainer.First().ContainsPath("scripts\\module-b\\test-3.js").ShouldBeTrue();
+                loadedContainer.First().Assets[0].OpenStream().ReadAsString().ShouldEqual("test-3");
             }
             finally
             {
@@ -36,16 +52,11 @@ namespace Cassette.IntegrationTests
             }
         }
 
-        ModuleContainer<ScriptModule> StubModuleContainerWithRootedModule()
+        IModuleContainer<ScriptModule> StubModuleContainerWithRootedModule()
         {
-            var modules = new[] {
-                new ScriptModule("c:\\test")
-            };
-            var asset1 = new Mock<IAsset>();
-            asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            asset1.Setup(a => a.OpenStream()).Returns("asset-content".AsStream());
-            modules[0].Assets.Add(asset1.Object);
-            return new ModuleContainer<ScriptModule>(modules, now, "c:\\test");
+            return new ModuleSource<ScriptModule>(root, "*.js")
+                .AsSingleModule()
+                .CreateModules(new ScriptModuleFactory());
         }
 
         [Fact]
@@ -72,16 +83,16 @@ namespace Cassette.IntegrationTests
             }
         }
 
-        ModuleContainer<ScriptModule> StubModuleContainerWithSubDirectoryModule()
+        IModuleContainer<ScriptModule> StubModuleContainerWithSubDirectoryModule()
         {
-            var modules = new[] {
-                new ScriptModule("c:\\test\\module-a")
-            };
-            var asset1 = new Mock<IAsset>();
-            asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            asset1.Setup(a => a.OpenStream()).Returns("asset-content".AsStream());
-            modules[0].Assets.Add(asset1.Object);
-            return new ModuleContainer<ScriptModule>(modules, now, "c:\\test");
+            return new ModuleSource<ScriptModule>(root, "*.js")
+                .AddEachSubDirectory()
+                .CreateModules(new ScriptModuleFactory());
+        }
+
+        public void Dispose()
+        {
+            Directory.Delete(root, true);
         }
     }
 }

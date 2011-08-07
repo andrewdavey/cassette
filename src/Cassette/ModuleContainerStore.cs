@@ -111,6 +111,23 @@ namespace Cassette
             }
         }
 
+        void SaveContainerXml(IModuleContainer<T> moduleContainer)
+        {
+            var xml = new XDocument(
+                new XElement("container",
+                    new XAttribute("lastWriteTime", moduleContainer.LastWriteTime.Ticks),
+                    from module in moduleContainer
+                    select new XElement("module",
+                        new XAttribute("directory", GetRelativeDirectoryPath(module, moduleContainer)),
+                        module.Assets.SelectMany(a => a.CreateManifest()))
+                )
+            );
+            using (var fileStream = fileSystem.OpenWrite(GetContainerXmlFilename()))
+            {
+                xml.Save(fileStream);
+            }
+        }
+
         void SaveModule(T module, IModuleContainer<T> moduleContainer)
         {
             using (var fileStream = fileSystem.OpenWrite(GetRelativeDirectoryPath(module, moduleContainer)))
@@ -120,25 +137,6 @@ namespace Cassette
                     dataStream.CopyTo(fileStream);
                 }
                 fileStream.Flush();
-            }
-        }
-
-        void SaveContainerXml(IModuleContainer<T> moduleContainer)
-        {
-            var xml = new XDocument(
-                new XElement("container",
-                    new XAttribute("lastWriteTime", moduleContainer.LastWriteTime.Ticks),
-                    from module in moduleContainer
-                    select new XElement("module",
-                        new XAttribute("directory", GetRelativeDirectoryPath(module, moduleContainer)),
-                        from asset in module.Assets
-                        select new XElement("asset")
-                    )
-                )
-            );
-            using (var fileStream = fileSystem.OpenWrite(GetContainerXmlFilename()))
-            {
-                xml.Save(fileStream);
             }
         }
 
