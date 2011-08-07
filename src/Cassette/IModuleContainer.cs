@@ -8,6 +8,5 @@ namespace Cassette
     {
         void ValidateAndSortModules();
         DateTime LastWriteTime { get; }
-        string RootDirectory { get; }
     }
 }

@@ -7,7 +7,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class ModuleSource<T> : IModuleSource<T>
+    public class ModuleSource<T> : IModuleContainerFactory<T>
         where T : Module
     {
         public ModuleSource(string rootDirectory, params string[] assetFileExtensions)
@@ -99,7 +99,7 @@ namespace Cassette
             return this;
         }
 
-        public IModuleContainer<T> CreateModules(IModuleFactory<T> moduleFactory)
+        public IModuleContainer<T> CreateModuleContainer(IModuleFactory<T> moduleFactory)
         {
             var modules = moduleDirectories.Select(
                 moduleDirectory => CreateModule(moduleFactory, moduleDirectory)

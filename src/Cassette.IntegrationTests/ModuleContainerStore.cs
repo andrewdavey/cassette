@@ -73,7 +73,7 @@ namespace Cassette.IntegrationTests
         {
             return new ModuleSource<ScriptModule>(Path.Combine(root, "scripts"), "*.js")
                 .AsSingleModule()
-                .CreateModules(new ScriptModuleFactory(getFullPath));
+                .CreateModuleContainer(new ScriptModuleFactory(getFullPath));
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace Cassette.IntegrationTests
         {
             return new ModuleSource<ScriptModule>(Path.Combine(root, "scripts"), "*.js")
                 .AddEachSubDirectory()
-                .CreateModules(new ScriptModuleFactory(getFullPath));
+                .CreateModuleContainer(new ScriptModuleFactory(getFullPath));
         }
 
         public void Dispose()

@@ -35,11 +35,6 @@ namespace Cassette
             get { return lastWriteTime; }
         }
 
-        public string RootDirectory
-        {
-            get { return rootDirectory; }
-        }
-
         void ValidateAssetReferences()
         {
             var notFound = from module in modules

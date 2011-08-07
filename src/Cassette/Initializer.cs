@@ -15,9 +15,9 @@ namespace Cassette
         readonly IModuleFactory<T> moduleFactory;
         readonly IModuleContainerStore<T> moduleContainerStore;
 
-        public IModuleContainer<T> Initialize(IModuleSource<T> moduleSource, IModuleProcessor<T> moduleProcessorPipeline)
+        public IModuleContainer<T> Initialize(IModuleContainerFactory<T> moduleSource, IModuleProcessor<T> moduleProcessorPipeline)
         {
-            var currentContainer = moduleSource.CreateModules(moduleFactory);
+            var currentContainer = moduleSource.CreateModuleContainer(moduleFactory);
             var cachedModuleContainer = moduleContainerStore.Load();
             if (cachedModuleContainer.LastWriteTime == currentContainer.LastWriteTime)
             {

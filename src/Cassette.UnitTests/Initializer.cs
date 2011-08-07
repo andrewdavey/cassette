@@ -14,14 +14,14 @@ namespace Cassette
         {
             moduleFactory = new Mock<IModuleFactory<Module>>();
             store = new Mock<IModuleContainerStore<Module>>();
-            source = new Mock<IModuleSource<Module>>();
+            source = new Mock<IModuleContainerFactory<Module>>();
             pipeline = new Mock<IModuleProcessor<Module>>();
             cachedContainer = new Mock<IModuleContainer<Module>>();
             newContainer = new Mock<IModuleContainer<Module>>();
 
             store.Setup(s => s.Load())
                  .Returns(cachedContainer.Object);
-            source.Setup(s => s.CreateModules(moduleFactory.Object))
+            source.Setup(s => s.CreateModuleContainer(moduleFactory.Object))
                   .Returns(newContainer.Object);
             newContainer.Setup(c => c.GetEnumerator())
                         .Returns(() => new List<Module>(new[] { new Module("", _ => null) }).GetEnumerator());
@@ -32,7 +32,7 @@ namespace Cassette
         readonly Initializer<Module> initializer;
         readonly Mock<IModuleFactory<Module>> moduleFactory;
         readonly Mock<IModuleContainerStore<Module>> store;
-        readonly Mock<IModuleSource<Module>> source;
+        readonly Mock<IModuleContainerFactory<Module>> source;
         readonly Mock<IModuleProcessor<Module>> pipeline;
         readonly Mock<IModuleContainer<Module>> cachedContainer;
         readonly Mock<IModuleContainer<Module>> newContainer;
@@ -42,7 +42,7 @@ namespace Cassette
         {
             initializer.Initialize(source.Object, pipeline.Object);
 
-            source.Verify(s => s.CreateModules(moduleFactory.Object));
+            source.Verify(s => s.CreateModuleContainer(moduleFactory.Object));
         }
 
         [Fact]

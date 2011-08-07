@@ -70,7 +70,7 @@
     <Compile Include="IModuleFactory.cs" />
     <Compile Include="ModuleProcessing\IModuleProcessor.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <Compile Include="IModuleSource.cs" />
+    <Compile Include="IModuleContainerFactory.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />

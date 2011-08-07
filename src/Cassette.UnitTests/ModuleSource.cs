@@ -44,7 +44,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(new Module("module-a", getFullPath));
 
-            var module = source.CreateModules(moduleFactory.Object).First();
+            var module = source.CreateModuleContainer(moduleFactory.Object).First();
 
             module.Directory.ShouldEqual("module-a");
         }
@@ -59,7 +59,7 @@ namespace Cassette
                          .Returns(new Module("module-a", getFullPath))
                          .Verifiable();
 
-            var module = source.CreateModules(moduleFactory.Object).First();
+            var module = source.CreateModuleContainer(moduleFactory.Object).First();
 
             moduleFactory.Verify();
         }
@@ -74,7 +74,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(() => stubs.Dequeue());
 
-            var modules = source.CreateModules(moduleFactory.Object);
+            var modules = source.CreateModuleContainer(moduleFactory.Object);
 
             modules.Count().ShouldEqual(2);
         }
@@ -97,7 +97,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(() => stubs.Dequeue());
 
-            var modules = source.CreateModules(moduleFactory.Object);
+            var modules = source.CreateModuleContainer(moduleFactory.Object);
 
             modules.Count().ShouldEqual(2);
         }
@@ -121,7 +121,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(() => stubs.Dequeue());
 
-            var modules = source.CreateModules(moduleFactory.Object).ToArray();
+            var modules = source.CreateModuleContainer(moduleFactory.Object).ToArray();
 
             modules.Length.ShouldEqual(2);
             var names = modules.Select(m => m.Directory).OrderBy(d => d).ToArray();
@@ -137,7 +137,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(new Module("module-a", getFullPath));
 
-            var modules = source.CreateModules(moduleFactory.Object).ToArray();
+            var modules = source.CreateModuleContainer(moduleFactory.Object).ToArray();
             modules[0].Assets.Count.ShouldEqual(2);
         }
 
@@ -149,7 +149,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(new Module("module-b", getFullPath));
 
-            var modules = source.CreateModules(moduleFactory.Object).ToArray();
+            var modules = source.CreateModuleContainer(moduleFactory.Object).ToArray();
             modules[0].Assets.Count.ShouldEqual(1);
         }
 
@@ -161,7 +161,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(new Module("", getFullPath));
             
-            var modules = source.CreateModules(moduleFactory.Object).ToArray();
+            var modules = source.CreateModuleContainer(moduleFactory.Object).ToArray();
             modules.Length.ShouldEqual(1);
         }
 
@@ -203,7 +203,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(new Module("", getFullPath));
 
-            var module = source.CreateModules(moduleFactory.Object).First();
+            var module = source.CreateModuleContainer(moduleFactory.Object).First();
             module.Assets.Count.ShouldEqual(2);
         }
 
@@ -218,7 +218,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(new Module("", getFullPath));
 
-            var module = source.CreateModules(moduleFactory.Object).First();
+            var module = source.CreateModuleContainer(moduleFactory.Object).First();
 
             module.Assets.Count.ShouldEqual(1);
             using (var reader = new StreamReader(module.Assets[0].OpenStream()))
@@ -235,7 +235,7 @@ namespace Cassette
             moduleFactory.Setup(f => f.CreateModule(""))
                          .Returns(new Module("", getFullPath));
 
-            var container = source.CreateModules(moduleFactory.Object);
+            var container = source.CreateModuleContainer(moduleFactory.Object);
 
             var expected = File.GetLastWriteTimeUtc(Path.Combine(root, "module-b", "test-3.js"));
             container.LastWriteTime.ShouldEqual(expected);
