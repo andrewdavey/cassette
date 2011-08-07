@@ -21,7 +21,7 @@ namespace Cassette
             module.Assets.Add(asset1.Object);
             module.Assets.Add(asset2.Object);
 
-            var processor = new ConcatentateAssets();
+            var processor = new ConcatenateAssets();
             processor.Process(module);
 
             module.Assets.Count.ShouldEqual(1);
@@ -52,7 +52,7 @@ namespace Cassette
             module.Assets.Add(asset1.Object);
             module.Assets.Add(asset2.Object);
 
-            var processor = new ConcatentateAssets();
+            var processor = new ConcatenateAssets();
             processor.Process(module);
 
             module.Assets[0].References

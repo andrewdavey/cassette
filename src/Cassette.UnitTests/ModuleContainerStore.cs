@@ -104,7 +104,7 @@ namespace Cassette
             store.Save(container);
 
             fileSystem.Verify(fs => fs.OpenWrite("container.xml"));
-            fileSystem.Verify(fs => fs.OpenWrite("_.module"));
+            fileSystem.Verify(fs => fs.OpenWrite(".module"));
         }
     }
 }

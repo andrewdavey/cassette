@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using Cassette.Utilities;
-using System;
 
 namespace Cassette
 {
@@ -10,10 +11,15 @@ namespace Cassette
         public void Process(T module)
         {
             // In the absence of dependencies, sort by the filename to ensure consistent output.
-            var sortedByFilename = module.Assets.OrderBy(a => a.SourceFilename);
+            var sortedByFilename = module.Assets.OrderBy(
+                a => Path.Combine(module.Directory, a.SourceFilename)
+            );
 
             // Graph topological sort, based on references between assets.
-            var assetsByFilename = module.Assets.ToDictionary(a => a.SourceFilename, StringComparer.OrdinalIgnoreCase);
+            var assetsByFilename = module.Assets.ToDictionary(
+                a => Path.Combine(module.Directory, a.SourceFilename),
+                StringComparer.OrdinalIgnoreCase
+            );
             var graph = new Graph<IAsset>(
                 sortedByFilename,
                 asset => asset.References

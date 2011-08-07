@@ -63,7 +63,7 @@ namespace Cassette
         T CreateModule(XElement moduleElement)
         {
             var directory = moduleElement.Attribute("directory").Value;
-            var filename = ((directory.Length == 0) ? "_" : directory) + ".module";
+            var filename = directory + ".module";
             var module = moduleFactory.CreateModule(directory);
 
             var singleAsset = CreateSingleAssetForModule(moduleElement, module, filename);
@@ -129,7 +129,11 @@ namespace Cassette
 
         void SaveModule(T module, IModuleContainer<T> moduleContainer)
         {
-            var filename = GetRelativeDirectoryPath(module, moduleContainer) + ".module";
+            if (module.Assets.Count > 1)
+            {
+                throw new InvalidOperationException("Cannot save a module when assets have not been concatenated into a single asset.");
+            }
+            var filename = module.Directory + ".module";
             using (var fileStream = fileSystem.OpenWrite(filename))
             {
                 using (var dataStream = module.Assets[0].OpenStream())
@@ -138,15 +142,6 @@ namespace Cassette
                 }
                 fileStream.Flush();
             }
-        }
-
-        string GetRelativeDirectoryPath(T module, IModuleContainer<T> moduleContainer)
-        {
-            if (module.Directory.Length > moduleContainer.RootDirectory.Length)
-            {
-                return module.Directory.Substring(moduleContainer.RootDirectory.Length + 1);
-            }
-            return "_";
         }
     }
 }

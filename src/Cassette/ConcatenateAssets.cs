@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public class ConcatentateAssets : IModuleProcessor<Module>
+    public class ConcatenateAssets : IModuleProcessor<Module>
     {
         public void Process(Module module)
         {

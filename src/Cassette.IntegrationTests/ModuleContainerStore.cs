@@ -23,7 +23,7 @@ namespace Cassette.IntegrationTests
 
             now = File.GetLastWriteTimeUtc(Path.Combine(root, "scripts", "module-b", "test-3.js"));
 
-            getFullPath = (path) => Path.Combine(root, path);
+            getFullPath = (path) => Path.Combine(root, "scripts", path);
         }
 
         readonly DateTime now;
@@ -41,13 +41,17 @@ namespace Cassette.IntegrationTests
                 var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
 
                 var container = StubModuleContainerWithRootedModule();
+                ConcatentateAssets(container);
                 store.Save(container);
                 var loadedContainer = store.Load();
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);
-                loadedContainer.First().ContainsPath("scripts\\module-b\\test-3.js").ShouldBeTrue();
-                loadedContainer.First().Assets[0].OpenStream().ReadAsString().ShouldEqual("test-3");
+                loadedContainer.First().ContainsPath("module-a\\test-1.js").ShouldBeTrue();
+                loadedContainer.First().ContainsPath("module-a\\test-2.js").ShouldBeTrue();
+                loadedContainer.First().ContainsPath("module-b\\test-3.js").ShouldBeTrue();
+                loadedContainer.First().Assets[0].OpenStream().ReadAsString()
+                    .ShouldEqual(string.Join(Environment.NewLine, "test-1", "test-2", "test-3"));
             }
             finally
             {
@@ -55,9 +59,17 @@ namespace Cassette.IntegrationTests
             }
         }
 
+        void ConcatentateAssets(IModuleContainer<ScriptModule> container)
+        {
+            foreach (var module in container)
+            {
+                new ConcatenateAssets().Process(module);
+            }
+        }
+
         IModuleContainer<ScriptModule> StubModuleContainerWithRootedModule()
         {
-            return new ModuleSource<ScriptModule>(root, "*.js")
+            return new ModuleSource<ScriptModule>(Path.Combine(root, "scripts"), "*.js")
                 .AsSingleModule()
                 .CreateModules(new ScriptModuleFactory(getFullPath));
         }
@@ -73,12 +85,14 @@ namespace Cassette.IntegrationTests
                 var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
 
                 var container = StubModuleContainerWithSubDirectoryModule();
+                ConcatentateAssets(container);
                 store.Save(container);
                 var loadedContainer = store.Load();
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);
-                loadedContainer.First().Assets[0].OpenStream().ReadAsString().ShouldEqual("asset-content");
+                loadedContainer.First().Assets[0].OpenStream().ReadAsString()
+                    .ShouldEqual("test-1" + Environment.NewLine + "test-2");
             }
             finally
             {
@@ -88,7 +102,7 @@ namespace Cassette.IntegrationTests
 
         IModuleContainer<ScriptModule> StubModuleContainerWithSubDirectoryModule()
         {
-            return new ModuleSource<ScriptModule>(root, "*.js")
+            return new ModuleSource<ScriptModule>(Path.Combine(root, "scripts"), "*.js")
                 .AddEachSubDirectory()
                 .CreateModules(new ScriptModuleFactory(getFullPath));
         }

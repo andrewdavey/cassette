@@ -27,7 +27,7 @@ namespace Cassette.IntegrationTests
             var pipeline = new Pipeline<ScriptModule>(
                 new ParseJavaScriptReferences(),
                 new SortAssetsByDependency<ScriptModule>(),
-                new ConcatentateAssets(),
+                new ConcatenateAssets(),
                 new MinifyAssets(new MicrosoftJavaScriptMinifier())
             );
 
