@@ -2,7 +2,7 @@
 using System.IO;
 using Cassette.CoffeeScript;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class CompileCoffeeScriptAsset : IAssetTransformer
     {

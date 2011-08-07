@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class ParseCoffeeScriptReferences : LineBasedAssetReferenceParser<Module>
     {

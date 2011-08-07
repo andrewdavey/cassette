@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class SortAssetsByDependency<T> : IModuleProcessor<T>
         where T : Module

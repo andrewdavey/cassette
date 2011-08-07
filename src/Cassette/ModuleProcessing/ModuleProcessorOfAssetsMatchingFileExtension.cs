@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public abstract class ModuleProcessorOfAssetsMatchingFileExtension<T> : IModuleProcessor<T>
         where T : Module

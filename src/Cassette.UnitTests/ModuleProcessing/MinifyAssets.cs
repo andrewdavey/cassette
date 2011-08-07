@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class MinifyAssets_Tests
     {

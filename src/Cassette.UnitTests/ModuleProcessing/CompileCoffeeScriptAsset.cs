@@ -4,7 +4,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class CompileCoffeeScriptAsset_Tests
     {

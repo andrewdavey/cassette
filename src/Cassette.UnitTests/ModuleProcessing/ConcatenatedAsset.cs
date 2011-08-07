@@ -5,7 +5,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class GivenConcatenatedAsset_WithTwoChildren
     {

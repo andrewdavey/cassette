@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Linq;
 
 namespace Cassette
 {
     /// <summary>
-    /// Base class for Asset and InMemoryAsset.
+    /// Base class for <see cref="Asset"/> and <see cref="ConcatenatedAsset"/>.
     /// </summary>
     public abstract class AssetBase : IAsset
     {
@@ -39,6 +38,5 @@ namespace Cassette
         public abstract IEnumerable<AssetReference> References { get; }
 
         public abstract void AddReference(string path, int lineNumber);
-
     }
 }

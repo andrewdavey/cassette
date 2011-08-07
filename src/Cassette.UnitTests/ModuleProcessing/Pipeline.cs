@@ -3,7 +3,7 @@ using Should;
 using Xunit;
 using System;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class Pipeline_WithTwoProcessors
     {

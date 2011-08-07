@@ -2,7 +2,7 @@
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class SortAssetsByDependency_Tests
     {

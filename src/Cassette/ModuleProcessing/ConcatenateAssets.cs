@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class ConcatenateAssets : IModuleProcessor<Module>
     {

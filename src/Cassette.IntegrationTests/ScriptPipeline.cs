@@ -4,6 +4,7 @@ using System.Linq;
 using Should;
 using Xunit;
 using Cassette.Persistence;
+using Cassette.ModuleProcessing;
 
 namespace Cassette.IntegrationTests
 {

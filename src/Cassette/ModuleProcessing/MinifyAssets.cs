@@ -1,4 +1,4 @@
-﻿namespace Cassette
+﻿namespace Cassette.ModuleProcessing
 {
     public class MinifyAssets : IModuleProcessor<Module>
     {

@@ -1,6 +1,6 @@
 ﻿using Cassette.CoffeeScript;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class CompileCoffeeScript : ModuleProcessorOfAssetsMatchingFileExtension<Module>
     {

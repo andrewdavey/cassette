@@ -3,11 +3,11 @@ using System.IO;
 
 namespace Cassette
 {
-    public class AssetFinder : IAssetVisitor
+    public class ModuleContainsPathPredicate : IAssetVisitor
     {
-        public bool Contains(string pathRelativeToModuleSource, Module module)
+        public bool ModuleContainsPath(string pathRelativeToModuleSource, Module module)
         {
-            this.pathToFind = pathRelativeToModuleSource.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            pathToFind = pathRelativeToModuleSource.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             module.Accept(this);
             return isFound;
         }

@@ -50,15 +50,15 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
-    <Compile Include="AssetFinder.cs" />
+    <Compile Include="ModuleContainsPathPredicate.cs" />
     <Compile Include="Persistence\AssetInfo.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="Persistence\CachedAsset.cs" />
-    <Compile Include="CompileCoffeeScript.cs" />
-    <Compile Include="CompileCoffeeScriptAsset.cs" />
-    <Compile Include="ConcatenateAssets.cs" />
+    <Compile Include="ModuleProcessing\CompileCoffeeScript.cs" />
+    <Compile Include="ModuleProcessing\CompileCoffeeScriptAsset.cs" />
+    <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="Persistence\CreateManifestVisitor.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="IAsset.cs" />
@@ -68,27 +68,27 @@
     <Compile Include="IModuleContainer.cs" />
     <Compile Include="Persistence\IModuleContainerStore.cs" />
     <Compile Include="IModuleFactory.cs" />
-    <Compile Include="IModuleProcessor.cs" />
+    <Compile Include="ModuleProcessing\IModuleProcessor.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="IModuleSource.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />
-    <Compile Include="LineBasedAssetReferenceParser.cs" />
-    <Compile Include="MicrosoftJavaScriptMinifier.cs" />
-    <Compile Include="MinifyAssets.cs" />
+    <Compile Include="ModuleProcessing\LineBasedAssetReferenceParser.cs" />
+    <Compile Include="ModuleProcessing\MicrosoftJavaScriptMinifier.cs" />
+    <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="Persistence\ModuleContainerStore.cs" />
-    <Compile Include="ModuleProcessorOfAssetsMatchingFileExtension.cs" />
+    <Compile Include="ModuleProcessing\ModuleProcessorOfAssetsMatchingFileExtension.cs" />
     <Compile Include="ModuleSource.cs" />
-    <Compile Include="ParseCoffeeScriptReferences.cs" />
-    <Compile Include="ParseJavaScriptReferences.cs" />
-    <Compile Include="Pipeline.cs" />
+    <Compile Include="ModuleProcessing\ParseCoffeeScriptReferences.cs" />
+    <Compile Include="ModuleProcessing\ParseJavaScriptReferences.cs" />
+    <Compile Include="ModuleProcessing\Pipeline.cs" />
     <Compile Include="ScriptModule.cs" />
     <Compile Include="ScriptModuleFactory.cs" />
-    <Compile Include="SortAssetsByDependency.cs" />
+    <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
@@ -122,6 +122,7 @@
   <ItemGroup>
     <None Include="Resources\less.js" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

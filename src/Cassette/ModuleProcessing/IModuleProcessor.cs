@@ -1,4 +1,4 @@
-﻿namespace Cassette
+﻿namespace Cassette.ModuleProcessing
 {
     public interface IModuleProcessor<in T>
         where T : Module

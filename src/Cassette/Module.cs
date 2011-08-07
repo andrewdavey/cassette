@@ -35,7 +35,7 @@ namespace Cassette
 
         public bool ContainsPath(string path)
         {
-            return new AssetFinder().Contains(path, this);
+            return new ModuleContainsPathPredicate().ModuleContainsPath(path, this);
         }
 
         bool IsModulePath(string path)

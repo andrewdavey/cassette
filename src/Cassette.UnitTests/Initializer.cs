@@ -4,6 +4,7 @@ using Cassette.Persistence;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.ModuleProcessing;
 
 namespace Cassette
 {

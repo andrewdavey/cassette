@@ -3,7 +3,7 @@ using System.IO;
 using Cassette.Utilities;
 using Microsoft.Ajax.Utilities;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class MicrosoftJavaScriptMinifier : IAssetTransformer
     {

@@ -1,4 +1,5 @@
 ﻿using Cassette.Persistence;
+using Cassette.ModuleProcessing;
 
 namespace Cassette
 {
