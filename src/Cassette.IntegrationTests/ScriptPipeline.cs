@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Cassette.ModuleProcessing;
+using Cassette.Persistence;
 using Should;
 using Xunit;
-using Cassette.Persistence;
-using Cassette.ModuleProcessing;
 
 namespace Cassette.IntegrationTests
 {
@@ -28,7 +28,7 @@ namespace Cassette.IntegrationTests
 
             var pipeline = new Pipeline<ScriptModule>(
                 new ParseJavaScriptReferences(),
-                new SortAssetsByDependency<ScriptModule>(),
+                new SortAssetsByDependency(),
                 new ConcatenateAssets(),
                 new MinifyAssets(new MicrosoftJavaScriptMinifier())
             );

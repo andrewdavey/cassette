@@ -5,10 +5,9 @@ using Cassette.Utilities;
 
 namespace Cassette.ModuleProcessing
 {
-    public class SortAssetsByDependency<T> : IModuleProcessor<T>
-        where T : Module
+    public class SortAssetsByDependency : IModuleProcessor<Module>
     {
-        public void Process(T module)
+        public void Process(Module module)
         {
             // In the absence of dependencies, sort by the filename to ensure consistent output.
             var sortedByFilename = module.Assets.OrderBy(
