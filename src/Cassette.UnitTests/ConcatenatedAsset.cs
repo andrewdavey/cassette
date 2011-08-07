@@ -60,5 +60,14 @@ namespace Cassette
                 stream1.ShouldNotBeSameAs(stream2);
             }
         }
+
+        [Fact]
+        public void AcceptCallsVisitOnVisitorForEachChildAsset()
+        {
+            var visitor = new Mock<IAssetVisitor>();
+            asset.Accept(visitor.Object);
+            visitor.Verify(v => v.Visit(child1.Object));
+            visitor.Verify(v => v.Visit(child2.Object));
+        }
     }
 }

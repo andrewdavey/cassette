@@ -45,6 +45,15 @@ namespace Cassette
             return path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
+        public void Accept(IAssetVisitor visitor)
+        {
+            visitor.Visit(this);
+            foreach (var asset in assets)
+            {
+                visitor.Visit(asset);
+            }
+        }
+
         public void Dispose()
         {
             foreach (var asset in assets.OfType<IDisposable>())

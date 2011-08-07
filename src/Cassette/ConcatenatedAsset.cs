@@ -56,5 +56,13 @@ namespace Cassette
         {
             stream.Dispose();
         }
+
+        public void Accept(IAssetVisitor visitor)
+        {
+            foreach (var child in children)
+            {
+                visitor.Visit(child);
+            }
+        }
     }
 }

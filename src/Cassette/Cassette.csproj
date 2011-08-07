@@ -61,6 +61,7 @@
     <Compile Include="FileSystem.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />
+    <Compile Include="IAssetVisitor.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="IModuleContainer.cs" />
     <Compile Include="IModuleContainerStore.cs" />

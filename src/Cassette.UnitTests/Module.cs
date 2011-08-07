@@ -76,6 +76,33 @@ namespace Cassette
         }
 
         [Fact]
+        public void AcceptCallsVisitOnVistor()
+        {
+            var visitor = new Mock<IAssetVisitor>();
+            var module = new Module("c:\\test");
+
+            module.Accept(visitor.Object);
+
+            visitor.Verify(v => v.Visit(module));
+        }
+
+        [Fact]
+        public void AcceptCallsVisitOnVistorForEachAsset()
+        {
+            var visitor = new Mock<IAssetVisitor>();
+            var module = new Module("c:\\test");
+            var asset1 = new Mock<IAsset>();
+            var asset2 = new Mock<IAsset>();
+            module.Assets.Add(asset1.Object);
+            module.Assets.Add(asset2.Object);
+            
+            module.Accept(visitor.Object);
+
+            visitor.Verify(v => v.Visit(asset1.Object));
+            visitor.Verify(v => v.Visit(asset2.Object));
+        }
+
+        [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
             var module = new Module("c:\\");

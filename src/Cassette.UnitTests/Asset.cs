@@ -183,6 +183,14 @@ namespace Cassette
             element.Attribute("filename").Value.ShouldEqual(filename);
         }
 
+        [Fact]
+        public void AcceptCallsVisitOnVisitor()
+        {
+            var visitor = new Mock<IAssetVisitor>();
+            asset.Accept(visitor.Object);
+            visitor.Verify(v => v.Visit(asset));
+        }
+
         void IDisposable.Dispose()
         {
             File.Delete(filename);

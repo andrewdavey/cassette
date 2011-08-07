@@ -97,5 +97,10 @@ namespace Cassette
                 new XAttribute("filename", filename)
             );
         }
+
+        public void Accept(IAssetVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }
