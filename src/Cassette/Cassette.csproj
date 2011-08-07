@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
+    <Compile Include="HtmlTemplateModule.cs" />
+    <Compile Include="HtmlTemplateModuleFactory.cs" />
     <Compile Include="ModuleContainsPathPredicate.cs" />
     <Compile Include="Persistence\AssetInfo.cs" />
     <Compile Include="AssetReference.cs" />
@@ -91,6 +93,8 @@
     <Compile Include="ScriptModule.cs" />
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
+    <Compile Include="StylesheetModule.cs" />
+    <Compile Include="StylesheetModuleFactory.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />

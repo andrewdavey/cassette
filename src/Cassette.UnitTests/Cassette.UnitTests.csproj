@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
+    <Compile Include="HtmlTemplateModuleFactory.cs" />
     <Compile Include="ModuleProcessing\CompileCoffeeScript.cs" />
     <Compile Include="ModuleProcessing\CompileCoffeeScriptAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="StubFileSystem.cs" />
+    <Compile Include="StylesheetModuleFactory.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />

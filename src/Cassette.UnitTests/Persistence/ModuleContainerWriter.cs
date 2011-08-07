@@ -19,8 +19,6 @@ namespace Cassette.Persistence
         [Fact]
         public void SaveWritesContainerXmlFile()
         {
-            
-            var now = DateTime.UtcNow;
             var modules = new[] {
                 new ScriptModule("", _ => null)
             };
@@ -28,7 +26,7 @@ namespace Cassette.Persistence
             asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
             asset1.Setup(a => a.OpenStream()).Returns(Stream.Null);
             modules[0].Assets.Add(asset1.Object);
-            var container = new ModuleContainer<ScriptModule>(modules, now);
+            var container = new ModuleContainer<ScriptModule>(modules, DateTime.UtcNow);
 
             var writer = new ModuleContainerWriter<ScriptModule>(fileSystem.Object);
             writer.Save(container);

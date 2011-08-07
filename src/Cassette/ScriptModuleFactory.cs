@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Cassette
 {
@@ -14,9 +11,9 @@ namespace Cassette
 
         readonly Func<string, string> getFullPath;
 
-        public ScriptModule CreateModule(string directoryPath)
+        public ScriptModule CreateModule(string directory)
         {
-            return new ScriptModule(directoryPath, getFullPath);
+            return new ScriptModule(directory, getFullPath);
         }
     }
 }
