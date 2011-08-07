@@ -8,7 +8,7 @@ namespace Cassette.IntegrationTests
     public class IsolatedStorageFileSystem_Tests
     {
         [Fact]
-        public void IsolatedStorageFileSystem_AccessIsolatedStorage()
+        public void IsolatedStorageFileSystem_AccessesIsolatedStorage()
         {
             using (var store = IsolatedStorageFile.GetMachineStoreForAssembly())
             {
