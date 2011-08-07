@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IsolatedStorageFileSystem.cs" />
     <Compile Include="ModuleContainerStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptPipeline.cs" />

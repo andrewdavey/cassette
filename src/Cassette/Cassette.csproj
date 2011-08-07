@@ -52,6 +52,7 @@
     <Compile Include="AssetBase.cs" />
     <Compile Include="HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplateModuleFactory.cs" />
+    <Compile Include="IsolatedStorageFileSystem.cs" />
     <Compile Include="ModuleContainsPathPredicate.cs" />
     <Compile Include="Persistence\AssetInfo.cs" />
     <Compile Include="AssetReference.cs" />
