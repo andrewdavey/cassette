@@ -28,7 +28,9 @@ namespace Cassette
         {
             var module = new Module("test", getFullPath);
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.IsFrom("test\\asset.js")).Returns(true);
+            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
+                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);
 
             module.ContainsPath("test\\asset.js").ShouldBeTrue();
@@ -39,7 +41,9 @@ namespace Cassette
         {
             var module = new Module("test", getFullPath);
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.IsFrom("TEST\\ASSET.js")).Returns(true);
+            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
+                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);
 
             module.ContainsPath("TEST\\ASSET.js").ShouldBeTrue();
@@ -89,7 +93,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void AcceptCallsVisitOnVistorForEachAsset()
+        public void AcceptCallsAcceptForEachAsset()
         {
             var visitor = new Mock<IAssetVisitor>();
             var module = new Module("test", getFullPath);
@@ -100,8 +104,8 @@ namespace Cassette
             
             module.Accept(visitor.Object);
 
-            visitor.Verify(v => v.Visit(asset1.Object));
-            visitor.Verify(v => v.Visit(asset2.Object));
+            asset1.Verify(a => a.Accept(visitor.Object));
+            asset2.Verify(a => a.Accept(visitor.Object));
         }
 
         [Fact]

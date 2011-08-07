@@ -92,12 +92,7 @@ namespace Cassette
             return File.OpenRead(parentModule.GetFullPath(relativeFilename));
         }
 
-        public override bool IsFrom(string path)
-        {
-            return relativeFilename.Equals(path, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public void Accept(IAssetVisitor visitor)
+        public override void Accept(IAssetVisitor visitor)
         {
             visitor.Visit(this);
         }

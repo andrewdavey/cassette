@@ -12,6 +12,8 @@ namespace Cassette
     {
         readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
 
+        public abstract void Accept(IAssetVisitor visitor);
+
         public void AddAssetTransformer(IAssetTransformer transformer)
         {
             transformers.Add(transformer);
@@ -38,6 +40,5 @@ namespace Cassette
 
         public abstract void AddReference(string path, int lineNumber);
 
-        public abstract bool IsFrom(string path);
     }
 }

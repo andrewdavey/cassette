@@ -35,8 +35,7 @@ namespace Cassette
 
         public bool ContainsPath(string path)
         {
-            if (IsModulePath(path)) return true;
-            return assets.Any(a => a.IsFrom(path));
+            return new AssetFinder().Contains(path, this);
         }
 
         bool IsModulePath(string path)
@@ -57,7 +56,7 @@ namespace Cassette
             visitor.Visit(this);
             foreach (var asset in assets)
             {
-                visitor.Visit(asset);
+                asset.Accept(visitor);
             }
         }
 

@@ -22,12 +22,9 @@ namespace Cassette
             asset = new Asset("test.js", module);
             module.Assets.Add(asset);
 
-            var another = new Mock<IAsset>();
-            another.SetupGet(a => a.SourceFilename)
-                   .Returns(Path.Combine(module.Directory, "another.js"));
-            another.Setup(a => a.IsFrom(Path.Combine(module.Directory, "another.js")))
-                   .Returns(true);
-            module.Assets.Add(another.Object);
+            File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
+            var another = new Asset("another.js", module);
+            module.Assets.Add(another);
         }
 
         readonly string filename;
@@ -156,24 +153,6 @@ namespace Cassette
             {
                 asset.AddReference("not-in-module.js", 1);
             });
-        }
-
-        [Fact]
-        public void IsFrom_WhereFilenameMatches_ReturnsTrue()
-        {
-            asset.IsFrom("test.js").ShouldBeTrue();
-        }
-
-        [Fact]
-        public void IsFrom_WhereFilenameMatchesDifferentCase_ReturnsTrue()
-        {
-            asset.IsFrom("TEST.JS").ShouldBeTrue();
-        }
-
-        [Fact]
-        public void IsFrom_WhereFilenameDoesntMatch_ReturnsTrue()
-        {
-            asset.IsFrom("other.js").ShouldBeFalse();
         }
 
         [Fact]

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace Cassette
 {
@@ -17,7 +16,7 @@ namespace Cassette
             this.stream = stream;
         }
 
-        public void Accept(IAssetVisitor visitor)
+        public override void Accept(IAssetVisitor visitor)
         {
             foreach (var child in children)
             {
@@ -47,11 +46,6 @@ namespace Cassette
             stream.CopyTo(newStream);
             newStream.Position = 0;
             return newStream;
-        }
-
-        public override bool IsFrom(string path)
-        {
-            return children.Any(c => c.IsFrom(path));
         }
 
         public void Dispose()

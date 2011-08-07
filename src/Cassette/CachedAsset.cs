@@ -7,15 +7,23 @@ namespace Cassette
 {
     public class CachedAsset : IAsset
     {
-        public CachedAsset(IEnumerable<IAsset> assetInfos, Func<Stream> openStream)
+        public CachedAsset(IEnumerable<IAsset> children, Func<Stream> openStream)
         {
-            this.assetInfos = assetInfos.ToArray();
+            this.children = children.ToArray();
             this.openStream = openStream;
         }
 
-        readonly IEnumerable<IAsset> assetInfos;
+        readonly IEnumerable<IAsset> children;
         readonly Func<Stream> openStream;
         readonly List<AssetReference> references = new List<AssetReference>();
+
+        public void Accept(IAssetVisitor visitor)
+        {
+            foreach (var child in children)
+            {
+                visitor.Visit(child);
+            }
+        }
 
         public string SourceFilename
         {
@@ -37,19 +45,9 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public System.IO.Stream OpenStream()
+        public Stream OpenStream()
         {
             return openStream();
-        }
-
-        public bool IsFrom(string filename)
-        {
-            return assetInfos.Any(a => a.IsFrom(filename));
-        }
-
-        public IEnumerable<System.Xml.Linq.XElement> CreateManifest()
-        {
-            throw new NotImplementedException();
         }
     }
 }

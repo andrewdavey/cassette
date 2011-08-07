@@ -39,14 +39,9 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public bool IsFrom(string filename)
+        public void Accept(IAssetVisitor visitor)
         {
-            return this.filename.Equals(filename, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public IEnumerable<System.Xml.Linq.XElement> CreateManifest()
-        {
-            throw new NotImplementedException();
+            visitor.Visit(this);
         }
     }
 }
