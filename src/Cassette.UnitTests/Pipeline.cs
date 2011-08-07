@@ -27,7 +27,7 @@ namespace Cassette
         [Fact]
         public void WhenProcess_ThenEachStepIsCalled()
         {
-            var module = new Module("c:\\");
+            var module = new Module("", _ => null);
             pipeline.Process(module);
 
             step1.Verify(p => p.Process(module));

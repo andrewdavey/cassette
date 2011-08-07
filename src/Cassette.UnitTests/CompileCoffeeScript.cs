@@ -17,9 +17,9 @@ namespace Cassette
         [Fact]
         public void WhenProcessModuleContainingCoffeeScriptAsset_ThenCompileCoffeeScriptAssetTransformIsAddedToAsset()
         {
-            var module = new Module("c:\\");
+            var module = new Module("", _ => null);
             var coffeeScriptAsset = new Mock<IAsset>();
-            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("c:\\test.coffee");
+            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.coffee");
             module.Assets.Add(coffeeScriptAsset.Object);
 
             step.Process(module);
@@ -36,9 +36,9 @@ namespace Cassette
         [Fact]
         public void WhenProcessModuleContainingJavaScriptAsset_ThenNoTransformsAreAddedToAsset()
         {
-            var module = new Module("c:\\");
+            var module = new Module("", _ => null);
             var coffeeScriptAsset = new Mock<IAsset>();
-            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("c:\\test.js");
+            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.js");
             module.Assets.Add(coffeeScriptAsset.Object);
 
             step.Process(module);

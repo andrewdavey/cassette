@@ -12,7 +12,7 @@ namespace Cassette
         public void TransformCallsCoffeeScriptCompiler()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("c:\\test.coffee");
+            asset.SetupGet(a => a.SourceFilename).Returns("test.coffee");
 
             var sourceInput = "source-input";
             var compilerOutput = "compiler-output";
@@ -44,7 +44,7 @@ namespace Cassette
         ICoffeeScriptCompiler StubCompiler(string expectedSourceInput, string compilerOutput)
         {
             var compiler = new Mock<ICoffeeScriptCompiler>();
-            compiler.Setup(c => c.Compile(expectedSourceInput, "c:\\test.coffee"))
+            compiler.Setup(c => c.Compile(expectedSourceInput, "test.coffee"))
                     .Returns(compilerOutput);
             return compiler.Object;
         }

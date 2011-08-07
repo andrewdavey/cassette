@@ -63,9 +63,10 @@ namespace Cassette
         T CreateModule(XElement moduleElement)
         {
             var directory = moduleElement.Attribute("directory").Value;
+            var filename = ((directory.Length == 0) ? "_" : directory) + ".module";
             var module = moduleFactory.CreateModule(directory);
 
-            var singleAsset = CreateSingleAssetForModule(moduleElement, module, directory);
+            var singleAsset = CreateSingleAssetForModule(moduleElement, module, filename);
             module.Assets.Add(singleAsset);
             return module;
         }
@@ -113,13 +114,11 @@ namespace Cassette
 
         void SaveContainerXml(IModuleContainer<T> moduleContainer)
         {
+            var createManifestVisitor = new CreateManifestVisitor();
             var xml = new XDocument(
                 new XElement("container",
                     new XAttribute("lastWriteTime", moduleContainer.LastWriteTime.Ticks),
-                    from module in moduleContainer
-                    select new XElement("module",
-                        new XAttribute("directory", GetRelativeDirectoryPath(module, moduleContainer)),
-                        module.Assets.SelectMany(a => a.CreateManifest()))
+                    moduleContainer.Select(createManifestVisitor.CreateManifest)
                 )
             );
             using (var fileStream = fileSystem.OpenWrite(GetContainerXmlFilename()))
@@ -130,7 +129,8 @@ namespace Cassette
 
         void SaveModule(T module, IModuleContainer<T> moduleContainer)
         {
-            using (var fileStream = fileSystem.OpenWrite(GetRelativeDirectoryPath(module, moduleContainer)))
+            var filename = GetRelativeDirectoryPath(module, moduleContainer) + ".module";
+            using (var fileStream = fileSystem.OpenWrite(filename))
             {
                 using (var dataStream = module.Assets[0].OpenStream())
                 {
@@ -144,9 +144,9 @@ namespace Cassette
         {
             if (module.Directory.Length > moduleContainer.RootDirectory.Length)
             {
-                return module.Directory.Substring(moduleContainer.RootDirectory.Length + 1) + ".module";
+                return module.Directory.Substring(moduleContainer.RootDirectory.Length + 1);
             }
-            return ".module";
+            return "_";
         }
     }
 }

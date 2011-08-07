@@ -10,7 +10,7 @@ namespace Cassette
         public void ProcessAddsReferencesToCoffeeScriptAssetInModule()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("c:\\asset.coffee");
+            asset.SetupGet(a => a.SourceFilename).Returns("asset.coffee");
 
             var coffeeScriptSource = @"
 # reference ""another1.js""
@@ -21,7 +21,7 @@ class Foo
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(coffeeScriptSource.AsStream());
-            var module = new Module("c:\\");
+            var module = new Module("", _ => null);
             module.Assets.Add(asset.Object);
 
             var processor = new ParseCoffeeScriptReferences();

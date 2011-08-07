@@ -39,7 +39,5 @@ namespace Cassette
         public abstract void AddReference(string path, int lineNumber);
 
         public abstract bool IsFrom(string path);
-
-        public abstract IEnumerable<XElement> CreateManifest();
     }
 }

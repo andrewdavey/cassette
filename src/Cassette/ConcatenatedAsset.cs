@@ -54,11 +54,6 @@ namespace Cassette
             return children.Any(c => c.IsFrom(path));
         }
 
-        public override IEnumerable<XElement> CreateManifest()
-        {
-            return children.SelectMany(c => c.CreateManifest());
-        }
-
         public void Dispose()
         {
             stream.Dispose();

@@ -14,23 +14,26 @@ namespace Cassette
         public ModuleSource_BehaviorTests()
         {
             // Create a basic set of directories and files.
-            root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(Path.Combine(root, "scripts"));
-                Directory.CreateDirectory(Path.Combine(root, "scripts", "module-a"));
-                    File.WriteAllText(Path.Combine(root, "scripts", "module-a", "test-1.js"), "test-1");
-                    File.WriteAllText(Path.Combine(root, "scripts", "module-a", "test-2.js"), "test-2");
-                Directory.CreateDirectory(Path.Combine(root, "scripts", "module-b"));
-                    File.WriteAllText(Path.Combine(root, "scripts", "module-b", "test-3.js"), "test-3");
-                    File.WriteAllText(Path.Combine(root, "scripts", "module-b", "ignore.me"), "");
+            root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString(), "scripts");
+            Directory.CreateDirectory(Path.Combine(root));
+                Directory.CreateDirectory(Path.Combine(root, "module-a"));
+                    File.WriteAllText(Path.Combine(root, "module-a", "test-1.js"), "test-1");
+                    File.WriteAllText(Path.Combine(root, "module-a", "test-2.js"), "test-2");
+                Directory.CreateDirectory(Path.Combine(root, "module-b"));
+                    File.WriteAllText(Path.Combine(root, "module-b", "test-3.js"), "test-3");
+                    File.WriteAllText(Path.Combine(root, "module-b", "ignore.me"), "");
                 // Hidden directories should be ignored by AddEachSubDirectory
-                var svn = Directory.CreateDirectory(Path.Combine(root, "scripts", ".svn"));
+                var svn = Directory.CreateDirectory(Path.Combine(root, ".svn"));
                 svn.Attributes |= FileAttributes.Hidden;
+            
+            getFullPath = (path) => Path.Combine(root, path);
 
-            source = new ModuleSource<Module>(Path.Combine(root, "scripts"), "*.js");
+            source = new ModuleSource<Module>(root, "*.js");
         }
 
         ModuleSource<Module> source;
         string root;
+        Func<string, string> getFullPath;
 
         [Fact]
         public void WhenAddDirectoryRelativePath_ThenCreateModulesReturnsModuleWithAbsolutePath()
@@ -39,11 +42,11 @@ namespace Cassette
 
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new Module(Path.Combine(root, "scripts", "module-a")));
+                         .Returns(new Module("module-a", getFullPath));
 
             var module = source.CreateModules(moduleFactory.Object).First();
 
-            module.Directory.ShouldEqual(Path.Combine(root, "scripts", "module-a"));
+            module.Directory.ShouldEqual("module-a");
         }
 
         [Fact]
@@ -52,9 +55,8 @@ namespace Cassette
             source.AddDirectory("module-a");
 
             var moduleFactory = new Mock<IModuleFactory<Module>>();
-            var path = Path.Combine(root, "scripts", "module-a");
-            moduleFactory.Setup(f => f.CreateModule(path))
-                         .Returns(new Module(path))
+            moduleFactory.Setup(f => f.CreateModule("module-a"))
+                         .Returns(new Module("module-a", getFullPath))
                          .Verifiable();
 
             var module = source.CreateModules(moduleFactory.Object).First();
@@ -68,7 +70,7 @@ namespace Cassette
             source.AddDirectory("module-a");
             source.AddDirectory("module-b");
             var moduleFactory = new Mock<IModuleFactory<Module>>();
-            var stubs = new Queue<Module>(new[] { new Module("c:\\test\\module-a"), new Module("c:\\test\\module-b") });
+            var stubs = new Queue<Module>(new[] { new Module("module-a", getFullPath), new Module("module-b", getFullPath) });
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(() => stubs.Dequeue());
 
@@ -91,7 +93,7 @@ namespace Cassette
         {
             source.AddDirectories("module-a", "module-b");
             var moduleFactory = new Mock<IModuleFactory<Module>>();
-            var stubs = new Queue<Module>(new[] { new Module(Path.Combine(root, "scripts", "module-a")), new Module(Path.Combine(root, "scripts", "module-b")) });
+            var stubs = new Queue<Module>(new[] { new Module("module-a", getFullPath), new Module("module-b", getFullPath) });
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(() => stubs.Dequeue());
 
@@ -115,7 +117,7 @@ namespace Cassette
             source.AddEachSubDirectory();
 
             var moduleFactory = new Mock<IModuleFactory<Module>>();
-            var stubs = new Queue<Module>(new[] { new Module(Path.Combine(root, "scripts", "module-a")), new Module(Path.Combine(root, "scripts", "module-b")) });
+            var stubs = new Queue<Module>(new[] { new Module("module-a", getFullPath), new Module("module-b", getFullPath) });
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
                          .Returns(() => stubs.Dequeue());
 
@@ -133,7 +135,7 @@ namespace Cassette
             source.AddDirectory("module-a");
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new Module(Path.Combine(root, "scripts", "module-a")));
+                         .Returns(new Module("module-a", getFullPath));
 
             var modules = source.CreateModules(moduleFactory.Object).ToArray();
             modules[0].Assets.Count.ShouldEqual(2);
@@ -145,7 +147,7 @@ namespace Cassette
             source.AddDirectory("module-b");
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new Module(Path.Combine(root, "scripts", "module-b")));
+                         .Returns(new Module("module-b", getFullPath));
 
             var modules = source.CreateModules(moduleFactory.Object).ToArray();
             modules[0].Assets.Count.ShouldEqual(1);
@@ -157,7 +159,7 @@ namespace Cassette
             source.AsSingleModule();
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new Module(Path.Combine(root, "scripts")));
+                         .Returns(new Module("", getFullPath));
             
             var modules = source.CreateModules(moduleFactory.Object).ToArray();
             modules.Length.ShouldEqual(1);
@@ -199,7 +201,7 @@ namespace Cassette
             source.AsSingleModule();
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new Module(Path.Combine(root, "scripts")));
+                         .Returns(new Module("", getFullPath));
 
             var module = source.CreateModules(moduleFactory.Object).First();
             module.Assets.Count.ShouldEqual(2);
@@ -214,7 +216,7 @@ namespace Cassette
             source.AsSingleModule();
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new Module(Path.Combine(root, "scripts")));
+                         .Returns(new Module("", getFullPath));
 
             var module = source.CreateModules(moduleFactory.Object).First();
 
@@ -230,12 +232,12 @@ namespace Cassette
         {
             source.AsSingleModule();
             var moduleFactory = new Mock<IModuleFactory<Module>>();
-            moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new Module(Path.Combine(root, "scripts")));
+            moduleFactory.Setup(f => f.CreateModule(""))
+                         .Returns(new Module("", getFullPath));
 
             var container = source.CreateModules(moduleFactory.Object);
 
-            var expected = File.GetLastWriteTimeUtc(Path.Combine(root, "scripts", "module-b", "test-3.js"));
+            var expected = File.GetLastWriteTimeUtc(Path.Combine(root, "module-b", "test-3.js"));
             container.LastWriteTime.ShouldEqual(expected);
         }
 

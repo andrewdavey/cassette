@@ -12,12 +12,14 @@ namespace Cassette
     {
         public Asset_Tests()
         {
-            filename = Path.GetTempFileName();
+            root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            root.CreateSubdirectory("module");
+            filename = Path.Combine(root.FullName, "module", "test.js");
             // Write some testable content to the file.
             File.WriteAllText(filename, "asset content");
 
-            var module = new Module(Path.GetDirectoryName(filename));
-            asset = new Asset(filename, module);
+            var module = new Module("module", path => Path.Combine(root.FullName, path));
+            asset = new Asset("test.js", module);
             module.Assets.Add(asset);
 
             var another = new Mock<IAsset>();
@@ -30,6 +32,7 @@ namespace Cassette
 
         readonly string filename;
         readonly Asset asset;
+        readonly DirectoryInfo root;
 
         [Fact]
         public void OpenStream_OpensTheFile()
@@ -100,8 +103,7 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
-            asset.References.First().ReferencedFilename.ShouldEqual(expectedFilename);
+            asset.References.First().ReferencedFilename.ShouldEqual("module\\another.js");
         }
 
         [Fact]
@@ -127,8 +129,7 @@ namespace Cassette
         {
             asset.AddReference("../another/test.js", 1);
 
-            var expectedFilename = Path.Combine(new FileInfo(filename).Directory.Parent.FullName, "another", "test.js");
-            asset.References.First().ReferencedFilename.ShouldEqual(expectedFilename);
+            asset.References.First().ReferencedFilename.ShouldEqual("another\\test.js");
         }
 
         [Fact]
@@ -160,27 +161,19 @@ namespace Cassette
         [Fact]
         public void IsFrom_WhereFilenameMatches_ReturnsTrue()
         {
-            asset.IsFrom(filename).ShouldBeTrue();
+            asset.IsFrom("test.js").ShouldBeTrue();
         }
 
         [Fact]
         public void IsFrom_WhereFilenameMatchesDifferentCase_ReturnsTrue()
         {
-            asset.IsFrom(filename.ToUpper()).ShouldBeTrue();
+            asset.IsFrom("TEST.JS").ShouldBeTrue();
         }
 
         [Fact]
         public void IsFrom_WhereFilenameDoesntMatch_ReturnsTrue()
         {
-            asset.IsFrom("c:\\other.js").ShouldBeFalse();
-        }
-
-        [Fact]
-        public void CreateManifestReturnsElementWithFilenameAndLastWriteTime()
-        {
-            var element = asset.CreateManifest().First();
-            element.Name.LocalName.ShouldEqual("asset");
-            element.Attribute("filename").Value.ShouldEqual(filename);
+            asset.IsFrom("other.js").ShouldBeFalse();
         }
 
         [Fact]
@@ -193,7 +186,7 @@ namespace Cassette
 
         void IDisposable.Dispose()
         {
-            File.Delete(filename);
+            root.Delete(true);
         }
     }
 }

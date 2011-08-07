@@ -22,10 +22,13 @@ namespace Cassette.IntegrationTests
                     File.WriteAllText(Path.Combine(root, "scripts", "module-b", "test-3.js"), "test-3");
 
             now = File.GetLastWriteTimeUtc(Path.Combine(root, "scripts", "module-b", "test-3.js"));
+
+            getFullPath = (path) => Path.Combine(root, path);
         }
 
         readonly DateTime now;
         readonly string root;
+        private Func<string, string> getFullPath;
 
         [Fact]
         public void CanRoundTripInStoreModuleContainerWithRootedModule()
@@ -35,7 +38,7 @@ namespace Cassette.IntegrationTests
             try
             {
                 var fileSystem = new FileSystem(cacheDirectory);
-                var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory());
+                var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
 
                 var container = StubModuleContainerWithRootedModule();
                 store.Save(container);
@@ -56,7 +59,7 @@ namespace Cassette.IntegrationTests
         {
             return new ModuleSource<ScriptModule>(root, "*.js")
                 .AsSingleModule()
-                .CreateModules(new ScriptModuleFactory());
+                .CreateModules(new ScriptModuleFactory(getFullPath));
         }
 
         [Fact]
@@ -67,7 +70,7 @@ namespace Cassette.IntegrationTests
             try
             {
                 var fileSystem = new FileSystem(cacheDirectory);
-                var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory());
+                var store = new ModuleContainerStore<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
 
                 var container = StubModuleContainerWithSubDirectoryModule();
                 store.Save(container);
@@ -87,7 +90,7 @@ namespace Cassette.IntegrationTests
         {
             return new ModuleSource<ScriptModule>(root, "*.js")
                 .AddEachSubDirectory()
-                .CreateModules(new ScriptModuleFactory());
+                .CreateModules(new ScriptModuleFactory(getFullPath));
         }
 
         public void Dispose()

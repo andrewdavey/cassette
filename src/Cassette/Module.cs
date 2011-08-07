@@ -7,12 +7,14 @@ namespace Cassette
 {
     public class Module : IDisposable
     {
-        public Module(string directory)
+        public Module(string relativeDirectory, Func<string, string> getFullPath)
         {
-            this.directory = NormalizePath(directory);
+            this.directory = NormalizePath(relativeDirectory);
+            this.getFullPath = getFullPath;
         }
 
         readonly string directory;
+        readonly Func<string, string> getFullPath;
         IList<IAsset> assets = new List<IAsset>();
 
         public string Directory
@@ -24,6 +26,11 @@ namespace Cassette
         {
             get { return assets; }
             set { assets = value; }
+        }
+
+        public string GetFullPath(string path)
+        {
+            return getFullPath(Path.Combine(directory, path));
         }
 
         public bool ContainsPath(string path)

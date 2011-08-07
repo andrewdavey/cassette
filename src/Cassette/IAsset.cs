@@ -12,6 +12,5 @@ namespace Cassette
         void AddAssetTransformer(IAssetTransformer transformer);
         Stream OpenStream();
         bool IsFrom(string filename);
-        IEnumerable<XElement> CreateManifest();
     }
 }

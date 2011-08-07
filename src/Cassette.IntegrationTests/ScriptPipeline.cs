@@ -31,7 +31,7 @@ namespace Cassette.IntegrationTests
                 new MinifyAssets(new MicrosoftJavaScriptMinifier())
             );
 
-            var moduleFactory = new ScriptModuleFactory();
+            var moduleFactory = new ScriptModuleFactory(path => Path.Combine(root, path));
 
             var fileSystem = new FileSystem(cacheDirectory);
 

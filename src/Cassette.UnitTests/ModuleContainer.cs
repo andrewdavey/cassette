@@ -11,14 +11,14 @@ namespace Cassette
         [Fact]
         public void ValidateAndSortModulesOrdersModulesByDependency()
         {
-            var module1 = new Module("c:\\test\\module-1");
+            var module1 = new Module("module-1", _ => null);
             var asset1 = new Mock<IAsset>();
             asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
             module1.Assets.Add(asset1.Object);
-            var module2 = new Module("c:\\test\\module-2");
+            var module2 = new Module("module-2", _ => null);
             var asset2 = new Mock<IAsset>();
-            asset2.Setup(a => a.IsFrom("c:\\test\\module-2\\b.js")).Returns(true);
+            asset2.Setup(a => a.IsFrom("module-2\\b.js")).Returns(true);
             module2.Assets.Add(asset2.Object);
 
             var container = new ModuleContainer<Module>(new[] { module1, module2 }, DateTime.UtcNow, "c:\\test");
@@ -32,35 +32,35 @@ namespace Cassette
         [Fact]
         public void GivenAssetWithUnknownDifferentModuleReference_ThenValidateAndSortModulesThrowsAssetReferenceException()
         {
-            var module = new Module("c:\\test\\module-1");
+            var module = new Module("module-1", _ => null);
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("c:\\test\\module-1\\a.js");
+            asset.SetupGet(a => a.SourceFilename).Returns("module-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentModule) });
             module.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
                 new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow, "c:\\test").ValidateAndSortModules();
             });
-            exception.Message.ShouldEqual("Reference error in \"c:\\test\\module-1\\a.js\". Cannot find \"c:\\test\\fail\\fail.js\".");
+            exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\". Cannot find \"fail\\fail.js\".");
         }
 
         [Fact]
         public void GivenAssetWithUnknownDifferentModuleReferenceHavingLineNumber_ThenValidateAndSortModulesThrowsAssetReferenceException()
         {
-            var module = new Module("c:\\test\\module-1");
+            var module = new Module("module-1", _ => null);
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("c:\\test\\module-1\\a.js");
+            asset.SetupGet(a => a.SourceFilename).Returns("module-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentModule) });
             module.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
                 new ModuleContainer<Module>(new[] { module }, DateTime.UtcNow, "c:\\test").ValidateAndSortModules();
             });
-            exception.Message.ShouldEqual("Reference error in \"c:\\test\\module-1\\a.js\", line 42. Cannot find \"c:\\test\\fail\\fail.js\".");
+            exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\", line 42. Cannot find \"fail\\fail.js\".");
         }
     }
 }

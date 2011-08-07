@@ -11,7 +11,7 @@ namespace Cassette
         public void GivenModuleAndAssets_CreateManifestVisitorCreatesXElement()
         {
             var visitor = new CreateManifestVisitor();
-            var module = new Module("");
+            var module = new Module("", _ => null);
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);

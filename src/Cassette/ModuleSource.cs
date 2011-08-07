@@ -48,7 +48,7 @@ namespace Cassette
             {
                 throw new DirectoryNotFoundException("Directory not found: \"" + absolutePath + "\"");
             }
-            moduleDirectories.Add(absolutePath);
+            moduleDirectories.Add(relativePath);
             return this;
         }
 
@@ -62,7 +62,7 @@ namespace Cassette
                 {
                     throw new DirectoryNotFoundException("Directory not found: \"" + absolutePath + "\"");
                 }
-                moduleDirectories.Add(absolutePath);
+                moduleDirectories.Add(relativePath);
             }
             return this;
         }
@@ -74,9 +74,9 @@ namespace Cassette
                 where directory.Attributes.HasFlag(FileAttributes.Hidden) == false
                 select directory.Name;
 
-            foreach (var directory in subDirectories)
+            foreach (var directoryName in subDirectories)
             {
-                AddDirectory(directory);
+                AddDirectory(directoryName);
             }
 
             return this;
@@ -89,7 +89,7 @@ namespace Cassette
                 throw new InvalidOperationException("Cannot treat this source as a single module when directories have already been added.");
             }
             isSingleModule = true;
-            moduleDirectories.Add(rootDirectory);
+            moduleDirectories.Add("");
             return this;
         }
 
@@ -116,7 +116,7 @@ namespace Cassette
                 return module;
             }
 
-            var max = filenames.Select(File.GetLastWriteTimeUtc).Max();
+            var max = filenames.Select(filename => File.GetLastWriteTimeUtc(module.GetFullPath(filename))).Max();
             if (max > lastWriteTime) lastWriteTime = max;
 
             var assets = filenames.Select(filename => new Asset(filename, module));
@@ -132,13 +132,26 @@ namespace Cassette
             return assetFileExtensions
                 .SelectMany(
                     extension => Directory.GetFiles(
-                        moduleDirectory,
+                        Path.Combine(rootDirectory, moduleDirectory),
                         extension,
                         SearchOption.AllDirectories
                     )
                 )
                 .Where(filename => ShouldIgnoreFile(filename) == false)
+                .Select(filename => CreateModuleRelativeFilename(filename, moduleDirectory))
                 .Distinct(); // Because "*.htm;*.html" will match "foo.html" twice.
+        }
+
+        string CreateModuleRelativeFilename(string filename, string moduleDirectory)
+        {
+            if (moduleDirectory.Length == 0)
+            {
+                return filename.Substring(rootDirectory.Length + 1);
+            }
+            else
+            {
+                return filename.Substring(rootDirectory.Length + 1 + moduleDirectory.Length + 1);
+            }
         }
 
         bool ShouldIgnoreFile(string filename)

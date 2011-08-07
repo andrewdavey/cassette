@@ -17,7 +17,7 @@ namespace Cassette
         [Fact]
         public void ProcessAddsAssetMinifierToAssetInModule()
         {
-            var module = new Module("c:\\test");
+            var module = new Module("", _ => null);
             var asset = new Mock<IAsset>();
             module.Assets.Add(asset.Object);
 

@@ -9,24 +9,30 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(string filename, Module parentModule)
+        public Asset(string relativeFilename, Module parentModule)
         {
-            this.filename = filename;
+            if (Path.IsPathRooted(relativeFilename))
+            {
+                throw new ArgumentException("Asset filename must be relative to it's module directory.");
+            }
+
+            this.relativeFilename = relativeFilename;
             this.parentModule = parentModule;
-            this.hash = HashFileContents(filename);
+            this.hash = HashFileContents(parentModule.GetFullPath(relativeFilename));
         }
 
-        readonly string filename;
+        readonly string relativeFilename;
         readonly Module parentModule;
         readonly byte[] hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
         public override void AddReference(string filename, int lineNumber)
         {
-            var absoluteFilename = PathUtilities.NormalizePath(
-                Path.GetDirectoryName(this.filename),
+            var absoluteFilename = PathUtilities.NormalizePath(Path.Combine(
+                parentModule.Directory,
+                Path.GetDirectoryName(this.relativeFilename),
                 filename
-            );
+            ));
             AssetReferenceType type;
             if (ModuleCouldContain(absoluteFilename))
             {
@@ -40,21 +46,21 @@ namespace Cassette
             references.Add(new AssetReference(absoluteFilename, this, lineNumber, type));
         }
 
-        void RequireModuleContainsReference(int lineNumber, string absoluteFilename)
+        void RequireModuleContainsReference(int lineNumber, string filename)
         {
-            if (parentModule.ContainsPath(absoluteFilename)) return;
+            if (parentModule.ContainsPath(filename)) return;
             
             throw new AssetReferenceException(
                 string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    SourceFilename, lineNumber, absoluteFilename
+                    Path.Combine(parentModule.Directory, SourceFilename), lineNumber, filename
                 )
             );
         }
 
         public override string SourceFilename
         {
-            get { return filename; }
+            get { return relativeFilename; }
         }
 
         public byte[] Hash
@@ -83,19 +89,12 @@ namespace Cassette
 
         protected override Stream OpenStreamCore()
         {
-            return File.OpenRead(filename);
+            return File.OpenRead(parentModule.GetFullPath(relativeFilename));
         }
 
         public override bool IsFrom(string path)
         {
-            return filename.Equals(path, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public override IEnumerable<XElement> CreateManifest()
-        {
-            yield return new XElement("asset",
-                new XAttribute("filename", filename)
-            );
+            return relativeFilename.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
 
         public void Accept(IAssetVisitor visitor)

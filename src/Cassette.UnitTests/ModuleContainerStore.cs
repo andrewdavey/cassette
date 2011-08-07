@@ -45,8 +45,8 @@ namespace Cassette
             };
             var fileSystem = new StubFileSystem(fileStreams);
             var moduleFactory = new Mock<IModuleFactory<ScriptModule>>();
-            moduleFactory.Setup(f => f.CreateModule("module-a")).Returns(new ScriptModule("module-a"));
-            moduleFactory.Setup(f => f.CreateModule("module-b")).Returns(new ScriptModule("module-b"));
+            moduleFactory.Setup(f => f.CreateModule("module-a")).Returns(new ScriptModule("module-a", _ => null));
+            moduleFactory.Setup(f => f.CreateModule("module-b")).Returns(new ScriptModule("module-b", _ => null));
             var store = new ModuleContainerStore<ScriptModule>(fileSystem, moduleFactory.Object);
             
             var container = store.Load();
@@ -92,7 +92,7 @@ namespace Cassette
 
             var now = DateTime.UtcNow;
             var modules = new[] {
-                new ScriptModule("c:\\test")
+                new ScriptModule("", _ => null)
             };
             var asset1 = new Mock<IAsset>();
             asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
@@ -104,7 +104,7 @@ namespace Cassette
             store.Save(container);
 
             fileSystem.Verify(fs => fs.OpenWrite("container.xml"));
-            fileSystem.Verify(fs => fs.OpenWrite(".module"));
+            fileSystem.Verify(fs => fs.OpenWrite("_.module"));
         }
     }
 }

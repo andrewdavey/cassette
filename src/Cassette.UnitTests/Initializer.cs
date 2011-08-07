@@ -22,7 +22,7 @@ namespace Cassette
             source.Setup(s => s.CreateModules(moduleFactory.Object))
                   .Returns(newContainer.Object);
             newContainer.Setup(c => c.GetEnumerator())
-                        .Returns(() => new List<Module>(new[] { new Module("c:\\") }).GetEnumerator());
+                        .Returns(() => new List<Module>(new[] { new Module("", _ => null) }).GetEnumerator());
 
             initializer = new Initializer<Module>(moduleFactory.Object, store.Object);
         }

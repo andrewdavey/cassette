@@ -13,13 +13,13 @@ namespace Cassette
         [Fact]
         public void GivenTwoAssetsWhereADependsOnB_WhenSorted_ThenBIsBeforeAInModule()
         {
-            var module = new Module("c:\\test");
+            var module = new Module("test", _ => null);
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("c:\\test\\a.js");
+            assetA.SetupGet(a => a.SourceFilename).Returns("test\\a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\test\\b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("test\\b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("c:\\test\\b.js");
+            assetB.SetupGet(a => a.SourceFilename).Returns("test\\b.js");
             module.Assets.Add(assetA.Object);
             module.Assets.Add(assetB.Object);
 
@@ -33,13 +33,13 @@ namespace Cassette
         [Fact]
         public void GivenTwoAssetsWhereADependsOnBByDifferentlyCasedFilename_WhenSorted_ThenBIsBeforeAInModule()
         {
-            var module = new Module("c:\\test");
+            var module = new Module("test", _ => null);
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("c:\\test\\a.js");
+            assetA.SetupGet(a => a.SourceFilename).Returns("test\\a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("c:\\TEST\\B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("TEST\\B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("c:\\test\\b.js");
+            assetB.SetupGet(a => a.SourceFilename).Returns("test\\b.js");
             module.Assets.Add(assetA.Object);
             module.Assets.Add(assetB.Object);
 
@@ -53,13 +53,13 @@ namespace Cassette
         [Fact]
         public void GivenNoAssetReferences_WhenSorted_ThenAssetsOrderedBySourceFilename()
         {
-            var module = new Module("c:\\test");
+            var module = new Module("test", _ => null);
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("c:\\test\\a.js");
+            assetA.SetupGet(a => a.SourceFilename).Returns("test\\a.js");
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("c:\\test\\b.js");
+            assetB.SetupGet(a => a.SourceFilename).Returns("test\\b.js");
             var assetC = new Mock<IAsset>();
-            assetC.SetupGet(a => a.SourceFilename).Returns("c:\\test\\c.js");
+            assetC.SetupGet(a => a.SourceFilename).Returns("test\\c.js");
             // Add in wrong order here, to make sort have to do it's job.
             module.Assets.Add(assetB.Object);
             module.Assets.Add(assetC.Object);

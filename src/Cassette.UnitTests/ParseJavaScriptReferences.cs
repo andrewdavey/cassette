@@ -10,7 +10,7 @@ namespace Cassette
         public void ProcessAddsReferencesToJavaScriptAssetInModule()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("c:\\asset.js");
+            asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
 
             var javaScriptSource = @"
 /// <reference path=""another1.js""/>
@@ -23,7 +23,7 @@ function dummy() {}
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(javaScriptSource.AsStream());
-            var module = new Module("c:\\");
+            var module = new Module("", _ => null);
             module.Assets.Add(asset.Object);
 
             var processor = new ParseJavaScriptReferences();
