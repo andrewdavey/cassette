@@ -10,12 +10,19 @@ namespace Cassette
     {
         readonly IEnumerable<IAsset> children;
         readonly Stream stream;
-        readonly IEnumerable<AssetReference> references;
 
         public ConcatenatedAsset(IEnumerable<IAsset> children, Stream stream)
         {
             this.children = children;
             this.stream = stream;
+        }
+
+        public void Accept(IAssetVisitor visitor)
+        {
+            foreach (var child in children)
+            {
+                visitor.Visit(child);
+            }
         }
 
         public override string SourceFilename
@@ -55,14 +62,6 @@ namespace Cassette
         public void Dispose()
         {
             stream.Dispose();
-        }
-
-        public void Accept(IAssetVisitor visitor)
-        {
-            foreach (var child in children)
-            {
-                visitor.Visit(child);
-            }
         }
     }
 }

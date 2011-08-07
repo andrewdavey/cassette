@@ -58,6 +58,7 @@
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="CompileCoffeeScriptAsset.cs" />
     <Compile Include="ConcatentateAssets.cs" />
+    <Compile Include="CreateManifestVisitor.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />
