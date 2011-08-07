@@ -19,6 +19,7 @@ namespace Cassette.Persistence
 
         public void Save(IModuleContainer<T> moduleContainer)
         {
+            fileSystem.DeleteAll();
             SaveContainerXml(moduleContainer);
             foreach (var module in moduleContainer)
             {

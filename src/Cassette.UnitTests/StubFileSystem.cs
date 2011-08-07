@@ -26,5 +26,10 @@ namespace Cassette
         {
             return fileStreams.ContainsKey(filename);
         }
+
+        public void DeleteAll()
+        {
+            fileStreams.Clear();
+        }
     }
 }

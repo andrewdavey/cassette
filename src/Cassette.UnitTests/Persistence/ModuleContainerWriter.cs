@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
-using Cassette.Utilities;
 using Moq;
-using Should;
 using Xunit;
 
 namespace Cassette.Persistence
 {
     public class ModuleContainerWriter_Tests
     {
+        public ModuleContainerWriter_Tests()
+        {
+            fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(fs => fs.OpenWrite(It.IsAny<string>())).Returns(Stream.Null);
+        }
+
+        readonly Mock<IFileSystem> fileSystem;
+
         [Fact]
         public void SaveWritesContainerXmlFile()
         {
-            var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(fs => fs.OpenWrite(It.IsAny<string>())).Returns(Stream.Null);
-
+            
             var now = DateTime.UtcNow;
             var modules = new[] {
                 new ScriptModule("", _ => null)
@@ -33,6 +35,14 @@ namespace Cassette.Persistence
 
             fileSystem.Verify(fs => fs.OpenWrite("container.xml"));
             fileSystem.Verify(fs => fs.OpenWrite(".module"));
+        }
+
+        [Fact]
+        public void SaveDeletesAllCurrentFileSystemContent()
+        {
+            var writer = new ModuleContainerWriter<ScriptModule>(fileSystem.Object);
+            writer.Save(new ModuleContainer<ScriptModule>(Enumerable.Empty<ScriptModule>(), DateTime.UtcNow));
+            fileSystem.Verify(fs => fs.DeleteAll());
         }
     }
 }

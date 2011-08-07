@@ -8,5 +8,7 @@ namespace Cassette
         bool FileExists(string filename);
         Stream OpenRead(string filename);
         Stream OpenWrite(string filename);
+
+        void DeleteAll();
     }
 }

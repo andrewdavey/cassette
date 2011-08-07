@@ -26,6 +26,18 @@ namespace Cassette
             return File.Exists(GetFullPath(filename));
         }
 
+        public void DeleteAll()
+        {
+            foreach (var directory in Directory.GetDirectories(rootDirectory))
+            {
+                Directory.Delete(directory, true);
+            }
+            foreach (var filename in Directory.GetFiles(rootDirectory))
+            {
+                File.Delete(filename);
+            }
+        }
+
         string GetFullPath(string filename)
         {
             return Path.Combine(rootDirectory, filename);
