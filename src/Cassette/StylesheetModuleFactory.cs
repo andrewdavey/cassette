@@ -4,16 +4,16 @@ namespace Cassette
 {
     public class StylesheetModuleFactory : IModuleFactory<StylesheetModule>
     {
-        public StylesheetModuleFactory(Func<string, string> getFullPath)
+        public StylesheetModuleFactory(IFileSystem fileSystem)
         {
-            this.getFullPath = getFullPath;
+            this.fileSystem = fileSystem;
         }
 
-        readonly Func<string, string> getFullPath;
+        readonly IFileSystem fileSystem;
 
         public StylesheetModule CreateModule(string directoryPath)
         {
-            throw new NotImplementedException();
+            return new StylesheetModule(directoryPath, fileSystem);
         }
     }
 }

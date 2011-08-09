@@ -49,15 +49,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CassetteApplication.cs" />
     <Compile Include="IsolatedStorageFileSystem.cs" />
-    <Compile Include="ModuleContainerStore.cs" />
+    <Compile Include="StreamExtensions.cs" />
+    <None Include="ModuleCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScriptPipeline.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\scripts\module-a\asset-1.js" />
     <Content Include="assets\scripts\module-a\asset-2.js" />
     <Content Include="assets\scripts\module-b\asset-3.js" />
+    <Content Include="assets\scripts\module-b\asset-3.vsdoc.js" />
+    <Content Include="assets\styles\asset-1.css" />
+    <Content Include="assets\styles\asset-2.css" />
+    <Content Include="assets\templates\asset-1.htm" />
+    <Content Include="assets\templates\asset-2.htm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">

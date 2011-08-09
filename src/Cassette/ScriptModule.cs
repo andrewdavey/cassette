@@ -7,7 +7,8 @@ namespace Cassette
 {
     public class ScriptModule : Module
     {
-        public ScriptModule(string directory, Func<string, string> getFullPath) : base(directory, getFullPath)
+        public ScriptModule(string directory, IFileSystem fileSystem)
+            : base(directory, fileSystem)
         {
         }
     }

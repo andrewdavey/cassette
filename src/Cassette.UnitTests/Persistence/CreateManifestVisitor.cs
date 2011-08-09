@@ -11,7 +11,7 @@ namespace Cassette.Persistence
         public void GivenModuleAndAssets_CreateManifestVisitorCreatesXElement()
         {
             var visitor = new CreateManifestVisitor();
-            var module = new Module("", _ => null);
+            var module = new Module("", Mock.Of<IFileSystem>());
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));

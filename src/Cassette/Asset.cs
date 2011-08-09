@@ -17,11 +17,13 @@ namespace Cassette
 
             this.relativeFilename = relativeFilename;
             this.parentModule = parentModule;
-            this.hash = HashFileContents(parentModule.GetFullPath(relativeFilename));
+            this.fileSystem = parentModule.FileSystem;
+            this.hash = HashFileContents(relativeFilename);
         }
 
         readonly string relativeFilename;
         readonly Module parentModule;
+        readonly IFileSystem fileSystem;
         readonly byte[] hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
@@ -75,7 +77,7 @@ namespace Cassette
         byte[] HashFileContents(string filename)
         {
             using (var sha1 = SHA1.Create())
-            using (var fileStream = File.OpenRead(filename))
+            using (var fileStream = fileSystem.OpenFile(filename, FileMode.Open, FileAccess.Read))
             {
                 return sha1.ComputeHash(fileStream);
             }
@@ -88,7 +90,7 @@ namespace Cassette
 
         protected override Stream OpenStreamCore()
         {
-            return File.OpenRead(parentModule.GetFullPath(relativeFilename));
+            return fileSystem.OpenFile(relativeFilename, FileMode.Open, FileAccess.Read);
         }
 
         public override void Accept(IAssetVisitor visitor)

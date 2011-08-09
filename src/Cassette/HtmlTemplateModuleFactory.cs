@@ -4,16 +4,16 @@ namespace Cassette
 {
     public class HtmlTemplateModuleFactory : IModuleFactory<HtmlTemplateModule>
     {
-        public HtmlTemplateModuleFactory(Func<string, string> getFullPath)
+        public HtmlTemplateModuleFactory(IFileSystem fileSystem)
         {
-            this.getFullPath = getFullPath;
+            this.fileSystem = fileSystem;
         }
 
-        readonly Func<string, string> getFullPath;
+        readonly IFileSystem fileSystem;
 
         public HtmlTemplateModule CreateModule(string directory)
         {
-            return new HtmlTemplateModule(directory, getFullPath);
+            return new HtmlTemplateModule(directory, fileSystem);
         }
     }
 }

@@ -20,13 +20,13 @@ namespace Cassette.Persistence
         public void SaveWritesContainerXmlFile()
         {
             var modules = new[] {
-                new ScriptModule("", _ => null)
+                new ScriptModule("", Mock.Of<IFileSystem>())
             };
             var asset1 = new Mock<IAsset>();
             asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
             asset1.Setup(a => a.OpenStream()).Returns(Stream.Null);
             modules[0].Assets.Add(asset1.Object);
-            var container = new ModuleContainer<ScriptModule>(modules, DateTime.UtcNow);
+            var container = new ModuleContainer<ScriptModule>(modules);
 
             var writer = new ModuleContainerWriter<ScriptModule>(fileSystem.Object);
             writer.Save(container);
@@ -39,7 +39,7 @@ namespace Cassette.Persistence
         public void SaveDeletesAllCurrentFileSystemContent()
         {
             var writer = new ModuleContainerWriter<ScriptModule>(fileSystem.Object);
-            writer.Save(new ModuleContainer<ScriptModule>(Enumerable.Empty<ScriptModule>(), DateTime.UtcNow));
+            writer.Save(new ModuleContainer<ScriptModule>(Enumerable.Empty<ScriptModule>()));
             fileSystem.Verify(fs => fs.DeleteAll());
         }
     }

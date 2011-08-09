@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Cassette
@@ -25,6 +26,42 @@ namespace Cassette
         public void DeleteAll()
         {
             fileStreams.Clear();
+        }
+
+        public DateTime GetLastWriteTimeUtc(string filename)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFileSystem AtSubDirectory(string path, bool createIfNotExists)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetDirectories(string relativePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DirectoryExists(string relativePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetFiles(string directory)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetFiles(string directory, string searchPattern)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public FileAttributes GetAttributes(string path)
+        {
+            throw new NotImplementedException();
         }
     }
 }

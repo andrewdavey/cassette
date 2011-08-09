@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Linq;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -21,6 +24,11 @@ namespace Cassette
             return File.Exists(GetFullPath(filename));
         }
 
+        public bool DirectoryExists(string filename)
+        {
+            return Directory.Exists(GetFullPath(filename));
+        }
+
         public void DeleteAll()
         {
             foreach (var directory in Directory.GetDirectories(rootDirectory))
@@ -33,9 +41,56 @@ namespace Cassette
             }
         }
 
+        public DateTime GetLastWriteTimeUtc(string filename)
+        {
+            return File.GetLastWriteTimeUtc(filename);
+        }
+
         string GetFullPath(string filename)
         {
             return Path.Combine(rootDirectory, filename);
+        }
+
+        string ToRelativePath(string fullPath)
+        {
+            return fullPath.Substring(rootDirectory.Length + 1);
+        }
+
+        public IFileSystem AtSubDirectory(string path, bool createIfNotExists)
+        {
+            var fullPath = GetFullPath(path);
+            if (Directory.Exists(fullPath) == false)
+            {
+                if (createIfNotExists)
+                {
+                    Directory.CreateDirectory(fullPath);
+                }
+                else
+                {
+                    throw new DirectoryNotFoundException("Directory not found: " + fullPath);
+                }
+            }
+            return new FileSystem(fullPath);
+        }
+
+        public IEnumerable<string> GetDirectories(string relativePath)
+        {
+            return Directory.EnumerateDirectories(GetFullPath(relativePath)).Select(ToRelativePath);
+        }
+
+        public IEnumerable<string> GetFiles(string directory)
+        {
+            return Directory.GetFiles(GetFullPath(directory)).Select(ToRelativePath);
+        }
+
+        public IEnumerable<string> GetFiles(string directory, string searchPattern)
+        {
+            return Directory.GetFiles(GetFullPath(directory), searchPattern).Select(ToRelativePath);
+        }
+
+        public FileAttributes GetAttributes(string path)
+        {
+            return File.GetAttributes(GetFullPath(path));
         }
     }
 }

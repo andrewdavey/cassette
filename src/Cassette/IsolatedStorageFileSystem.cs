@@ -1,33 +1,94 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.IsolatedStorage;
+using System.Collections.Generic;
 
 namespace Cassette
 {
     public class IsolatedStorageFileSystem : IFileSystem
     {
         public IsolatedStorageFileSystem(IsolatedStorageFile storage)
+            : this(storage, "/")
+        {
+        }
+
+        public IsolatedStorageFileSystem(IsolatedStorageFile storage, string basePath)
         {
             this.storage = storage;
+            this.basePath = basePath;
         }
 
         readonly IsolatedStorageFile storage;
+        readonly string basePath;
 
         public bool FileExists(string filename)
         {
-            return storage.FileExists(filename);
+            return storage.FileExists(GetFullPath(filename));
         }
 
         public Stream OpenFile(string filename, FileMode mode, FileAccess access)
         {
-            return storage.OpenFile(filename, mode, access);
+            return storage.OpenFile(GetFullPath(filename), mode, access);
         }
 
         public void DeleteAll()
         {
-            foreach (var filename in storage.GetFileNames())
+            foreach (var filename in storage.GetFileNames(basePath + "/*"))
             {
-                storage.DeleteFile(filename);
+                storage.DeleteFile(GetFullPath(filename));
             }
+        }
+
+        public DateTime GetLastWriteTimeUtc(string filename)
+        {
+            return storage.GetLastWriteTime(GetFullPath(filename)).UtcDateTime;
+        }
+
+        string GetFullPath(string path)
+        {
+            return Path.Combine(basePath, path);
+        }
+
+        public IFileSystem AtSubDirectory(string path, bool createIfNotExists)
+        {
+            var fullPath = GetFullPath(path);
+            if (storage.DirectoryExists(fullPath) == false)
+            {
+                if (createIfNotExists)
+                {
+                    storage.CreateDirectory(fullPath);
+                }
+                else
+                {
+                    throw new DirectoryNotFoundException("Directory not found: " + fullPath);
+                }
+            }
+            return new IsolatedStorageFileSystem(storage, fullPath);
+        }
+
+        public IEnumerable<string> GetFiles(string directory)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetFiles(string directory, string searchPattern)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetDirectories(string relativePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DirectoryExists(string relativePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FileAttributes GetAttributes(string path)
+        {
+            throw new NotImplementedException();
         }
     }
 }

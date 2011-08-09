@@ -7,6 +7,7 @@ namespace Cassette
         where T : Module
     {
         void ValidateAndSortModules();
-        DateTime LastWriteTime { get; }
+
+        T FindModuleByPath(string path);
     }
 }

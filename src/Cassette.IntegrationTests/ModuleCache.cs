@@ -10,9 +10,9 @@ using Cassette.ModuleProcessing;
 
 namespace Cassette.IntegrationTests
 {
-    public class ModuleContainerStore_Tests : IDisposable
+    public class ModuleCache_Tests : IDisposable
     {
-        public ModuleContainerStore_Tests()
+        public ModuleCache_Tests()
         {
             // Create a basic set of directories and files.
             root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -28,9 +28,10 @@ namespace Cassette.IntegrationTests
             getFullPath = (path) => Path.Combine(root, "scripts", path);
         }
 
+        readonly ICassetteApplication application;
         readonly DateTime now;
         readonly string root;
-        private Func<string, string> getFullPath;
+        readonly Func<string, string> getFullPath;
 
         [Fact]
         public void CanRoundTripInStoreModuleContainerWithRootedModule()
@@ -40,13 +41,12 @@ namespace Cassette.IntegrationTests
             try
             {
                 var fileSystem = new FileSystem(cacheDirectory);
-                var writer = new ModuleContainerWriter<ScriptModule>(fileSystem);
-                var reader = new ModuleContainerReader<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
+                var cache = new ModuleCache<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
 
                 var container = StubModuleContainerWithRootedModule();
                 ConcatentateAssets(container);
-                writer.Save(container);
-                var loadedContainer = reader.Load();
+                cache.SaveModuleContainer(container);
+                var loadedContainer = cache.LoadModuleContainer();
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);
@@ -74,7 +74,7 @@ namespace Cassette.IntegrationTests
         {
             return new ModuleSource<ScriptModule>(Path.Combine(root, "scripts"), "*.js")
                 .AsSingleModule()
-                .CreateModuleContainer(new ScriptModuleFactory(getFullPath));
+                .CreateModuleContainer();
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace Cassette.IntegrationTests
                 var container = StubModuleContainerWithSubDirectoryModule();
                 ConcatentateAssets(container);
                 writer.Save(container);
-                var loadedContainer = reader.Load();
+                var loadedContainer = reader.Load(fileSystem);
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);

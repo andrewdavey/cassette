@@ -7,7 +7,7 @@ namespace Cassette
     {
         public bool ModuleContainsPath(string pathRelativeToModuleSource, Module module)
         {
-            pathToFind = pathRelativeToModuleSource.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            pathToFind = NormalizePath(pathRelativeToModuleSource);
             module.Accept(this);
             return isFound;
         }
@@ -32,6 +32,13 @@ namespace Cassette
             {
                 isFound = true;
             }
+        }
+
+        string NormalizePath(string path)
+        {
+            return path
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
     }
 }

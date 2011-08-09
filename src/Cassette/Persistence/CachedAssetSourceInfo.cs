@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 
 namespace Cassette.Persistence
 {
-    public class AssetInfo : IAsset
+    public class CachedAssetSourceInfo : IAsset
     {
-        public AssetInfo(string filename)
+        public CachedAssetSourceInfo(string filename)
         {
             this.filename = filename;
         }
@@ -17,6 +16,11 @@ namespace Cassette.Persistence
         public string SourceFilename
         {
             get { return filename; }
+        }
+
+        public void Accept(IAssetVisitor visitor)
+        {
+            visitor.Visit(this);
         }
 
         public IEnumerable<AssetReference> References
@@ -34,14 +38,9 @@ namespace Cassette.Persistence
             throw new NotImplementedException();
         }
 
-        public System.IO.Stream OpenStream()
+        public Stream OpenStream()
         {
             throw new NotImplementedException();
-        }
-
-        public void Accept(IAssetVisitor visitor)
-        {
-            visitor.Visit(this);
         }
     }
 }

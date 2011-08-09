@@ -7,15 +7,20 @@ namespace Cassette
 {
     public class Module : IDisposable
     {
-        public Module(string relativeDirectory, Func<string, string> getFullPath)
+        public Module(string relativeDirectory, IFileSystem fileSystem)
         {
             this.directory = NormalizePath(relativeDirectory);
-            this.getFullPath = getFullPath;
+            this.fileSystem = fileSystem.AtSubDirectory(relativeDirectory, false);
         }
 
         readonly string directory;
-        readonly Func<string, string> getFullPath;
+        readonly IFileSystem fileSystem;
         IList<IAsset> assets = new List<IAsset>();
+
+        public IFileSystem FileSystem
+        {
+            get { return fileSystem; }
+        }
 
         public string Directory
         {
@@ -26,11 +31,6 @@ namespace Cassette
         {
             get { return assets; }
             set { assets = value; }
-        }
-
-        public string GetFullPath(string path)
-        {
-            return getFullPath(Path.Combine(directory, path));
         }
 
         public bool ContainsPath(string path)

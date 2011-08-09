@@ -17,8 +17,9 @@ namespace Cassette
             filename = Path.Combine(root.FullName, "module", "test.js");
             // Write some testable content to the file.
             File.WriteAllText(filename, "asset content");
+            var fileSystem = new FileSystem(root.FullName);
 
-            var module = new Module("module", path => Path.Combine(root.FullName, path));
+            var module = new Module("module", fileSystem);
             asset = new Asset("test.js", module);
             module.Assets.Add(asset);
 

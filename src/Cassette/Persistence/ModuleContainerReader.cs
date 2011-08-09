@@ -9,36 +9,34 @@ namespace Cassette.Persistence
     public class ModuleContainerReader<T> : IModuleContainerReader<T>
         where T : Module
     {
-        public ModuleContainerReader(IFileSystem fileSystem, IModuleFactory<T> moduleFactory)
+        public ModuleContainerReader(IModuleFactory<T> moduleFactory)
         {
-            this.fileSystem = fileSystem;
             this.moduleFactory = moduleFactory;
         }
 
-        readonly IFileSystem fileSystem;
         readonly IModuleFactory<T> moduleFactory;
 
-        public IModuleContainer<T> Load()
+        public IModuleContainer<T> Load(IFileSystem fileSystem)
         {
             if (fileSystem.FileExists("container.xml") == false)
             {
                 return EmptyContainer();
             }
 
-            var containerElement = LoadContainerElement();
+            var containerElement = LoadContainerElement(fileSystem);
             var lastWriteTime = new DateTime(long.Parse(containerElement.Attribute("lastWriteTime").Value));
             var moduleElements = containerElement.Elements("module");
-            var modules = CreateModules(moduleElements);
+            var modules = CreateModules(moduleElements, fileSystem);
 
-            return new ModuleContainer<T>(modules, lastWriteTime);
+            return new ModuleContainer<T>(modules);
         }
 
         IModuleContainer<T> EmptyContainer()
         {
-            return new ModuleContainer<T>(Enumerable.Empty<T>(), DateTime.MinValue);
+            return new ModuleContainer<T>(Enumerable.Empty<T>());
         }
 
-        XElement LoadContainerElement()
+        XElement LoadContainerElement(IFileSystem fileSystem)
         {
             using (var containerFile = fileSystem.OpenFile("container.xml", FileMode.Open, FileAccess.Read))
             {
@@ -46,26 +44,26 @@ namespace Cassette.Persistence
             }
         }
 
-        T[] CreateModules(IEnumerable<XElement> moduleElements)
+        T[] CreateModules(IEnumerable<XElement> moduleElements, IFileSystem fileSystem)
         {
             return (
                 from moduleElement in moduleElements
-                select CreateModule(moduleElement)
+                select CreateModule(moduleElement, fileSystem)
             ).ToArray();
         }
 
-        T CreateModule(XElement moduleElement)
+        T CreateModule(XElement moduleElement, IFileSystem fileSystem)
         {
             var directory = moduleElement.Attribute("directory").Value;
             var filename = directory + ".module";
             var module = moduleFactory.CreateModule(directory);
 
-            var singleAsset = CreateSingleAssetForModule(moduleElement, module, filename);
+            var singleAsset = CreateSingleAssetForModule(moduleElement, module, filename, fileSystem);
             module.Assets.Add(singleAsset);
             return module;
         }
 
-        CachedAsset CreateSingleAssetForModule(XElement moduleElement, T module, string moduleFilename)
+        CachedAsset CreateSingleAssetForModule(XElement moduleElement, T module, string moduleFilename, IFileSystem fileSystem)
         {
             var assetInfos = CreateAssetInfos(moduleElement, module.Directory);
             var asset = new CachedAsset(assetInfos, () => fileSystem.OpenFile(moduleFilename, FileMode.Open, FileAccess.Read));
@@ -85,16 +83,16 @@ namespace Cassette.Persistence
             }
         }
 
-        IEnumerable<AssetInfo> CreateAssetInfos(XElement moduleElement, string directory)
+        IEnumerable<CachedAssetSourceInfo> CreateAssetInfos(XElement moduleElement, string directory)
         {
             return moduleElement.Elements("asset").Select(a => CreateAssetInfo(a, directory));
         }
 
-        AssetInfo CreateAssetInfo(XElement assetElement, string directory)
+        CachedAssetSourceInfo CreateAssetInfo(XElement assetElement, string directory)
         {
             var relativeFilename = assetElement.Attribute("filename").Value;
             var absoluteFilename = Path.Combine(directory, relativeFilename);
-            return new AssetInfo(absoluteFilename);
+            return new CachedAssetSourceInfo(absoluteFilename);
         }
     }
 }

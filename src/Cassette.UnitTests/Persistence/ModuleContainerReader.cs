@@ -45,11 +45,11 @@ namespace Cassette.Persistence
             };
             var fileSystem = new StubFileSystem(fileStreams);
             var moduleFactory = new Mock<IModuleFactory<ScriptModule>>();
-            moduleFactory.Setup(f => f.CreateModule("module-a")).Returns(new ScriptModule("module-a", _ => null));
-            moduleFactory.Setup(f => f.CreateModule("module-b")).Returns(new ScriptModule("module-b", _ => null));
-            var reader = new ModuleContainerReader<ScriptModule>(fileSystem, moduleFactory.Object);
+            moduleFactory.Setup(f => f.CreateModule("module-a")).Returns(new ScriptModule("module-a", Mock.Of<IFileSystem>()));
+            moduleFactory.Setup(f => f.CreateModule("module-b")).Returns(new ScriptModule("module-b", Mock.Of<IFileSystem>()));
+            var reader = new ModuleContainerReader<ScriptModule>(moduleFactory.Object);
 
-            var container = reader.Load();
+            var container = reader.Load(fileSystem);
 
             var moduleA = container.First(m => m.Directory.EndsWith("module-a"));
             moduleA.Assets.Count.ShouldEqual(1);
@@ -69,19 +69,10 @@ namespace Cassette.Persistence
         [Fact]
         public void GivenNoFilesExist_LoadReturnsEmptyModuleContainer()
         {
-            var reader = new ModuleContainerReader<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
-            var container = reader.Load();
+            var reader = new ModuleContainerReader<ScriptModule>(Mock.Of<IModuleFactory<ScriptModule>>());
+            var container = reader.Load(Mock.Of<IFileSystem>());
 
             container.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public void GivenNoFilesExist_LoadReturnsModuleContainerWithMinLastWriteDate()
-        {
-            var reader = new ModuleContainerReader<ScriptModule>(Mock.Of<IFileSystem>(), Mock.Of<IModuleFactory<ScriptModule>>());
-            var container = reader.Load();
-
-            container.LastWriteTime.ShouldEqual(DateTime.MinValue);
         }
 
     }

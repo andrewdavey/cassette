@@ -7,7 +7,8 @@ namespace Cassette.ModuleProcessing
 {
     public class MicrosoftJavaScriptMinifier : IAssetTransformer
     {
-        public MicrosoftJavaScriptMinifier() : this(new CodeSettings())
+        public MicrosoftJavaScriptMinifier()
+            : this(new CodeSettings())
         {
         }
 

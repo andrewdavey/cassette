@@ -57,14 +57,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asset.cs" />
+    <Compile Include="CassetteApplicationExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
+    <Compile Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplateModuleFactory.cs" />
+    <Compile Include="ModuleCache.cs" />
     <Compile Include="ModuleProcessing\CompileCoffeeScript.cs" />
     <Compile Include="ModuleProcessing\CompileCoffeeScriptAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="ModuleProcessing\ConcatenatedAsset.cs" />
+    <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="Persistence\CreateManifestVisitor.cs" />
-    <Compile Include="Initializer.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="Persistence\ModuleContainerReader.cs" />
@@ -72,7 +75,6 @@
     <Compile Include="ModuleProcessing\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
-    <Compile Include="ModuleSource.cs" />
     <Compile Include="ModuleProcessing\ParseJavaScriptReferences.cs" />
     <Compile Include="ModuleProcessing\Pipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -41,18 +41,14 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WebActivator">
+      <HintPath>..\packages\WebActivator.1.4.1\lib\net40\WebActivator.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets.cs" />
     <Compile Include="CassetteApplication.cs" />
-    <Compile Include="CassetteHttpHandler.cs" />
-    <Compile Include="CassetteHttpHandlerFactory.cs" />
-    <Compile Include="CassetteHttpModule.cs" />
-    <Compile Include="ExceptionCachedManager.cs" />
-    <Compile Include="ICassetteApplication.cs" />
-    <Compile Include="PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingletonCassetteApplicationContainer.cs" />
+    <Compile Include="StartUp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
@@ -64,6 +60,7 @@
     <None Include="Cassette.Web.nuspec">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Views\Web.config.transform" />
     <None Include="Web.config.transform" />
   </ItemGroup>

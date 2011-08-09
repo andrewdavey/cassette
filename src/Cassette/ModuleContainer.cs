@@ -8,14 +8,12 @@ namespace Cassette
     public class ModuleContainer<T> : IModuleContainer<T>
         where T : Module
     {
-        public ModuleContainer(IEnumerable<T> modules, DateTime lastWriteTime)
+        public ModuleContainer(IEnumerable<T> modules)
         {
             this.modules = modules.ToArray(); // Force eval to prevent repeatedly generating new modules.
-            this.lastWriteTime = lastWriteTime;
         }
 
         IEnumerable<T> modules;
-        readonly DateTime lastWriteTime;
 
         public void ValidateAndSortModules()
         {
@@ -26,11 +24,6 @@ namespace Cassette
         public IEnumerator<T> GetEnumerator()
         {
             return modules.GetEnumerator();
-        }
-
-        public DateTime LastWriteTime
-        {
-            get { return lastWriteTime; }
         }
 
         void ValidateAssetReferences()
@@ -91,6 +84,11 @@ namespace Cassette
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public T FindModuleByPath(string path)
+        {
+            return modules.FirstOrDefault(module => module.ContainsPath(path));
         }
     }
 }

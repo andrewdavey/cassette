@@ -1,5 +1,6 @@
 ﻿using Should;
 using Xunit;
+using Moq;
 
 namespace Cassette
 {
@@ -8,7 +9,7 @@ namespace Cassette
         [Fact]
         public void CreateModule_ReturnsStylesheetModuleWithDirectorySet()
         {
-            var factory = new ScriptModuleFactory(_ => "");
+            var factory = new StylesheetModuleFactory(Mock.Of<IFileSystem>());
             var module = factory.CreateModule("test");
             module.Directory.ShouldEqual("test");
         }

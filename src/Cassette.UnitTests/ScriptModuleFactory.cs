@@ -1,5 +1,6 @@
 ﻿using Should;
 using Xunit;
+using Moq;
 
 namespace Cassette
 {
@@ -8,7 +9,7 @@ namespace Cassette
         [Fact]
         public void CreateModuleReturnsScriptModule()
         {
-            var factory = new ScriptModuleFactory(_ => null);
+            var factory = new ScriptModuleFactory(Mock.Of<IFileSystem>());
             var module = factory.CreateModule("test");
             module.ShouldBeType<ScriptModule>();
         }
@@ -16,7 +17,7 @@ namespace Cassette
         [Fact]
         public void CreateModuleAssignsScriptModuleDirectory()
         {
-            var factory = new ScriptModuleFactory(_ => null);
+            var factory = new ScriptModuleFactory(Mock.Of<IFileSystem>());
             var module = factory.CreateModule("test");
             module.Directory.ShouldEqual("test");
         }

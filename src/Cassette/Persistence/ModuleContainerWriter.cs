@@ -32,7 +32,6 @@ namespace Cassette.Persistence
             var createManifestVisitor = new CreateManifestVisitor();
             var xml = new XDocument(
                 new XElement("container",
-                    new XAttribute("lastWriteTime", moduleContainer.LastWriteTime.Ticks),
                     moduleContainer.Select(createManifestVisitor.CreateManifest)
                 )
             );

@@ -27,7 +27,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenProcess_ThenEachStepIsCalled()
         {
-            var module = new Module("", _ => null);
+            var module = new Module("", Mock.Of<IFileSystem>());
             pipeline.Process(module);
 
             step1.Verify(p => p.Process(module));

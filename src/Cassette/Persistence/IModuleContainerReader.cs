@@ -3,6 +3,6 @@
     public interface IModuleContainerReader<T>
         where T : Module
     {
-        IModuleContainer<T> Load();
+        IModuleContainer<T> Load(IFileSystem fileSystem);
     }
 }
