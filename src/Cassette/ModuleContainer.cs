@@ -11,11 +11,14 @@ namespace Cassette
         public ModuleContainer(IEnumerable<T> modules)
         {
             this.modules = modules.ToArray(); // Force eval to prevent repeatedly generating new modules.
+            ValidateAssetReferences();
+            moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
+            sortIndex = BuildSortIndex();
         }
 
-        IEnumerable<T> modules;
-        Dictionary<T, HashSet<T>> moduleImmediateReferences;
-        Dictionary<T, int> sortIndex = new Dictionary<T, int>();
+        readonly IEnumerable<T> modules;
+        readonly Dictionary<T, HashSet<T>> moduleImmediateReferences;
+        readonly Dictionary<T, int> sortIndex;
 
         public IEnumerable<T> Modules
         {
@@ -35,13 +38,6 @@ namespace Cassette
         public T FindModuleByPath(string path)
         {
             return modules.FirstOrDefault(module => module.ContainsPath(path));
-        }
-
-        public void ValidateAndSortModules()
-        {
-            ValidateAssetReferences();
-            moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
-            sortIndex = BuildSortIndex();
         }
 
         Dictionary<T, HashSet<T>> BuildModuleImmediateReferenceDictionary()

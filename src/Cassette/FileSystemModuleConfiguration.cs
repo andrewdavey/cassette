@@ -119,7 +119,6 @@ namespace Cassette
                 {
                     ProcessAllModules(modules, application);
                     var container = new ModuleContainer<T>(modules);
-                    container.ValidateAndSortModules();
                     cache.SaveModuleContainer(container);
                     return container;
                 }
@@ -128,7 +127,6 @@ namespace Cassette
             {
                 ProcessAllModules(modules, application);
                 var container = new ModuleContainer<T>(modules);
-                container.ValidateAndSortModules();
                 return container;
             }
         }

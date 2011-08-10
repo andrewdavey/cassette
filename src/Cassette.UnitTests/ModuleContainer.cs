@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Moq;
 using Should;
 using Xunit;
-using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -17,7 +15,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenAssetWithUnknownDifferentModuleReference_ThenValidateAndSortModulesThrowsAssetReferenceException()
+        public void GivenAssetWithUnknownDifferentModuleReference_ThenConstructorThrowsAssetReferenceException()
         {
             var module = new Module("module-1", Mock.Of<IFileSystem>());
             var asset = new Mock<IAsset>();
@@ -28,13 +26,13 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module }).ValidateAndSortModules();
+                new ModuleContainer<Module>(new[] { module });
             });
             exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\". Cannot find \"fail\\fail.js\".");
         }
 
         [Fact]
-        public void GivenAssetWithUnknownDifferentModuleReferenceHavingLineNumber_ThenValidateAndSortModulesThrowsAssetReferenceException()
+        public void GivenAssetWithUnknownDifferentModuleReferenceHavingLineNumber_ThenConstructorThrowsAssetReferenceException()
         {
             var module = new Module("module-1", Mock.Of<IFileSystem>());
             var asset = new Mock<IAsset>();
@@ -45,7 +43,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module }).ValidateAndSortModules();
+                new ModuleContainer<Module>(new[] { module });
             });
             exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\", line 42. Cannot find \"fail\\fail.js\".");
         }
@@ -103,7 +101,6 @@ namespace Cassette
             module2.Assets.Add(asset2.Object);
 
             var container = new ModuleContainer<Module>(new[] { module1, module2 });
-            container.ValidateAndSortModules();
 
             container.AddDependenciesAndSort(new[] { module1 })
                 .SequenceEqual(new[] { module2, module1 }).ShouldBeTrue();
@@ -132,7 +129,6 @@ namespace Cassette
             module3.Assets.Add(asset3.Object);
 
             var container = new ModuleContainer<Module>(new[] { module1, module2, module3 });
-            container.ValidateAndSortModules();
 
             container.AddDependenciesAndSort(new[] { module1 })
                 .SequenceEqual(new[] { module3, module2, module1 }).ShouldBeTrue();
@@ -171,7 +167,6 @@ namespace Cassette
             module4.Assets.Add(asset4.Object);
 
             var container = new ModuleContainer<Module>(new[] { module1, module2, module3, module4 });
-            container.ValidateAndSortModules();
 
             container.AddDependenciesAndSort(new[] { module1 })
                 .SequenceEqual(new[] { module4, module2, module3, module1 }).ShouldBeTrue();

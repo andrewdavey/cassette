@@ -7,7 +7,6 @@ namespace Cassette
         where T : Module
     {
         IEnumerable<T> Modules { get; }
-        void ValidateAndSortModules();
         T FindModuleByPath(string path);
         IEnumerable<T> AddDependenciesAndSort(IEnumerable<T> modules);
     }
