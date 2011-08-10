@@ -132,11 +132,14 @@ namespace Cassette
             var filename = FlattenPathToSingleFilename(module.Directory) + ".module";
             using (var fileStream = fileSystem.OpenFile(filename, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                using (var dataStream = module.Assets[0].OpenStream())
+                if (module.Assets.Count > 0)
                 {
-                    dataStream.CopyTo(fileStream);
+                    using (var dataStream = module.Assets[0].OpenStream())
+                    {
+                        dataStream.CopyTo(fileStream);
+                    }
+                    fileStream.Flush();
                 }
-                fileStream.Flush();
             }
         }
 
