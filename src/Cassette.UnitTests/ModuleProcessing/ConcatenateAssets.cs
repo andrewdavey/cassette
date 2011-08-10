@@ -22,7 +22,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(asset2.Object);
 
             var processor = new ConcatenateAssets();
-            processor.Process(module);
+            processor.Process(module, Mock.Of<ICassetteApplication>());
 
             module.Assets.Count.ShouldEqual(1);
             using (var reader = new StreamReader(module.Assets[0].OpenStream()))
@@ -53,7 +53,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(asset2.Object);
 
             var processor = new ConcatenateAssets();
-            processor.Process(module);
+            processor.Process(module, Mock.Of<ICassetteApplication>());
 
             module.Assets[0].References
                 .Select(r => r.ReferencedFilename)

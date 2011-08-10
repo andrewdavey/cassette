@@ -21,7 +21,7 @@ namespace Cassette.ModuleProcessing
             var asset = new Mock<IAsset>();
             module.Assets.Add(asset.Object);
 
-            processor.Process(module);
+            processor.Process(module, Mock.Of<ICassetteApplication>());
 
             asset.Verify(a => a.AddAssetTransformer(minifier.Object));
         }

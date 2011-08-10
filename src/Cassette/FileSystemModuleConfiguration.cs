@@ -108,25 +108,36 @@ namespace Cassette
                 modules.Add(module);
             }
 
-            var cache = application.GetModuleCache<T>();
-            if (cache.IsUpToDate(lastWriteTimeMax))
+            if (application.IsOutputOptimized)
             {
-                return cache.LoadModuleContainer();
+                var cache = application.GetModuleCache<T>();
+                if (cache.IsUpToDate(lastWriteTimeMax))
+                {
+                    return cache.LoadModuleContainer();
+                }
+                else
+                {
+                    ProcessAllModules(modules, application);
+                    var container = new ModuleContainer<T>(modules);
+                    container.ValidateAndSortModules();
+                    cache.SaveModuleContainer(container);
+                    return container;
+                }
             }
             else
             {
-                ProcessAllModules(modules);
+                ProcessAllModules(modules, application);
                 var container = new ModuleContainer<T>(modules);
-                cache.SaveModuleContainer(container);
+                container.ValidateAndSortModules();
                 return container;
             }
         }
 
-        void ProcessAllModules(IEnumerable<T> container)
+        void ProcessAllModules(IEnumerable<T> container, ICassetteApplication application)
         {
             foreach (var module in container)
             {
-                pipeline.Process(module);
+                pipeline.Process(module, application);
             }
         }
     }

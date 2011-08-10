@@ -23,7 +23,7 @@ namespace Cassette.IntegrationTests
             {
                 var sourceFileSystem = new FileSystem(Path.GetFullPath(@"..\..\assets"));
                 var cacheFileSystem = new IsolatedStorageFileSystem(storage);
-                var application = new CassetteApplication(sourceFileSystem, cacheFileSystem);
+                var application = new CassetteApplication(sourceFileSystem, cacheFileSystem, true);
                 
                 // Define the modules
                 application.HasModules<ScriptModule>()
@@ -32,9 +32,13 @@ namespace Cassette.IntegrationTests
                     .ProcessWith(
                         new ParseJavaScriptReferences(),
                         new SortAssetsByDependency(),
-                        new ConcatenateAssets(),
-                        new MinifyAssets(new MicrosoftJavaScriptMinifier())
+                        new ConditionalStep<ScriptModule>(
+                            (m, app) => app.IsOutputOptimized,
+                            new ConcatenateAssets(),
+                            new MinifyAssets(new MicrosoftJavaScriptMinifier())
+                        )
                     );
+                
                 application.HasModules<StylesheetModule>()
                     .Directories("styles")
                     .ProcessWith(

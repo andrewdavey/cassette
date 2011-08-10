@@ -20,7 +20,7 @@
 
         readonly string contentType;
 
-        public void Process(HtmlTemplateModule module)
+        public void Process(HtmlTemplateModule module, ICassetteApplication application)
         {
             foreach (var asset in module.Assets)
             {

@@ -14,16 +14,57 @@ namespace Cassette
         }
 
         IEnumerable<T> modules;
+        Dictionary<T, HashSet<T>> moduleImmediateReferences;
+        Dictionary<T, int> sortIndex = new Dictionary<T, int>();
+
+        public IEnumerable<T> Modules
+        {
+            get { return modules; }
+        }
+
+        public IEnumerable<T> AddDependenciesAndSort(IEnumerable<T> modules)
+        {
+            var references = new HashSet<T>(modules);
+            foreach (var module in modules)
+            {
+                AddModulesReferencedBy(module, references);
+            }
+            return references.OrderBy(m => sortIndex[m]);
+        }
+
+        public T FindModuleByPath(string path)
+        {
+            return modules.FirstOrDefault(module => module.ContainsPath(path));
+        }
 
         public void ValidateAndSortModules()
         {
             ValidateAssetReferences();
-            OrderModulesByDependency();
+            moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
+            sortIndex = BuildSortIndex();
         }
 
-        public IEnumerator<T> GetEnumerator()
+        Dictionary<T, HashSet<T>> BuildModuleImmediateReferenceDictionary()
         {
-            return modules.GetEnumerator();
+            return (
+                from module in modules
+                select new 
+                { 
+                    module, 
+                    references = new HashSet<T>(module.Assets.SelectMany(a => a.References)
+                        .Where(r => r.Type == AssetReferenceType.DifferentModule)
+                        .Select(r => GetModuleContainingPath(r.ReferencedFilename))
+                    ) 
+                }
+            ).ToDictionary(x => x.module, x => x.references);
+        }
+
+        Dictionary<T, int> BuildSortIndex()
+        {
+            var graph = new Graph<T>(modules, m => moduleImmediateReferences[m]);
+            return graph.TopologicalSort()
+                .Select((module, index) => new { module, index })
+                .ToDictionary(x => x.module, x => x.index);
         }
 
         void ValidateAssetReferences()
@@ -60,19 +101,6 @@ namespace Cassette
             }
         }
 
-        void OrderModulesByDependency()
-        {
-            var graph = new Graph<T>(
-                modules,
-                module => module.Assets.SelectMany(asset => asset.References)
-                    .Where(r => r.Type == AssetReferenceType.DifferentModule)
-                    .Select(r => r.ReferencedFilename)
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .Select(GetModuleContainingPath)
-            );
-            modules = graph.TopologicalSort().ToArray();
-        }
-
         T GetModuleContainingPath(string path)
         {
             var module = modules.First(m => m.ContainsPath(path));
@@ -81,14 +109,18 @@ namespace Cassette
             throw new AssetReferenceException("Cannot find an asset module containing the path \"" + path + "\".");
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        void AddModulesReferencedBy(T module, HashSet<T> references)
         {
-            return GetEnumerator();
-        }
+            var modules = moduleImmediateReferences[module];
 
-        public T FindModuleByPath(string path)
-        {
-            return modules.FirstOrDefault(module => module.ContainsPath(path));
+            foreach (var referencedModule in modules)
+            {
+                AddModulesReferencedBy(referencedModule, references);
+            }
+            foreach (var referencedModule in modules)
+            {
+                references.Add(referencedModule);
+            }
         }
     }
 }

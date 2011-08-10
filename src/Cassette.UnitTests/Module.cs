@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Moq;
 using Should;
 using Xunit;
@@ -119,6 +120,36 @@ namespace Cassette
 
             asset1.Verify(a => a.Accept(visitor.Object));
             asset2.Verify(a => a.Accept(visitor.Object));
+        }
+
+        [Fact]
+        public void WhenAddReferenceToAnotherModule_ThenReferencesReturnsThatModule()
+        {
+            var module = new Module("test", fileSystem);
+            var anotherModule = new Module("another", fileSystem);
+            module.AddReference(anotherModule);
+            module.References.ToArray().SequenceEqual(new[] { anotherModule }).ShouldBeTrue();
+        }
+
+
+        [Fact]
+        public void WhenAddReferenceToAnotherModuleTwice_ThenReferencesReturnsThatModuleOnce()
+        {
+            var module = new Module("test", fileSystem);
+            var anotherModule = new Module("another", fileSystem);
+            module.AddReference(anotherModule);
+            module.AddReference(anotherModule);
+            module.References.ToArray().SequenceEqual(new[] { anotherModule }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void WhenAddReferenceToSelf_ThenThrowArgumentException()
+        {
+            var module = new Module("test", fileSystem);
+            Assert.Throws<ArgumentException>(delegate
+            {
+                module.AddReference(module);
+            });
         }
 
         [Fact]

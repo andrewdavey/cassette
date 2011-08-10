@@ -9,7 +9,7 @@
 
         readonly IAssetTransformer minifier;
 
-        public void Process(Module module)
+        public void Process(Module module, ICassetteApplication application)
         {
             foreach (var asset in module.Assets)
             {

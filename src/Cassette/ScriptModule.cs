@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace Cassette
 {
@@ -10,6 +11,31 @@ namespace Cassette
         public ScriptModule(string directory, IFileSystem fileSystem)
             : base(directory, fileSystem)
         {
+        }
+
+        static readonly string scriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
+
+        public override string ContentType
+        {
+            get { return "text/javascript"; }
+        }
+
+        public override IHtmlString Render(ICassetteApplication application)
+        {
+            if (application.IsOutputOptimized)
+            {
+                var url = HttpUtility.UrlEncode(application.CreateModuleUrl(this));
+                return new HtmlString(string.Format(scriptHtml, url));
+            }
+            else
+            {
+                var scripts = string.Join(Environment.NewLine, 
+                    from asset in Assets
+                    let url = HttpUtility.UrlEncode(application.CreateAssetUrl(this, asset))
+                    select string.Format(scriptHtml, url)
+                );
+                return new HtmlString(scripts);
+            }
         }
     }
 }

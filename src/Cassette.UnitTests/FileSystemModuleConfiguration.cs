@@ -73,7 +73,7 @@ namespace Cassette
         {
             config.ForSubDirectoriesOf("scripts");
 
-            ModuleContainer.Count().ShouldEqual(2);
+            ModuleContainer.Modules.Count().ShouldEqual(2);
         }
 
         [Fact]
@@ -81,8 +81,8 @@ namespace Cassette
         {
             config.ForSubDirectoriesOf("scripts");
 
-            ModuleContainer.ElementAt(0).Assets.Count.ShouldEqual(3);
-            ModuleContainer.ElementAt(1).Assets.Count.ShouldEqual(2);
+            ModuleContainer.Modules.ElementAt(0).Assets.Count.ShouldEqual(3);
+            ModuleContainer.Modules.ElementAt(1).Assets.Count.ShouldEqual(2);
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Cassette
         {
             config.Directories("scripts/module-a");
 
-            ModuleContainer.Count().ShouldEqual(1);
+            ModuleContainer.Modules.Count().ShouldEqual(1);
         }
 
         [Fact]
@@ -107,7 +107,7 @@ namespace Cassette
         {
             config.Directories("scripts/module-a", "scripts/module-b");
 
-            ModuleContainer.Count().ShouldEqual(2);
+            ModuleContainer.Modules.Count().ShouldEqual(2);
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace Cassette
             config.Directories("scripts/module-b")
                   .IncludeFiles("*.js");
 
-            var assets = ModuleContainer.First().Assets;
+            var assets = ModuleContainer.Modules.First().Assets;
             assets.Count.ShouldEqual(1);
             assets[0].SourceFilename.EndsWith("test-3.js").ShouldBeTrue();
         }
@@ -136,7 +136,7 @@ namespace Cassette
             config.Directories("html-templates")
                   .IncludeFiles("*.htm", "*.html");
 
-            ModuleContainer.First().Assets.Count.ShouldEqual(2);
+            ModuleContainer.Modules.First().Assets.Count.ShouldEqual(2);
         }
 
         [Fact]
@@ -145,7 +145,7 @@ namespace Cassette
             config.Directories("scripts/module-b")
                   .IncludeFiles();
 
-            ModuleContainer.First().Assets.Count.ShouldEqual(2);
+            ModuleContainer.Modules.First().Assets.Count.ShouldEqual(2);
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace Cassette
             config.Directories("scripts/module-a")
                   .IncludeFiles("*.js")
                   .ExcludeFiles(new Regex("\\.vsdoc\\.js$"));
-            ModuleContainer.First().Assets.Count.ShouldEqual(2);
+            ModuleContainer.Modules.First().Assets.Count.ShouldEqual(2);
         }
     }
 
@@ -166,13 +166,19 @@ namespace Cassette
             config.ForSubDirectoriesOf("scripts");
             (config as IModuleContainerFactory<Module>).CreateModuleContainer();
 
-            pipeline.Verify(p => p.Process(It.IsAny<Module>()), Times.Exactly(2));
+            pipeline.Verify(p => p.Process(It.IsAny<Module>(), It.IsAny<ICassetteApplication>()), Times.Exactly(2));
         }
 
         [Fact]
         public void WhenCacheIsUpToDate_ThenPipelineIsNotProcessed()
         {
+            cache.Setup(c => c.IsUpToDate(It.IsAny<DateTime>())).Returns(true);
+            (config as IModuleContainerFactory<Module>).CreateModuleContainer();
 
+            pipeline.Verify(
+                p => p.Process(It.IsAny<Module>(), It.IsAny<ICassetteApplication>()),
+                Times.Never()
+            );
         }
     }
 }

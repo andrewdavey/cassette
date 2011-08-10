@@ -42,5 +42,10 @@ namespace Cassette.Persistence
         {
             throw new NotImplementedException();
         }
+
+        public byte[] Hash
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

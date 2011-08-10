@@ -10,5 +10,10 @@ namespace Cassette
         }
 
         public string Media { get; set; }
+
+        public override string ContentType
+        {
+            get { return "text/css"; }
+        }
     }
 }

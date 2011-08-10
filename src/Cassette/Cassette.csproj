@@ -52,6 +52,7 @@
     <Compile Include="AssetBase.cs" />
     <Compile Include="CassetteApplication.cs" />
     <Compile Include="CassetteApplicationExtensions.cs" />
+    <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="EmptyCassetteConfiguration.cs" />
     <Compile Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplateModule.cs" />
@@ -62,7 +63,6 @@
     <Compile Include="IsolatedStorageFileSystem.cs" />
     <Compile Include="ModuleCache.cs" />
     <Compile Include="ModuleContainsPathPredicate.cs" />
-    <Compile Include="ModuleProcessing\HtmlTemplatesInScriptBlocks.cs" />
     <Compile Include="ModuleProcessing\MicrosoftStyleSheetMinifier.cs" />
     <Compile Include="ModuleProcessing\ParseCssReferences.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
@@ -82,7 +82,6 @@
     <Compile Include="IAssetVisitor.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="IModuleContainer.cs" />
-    <Compile Include="Persistence\IModuleContainerReader.cs" />
     <Compile Include="IModuleFactory.cs" />
     <Compile Include="ModuleProcessing\IModuleProcessor.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
@@ -95,13 +94,11 @@
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="Persistence\IModuleContainerWriter.cs" />
-    <Compile Include="Persistence\ModuleContainerReader.cs" />
     <Compile Include="ModuleProcessing\ModuleProcessorOfAssetsMatchingFileExtension.cs" />
     <Compile Include="ModuleProcessing\ParseCoffeeScriptReferences.cs" />
     <Compile Include="ModuleProcessing\ParseJavaScriptReferences.cs" />
     <Compile Include="ModuleProcessing\Pipeline.cs" />
-    <Compile Include="Persistence\ModuleContainerWriter.cs" />
+    <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="ScriptModule.cs" />
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />

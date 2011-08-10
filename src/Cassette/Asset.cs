@@ -64,7 +64,7 @@ namespace Cassette
             get { return relativeFilename; }
         }
 
-        public byte[] Hash
+        public override byte[] Hash
         {
             get { return hash; }
         }

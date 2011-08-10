@@ -7,7 +7,7 @@ namespace Cassette.ModuleProcessing
 {
     public class SortAssetsByDependency : IModuleProcessor<Module>
     {
-        public void Process(Module module)
+        public void Process(Module module, ICassetteApplication application)
         {
             // In the absence of dependencies, sort by the filename to ensure consistent output.
             var sortedByFilename = module.Assets.OrderBy(

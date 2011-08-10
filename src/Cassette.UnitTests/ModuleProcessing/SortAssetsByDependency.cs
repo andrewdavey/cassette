@@ -20,7 +20,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(assetB.Object);
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(module);
+            sorter.Process(module, Mock.Of<ICassetteApplication>());
 
             module.Assets[0].ShouldBeSameAs(assetB.Object);
             module.Assets[1].ShouldBeSameAs(assetA.Object);
@@ -40,7 +40,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(assetB.Object);
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(module);
+            sorter.Process(module, Mock.Of<ICassetteApplication>());
 
             module.Assets[0].ShouldBeSameAs(assetB.Object);
             module.Assets[1].ShouldBeSameAs(assetA.Object);
@@ -62,7 +62,7 @@ namespace Cassette.ModuleProcessing
             module.Assets.Add(assetA.Object);
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(module);
+            sorter.Process(module, Mock.Of<ICassetteApplication>());
 
             module.Assets[0].ShouldBeSameAs(assetA.Object);
             module.Assets[1].ShouldBeSameAs(assetB.Object);

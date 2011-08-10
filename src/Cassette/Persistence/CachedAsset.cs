@@ -49,5 +49,10 @@ namespace Cassette.Persistence
         {
             return openStream();
         }
+
+        public byte[] Hash
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

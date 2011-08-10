@@ -27,7 +27,7 @@ function dummy() {}
             module.Assets.Add(asset.Object);
 
             var processor = new ParseJavaScriptReferences();
-            processor.Process(module);
+            processor.Process(module, Mock.Of<ICassetteApplication>());
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("/another2.js", 3));

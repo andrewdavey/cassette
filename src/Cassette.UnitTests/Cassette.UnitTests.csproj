@@ -66,18 +66,18 @@
     <Compile Include="ModuleProcessing\CompileCoffeeScriptAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="ModuleProcessing\ConcatenatedAsset.cs" />
+    <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="Persistence\CreateManifestVisitor.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
-    <Compile Include="Persistence\ModuleContainerReader.cs" />
-    <Compile Include="Persistence\ModuleContainerWriter.cs" />
     <Compile Include="ModuleProcessing\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleProcessing\ParseJavaScriptReferences.cs" />
     <Compile Include="ModuleProcessing\Pipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="StubFileSystem.cs" />
@@ -85,16 +85,23 @@
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />
+    <Compile Include="Web\CassetteApplication.cs" />
+    <Compile Include="Web\UrlGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cassette.Web\Cassette.Web.csproj">
+      <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>
+      <Name>Cassette.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
       <Name>Cassette</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -6,7 +6,7 @@ namespace Cassette.ModuleProcessing
 {
     public class ConcatenateAssets : IModuleProcessor<Module>
     {
-        public void Process(Module module)
+        public void Process(Module module, ICassetteApplication application)
         {
             var outputStream = CopyAssetsIntoSingleStream(module);
             module.Assets = new List<IAsset>(new[]

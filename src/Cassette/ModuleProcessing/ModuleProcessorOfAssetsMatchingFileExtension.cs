@@ -13,7 +13,7 @@ namespace Cassette.ModuleProcessing
 
         readonly string filenameEndsWith;
 
-        public void Process(T module)
+        public void Process(T module, ICassetteApplication application)
         {
             var assets = module.Assets.Where(ShouldProcessAsset);
             foreach (var asset in assets)

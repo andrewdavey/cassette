@@ -8,5 +8,10 @@ namespace Cassette
             : base(directory, fileSystem)
         {
         }
+
+        public override string ContentType
+        {
+            get { return "text/html"; }
+        }
     }
 }

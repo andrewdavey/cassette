@@ -22,7 +22,7 @@ namespace Cassette.ModuleProcessing
             coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.coffee");
             module.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(module);
+            step.Process(module, Mock.Of<ICassetteApplication>());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(
@@ -41,7 +41,7 @@ namespace Cassette.ModuleProcessing
             coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.js");
             module.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(module);
+            step.Process(module, Mock.Of<ICassetteApplication>());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(

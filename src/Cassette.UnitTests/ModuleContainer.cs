@@ -3,34 +3,12 @@ using System.Linq;
 using Moq;
 using Should;
 using Xunit;
+using System.Collections.Generic;
 
 namespace Cassette
 {
     public class ModuleContainer_Tests
     {
-        [Fact]
-        public void WhenValidateAndSortModules_ThenModulesAreOrderedByDependency()
-        {
-            var module1 = new Module("module-1", Mock.Of<IFileSystem>());
-            var asset1 = new Mock<IAsset>();
-            SetupAsset("a.js", asset1);
-            asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
-            module1.Assets.Add(asset1.Object);
-
-            var module2 = new Module("module-2", Mock.Of<IFileSystem>());
-            var asset2 = new Mock<IAsset>();
-            SetupAsset("b.js", asset2);
-            module2.Assets.Add(asset2.Object);
-
-            var container = new ModuleContainer<Module>(new[] { module1, module2 });
-            container.ValidateAndSortModules();
-
-            var modules = container.ToArray();
-            modules[0].ShouldBeSameAs(module2);
-            modules[1].ShouldBeSameAs(module1);
-        }
-
         void SetupAsset(string filename, Mock<IAsset> asset)
         {
             asset.Setup(a => a.SourceFilename).Returns(filename);
@@ -107,6 +85,96 @@ namespace Cassette
             });
             var actualModule = container.FindModuleByPath("test/test.js");
             actualModule.ShouldBeSameAs(expectedModule);
+        }
+
+        [Fact]
+        public void GivenModule1ReferencesModule2_ThenAddDependenciesAndSortModule1ReturnsModule2AndModule1()
+        {
+            var module1 = new Module("module-1", Mock.Of<IFileSystem>());
+            var asset1 = new Mock<IAsset>();
+            SetupAsset("a.js", asset1);
+            asset1.SetupGet(a => a.References)
+                  .Returns(new[] { new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+            module1.Assets.Add(asset1.Object);
+
+            var module2 = new Module("module-2", Mock.Of<IFileSystem>());
+            var asset2 = new Mock<IAsset>();
+            SetupAsset("b.js", asset2);
+            module2.Assets.Add(asset2.Object);
+
+            var container = new ModuleContainer<Module>(new[] { module1, module2 });
+            container.ValidateAndSortModules();
+
+            container.AddDependenciesAndSort(new[] { module1 })
+                .SequenceEqual(new[] { module2, module1 }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenModule1ReferencesModule2WhichReferencesModule3_ThenAddDependenciesAndSortModule1ReturnsModule3AndModule2AndModule1()
+        {
+            var module1 = new Module("module-1", Mock.Of<IFileSystem>());
+            var asset1 = new Mock<IAsset>();
+            SetupAsset("a.js", asset1);
+            asset1.SetupGet(a => a.References)
+                  .Returns(new[] { new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+            module1.Assets.Add(asset1.Object);
+
+            var module2 = new Module("module-2", Mock.Of<IFileSystem>());
+            var asset2 = new Mock<IAsset>();
+            SetupAsset("b.js", asset2);
+            asset2.SetupGet(a => a.References)
+                  .Returns(new[] { new AssetReference("module-3\\c.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+            module2.Assets.Add(asset2.Object);
+
+            var module3 = new Module("module-3", Mock.Of<IFileSystem>());
+            var asset3 = new Mock<IAsset>();
+            SetupAsset("c.js", asset3);
+            module3.Assets.Add(asset3.Object);
+
+            var container = new ModuleContainer<Module>(new[] { module1, module2, module3 });
+            container.ValidateAndSortModules();
+
+            container.AddDependenciesAndSort(new[] { module1 })
+                .SequenceEqual(new[] { module3, module2, module1 }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenDiamondReferencing_ThenAddDependenciesAndSortReturnsEachReferencedModuleOnlyOnceInDependencyOrder()
+        {
+            var module1 = new Module("module-1", Mock.Of<IFileSystem>());
+            var asset1 = new Mock<IAsset>();
+            SetupAsset("a.js", asset1);
+            asset1.SetupGet(a => a.References)
+                  .Returns(new[] { 
+                      new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule),
+                      new AssetReference("module-3\\c.js", asset1.Object, 1, AssetReferenceType.DifferentModule)
+                  });
+            module1.Assets.Add(asset1.Object);
+
+            var module2 = new Module("module-2", Mock.Of<IFileSystem>());
+            var asset2 = new Mock<IAsset>();
+            SetupAsset("b.js", asset2);
+            asset2.SetupGet(a => a.References)
+                  .Returns(new[] { new AssetReference("module-4\\d.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+            module2.Assets.Add(asset2.Object);
+
+            var module3 = new Module("module-3", Mock.Of<IFileSystem>());
+            var asset3 = new Mock<IAsset>();
+            SetupAsset("c.js", asset3);
+            asset3.SetupGet(a => a.References)
+                  .Returns(new[] { new AssetReference("module-4\\d.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+            module3.Assets.Add(asset3.Object);
+            
+            var module4 = new Module("module-4", Mock.Of<IFileSystem>());
+            var asset4 = new Mock<IAsset>();
+            SetupAsset("d.js", asset4);
+            module4.Assets.Add(asset4.Object);
+
+            var container = new ModuleContainer<Module>(new[] { module1, module2, module3, module4 });
+            container.ValidateAndSortModules();
+
+            container.AddDependenciesAndSort(new[] { module1 })
+                .SequenceEqual(new[] { module4, module2, module3, module1 }).ShouldBeTrue();
         }
     }
 }

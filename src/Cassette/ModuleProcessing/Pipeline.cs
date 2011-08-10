@@ -22,11 +22,11 @@ namespace Cassette.ModuleProcessing
 
         readonly IModuleProcessor<T>[] steps;
 
-        public void Process(T module)
+        public void Process(T module, ICassetteApplication application)
         {
             foreach (var step in steps)
             {
-                step.Process(module);
+                step.Process(module, application);
             }
         }
     }

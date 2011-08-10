@@ -103,7 +103,7 @@ namespace Cassette
         public void SaveModuleContainer(IModuleContainer<T> moduleContainer)
         {
             SaveContainerXml(moduleContainer);
-            foreach (var module in moduleContainer)
+            foreach (var module in moduleContainer.Modules)
             {
                 SaveModule(module, moduleContainer);
             }
@@ -115,7 +115,7 @@ namespace Cassette
             var createManifestVisitor = new CreateManifestVisitor();
             var xml = new XDocument(
                 new XElement("container",
-                    moduleContainer.Select(createManifestVisitor.CreateManifest)
+                    moduleContainer.Modules.Select(createManifestVisitor.CreateManifest)
                 )
             );
             using (var fileStream = fileSystem.OpenFile(containerFilename, FileMode.OpenOrCreate, FileAccess.Write))

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Routing;
-using System.IO.IsolatedStorage;
+using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 [assembly: WebActivator.PostApplicationStartMethod(
     typeof(Cassette.Web.StartUp), 
     "PostApplicationStart"
 )]
-[asembly: WebActivator.ApplicationShutdownMethod(
+[assembly: WebActivator.ApplicationShutdownMethod(
     typeof(Cassette.Web.StartUp),
     "ApplicationShutdown"
 )]
@@ -20,24 +22,32 @@ namespace Cassette.Web
     public static class StartUp
     {
         static IsolatedStorageFile storage;
-        static IFileSystem cacheFileSystem;
         public static CassetteApplication CassetteApplication { get; private set; }
 
+        // If using an IoC container, this delegate can be replaced (in Application_Start) to
+        // provide an alternative way to create the configuration object.
         public static Func<ICassetteConfiguration> CreateConfiguration = CreateConfigurationByScanningAssembliesForType;
 
         // This runs *after* Global.asax Application_Start.
         public static void PostApplicationStart()
         {
             storage = IsolatedStorageFile.GetMachineStoreForAssembly();
+
             var configuration = CreateConfiguration();
-            CassetteApplication = CreateCassetteApplication(configuration);
+            CassetteApplication = CreateCassetteApplication(configuration, storage);
             CassetteApplication.InitializeModuleContainers();
-            InstallRoutes();
+            CassetteApplication.InstallRoutes(RouteTable.Routes);
+            
+            DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
 
         public static void ApplicationShutdown()
         {
-            storage.Dispose();
+            if (storage != null)
+            {
+                storage.Dispose();
+                storage = null;
+            }
         }
 
         static ICassetteConfiguration CreateConfigurationByScanningAssembliesForType()
@@ -64,23 +74,22 @@ namespace Cassette.Web
             }
         }
 
-        static CassetteApplication CreateCassetteApplication(ICassetteConfiguration configuration)
+        static CassetteApplication CreateCassetteApplication(ICassetteConfiguration configuration, IsolatedStorageFile storage)
         {
             var application = new CassetteApplication(
-                HttpRuntime.AppDomainAppPath, 
-                HttpRuntime.AppDomainAppVirtualPath,
-                new IsolatedStorageFileSystem(storage)
+                new FileSystem(HttpRuntime.AppDomainAppPath),
+                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
+                new IsolatedStorageFileSystem(storage),
+                GetDebugModeFromConfig() == false
             );
             configuration.Configure(application);
             return application;
         }
 
-        static void InstallRoutes()
+        static bool GetDebugModeFromConfig()
         {
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            RouteTable.Routes.Insert(0, new Route("_assets/module/{*path}", null));
-            RouteTable.Routes.Insert(0, new Route("_assets/compile/{*path}", null)); //coffee, less, etc
+            var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
+            return (compilation != null && compilation.Debug) || false;
         }
     }
 }

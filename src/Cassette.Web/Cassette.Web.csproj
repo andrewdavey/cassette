@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -47,8 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CassetteApplication.cs" />
+    <Compile Include="CassetteHttpModule.cs" />
+    <Compile Include="ModuleRequestHandler.cs" />
+    <Compile Include="ModuleRouteHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartUp.cs" />
+    <Compile Include="UrlGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">

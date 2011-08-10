@@ -5,16 +5,19 @@ namespace Cassette
 {
     public class CassetteApplication : ICassetteApplication
     {
-        public CassetteApplication(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem)
+        public CassetteApplication(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized)
         {
             this.sourceFileSystem = sourceFileSystem;
             this.cacheFileSystem = cacheFileSystem;
+            IsOutputOptimized = isOutputOptmized;
         }
 
         readonly IFileSystem sourceFileSystem;
         readonly IFileSystem cacheFileSystem;
         readonly List<Action> initializers = new List<Action>();
         readonly Dictionary<Type, object> moduleContainers = new Dictionary<Type, object>();
+
+        public bool IsOutputOptimized { get; private set; }
 
         public IFileSystem RootDirectory
         {
@@ -74,5 +77,14 @@ namespace Cassette
             initializers.Clear();
         }
 
+        public virtual string CreateModuleUrl(Module module)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual string CreateAssetUrl(Module module, IAsset asset)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

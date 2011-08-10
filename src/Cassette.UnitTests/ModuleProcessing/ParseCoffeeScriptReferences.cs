@@ -25,7 +25,7 @@ class Foo
             module.Assets.Add(asset.Object);
 
             var processor = new ParseCoffeeScriptReferences();
-            processor.Process(module);
+            processor.Process(module, Mock.Of<ICassetteApplication>());
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.coffee", 3));

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 
 namespace Cassette
 {
@@ -16,6 +17,7 @@ namespace Cassette
         readonly string directory;
         readonly IFileSystem fileSystem;
         IList<IAsset> assets = new List<IAsset>();
+        HashSet<Module> references = new HashSet<Module>();
 
         public IFileSystem FileSystem
         {
@@ -31,6 +33,11 @@ namespace Cassette
         {
             get { return assets; }
             set { assets = value; }
+        }
+
+        public virtual string ContentType
+        {
+            get { return null; }
         }
 
         public bool ContainsPath(string path)
@@ -60,12 +67,31 @@ namespace Cassette
             }
         }
 
+        public virtual IHtmlString Render(ICassetteApplication application)
+        {
+            return new HtmlString("");
+        }
+
         public void Dispose()
         {
             foreach (var asset in assets.OfType<IDisposable>())
             {
                 asset.Dispose();
             }
+        }
+
+        public void AddReference(Module module)
+        {
+            if (object.ReferenceEquals(this, module))
+            {
+                throw new ArgumentException("The module \"" + directory + "\" cannot add a reference to itself.");
+            }
+            references.Add(module);
+        }
+
+        public IEnumerable<Module> References
+        {
+            get { return references; }
         }
     }
 }
