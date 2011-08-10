@@ -6,11 +6,29 @@ namespace Cassette.Web
 {
     public class UrlGenerator_CreateModuleUrl_Tests
     {
+        ScriptModule StubScriptModule(string path)
+        {
+            var module = new ScriptModule(path, Mock.Of<IFileSystem>());
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
+            module.Assets.Add(asset.Object);
+            return module;
+        }
+
+        StylesheetModule StubStylesheetModule(string path)
+        {
+            var module = new StylesheetModule(path, Mock.Of<IFileSystem>());
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
+            module.Assets.Add(asset.Object);
+            return module;
+        }
+
         [Fact]
         public void UrlStartsWithApplicationVirtualDirectory()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(new ScriptModule("test", Mock.Of<IFileSystem>()));
+            var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/");
         }
 
@@ -18,7 +36,7 @@ namespace Cassette.Web
         public void AppendsSlashToVirtualDirectoryWhenMissingFromEnd()
         {
             var app = new UrlGenerator("/myapp");
-            var url = app.CreateModuleUrl(new ScriptModule("test", Mock.Of<IFileSystem>()));
+            var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/myapp/");
         }
 
@@ -26,7 +44,7 @@ namespace Cassette.Web
         public void Inserts_assetsPrefix()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(new ScriptModule("test", Mock.Of<IFileSystem>()));
+            var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/_assets/");
         }
 
@@ -34,7 +52,7 @@ namespace Cassette.Web
         public void InsertsLowercasedPluralisedScriptModuleTypeName()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(new ScriptModule("test", Mock.Of<IFileSystem>()));
+            var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/_assets/scripts/");
         }
 
@@ -42,7 +60,7 @@ namespace Cassette.Web
         public void InsertsLowercasedPluralisedStylesheetModuleTypeName()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(new StylesheetModule("test", Mock.Of<IFileSystem>()));
+            var url = app.CreateModuleUrl(StubStylesheetModule("test"));
             url.ShouldStartWith("/_assets/stylesheets/");
         }
 
@@ -50,16 +68,24 @@ namespace Cassette.Web
         public void InsertsModuleDirectory()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(new ScriptModule("test", Mock.Of<IFileSystem>()));
-            url.ShouldEqual("/_assets/scripts/test");
+            var url = app.CreateModuleUrl(StubScriptModule("test"));
+            url.ShouldStartWith("/_assets/scripts/test");
         }
 
         [Fact]
         public void InsertsModuleDirectoryWithBackSlashesConvertedToForwardSlashes()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(new ScriptModule("test\\foo\\bar", Mock.Of<IFileSystem>()));
-            url.ShouldEqual("/_assets/scripts/test/foo/bar");
+            var url = app.CreateModuleUrl(StubScriptModule("test\\foo\\bar"));
+            url.ShouldStartWith("/_assets/scripts/test/foo/bar");
+        }
+
+        [Fact]
+        public void AppendsModuleHashHexString()
+        {
+            var app = new UrlGenerator("/");
+            var url = app.CreateModuleUrl(StubScriptModule("test\\foo\\bar"));
+            url.ShouldEqual("/_assets/scripts/test/foo/bar_010203");
         }
     }
 

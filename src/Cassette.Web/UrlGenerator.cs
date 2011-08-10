@@ -22,11 +22,12 @@ namespace Cassette.Web
 
         public string CreateModuleUrl(Module module)
         {
-            return string.Format("{0}/{1}/{2}/{3}",
+            return string.Format("{0}/{1}/{2}/{3}_{4}",
                 urlRootPath,
                 assetsPrefix,
                 ConvertionalModulePathName(module.GetType()),
-                ConvertToForwardSlashes(module.Directory)
+                ConvertToForwardSlashes(module.Directory),
+                HexString(module.Assets[0].Hash)
             );
         }
 
