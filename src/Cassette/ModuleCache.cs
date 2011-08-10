@@ -109,7 +109,6 @@ namespace Cassette
             }
         }
 
-
         void SaveContainerXml(IModuleContainer<T> moduleContainer)
         {
             var createManifestVisitor = new CreateManifestVisitor();

@@ -2,15 +2,18 @@
 {
     public class AssetReference
     {
-        public AssetReference(string referencedFilename, IAsset sourceAsset, int sourceLineNumber, AssetReferenceType type)
+        public AssetReference(string referencedPath, IAsset sourceAsset, int sourceLineNumber, AssetReferenceType type)
         {
-            ReferencedFilename = referencedFilename;
+            ReferencedPath = referencedPath;
             SourceAsset = sourceAsset;
             SourceLineNumber = sourceLineNumber;
             Type = type;
         }
 
-        public string ReferencedFilename { get; private set; }
+        /// <summary>
+        /// Path to an asset or module.
+        /// </summary>
+        public string ReferencedPath { get; private set; }
         /// <summary>
         /// The asset that made this reference.
         /// </summary>

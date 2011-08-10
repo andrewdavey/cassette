@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Cassette.Persistence
 {
@@ -15,8 +17,19 @@ namespace Cassette.Persistence
         void IAssetVisitor.Visit(Module module)
         {
             moduleElement = new XElement("module",
-                new XAttribute("directory", module.Directory)
+                new XAttribute("directory", module.Directory),
+                ReferenceElements(module)
             );
+        }
+
+        IEnumerable<XElement> ReferenceElements(Module module)
+        {
+            return from asset in module.Assets
+                   from reference in asset.References
+                   where reference.Type == AssetReferenceType.DifferentModule
+                   select new XElement("reference", 
+                       new XAttribute("path", reference.ReferencedPath)
+                   );
         }
 
         void IAssetVisitor.Visit(IAsset asset)

@@ -101,7 +101,7 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().ReferencedFilename.ShouldEqual("module\\another.js");
+            asset.References.First().ReferencedPath.ShouldEqual("module\\another.js");
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace Cassette
         {
             asset.AddReference("../another/test.js", 1);
 
-            asset.References.First().ReferencedFilename.ShouldEqual("another\\test.js");
+            asset.References.First().ReferencedPath.ShouldEqual("another\\test.js");
         }
 
         [Fact]

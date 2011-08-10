@@ -113,7 +113,7 @@ namespace Cassette
 
             var moduleA = container.Modules.First(m => m.Directory.EndsWith("module-a"));
             moduleA.Assets.Count.ShouldEqual(1);
-            moduleA.Assets[0].References.Single().ReferencedFilename.ShouldEqual("module-b");
+            moduleA.Assets[0].References.Single().ReferencedPath.ShouldEqual("module-b");
             moduleA.ContainsPath("module-a\\asset-1.js");
             moduleA.ContainsPath("module-a\\asset-2.js");
             moduleA.ContainsPath("module-a");
@@ -155,6 +155,41 @@ namespace Cassette
 
             fileSystem.Verify(fs => fs.OpenFile("container.xml", FileMode.OpenOrCreate, FileAccess.Write));
             fileSystem.Verify(fs => fs.OpenFile(".module", FileMode.OpenOrCreate, FileAccess.Write));
+        }
+
+        [Fact]
+        public void ModuleReferencesAreSavedInContainerXml()
+        {
+            var moduleA = new Module("module-a", Mock.Of<IFileSystem>());
+            var moduleB = new Module("module-b", Mock.Of<IFileSystem>());
+
+            var assetA = new Mock<IAsset>();
+            assetA.SetupGet(a => a.References).Returns(new[] {
+                new AssetReference("module-b", assetA.Object, 0, AssetReferenceType.DifferentModule)
+            });
+            assetA.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            moduleA.Assets.Add(assetA.Object);
+
+            var assetB = new Mock<IAsset>();
+            assetB.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            moduleB.Assets.Add(assetB.Object);
+
+            var temp = Path.GetTempFileName();
+            try
+            {
+                fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.OpenOrCreate, FileAccess.Write))
+                            .Returns(() => File.OpenWrite(temp));
+
+                var container = new ModuleContainer<Module>(new[] { moduleA, moduleB });
+                cache.SaveModuleContainer(container);
+
+                var xml = File.ReadAllText(temp);
+                xml.ShouldContain("<reference path=\"module-b\" />");
+            }
+            finally
+            {
+                File.Delete(temp);
+            }
         }
     }
 }
