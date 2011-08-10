@@ -78,6 +78,7 @@
     <Compile Include="ModuleProcessing\Pipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceBuilder.cs" />
+    <Compile Include="ScriptModule.cs" />
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="StubFileSystem.cs" />

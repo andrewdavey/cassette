@@ -24,14 +24,14 @@ namespace Cassette
         {
             if (application.IsOutputOptimized)
             {
-                var url = HttpUtility.UrlEncode(application.CreateModuleUrl(this));
+                var url = application.CreateModuleUrl(this);
                 return new HtmlString(string.Format(scriptHtml, url));
             }
             else
             {
                 var scripts = string.Join(Environment.NewLine, 
                     from asset in Assets
-                    let url = HttpUtility.UrlEncode(application.CreateAssetUrl(this, asset))
+                    let url = application.CreateAssetUrl(this, asset)
                     select string.Format(scriptHtml, url)
                 );
                 return new HtmlString(scripts);
