@@ -82,6 +82,7 @@
     <Compile Include="ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="StubFileSystem.cs" />
+    <Compile Include="StylesheetModule.cs" />
     <Compile Include="StylesheetModuleFactory.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
