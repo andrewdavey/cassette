@@ -40,29 +40,6 @@ namespace Cassette
             return modules.FirstOrDefault(module => module.ContainsPath(path));
         }
 
-        Dictionary<T, HashSet<T>> BuildModuleImmediateReferenceDictionary()
-        {
-            return (
-                from module in modules
-                select new 
-                { 
-                    module, 
-                    references = new HashSet<T>(module.Assets.SelectMany(a => a.References)
-                        .Where(r => r.Type == AssetReferenceType.DifferentModule)
-                        .Select(r => GetModuleContainingPath(r.ReferencedFilename))
-                    ) 
-                }
-            ).ToDictionary(x => x.module, x => x.references);
-        }
-
-        Dictionary<T, int> BuildSortIndex()
-        {
-            var graph = new Graph<T>(modules, m => moduleImmediateReferences[m]);
-            return graph.TopologicalSort()
-                .Select((module, index) => new { module, index })
-                .ToDictionary(x => x.module, x => x.index);
-        }
-
         void ValidateAssetReferences()
         {
             var notFound = from module in modules
@@ -77,6 +54,29 @@ namespace Cassette
             {
                 throw new AssetReferenceException(message);
             }
+        }
+
+        Dictionary<T, HashSet<T>> BuildModuleImmediateReferenceDictionary()
+        {
+            return (
+                from module in modules
+                select new 
+                { 
+                    module, 
+                    references = new HashSet<T>(module.Assets.SelectMany(a => a.References)
+                        .Where(r => r.Type == AssetReferenceType.DifferentModule)
+                        .Select(r => FindModuleByPath(r.ReferencedFilename))
+                    ) 
+                }
+            ).ToDictionary(x => x.module, x => x.references);
+        }
+
+        Dictionary<T, int> BuildSortIndex()
+        {
+            var graph = new Graph<T>(modules, m => moduleImmediateReferences[m]);
+            return graph.TopologicalSort()
+                .Select((module, index) => new { module, index })
+                .ToDictionary(x => x.module, x => x.index);
         }
 
         string CreateAssetReferenceNotFoundMessage(AssetReference reference)
@@ -97,24 +97,12 @@ namespace Cassette
             }
         }
 
-        T GetModuleContainingPath(string path)
-        {
-            var module = modules.First(m => m.ContainsPath(path));
-            if (module != null) return module;
-            
-            throw new AssetReferenceException("Cannot find an asset module containing the path \"" + path + "\".");
-        }
-
         void AddModulesReferencedBy(T module, HashSet<T> references)
         {
-            var modules = moduleImmediateReferences[module];
-
-            foreach (var referencedModule in modules)
+            var referencedModules = moduleImmediateReferences[module];
+            foreach (var referencedModule in referencedModules)
             {
                 AddModulesReferencedBy(referencedModule, references);
-            }
-            foreach (var referencedModule in modules)
-            {
                 references.Add(referencedModule);
             }
         }
