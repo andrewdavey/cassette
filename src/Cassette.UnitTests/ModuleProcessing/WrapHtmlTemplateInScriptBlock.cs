@@ -9,6 +9,8 @@ namespace Cassette.ModuleProcessing
 {
     public class WrapHtmlTemplateInScriptBlock_Tests
     {
+        HtmlTemplateModule module = new HtmlTemplateModule("test", Mock.Of<IFileSystem>());
+
         [Fact]
         public void ScriptBlockIdMatchesAssetFilenameWithoutExtension()
         {
@@ -41,7 +43,8 @@ namespace Cassette.ModuleProcessing
 
         string Transform(Mock<IAsset> asset, string content, string contentType)
         {
-            var transformer = new WrapHtmlTemplateInScriptBlock(contentType);
+            module.ContentType = contentType;
+            var transformer = new WrapHtmlTemplateInScriptBlock(module);
             var getResult = transformer.Transform(() => content.AsStream(), asset.Object);
             using (var reader = new StreamReader(getResult()))
             {

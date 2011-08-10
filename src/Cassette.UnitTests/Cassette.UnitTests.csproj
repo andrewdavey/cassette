@@ -60,6 +60,7 @@
     <Compile Include="CassetteApplicationExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="FileSystemModuleConfiguration.cs" />
+    <Compile Include="HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplateModuleFactory.cs" />
     <Compile Include="ModuleCache.cs" />
     <Compile Include="ModuleProcessing\CompileCoffeeScript.cs" />

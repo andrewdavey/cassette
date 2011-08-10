@@ -9,17 +9,13 @@ namespace Cassette
         public StylesheetModule(string directory, IFileSystem fileSystem)
             : base(directory, fileSystem)
         {
+            ContentType = "text/css";
         }
 
         static readonly string linkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
         static readonly string linkHtmlWithMedia = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
 
         public string Media { get; set; }
-
-        public override string ContentType
-        {
-            get { return "text/css"; }
-        }
 
         public override IHtmlString Render(ICassetteApplication application)
         {

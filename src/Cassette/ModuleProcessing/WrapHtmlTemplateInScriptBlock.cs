@@ -1,58 +1,24 @@
 ﻿using System;
 using System.IO;
+using Cassette.Utilities;
 
 namespace Cassette.ModuleProcessing
 {
     public class WrapHtmlTemplateInScriptBlock : IAssetTransformer
     {
-        public WrapHtmlTemplateInScriptBlock(string contentType)
+        public WrapHtmlTemplateInScriptBlock(HtmlTemplateModule module)
         {
-            if (string.IsNullOrWhiteSpace(contentType))
-            {
-                throw new ArgumentException("The script block content type is required.", "contentType");
-            }
-
-            this.contentType = contentType;
+            this.module = module;
         }
 
-        readonly string contentType;
+        readonly HtmlTemplateModule module;
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
             return delegate
             {
-                var output = new MemoryStream();
-                var outputWriter = new StreamWriter(output);
-
-                outputWriter.Write("<script id=\"");
-                outputWriter.Write(GetScriptBlockId(asset));
-                outputWriter.Write("\" type=\"");
-                outputWriter.Write(contentType);
-                outputWriter.WriteLine("\">");
-                WriteTemplateContent(openSourceStream, outputWriter);
-                outputWriter.Write("</script>");
-                outputWriter.Flush();
-
-                output.Position = 0;
-                return output;
+                return module.RenderTemplate(openSourceStream, asset).AsStream();
             };
-        }
-
-        protected virtual string GetScriptBlockId(IAsset asset)
-        {
-            return Path.GetFileNameWithoutExtension(asset.SourceFilename);
-        }
-
-        void WriteTemplateContent(Func<Stream> openSourceStream, StreamWriter outputWriter)
-        {
-            using (var inputReader = new StreamReader(openSourceStream()))
-            {
-                string line = null;
-                while ((line = inputReader.ReadLine()) != null)
-                {
-                    outputWriter.WriteLine(line);
-                }
-            }
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Cassette.IntegrationTests
                 application.HasModules<HtmlTemplateModule>()
                     .Directories("templates")
                     .ProcessWith(
-                        new WrapHtmlTemplatesInScriptBlocks("text/html"),
+                        new WrapHtmlTemplatesInScriptBlocks(),
                         new ConcatenateAssets()
                     );
 

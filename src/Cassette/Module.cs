@@ -35,10 +35,7 @@ namespace Cassette
             set { assets = value; }
         }
 
-        public virtual string ContentType
-        {
-            get { return null; }
-        }
+        public string ContentType { get; set; }
 
         public bool ContainsPath(string path)
         {
@@ -72,14 +69,6 @@ namespace Cassette
             return new HtmlString("");
         }
 
-        public void Dispose()
-        {
-            foreach (var asset in assets.OfType<IDisposable>())
-            {
-                asset.Dispose();
-            }
-        }
-
         public void AddReference(Module module)
         {
             if (object.ReferenceEquals(this, module))
@@ -92,6 +81,14 @@ namespace Cassette
         public IEnumerable<Module> References
         {
             get { return references; }
+        }
+
+        public void Dispose()
+        {
+            foreach (var asset in assets.OfType<IDisposable>())
+            {
+                asset.Dispose();
+            }
         }
     }
 }
