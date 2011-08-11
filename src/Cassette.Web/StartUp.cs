@@ -9,6 +9,10 @@ using System.Web.Routing;
 using Cassette.UI;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
+[assembly: WebActivator.PreApplicationStartMethod(
+    typeof(Cassette.Web.StartUp),
+    "PreApplicationStart"
+)]
 [assembly: WebActivator.PostApplicationStartMethod(
     typeof(Cassette.Web.StartUp), 
     "PostApplicationStart"
@@ -29,6 +33,11 @@ namespace Cassette.Web
         // provide an alternative way to create the configuration object.
         public static Func<ICassetteConfiguration> CreateConfiguration = CreateConfigurationByScanningAssembliesForType;
 
+        public static void PreApplicationStart()
+        {
+            DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
+        }
+
         // This runs *after* Global.asax Application_Start.
         public static void PostApplicationStart()
         {
@@ -40,8 +49,6 @@ namespace Cassette.Web
             CassetteApplication.InstallRoutes(RouteTable.Routes);
             
             Assets.Application = CassetteApplication;
-
-            DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
 
         public static void ApplicationShutdown()
@@ -61,6 +68,7 @@ namespace Cassette.Web
                         from type in assembly.GetExportedTypes()
                         where type.IsClass
                            && !type.IsAbstract
+                           && type != typeof(EmptyCassetteConfiguration)
                            && typeof(ICassetteConfiguration).IsAssignableFrom(type)
                         select type;
 

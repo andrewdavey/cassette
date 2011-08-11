@@ -1,5 +1,6 @@
 ﻿using System.Web.Routing;
 using Cassette.UI;
+using System.Web;
 
 namespace Cassette.Web
 {
@@ -25,7 +26,17 @@ namespace Cassette.Web
 
         public override IPageAssetManager<T> GetPageAssetManager<T>()
         {
-            return new PageAssetManager<T>(new ReferenceBuilder<T>(GetModuleContainer<T>()), this);
+            var key = "Cassette.UI.PageAssetManager<" + typeof(T).FullName + ">";
+            if (HttpContext.Current.Items.Contains(key))
+            {
+                return (IPageAssetManager<T>)HttpContext.Current.Items[key];
+            }
+            else
+            {
+                var manager = new PageAssetManager<T>(new ReferenceBuilder<T>(GetModuleContainer<T>()), this);
+                HttpContext.Current.Items[key] = manager;
+                return manager;
+            }
         }
 
         public void InstallRoutes(RouteCollection routes)

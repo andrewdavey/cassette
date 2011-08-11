@@ -29,7 +29,7 @@ namespace Cassette.ModuleProcessing
                 writer.Write(javaScript);
                 writer.Flush();
                 // Do not close writer, because this will also close the outputStream,
-                // which need to the caller return.
+                // which we need to return.
 
                 outputStream.Position = 0;
                 return outputStream;

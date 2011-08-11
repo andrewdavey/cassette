@@ -34,9 +34,8 @@ namespace Cassette.Web
         public string CreateAssetUrl(Module module, IAsset asset)
         {
             return string.Format(
-                "{0}/{1}/{2}/{3}?{4}",
+                "{0}/{1}/{2}?{3}",
                 urlRootPath,
-                assetsPrefix,
                 ConvertToForwardSlashes(module.Directory),
                 ConvertToForwardSlashes(asset.SourceFilename),
                 HexString(asset.Hash)

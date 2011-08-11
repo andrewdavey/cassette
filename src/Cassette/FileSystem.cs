@@ -9,7 +9,7 @@ namespace Cassette
     {
         public FileSystem(string rootDirectory)
         {
-            this.rootDirectory = rootDirectory;
+            this.rootDirectory = rootDirectory.TrimEnd('\\', '/');
         }
 
         readonly string rootDirectory;
@@ -80,12 +80,12 @@ namespace Cassette
 
         public IEnumerable<string> GetFiles(string directory)
         {
-            return Directory.GetFiles(GetFullPath(directory)).Select(ToRelativePath);
+            return Directory.GetFiles(GetFullPath(directory), "*", SearchOption.AllDirectories).Select(ToRelativePath);
         }
 
         public IEnumerable<string> GetFiles(string directory, string searchPattern)
         {
-            return Directory.GetFiles(GetFullPath(directory), searchPattern).Select(ToRelativePath);
+            return Directory.GetFiles(GetFullPath(directory), searchPattern, SearchOption.AllDirectories).Select(ToRelativePath);
         }
 
         public FileAttributes GetAttributes(string path)

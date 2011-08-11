@@ -118,19 +118,6 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void Inserts_assetsPrefix()
-        {
-            var module = new Module("test", Mock.Of<IFileSystem>());
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            var app = new UrlGenerator("/myapp");
-
-            var url = app.CreateAssetUrl(module, asset.Object);
-
-            url.ShouldStartWith("/myapp/_assets/");
-        }
-
-        [Fact]
         public void InsertsModuleDirectory()
         {
             var module = new Module("test", Mock.Of<IFileSystem>());
@@ -140,7 +127,7 @@ namespace Cassette.Web
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
-            url.ShouldStartWith("/myapp/_assets/test/");
+            url.ShouldStartWith("/myapp/test/");
         }
 
         [Fact]
@@ -153,7 +140,7 @@ namespace Cassette.Web
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
-            url.ShouldStartWith("/myapp/_assets/test/foo/bar");
+            url.ShouldStartWith("/myapp/test/foo/bar");
         }
 
         [Fact]
@@ -166,7 +153,7 @@ namespace Cassette.Web
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
-            url.ShouldStartWith("/_assets/test/asset.js");
+            url.ShouldStartWith("/test/asset.js");
         }
 
         [Fact]
@@ -179,7 +166,7 @@ namespace Cassette.Web
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
-            url.ShouldStartWith("/_assets/test/sub/asset.js");
+            url.ShouldStartWith("/test/sub/asset.js");
         }
 
         [Fact]
@@ -193,7 +180,7 @@ namespace Cassette.Web
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
-            url.ShouldEqual("/_assets/test/sub/asset.js?01020f10");
+            url.ShouldEqual("/test/sub/asset.js?01020f10");
         }
     }
 
