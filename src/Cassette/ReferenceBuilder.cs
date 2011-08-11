@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public class ReferenceBuilder<T>
+    public class ReferenceBuilder<T> : IReferenceBuilder<T>
         where T: Module
     {
         public ReferenceBuilder(IModuleContainer<T> moduleContainer)

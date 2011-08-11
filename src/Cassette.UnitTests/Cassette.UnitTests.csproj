@@ -69,6 +69,7 @@
     <Compile Include="ModuleProcessing\ConcatenatedAsset.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
+    <Compile Include="PageAssetManager.cs" />
     <Compile Include="Persistence\CreateManifestVisitor.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
