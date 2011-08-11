@@ -24,12 +24,13 @@ namespace Cassette.Persistence
 
         IEnumerable<XElement> ReferenceElements(Module module)
         {
-            return from asset in module.Assets
-                   from reference in asset.References
-                   where reference.Type == AssetReferenceType.DifferentModule
-                   select new XElement("reference", 
-                       new XAttribute("path", reference.ReferencedPath)
-                   );
+            return (from asset in module.Assets
+                    from reference in asset.References
+                    where reference.Type == AssetReferenceType.DifferentModule
+                    select reference.ReferencedPath).Distinct().Select(path =>
+                   new XElement("reference",
+                       new XAttribute("path", path)
+                   ));
         }
 
         void IAssetVisitor.Visit(IAsset asset)

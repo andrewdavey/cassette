@@ -77,7 +77,7 @@ namespace Cassette
                     new XElement("asset",
                         new XAttribute("filename", "asset-2.js")
                     ),
-                    new XElement("reference", new XAttribute("module", "module-b"))
+                    new XElement("reference", new XAttribute("path", "module-b"))
                 ),
                 new XElement("module",
                     new XAttribute("directory", "module-b"),

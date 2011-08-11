@@ -80,7 +80,7 @@ namespace Cassette
         {
             var modulePaths =
                 from element in moduleElement.Elements("reference")
-                select element.Attribute("module").Value;
+                select element.Attribute("path").Value;
 
             foreach (var path in modulePaths)
             {

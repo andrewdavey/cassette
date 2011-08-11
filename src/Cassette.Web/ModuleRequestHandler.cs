@@ -24,6 +24,11 @@ namespace Cassette
         public void ProcessRequest(HttpContext _)
         {
             var path = requestContext.RouteData.GetRequiredString("path");
+            var index = path.LastIndexOf('_');
+            if (index >= 0)
+            {
+                path = path.Substring(0, index);
+            }
             var module = moduleContainer.FindModuleByPath(path);
             var response = requestContext.HttpContext.Response;
             if (module == null)
