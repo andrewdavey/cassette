@@ -7,14 +7,16 @@ namespace Cassette.UI
     public class PageAssetManager<T> : IPageAssetManager<T>
         where T : Module
     {
-        public PageAssetManager(IReferenceBuilder<T> referenceBuilder, ICassetteApplication application)
+        public PageAssetManager(IReferenceBuilder<T> referenceBuilder, ICassetteApplication application, IPlaceholderTracker placeholderTracker)
         {
             this.referenceBuilder = referenceBuilder;
             this.application = application;
+            this.placeholderTracker = placeholderTracker;
         }
 
         readonly IReferenceBuilder<T> referenceBuilder;
         readonly ICassetteApplication application;
+        readonly IPlaceholderTracker placeholderTracker;
 
         public void Reference(string path)
         {
@@ -23,12 +25,13 @@ namespace Cassette.UI
 
         public IHtmlString Render(string location = null)
         {
-            var html = string.Join(Environment.NewLine,
-                referenceBuilder.GetModules(location).Select(
-                    module => module.Render(application).ToHtmlString()
-                )
+            return placeholderTracker.InsertPlaceholder(
+                new HtmlString(string.Join(Environment.NewLine,
+                    referenceBuilder.GetModules(location).Select(
+                        module => module.Render(application).ToHtmlString()
+                    )
+                ))
             );
-            return new HtmlString(html);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using Cassette.UI;
 
 namespace Cassette.Web
 {
@@ -16,8 +17,11 @@ namespace Cassette.Web
 
         void HttpApplicationBeginRequest(object sender, EventArgs e)
         {
-            // TODO: Install response buffer
-            //((HttpApplication)sender).Response.Filter = 
+            var response = ((HttpApplication)sender).Response;
+            response.Filter = new PlaceholderReplacingResponseFilter(
+                new HttpResponseWrapper(response),
+                new PlaceholderTracker()
+            );
         }
 
         public void Dispose()

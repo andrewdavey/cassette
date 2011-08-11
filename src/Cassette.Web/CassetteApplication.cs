@@ -33,7 +33,7 @@ namespace Cassette.Web
             }
             else
             {
-                var manager = new PageAssetManager<T>(new ReferenceBuilder<T>(GetModuleContainer<T>()), this);
+                var manager = new PageAssetManager<T>(new ReferenceBuilder<T>(GetModuleContainer<T>()), this, new PlaceholderTracker());
                 HttpContext.Current.Items[key] = manager;
                 return manager;
             }

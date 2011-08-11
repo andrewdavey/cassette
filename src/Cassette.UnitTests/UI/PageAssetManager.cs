@@ -11,11 +11,16 @@ namespace Cassette.UI
         public PageAssetManager_Tests()
         {
             referenceBuilder = new Mock<IReferenceBuilder<Module>>();
-            manager = new PageAssetManager<Module>(referenceBuilder.Object, Mock.Of<ICassetteApplication>());
+            placeholderTracker = new Mock<IPlaceholderTracker>();
+            manager = new PageAssetManager<Module>(referenceBuilder.Object, Mock.Of<ICassetteApplication>(), placeholderTracker.Object);
+
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<IHtmlString>()))
+                              .Returns(new HtmlString("output"));
         }
 
         readonly PageAssetManager<Module> manager;
         readonly Mock<IReferenceBuilder<Module>> referenceBuilder;
+        readonly Mock<IPlaceholderTracker> placeholderTracker;
 
         [Fact]
         public void WhenAddReference_ThenReferenceBuilderIsCalled()
@@ -28,9 +33,9 @@ namespace Cassette.UI
         public void GivenAddReferenceToPath_WhenRender_ThenModuleRenderOutputReturned()
         {
             var module = new Mock<Module>("stub", Mock.Of<IFileSystem>());
+            referenceBuilder.Setup(b => b.GetModules(null)).Returns(new[] { module.Object });
             module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                   .Returns(new HtmlString("output"));
-            referenceBuilder.Setup(b => b.GetModules(null)).Returns(new[] { module.Object });
             manager.Reference("test");
 
             var html = manager.Render();
@@ -66,9 +71,16 @@ namespace Cassette.UI
             manager.Reference("stub1");
             manager.Reference("stub2");
 
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.Is<IHtmlString>(
+                                  s => s.ToHtmlString() == "output1" + Environment.NewLine + "output2"
+                              )))
+                              .Returns(new HtmlString("output"))
+                              .Verifiable();
+
             var html = manager.Render();
 
-            html.ToHtmlString().ShouldEqual("output1" + Environment.NewLine + "output2");
+            html.ToHtmlString().ShouldEqual("output");
+            placeholderTracker.Verify();
         }
     }
 }

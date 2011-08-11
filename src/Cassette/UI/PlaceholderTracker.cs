@@ -5,14 +5,15 @@ using System.Web;
 
 namespace Cassette.UI
 {
-    public class PlaceholderTracker
+    public class PlaceholderTracker : IPlaceholderTracker
     {
-        readonly Dictionary<string, Func<IHtmlString>> creationFunctions = new Dictionary<string, Func<IHtmlString>>();
+        readonly Dictionary<Guid, string> creationFunctions = new Dictionary<Guid, string>();
 
-        public IHtmlString InsertPlaceholder(string id, Func<IHtmlString> createHtml)
+        public IHtmlString InsertPlaceholder(IHtmlString futureHtml)
         {
-            creationFunctions[id] = createHtml;
-            return new HtmlString(Environment.NewLine + id + Environment.NewLine);
+            var id = Guid.NewGuid();
+            creationFunctions[id] = futureHtml.ToHtmlString();
+            return new HtmlString(Environment.NewLine + id.ToString() + Environment.NewLine);
         }
 
         public string ReplacePlaceholders(string html)
@@ -20,7 +21,7 @@ namespace Cassette.UI
             var builder = new StringBuilder(html);
             foreach (var item in creationFunctions)
             {
-                builder.Replace(item.Key, item.Value().ToHtmlString());
+                builder.Replace(item.Key.ToString(), item.Value);
             }
             return builder.ToString();
         }

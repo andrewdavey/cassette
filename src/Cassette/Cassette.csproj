@@ -73,6 +73,7 @@
     <Compile Include="ModuleProcessing\ParseCssReferences.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplatesInScriptBlocks.cs" />
+    <Compile Include="UI\IPlaceholderTracker.cs" />
     <Compile Include="UI\PageAssetManager.cs" />
     <Compile Include="Persistence\CachedAssetSourceInfo.cs" />
     <Compile Include="AssetReference.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="StylesheetModule.cs" />
     <Compile Include="StylesheetModuleFactory.cs" />
+    <Compile Include="UI\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
