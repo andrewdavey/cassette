@@ -30,10 +30,24 @@ namespace Cassette.UI
             var module = new Mock<Module>("stub", Mock.Of<IFileSystem>());
             module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                   .Returns(new HtmlString("output"));
-            referenceBuilder.Setup(b => b.GetModules()).Returns(new[] { module.Object });
+            referenceBuilder.Setup(b => b.GetModules(null)).Returns(new[] { module.Object });
             manager.Reference("test");
 
             var html = manager.Render();
+
+            html.ToHtmlString().ShouldEqual("output");
+        }
+
+        [Fact]
+        public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenModuleRenderOutputReturned()
+        {
+            var module = new Mock<Module>("stub", Mock.Of<IFileSystem>());
+            module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
+                  .Returns(new HtmlString("output"));
+            referenceBuilder.Setup(b => b.GetModules("body")).Returns(new[] { module.Object });
+            manager.Reference("test");
+
+            var html = manager.Render("body");
 
             html.ToHtmlString().ShouldEqual("output");
         }
@@ -47,7 +61,7 @@ namespace Cassette.UI
             var module2 = new Mock<Module>("stub2", Mock.Of<IFileSystem>());
             module2.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                    .Returns(new HtmlString("output2"));
-            referenceBuilder.Setup(b => b.GetModules())
+            referenceBuilder.Setup(b => b.GetModules(null))
                             .Returns(new[] { module1.Object, module2.Object });
             manager.Reference("stub1");
             manager.Reference("stub2");

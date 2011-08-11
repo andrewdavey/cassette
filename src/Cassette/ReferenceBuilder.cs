@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Cassette
@@ -24,9 +25,10 @@ namespace Cassette
             modules.Add(module);
         }
 
-        public IEnumerable<T> GetModules()
+        public IEnumerable<T> GetModules(string location)
         {
-            return moduleContainer.AddDependenciesAndSort(modules);
+            var modulesAtLocation = modules.Where(m => m.Location == location).ToArray();
+            return moduleContainer.AddDependenciesAndSort(modulesAtLocation);
         }
     }
 }

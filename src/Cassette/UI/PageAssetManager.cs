@@ -24,7 +24,7 @@ namespace Cassette.UI
         public IHtmlString Render(string location = null)
         {
             var html = string.Join(Environment.NewLine,
-                referenceBuilder.GetModules().Select(
+                referenceBuilder.GetModules(location).Select(
                     module => module.Render(application).ToHtmlString()
                 )
             );

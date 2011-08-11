@@ -36,6 +36,7 @@ namespace Cassette
         }
 
         public string ContentType { get; set; }
+        public string Location { get; set; }
 
         public bool ContainsPath(string path)
         {
