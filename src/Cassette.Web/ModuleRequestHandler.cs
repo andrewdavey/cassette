@@ -2,7 +2,7 @@
 using System.Web;
 using System.Web.Routing;
 
-namespace Cassette
+namespace Cassette.Web
 {
     public class ModuleRequestHandler<T> : IHttpHandler
         where T : Module
