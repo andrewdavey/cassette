@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cassette.UI;
 
 namespace Cassette
 {
-    public class CassetteApplication : ICassetteApplication
+    public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        public CassetteApplication(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized)
+        public CassetteApplicationBase(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized)
         {
             this.sourceFileSystem = sourceFileSystem;
             this.cacheFileSystem = cacheFileSystem;
@@ -77,14 +78,8 @@ namespace Cassette
             initializers.Clear();
         }
 
-        public virtual string CreateModuleUrl(Module module)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual string CreateAssetUrl(Module module, IAsset asset)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract string CreateModuleUrl(Module module);
+        public abstract string CreateAssetUrl(Module module, IAsset asset);
+        public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
     }
 }

@@ -1,13 +1,11 @@
-﻿using System.Linq;
-using System.Text;
-using System;
-using System.Web.Routing;
+﻿using System.Web.Routing;
+using Cassette.UI;
 
 namespace Cassette.Web
 {
-    public class CassetteApplication : Cassette.CassetteApplication
+    public class CassetteApplication : Cassette.CassetteApplicationBase
     {
-        public CassetteApplication(IFileSystem sourceFileSystem, UrlGenerator urlGenerator, IFileSystem cacheFileSystem, bool isOutputOptmized)
+        public CassetteApplication(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, UrlGenerator urlGenerator, bool isOutputOptmized)
             : base(sourceFileSystem, cacheFileSystem, isOutputOptmized)
         {
             this.urlGenerator = urlGenerator;
@@ -23,6 +21,11 @@ namespace Cassette.Web
         public override string CreateModuleUrl(Module module)
         {
             return urlGenerator.CreateModuleUrl(module);
+        }
+
+        public override IPageAssetManager<T> GetPageAssetManager<T>()
+        {
+            return new PageAssetManager<T>(new ReferenceBuilder<T>(GetModuleContainer<T>()), this);
         }
 
         public void InstallRoutes(RouteCollection routes)

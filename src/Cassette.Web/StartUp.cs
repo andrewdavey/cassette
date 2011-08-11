@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Routing;
+using Cassette.UI;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 [assembly: WebActivator.PostApplicationStartMethod(
@@ -38,6 +39,8 @@ namespace Cassette.Web
             CassetteApplication.InitializeModuleContainers();
             CassetteApplication.InstallRoutes(RouteTable.Routes);
             
+            Assets.Application = CassetteApplication;
+
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
 
@@ -78,8 +81,8 @@ namespace Cassette.Web
         {
             var application = new CassetteApplication(
                 new FileSystem(HttpRuntime.AppDomainAppPath),
-                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
                 new IsolatedStorageFileSystem(storage),
+                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
                 GetDebugModeFromConfig() == false
             );
             configuration.Configure(application);

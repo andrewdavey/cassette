@@ -4,7 +4,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.UI
 {
     public class PageAssetManager_Tests
     {
@@ -20,7 +20,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReference_ThenReferenceBuilderIsCalled()
         {
-            manager.AddReference("test");
+            manager.Reference("test");
             referenceBuilder.Verify(b => b.AddReference("test"));
         }
 
@@ -31,7 +31,7 @@ namespace Cassette
             module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                   .Returns(new HtmlString("output"));
             referenceBuilder.Setup(b => b.GetModules()).Returns(new[] { module.Object });
-            manager.AddReference("test");
+            manager.Reference("test");
 
             var html = manager.Render();
 
@@ -49,8 +49,8 @@ namespace Cassette
                    .Returns(new HtmlString("output2"));
             referenceBuilder.Setup(b => b.GetModules())
                             .Returns(new[] { module1.Object, module2.Object });
-            manager.AddReference("stub1");
-            manager.AddReference("stub2");
+            manager.Reference("stub1");
+            manager.Reference("stub2");
 
             var html = manager.Render();
 

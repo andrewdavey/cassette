@@ -2,26 +2,26 @@
 using System.Linq;
 using System.Web;
 
-namespace Cassette
+namespace Cassette.UI
 {
-    public class PageAssetManager<T>
+    public class PageAssetManager<T> : IPageAssetManager<T>
         where T : Module
     {
-        public PageAssetManager(IReferenceBuilder<Module> referenceBuilder, ICassetteApplication application)
+        public PageAssetManager(IReferenceBuilder<T> referenceBuilder, ICassetteApplication application)
         {
             this.referenceBuilder = referenceBuilder;
             this.application = application;
         }
 
-        readonly IReferenceBuilder<Module> referenceBuilder;
+        readonly IReferenceBuilder<T> referenceBuilder;
         readonly ICassetteApplication application;
 
-        public void AddReference(string path)
+        public void Reference(string path)
         {
             referenceBuilder.AddReference(path);
         }
 
-        public IHtmlString Render()
+        public IHtmlString Render(string location = null)
         {
             var html = string.Join(Environment.NewLine,
                 referenceBuilder.GetModules().Select(

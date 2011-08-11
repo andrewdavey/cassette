@@ -50,10 +50,10 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
-    <Compile Include="Assets.cs" />
-    <Compile Include="CassetteApplication.cs" />
+    <Compile Include="UI\Assets.cs" />
+    <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="CassetteApplicationExtensions.cs" />
-    <Compile Include="IPageAssetManager.cs" />
+    <Compile Include="UI\IPageAssetManager.cs" />
     <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="EmptyCassetteConfiguration.cs" />
@@ -70,7 +70,7 @@
     <Compile Include="ModuleProcessing\ParseCssReferences.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplatesInScriptBlocks.cs" />
-    <Compile Include="PageAssetManager.cs" />
+    <Compile Include="UI\PageAssetManager.cs" />
     <Compile Include="Persistence\CachedAssetSourceInfo.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />

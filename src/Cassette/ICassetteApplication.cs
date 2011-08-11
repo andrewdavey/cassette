@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.UI;
 
 namespace Cassette
 {
@@ -13,5 +14,7 @@ namespace Cassette
 
         string CreateModuleUrl(Module module);
         string CreateAssetUrl(Module module, IAsset asset);
+
+        IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
     }
 }

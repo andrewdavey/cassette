@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Cassette.ModuleProcessing;
 using Should;
 using Xunit;
+using Cassette.Web;
 
 namespace Cassette.IntegrationTests
 {
@@ -23,7 +24,7 @@ namespace Cassette.IntegrationTests
             {
                 var sourceFileSystem = new FileSystem(Path.GetFullPath(@"..\..\assets"));
                 var cacheFileSystem = new IsolatedStorageFileSystem(storage);
-                var application = new CassetteApplication(sourceFileSystem, cacheFileSystem, true);
+                var application = new Cassette.Web.CassetteApplication(sourceFileSystem, cacheFileSystem, new UrlGenerator("/"), true);
                 
                 // Define the modules
                 application.HasModules<ScriptModule>()
