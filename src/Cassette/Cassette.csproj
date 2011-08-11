@@ -111,6 +111,7 @@
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="StylesheetModule.cs" />
     <Compile Include="StylesheetModuleFactory.cs" />
+    <Compile Include="UI\PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />

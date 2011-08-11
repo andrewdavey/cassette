@@ -88,6 +88,7 @@
     <Compile Include="StubFileSystem.cs" />
     <Compile Include="StylesheetModule.cs" />
     <Compile Include="StylesheetModuleFactory.cs" />
+    <Compile Include="UI\PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />
