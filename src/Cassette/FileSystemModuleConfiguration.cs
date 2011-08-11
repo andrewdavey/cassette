@@ -76,37 +76,9 @@ namespace Cassette
         IModuleContainer<T> IModuleContainerFactory<T>.CreateModuleContainer()
         {
             var moduleFactory = application.GetModuleFactory<T>();
-            List<T> modules = new List<T>();
-            DateTime lastWriteTimeMax = DateTime.MinValue;
-            foreach (var directory in moduleDirectories)
-            {
-                var module = moduleFactory.CreateModule(directory);
-                IEnumerable<string> filenames;
-                if (searchPatterns.Count == 0)
-                {
-                    filenames = application.RootDirectory.GetFiles(directory);
-                }
-                else
-                {
-                    filenames = searchPatterns.SelectMany(pattern => application.RootDirectory.GetFiles(directory, pattern)).Distinct();
-                }
-                foreach (var exclusion in exclusions)
-                {
-                    filenames = filenames.Where(f => exclusion.IsMatch(f) == false);
-                }
-                foreach (var filename in filenames)
-                {
-                    var moduleRelativeFilename = filename.Substring(directory.Length + 1);
-                    module.Assets.Add(new Asset(moduleRelativeFilename, module));
-
-                    var lastWriteTime = application.RootDirectory.GetLastWriteTimeUtc(filename);
-                    if (lastWriteTime > lastWriteTimeMax)
-                    {
-                        lastWriteTimeMax = lastWriteTime;
-                    }
-                }
-                modules.Add(module);
-            }
+            List<T> modules;
+            DateTime lastWriteTimeMax;
+            GetModulesAndLastWriteTime(moduleFactory, out modules, out lastWriteTimeMax);
 
             if (application.IsOutputOptimized)
             {
@@ -129,6 +101,47 @@ namespace Cassette
                 var container = new ModuleContainer<T>(modules);
                 return container;
             }
+        }
+
+        void GetModulesAndLastWriteTime(IModuleFactory<T> moduleFactory, out List<T> modules, out DateTime lastWriteTimeMax)
+        {
+            modules = new List<T>();
+            lastWriteTimeMax = DateTime.MinValue;
+            foreach (var directory in moduleDirectories)
+            {
+                var module = moduleFactory.CreateModule(directory);
+                var filenames = GetAssetFilenames(directory);
+                foreach (var filename in filenames)
+                {
+                    var moduleRelativeFilename = filename.Substring(directory.Length + 1);
+                    module.Assets.Add(new Asset(moduleRelativeFilename, module));
+
+                    var lastWriteTime = application.RootDirectory.GetLastWriteTimeUtc(filename);
+                    if (lastWriteTime > lastWriteTimeMax)
+                    {
+                        lastWriteTimeMax = lastWriteTime;
+                    }
+                }
+                modules.Add(module);
+            }
+        }
+
+        IEnumerable<string> GetAssetFilenames(string directory)
+        {
+            IEnumerable<string> filenames;
+            if (searchPatterns.Count == 0)
+            {
+                filenames = application.RootDirectory.GetFiles(directory);
+            }
+            else
+            {
+                filenames = searchPatterns.SelectMany(pattern => application.RootDirectory.GetFiles(directory, pattern)).Distinct();
+            }
+            foreach (var exclusion in exclusions)
+            {
+                filenames = filenames.Where(f => exclusion.IsMatch(f) == false);
+            }
+            return filenames;
         }
 
         void ProcessAllModules(IEnumerable<T> container, ICassetteApplication application)

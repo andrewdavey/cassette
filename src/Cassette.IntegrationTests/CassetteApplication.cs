@@ -38,20 +38,25 @@ namespace Cassette.IntegrationTests
                             new MinifyAssets(new MicrosoftJavaScriptMinifier())
                         )
                     );
-                
                 application.HasModules<StylesheetModule>()
                     .Directories("styles")
                     .ProcessWith(
                         new ParseCssReferences(),
                         new SortAssetsByDependency(),
-                        new ConcatenateAssets(),
-                        new MinifyAssets(new MicrosoftStyleSheetMinifier())
+                        new ConditionalStep<StylesheetModule>(
+                            (m, app) => app.IsOutputOptimized,
+                            new ConcatenateAssets(),
+                            new MinifyAssets(new MicrosoftStyleSheetMinifier())
+                        )
                     );
                 application.HasModules<HtmlTemplateModule>()
                     .Directories("templates")
                     .ProcessWith(
                         new WrapHtmlTemplatesInScriptBlocks(),
-                        new ConcatenateAssets()
+                        new ConditionalStep<HtmlTemplateModule>(
+                            (m, app) => app.IsOutputOptimized,
+                            new ConcatenateAssets()
+                        )
                     );
 
                 application.InitializeModuleContainers();
