@@ -23,7 +23,7 @@ namespace Cassette.ModuleProcessing
                 using (var input = new StreamReader(openSourceStream()))
                 {
                     var directory = Path.GetDirectoryName(asset.SourceFilename);
-                    var fileSystem = directory.Length > 0 ? module.FileSystem.AtSubDirectory(directory, false)
+                    var fileSystem = directory.Length > 0 ? module.FileSystem.NavigateTo(directory, false)
                                                           : module.FileSystem;
                     var css = compiler.Compile(input.ReadToEnd(), asset.SourceFilename, fileSystem);
                     return css.AsStream();

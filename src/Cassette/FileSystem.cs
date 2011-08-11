@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -17,17 +17,17 @@ namespace Cassette
 
         public Stream OpenFile(string filename, FileMode mode, FileAccess access)
         {
-            return File.Open(GetFullPath(filename), mode, access);
+            return File.Open(GetAbsolutePath(filename), mode, access);
         }
 
         public bool FileExists(string filename)
         {
-            return File.Exists(GetFullPath(filename));
+            return File.Exists(GetAbsolutePath(filename));
         }
 
         public bool DirectoryExists(string filename)
         {
-            return Directory.Exists(GetFullPath(filename));
+            return Directory.Exists(GetAbsolutePath(filename));
         }
 
         public void DeleteAll()
@@ -47,7 +47,7 @@ namespace Cassette
             return File.GetLastWriteTimeUtc(filename);
         }
 
-        string GetFullPath(string filename)
+        public string GetAbsolutePath(string filename)
         {
             return PathUtilities.NormalizePath(Path.Combine(rootDirectory, filename));
         }
@@ -57,9 +57,9 @@ namespace Cassette
             return fullPath.Substring(rootDirectory.Length + 1);
         }
 
-        public IFileSystem AtSubDirectory(string path, bool createIfNotExists)
+        public IFileSystem NavigateTo(string path, bool createIfNotExists)
         {
-            var fullPath = GetFullPath(path);
+            var fullPath = GetAbsolutePath(path);
             if (Directory.Exists(fullPath) == false)
             {
                 if (createIfNotExists)
@@ -76,22 +76,22 @@ namespace Cassette
 
         public IEnumerable<string> GetDirectories(string relativePath)
         {
-            return Directory.EnumerateDirectories(GetFullPath(relativePath)).Select(ToRelativePath);
+            return Directory.EnumerateDirectories(GetAbsolutePath(relativePath)).Select(ToRelativePath);
         }
 
         public IEnumerable<string> GetFiles(string directory)
         {
-            return Directory.GetFiles(GetFullPath(directory), "*", SearchOption.AllDirectories).Select(ToRelativePath);
+            return Directory.GetFiles(GetAbsolutePath(directory), "*", SearchOption.AllDirectories).Select(ToRelativePath);
         }
 
         public IEnumerable<string> GetFiles(string directory, string searchPattern)
         {
-            return Directory.GetFiles(GetFullPath(directory), searchPattern, SearchOption.AllDirectories).Select(ToRelativePath);
+            return Directory.GetFiles(GetAbsolutePath(directory), searchPattern, SearchOption.AllDirectories).Select(ToRelativePath);
         }
 
         public FileAttributes GetAttributes(string path)
         {
-            return File.GetAttributes(GetFullPath(path));
+            return File.GetAttributes(GetAbsolutePath(path));
         }
     }
 }

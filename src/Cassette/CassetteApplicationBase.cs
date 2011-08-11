@@ -29,7 +29,7 @@ namespace Cassette
             where T : Module
         {
             return new ModuleCache<T>(
-                cacheFileSystem.AtSubDirectory(typeof(T).Name, true),
+                cacheFileSystem.NavigateTo(typeof(T).Name, true),
                 GetModuleFactory<T>()
             );
         }

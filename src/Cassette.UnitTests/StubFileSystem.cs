@@ -33,7 +33,7 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public IFileSystem AtSubDirectory(string path, bool createIfNotExists)
+        public IFileSystem NavigateTo(string path, bool createIfNotExists)
         {
             throw new NotImplementedException();
         }
@@ -60,6 +60,12 @@ namespace Cassette
 
 
         public FileAttributes GetAttributes(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public string GetAbsolutePath(string path)
         {
             throw new NotImplementedException();
         }

@@ -49,7 +49,7 @@ namespace Cassette
             return Path.Combine(basePath, path);
         }
 
-        public IFileSystem AtSubDirectory(string path, bool createIfNotExists)
+        public IFileSystem NavigateTo(string path, bool createIfNotExists)
         {
             var fullPath = GetFullPath(path);
             if (storage.DirectoryExists(fullPath) == false)
@@ -87,6 +87,11 @@ namespace Cassette
         }
 
         public FileAttributes GetAttributes(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetAbsolutePath(string path)
         {
             throw new NotImplementedException();
         }

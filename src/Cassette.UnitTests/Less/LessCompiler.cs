@@ -1,10 +1,9 @@
-﻿using Should;
-using Xunit;
-using System.Collections.Generic;
-using Moq;
+﻿using System;
 using System.IO;
 using Cassette.Utilities;
-using System;
+using Moq;
+using Should;
+using Xunit;
 
 namespace Cassette.Less
 {
@@ -13,6 +12,8 @@ namespace Cassette.Less
         public LessCompiler_Compile()
         {
             fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(fs => fs.NavigateTo(It.IsAny<string>(), false))
+                      .Returns(fileSystem.Object);
         }
 
         readonly Mock<IFileSystem> fileSystem;
@@ -104,6 +105,61 @@ namespace Cassette.Less
                     fileSystem
                 );
                 css.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: red;\n}\n");
+            }
+            finally
+            {
+                root.Delete(true);
+            }
+        }
+
+        [Fact]
+        public void Importing_less_file_not_found_throws_useful_exception()
+        {
+            var root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            try
+            {
+                var moduleA = root.CreateSubdirectory("module-a");
+                var moduleB = root.CreateSubdirectory("module-b");
+                var fileSystem = new FileSystem(moduleA.FullName);
+
+                var compiler = new LessCompiler();
+                var exception = Assert.Throws<FileNotFoundException>(delegate
+                {
+                    compiler.Compile(
+                        "@import \"../module-b/_MISSING.less\";\nbody{ color: @color }",
+                        @"test.less",
+                        fileSystem
+                    );
+                });
+                var fullPathOfSourceFile = Path.Combine(moduleA.FullName, "test.less");
+                exception.Message.ShouldContain(fullPathOfSourceFile);
+            }
+            finally
+            {
+                root.Delete(true);
+            }
+        }
+
+        [Fact]
+        public void Importing_less_file_when_directory_not_found_throws_useful_exception()
+        {
+            var root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            try
+            {
+                var moduleA = root.CreateSubdirectory("module-a");
+                var fileSystem = new FileSystem(moduleA.FullName);
+
+                var compiler = new LessCompiler();
+                var exception = Assert.Throws<DirectoryNotFoundException>(delegate
+                {
+                    compiler.Compile(
+                        "@import \"../MISSING/_file.less\";\nbody{ color: @color }",
+                        @"test.less",
+                        fileSystem
+                    );
+                });
+                var fullPathOfSourceFile = Path.Combine(moduleA.FullName, "test.less");
+                exception.Message.ShouldContain(fullPathOfSourceFile);
             }
             finally
             {

@@ -1,12 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Cassette
 {
     public interface IFileSystem
     {
-        IFileSystem AtSubDirectory(string path, bool createIfNotExists);
+        IFileSystem NavigateTo(string path, bool createIfNotExists);
         bool FileExists(string filename);
         Stream OpenFile(string filename, FileMode mode, FileAccess access);
         void DeleteAll();
@@ -20,5 +20,7 @@ namespace Cassette
         IEnumerable<string> GetFiles(string directory, string searchPattern);
 
         FileAttributes GetAttributes(string path);
+
+        string GetAbsolutePath(string path);
     }
 }

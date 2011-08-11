@@ -43,7 +43,7 @@ namespace Cassette.IntegrationTests
                 }
 
                 var fileSystem = new IsolatedStorageFileSystem(store);
-                var subFileSystem = fileSystem.AtSubDirectory("sub", false);
+                var subFileSystem = fileSystem.NavigateTo("sub", false);
 
                 subFileSystem.FileExists("test.txt").ShouldBeTrue();
                 using (var reader = new StreamReader(subFileSystem.OpenFile("test.txt", FileMode.Open, FileAccess.Read)))

@@ -18,11 +18,15 @@ namespace Cassette.Less
 
         readonly ScriptEngine engine;
         readonly Stack<IFileSystem> currentDirectories = new Stack<IFileSystem>();
+        readonly Stack<string> currentFilenames = new Stack<string>();
 
         public string Compile(string lessSource, string sourceFilename, IFileSystem fileSystem)
         {
             lock (engine)
             {
+                currentDirectories.Clear();
+                currentFilenames.Clear();
+
                 var result = CompileImpl(lessSource, sourceFilename, fileSystem);
                 if (result.Css != null)
                 {
@@ -43,6 +47,7 @@ namespace Cassette.Less
 
         CompileResult CompileImpl(string lessSource, string sourceFilename, IFileSystem fileSystem)
         {
+            currentFilenames.Push(fileSystem.GetAbsolutePath(sourceFilename));
             currentDirectories.Push(fileSystem);
             
             var parser = (ObjectInstance)engine.Evaluate("(new window.less.Parser)");
@@ -57,6 +62,7 @@ namespace Cassette.Less
                 throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", sourceFilename, message));
             }
 
+            currentFilenames.Pop();
             currentDirectories.Pop();
             return callback;
         }
@@ -64,15 +70,52 @@ namespace Cassette.Less
         void LoadStylesheet(ObjectInstance options, FunctionInstance callback)
         {
             var href = options.GetPropertyValue("href").ToString();
-            var directory = currentDirectories.Peek();
+            var currentDirectory = currentDirectories.Peek();
             string source;
-            using (var reader = new StreamReader(directory.OpenFile(href, FileMode.Open, FileAccess.Read)))
+            try
             {
-                source = reader.ReadToEnd();
+                using (var reader = new StreamReader(currentDirectory.OpenFile(href, FileMode.Open, FileAccess.Read)))
+                {
+                    source = reader.ReadToEnd();
+                }
             }
-            var newDirectory = directory.AtSubDirectory(Path.GetDirectoryName(href), false);
+            catch (FileNotFoundException ex)
+            {
+                throw FileNotFoundExceptionWithSourceFilename(ex);
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                throw DirectoryNotFoundExceptionWithSourceFilename(ex);
+            }
+            var newDirectory = currentDirectory.NavigateTo(Path.GetDirectoryName(href), false);
             var result = CompileImpl(source, href, newDirectory);
             callback.Call(Null.Value, result.Root);
+        }
+
+        FileNotFoundException FileNotFoundExceptionWithSourceFilename(FileNotFoundException ex)
+        {
+            return new FileNotFoundException(
+                string.Format(
+                    "{0}{1}Referenced by an @import in '{2}'.",
+                    ex.Message,
+                    Environment.NewLine,
+                    currentFilenames.Peek()
+                ),
+                ex
+            );
+        }
+
+        DirectoryNotFoundException DirectoryNotFoundExceptionWithSourceFilename(DirectoryNotFoundException ex)
+        {
+            return new DirectoryNotFoundException(
+                string.Format(
+                    "{0}{1}Referenced by an @import in '{2}'.",
+                    ex.Message,
+                    Environment.NewLine,
+                    currentFilenames.Peek()
+                ),
+                ex
+            );
         }
 
         class CompileResult : FunctionInstance

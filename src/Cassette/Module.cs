@@ -11,7 +11,7 @@ namespace Cassette
         public Module(string relativeDirectory, IFileSystem fileSystem)
         {
             this.directory = NormalizePath(relativeDirectory);
-            this.fileSystem = fileSystem.AtSubDirectory(relativeDirectory, false);
+            this.fileSystem = fileSystem.NavigateTo(relativeDirectory, false);
         }
 
         readonly string directory;
