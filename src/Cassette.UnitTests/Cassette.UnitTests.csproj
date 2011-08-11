@@ -69,6 +69,7 @@
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="ModuleProcessing\ConcatenatedAsset.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
+    <Compile Include="ModuleProcessing\ParseLessReferences.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="UI\PageAssetManager.cs" />
     <Compile Include="Persistence\CreateManifestVisitor.cs" />

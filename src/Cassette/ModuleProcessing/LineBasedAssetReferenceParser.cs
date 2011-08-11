@@ -31,7 +31,7 @@ namespace Cassette.ModuleProcessing
                     var match = referenceRegex.Match(line);
                     if (match.Success)
                     {
-                        asset.AddReference(match.Groups[1].Value, lineNumber);
+                        asset.AddReference(match.Groups["path"].Value, lineNumber);
                     }
                     else
                     {

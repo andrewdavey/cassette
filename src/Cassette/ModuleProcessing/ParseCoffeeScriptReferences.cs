@@ -10,7 +10,7 @@ namespace Cassette.ModuleProcessing
         }
 
         static readonly Regex referenceRegex = new Regex(
-            @"#\s*reference\s+[""'](.*?)[""']",
+            @"#\s*reference\s+(?<quote>[""'])(?<path>.*?)\<quote>",
             RegexOptions.IgnoreCase
         );
     }

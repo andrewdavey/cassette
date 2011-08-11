@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Cassette;
 using Cassette.ModuleProcessing;
+using Cassette.Less;
 
 namespace Example
 {
@@ -23,9 +24,12 @@ namespace Example
                 );
             application.HasModules<StylesheetModule>()
                 .Directories("Styles")
+                .IncludeFiles("*.css", "*.less")
                 .ProcessWith(
                     new ParseCssReferences(),
+                    new ParseLessReferences(),
                     new SortAssetsByDependency(),
+                    new CompileLess(new LessCompiler()),
                     new ConditionalStep<StylesheetModule>(
                         (m, a) => a.IsOutputOptimized,
                         new ConcatenateAssets(),
