@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
+    <Compile Include="ModuleProcessing\CompileLess.cs" />
     <Compile Include="ModuleProcessing\CompileLessAsset.cs" />
     <Compile Include="UI\Assets.cs" />
     <Compile Include="CassetteApplicationBase.cs" />

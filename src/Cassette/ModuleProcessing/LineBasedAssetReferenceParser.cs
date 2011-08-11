@@ -14,7 +14,7 @@ namespace Cassette.ModuleProcessing
 
         readonly Regex referenceRegex;
 
-        protected override void Process(IAsset asset)
+        protected override void Process(IAsset asset, Module module)
         {
             using (var reader = new StreamReader(asset.OpenStream()))
             {

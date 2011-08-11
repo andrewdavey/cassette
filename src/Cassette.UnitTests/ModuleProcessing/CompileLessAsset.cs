@@ -19,7 +19,7 @@ namespace Cassette.ModuleProcessing
             var compilerOutput = "compiler-output";
             var compiler = StubCompiler(sourceInput, compilerOutput);
 
-            var transformer = new CompileLessAsset(compiler);
+            var transformer = new CompileLessAsset(compiler, new Module("test", Mock.Of<IFileSystem>()));
 
             var getResultStream = transformer.Transform(
                 () => sourceInput.AsStream(),
@@ -35,7 +35,7 @@ namespace Cassette.ModuleProcessing
         ILessCompiler StubCompiler(string expectedSourceInput, string compilerOutput)
         {
             var compiler = new Mock<ILessCompiler>();
-            compiler.Setup(c => c.CompileFile("test.coffee"))
+            compiler.Setup(c => c.Compile(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IFileSystem>()))
                     .Returns(compilerOutput);
             return compiler.Object;
         }

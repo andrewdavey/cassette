@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -48,7 +49,7 @@ namespace Cassette
 
         string GetFullPath(string filename)
         {
-            return Path.Combine(rootDirectory, filename);
+            return PathUtilities.NormalizePath(Path.Combine(rootDirectory, filename));
         }
 
         string ToRelativePath(string fullPath)

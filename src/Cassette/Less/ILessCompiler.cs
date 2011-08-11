@@ -2,6 +2,6 @@
 {
     public interface ILessCompiler
     {
-        string CompileFile(string lessSource);
+        string Compile(string lessSource, string sourceFilename, IFileSystem fileSystem);
     }
 }

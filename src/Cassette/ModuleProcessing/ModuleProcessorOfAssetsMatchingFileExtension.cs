@@ -18,7 +18,7 @@ namespace Cassette.ModuleProcessing
             var assets = module.Assets.Where(ShouldProcessAsset);
             foreach (var asset in assets)
             {
-                Process(asset);
+                Process(asset, module);
             }
         }
 
@@ -27,6 +27,6 @@ namespace Cassette.ModuleProcessing
             return asset.SourceFilename.EndsWith(filenameEndsWith, StringComparison.OrdinalIgnoreCase);
         }
 
-        protected abstract void Process(IAsset asset);
+        protected abstract void Process(IAsset asset, Module module);
     }
 }

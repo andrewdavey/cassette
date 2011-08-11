@@ -21,7 +21,7 @@ namespace Cassette.ModuleProcessing
             RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
 
-        protected override void Process(IAsset asset)
+        protected override void Process(IAsset asset, Module module)
         {
             var css = ReadAllCss(asset);
             foreach (var reference in ParseReferences(css))

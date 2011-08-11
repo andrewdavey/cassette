@@ -12,7 +12,7 @@ namespace Cassette.ModuleProcessing
 
         readonly ICoffeeScriptCompiler coffeeScriptCompiler;
 
-        protected override void Process(IAsset asset)
+        protected override void Process(IAsset asset, Module module)
         {
             asset.AddAssetTransformer(new CompileCoffeeScriptAsset(coffeeScriptCompiler));
         }
