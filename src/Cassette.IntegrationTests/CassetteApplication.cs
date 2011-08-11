@@ -24,7 +24,7 @@ namespace Cassette.IntegrationTests
             {
                 var sourceFileSystem = new FileSystem(Path.GetFullPath(@"..\..\assets"));
                 var cacheFileSystem = new IsolatedStorageFileSystem(storage);
-                var application = new Cassette.Web.CassetteApplication(sourceFileSystem, cacheFileSystem, new UrlGenerator("/"), true);
+                var application = new Cassette.Web.CassetteApplication(sourceFileSystem, cacheFileSystem, new UrlGenerator("/"), true, "1");
                 
                 // Define the modules
                 application.HasModules<ScriptModule>()

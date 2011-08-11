@@ -172,7 +172,7 @@ namespace Cassette
         [Fact]
         public void WhenCacheIsUpToDate_ThenPipelineIsNotProcessed()
         {
-            cache.Setup(c => c.IsUpToDate(It.IsAny<DateTime>())).Returns(true);
+            cache.Setup(c => c.IsUpToDate(It.IsAny<DateTime>(), It.IsAny<string>())).Returns(true);
             (config as IModuleContainerFactory<Module>).CreateModuleContainer();
 
             pipeline.Verify(

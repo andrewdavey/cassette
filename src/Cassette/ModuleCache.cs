@@ -19,12 +19,23 @@ namespace Cassette
         readonly IFileSystem fileSystem;
         readonly IModuleFactory<T> moduleFactory;
         readonly string containerFilename = "container.xml";
+        readonly string versionFilename = "version";
 
-        public bool IsUpToDate(DateTime dateTime)
+        public bool IsUpToDate(DateTime dateTime, string version)
         {
             if (!fileSystem.FileExists(containerFilename)) return false;
+            if (!fileSystem.FileExists(versionFilename)) return false;
             var lastWriteTime = fileSystem.GetLastWriteTimeUtc(containerFilename);
-            return lastWriteTime >= dateTime;
+            return lastWriteTime >= dateTime 
+                && IsSameVersion(version);
+        }
+
+        bool IsSameVersion(string version)
+        {
+            using (var reader = new StreamReader(fileSystem.OpenFile(versionFilename, FileMode.Open, FileAccess.Read)))
+            {
+                return reader.ReadLine() == version;
+            }
         }
 
         public IModuleContainer<T> LoadModuleContainer()
@@ -100,9 +111,11 @@ namespace Cassette
             return new CachedAssetSourceInfo(absoluteFilename);
         }
 
-        public void SaveModuleContainer(IModuleContainer<T> moduleContainer)
+        public void SaveModuleContainer(IModuleContainer<T> moduleContainer, string version)
         {
+            fileSystem.DeleteAll();
             SaveContainerXml(moduleContainer);
+            SaveVersion(version);
             foreach (var module in moduleContainer.Modules)
             {
                 SaveModule(module, moduleContainer);
@@ -117,9 +130,17 @@ namespace Cassette
                     moduleContainer.Modules.Select(createManifestVisitor.CreateManifest)
                 )
             );
-            using (var fileStream = fileSystem.OpenFile(containerFilename, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var fileStream = fileSystem.OpenFile(containerFilename, FileMode.Create, FileAccess.Write))
             {
                 xml.Save(fileStream);
+            }
+        }
+
+        void SaveVersion(string version)
+        {
+            using (var writer = new StreamWriter(fileSystem.OpenFile(versionFilename, FileMode.Create, FileAccess.Write)))
+            {
+                writer.Write(version);
             }
         }
 
@@ -139,7 +160,7 @@ namespace Cassette
                 throw new InvalidOperationException("Cannot save a module when assets have not been concatenated into a single asset.");
             }
             var filename = FlattenPathToSingleFilename(module.Directory) + ".module";
-            using (var fileStream = fileSystem.OpenFile(filename, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var fileStream = fileSystem.OpenFile(filename, FileMode.Create, FileAccess.Write))
             {
                 if (module.Assets.Count > 0)
                 {

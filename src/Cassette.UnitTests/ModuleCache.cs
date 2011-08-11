@@ -26,7 +26,7 @@ namespace Cassette
         {
             fileSystem.Setup(fs => fs.FileExists("container.xml"))
                       .Returns(false);
-            cache.IsUpToDate(new DateTime(2000, 1, 2)).ShouldEqual(false);
+            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0").ShouldEqual(false);
         }
 
         [Fact]
@@ -36,8 +36,12 @@ namespace Cassette
                       .Returns(true);
             fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
                       .Returns(new DateTime(2000, 1, 1));
+            fileSystem.Setup(fs => fs.FileExists("version"))
+                      .Returns(true);
+            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+                      .Returns("1.0.0.0".AsStream());
 
-            cache.IsUpToDate(new DateTime(2000, 1, 2)).ShouldEqual(false);
+            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0").ShouldEqual(false);
         }
 
         [Fact]
@@ -47,8 +51,12 @@ namespace Cassette
                       .Returns(true);
             fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
                       .Returns(new DateTime(2000, 1, 2));
+            fileSystem.Setup(fs => fs.FileExists("version"))
+                      .Returns(true);
+            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+                      .Returns("1.0.0.0".AsStream());
 
-            cache.IsUpToDate(new DateTime(2000, 1, 1)).ShouldEqual(true);
+            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0").ShouldEqual(true);
         }
 
         [Fact]
@@ -58,8 +66,27 @@ namespace Cassette
                       .Returns(true);
             fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
                       .Returns(new DateTime(2000, 1, 1));
+            fileSystem.Setup(fs => fs.FileExists("version"))
+                      .Returns(true);
+            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+                      .Returns("1.0.0.0".AsStream());
 
-            cache.IsUpToDate(new DateTime(2000, 1, 1)).ShouldEqual(true);
+            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0").ShouldEqual(true);
+        }
+
+        [Fact]
+        public void WhenVersionNotEqual_ThenIsUpToDateReturnsFalse()
+        {
+            fileSystem.Setup(fs => fs.FileExists("version"))
+                      .Returns(true);
+            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+                      .Returns("1.0.0.0".AsStream());
+            fileSystem.Setup(fs => fs.FileExists("container.xml"))
+                      .Returns(true);
+            fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
+                      .Returns(new DateTime(2000, 1, 1));
+
+            cache.IsUpToDate(new DateTime(2000, 1, 1), "2.0.0.0").ShouldEqual(false);
         }
     }
 
@@ -132,7 +159,7 @@ namespace Cassette
         public ModuleCache_SaveModuleContainer_Tests()
         {
             fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(fs => fs.OpenFile(It.IsAny<string>(), FileMode.OpenOrCreate, FileAccess.Write))
+            fileSystem.Setup(fs => fs.OpenFile(It.IsAny<string>(), FileMode.Create, FileAccess.Write))
                       .Returns(Stream.Null);
 
             cache = new ModuleCache<Module>(fileSystem.Object, Mock.Of<IModuleFactory<Module>>());
@@ -151,10 +178,11 @@ namespace Cassette
             module.Assets.Add(asset1.Object);
             var container = new ModuleContainer<Module>(new[] { module });
 
-            cache.SaveModuleContainer(container);
+            cache.SaveModuleContainer(container, "1.0.0.0");
 
-            fileSystem.Verify(fs => fs.OpenFile("container.xml", FileMode.OpenOrCreate, FileAccess.Write));
-            fileSystem.Verify(fs => fs.OpenFile(".module", FileMode.OpenOrCreate, FileAccess.Write));
+            fileSystem.Verify(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write));
+            fileSystem.Verify(fs => fs.OpenFile("version", FileMode.Create, FileAccess.Write));
+            fileSystem.Verify(fs => fs.OpenFile(".module", FileMode.Create, FileAccess.Write));
         }
 
         [Fact]
@@ -177,11 +205,11 @@ namespace Cassette
             var temp = Path.GetTempFileName();
             try
             {
-                fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.OpenOrCreate, FileAccess.Write))
+                fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write))
                             .Returns(() => File.OpenWrite(temp));
 
                 var container = new ModuleContainer<Module>(new[] { moduleA, moduleB });
-                cache.SaveModuleContainer(container);
+                cache.SaveModuleContainer(container, "1.0.0.0");
 
                 var xml = File.ReadAllText(temp);
                 xml.ShouldContain("<reference path=\"module-b\" />");

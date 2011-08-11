@@ -11,6 +11,7 @@ namespace Cassette
         IModuleFactory<T> GetModuleFactory<T>() where T : Module;
         IFileSystem RootDirectory { get; }
         bool IsOutputOptimized { get; }
+        string Version { get; }
 
         string CreateModuleUrl(Module module);
         string CreateAssetUrl(Module module, IAsset asset);

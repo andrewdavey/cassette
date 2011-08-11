@@ -6,8 +6,8 @@ namespace Cassette.Web
 {
     public class CassetteApplication : Cassette.CassetteApplicationBase
     {
-        public CassetteApplication(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, UrlGenerator urlGenerator, bool isOutputOptmized)
-            : base(sourceFileSystem, cacheFileSystem, isOutputOptmized)
+        public CassetteApplication(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, UrlGenerator urlGenerator, bool isOutputOptmized, string version)
+            : base(sourceFileSystem, cacheFileSystem, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;
         }

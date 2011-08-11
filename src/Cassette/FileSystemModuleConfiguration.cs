@@ -83,7 +83,7 @@ namespace Cassette
             if (application.IsOutputOptimized)
             {
                 var cache = application.GetModuleCache<T>();
-                if (cache.IsUpToDate(lastWriteTimeMax))
+                if (cache.IsUpToDate(lastWriteTimeMax, application.Version))
                 {
                     return cache.LoadModuleContainer();
                 }
@@ -91,7 +91,7 @@ namespace Cassette
                 {
                     ProcessAllModules(modules, application);
                     var container = new ModuleContainer<T>(modules);
-                    cache.SaveModuleContainer(container);
+                    cache.SaveModuleContainer(container, application.Version);
                     return container;
                 }
             }

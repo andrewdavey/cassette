@@ -6,15 +6,17 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        public CassetteApplicationBase(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized)
+        public CassetteApplicationBase(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized, string version)
         {
             this.sourceFileSystem = sourceFileSystem;
             this.cacheFileSystem = cacheFileSystem;
             IsOutputOptimized = isOutputOptmized;
+            this.version = CombineVersionWithCassetteVersion(version);
         }
 
         readonly IFileSystem sourceFileSystem;
         readonly IFileSystem cacheFileSystem;
+        readonly string version;
         readonly List<Action> initializers = new List<Action>();
         readonly Dictionary<Type, object> moduleContainers = new Dictionary<Type, object>();
 
@@ -23,6 +25,11 @@ namespace Cassette
         public IFileSystem RootDirectory
         {
             get { return sourceFileSystem; }
+        }
+
+        public string Version
+        {
+            get { return version; }
         }
 
         public IModuleCache<T> GetModuleCache<T>()
@@ -81,5 +88,14 @@ namespace Cassette
         public abstract string CreateModuleUrl(Module module);
         public abstract string CreateAssetUrl(Module module, IAsset asset);
         public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
+
+        /// <remarks>
+        /// We need module container cache to depend on both the application version
+        /// and the Cassette version. So if either is upgraded, then the cache is discarded.
+        /// </remarks>
+        string CombineVersionWithCassetteVersion(string version)
+        {
+            return version + "|" + GetType().Assembly.GetName().Version.ToString();
+        }
     }
 }

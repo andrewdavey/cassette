@@ -91,16 +91,26 @@ namespace Cassette.Web
                 new FileSystem(HttpRuntime.AppDomainAppPath),
                 new IsolatedStorageFileSystem(storage),
                 new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
-                GetDebugModeFromConfig() == false
+                ShouldOptimizeOutput(),
+                GetConfigurationVersion(configuration)
             );
             configuration.Configure(application);
             return application;
         }
 
-        static bool GetDebugModeFromConfig()
+        static bool ShouldOptimizeOutput()
         {
             var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-            return (compilation != null && compilation.Debug) || false;
+            return (compilation != null && compilation.Debug) == false;
+        }
+
+        static string GetConfigurationVersion(ICassetteConfiguration configuration)
+        {
+            return configuration.GetType()
+                .Assembly
+                .GetName()
+                .Version
+                .ToString();
         }
     }
 }
