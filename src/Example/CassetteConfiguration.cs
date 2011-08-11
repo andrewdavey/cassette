@@ -19,7 +19,7 @@ namespace Example
                     new ConditionalStep<ScriptModule>(
                         (m,a) => a.IsOutputOptimized,
                         new ConcatenateAssets(),
-                        new MinifyAssets(new MicrosoftStyleSheetMinifier())
+                        new MinifyAssets(new MicrosoftJavaScriptMinifier())
                     )
                 );
             application.HasModules<StylesheetModule>()

@@ -111,7 +111,7 @@ namespace Cassette
 
         void SaveContainerXml(IModuleContainer<T> moduleContainer)
         {
-            var createManifestVisitor = new CreateManifestVisitor();
+            var createManifestVisitor = new CreateManifestVisitor(m => GetModuleReferences(m, moduleContainer));
             var xml = new XDocument(
                 new XElement("container",
                     moduleContainer.Modules.Select(createManifestVisitor.CreateManifest)
@@ -121,6 +121,15 @@ namespace Cassette
             {
                 xml.Save(fileStream);
             }
+        }
+
+        IEnumerable<string> GetModuleReferences(Module module, IModuleContainer<T> moduleContainer)
+        {
+            return from asset in module.Assets
+                   from reference in asset.References
+                   where reference.Type == AssetReferenceType.DifferentModule
+                   let referencedModule = moduleContainer.FindModuleByPath(reference.ReferencedPath)
+                   select referencedModule.Directory;
         }
 
         void SaveModule(T module, IModuleContainer<T> moduleContainer)

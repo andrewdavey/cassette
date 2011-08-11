@@ -1,18 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using System;
 
 namespace Cassette.Persistence
 {
     public class CreateManifestVisitor : IAssetVisitor
     {
+        public CreateManifestVisitor(Func<Module, IEnumerable<string>> getModuleReferences)
+	    {
+            this.getModuleReferences = getModuleReferences;
+	    }
+        
+        XElement moduleElement;
+        readonly Func<Module, IEnumerable<string>> getModuleReferences;
+
         public XElement CreateManifest(Module module)
         {
             module.Accept(this);
             return moduleElement;
         }
-
-        XElement moduleElement;
 
         void IAssetVisitor.Visit(Module module)
         {
@@ -24,13 +31,10 @@ namespace Cassette.Persistence
 
         IEnumerable<XElement> ReferenceElements(Module module)
         {
-            return (from asset in module.Assets
-                    from reference in asset.References
-                    where reference.Type == AssetReferenceType.DifferentModule
-                    select reference.ReferencedPath).Distinct().Select(path =>
-                   new XElement("reference",
-                       new XAttribute("path", path)
-                   ));
+            return from reference in getModuleReferences(module)
+                   select new XElement("reference",
+                      new XAttribute("path", reference)
+                   );
         }
 
         void IAssetVisitor.Visit(IAsset asset)
