@@ -26,7 +26,7 @@ namespace Cassette.Web
 
         public override IPageAssetManager<T> GetPageAssetManager<T>()
         {
-            var key = "Cassette.UI.PageAssetManager<" + typeof(T).FullName + ">";
+            var key = typeof(IPageAssetManager<T>).FullName;
             if (HttpContext.Current.Items.Contains(key))
             {
                 return (IPageAssetManager<T>)HttpContext.Current.Items[key];

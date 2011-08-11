@@ -123,36 +123,6 @@ namespace Cassette
         }
 
         [Fact]
-        public void WhenAddReferenceToAnotherModule_ThenReferencesReturnsThatModule()
-        {
-            var module = new Module("test", fileSystem);
-            var anotherModule = new Module("another", fileSystem);
-            module.AddReference(anotherModule);
-            module.References.ToArray().SequenceEqual(new[] { anotherModule }).ShouldBeTrue();
-        }
-
-
-        [Fact]
-        public void WhenAddReferenceToAnotherModuleTwice_ThenReferencesReturnsThatModuleOnce()
-        {
-            var module = new Module("test", fileSystem);
-            var anotherModule = new Module("another", fileSystem);
-            module.AddReference(anotherModule);
-            module.AddReference(anotherModule);
-            module.References.ToArray().SequenceEqual(new[] { anotherModule }).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void WhenAddReferenceToSelf_ThenThrowArgumentException()
-        {
-            var module = new Module("test", fileSystem);
-            Assert.Throws<ArgumentException>(delegate
-            {
-                module.AddReference(module);
-            });
-        }
-
-        [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
             var module = new Module("", fileSystem);

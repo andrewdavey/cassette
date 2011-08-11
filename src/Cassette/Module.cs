@@ -69,20 +69,6 @@ namespace Cassette
             return new HtmlString("");
         }
 
-        public void AddReference(Module module)
-        {
-            if (object.ReferenceEquals(this, module))
-            {
-                throw new ArgumentException("The module \"" + directory + "\" cannot add a reference to itself.");
-            }
-            references.Add(module);
-        }
-
-        public IEnumerable<Module> References
-        {
-            get { return references; }
-        }
-
         public void Dispose()
         {
             foreach (var asset in assets.OfType<IDisposable>())

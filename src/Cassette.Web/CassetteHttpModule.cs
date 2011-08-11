@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 
 namespace Cassette.Web
 {
@@ -13,10 +14,10 @@ namespace Cassette.Web
             httpApplication.BeginRequest += HttpApplicationBeginRequest;
         }
 
-        void HttpApplicationBeginRequest(object sender, System.EventArgs e)
+        void HttpApplicationBeginRequest(object sender, EventArgs e)
         {
             // TODO: Install response buffer
-            // TODO: Add asset reference helper to HttpContext.Items
+            //((HttpApplication)sender).Response.Filter = 
         }
 
         public void Dispose()
