@@ -1,28 +1,23 @@
 ﻿using System;
+using Cassette.Utilities;
 using Jurassic;
 using Jurassic.Library;
-using Cassette.Utilities;
 
 namespace Cassette.CoffeeScript
 {
     public class CoffeeScriptCompiler : ICompiler
     {
-        /// <summary>
-        /// ScriptEngine is expensive to create and initialize with CoffeeScript compiler,
-        /// so this is done lazily.
-        /// </summary>
-        readonly Lazy<ScriptEngine> scriptEngine;
-
         public CoffeeScriptCompiler()
         {
+            //ScriptEngine is expensive to create and initialize with CoffeeScript compiler, so this is done lazily.
             scriptEngine = new Lazy<ScriptEngine>(CreateScriptEngineWithCoffeeScriptLoaded);
         }
 
-        ScriptEngine CreateScriptEngineWithCoffeeScriptLoaded()
+        readonly Lazy<ScriptEngine> scriptEngine;
+
+        public string OutputContentType
         {
-            var scriptEngine = new ScriptEngine();
-            scriptEngine.Execute(Properties.Resources.coffeescript);
-            return scriptEngine;
+            get { return "text/javascript"; }
         }
 
         public string Compile(string coffeeScriptSource, string filename, IFileSystem currentDirectory)
@@ -56,12 +51,16 @@ namespace Cassette.CoffeeScript
             }
         }
 
+        ScriptEngine CreateScriptEngineWithCoffeeScriptLoaded()
+        {
+            var scriptEngine = new ScriptEngine();
+            scriptEngine.Execute(Properties.Resources.coffeescript);
+            return scriptEngine;
+        }
+
         ScriptEngine ScriptEngine
         {
-            get
-            {
-                return scriptEngine.Value;
-            }
+            get { return scriptEngine.Value; }
         }
     }
 }

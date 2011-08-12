@@ -50,6 +50,7 @@
     <Compile Include="CassetteApplication.cs" />
     <Compile Include="CassetteHttpModule.cs" />
     <Compile Include="CompileRequestHandler.cs" />
+    <Compile Include="CompileRouteHandler.cs" />
     <Compile Include="ModuleRequestHandler.cs" />
     <Compile Include="ModuleRouteHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

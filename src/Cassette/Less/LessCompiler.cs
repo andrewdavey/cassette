@@ -20,6 +20,11 @@ namespace Cassette.Less
         readonly Stack<IFileSystem> currentDirectories = new Stack<IFileSystem>();
         readonly Stack<string> currentFilenames = new Stack<string>();
 
+        public string OutputContentType
+        {
+            get { return "text/css"; }
+        }
+
         public string Compile(string lessSource, string sourceFilename, IFileSystem fileSystem)
         {
             lock (engine)

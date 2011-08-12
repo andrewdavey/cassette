@@ -26,5 +26,11 @@ namespace Cassette.CoffeeScript
             });
             exception.SourcePath.ShouldEqual("test.coffee");
         }
+
+        [Fact]
+        public void OutputContentTypeIsTextJavascript()
+        {
+            new CoffeeScriptCompiler().OutputContentType.ShouldEqual("text/javascript");
+        }
     }
 }

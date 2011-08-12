@@ -19,6 +19,12 @@ namespace Cassette.Less
         readonly Mock<IFileSystem> fileSystem;
 
         [Fact]
+        public void OutputContentTypeIsTextCss()
+        {
+            new LessCompiler().OutputContentType.ShouldEqual("text/css");
+        }
+
+        [Fact]
         public void Compile_converts_LESS_into_CSS()
         {
             var compiler = new LessCompiler();

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cassette.UI;
+using Cassette.CoffeeScript;
+using Cassette.Less;
 
 namespace Cassette
 {
@@ -12,6 +14,9 @@ namespace Cassette
             this.cacheFileSystem = cacheFileSystem;
             IsOutputOptimized = isOutputOptmized;
             this.version = CombineVersionWithCassetteVersion(version);
+
+            AddCompiler("coffee", new CoffeeScriptCompiler());
+            AddCompiler("less", new LessCompiler());
         }
 
         readonly IFileSystem sourceFileSystem;
@@ -19,7 +24,8 @@ namespace Cassette
         readonly string version;
         readonly List<Action> initializers = new List<Action>();
         readonly Dictionary<Type, object> moduleContainers = new Dictionary<Type, object>();
-
+        readonly Dictionary<string, ICompiler> compilers = new Dictionary<string, ICompiler>();
+        
         public bool IsOutputOptimized { get; private set; }
 
         public IFileSystem RootDirectory
@@ -83,6 +89,25 @@ namespace Cassette
                 initializer();
             }
             initializers.Clear();
+        }
+
+        public void AddCompiler(string fileExtension, ICompiler compiler)
+        {
+            compilers.Add(fileExtension, compiler);
+        }
+
+        public ICompiler GetCompiler(string fileExtension)
+        {
+            ICompiler compiler;
+            if (compilers.TryGetValue(fileExtension, out compiler))
+            {
+                return compiler;
+            }
+
+            throw new ArgumentException(string.Format(
+                "No compiler added for the file extension \"{0}\".",
+                fileExtension
+            ));
         }
 
         public abstract string CreateModuleUrl(Module module);

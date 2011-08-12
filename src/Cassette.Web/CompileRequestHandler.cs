@@ -42,7 +42,8 @@ namespace Cassette.Web
                 new FileSystem(Path.GetDirectoryName(filename))
             );
 
-            requestContext.HttpContext.Response.Write(output);
+            response.ContentType = compiler.OutputContentType;
+            response.Write(output);
         }
     }
 }
