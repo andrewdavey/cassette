@@ -17,11 +17,8 @@ namespace Cassette.Web
 
         void HttpApplicationBeginRequest(object sender, EventArgs e)
         {
-            var response = ((HttpApplication)sender).Response;
-            response.Filter = new PlaceholderReplacingResponseFilter(
-                new HttpResponseWrapper(response),
-                new PlaceholderTracker()
-            );
+            var context = new HttpContextWrapper(((HttpApplication)sender).Context);
+            application.HandleBeginRequest(context);
         }
 
         public void Dispose()

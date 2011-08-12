@@ -33,10 +33,39 @@ namespace Cassette.Web
             }
             else
             {
-                var manager = new PageAssetManager<T>(new ReferenceBuilder<T>(GetModuleContainer<T>()), this, new PlaceholderTracker());
+                var manager = new PageAssetManager<T>(
+                    new ReferenceBuilder<T>(GetModuleContainer<T>()), 
+                    this, 
+                    GetPlaceholderTracker(new HttpContextWrapper(HttpContext.Current))
+                );
                 HttpContext.Current.Items[key] = manager;
                 return manager;
             }
+        }
+
+        public IPlaceholderTracker GetPlaceholderTracker(HttpContextBase httpContext)
+        {
+            var key = typeof(IPlaceholderTracker).FullName;
+            var items = httpContext.Items;
+            if (items.Contains(key))
+            {
+                return (IPlaceholderTracker)items[key];
+            }
+            else
+            {
+                var tracker = new PlaceholderTracker();
+                items[key] = tracker;
+                return tracker;
+            }
+        }
+
+        public void HandleBeginRequest(HttpContextBase httpContext)
+        {
+            var response = httpContext.Response;
+            response.Filter = new PlaceholderReplacingResponseFilter(
+                response,
+                GetPlaceholderTracker(httpContext)
+            );
         }
 
         public void InstallRoutes(RouteCollection routes)
