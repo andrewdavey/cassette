@@ -39,13 +39,13 @@ namespace Cassette
             
             cache = new Mock<IModuleCache<Module>>();
 
-            var app = new Mock<ICassetteApplication>();
-            app.SetupGet(a => a.RootDirectory).Returns(fileSystem);
-            app.Setup(a => a.GetModuleFactory<Module>()).Returns(moduleFactory.Object);
-            app.Setup(a => a.GetModuleCache<Module>()).Returns(cache.Object);
+            application = new Mock<ICassetteApplication>();
+            application.SetupGet(a => a.RootDirectory).Returns(fileSystem);
+            application.Setup(a => a.GetModuleFactory<Module>()).Returns(moduleFactory.Object);
+            application.Setup(a => a.GetModuleCache<Module>()).Returns(cache.Object);
             pipeline = new Mock<ModuleProcessing.IModuleProcessor<Module>>();
 
-            config = new FileSystemModuleConfiguration<Module>(app.Object);
+            config = new FileSystemModuleConfiguration<Module>(application.Object);
             config.ProcessWith(pipeline.Object);
         }
 
@@ -54,6 +54,7 @@ namespace Cassette
         public Func<string, string> getFullPath;
         public Mock<ModuleProcessing.IModuleProcessor<Module>> pipeline;
         public Mock<IModuleCache<Module>> cache;
+        public Mock<ICassetteApplication> application;
 
         public void Dispose()
         {
@@ -179,6 +180,7 @@ namespace Cassette
         [Fact]
         public void WhenCacheIsUpToDate_ThenPipelineIsNotProcessed()
         {
+            application.SetupGet(a => a.IsOutputOptimized).Returns(true);
             cache.Setup(c => c.IsUpToDate(It.IsAny<DateTime>(), It.IsAny<string>())).Returns(true);
             (config as IModuleContainerFactory<Module>).CreateModuleContainer();
 
