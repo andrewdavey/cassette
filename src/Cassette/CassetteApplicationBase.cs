@@ -109,6 +109,7 @@ namespace Cassette
             ));
         }
 
+        public abstract string CreateAbsoluteUrl(string path);
         public abstract string CreateModuleUrl(Module module);
         public abstract string CreateAssetUrl(Module module, IAsset asset);
         public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;

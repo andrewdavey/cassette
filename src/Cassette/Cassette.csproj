@@ -55,6 +55,8 @@
     <Compile Include="ModuleProcessing\CompileLess.cs" />
     <Compile Include="ModuleProcessing\CompileAsset.cs" />
     <Compile Include="ModuleProcessing\Customize.cs" />
+    <Compile Include="ModuleProcessing\ExpandCssUrlsAssetTransformer.cs" />
+    <Compile Include="ModuleProcessing\ExpandCssUrls.cs" />
     <Compile Include="ModuleProcessing\ParseLessReferences.cs" />
     <Compile Include="UI\Assets.cs" />
     <Compile Include="CassetteApplicationBase.cs" />

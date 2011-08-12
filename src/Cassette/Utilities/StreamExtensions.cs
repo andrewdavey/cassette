@@ -12,5 +12,13 @@ namespace Cassette.Utilities
                 return sha1.ComputeHash(stream);
             }
         }
+
+        public static string ReadToEnd(this Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
     }
 }

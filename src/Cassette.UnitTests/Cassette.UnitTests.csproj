@@ -69,6 +69,8 @@
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\Customize.cs" />
+    <Compile Include="ModuleProcessing\ExpandCssUrlsAssetTransformer.cs" />
+    <Compile Include="ModuleProcessing\ExpandCssUrls.cs" />
     <Compile Include="ModuleProcessing\ParseLessReferences.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="UI\PageAssetManager.cs" />

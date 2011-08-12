@@ -15,6 +15,11 @@ namespace Cassette.Web
         readonly UrlGenerator urlGenerator;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
 
+        public override string CreateAbsoluteUrl(string path)
+        {
+            return VirtualPathUtility.ToAbsolute(path);
+        }
+
         public override string CreateAssetUrl(Module module, IAsset asset)
         {
             return urlGenerator.CreateAssetUrl(module, asset);

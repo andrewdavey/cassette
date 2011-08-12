@@ -23,6 +23,7 @@ namespace Example
                     new ParseLessReferences(),
                     new SortAssetsByDependency(),
                     new CompileLess(new LessCompiler()),
+                    new ExpandCssUrls(),
                     new ConditionalStep<StylesheetModule>(
                         (m, a) => a.IsOutputOptimized,
                         new ConcatenateAssets(),
