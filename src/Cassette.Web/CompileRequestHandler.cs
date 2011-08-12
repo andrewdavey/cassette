@@ -1,21 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Routing;
-using Cassette.Compilation;
 
 namespace Cassette.Web
 {
     public class CompileRequestHandler : IHttpHandler
     {
-        public CompileRequestHandler(RequestContext requestContext, Func<string, ICompiler> getCompiler)
+        public CompileRequestHandler(RequestContext requestContext, Func<string, IAsset> getAssetForPath, IDictionary<string, string> contentTypeForFileExtension)
         {
             this.requestContext = requestContext;
-            this.getCompiler = getCompiler;
+            this.getAssetForPath = getAssetForPath;
+            this.contentTypeForFileExtension = contentTypeForFileExtension;
         }
 
         readonly RequestContext requestContext;
-        readonly Func<string, ICompiler> getCompiler;
+        readonly Func<string, IAsset> getAssetForPath;
+        readonly IDictionary<string, string> contentTypeForFileExtension;
 
         public bool IsReusable
         {
@@ -26,25 +28,24 @@ namespace Cassette.Web
         {
             var path = requestContext.RouteData.GetRequiredString("path");
             var response = requestContext.HttpContext.Response;
-            var filename = requestContext.HttpContext.Server.MapPath("~/" + path);
-            if (File.Exists(filename) == false)
+            var asset = getAssetForPath(path);
+            if (asset == null)
             {
                 response.StatusCode = 404;
                 response.End();
                 return;
             }
 
-            var extension = Path.GetExtension(path).Substring(1);
-            var compiler = getCompiler(extension);
-            var source = File.ReadAllText(filename);
-            var output = compiler.Compile(
-                source, 
-                Path.GetFileName(filename), 
-                new FileSystem(Path.GetDirectoryName(filename))
-            );
+            response.ContentType = GetContentType(path);
+            using (var stream = asset.OpenStream())
+            {
+                stream.CopyTo(response.OutputStream);
+            }
+        }
 
-            response.ContentType = compiler.OutputContentType;
-            response.Write(output);
+        string GetContentType(string path)
+        {
+            return contentTypeForFileExtension[Path.GetExtension(path).Substring(1)];
         }
     }
 }

@@ -96,6 +96,47 @@ namespace Cassette
         }
 
         [Fact]
+        public void FindAssetByPathReturnsAssetWithMatchingFilename()
+        {
+            var module = new Module("test", fileSystem);
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.SourceFilename).Returns("asset.js");
+            module.Assets.Add(asset.Object);
+
+            module.FindAssetByPath("asset.js").ShouldBeSameAs(asset.Object);
+        }
+
+        [Fact]
+        public void WhenFindAssetByPathNotFound_ThenNullReturned()
+        {
+            var module = new Module("test", fileSystem);
+
+            module.FindAssetByPath("notfound.js").ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenAssetInSubDirectory_WhenFindAssetByPath_ThenAssetWithMatchingFilenameIsReturned()
+        {
+            var module = new Module("test", fileSystem);
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
+            module.Assets.Add(asset.Object);
+
+            module.FindAssetByPath("sub\\asset.js").ShouldBeSameAs(asset.Object);
+        }
+
+        [Fact]
+        public void GivenAssetInSubDirectory_WhenFindAssetByPathWithForwardSlashes_ThenAssetWithMatchingFilenameIsReturned()
+        {
+            var module = new Module("test", fileSystem);
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
+            module.Assets.Add(asset.Object);
+
+            module.FindAssetByPath("sub/asset.js").ShouldBeSameAs(asset.Object);
+        }
+
+        [Fact]
         public void AcceptCallsVisitOnVistor()
         {
             var visitor = new Mock<IAssetVisitor>();

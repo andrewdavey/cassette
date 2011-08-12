@@ -17,7 +17,7 @@ namespace Cassette.Web
 
         public override string CreateAbsoluteUrl(string path)
         {
-            return VirtualPathUtility.ToAbsolute(path);
+            return VirtualPathUtility.ToAbsolute("~/" + path);
         }
 
         public override string CreateAssetUrl(Module module, IAsset asset)

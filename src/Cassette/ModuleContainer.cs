@@ -40,6 +40,17 @@ namespace Cassette
             return modules.FirstOrDefault(module => module.ContainsPath(path));
         }
 
+        public IAsset FindAssetByPath(string path)
+        {
+            var module = FindModuleByPath(path);
+            if (module != null)
+            {
+                path = path.Substring(module.Directory.Length > 0 ? module.Directory.Length + 1 : 0);
+                return module.FindAssetByPath(path);
+            }
+            return null;
+        }
+
         void ValidateAssetReferences()
         {
             var notFound = from module in modules

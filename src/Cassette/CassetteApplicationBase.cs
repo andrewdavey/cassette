@@ -22,7 +22,7 @@ namespace Cassette
         readonly IFileSystem cacheFileSystem;
         readonly string version;
         readonly List<Action> initializers = new List<Action>();
-        readonly Dictionary<Type, object> moduleContainers = new Dictionary<Type, object>();
+        readonly Dictionary<Type, IModuleContainer> moduleContainers = new Dictionary<Type, IModuleContainer>();
         readonly Dictionary<string, ICompiler> compilers = new Dictionary<string, ICompiler>();
         
         public bool IsOutputOptimized { get; private set; }
@@ -69,6 +69,16 @@ namespace Cassette
         {
             // TODO: Throw better exception when module of type T is not defined.
             return (IModuleContainer<T>)moduleContainers[typeof(T)];
+        }
+
+        public IAsset FindAssetByPath(string path)
+        {
+            foreach (var container in moduleContainers.Values)
+            {
+                var asset = container.FindAssetByPath(path);
+                if (asset != null) return asset;
+            }
+            return null;
         }
 
         public void AddModuleContainerFactory<T>(IModuleContainerFactory<T> moduleContainerFactory)

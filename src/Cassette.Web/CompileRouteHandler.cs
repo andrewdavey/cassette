@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Routing;
+using System.Collections.Generic;
 
 namespace Cassette.Web
 {
@@ -14,7 +15,15 @@ namespace Cassette.Web
 
         public IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
-            return new CompileRequestHandler(requestContext, application.GetCompiler);
+            return new CompileRequestHandler(
+                requestContext,
+                application.FindAssetByPath,
+                new Dictionary<string, string>
+                {
+                    { "less", "text/css" },
+                    { "coffee", "text/javascript" }
+                }
+            );
         }
     }
 }

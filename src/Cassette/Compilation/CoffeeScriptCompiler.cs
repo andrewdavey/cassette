@@ -15,11 +15,6 @@ namespace Cassette.Compilation
 
         readonly Lazy<ScriptEngine> scriptEngine;
 
-        public string OutputContentType
-        {
-            get { return "text/javascript"; }
-        }
-
         public string Compile(string coffeeScriptSource, string filename, IFileSystem currentDirectory)
         {
             var callCoffeeCompile =

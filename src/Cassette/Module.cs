@@ -43,6 +43,16 @@ namespace Cassette
             return new ModuleContainsPathPredicate().ModuleContainsPath(path, this);
         }
 
+        public IAsset FindAssetByPath(string path)
+        {
+            var slashes = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+            var pathSegments = path.Split(slashes);
+            return Assets.FirstOrDefault(
+                a => a.SourceFilename.Split(slashes)
+                                     .SequenceEqual(pathSegments, StringComparer.OrdinalIgnoreCase)
+            );
+        }
+
         bool IsModulePath(string path)
         {
             return directory.Equals(
