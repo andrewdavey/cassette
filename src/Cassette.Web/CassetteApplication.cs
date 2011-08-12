@@ -13,6 +13,7 @@ namespace Cassette.Web
         }
 
         readonly UrlGenerator urlGenerator;
+        static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
 
         public override string CreateAssetUrl(Module module, IAsset asset)
         {
@@ -26,45 +27,33 @@ namespace Cassette.Web
 
         public override IPageAssetManager<T> GetPageAssetManager<T>()
         {
+            var items = HttpContext.Current.Items;
             var key = typeof(IPageAssetManager<T>).FullName;
-            if (HttpContext.Current.Items.Contains(key))
+            if (items.Contains(key))
             {
-                return (IPageAssetManager<T>)HttpContext.Current.Items[key];
+                return (IPageAssetManager<T>)items[key];
             }
             else
             {
                 var manager = new PageAssetManager<T>(
                     new ReferenceBuilder<T>(GetModuleContainer<T>()), 
-                    this, 
-                    GetPlaceholderTracker(new HttpContextWrapper(HttpContext.Current))
+                    this,
+                    (IPlaceholderTracker)items[PlaceholderTrackerKey]
                 );
-                HttpContext.Current.Items[key] = manager;
+                items[key] = manager;
                 return manager;
             }
         }
 
-        public IPlaceholderTracker GetPlaceholderTracker(HttpContextBase httpContext)
+        public void OnBeginRequest(HttpContextBase httpContext)
         {
-            var key = typeof(IPlaceholderTracker).FullName;
-            var items = httpContext.Items;
-            if (items.Contains(key))
-            {
-                return (IPlaceholderTracker)items[key];
-            }
-            else
-            {
-                var tracker = new PlaceholderTracker();
-                items[key] = tracker;
-                return tracker;
-            }
-        }
+            var tracker = new PlaceholderTracker();
+            httpContext.Items[PlaceholderTrackerKey] = tracker;
 
-        public void HandleBeginRequest(HttpContextBase httpContext)
-        {
             var response = httpContext.Response;
             response.Filter = new PlaceholderReplacingResponseFilter(
                 response,
-                GetPlaceholderTracker(httpContext)
+                tracker
             );
         }
 

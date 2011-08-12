@@ -18,7 +18,7 @@ namespace Cassette.Web
         void HttpApplicationBeginRequest(object sender, EventArgs e)
         {
             var context = new HttpContextWrapper(((HttpApplication)sender).Context);
-            application.HandleBeginRequest(context);
+            application.OnBeginRequest(context);
         }
 
         public void Dispose()
