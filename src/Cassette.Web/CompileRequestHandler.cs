@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web;
 using System.Web.Routing;
+using Cassette.Compilation;
 
 namespace Cassette.Web
 {

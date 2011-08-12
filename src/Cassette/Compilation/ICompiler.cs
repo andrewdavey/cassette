@@ -1,4 +1,4 @@
-﻿namespace Cassette
+﻿namespace Cassette.Compilation
 {
     public interface ICompiler
     {

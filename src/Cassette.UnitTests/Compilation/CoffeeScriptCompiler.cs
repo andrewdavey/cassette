@@ -2,7 +2,7 @@
 using Xunit;
 using Moq;
 
-namespace Cassette.CoffeeScript
+namespace Cassette.Compilation
 {
     public class CoffeeScriptCompiler_tests
     {

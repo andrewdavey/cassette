@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Cassette;
 using Cassette.ModuleProcessing;
-using Cassette.Less;
+using Cassette.Compilation;
 
 namespace Example
 {

@@ -1,4 +1,4 @@
-﻿using Cassette.CoffeeScript;
+﻿using Cassette.Compilation;
 using Moq;
 using Xunit;
 

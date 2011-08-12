@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Cassette.Less;
+using Cassette.Compilation;
 using Cassette.Utilities;
 
 namespace Cassette.ModuleProcessing

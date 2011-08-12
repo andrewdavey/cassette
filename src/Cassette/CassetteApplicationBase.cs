@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cassette.UI;
-using Cassette.CoffeeScript;
-using Cassette.Less;
+using Cassette.Compilation;
 
 namespace Cassette
 {

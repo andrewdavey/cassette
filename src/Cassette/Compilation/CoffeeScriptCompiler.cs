@@ -3,7 +3,7 @@ using Cassette.Utilities;
 using Jurassic;
 using Jurassic.Library;
 
-namespace Cassette.CoffeeScript
+namespace Cassette.Compilation
 {
     public class CoffeeScriptCompiler : ICompiler
     {

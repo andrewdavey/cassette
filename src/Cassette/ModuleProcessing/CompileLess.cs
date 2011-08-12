@@ -1,4 +1,4 @@
-﻿using Cassette.Less;
+﻿using Cassette.Compilation;
 
 namespace Cassette.ModuleProcessing
 {

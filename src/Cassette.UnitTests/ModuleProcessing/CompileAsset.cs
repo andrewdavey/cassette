@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Cassette.Less;
+using Cassette.Compilation;
 using Cassette.Utilities;
 using Moq;
 using Xunit;

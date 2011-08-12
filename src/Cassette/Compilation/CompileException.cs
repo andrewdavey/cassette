@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cassette.CoffeeScript
+namespace Cassette.Compilation
 {
     public class CompileException : Exception
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cassette.Less
+namespace Cassette.Compilation
 {
     public class LessCompileException : Exception
     {

@@ -4,7 +4,7 @@ using System.IO;
 using Jurassic;
 using Jurassic.Library;
 
-namespace Cassette.Less
+namespace Cassette.Compilation
 {
     public class LessCompiler : ICompiler
     {

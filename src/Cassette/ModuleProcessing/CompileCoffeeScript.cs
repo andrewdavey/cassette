@@ -1,4 +1,4 @@
-﻿using Cassette.CoffeeScript;
+﻿using Cassette.Compilation;
 
 namespace Cassette.ModuleProcessing
 {

@@ -5,7 +5,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.Less
+namespace Cassette.Compilation
 {
     public class LessCompiler_Compile
     {
