@@ -23,7 +23,7 @@ namespace Cassette.ModuleProcessing
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(lessSource.AsStream());
-            var module = new Module("", Mock.Of<IFileSystem>());
+            var module = new Module("");
             module.Assets.Add(asset.Object);
 
             var processor = new ParseLessReferences();

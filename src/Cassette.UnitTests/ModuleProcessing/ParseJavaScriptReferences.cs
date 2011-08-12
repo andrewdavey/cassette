@@ -23,7 +23,7 @@ function dummy() {}
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(javaScriptSource.AsStream());
-            var module = new Module("", Mock.Of<IFileSystem>());
+            var module = new Module("");
             module.Assets.Add(asset.Object);
 
             var processor = new ParseJavaScriptReferences();

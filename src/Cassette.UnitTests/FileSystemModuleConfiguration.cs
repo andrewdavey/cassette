@@ -35,7 +35,7 @@ namespace Cassette
 
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                .Returns<string>(directory => new Module(directory, fileSystem));
+                .Returns<string>(directory => new Module(directory));
             
             cache = new Mock<IModuleCache<Module>>();
 

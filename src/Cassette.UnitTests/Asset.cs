@@ -19,12 +19,12 @@ namespace Cassette
             File.WriteAllText(filename, "asset content");
             var fileSystem = new FileSystem(root.FullName);
 
-            var module = new Module("module", fileSystem);
-            asset = new Asset("test.js", module);
+            var module = new Module("module");
+            asset = new Asset("test.js", module, fileSystem.NavigateTo("module", false));
             module.Assets.Add(asset);
 
             File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
-            var another = new Asset("another.js", module);
+            var another = new Asset("another.js", module, fileSystem.NavigateTo("module", false));
             module.Assets.Add(another);
         }
 

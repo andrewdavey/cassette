@@ -7,14 +7,12 @@ namespace Cassette.ModuleProcessing
 {
     public class CompileAsset : IAssetTransformer
     {
-        public CompileAsset(ICompiler compiler, Module module)
+        public CompileAsset(ICompiler compiler)
         {
             this.compiler = compiler;
-            this.module = module;
         }
 
         readonly ICompiler compiler;
-        readonly Module module;
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
@@ -22,10 +20,7 @@ namespace Cassette.ModuleProcessing
             {
                 using (var input = new StreamReader(openSourceStream()))
                 {
-                    var directory = Path.GetDirectoryName(asset.SourceFilename);
-                    var fileSystem = directory.Length > 0 ? module.FileSystem.NavigateTo(directory, false)
-                                                          : module.FileSystem;
-                    var css = compiler.Compile(input.ReadToEnd(), asset.SourceFilename, fileSystem);
+                    var css = compiler.Compile(input.ReadToEnd(), asset.SourceFilename, asset.Directory);
                     return css.AsStream();
                 }
             };

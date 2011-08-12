@@ -47,5 +47,11 @@ namespace Cassette.Persistence
         {
             get { throw new NotImplementedException(); }
         }
+
+
+        public IFileSystem Directory
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

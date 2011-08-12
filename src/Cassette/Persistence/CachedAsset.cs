@@ -56,5 +56,11 @@ namespace Cassette.Persistence
         {
             get { return hash; }
         }
+
+
+        public IFileSystem Directory
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

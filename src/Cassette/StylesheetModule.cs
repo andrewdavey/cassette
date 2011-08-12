@@ -7,7 +7,7 @@ namespace Cassette
     public class StylesheetModule : Module
     {
         public StylesheetModule(string directory, IFileSystem fileSystem)
-            : base(directory, fileSystem)
+            : base(directory)
         {
             ContentType = "text/css";
         }

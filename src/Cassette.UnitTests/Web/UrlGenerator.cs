@@ -95,7 +95,7 @@ namespace Cassette.Web
         [Fact]
         public void StartsWithApplicationVirtualDirectory()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             var app = new UrlGenerator("/", Enumerable.Empty<string>());
@@ -108,7 +108,7 @@ namespace Cassette.Web
         [Fact]
         public void StartsWithApplicationVirtualDirectoryEndingInSlash()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             var app = new UrlGenerator("/myapp", Enumerable.Empty<string>());
@@ -121,7 +121,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsModuleDirectory()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             var app = new UrlGenerator("/myapp", Enumerable.Empty<string>());
@@ -134,7 +134,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsModuleDirectoryWithBackSlashesConvertedToForwardSlashes()
         {
-            var module = new Module("test\\foo\\bar", Mock.Of<IFileSystem>());
+            var module = new Module("test\\foo\\bar");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             var app = new UrlGenerator("/myapp", Enumerable.Empty<string>());
@@ -147,7 +147,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsAssetSourceFilename()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             var app = new UrlGenerator("/", Enumerable.Empty<string>());
@@ -160,7 +160,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsAssetSourceFilenameWithBackSlashesConvertedToForwardSlashes()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("sub\\asset.js");
             var app = new UrlGenerator("/", Enumerable.Empty<string>());
@@ -173,7 +173,7 @@ namespace Cassette.Web
         [Fact]
         public void AppendsHashHexString()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("sub\\asset.js");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
@@ -187,7 +187,7 @@ namespace Cassette.Web
         [Fact]
         public void WhenAssetThatRequiresCompilation_ThenUrlIsToCompiler()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });

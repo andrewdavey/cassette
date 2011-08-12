@@ -12,5 +12,6 @@ namespace Cassette
         void AddReference(string path, int lineNumber);
         void AddAssetTransformer(IAssetTransformer transformer);
         Stream OpenStream();
+        IFileSystem Directory { get; }
     }
 }

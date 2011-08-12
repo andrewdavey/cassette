@@ -9,7 +9,7 @@ namespace Cassette
     public class ScriptModule : Module
     {
         public ScriptModule(string directory, IFileSystem fileSystem)
-            : base(directory, fileSystem)
+            : base(directory)
         {
             ContentType = "text/javascript";
         }

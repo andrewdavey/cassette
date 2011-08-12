@@ -8,7 +8,7 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(string relativeFilename, Module parentModule)
+        public Asset(string relativeFilename, Module parentModule, IFileSystem fileSystem)
         {
             if (Path.IsPathRooted(relativeFilename))
             {
@@ -17,7 +17,7 @@ namespace Cassette
 
             this.relativeFilename = relativeFilename;
             this.parentModule = parentModule;
-            this.fileSystem = parentModule.FileSystem;
+            this.fileSystem = fileSystem;
             this.hash = HashFileContents(relativeFilename);
         }
 
@@ -76,6 +76,11 @@ namespace Cassette
         public override byte[] Hash
         {
             get { return hash; }
+        }
+
+        public override IFileSystem Directory
+        {
+            get { return fileSystem; }
         }
 
         public override IEnumerable<AssetReference> References

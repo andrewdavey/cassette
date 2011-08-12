@@ -9,7 +9,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void GivenTwoAssetsWhereADependsOnB_WhenSorted_ThenBIsBeforeAInModule()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
             assetA.SetupGet(a => a.References)
@@ -29,7 +29,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void GivenTwoAssetsWhereADependsOnBByDifferentlyCasedFilename_WhenSorted_ThenBIsBeforeAInModule()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
             assetA.SetupGet(a => a.References)
@@ -49,7 +49,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void GivenNoAssetReferences_WhenSorted_ThenAssetsOrderedBySourceFilename()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
             var assetB = new Mock<IAsset>();

@@ -105,31 +105,30 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUrl_ThenGetModulesReturnsAnExternalModule()
         {
-            moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new ScriptModule("", Mock.Of<IFileSystem>()));
+            moduleFactory.Setup(f => f.CreateExternalModule("http://test.com/test.js"))
+                         .Returns(new ExternalScriptModule("http://test.com/test.js"));
             moduleContainer.Setup(c => c.AddDependenciesAndSort(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
             builder.AddReference("http://test.com/test.js");
 
             var module = builder.GetModules(null).First();
-            module.Assets[0].SourceFilename.ShouldEqual("http://test.com/test.js");
+            module.ShouldBeType<ExternalScriptModule>();
         }
 
         [Fact]
         public void WhenAddReferenceToHttpsUrl_ThenGetModulesReturnsAnExternalModule()
         {
-            moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns(new ScriptModule("", Mock.Of<IFileSystem>()));
+            moduleFactory.Setup(f => f.CreateExternalModule("https://test.com/test.js"))
+                         .Returns(new ExternalScriptModule("https://test.com/test.js"));
             moduleContainer.Setup(c => c.AddDependenciesAndSort(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
             builder.AddReference("https://test.com/test.js");
 
             var module = builder.GetModules(null).First();
-            module.Assets[0].SourceFilename.ShouldEqual("https://test.com/test.js");
+            module.ShouldBeType<ExternalScriptModule>();
         }
-
 
         [Fact]
         public void WhenAddReferenceToProtocolRelativeUrl_ThenGetModulesReturnsAnExternalModule()

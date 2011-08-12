@@ -8,21 +8,14 @@ namespace Cassette
 {
     public class Module : IDisposable
     {
-        public Module(string relativeDirectory, IFileSystem fileSystem)
+        public Module(string relativeDirectory)
         {
             this.directory = NormalizePath(relativeDirectory);
-            this.fileSystem = fileSystem.NavigateTo(relativeDirectory, false);
         }
 
         readonly string directory;
-        readonly IFileSystem fileSystem;
         IList<IAsset> assets = new List<IAsset>();
         HashSet<Module> references = new HashSet<Module>();
-
-        public IFileSystem FileSystem
-        {
-            get { return fileSystem; }
-        }
 
         public string Directory
         {

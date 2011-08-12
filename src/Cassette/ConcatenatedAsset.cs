@@ -37,6 +37,11 @@ namespace Cassette
             get { return string.Join(";", children.Select(c => c.SourceFilename)); }
         }
 
+        public override IFileSystem Directory
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public override IEnumerable<AssetReference> References
         {
             get { return children.SelectMany(c => c.References); }

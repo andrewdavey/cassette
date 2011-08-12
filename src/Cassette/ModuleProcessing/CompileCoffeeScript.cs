@@ -14,7 +14,7 @@ namespace Cassette.ModuleProcessing
 
         protected override void Process(IAsset asset, Module module)
         {
-            asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler, module));
+            asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler));
         }
     }
 }

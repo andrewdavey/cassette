@@ -108,13 +108,14 @@ namespace Cassette
             lastWriteTimeMax = DateTime.MinValue;
             foreach (var directory in moduleDirectories.DefaultIfEmpty(""))
             {
+                var fileSystem = application.RootDirectory.NavigateTo(directory, false);
                 var module = moduleFactory.CreateModule(directory);
                 var filenames = GetAssetFilenames(directory);
                 var offset = (directory.Length > 0) ? directory.Length + 1 : 0;
                 foreach (var filename in filenames)
                 {
                     var moduleRelativeFilename = filename.Substring(offset);
-                    module.Assets.Add(new Asset(moduleRelativeFilename, module));
+                    module.Assets.Add(new Asset(moduleRelativeFilename, module, fileSystem));
 
                     var lastWriteTime = application.RootDirectory.GetLastWriteTimeUtc(filename);
                     if (lastWriteTime > lastWriteTimeMax)

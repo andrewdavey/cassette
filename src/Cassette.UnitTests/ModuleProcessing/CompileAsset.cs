@@ -19,7 +19,7 @@ namespace Cassette.ModuleProcessing
             var compilerOutput = "compiler-output";
             var compiler = StubCompiler(sourceInput, compilerOutput);
 
-            var transformer = new CompileAsset(compiler, new Module("test", Mock.Of<IFileSystem>()));
+            var transformer = new CompileAsset(compiler);
 
             var getResultStream = transformer.Transform(
                 () => sourceInput.AsStream(),

@@ -8,26 +8,24 @@ namespace Cassette
 {
     public class Module_Tests
     {
-        IFileSystem fileSystem = Mock.Of<IFileSystem>();
-
         [Fact]
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingBackSlash()
         {
-            var module = new Module("test\\", fileSystem);
+            var module = new Module("test\\");
             module.Directory.ShouldEqual("test");
         }
 
         [Fact]
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingForwardSlash()
         {
-            var module = new Module("test/", fileSystem);
+            var module = new Module("test/");
             module.Directory.ShouldEqual("test");
         }
 
         [Fact]
         public void ContainsPathOfAssetInModule_ReturnsTrue()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
@@ -40,7 +38,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetInModuleWithForwardSlash_ReturnsTrue()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
@@ -53,7 +51,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetInModuleWithDifferentCasing_ReturnsTrue()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
@@ -66,7 +64,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetNotInModule_ReturnsFalse()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
 
             module.ContainsPath("test\\not-in-module.js").ShouldBeFalse();
         }
@@ -74,7 +72,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheModuleItself_ReturnsTrue()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
 
             module.ContainsPath("test").ShouldBeTrue();
         }
@@ -82,7 +80,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheModuleItselfWithDifferentCasing_ReturnsTrue()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
 
             module.ContainsPath("TEST").ShouldBeTrue();
         }
@@ -90,7 +88,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheModuleItselfWithTrailingSlash_ReturnsTrue()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
 
             module.ContainsPath("test\\").ShouldBeTrue();
         }
@@ -98,7 +96,7 @@ namespace Cassette
         [Fact]
         public void FindAssetByPathReturnsAssetWithMatchingFilename()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);
@@ -109,7 +107,7 @@ namespace Cassette
         [Fact]
         public void WhenFindAssetByPathNotFound_ThenNullReturned()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
 
             module.FindAssetByPath("notfound.js").ShouldBeNull();
         }
@@ -117,7 +115,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetInSubDirectory_WhenFindAssetByPath_ThenAssetWithMatchingFilenameIsReturned()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
             module.Assets.Add(asset.Object);
@@ -128,7 +126,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetInSubDirectory_WhenFindAssetByPathWithForwardSlashes_ThenAssetWithMatchingFilenameIsReturned()
         {
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
             module.Assets.Add(asset.Object);
@@ -140,7 +138,7 @@ namespace Cassette
         public void AcceptCallsVisitOnVistor()
         {
             var visitor = new Mock<IAssetVisitor>();
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
 
             module.Accept(visitor.Object);
 
@@ -151,7 +149,7 @@ namespace Cassette
         public void AcceptCallsAcceptForEachAsset()
         {
             var visitor = new Mock<IAssetVisitor>();
-            var module = new Module("test", fileSystem);
+            var module = new Module("test");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             module.Assets.Add(asset1.Object);
@@ -166,7 +164,7 @@ namespace Cassette
         [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
-            var module = new Module("", fileSystem);
+            var module = new Module("");
             var asset1 = new Mock<IDisposable>();
             var asset2 = new Mock<IDisposable>();
             var asset3 = new Mock<IAsset>(); // Not disposable; Tests for incorrect casting to IDisposable.

@@ -9,7 +9,7 @@ namespace Cassette.ModuleProcessing
     {
         public ExpandCssUrlsAssetTransformer_Tests()
         {
-            var module = new Module("styles", Mock.Of<IFileSystem>());
+            var module = new Module("styles");
             application = new Mock<ICassetteApplication>();
             transformer = new ExpandCssUrlsAssetTransformer(module, application.Object);
             asset = new Mock<IAsset>();

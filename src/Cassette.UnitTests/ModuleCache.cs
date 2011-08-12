@@ -128,7 +128,7 @@ namespace Cassette
 
             var moduleFactory = new Mock<IModuleFactory<Module>>();
             moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns<string>(path => new Module(path, Mock.Of<IFileSystem>()));
+                         .Returns<string>(path => new Module(path));
 
             cache = new ModuleCache<Module>(fileSystem, moduleFactory.Object);
         }
@@ -175,7 +175,7 @@ namespace Cassette
         [Fact]
         public void SaveWritesContainerXmlFile()
         {
-            var module = new Module("", Mock.Of<IFileSystem>());
+            var module = new Module("");
             var asset1 = new Mock<IAsset>();
             asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
             asset1.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
@@ -193,7 +193,7 @@ namespace Cassette
         [Fact]
         public void ModuleHashIsSavedInContainerXml()
         {
-            var module = new Module("test", Mock.Of<IFileSystem>());
+            var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
@@ -221,8 +221,8 @@ namespace Cassette
         [Fact]
         public void ModuleReferencesAreSavedInContainerXml()
         {
-            var moduleA = new Module("module-a", Mock.Of<IFileSystem>());
-            var moduleB = new Module("module-b", Mock.Of<IFileSystem>());
+            var moduleA = new Module("module-a");
+            var moduleB = new Module("module-b");
 
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.References).Returns(new[] {
