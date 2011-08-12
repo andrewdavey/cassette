@@ -5,7 +5,7 @@ using Cassette.Utilities;
 
 namespace Cassette.CoffeeScript
 {
-    public class CoffeeScriptCompiler : ICoffeeScriptCompiler
+    public class CoffeeScriptCompiler : ICompiler
     {
         /// <summary>
         /// ScriptEngine is expensive to create and initialize with CoffeeScript compiler,
@@ -25,7 +25,7 @@ namespace Cassette.CoffeeScript
             return scriptEngine;
         }
 
-        public string Compile(string coffeeScriptSource, string filename)
+        public string Compile(string coffeeScriptSource, string filename, IFileSystem currentDirectory)
         {
             var callCoffeeCompile =
                 "(function() { try { return CoffeeScript.compile('"

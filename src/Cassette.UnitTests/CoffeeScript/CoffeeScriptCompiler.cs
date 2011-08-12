@@ -1,5 +1,6 @@
 ﻿using Should;
 using Xunit;
+using Moq;
 
 namespace Cassette.CoffeeScript
 {
@@ -10,7 +11,7 @@ namespace Cassette.CoffeeScript
         {
             var source = "x = 1";
             var compiler = new CoffeeScriptCompiler();
-            var javaScript = compiler.Compile(source, "test.coffee");
+            var javaScript = compiler.Compile(source, "test.coffee", Mock.Of<IFileSystem>());
             javaScript.ShouldEqual("(function() {\n  var x;\n  x = 1;\n}).call(this);\n");
         }
 
@@ -21,7 +22,7 @@ namespace Cassette.CoffeeScript
             var compiler = new CoffeeScriptCompiler();
             var exception = Assert.Throws<CompileException>(delegate
             {
-                compiler.Compile(source, "test.coffee");
+                compiler.Compile(source, "test.coffee", Mock.Of<IFileSystem>());
             });
             exception.SourcePath.ShouldEqual("test.coffee");
         }

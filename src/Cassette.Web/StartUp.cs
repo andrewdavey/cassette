@@ -90,7 +90,7 @@ namespace Cassette.Web
             var application = new CassetteApplication(
                 new FileSystem(HttpRuntime.AppDomainAppPath),
                 new IsolatedStorageFileSystem(storage),
-                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
+                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath, new[] { "coffee", "less" }),
                 ShouldOptimizeOutput(),
                 GetConfigurationVersion(configuration)
             );

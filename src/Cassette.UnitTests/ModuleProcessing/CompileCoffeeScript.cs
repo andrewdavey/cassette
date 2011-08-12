@@ -8,7 +8,7 @@ namespace Cassette.ModuleProcessing
     {
         public CompileCoffeeScript_Tests()
         {
-            var compiler = new Mock<ICoffeeScriptCompiler>();
+            var compiler = new Mock<ICompiler>();
             step = new CompileCoffeeScript(compiler.Object);
         }
 
@@ -27,7 +27,7 @@ namespace Cassette.ModuleProcessing
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(
                     It.Is<IAssetTransformer>(
-                        t => t is CompileCoffeeScriptAsset
+                        t => t is CompileAsset
                     )
                 )
             );

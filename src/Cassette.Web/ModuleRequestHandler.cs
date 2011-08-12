@@ -18,7 +18,7 @@ namespace Cassette.Web
 
         public bool IsReusable
         {
-            get { return true; }
+            get { return false; }
         }
 
         public void ProcessRequest(HttpContext _)

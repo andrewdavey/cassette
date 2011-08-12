@@ -4,17 +4,17 @@ namespace Cassette.ModuleProcessing
 {
     public class CompileCoffeeScript : ModuleProcessorOfAssetsMatchingFileExtension<Module>
     {
-        public CompileCoffeeScript(ICoffeeScriptCompiler coffeeScriptCompiler)
+        public CompileCoffeeScript(ICompiler coffeeScriptCompiler)
             : base("coffee")
         {
             this.coffeeScriptCompiler = coffeeScriptCompiler;
         }
 
-        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
+        readonly ICompiler coffeeScriptCompiler;
 
         protected override void Process(IAsset asset, Module module)
         {
-            asset.AddAssetTransformer(new CompileCoffeeScriptAsset(coffeeScriptCompiler));
+            asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler, module));
         }
     }
 }

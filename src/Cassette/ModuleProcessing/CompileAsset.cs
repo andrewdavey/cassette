@@ -5,15 +5,15 @@ using Cassette.Utilities;
 
 namespace Cassette.ModuleProcessing
 {
-    public class CompileLessAsset : IAssetTransformer
+    public class CompileAsset : IAssetTransformer
     {
-        public CompileLessAsset(ILessCompiler compiler, Module module)
+        public CompileAsset(ICompiler compiler, Module module)
         {
             this.compiler = compiler;
             this.module = module;
         }
 
-        readonly ILessCompiler compiler;
+        readonly ICompiler compiler;
         readonly Module module;
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)

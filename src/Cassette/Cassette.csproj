@@ -50,8 +50,9 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
+    <Compile Include="ICompiler.cs" />
     <Compile Include="ModuleProcessing\CompileLess.cs" />
-    <Compile Include="ModuleProcessing\CompileLessAsset.cs" />
+    <Compile Include="ModuleProcessing\CompileAsset.cs" />
     <Compile Include="ModuleProcessing\ParseLessReferences.cs" />
     <Compile Include="UI\Assets.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
@@ -81,7 +82,6 @@
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="Persistence\CachedAsset.cs" />
     <Compile Include="ModuleProcessing\CompileCoffeeScript.cs" />
-    <Compile Include="ModuleProcessing\CompileCoffeeScriptAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="Persistence\CreateManifestVisitor.cs" />
     <Compile Include="FileSystem.cs" />
@@ -94,7 +94,6 @@
     <Compile Include="ModuleProcessing\IModuleProcessor.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="IModuleContainerFactory.cs" />
-    <Compile Include="Less\ILessCompiler.cs" />
     <Compile Include="Less\LessCompileException.cs" />
     <Compile Include="Less\LessCompiler.cs" />
     <Compile Include="ModuleProcessing\LineBasedAssetReferenceParser.cs" />
@@ -117,7 +116,6 @@
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
     <Compile Include="CoffeeScript\CompileException.cs" />
-    <Compile Include="CoffeeScript\ICoffeeScriptCompiler.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

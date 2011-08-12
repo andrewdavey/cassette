@@ -19,7 +19,7 @@ namespace Cassette.Persistence
             var element = visitor.CreateManifest(module);
 
             element.ToString(SaveOptions.DisableFormatting)
-                   .ShouldEqual("<module directory=\"test\"><asset filename=\"asset.js\" /></module>");
+                   .ShouldEqual("<module directory=\"test\" hash=\"\"><asset filename=\"asset.js\" /></module>");
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace Cassette.Persistence
             var element = visitor.CreateManifest(module);
 
             element.ToString(SaveOptions.DisableFormatting)
-                   .ShouldEqual("<module directory=\"test\"><reference path=\"module-b\" /><asset filename=\"asset.js\" /></module>");
+                   .ShouldEqual("<module directory=\"test\" hash=\"\"><reference path=\"module-b\" /><asset filename=\"asset.js\" /></module>");
         }
 
         Mock<IAsset> StubAsset(string filename)

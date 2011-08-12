@@ -65,8 +65,7 @@
     <Compile Include="HtmlTemplateModuleFactory.cs" />
     <Compile Include="ModuleCache.cs" />
     <Compile Include="ModuleProcessing\CompileCoffeeScript.cs" />
-    <Compile Include="ModuleProcessing\CompileCoffeeScriptAsset.cs" />
-    <Compile Include="ModuleProcessing\CompileLessAsset.cs" />
+    <Compile Include="ModuleProcessing\CompileAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\ParseLessReferences.cs" />

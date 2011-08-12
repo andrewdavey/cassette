@@ -1,6 +1,9 @@
 ﻿using System.Web.Routing;
 using Cassette.UI;
 using System.Web;
+using System.Collections.Generic;
+using Cassette.CoffeeScript;
+using Cassette.Less;
 
 namespace Cassette.Web
 {
@@ -10,10 +13,18 @@ namespace Cassette.Web
             : base(sourceFileSystem, cacheFileSystem, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;
+            AddCompiler("coffee", new CoffeeScriptCompiler());
+            AddCompiler("less", new LessCompiler());
         }
 
         readonly UrlGenerator urlGenerator;
+        readonly Dictionary<string, ICompiler> compilers = new Dictionary<string, ICompiler>();
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
+
+        public void AddCompiler(string fileExtension, ICompiler compiler)
+        {
+            compilers.Add(fileExtension, compiler);
+        }
 
         public override string CreateAssetUrl(Module module, IAsset asset)
         {

@@ -1,25 +1,25 @@
 ﻿using System.IO;
-using Cassette.CoffeeScript;
-using Moq;
-using Should;
-using Xunit;
+using Cassette.Less;
 using Cassette.Utilities;
+using Moq;
+using Xunit;
+using Should;
 
 namespace Cassette.ModuleProcessing
 {
-    public class CompileCoffeeScriptAsset_Tests
+    public class CompileAsset_Tests
     {
         [Fact]
-        public void TransformCallsCoffeeScriptCompiler()
+        public void TransformCallsLessCompiler()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("test.coffee");
+            asset.SetupGet(a => a.SourceFilename).Returns("test.less");
 
             var sourceInput = "source-input";
             var compilerOutput = "compiler-output";
             var compiler = StubCompiler(sourceInput, compilerOutput);
 
-            var transformer = new CompileCoffeeScriptAsset(compiler);
+            var transformer = new CompileAsset(compiler, new Module("test", Mock.Of<IFileSystem>()));
 
             var getResultStream = transformer.Transform(
                 () => sourceInput.AsStream(),
@@ -32,10 +32,10 @@ namespace Cassette.ModuleProcessing
             }
         }
 
-        ICoffeeScriptCompiler StubCompiler(string expectedSourceInput, string compilerOutput)
+        ICompiler StubCompiler(string expectedSourceInput, string compilerOutput)
         {
-            var compiler = new Mock<ICoffeeScriptCompiler>();
-            compiler.Setup(c => c.Compile(expectedSourceInput, "test.coffee"))
+            var compiler = new Mock<ICompiler>();
+            compiler.Setup(c => c.Compile(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IFileSystem>()))
                     .Returns(compilerOutput);
             return compiler.Object;
         }

@@ -6,7 +6,7 @@ using Jurassic.Library;
 
 namespace Cassette.Less
 {
-    public class LessCompiler : ILessCompiler
+    public class LessCompiler : ICompiler
     {
         public LessCompiler()
         {
