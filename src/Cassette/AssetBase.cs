@@ -35,10 +35,7 @@ namespace Cassette
 
         public abstract string SourceFilename { get; }
 
-        public virtual byte[] Hash
-        {
-            get { return new byte[0]; }
-        }
+        public abstract byte[] Hash { get;  }
 
         public abstract IEnumerable<AssetReference> References { get; }
 

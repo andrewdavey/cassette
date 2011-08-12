@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Cassette.Utilities;
 
 namespace Cassette
 {
     public class ConcatenatedAsset : AssetBase, IDisposable
     {
+        readonly byte[] hash;
         readonly IEnumerable<IAsset> children;
-        readonly Stream stream;
+        readonly MemoryStream stream;
 
-        public ConcatenatedAsset(IEnumerable<IAsset> children, Stream stream)
+        public ConcatenatedAsset(IEnumerable<IAsset> children, MemoryStream stream)
         {
+            this.hash = stream.ComputeSHA1Hash();
             this.children = children;
             this.stream = stream;
         }
@@ -22,6 +25,11 @@ namespace Cassette
             {
                 visitor.Visit(child);
             }
+        }
+
+        public override byte[] Hash
+        {
+            get { return hash; }
         }
 
         public override string SourceFilename

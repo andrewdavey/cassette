@@ -1,13 +1,42 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
-using System.Xml.Linq;
+using System.Security.Cryptography;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette
 {
-    public class GivenConcatenatedAsset_WithTwoChildren
+    public class ConcatenatedAsset_Tests : IDisposable
+    {
+        public ConcatenatedAsset_Tests()
+        {
+            stream = new MemoryStream(new byte[] { 1, 2, 3 });
+            asset = new ConcatenatedAsset(Enumerable.Empty<IAsset>(), stream);
+        }
+
+        readonly MemoryStream stream;
+        readonly ConcatenatedAsset asset;
+
+        [Fact]
+        public void HashIsSHA1OfStream()
+        {
+            byte[] expected;
+            using (var sha1 = SHA1.Create())
+            {
+                expected = sha1.ComputeHash(new byte[] { 1, 2, 3 });
+            }
+            asset.Hash.SequenceEqual(expected).ShouldBeTrue();
+        }
+
+        public void Dispose()
+        {
+            stream.Dispose();
+        }
+    }
+
+    public class GivenConcatenatedAsset_WithTwoChildren : IDisposable
     {
         public GivenConcatenatedAsset_WithTwoChildren()
         {
@@ -15,7 +44,7 @@ namespace Cassette.ModuleProcessing
             child2 = new Mock<IAsset>();
             asset = new ConcatenatedAsset(
                 new[] { child1.Object, child2.Object },
-                Stream.Null
+                new MemoryStream()
             );
         }
 
@@ -39,6 +68,11 @@ namespace Cassette.ModuleProcessing
             asset.Accept(visitor.Object);
             visitor.Verify(v => v.Visit(child1.Object));
             visitor.Verify(v => v.Visit(child2.Object));
+        }
+
+        public void Dispose()
+        {
+            asset.Dispose();
         }
     }
 }

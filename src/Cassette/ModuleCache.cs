@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Cassette.Persistence;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -82,7 +83,8 @@ namespace Cassette
         CachedAsset CreateSingleAssetForModule(XElement moduleElement, T module, string moduleFilename, IFileSystem fileSystem)
         {
             var assetInfos = CreateAssetInfos(moduleElement, module.Directory);
-            var asset = new CachedAsset(assetInfos, () => fileSystem.OpenFile(moduleFilename, FileMode.Open, FileAccess.Read));
+            var hash = ByteArrayExtensions.FromHexString(moduleElement.Attribute("hash").Value);
+            var asset = new CachedAsset(hash, assetInfos, () => fileSystem.OpenFile(moduleFilename, FileMode.Open, FileAccess.Read));
             AddReferencesToAsset(asset, moduleElement);
             return asset;
         }

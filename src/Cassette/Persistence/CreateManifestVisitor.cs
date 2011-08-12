@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using System;
+using Cassette.Utilities;
 
 namespace Cassette.Persistence
 {
@@ -25,6 +26,7 @@ namespace Cassette.Persistence
         {
             moduleElement = new XElement("module",
                 new XAttribute("directory", module.Directory),
+                new XAttribute("hash", module.Assets[0].Hash.ToHexString()),
                 ReferenceElements(module)
             );
         }

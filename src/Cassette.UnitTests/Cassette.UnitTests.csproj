@@ -59,6 +59,7 @@
     <Compile Include="Asset.cs" />
     <Compile Include="CassetteApplicationExtensions.cs" />
     <Compile Include="CoffeeScript\CoffeeScriptCompiler.cs" />
+    <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplateModuleFactory.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="ModuleProcessing\CompileCoffeeScriptAsset.cs" />
     <Compile Include="ModuleProcessing\CompileLessAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
-    <Compile Include="ModuleProcessing\ConcatenatedAsset.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\ParseLessReferences.cs" />
     <Compile Include="ModuleProcessing\WrapHtmlTemplateInScriptBlock.cs" />

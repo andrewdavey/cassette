@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cassette.Utilities;
 
 namespace Cassette.Web
 {
@@ -27,7 +28,7 @@ namespace Cassette.Web
                 assetsPrefix,
                 ConvertionalModulePathName(module.GetType()),
                 ConvertToForwardSlashes(module.Directory),
-                HexString(module.Assets[0].Hash)
+                module.Assets[0].Hash.ToHexString()
             );
         }
 
@@ -38,7 +39,7 @@ namespace Cassette.Web
                 urlRootPath,
                 ConvertToForwardSlashes(module.Directory),
                 ConvertToForwardSlashes(asset.SourceFilename),
-                HexString(asset.Hash)
+                asset.Hash.ToHexString()
             );
         }
 
@@ -52,14 +53,6 @@ namespace Cassette.Web
         string ConvertToForwardSlashes(string path)
         {
             return path.Replace('\\', '/');
-        }
-
-        string HexString(byte[] bytes)
-        {
-            return bytes.Aggregate(
-                new StringBuilder(),
-                (builder, b) => builder.Append(b.ToString("x2"))
-            ).ToString();
         }
     }
 }

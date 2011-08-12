@@ -72,7 +72,6 @@ namespace Cassette
             return this;
         }
 
-
         IModuleContainer<T> IModuleContainerFactory<T>.CreateModuleContainer()
         {
             var moduleFactory = application.GetModuleFactory<T>();

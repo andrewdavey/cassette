@@ -7,12 +7,14 @@ namespace Cassette.Persistence
 {
     public class CachedAsset : IAsset
     {
-        public CachedAsset(IEnumerable<IAsset> children, Func<Stream> openStream)
+        public CachedAsset(byte[] hash, IEnumerable<IAsset> children, Func<Stream> openStream)
         {
+            this.hash = hash;
             this.children = children.ToArray();
             this.openStream = openStream;
         }
 
+        readonly byte[] hash;
         readonly IEnumerable<IAsset> children;
         readonly Func<Stream> openStream;
         readonly List<AssetReference> references = new List<AssetReference>();
@@ -52,7 +54,7 @@ namespace Cassette.Persistence
 
         public byte[] Hash
         {
-            get { throw new NotImplementedException(); }
+            get { return hash; }
         }
     }
 }
