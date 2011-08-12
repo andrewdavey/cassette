@@ -13,15 +13,8 @@ namespace Example
                 .ForSubDirectoriesOf("Scripts")
                 .IncludeFiles("*.js")
                 .ExcludeFiles(new Regex("-vsdoc\\.js$"))
-                .ProcessWith(
-                    new ParseJavaScriptReferences(),
-                    new SortAssetsByDependency(),
-                    new ConditionalStep<ScriptModule>(
-                        (m,a) => a.IsOutputOptimized,
-                        new ConcatenateAssets(),
-                        new MinifyAssets(new MicrosoftJavaScriptMinifier())
-                    )
-                );
+                .ProcessWith(new DefaultScriptPipeline());
+
             application.HasModules<StylesheetModule>()
                 .Directories("Styles")
                 .IncludeFiles("*.css", "*.less")

@@ -51,6 +51,7 @@
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="Compilation\ICompiler.cs" />
+    <Compile Include="DefaultScriptPipeline.cs" />
     <Compile Include="ModuleProcessing\CompileLess.cs" />
     <Compile Include="ModuleProcessing\CompileAsset.cs" />
     <Compile Include="ModuleProcessing\ParseLessReferences.cs" />
