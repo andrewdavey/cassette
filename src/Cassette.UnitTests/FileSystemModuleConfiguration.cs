@@ -69,6 +69,13 @@ namespace Cassette
         }
 
         [Fact]
+        public void WhenNoDirectoriesSpecified_ThenModuleContainerHasOneModuleForEntireRoot()
+        {
+            var module = ModuleContainer.Modules.Single();
+            module.Directory.ShouldEqual("");
+        }
+
+        [Fact]
         public void WhenForSubDirectoriesOfScripts_ThenModuleContainerHasTwoModules()
         {
             config.ForSubDirectoriesOf("scripts");
