@@ -9,7 +9,7 @@ namespace Cassette.Web
     {
         ScriptModule StubScriptModule(string path)
         {
-            var module = new ScriptModule(path, Mock.Of<IFileSystem>());
+            var module = new ScriptModule(path);
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             module.Assets.Add(asset.Object);
@@ -18,7 +18,7 @@ namespace Cassette.Web
 
         StylesheetModule StubStylesheetModule(string path)
         {
-            var module = new StylesheetModule(path, Mock.Of<IFileSystem>());
+            var module = new StylesheetModule(path);
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             module.Assets.Add(asset.Object);

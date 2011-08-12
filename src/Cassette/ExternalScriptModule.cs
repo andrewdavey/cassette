@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
+﻿using System.Web;
 
 namespace Cassette
 {
     public class ExternalScriptModule : ScriptModule
     {
         public ExternalScriptModule(string url)
-            : base("", null)
+            : base("")
         {
             this.url = url;
         }
@@ -18,7 +14,7 @@ namespace Cassette
 
         public override IHtmlString Render(ICassetteApplication application)
         {
-            return base.Render(application);
+            return new HtmlString(string.Format(scriptHtml, url));
         }
     }
 }

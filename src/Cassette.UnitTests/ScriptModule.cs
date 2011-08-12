@@ -10,7 +10,7 @@ namespace Cassette
         public ScriptModule_Render_Tests()
         {
             application = new Mock<ICassetteApplication>();
-            module = new ScriptModule("test", Mock.Of<IFileSystem>());
+            module = new ScriptModule("test");
             asset1 = Mock.Of<IAsset>();
             asset2 = Mock.Of<IAsset>();
             module.Assets.Add(asset1);

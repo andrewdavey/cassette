@@ -5,7 +5,7 @@ namespace Cassette
     public class ExternalStylesheetModule : StylesheetModule
     {
         public ExternalStylesheetModule(string url)
-            : base("", null)
+            : base("")
         {
             this.url = url;
         }

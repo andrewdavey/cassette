@@ -13,7 +13,7 @@ namespace Cassette
 
         public HtmlTemplateModule CreateModule(string directory)
         {
-            return new HtmlTemplateModule(directory, fileSystem);
+            return new HtmlTemplateModule(directory);
         }
 
         public HtmlTemplateModule CreateExternalModule(string url)

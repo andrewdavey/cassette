@@ -171,5 +171,14 @@ namespace Cassette
             container.AddDependenciesAndSort(new[] { module1 })
                 .SequenceEqual(new[] { module4, module2, module3, module1 }).ShouldBeTrue();
         }
+
+        [Fact]
+        public void AddDependenciesAndSortToleratesExternalModulesWhichAreNotInTheContainer()
+        {
+            var externalModule = new ExternalScriptModule("http://test.com/test.js");
+            var container = new ModuleContainer<ScriptModule>(Enumerable.Empty<ScriptModule>());
+            var results = container.AddDependenciesAndSort(new[] { externalModule });
+            results.SequenceEqual(new[] { externalModule }).ShouldBeTrue();
+        }
     }
 }

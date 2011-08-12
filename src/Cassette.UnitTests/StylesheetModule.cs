@@ -10,7 +10,7 @@ namespace Cassette
         public StylesheetModule_Render_Tests()
         {
             application = new Mock<ICassetteApplication>();
-            module = new StylesheetModule("test", Mock.Of<IFileSystem>());
+            module = new StylesheetModule("test");
             asset1 = Mock.Of<IAsset>();
             asset2 = Mock.Of<IAsset>();
             module.Assets.Add(asset1);

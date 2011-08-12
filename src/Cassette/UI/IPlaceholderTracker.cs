@@ -5,7 +5,7 @@ namespace Cassette.UI
 {
     public interface IPlaceholderTracker
     {
-        IHtmlString InsertPlaceholder(IHtmlString futureHtml);
+        IHtmlString InsertPlaceholder(Func<IHtmlString> futureHtml);
         string ReplacePlaceholders(string html);
     }
 }

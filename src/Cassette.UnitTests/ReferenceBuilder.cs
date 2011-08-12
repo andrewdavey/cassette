@@ -23,7 +23,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToModuleDirectory_ThenGetModulesReturnTheModule()
         {
-            var module = new ScriptModule("test", Mock.Of<IFileSystem>());
+            var module = new ScriptModule("test");
             moduleContainer.Setup(c => c.FindModuleByPath("test"))
                            .Returns(module);
             moduleContainer.Setup(c => c.AddDependenciesAndSort(new[] { module }))
@@ -40,7 +40,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToModuleDirectoryWithLocation_ThenGetModulesThatLocationReturnTheModule()
         {
-            var module = new ScriptModule("test", Mock.Of<IFileSystem>());
+            var module = new ScriptModule("test");
             module.Location = "body";
             moduleContainer.Setup(c => c.FindModuleByPath("test"))
                            .Returns(module);
@@ -58,8 +58,8 @@ namespace Cassette
         [Fact]
         public void OnlyModulesMatchingLocationAreReturnedByGetModules()
         {
-            var module1 = new ScriptModule("test1", Mock.Of<IFileSystem>());
-            var module2 = new ScriptModule("test2", Mock.Of<IFileSystem>());
+            var module1 = new ScriptModule("test1");
+            var module2 = new ScriptModule("test2");
             module1.Location = "body";
             moduleContainer.Setup(c => c.FindModuleByPath("test1"))
                            .Returns(module1);
@@ -89,8 +89,8 @@ namespace Cassette
         [Fact]
         public void GivenModuleAReferencesModuleB_WhenAddReferenceToModuleA_ThenGetModulesReturnsBoth()
         {
-            var moduleA = new ScriptModule("a", Mock.Of<IFileSystem>());
-            var moduleB = new ScriptModule("b", Mock.Of<IFileSystem>());
+            var moduleA = new ScriptModule("a");
+            var moduleB = new ScriptModule("b");
 
             moduleContainer.Setup(c => c.FindModuleByPath("a"))
                            .Returns(moduleA);

@@ -32,7 +32,17 @@ namespace Cassette
             {
                 AddModulesReferencedBy(module, references);
             }
-            return references.OrderBy(m => sortIndex[m]);
+            return references.OrderBy(GetSortIndex);
+        }
+
+        int GetSortIndex(T module)
+        {
+            int index;
+            if (sortIndex.TryGetValue(module, out index))
+            {
+                return index;
+            }
+            return int.MaxValue;
         }
 
         public T FindModuleByPath(string path)
@@ -110,11 +120,14 @@ namespace Cassette
 
         void AddModulesReferencedBy(T module, HashSet<T> references)
         {
-            var referencedModules = moduleImmediateReferences[module];
-            foreach (var referencedModule in referencedModules)
+            HashSet<T> referencedModules;
+            if (moduleImmediateReferences.TryGetValue(module, out referencedModules))
             {
-                AddModulesReferencedBy(referencedModule, references);
-                references.Add(referencedModule);
+                foreach (var referencedModule in referencedModules)
+                {
+                    AddModulesReferencedBy(referencedModule, references);
+                    references.Add(referencedModule);
+                }
             }
         }
     }

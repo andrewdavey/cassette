@@ -13,7 +13,7 @@ namespace Cassette
 
         public ScriptModule CreateModule(string directory)
         {
-            return new ScriptModule(directory, fileSystem);
+            return new ScriptModule(directory);
         }
 
         public ScriptModule CreateExternalModule(string url)

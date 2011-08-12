@@ -9,7 +9,7 @@ namespace Cassette.ModuleProcessing
 {
     public class WrapHtmlTemplateInScriptBlock_Tests
     {
-        HtmlTemplateModule module = new HtmlTemplateModule("test", Mock.Of<IFileSystem>());
+        HtmlTemplateModule module = new HtmlTemplateModule("test");
 
         [Fact]
         public void ScriptBlockIdMatchesAssetFilenameWithoutExtension()

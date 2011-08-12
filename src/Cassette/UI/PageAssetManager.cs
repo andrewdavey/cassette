@@ -26,12 +26,17 @@ namespace Cassette.UI
         public IHtmlString Render(string location = null)
         {
             return placeholderTracker.InsertPlaceholder(
-                new HtmlString(string.Join(Environment.NewLine,
-                    referenceBuilder.GetModules(location).Select(
-                        module => module.Render(application).ToHtmlString()
-                    )
-                ))
+                () => CreateHtml(location)
             );
+        }
+
+        HtmlString CreateHtml(string location)
+        {
+            return new HtmlString(string.Join(Environment.NewLine,
+                referenceBuilder.GetModules(location).Select(
+                    module => module.Render(application).ToHtmlString()
+                )
+            ));
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Cassette
 {
     public class ScriptModule : Module
     {
-        public ScriptModule(string directory, IFileSystem fileSystem)
+        public ScriptModule(string directory)
             : base(directory)
         {
             ContentType = "text/javascript";
         }
 
-        static readonly string scriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
+        protected static readonly string scriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
 
         public override IHtmlString Render(ICassetteApplication application)
         {

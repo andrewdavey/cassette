@@ -14,7 +14,7 @@ namespace Cassette.UI
             placeholderTracker = new Mock<IPlaceholderTracker>();
             manager = new PageAssetManager<Module>(referenceBuilder.Object, Mock.Of<ICassetteApplication>(), placeholderTracker.Object);
 
-            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<IHtmlString>()))
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
                               .Returns(new HtmlString("output"));
         }
 
@@ -71,8 +71,8 @@ namespace Cassette.UI
             manager.Reference("stub1");
             manager.Reference("stub2");
 
-            placeholderTracker.Setup(t => t.InsertPlaceholder(It.Is<IHtmlString>(
-                                  s => s.ToHtmlString() == "output1" + Environment.NewLine + "output2"
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.Is<Func<IHtmlString>>(
+                                  createHtml => createHtml().ToHtmlString() == "output1" + Environment.NewLine + "output2"
                               )))
                               .Returns(new HtmlString("output"))
                               .Verifiable();

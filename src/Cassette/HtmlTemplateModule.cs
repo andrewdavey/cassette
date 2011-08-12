@@ -6,7 +6,7 @@ namespace Cassette
 {
     public class HtmlTemplateModule : Module
     {
-        public HtmlTemplateModule(string directory, IFileSystem fileSystem)
+        public HtmlTemplateModule(string directory)
             : base(directory)
         {
             ContentType = "text/html";

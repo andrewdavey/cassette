@@ -13,7 +13,7 @@ namespace Cassette
 
         public StylesheetModule CreateModule(string directoryPath)
         {
-            return new StylesheetModule(directoryPath, fileSystem);
+            return new StylesheetModule(directoryPath);
         }
 
         public StylesheetModule CreateExternalModule(string url)
