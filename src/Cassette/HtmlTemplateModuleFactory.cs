@@ -15,5 +15,10 @@ namespace Cassette
         {
             return new HtmlTemplateModule(directory, fileSystem);
         }
+
+        public HtmlTemplateModule CreateExternalModule(string url)
+        {
+            throw new NotSupportedException("External HTML template modules are not supported.");
+        }
     }
 }

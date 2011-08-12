@@ -4,5 +4,6 @@
         where T : Module
     {
         T CreateModule(string directory);
+        T CreateExternalModule(string url);
     }
 }

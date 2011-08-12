@@ -41,7 +41,7 @@ namespace Cassette.Web
             else
             {
                 var manager = new PageAssetManager<T>(
-                    new ReferenceBuilder<T>(GetModuleContainer<T>()), 
+                    new ReferenceBuilder<T>(GetModuleContainer<T>(), GetModuleFactory<T>()), 
                     this,
                     (IPlaceholderTracker)items[PlaceholderTrackerKey]
                 );

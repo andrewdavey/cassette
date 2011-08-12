@@ -15,5 +15,10 @@ namespace Cassette
         {
             return new StylesheetModule(directoryPath, fileSystem);
         }
+
+        public StylesheetModule CreateExternalModule(string url)
+        {
+            return new ExternalStylesheetModule(url);
+        }
     }
 }

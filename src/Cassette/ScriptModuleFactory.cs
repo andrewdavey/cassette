@@ -15,5 +15,10 @@ namespace Cassette
         {
             return new ScriptModule(directory, fileSystem);
         }
+
+        public ScriptModule CreateExternalModule(string url)
+        {
+            return new ExternalScriptModule(url);
+        }
     }
 }
