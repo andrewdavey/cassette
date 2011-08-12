@@ -29,6 +29,15 @@ namespace Cassette
 
         public override void AddReference(string filename, int lineNumber)
         {
+            if (filename.StartsWith("~"))
+            {
+                filename = filename.Substring(1);
+                // So the path now starts with "/".
+            }
+
+            // If filename starts with "/" then Path.Combine will ignore the parentModule.Directory.
+            // NormalizePath ignores this starting slash, so we get back a nice application relative path.
+
             var absoluteFilename = PathUtilities.NormalizePath(Path.Combine(
                 parentModule.Directory,
                 Path.GetDirectoryName(this.relativeFilename),

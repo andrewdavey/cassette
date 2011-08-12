@@ -141,10 +141,20 @@ namespace Cassette
         [Fact]
         public void AddReferenceToAssetWithPathAbsoluteToWebApplication()
         {
-            // TODO: Decide how to treat references like "/foo/bar.js" and "~/foo/bar.js".
-            // Will need to know the web application's root directory to convert the filename
-            // to a file system absolute path.
-            throw new NotImplementedException();
+            asset.AddReference("/another/test.js", 1);
+
+            var reference = asset.References.First();
+            reference.ReferencedPath.ShouldEqual("another\\test.js");
+            reference.Type.ShouldEqual(AssetReferenceType.DifferentModule);
+        }
+
+        [Fact]
+        public void WhenAddReferenceToAssetPathStartingWithTilde_ThenPathIsConvertedToAppRelative()
+        {
+            asset.AddReference("~/another/test.js", 1);
+
+            var reference = asset.References.First();
+            reference.ReferencedPath.ShouldEqual("another\\test.js");
         }
 
         [Fact]
