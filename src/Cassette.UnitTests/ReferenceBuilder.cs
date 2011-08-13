@@ -29,7 +29,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.AddDependenciesAndSort(new[] { module }))
                            .Returns(new[] { module })
                            .Verifiable();
-            builder.AddReference("test");
+            builder.AddReference("test", null);
 
             var modules = builder.GetModules(null).ToArray();
 
@@ -47,7 +47,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.AddDependenciesAndSort(new[] { module }))
                            .Returns(new[] { module })
                            .Verifiable();
-            builder.AddReference("test");
+            builder.AddReference("test", null);
 
             var modules = builder.GetModules("body").ToArray();
 
@@ -67,8 +67,8 @@ namespace Cassette
                            .Returns(module2);
             moduleContainer.Setup(c => c.AddDependenciesAndSort(new[] { module1 }))
                            .Returns(new[] { module1 });
-            builder.AddReference("test1");
-            builder.AddReference("test2");
+            builder.AddReference("test1", null);
+            builder.AddReference("test2", null);
 
             var modules = builder.GetModules("body").ToArray();
             modules.Length.ShouldEqual(1);
@@ -82,7 +82,7 @@ namespace Cassette
 
             Assert.Throws<ArgumentException>(delegate
             {
-                builder.AddReference("test");
+                builder.AddReference("test", null);
             });
         }
 
@@ -97,7 +97,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.AddDependenciesAndSort(new[] { moduleA }))
                            .Returns(new[] { moduleB, moduleA });
 
-            builder.AddReference("a");
+            builder.AddReference("a", null);
 
             builder.GetModules(null).SequenceEqual(new[] { moduleB, moduleA }).ShouldBeTrue();
         }
@@ -110,7 +110,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.AddDependenciesAndSort(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
-            builder.AddReference("http://test.com/test.js");
+            builder.AddReference("http://test.com/test.js", null);
 
             var module = builder.GetModules(null).First();
             module.ShouldBeType<ExternalScriptModule>();
@@ -124,7 +124,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.AddDependenciesAndSort(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
-            builder.AddReference("https://test.com/test.js");
+            builder.AddReference("https://test.com/test.js", null);
 
             var module = builder.GetModules(null).First();
             module.ShouldBeType<ExternalScriptModule>();
@@ -138,10 +138,23 @@ namespace Cassette
             moduleContainer.Setup(c => c.AddDependenciesAndSort(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
-            builder.AddReference("//test.com/test.js");
+            builder.AddReference("//test.com/test.js", null);
 
             var module = builder.GetModules(null).First();
             module.ShouldBeType<ExternalScriptModule>();
+        }
+
+        [Fact]
+        public void WhenAddReferenceWithLocation_ThenGetModulesForThatLocationReturnsTheModule()
+        {
+            var module = new ScriptModule("test");
+            moduleContainer.Setup(c => c.FindModuleByPath("test"))
+                           .Returns(module);
+            moduleContainer.Setup(c => c.AddDependenciesAndSort(new[] { module }))
+                           .Returns(new[] { module });
+            builder.AddReference("test", "body");
+
+            builder.GetModules("body").SequenceEqual(new[] { module}).ShouldBeTrue();
         }
     }
 }

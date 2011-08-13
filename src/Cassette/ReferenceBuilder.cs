@@ -15,12 +15,13 @@ namespace Cassette
 
         readonly IModuleContainer<T> moduleContainer;
         readonly IModuleFactory<T> moduleFactory;
-        readonly HashSet<T> modules = new HashSet<T>();
-
-        public void AddReference(string path)
+        readonly Dictionary<string, HashSet<T>> modulesByLocation = new Dictionary<string, HashSet<T>>();
+        
+        public void AddReference(string path, string location)
         {
             if (IsUrl(path))
             {
+                var modules = GetOrCreateModuleSet(location);
                 modules.Add(moduleFactory.CreateExternalModule(path));
             }
             else
@@ -30,7 +31,36 @@ namespace Cassette
                 {
                     throw new ArgumentException("Cannot find an asset module containing the path \"" + path + "\".");
                 }
+                // Module can define it's own prefered location. Use this when we aren't given
+                // an explicit location argument i.e. null.
+                if (location == null)
+                {
+                    location = module.Location;
+                }
+                var modules = GetOrCreateModuleSet(location);
                 modules.Add(module);
+            }
+        }
+
+        public IEnumerable<T> GetModules(string location)
+        {
+            var modules = GetOrCreateModuleSet(location);
+            return moduleContainer.AddDependenciesAndSort(modules);
+        }
+
+        HashSet<T> GetOrCreateModuleSet(string location)
+        {
+            location = location ?? ""; // Dictionary doesn't accept null keys.
+            HashSet<T> modules;
+            if (modulesByLocation.TryGetValue(location, out modules))
+            {
+                return modules;
+            }
+            else
+            {
+                modules = new HashSet<T>();
+                modulesByLocation.Add(location, modules);
+                return modules;
             }
         }
 
@@ -39,12 +69,6 @@ namespace Cassette
             return path.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
                 || path.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
                 || path.StartsWith("//");
-        }
-
-        public IEnumerable<T> GetModules(string location)
-        {
-            var modulesAtLocation = modules.Where(m => m.Location == location).ToArray();
-            return moduleContainer.AddDependenciesAndSort(modulesAtLocation);
         }
     }
 }

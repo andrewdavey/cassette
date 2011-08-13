@@ -18,9 +18,9 @@ namespace Cassette.UI
         readonly ICassetteApplication application;
         readonly IPlaceholderTracker placeholderTracker;
 
-        public void Reference(string path)
+        public void Reference(string path, string location = null)
         {
-            referenceBuilder.AddReference(path);
+            referenceBuilder.AddReference(path, location);
         }
 
         public IHtmlString Render(string location = null)

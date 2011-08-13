@@ -26,7 +26,7 @@ namespace Cassette.UI
         public void WhenAddReference_ThenReferenceBuilderIsCalled()
         {
             manager.Reference("test");
-            referenceBuilder.Verify(b => b.AddReference("test"));
+            referenceBuilder.Verify(b => b.AddReference("test", null));
         }
 
         [Fact]
