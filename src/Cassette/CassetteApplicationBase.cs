@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cassette.Compilation;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;

@@ -1,5 +1,4 @@
-﻿using Cassette.Compilation;
-using Cassette.UI;
+﻿using Cassette.UI;
 
 namespace Cassette
 {

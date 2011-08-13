@@ -2,7 +2,7 @@
 using Xunit;
 using Moq;
 
-namespace Cassette.Compilation
+namespace Cassette.Scripts
 {
     public class CoffeeScriptCompiler_tests
     {
@@ -20,7 +20,7 @@ namespace Cassette.Compilation
         {
             var source = "'unclosed string";
             var compiler = new CoffeeScriptCompiler();
-            var exception = Assert.Throws<CompileException>(delegate
+            var exception = Assert.Throws<CoffeeScriptCompileException>(delegate
             {
                 compiler.Compile(source, "test.coffee", Mock.Of<IFileSystem>());
             });

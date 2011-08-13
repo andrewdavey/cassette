@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Cassette.Compilation;
 using Cassette.ModuleProcessing;
 using Cassette.Scripts;
 

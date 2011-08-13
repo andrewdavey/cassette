@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
-    <Compile Include="Compilation\ICompiler.cs" />
+    <Compile Include="ICompiler.cs" />
     <Compile Include="DefaultScriptPipeline.cs" />
     <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetModule.cs" />
@@ -100,8 +100,8 @@
     <Compile Include="ModuleProcessing\IModuleProcessor.cs" />
     <Compile Include="ModuleProcessing\ConcatenatedAsset.cs" />
     <Compile Include="IModuleContainerFactory.cs" />
-    <Compile Include="Compilation\LessCompileException.cs" />
-    <Compile Include="Compilation\LessCompiler.cs" />
+    <Compile Include="Stylesheets\LessCompileException.cs" />
+    <Compile Include="Stylesheets\LessCompiler.cs" />
     <Compile Include="ModuleProcessing\LineBasedAssetReferenceParser.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
@@ -120,8 +120,8 @@
     <Compile Include="UI\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
-    <Compile Include="Compilation\CoffeeScriptCompiler.cs" />
-    <Compile Include="Compilation\CompileException.cs" />
+    <Compile Include="Scripts\CoffeeScriptCompiler.cs" />
+    <Compile Include="Scripts\CoffeeScriptCompileException.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

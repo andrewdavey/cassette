@@ -1,5 +1,4 @@
-﻿using Cassette.Compilation;
-using Cassette.ModuleProcessing;
+﻿using Cassette.ModuleProcessing;
 using Moq;
 using Xunit;
 

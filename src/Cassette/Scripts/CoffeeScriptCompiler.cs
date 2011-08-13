@@ -3,7 +3,7 @@ using Cassette.Utilities;
 using Jurassic;
 using Jurassic.Library;
 
-namespace Cassette.Compilation
+namespace Cassette.Scripts
 {
     public class CoffeeScriptCompiler : ICompiler
     {
@@ -37,11 +37,11 @@ namespace Cassette.Compilation
                 var error = result as ErrorInstance;
                 if (error != null)
                 {
-                    throw new CompileException(error.Message + " in " + filename, filename);
+                    throw new CoffeeScriptCompileException(error.Message + " in " + filename, filename);
                 }
                 else
                 {
-                    throw new CompileException("Unknown CoffeeScript compilation failure.", filename);
+                    throw new CoffeeScriptCompileException("Unknown CoffeeScript compilation failure.", filename);
                 }
             }
         }
