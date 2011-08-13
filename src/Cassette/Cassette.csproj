@@ -52,6 +52,7 @@
     <Compile Include="AssetBase.cs" />
     <Compile Include="ICompiler.cs" />
     <Compile Include="DefaultScriptPipeline.cs" />
+    <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetModule.cs" />
     <Compile Include="Stylesheets\CompileLess.cs" />

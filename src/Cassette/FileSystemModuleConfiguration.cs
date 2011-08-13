@@ -106,18 +106,16 @@ namespace Cassette
         {
             modules = new List<T>();
             lastWriteTimeMax = DateTime.MinValue;
-            foreach (var directory in moduleDirectories.DefaultIfEmpty(""))
+            foreach (var directoryPath in moduleDirectories.DefaultIfEmpty(""))
             {
-                var fileSystem = application.RootDirectory.NavigateTo(directory, false);
-                var module = moduleFactory.CreateModule(directory);
-                var filenames = GetAssetFilenames(directory);
-                var offset = (directory.Length > 0) ? directory.Length + 1 : 0;
+                var directory = application.RootDirectory.NavigateTo(directoryPath, false);
+                var module = moduleFactory.CreateModule(directoryPath);
+                var filenames = GetAssetFilenames(directoryPath);
                 foreach (var filename in filenames)
                 {
-                    var moduleRelativeFilename = filename.Substring(offset);
-                    module.Assets.Add(new Asset(moduleRelativeFilename, module, fileSystem));
+                    module.Assets.Add(new Asset(filename, module, directory));
 
-                    var lastWriteTime = application.RootDirectory.GetLastWriteTimeUtc(filename);
+                    var lastWriteTime = directory.GetLastWriteTimeUtc(filename);
                     if (lastWriteTime > lastWriteTimeMax)
                     {
                         lastWriteTimeMax = lastWriteTime;
@@ -127,16 +125,38 @@ namespace Cassette
             }
         }
 
-        IEnumerable<string> GetAssetFilenames(string directory)
+        IEnumerable<string> GetAssetFilenames(string directoryPath)
+        {
+            var directory = application.RootDirectory.NavigateTo(directoryPath, false);
+            if (directory.FileExists("module.txt"))
+            {
+                return GetAssetFilenamesFromModuleDescriptorFile(directory);
+            }
+            else
+            {
+                return GetAssetFilenamesByConfiguration(directory);
+            }
+        }
+
+        IEnumerable<string> GetAssetFilenamesFromModuleDescriptorFile(IFileSystem directory)
+        {
+            using (var file = directory.OpenFile("module.txt", FileMode.Open, FileAccess.Read))
+            {
+                var reader = new ModuleDescriptorReader(file, directory);
+                return reader.ReadFilenames().ToArray();
+            }
+        }
+
+        IEnumerable<string> GetAssetFilenamesByConfiguration(IFileSystem directory)
         {
             IEnumerable<string> filenames;
             if (searchPatterns.Count == 0)
             {
-                filenames = application.RootDirectory.GetFiles(directory);
+                filenames = directory.GetFiles("");
             }
             else
             {
-                filenames = searchPatterns.SelectMany(pattern => application.RootDirectory.GetFiles(directory, pattern)).Distinct();
+                filenames = searchPatterns.SelectMany(pattern => directory.GetFiles("", pattern)).Distinct();
             }
             foreach (var exclusion in exclusions)
             {

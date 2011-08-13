@@ -164,6 +164,44 @@ namespace Cassette
                   .ExcludeFiles(new Regex("\\.vsdoc\\.js$"));
             ModuleContainer.Modules.First().Assets.Count.ShouldEqual(2);
         }
+
+        [Fact]
+        public void GivenModuleDescriptorTextFile_ThenOnlySpecifiedAssetsAreIncluded()
+        {
+            Directory.CreateDirectory(Path.Combine(root, "scripts/special"));
+            var moduleDescriptor = @"
+asset2.js
+asset1.js
+";
+            File.WriteAllText(Path.Combine(root, "scripts/special", "module.txt"), moduleDescriptor);
+            // Write THREE files.
+            for (int i = 0; i < 3; i++)
+            {
+                File.WriteAllText(Path.Combine(root, "scripts/special", "asset" + i + ".js"), "");
+            }
+
+            config.Directories("scripts/special");
+            var assets = ModuleContainer.Modules.First().Assets;
+            assets.Count.ShouldEqual(2);
+            assets[0].SourceFilename.ShouldEqual("asset2.js");
+            assets[1].SourceFilename.ShouldEqual("asset1.js");
+        }
+
+        [Fact]
+        public void GivenModuleDescriptorTextFile_WhenExclusionPattern_ThenOnlySpecifiedAssetsNotExcludedAreIncluded()
+        {
+            Directory.CreateDirectory(Path.Combine(root, "scripts/special"));
+            var moduleDescriptor = "* # includes all files, but they are then filtered by the exclusion";
+            File.WriteAllText(Path.Combine(root, "scripts/special", "module.txt"), moduleDescriptor);
+            File.WriteAllText(Path.Combine(root, "scripts/special", "asset.js"), "");
+            File.WriteAllText(Path.Combine(root, "scripts/special", "asset-vsdoc.js"), "");
+
+            config.Directories("scripts/special")
+                  .ExcludeFiles(new Regex("-vsdoc\\.js$"));
+            var assets = ModuleContainer.Modules.First().Assets;
+            assets.Count.ShouldEqual(1);
+            assets[0].SourceFilename.ShouldEqual("asset.js");
+        }
     }
 
     public class FileSystemModuleConfiguration_Interactions : FileSystemModuleConfiguration_TestsWithFiles

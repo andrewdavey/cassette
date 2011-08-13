@@ -1,8 +1,4 @@
 ﻿jquery.js
-jquery-ui.js
-jquery.unobtrusive-ajax.js
-jquery.validate.js
-jquery.validate.unobtrusive.js
-Class.js
 jquery.tmpl.js
-knockout.js
+jquery.validate.js
+*
