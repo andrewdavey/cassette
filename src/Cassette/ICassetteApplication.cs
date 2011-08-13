@@ -13,7 +13,6 @@ namespace Cassette
         IModuleCache<T> GetModuleCache<T>() where T : Module;
         IModuleContainer<T> GetModuleContainer<T>() where T : Module;
         IModuleFactory<T> GetModuleFactory<T>() where T : Module;
-        ICompiler GetCompiler(string fileExtension);
         IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
         string CreateModuleUrl(Module module);
         string CreateAssetUrl(Module module, IAsset asset);

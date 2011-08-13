@@ -29,7 +29,7 @@ namespace Cassette
             if (CompileCoffeeScript)
             {
                 yield return new ParseCoffeeScriptReferences();
-                yield return new CompileCoffeeScript(application.GetCompiler("coffee"));
+                yield return new CompileCoffeeScript(new CoffeeScriptCompiler());
             }
             yield return new SortAssetsByDependency();
             if (application.IsOutputOptimized)

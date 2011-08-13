@@ -16,9 +16,6 @@ namespace Cassette
             this.cacheFileSystem = cacheFileSystem;
             IsOutputOptimized = isOutputOptmized;
             this.version = CombineVersionWithCassetteVersion(version);
-
-            AddCompiler("coffee", new CoffeeScriptCompiler());
-            AddCompiler("less", new LessCompiler());
         }
 
         readonly IFileSystem sourceFileSystem;
@@ -101,25 +98,6 @@ namespace Cassette
                 initializer();
             }
             initializers.Clear();
-        }
-
-        public void AddCompiler(string fileExtension, ICompiler compiler)
-        {
-            compilers.Add(fileExtension, compiler);
-        }
-
-        public ICompiler GetCompiler(string fileExtension)
-        {
-            ICompiler compiler;
-            if (compilers.TryGetValue(fileExtension, out compiler))
-            {
-                return compiler;
-            }
-
-            throw new ArgumentException(string.Format(
-                "No compiler added for the file extension \"{0}\".",
-                fileExtension
-            ));
         }
 
         public abstract string CreateAbsoluteUrl(string path);
