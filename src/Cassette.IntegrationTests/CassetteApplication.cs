@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.HtmlTemplates;
 using Cassette.ModuleProcessing;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
+using Cassette.Web;
 using Should;
 using Xunit;
-using Cassette.Web;
-using System.Linq;
 
 namespace Cassette.IntegrationTests
 {

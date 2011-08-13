@@ -1,4 +1,8 @@
-﻿namespace Cassette.UI
+﻿using Cassette.HtmlTemplates;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
+
+namespace Cassette.UI
 {
     public static class Assets
     {

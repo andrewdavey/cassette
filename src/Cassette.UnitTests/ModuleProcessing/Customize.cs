@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;

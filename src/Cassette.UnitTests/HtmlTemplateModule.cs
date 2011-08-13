@@ -4,7 +4,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateModule_Render_Tests
     {

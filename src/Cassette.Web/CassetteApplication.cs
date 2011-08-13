@@ -1,5 +1,8 @@
 ﻿using System.Web;
 using System.Web.Routing;
+using Cassette.HtmlTemplates;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
 using Cassette.UI;
 
 namespace Cassette.Web

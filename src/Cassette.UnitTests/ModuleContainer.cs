@@ -2,6 +2,7 @@
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Scripts;
 
 namespace Cassette
 {

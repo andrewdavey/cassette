@@ -1,7 +1,10 @@
-﻿using Moq;
+﻿using System.Linq;
+using Cassette.HtmlTemplates;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
+using Moq;
 using Should;
 using Xunit;
-using System.Linq;
 
 namespace Cassette.Web
 {

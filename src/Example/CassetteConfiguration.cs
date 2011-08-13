@@ -1,7 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 using Cassette;
-using Cassette.ModuleProcessing;
 using Cassette.Compilation;
+using Cassette.HtmlTemplates;
+using Cassette.ModuleProcessing;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
 
 namespace Example
 {

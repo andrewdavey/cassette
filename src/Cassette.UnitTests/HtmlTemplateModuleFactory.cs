@@ -2,7 +2,7 @@
 using Xunit;
 using Moq;
 
-namespace Cassette
+namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateModuleFactory_Test
     {
