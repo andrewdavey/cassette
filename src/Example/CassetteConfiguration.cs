@@ -14,30 +14,15 @@ namespace Example
             application.HasModules<ScriptModule>()
                 .ForSubDirectoriesOf("Scripts")
                 .IncludeFiles("*.js")
-                .ExcludeFiles(new Regex("-vsdoc\\.js$"))
-                .ProcessWith(new DefaultScriptPipeline());
+                .ExcludeFiles(new Regex("-vsdoc\\.js$"));
 
             application.HasModules<StylesheetModule>()
                 .Directories("Styles")
                 .IncludeFiles("*.css", "*.less")
-                .ProcessWith(
-                    new ParseCssReferences(),
-                    new ParseLessReferences(),
-                    new SortAssetsByDependency(),
-                    new CompileLess(new LessCompiler()),
-                    new ExpandCssUrls(),
-                    new ConditionalStep<StylesheetModule>(
-                        (m, a) => a.IsOutputOptimized,
-                        new ConcatenateAssets(),
-                        new MinifyAssets(new MicrosoftStyleSheetMinifier())
-                    )
-                );
+                .ProcessWith(new DefaultStylesheetPipeline { CompileLess = true });
+
             application.HasModules<HtmlTemplateModule>()
-                .ForSubDirectoriesOf("HtmlTemplates")
-                .ProcessWith(
-                    new WrapHtmlTemplatesInScriptBlocks(),
-                    new ConcatenateAssets()
-                );
+                .ForSubDirectoriesOf("HtmlTemplates");
         }
     }
 }

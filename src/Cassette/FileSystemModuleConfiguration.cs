@@ -13,13 +13,14 @@ namespace Cassette
         public FileSystemModuleConfiguration(ICassetteApplication application)
         {
             this.application = application;
+            pipeline = CreateDefaultPipeline();
         }
 
         readonly ICassetteApplication application;
         readonly List<string> moduleDirectories = new List<string>();
         readonly List<string> searchPatterns = new List<string>();
         readonly List<Regex> exclusions = new List<Regex>();
-        Pipeline<T> pipeline;
+        IModuleProcessor<T> pipeline;
 
         public FileSystemModuleConfiguration<T> ForSubDirectoriesOf(string relativePath)
         {
@@ -171,6 +172,23 @@ namespace Cassette
             {
                 pipeline.Process(module, application);
             }
+        }
+
+        IModuleProcessor<T> CreateDefaultPipeline()
+        {
+            if (typeof(T) == typeof(Cassette.Stylesheets.StylesheetModule))
+            {
+                return (IModuleProcessor<T>)new DefaultStylesheetPipeline();
+            }
+            if (typeof(T) == typeof(Cassette.Scripts.ScriptModule))
+            {
+                return (IModuleProcessor<T>)new DefaultScriptPipeline();
+            }
+            if (typeof(T) == typeof(Cassette.HtmlTemplates.HtmlTemplateModule))
+            {
+                return (IModuleProcessor<T>)new DefaultHtmlTemplatePipeline();
+            }
+            throw new ArgumentException("No default pipeline for module of type " + typeof(T).FullName + ".");
         }
     }
 }

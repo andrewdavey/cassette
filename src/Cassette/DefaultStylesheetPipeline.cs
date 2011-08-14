@@ -30,6 +30,7 @@ namespace Cassette
                 yield return new ParseLessReferences();
                 yield return new CompileLess(new LessCompiler());
             }
+            yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
             if (application.IsOutputOptimized)
             {
