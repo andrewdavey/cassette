@@ -92,7 +92,7 @@ namespace Cassette.Web
                 new IsolatedStorageFileSystem(storage),
                 new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath, new[] { "coffee", "less" }),
                 ShouldOptimizeOutput(),
-                GetConfigurationVersion(configuration)
+                GetConfigurationVersion(configuration, HttpRuntime.AppDomainAppVirtualPath)
             );
             configuration.Configure(application);
             return application;
@@ -104,13 +104,14 @@ namespace Cassette.Web
             return (compilation != null && compilation.Debug) == false;
         }
 
-        static string GetConfigurationVersion(ICassetteConfiguration configuration)
+        static string GetConfigurationVersion(ICassetteConfiguration configuration, string virtualDirectory)
         {
-            return configuration.GetType()
+            var assemblyVersion = configuration.GetType()
                 .Assembly
                 .GetName()
                 .Version
                 .ToString();
+            return assemblyVersion + "|" + virtualDirectory;
         }
     }
 }
