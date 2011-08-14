@@ -142,7 +142,7 @@ namespace Cassette
         {
             using (var file = directory.OpenFile("module.txt", FileMode.Open, FileAccess.Read))
             {
-                var reader = new ModuleDescriptorReader(file, directory);
+                var reader = new ModuleDescriptorReader(file, GetAssetFilenamesByConfiguration(directory));
                 return reader.ReadFilenames().ToArray();
             }
         }

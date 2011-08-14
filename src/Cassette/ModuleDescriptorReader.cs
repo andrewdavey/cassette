@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace Cassette
 {
     public class ModuleDescriptorReader
     {
-        public ModuleDescriptorReader(Stream stream, IFileSystem directory)
+        public ModuleDescriptorReader(Stream stream, IEnumerable<string> filenames)
         {
             this.stream = stream;
-            this.directory = directory;
+            this.allFilenames = new HashSet<string>(filenames, StringComparer.OrdinalIgnoreCase);
         }
 
         readonly Stream stream;
-        readonly IFileSystem directory;
+        readonly HashSet<string> allFilenames;
 
         public IEnumerable<string> ReadFilenames()
         {
@@ -33,15 +34,17 @@ namespace Cassette
                     }
                     if (line == "*")
                     {
-                        foreach (var filename in directory.GetFiles(""))
+                        foreach (var filename in allFilenames)
                         {
                             if (filesAdded.Contains(filename)) continue;
                             yield return filename;
                         }
                     }
-                    else if (directory.FileExists(line) == false)
+                    else if (FileExists(line) == false)
                     {
-                        throw new FileNotFoundException("File in module descriptor not found: " + line, directory.GetAbsolutePath(line));
+                        throw new FileNotFoundException(
+                            "File in module descriptor not found: " + line
+                        );
                     }
                     else
                     {
@@ -50,6 +53,11 @@ namespace Cassette
                     }
                 }
             }
+        }
+
+        bool FileExists(string filename)
+        {
+            return allFilenames.Contains(filename);
         }
     }
 }

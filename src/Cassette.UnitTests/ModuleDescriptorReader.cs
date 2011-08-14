@@ -4,24 +4,22 @@ using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
+using System.Collections.Generic;
 
 namespace Cassette
 {
     public class ModuleDescriptorReader_Tests
     {
-        Mock<IFileSystem> fileSystem = new Mock<IFileSystem>();
-
+        List<string> files = new List<string>();
+        
         ModuleDescriptorReader GetReader(string descriptor)
         {
-            return new ModuleDescriptorReader(descriptor.AsStream(), fileSystem.Object);
+            return new ModuleDescriptorReader(descriptor.AsStream(), files);
         }
 
         void FilesExist(params string[] filenames)
         {
-            foreach (var filename in filenames)
-            {
-                fileSystem.Setup(fs => fs.FileExists(filename)).Returns(true);
-            }
+            files.AddRange(filenames);
         }
 
         [Fact]
@@ -51,8 +49,8 @@ namespace Cassette
         [Fact]
         public void ReturnsFilesSpecified()
         {
-            var reader = GetReader("test1.js\ntest2.js");
             FilesExist("test1.js", "test2.js");
+            var reader = GetReader("test1.js\ntest2.js");
             var filenames = reader.ReadFilenames();
             filenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
         }
@@ -60,8 +58,8 @@ namespace Cassette
         [Fact]
         public void ThrowsExceptionWhenFileNotFound()
         {
-            var reader = GetReader("test1.js\ntest2.js");
             FilesExist("test1.js");
+            var reader = GetReader("test1.js\ntest2.js");
             Assert.Throws<FileNotFoundException>(delegate
             {
                 reader.ReadFilenames().ToArray();
@@ -71,8 +69,8 @@ namespace Cassette
         [Fact]
         public void CommentAfterFilenameIgnored()
         {
-            var reader = GetReader("test.js # comment");
             FilesExist("test.js");
+            var reader = GetReader("test.js # comment");
             var filenames = reader.ReadFilenames();
             filenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
         }
@@ -80,9 +78,8 @@ namespace Cassette
         [Fact]
         public void AsteriskIncludesAllFiles()
         {
+            FilesExist("test1.js", "test2.js");
             var reader = GetReader("*");
-            fileSystem.Setup(fs => fs.GetFiles(""))
-                      .Returns(new[] { "test1.js", "test2.js" });
             var filenames = reader.ReadFilenames();
             filenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
         }
@@ -90,10 +87,8 @@ namespace Cassette
         [Fact]
         public void AsteriskIncludesAllFilesNotAlreadyadded()
         {
-            var reader = GetReader("test1.js\n*");
             FilesExist("test1.js", "test2.js");
-            fileSystem.Setup(fs => fs.GetFiles(""))
-                      .Returns(new[] { "test1.js", "test2.js" });
+            var reader = GetReader("test1.js\n*");
             var filenames = reader.ReadFilenames();
             filenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
         }
