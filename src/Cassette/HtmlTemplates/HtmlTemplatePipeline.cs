@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Cassette.HtmlTemplates;
 using Cassette.ModuleProcessing;
 
-namespace Cassette
+namespace Cassette.HtmlTemplates
 {
-    public class DefaultHtmlTemplatePipeline : IModuleProcessor<HtmlTemplateModule>
+    public class HtmlTemplatePipeline : IModuleProcessor<HtmlTemplateModule>
     {
         public void Process(HtmlTemplateModule module, ICassetteApplication application)
         {

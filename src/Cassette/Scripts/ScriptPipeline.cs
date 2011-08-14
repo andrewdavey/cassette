@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Cassette.ModuleProcessing;
-using Cassette.Scripts;
 
-namespace Cassette
+namespace Cassette.Scripts
 {
-    public class DefaultScriptPipeline : IModuleProcessor<ScriptModule>
+    public class ScriptPipeline : IModuleProcessor<ScriptModule>
     {
-        public DefaultScriptPipeline()
+        public ScriptPipeline()
         {
             Minifier = new MicrosoftJavaScriptMinifier();
         }

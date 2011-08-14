@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.HtmlTemplates;
 using Cassette.ModuleProcessing;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
 
 namespace Cassette
 {
@@ -176,17 +179,17 @@ namespace Cassette
 
         IModuleProcessor<T> CreateDefaultPipeline()
         {
-            if (typeof(T) == typeof(Cassette.Stylesheets.StylesheetModule))
+            if (typeof(T) == typeof(StylesheetModule))
             {
-                return (IModuleProcessor<T>)new DefaultStylesheetPipeline();
+                return (IModuleProcessor<T>)new StylesheetPipeline();
             }
-            if (typeof(T) == typeof(Cassette.Scripts.ScriptModule))
+            if (typeof(T) == typeof(ScriptModule))
             {
-                return (IModuleProcessor<T>)new DefaultScriptPipeline();
+                return (IModuleProcessor<T>)new ScriptPipeline();
             }
-            if (typeof(T) == typeof(Cassette.HtmlTemplates.HtmlTemplateModule))
+            if (typeof(T) == typeof(HtmlTemplateModule))
             {
-                return (IModuleProcessor<T>)new DefaultHtmlTemplatePipeline();
+                return (IModuleProcessor<T>)new HtmlTemplatePipeline();
             }
             throw new ArgumentException("No default pipeline for module of type " + typeof(T).FullName + ".");
         }

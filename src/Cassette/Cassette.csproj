@@ -50,10 +50,10 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
-    <Compile Include="DefaultHtmlTemplatePipeline.cs" />
-    <Compile Include="DefaultStylesheetPipeline.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
+    <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />
-    <Compile Include="DefaultScriptPipeline.cs" />
+    <Compile Include="Scripts\ScriptPipeline.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetModule.cs" />

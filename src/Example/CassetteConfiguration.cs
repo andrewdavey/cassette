@@ -19,7 +19,7 @@ namespace Example
             application.HasModules<StylesheetModule>()
                 .Directories("Styles")
                 .IncludeFiles("*.css", "*.less")
-                .ProcessWith(new DefaultStylesheetPipeline { CompileLess = true });
+                .ProcessWith(new StylesheetPipeline { CompileLess = true });
 
             application.HasModules<HtmlTemplateModule>()
                 .ForSubDirectoriesOf("HtmlTemplates");

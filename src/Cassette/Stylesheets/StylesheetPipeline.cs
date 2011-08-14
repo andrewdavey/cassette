@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Cassette.ModuleProcessing;
-using Cassette.Stylesheets;
 
-namespace Cassette
+namespace Cassette.Stylesheets
 {
-    public class DefaultStylesheetPipeline : IModuleProcessor<StylesheetModule>
+    public class StylesheetPipeline : IModuleProcessor<StylesheetModule>
     {
-        public DefaultStylesheetPipeline()
+        public StylesheetPipeline()
         {
             StylesheetMinifier = new MicrosoftStyleSheetMinifier();
         }
