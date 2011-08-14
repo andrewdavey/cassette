@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
+    <Compile Include="DefaultHtmlTemplatePipeline.cs" />
+    <Compile Include="DefaultStylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />
     <Compile Include="DefaultScriptPipeline.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
