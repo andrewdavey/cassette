@@ -31,38 +31,12 @@ namespace Cassette.IntegrationTests
                 var application = new Cassette.Web.CassetteApplication(sourceFileSystem, cacheFileSystem, new UrlGenerator("/", Enumerable.Empty<string>()), true, "1");
                 
                 // Define the modules
-                application.HasModules<ScriptModule>()
-                    .ForSubDirectoriesOf("scripts")
-                    .ExcludeFiles(new Regex(@"\.vsdoc\.js$"))
-                    .ProcessWith(
-                        new ParseJavaScriptReferences(),
-                        new SortAssetsByDependency(),
-                        new ConditionalStep<ScriptModule>(
-                            (m, app) => app.IsOutputOptimized,
-                            new ConcatenateAssets(),
-                            new MinifyAssets(new MicrosoftJavaScriptMinifier())
-                        )
-                    );
-                application.HasModules<StylesheetModule>()
-                    .Directories("styles")
-                    .ProcessWith(
-                        new ParseCssReferences(),
-                        new SortAssetsByDependency(),
-                        new ConditionalStep<StylesheetModule>(
-                            (m, app) => app.IsOutputOptimized,
-                            new ConcatenateAssets(),
-                            new MinifyAssets(new MicrosoftStyleSheetMinifier())
-                        )
-                    );
-                application.HasModules<HtmlTemplateModule>()
-                    .Directories("templates")
-                    .ProcessWith(
-                        new WrapHtmlTemplatesInScriptBlocks(),
-                        new ConditionalStep<HtmlTemplateModule>(
-                            (m, app) => app.IsOutputOptimized,
-                            new ConcatenateAssets()
-                        )
-                    );
+                application.Add(new PerSubDirectorySource<ScriptModule>("scripts")
+                {
+                    Exclude = new Regex(@"\.vsdoc\.js$")
+                });
+                application.Add(new DirectorySource<StylesheetModule>("styles"));
+                application.Add(new DirectorySource<HtmlTemplateModule>("templates"));
 
                 application.InitializeModuleContainers();
 
