@@ -70,6 +70,7 @@
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\Customize.cs" />
+    <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
