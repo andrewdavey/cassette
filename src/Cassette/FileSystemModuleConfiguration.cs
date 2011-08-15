@@ -10,20 +10,18 @@ using Cassette.Stylesheets;
 
 namespace Cassette
 {
-    public class FileSystemModuleConfiguration<T> : IModuleContainerFactory<T>
+    public class FileSystemModuleConfiguration<T> : IModuleSource<T>
         where T : Module
     {
         public FileSystemModuleConfiguration(ICassetteApplication application)
         {
             this.application = application;
-            pipeline = CreateDefaultPipeline();
         }
 
         readonly ICassetteApplication application;
         readonly List<string> moduleDirectories = new List<string>();
         readonly List<string> searchPatterns = new List<string>();
         readonly List<Regex> exclusions = new List<Regex>();
-        IModuleProcessor<T> pipeline;
 
         public FileSystemModuleConfiguration<T> ForSubDirectoriesOf(string relativePath)
         {
@@ -70,40 +68,12 @@ namespace Cassette
             return this;
         }
 
-        public FileSystemModuleConfiguration<T> ProcessWith(params IModuleProcessor<T>[] steps)
+        ModuleSourceResult<T> IModuleSource<T>.GetModules(IModuleFactory<T> moduleFactory)
         {
-            pipeline = new Pipeline<T>(steps);
-            return this;
-        }
-
-        IModuleContainer<T> IModuleContainerFactory<T>.CreateModuleContainer()
-        {
-            var moduleFactory = application.GetModuleFactory<T>();
             List<T> modules;
             DateTime lastWriteTimeMax;
             GetModulesAndLastWriteTime(moduleFactory, out modules, out lastWriteTimeMax);
-
-            if (application.IsOutputOptimized)
-            {
-                var cache = application.GetModuleCache<T>();
-                if (cache.IsUpToDate(lastWriteTimeMax, application.Version))
-                {
-                    return cache.LoadModuleContainer();
-                }
-                else
-                {
-                    ProcessAllModules(modules, application);
-                    var container = new ModuleContainer<T>(modules);
-                    cache.SaveModuleContainer(container, application.Version);
-                    return container;
-                }
-            }
-            else
-            {
-                ProcessAllModules(modules, application);
-                var container = new ModuleContainer<T>(modules);
-                return container;
-            }
+            return new ModuleSourceResult<T>(modules, lastWriteTimeMax);
         }
 
         void GetModulesAndLastWriteTime(IModuleFactory<T> moduleFactory, out List<T> modules, out DateTime lastWriteTimeMax)
@@ -169,29 +139,5 @@ namespace Cassette
             return filenames;
         }
 
-        void ProcessAllModules(IEnumerable<T> container, ICassetteApplication application)
-        {
-            foreach (var module in container)
-            {
-                pipeline.Process(module, application);
-            }
-        }
-
-        IModuleProcessor<T> CreateDefaultPipeline()
-        {
-            if (typeof(T) == typeof(StylesheetModule))
-            {
-                return (IModuleProcessor<T>)new StylesheetPipeline();
-            }
-            if (typeof(T) == typeof(ScriptModule))
-            {
-                return (IModuleProcessor<T>)new ScriptPipeline();
-            }
-            if (typeof(T) == typeof(HtmlTemplateModule))
-            {
-                return (IModuleProcessor<T>)new HtmlTemplatePipeline();
-            }
-            throw new ArgumentException("No default pipeline for module of type " + typeof(T).FullName + ".");
-        }
     }
 }

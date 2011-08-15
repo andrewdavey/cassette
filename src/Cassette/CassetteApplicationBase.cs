@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.UI;
+using Cassette.ModuleProcessing;
 
 namespace Cassette
 {
@@ -22,7 +24,6 @@ namespace Cassette
         readonly string version;
         readonly List<Action> initializers = new List<Action>();
         readonly Dictionary<Type, IModuleContainer> moduleContainers = new Dictionary<Type, IModuleContainer>();
-        readonly Dictionary<string, ICompiler> compilers = new Dictionary<string, ICompiler>();
         
         public bool IsOutputOptimized { get; private set; }
 
@@ -80,23 +81,91 @@ namespace Cassette
             return null;
         }
 
-        public void AddModuleContainerFactory<T>(IModuleContainerFactory<T> moduleContainerFactory)
+        readonly Dictionary<Type, List<object>> moduleSourcesByType = new Dictionary<Type, List<object>>();
+
+        public void Add<T>(IModuleSource<T> moduleSource)
             where T : Module
         {
-            initializers.Add(() =>
+            if (moduleSourcesByType.ContainsKey(typeof(T)) == false)
             {
-                var container = moduleContainerFactory.CreateModuleContainer();
-                moduleContainers[typeof(T)] = container;
-            });
+                moduleSourcesByType[typeof(T)] = new List<object>();
+                initializers.Add(() => InitializeModuleContainer<T>());
+            }
+
+            moduleSourcesByType[typeof(T)].Add(moduleSource);
+        }
+
+        void InitializeModuleContainer<T>()
+            where T : Module
+        {
+            var results = moduleSourcesByType[typeof(T)]
+                .Cast<IModuleSource<T>>()
+                .Select(source => source.GetModules(GetModuleFactory<T>(), this))
+                .ToArray();
+            var lastWriteTimeMax = results.Max(r => r.LastWriteTimeMax);
+            var modules = results.SelectMany(r => r.Modules);
+            
+            if (IsOutputOptimized)
+            {
+                var cache = GetModuleCache<T>();
+                if (cache.IsUpToDate(lastWriteTimeMax, Version))
+                {
+                    moduleContainers[typeof(T)] = cache.LoadModuleContainer();
+                }
+                else
+                {
+                    ProcessAllModules<T>(modules);
+                    var container = new ModuleContainer<T>(modules);
+                    cache.SaveModuleContainer(container, Version);
+                    moduleContainers[typeof(T)] = container;
+                }
+            }
+            else
+            {
+                ProcessAllModules<T>(modules);
+                moduleContainers[typeof(T)] = new ModuleContainer<T>(modules);
+            }
+        }
+
+        void ProcessAllModules<T>(IEnumerable<T> container)
+            where T : Module
+        {
+            foreach (var module in container)
+            {
+                GetPipeline<T>().Process(module, this);
+            }
+        }
+
+        IModuleProcessor<T> GetPipeline<T>()
+            where T : Module
+        {
+            return CreateDefaultPipeline<T>();
+        }
+
+        IModuleProcessor<T> CreateDefaultPipeline<T>()
+            where T : Module
+        {
+            if (typeof(T) == typeof(StylesheetModule))
+            {
+                return (IModuleProcessor<T>)new StylesheetPipeline();
+            }
+            if (typeof(T) == typeof(ScriptModule))
+            {
+                return (IModuleProcessor<T>)new ScriptPipeline();
+            }
+            if (typeof(T) == typeof(HtmlTemplateModule))
+            {
+                return (IModuleProcessor<T>)new HtmlTemplatePipeline();
+            }
+            throw new ArgumentException("No default pipeline for module of type " + typeof(T).FullName + ".");
         }
 
         public void InitializeModuleContainers()
         {
-            foreach (var initializer in initializers)
+            foreach (var initialize in initializers)
             {
-                initializer();
+                initialize();
             }
-            initializers.Clear();
         }
 
         public abstract string CreateAbsoluteUrl(string path);

@@ -51,6 +51,9 @@
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
+    <Compile Include="IModuleSource.cs" />
+    <Compile Include="ModuleSourceResult.cs" />
+    <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />
     <Compile Include="Scripts\ScriptPipeline.cs" />
@@ -65,12 +68,11 @@
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="UI\Assets.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
-    <Compile Include="CassetteApplicationExtensions.cs" />
     <Compile Include="UI\IPageAssetManager.cs" />
     <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="EmptyCassetteConfiguration.cs" />
-    <Compile Include="FileSystemModuleConfiguration.cs" />
+    <None Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
     <Compile Include="ICassetteApplication.cs" />

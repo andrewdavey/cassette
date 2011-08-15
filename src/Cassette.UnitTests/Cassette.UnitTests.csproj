@@ -57,11 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asset.cs" />
-    <Compile Include="CassetteApplicationExtensions.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
+    <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="Scripts\CoffeeScriptCompiler.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <Compile Include="FileSystemModuleConfiguration.cs" />
+    <None Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplateModuleFactory.cs" />
     <Compile Include="ModuleCache.cs" />
