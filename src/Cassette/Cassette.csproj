@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
+    <Compile Include="DirectorySource.cs" />
+    <Compile Include="FileSystemModuleSource.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
     <Compile Include="IModuleSource.cs" />
     <Compile Include="ModuleSourceResult.cs" />

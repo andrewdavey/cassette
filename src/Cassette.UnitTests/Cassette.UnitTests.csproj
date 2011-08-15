@@ -57,7 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asset.cs" />
+    <Compile Include="DirectorySource.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
+    <Compile Include="ModuleSourceTestBase.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="Scripts\CoffeeScriptCompiler.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
