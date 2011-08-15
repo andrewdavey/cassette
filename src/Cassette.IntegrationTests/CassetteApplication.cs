@@ -4,7 +4,6 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.HtmlTemplates;
-using Cassette.ModuleProcessing;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.Web;
