@@ -6,24 +6,29 @@ namespace Cassette.Scripts
     public class ExternalScriptModule : ScriptModule
     {
         public ExternalScriptModule(string url)
-            : base("")
+            : this("", url)
         {
-            if (url == null) throw new ArgumentNullException("url");
-            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
-            
-            this.url = url;
         }
 
-        public ExternalScriptModule(string name, string url, string fallbackUrl, string javaScriptCondition)
+        public ExternalScriptModule(string name, string url)
             : base(name)
         {
             if (url == null) throw new ArgumentNullException("url");
             if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
-            if (fallbackUrl == null) throw new ArgumentNullException("fallbackUrl");
-            if (string.IsNullOrWhiteSpace(fallbackUrl)) throw new ArgumentException("Fallback URL is required.", "fallbackUrl");
+
+            this.url = url;
+        }
+
+        public ExternalScriptModule(string name, string url, string javaScriptCondition, string fallbackUrl)
+            : base(name)
+        {
+            if (url == null) throw new ArgumentNullException("url");
+            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
             if (javaScriptCondition == null) throw new ArgumentNullException("javaScriptCondition");
             if (string.IsNullOrWhiteSpace(javaScriptCondition)) throw new ArgumentException("JavaScript condition is required.", "javaScriptCondition");
-
+            if (fallbackUrl == null) throw new ArgumentNullException("fallbackUrl");
+            if (string.IsNullOrWhiteSpace(fallbackUrl)) throw new ArgumentException("Fallback URL is required.", "fallbackUrl");
+            
             this.url = url;
             this.fallbackUrl = fallbackUrl;
             this.javaScriptCondition = javaScriptCondition;

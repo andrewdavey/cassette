@@ -10,7 +10,7 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenExternalScriptModuleWithFallback_ThenRenderReturnsFallbackScript()
         {
-            var module = new ExternalScriptModule("api", "http://test.com/api.js", "/api.js", "!window.api");
+            var module = new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", "/api.js");
             var html = module.Render(Mock.Of<ICassetteApplication>());
             html.ToHtmlString().ShouldEqual(
                 @"<script src=""http://test.com/api.js"" type=""text/javascript""></script>" + 
@@ -27,32 +27,15 @@ namespace Cassette.Scripts
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ExternalScriptModule("api", null, "/api.js", "!window.api");
+                new ExternalScriptModule("api", null, "!window.api", "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "", "/api.js", "!window.api");
+                new ExternalScriptModule("api", "", "!window.api", "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", " ", "/api.js", "!window.api");
-            });
-        }
-
-        [Fact]
-        public void FallbackUrlRequired()
-        {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ExternalScriptModule("api", "http://test.com/api.js", null, "!window.api");
-            });
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new ExternalScriptModule("api", "http://test.com/api.js", "", "!window.api");
-            });
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new ExternalScriptModule("api", "http://test.com/api.js", " ", "!window.api");
+                new ExternalScriptModule("api", " ", "!window.api", "/api.js");
             });
         }
 
@@ -61,16 +44,47 @@ namespace Cassette.Scripts
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", "/api.js", null);
+                new ExternalScriptModule("api", "http://test.com/api.js", null, "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", "/api.js", "");
+                new ExternalScriptModule("api", "http://test.com/api.js", "", "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", "/api.js", " ");
+                new ExternalScriptModule("api", "http://test.com/api.js", " ", "/api.js");
             });
+        }
+
+        [Fact]
+        public void FallbackUrlRequired()
+        {
+            Assert.Throws<ArgumentNullException>(delegate
+            {
+                new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", null);
+            });
+            Assert.Throws<ArgumentException>(delegate
+            {
+                new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", "");
+            });
+            Assert.Throws<ArgumentException>(delegate
+            {
+                new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", " ");
+            });
+        }
+
+        [Fact]
+        public void CanCreateAdHocExternalScriptModule()
+        {
+            var module = new ExternalScriptModule("http://test.com/api.js");
+            module.Directory.ShouldEqual("");
+        }
+
+        [Fact]
+        public void CanCreateExternalScriptModuleWithOnlyAUrl()
+        {
+            var module = new ExternalScriptModule("api", "http://test.com/api.js");
+            module.Directory.ShouldEqual("api");
         }
     }
 }
