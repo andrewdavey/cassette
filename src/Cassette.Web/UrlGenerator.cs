@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Cassette.Utilities;
 using System.IO;
+using Cassette.Utilities;
 
 namespace Cassette.Web
 {
@@ -21,7 +19,11 @@ namespace Cassette.Web
 
         public string ModuleUrlPattern<T>()
         {
-            return string.Format("{0}/{1}/{{*path}}", assetsPrefix, ConvertionalModulePathName(typeof(T)));
+            return string.Format(
+                "{0}/{1}/{{*path}}",
+                assetsPrefix,
+                ConventionalModulePathName(typeof(T))
+            );
         }
 
         public string CreateModuleUrl(Module module)
@@ -29,7 +31,7 @@ namespace Cassette.Web
             return string.Format("{0}/{1}/{2}/{3}_{4}",
                 urlRootPath,
                 assetsPrefix,
-                ConvertionalModulePathName(module.GetType()),
+                ConventionalModulePathName(module.GetType()),
                 ConvertToForwardSlashes(module.Directory),
                 module.Assets[0].Hash.ToHexString()
             );
@@ -61,7 +63,7 @@ namespace Cassette.Web
             }
         }
 
-        string ConvertionalModulePathName(Type moduleType)
+        string ConventionalModulePathName(Type moduleType)
         {
             var name = moduleType.Name;
             name = name.Substring(0, name.Length - "Module".Length);
