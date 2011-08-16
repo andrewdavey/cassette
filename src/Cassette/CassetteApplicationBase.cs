@@ -73,8 +73,15 @@ namespace Cassette
         protected IModuleContainer<T> GetModuleContainer<T>()
             where T: Module
         {
-            // TODO: Throw better exception when module of type T is not defined.
-            return (IModuleContainer<T>)moduleContainers[typeof(T)];
+            IModuleContainer container;
+            if (moduleContainers.TryGetValue(typeof(T), out container))
+            {
+                return (IModuleContainer<T>)container;
+            }
+            else
+            {
+                return new ModuleContainer<T>(Enumerable.Empty<T>());
+            }
         }
 
         public IAsset FindAssetByPath(string path)

@@ -25,7 +25,7 @@ namespace Cassette.Web
         {
             var path = requestContext.RouteData.GetRequiredString("path");
             var index = path.LastIndexOf('_');
-            if (index > 0)
+            if (index >= 0)
             {
                 path = path.Substring(0, index);
             }
@@ -37,6 +37,8 @@ namespace Cassette.Web
             }
             else
             {
+                // TODO: Check for E-Tag and If-Modified-Since headers.
+
                 response.Cache.SetCacheability(HttpCacheability.Public);
                 response.Cache.SetMaxAge(TimeSpan.FromDays(365));
                 response.ContentType = module.ContentType;
