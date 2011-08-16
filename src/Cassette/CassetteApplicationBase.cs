@@ -37,7 +37,7 @@ namespace Cassette
             get { return version; }
         }
 
-        public IModuleCache<T> GetModuleCache<T>()
+        IModuleCache<T> GetModuleCache<T>()
             where T : Module
         {
             return new ModuleCache<T>(
@@ -46,7 +46,13 @@ namespace Cassette
             );
         }
 
-        public virtual IModuleFactory<T> GetModuleFactory<T>()
+        public IReferenceBuilder<T> CreateReferenceBuilder<T>()
+            where T : Module
+        {
+            return new ReferenceBuilder<T>(GetModuleContainer<T>(), GetModuleFactory<T>());
+        }
+
+        IModuleFactory<T> GetModuleFactory<T>()
             where T : Module
         {
             if (typeof(T) == typeof(ScriptModule))
@@ -64,7 +70,7 @@ namespace Cassette
             throw new NotSupportedException("Cannot find the factory for " + typeof(T).FullName + ".");
         }
 
-        public IModuleContainer<T> GetModuleContainer<T>()
+        protected IModuleContainer<T> GetModuleContainer<T>()
             where T: Module
         {
             // TODO: Throw better exception when module of type T is not defined.

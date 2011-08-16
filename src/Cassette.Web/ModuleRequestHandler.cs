@@ -25,7 +25,7 @@ namespace Cassette.Web
         {
             var path = requestContext.RouteData.GetRequiredString("path");
             var index = path.LastIndexOf('_');
-            if (index >= 0)
+            if (index > 0)
             {
                 path = path.Substring(0, index);
             }

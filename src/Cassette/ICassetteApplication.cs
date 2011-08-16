@@ -9,9 +9,6 @@ namespace Cassette
         string Version { get; }
 
         void Add<T>(IModuleSource<T> moduleSource) where T : Module;
-        IModuleCache<T> GetModuleCache<T>() where T : Module;
-        IModuleContainer<T> GetModuleContainer<T>() where T : Module;
-        IModuleFactory<T> GetModuleFactory<T>() where T : Module;
         IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
         string CreateModuleUrl(Module module);
         string CreateAssetUrl(Module module, IAsset asset);

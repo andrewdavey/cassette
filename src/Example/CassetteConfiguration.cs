@@ -11,18 +11,20 @@ namespace Example
     {
         public void Configure(ICassetteApplication application)
         {
-            application.HasModules<ScriptModule>()
-                .ForSubDirectoriesOf("Scripts")
-                .IncludeFiles("*.js")
-                .ExcludeFiles(new Regex("-vsdoc\\.js$"));
+            application.Add(new PerSubDirectorySource<ScriptModule>("Scripts")
+            {
+                FilePattern = "*.js",
+                Exclude = new Regex("-vsdoc\\.js$")
+            });
 
-            application.HasModules<StylesheetModule>()
-                .Directories("Styles")
-                .IncludeFiles("*.css", "*.less")
-                .ProcessWith(new StylesheetPipeline { CompileLess = true });
+            application.Add(new DirectorySource<StylesheetModule>("Styles")
+            {
+                FilePattern = "*.css;*.less"
+            });
 
-            application.HasModules<HtmlTemplateModule>()
-                .ForSubDirectoriesOf("HtmlTemplates");
+            application.Add(new DirectorySource<HtmlTemplateModule>("HtmlTemplates"));
+
+            // TODO: Customize pipelines (e.g. compile LESS)
         }
     }
 }

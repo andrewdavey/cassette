@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
@@ -18,6 +19,8 @@ namespace Cassette.Web
         readonly UrlGenerator urlGenerator;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
 
+        public Func<HttpContextBase> GetHttpContext = GetDefaultHttpContext;
+
         public override string CreateAbsoluteUrl(string path)
         {
             return VirtualPathUtility.ToAbsolute("~/" + path);
@@ -35,7 +38,7 @@ namespace Cassette.Web
 
         public override IPageAssetManager<T> GetPageAssetManager<T>()
         {
-            var items = HttpContext.Current.Items;
+            var items = GetHttpContext().Items;
             var key = typeof(IPageAssetManager<T>).FullName;
             if (items.Contains(key))
             {
@@ -44,7 +47,7 @@ namespace Cassette.Web
             else
             {
                 var manager = new PageAssetManager<T>(
-                    new ReferenceBuilder<T>(GetModuleContainer<T>(), GetModuleFactory<T>()), 
+                    CreateReferenceBuilder<T>(), 
                     this,
                     (IPlaceholderTracker)items[PlaceholderTrackerKey]
                 );
@@ -69,19 +72,24 @@ namespace Cassette.Web
         {
             // Insert Cassette's routes at the start of the table, 
             // to avoid conflicts with the application's own routes.
-            InstallModuleRoute<ScriptModule>();
-            InstallModuleRoute<StylesheetModule>();
-            InstallModuleRoute<HtmlTemplateModule>();
-
-            RouteTable.Routes.Insert(0, new Route("_assets/compile/{*path}", new CompileRouteHandler(this))); //coffee, less, etc
+            InstallModuleRoute<ScriptModule>(routes);
+            InstallModuleRoute<StylesheetModule>(routes);
+            InstallModuleRoute<HtmlTemplateModule>(routes);
+            
+            routes.Insert(0, new Route("_assets/compile/{*path}", new CompileRouteHandler(this))); //coffee, less, etc
         }
 
-        void InstallModuleRoute<T>()
+        void InstallModuleRoute<T>(RouteCollection routes)
             where T : Module
         {
             var url = urlGenerator.ModuleUrlPattern<T>();
             var handler = new ModuleRouteHandler<T>(GetModuleContainer<T>());
-            RouteTable.Routes.Insert(0, new Route(url, handler));
+            routes.Insert(0, new Route(url, handler));
+        }
+
+        static HttpContextBase GetDefaultHttpContext()
+        {
+            return new HttpContextWrapper(HttpContext.Current);
         }
     }
 }
