@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 // CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
 using CreateModuleContainer = System.Func<bool, string, Cassette.IModuleContainer>;
-using Cassette.ModuleProcessing;
 
 namespace Cassette
 {
     public class ModuleConfiguration
     {
-        public ModuleConfiguration(ICassetteApplication application, IFileSystem cacheFileSystem, Dictionary<Type, object> moduleFactories)
+        public ModuleConfiguration(ICassetteApplication application, IFileSystem cacheDirectory, Dictionary<Type, object> moduleFactories)
         {
             this.application = application;
-            this.cacheFileSystem = cacheFileSystem;
+            this.cacheDirectory = cacheDirectory;
             this.moduleFactories = moduleFactories;
         }
 
         readonly ICassetteApplication application;
         readonly Dictionary<Type, Tuple<object, CreateModuleContainer>> moduleSourceResultsByType = new Dictionary<Type, Tuple<object, CreateModuleContainer>>();
-        readonly IFileSystem cacheFileSystem;
+        readonly IFileSystem cacheDirectory;
         readonly Dictionary<Type, object> moduleFactories;
         readonly Dictionary<Type, List<Action<object>>> customizations = new Dictionary<Type, List<Action<object>>>();
 
@@ -130,7 +129,7 @@ namespace Cassette
             where T : Module
         {
             return new ModuleCache<T>(
-                cacheFileSystem.NavigateTo(typeof(T).Name, true),
+                cacheDirectory.NavigateTo(typeof(T).Name, true),
                 GetModuleFactory<T>()
             );
         }

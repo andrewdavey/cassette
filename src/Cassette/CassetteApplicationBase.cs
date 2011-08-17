@@ -11,29 +11,32 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        public CassetteApplicationBase(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptimized, string version)
+        public CassetteApplicationBase(ICassetteConfiguration configuration, IFileSystem rootDirectory, IFileSystem cacheDirectory, bool isOutputOptimized, string version)
         {
-            this.sourceFileSystem = sourceFileSystem;
-            IsOutputOptimized = isOutputOptimized;
-            version = CombineVersionWithCassetteVersion(version);
-
+            this.rootDirectory = rootDirectory;
+            this.isOutputOptimized = isOutputOptimized;
             this.moduleFactories = CreateModuleFactories();
-            var moduleConfiguration = new ModuleConfiguration(this, cacheFileSystem, moduleFactories);
-            config.Configure(moduleConfiguration);
-            AddDefaultModuleSourcesIfEmpty(moduleConfiguration);
-            this.moduleContainers = moduleConfiguration.CreateModuleContainers(isOutputOptimized, version);        
+            this.moduleContainers = CreateModuleContainers(
+                configuration,
+                cacheDirectory, 
+                isOutputOptimized,
+                CombineVersionWithCassetteVersion(version)
+            );
         }
 
-        readonly IFileSystem sourceFileSystem;
-        readonly List<Action> initializers = new List<Action>();
+        readonly bool isOutputOptimized;
+        readonly IFileSystem rootDirectory;
         readonly Dictionary<Type, IModuleContainer> moduleContainers;
         readonly Dictionary<Type, object> moduleFactories;
-        
-        public bool IsOutputOptimized { get; private set; }
+
+        public bool IsOutputOptimized
+        {
+            get { return isOutputOptimized; }
+        }
 
         public IFileSystem RootDirectory
         {
-            get { return sourceFileSystem; }
+            get { return rootDirectory; }
         }
 
         public IReferenceBuilder<T> CreateReferenceBuilder<T>()
@@ -72,6 +75,14 @@ namespace Cassette
         public abstract string CreateAssetUrl(Module module, IAsset asset);
         public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
 
+
+        Dictionary<Type, IModuleContainer> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, bool isOutputOptimized, string version)
+        {
+            var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, moduleFactories);
+            config.Configure(moduleConfiguration);
+            AddDefaultModuleSourcesIfEmpty(moduleConfiguration);
+            return moduleConfiguration.CreateModuleContainers(isOutputOptimized, version);
+        }
 
         Dictionary<Type, object> CreateModuleFactories()
         {
