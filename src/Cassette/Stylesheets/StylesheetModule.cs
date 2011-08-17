@@ -14,7 +14,7 @@ namespace Cassette.Stylesheets
             Processor = new StylesheetPipeline();
         }
 
-        static readonly string linkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
+        protected static readonly string linkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
         static readonly string linkHtmlWithMedia = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
 
         public string Media { get; set; }

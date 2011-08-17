@@ -20,8 +20,7 @@ namespace Cassette.Stylesheets
 
         public override IHtmlString Render(ICassetteApplication application)
         {
-            // TODO: Render the link to the URL.
-            return base.Render(application);
+            return new HtmlString(string.Format(linkHtml, url));
         }
 
         ModuleSourceResult<StylesheetModule> IModuleSource<StylesheetModule>.GetModules(IModuleFactory<StylesheetModule> moduleFactory, ICassetteApplication application)

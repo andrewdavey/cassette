@@ -39,7 +39,7 @@ namespace Cassette
             }
         }
 
-        AddReferenceToModule(T module, string location)
+        void AddReferenceToModule(T module, string location)
         {
             // Module can define it's own prefered location. Use this when we aren't given
             // an explicit location argument i.e. null.
