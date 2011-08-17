@@ -90,9 +90,10 @@ namespace Cassette.Web
                 configuration,
                 new FileSystem(HttpRuntime.AppDomainAppPath),
                 new IsolatedStorageFileSystem(storage),
-                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath, new[] { "coffee", "less" }),
                 ShouldOptimizeOutput(),
-                GetConfigurationVersion(configuration, HttpRuntime.AppDomainAppVirtualPath)
+                GetConfigurationVersion(configuration, HttpRuntime.AppDomainAppVirtualPath),
+                // TODO: remove the hard coded compileable asset array.
+                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath, new[] { "coffee", "less" })
             );
         }
 

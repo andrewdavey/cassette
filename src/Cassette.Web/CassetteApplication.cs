@@ -10,7 +10,7 @@ namespace Cassette.Web
 {
     public class CassetteApplication : Cassette.CassetteApplicationBase
     {
-        public CassetteApplication(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, UrlGenerator urlGenerator, bool isOutputOptmized, string version)
+        public CassetteApplication(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator)
             : base(config, sourceFileSystem, cacheFileSystem, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;

@@ -36,9 +36,9 @@ namespace Cassette.IntegrationTests
                 config.Object,
                 new FileSystem(Path.GetFullPath(@"..\..\assets")),
                 new IsolatedStorageFileSystem(storage),
-                new UrlGenerator("/", new[] { "coffee", "less" }),
                 isOutputOptmized: true,
-                version: Guid.NewGuid().ToString() // unique version
+                version: Guid.NewGuid().ToString(), // unique version
+                urlGenerator: new UrlGenerator("/", new[] { "coffee", "less" })
             );
         }
 
