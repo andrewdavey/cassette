@@ -31,6 +31,11 @@ namespace Cassette
             }
         }
 
+        public bool ContainsModuleSources(Type moduleType)
+        {
+            return moduleSourceResultsByType.ContainsKey(moduleType);
+        }
+
         void Add<T>(IModuleSource<T> moduleSource)
             where T : Module
         {
@@ -59,29 +64,10 @@ namespace Cassette
 
         public Dictionary<Type, IModuleContainer> CreateModuleContainers(bool useCache, string applicationVersion)
         {
-            AddRootDirectorySourceForEachNonConfiguredModuleType();
-
             return moduleSourceResultsByType.ToDictionary(
                 kvp => kvp.Key,
                 kvp => kvp.Value.Item2(useCache, applicationVersion)
             );
-        }
-
-        void AddRootDirectorySourceForEachNonConfiguredModuleType()
-        {
-            var moduleTypesNotAdded = moduleFactories.Keys.Except(moduleSourceResultsByType.Keys);
-            foreach (var type in moduleTypesNotAdded)
-            {
-                AddRootDirectorySourceForNonConfiguredModuleType(type);
-            }
-        }
-
-        void AddRootDirectorySourceForNonConfiguredModuleType(Type moduleType)
-        {
-            var sourceType = typeof(DirectorySource<>).MakeGenericType(moduleType);
-            var source = Activator.CreateInstance(sourceType, "");
-            var addMethod = GetType().GetMethod("Add").MakeGenericMethod(moduleType);
-            addMethod.Invoke(this, new[] { source });
         }
 
         IModuleContainer CreateModuleContainer<T>(bool useCache, string applicationVersion)
