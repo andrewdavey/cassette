@@ -9,7 +9,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void CreateModule_ReturnsHtmlTemplateModuleWithDirectorySet()
         {
-            var factory = new HtmlTemplateModuleFactory(Mock.Of<IFileSystem>());
+            var factory = new HtmlTemplateModuleFactory();
             var module = factory.CreateModule("test");
             module.Directory.ShouldEqual("test");
         }

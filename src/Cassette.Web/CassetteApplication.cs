@@ -10,8 +10,8 @@ namespace Cassette.Web
 {
     public class CassetteApplication : Cassette.CassetteApplicationBase
     {
-        public CassetteApplication(IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, UrlGenerator urlGenerator, bool isOutputOptmized, string version)
-            : base(sourceFileSystem, cacheFileSystem, isOutputOptmized, version)
+        public CassetteApplication(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, UrlGenerator urlGenerator, bool isOutputOptmized, string version)
+            : base(config, sourceFileSystem, cacheFileSystem, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;
         }
@@ -70,6 +70,8 @@ namespace Cassette.Web
 
         public void InstallRoutes(RouteCollection routes)
         {
+            // TODO: Only install module routes if output is optimized?
+
             // Insert Cassette's routes at the start of the table, 
             // to avoid conflicts with the application's own routes.
             InstallModuleRoute<ScriptModule>(routes);

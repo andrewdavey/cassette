@@ -2,7 +2,7 @@
 {
     public class EmptyCassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(ICassetteApplication application)
+        public void Configure(ModuleConfiguration application)
         {
             // Do nothing :)
         }

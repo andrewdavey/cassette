@@ -12,6 +12,11 @@ namespace Cassette.HtmlTemplates
             ContentType = "text/html";
         }
 
+        public override void Process(ICassetteApplication application)
+        {
+            new HtmlTemplatePipeline().Process(this, application);
+        }
+
         public override IHtmlString Render(ICassetteApplication application)
         {
             if (application.IsOutputOptimized)

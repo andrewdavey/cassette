@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cassette
 {
@@ -23,6 +24,18 @@ namespace Cassette
         public DateTime LastWriteTimeMax
         {
             get { return lastWriteTimeMax; }
+        }
+
+        public ModuleSourceResult<T> Merge(ModuleSourceResult<T> result)
+        {
+            var max = (lastWriteTimeMax > result.lastWriteTimeMax) 
+                ? lastWriteTimeMax
+                : result.lastWriteTimeMax;
+
+            return new ModuleSourceResult<T>(
+                modules.Concat(result.modules),
+                max
+            );
         }
     }
 }

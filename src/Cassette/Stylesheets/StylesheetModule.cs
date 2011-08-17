@@ -17,6 +17,11 @@ namespace Cassette.Stylesheets
 
         public string Media { get; set; }
 
+        public override void Process(ICassetteApplication application)
+        {
+            new StylesheetPipeline().Process(this, application);
+        }
+
         public override IHtmlString Render(ICassetteApplication application)
         {
             if (application.IsOutputOptimized)

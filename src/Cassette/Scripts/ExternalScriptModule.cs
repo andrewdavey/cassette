@@ -3,7 +3,7 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptModule : ScriptModule
+    public class ExternalScriptModule : ScriptModule, IModuleSource<ScriptModule>
     {
         public ExternalScriptModule(string url)
             : this("", url)
@@ -39,7 +39,12 @@ namespace Cassette.Scripts
         readonly string javaScriptCondition;
 
         static readonly string fallbackHtml = "<script type=\"text/javascript\">{0} && document.write(unescape('%3Cscript src=\"{1}\"%3E%3C/script%3E'))</script>";
-        
+
+        public override void Process(ICassetteApplication application)
+        {
+            // No processing required.
+        }
+
         public override IHtmlString Render(ICassetteApplication application)
         {
             if (string.IsNullOrEmpty(fallbackUrl))
@@ -60,6 +65,11 @@ namespace Cassette.Scripts
                     )
                 );
             }
+        }
+
+        ModuleSourceResult<ScriptModule> IModuleSource<ScriptModule>.GetModules(IModuleFactory<ScriptModule> moduleFactory, ICassetteApplication application)
+        {
+            return new ModuleSourceResult<ScriptModule>(new[] { this }, DateTime.MinValue);
         }
     }
 }

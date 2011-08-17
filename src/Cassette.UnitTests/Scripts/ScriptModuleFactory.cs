@@ -9,7 +9,7 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateModuleReturnsScriptModule()
         {
-            var factory = new ScriptModuleFactory(Mock.Of<IFileSystem>());
+            var factory = new ScriptModuleFactory();
             var module = factory.CreateModule("test");
             module.ShouldBeType<ScriptModule>();
         }
@@ -17,7 +17,7 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateModuleAssignsScriptModuleDirectory()
         {
-            var factory = new ScriptModuleFactory(Mock.Of<IFileSystem>());
+            var factory = new ScriptModuleFactory();
             var module = factory.CreateModule("test");
             module.Directory.ShouldEqual("test");
         }

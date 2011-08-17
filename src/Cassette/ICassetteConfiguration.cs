@@ -5,6 +5,6 @@
     /// </summary>
     public interface ICassetteConfiguration
     {
-        void Configure(ICassetteApplication application);
+        void Configure(ModuleConfiguration moduleConfiguration);
     }
 }

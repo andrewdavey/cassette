@@ -45,7 +45,6 @@ namespace Cassette.Web
 
             var configuration = CreateConfiguration();
             CassetteApplication = CreateCassetteApplication(configuration, storage);
-            CassetteApplication.InitializeModuleContainers();
             CassetteApplication.InstallRoutes(RouteTable.Routes);
             
             Assets.Application = CassetteApplication;
@@ -87,15 +86,14 @@ namespace Cassette.Web
 
         static CassetteApplication CreateCassetteApplication(ICassetteConfiguration configuration, IsolatedStorageFile storage)
         {
-            var application = new CassetteApplication(
+            return new CassetteApplication(
+                configuration,
                 new FileSystem(HttpRuntime.AppDomainAppPath),
                 new IsolatedStorageFileSystem(storage),
                 new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath, new[] { "coffee", "less" }),
                 ShouldOptimizeOutput(),
                 GetConfigurationVersion(configuration, HttpRuntime.AppDomainAppVirtualPath)
             );
-            configuration.Configure(application);
-            return application;
         }
 
         static bool ShouldOptimizeOutput()

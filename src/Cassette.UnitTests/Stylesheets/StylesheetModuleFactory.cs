@@ -9,7 +9,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CreateModule_ReturnsStylesheetModuleWithDirectorySet()
         {
-            var factory = new StylesheetModuleFactory(Mock.Of<IFileSystem>());
+            var factory = new StylesheetModuleFactory();
             var module = factory.CreateModule("test");
             module.Directory.ShouldEqual("test");
         }

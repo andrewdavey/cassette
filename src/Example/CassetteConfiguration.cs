@@ -9,20 +9,21 @@ namespace Example
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(ICassetteApplication application)
+        public void Configure(ModuleConfiguration modules)
         {
-            application.Add(new PerSubDirectorySource<ScriptModule>("Scripts")
+            modules.Add(new PerSubDirectorySource<ScriptModule>("Scripts")
             {
                 FilePattern = "*.js",
                 Exclude = new Regex("-vsdoc\\.js$")
             });
+            modules.Add(new ExternalScriptModule("twitter", "http://platform.twitter.com/widgets.js") { Location = "body" });
 
-            application.Add(new DirectorySource<StylesheetModule>("Styles")
+            modules.Add(new DirectorySource<StylesheetModule>("Styles")
             {
                 FilePattern = "*.css;*.less"
             });
 
-            application.Add(new DirectorySource<HtmlTemplateModule>("HtmlTemplates"));
+            modules.Add(new PerSubDirectorySource<HtmlTemplateModule>("HtmlTemplates"));
 
             // TODO: Customize pipelines (e.g. compile LESS)
         }

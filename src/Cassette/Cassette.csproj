@@ -54,6 +54,7 @@
     <Compile Include="FileSystemModuleSource.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
     <Compile Include="IModuleSource.cs" />
+    <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleSourceResult.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />

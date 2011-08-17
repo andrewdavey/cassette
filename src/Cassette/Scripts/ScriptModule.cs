@@ -14,6 +14,11 @@ namespace Cassette.Scripts
 
         protected static readonly string scriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
 
+        public override void Process(ICassetteApplication application)
+        {
+            new ScriptPipeline().Process(this, application);
+        }
+
         public override IHtmlString Render(ICassetteApplication application)
         {
             if (application.IsOutputOptimized)
