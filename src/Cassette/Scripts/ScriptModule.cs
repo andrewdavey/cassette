@@ -27,6 +27,8 @@ namespace Cassette.Scripts
         {
             if (application.IsOutputOptimized)
             {
+                // TODO: Extract rendering into pluggable class to allow customization?
+                // Much like the Processor property allows.
                 var url = application.CreateModuleUrl(this);
                 return new HtmlString(string.Format(scriptHtml, url));
             }
