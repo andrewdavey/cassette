@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
+using Cassette.ModuleProcessing;
 
 namespace Cassette.Scripts
 {
@@ -10,13 +11,16 @@ namespace Cassette.Scripts
             : base(directory)
         {
             ContentType = "text/javascript";
+            Processor = new ScriptPipeline();
         }
 
         protected static readonly string scriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
 
+        public IModuleProcessor<ScriptModule> Processor { get; set; }
+
         public override void Process(ICassetteApplication application)
         {
-            new ScriptPipeline().Process(this, application);
+            Processor.Process(this, application);
         }
 
         public override IHtmlString Render(ICassetteApplication application)

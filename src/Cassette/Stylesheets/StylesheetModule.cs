@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
+using Cassette.ModuleProcessing;
 
 namespace Cassette.Stylesheets
 {
@@ -10,16 +11,18 @@ namespace Cassette.Stylesheets
             : base(directory)
         {
             ContentType = "text/css";
+            Processor = new StylesheetPipeline();
         }
 
         static readonly string linkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
         static readonly string linkHtmlWithMedia = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
 
         public string Media { get; set; }
+        public IModuleProcessor<StylesheetModule> Processor { get; set; }
 
         public override void Process(ICassetteApplication application)
         {
-            new StylesheetPipeline().Process(this, application);
+            Processor.Process(this, application);
         }
 
         public override IHtmlString Render(ICassetteApplication application)

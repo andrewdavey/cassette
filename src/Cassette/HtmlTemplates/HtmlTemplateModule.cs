@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Web;
+using Cassette.ModuleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
@@ -10,11 +11,14 @@ namespace Cassette.HtmlTemplates
             : base(directory)
         {
             ContentType = "text/html";
+            Processor = new HtmlTemplatePipeline();
         }
+
+        public IModuleProcessor<HtmlTemplateModule> Processor { get; set; }
 
         public override void Process(ICassetteApplication application)
         {
-            new HtmlTemplatePipeline().Process(this, application);
+            Processor.Process(this, application);
         }
 
         public override IHtmlString Render(ICassetteApplication application)
