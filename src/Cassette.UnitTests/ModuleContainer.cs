@@ -3,6 +3,7 @@ using Moq;
 using Should;
 using Xunit;
 using Cassette.Scripts;
+using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -87,7 +88,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenModule1ReferencesModule2_ThenAddDependenciesAndSortModule1ReturnsModule2AndModule1()
+        public void GivenModule1ReferencesModule2_ThenConcatDependenciesModule1ReturnsModule2AndModule1()
         {
             var module1 = new Module("module-1");
             var asset1 = new Mock<IAsset>();
@@ -103,12 +104,12 @@ namespace Cassette
 
             var container = new ModuleContainer<Module>(new[] { module1, module2 });
 
-            container.AddDependenciesAndSort(new[] { module1 })
-                .SequenceEqual(new[] { module2, module1 }).ShouldBeTrue();
+            container.ConcatDependencies(module1)
+                .SequenceEqual(new[] { module1, module2 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenModule1ReferencesModule2WhichReferencesModule3_ThenAddDependenciesAndSortModule1ReturnsModule3AndModule2AndModule1()
+        public void GivenModule1ReferencesModule2WhichReferencesModule3_ThenConcatDependenciesModule1ReturnsModule3AndModule2AndModule1()
         {
             var module1 = new Module("module-1");
             var asset1 = new Mock<IAsset>();
@@ -131,12 +132,13 @@ namespace Cassette
 
             var container = new ModuleContainer<Module>(new[] { module1, module2, module3 });
 
-            container.AddDependenciesAndSort(new[] { module1 })
-                .SequenceEqual(new[] { module3, module2, module1 }).ShouldBeTrue();
+            var actual = new HashSet<Module>(container.ConcatDependencies(module1));
+            var expected = new[] { module1, module2, module3 };
+            actual.SetEquals(expected).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenDiamondReferencing_ThenAddDependenciesAndSortReturnsEachReferencedModuleOnlyOnceInDependencyOrder()
+        public void GivenDiamondReferencing_ThenConcatDependenciesReturnsEachReferencedModuleOnlyOnceInDependencyOrder()
         {
             var module1 = new Module("module-1");
             var asset1 = new Mock<IAsset>();
@@ -152,14 +154,14 @@ namespace Cassette
             var asset2 = new Mock<IAsset>();
             SetupAsset("b.js", asset2);
             asset2.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-4\\d.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("module-4\\d.js", asset2.Object, 1, AssetReferenceType.DifferentModule) });
             module2.Assets.Add(asset2.Object);
 
             var module3 = new Module("module-3");
             var asset3 = new Mock<IAsset>();
             SetupAsset("c.js", asset3);
             asset3.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-4\\d.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("module-4\\d.js", asset3.Object, 1, AssetReferenceType.DifferentModule) });
             module3.Assets.Add(asset3.Object);
 
             var module4 = new Module("module-4");
@@ -169,16 +171,16 @@ namespace Cassette
 
             var container = new ModuleContainer<Module>(new[] { module1, module2, module3, module4 });
 
-            container.AddDependenciesAndSort(new[] { module1 })
+            container.SortModules(container.ConcatDependencies(module1))
                 .SequenceEqual(new[] { module4, module2, module3, module1 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void AddDependenciesAndSortToleratesExternalModulesWhichAreNotInTheContainer()
+        public void SortModulesToleratesExternalModulesWhichAreNotInTheContainer()
         {
             var externalModule = new ExternalScriptModule("http://test.com/test.js");
             var container = new ModuleContainer<ScriptModule>(Enumerable.Empty<ScriptModule>());
-            var results = container.AddDependenciesAndSort(new[] { externalModule });
+            var results = container.SortModules(new[] { externalModule });
             results.SequenceEqual(new[] { externalModule }).ShouldBeTrue();
         }
     }
