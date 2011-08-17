@@ -11,12 +11,17 @@ namespace Example
     {
         public void Configure(ModuleConfiguration modules)
         {
-            modules.Add(new PerSubDirectorySource<ScriptModule>("Scripts")
-            {
-                FilePattern = "*.js",
-                Exclude = new Regex("-vsdoc\\.js$")
-            });
-            modules.Add(new ExternalScriptModule("twitter", "http://platform.twitter.com/widgets.js") { Location = "body" });
+            modules.Add(
+                new PerSubDirectorySource<ScriptModule>("Scripts")
+                {
+                    FilePattern = "*.js",
+                    Exclude = new Regex("-vsdoc\\.js$")
+                },
+                new ExternalScriptModule("twitter", "http://platform.twitter.com/widgets.js")
+                {
+                    Location = "body"
+                }
+            );
 
             modules.Add(new DirectorySource<StylesheetModule>("Styles")
             {
@@ -25,7 +30,10 @@ namespace Example
 
             modules.Add(new PerSubDirectorySource<HtmlTemplateModule>("HtmlTemplates"));
 
-            // TODO: Customize pipelines (e.g. compile LESS)
+            modules.Customize<StylesheetModule>(m => m.Processor = new StylesheetPipeline
+            {
+                CompileLess = true
+            });
         }
     }
 }

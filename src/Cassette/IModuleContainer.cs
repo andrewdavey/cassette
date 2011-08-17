@@ -8,7 +8,8 @@ namespace Cassette
     {
         IEnumerable<T> Modules { get; }
         T FindModuleByPath(string path);
-        IEnumerable<T> AddDependenciesAndSort(IEnumerable<T> modules);
+        IEnumerable<T> ConcatDependencies(T module);
+        IEnumerable<T> SortModules(IEnumerable<T> modules);
     }
 
     public interface IModuleContainer

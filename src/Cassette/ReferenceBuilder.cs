@@ -26,26 +26,35 @@ namespace Cassette
             }
             else
             {
-                var module = moduleContainer.FindModuleByPath(path);
-                if (module == null)
+                var referencedModule = moduleContainer.FindModuleByPath(path);
+                if (referencedModule == null)
                 {
                     throw new ArgumentException("Cannot find an asset module containing the path \"" + path + "\".");
                 }
-                // Module can define it's own prefered location. Use this when we aren't given
-                // an explicit location argument i.e. null.
-                if (location == null)
+                var allRequiredModules = moduleContainer.ConcatDependencies(referencedModule);
+                foreach (var module in allRequiredModules)
                 {
-                    location = module.Location;
+                    AddReferenceToModule(module, location);
                 }
-                var modules = GetOrCreateModuleSet(location);
-                modules.Add(module);
             }
+        }
+
+        AddReferenceToModule(T module, string location)
+        {
+            // Module can define it's own prefered location. Use this when we aren't given
+            // an explicit location argument i.e. null.
+            if (location == null)
+            {
+                location = module.Location;
+            }
+            var moduleSet = GetOrCreateModuleSet(location);
+            moduleSet.Add(module);
         }
 
         public IEnumerable<T> GetModules(string location)
         {
             var modules = GetOrCreateModuleSet(location);
-            return moduleContainer.AddDependenciesAndSort(modules);
+            return moduleContainer.SortModules(modules);
         }
 
         HashSet<T> GetOrCreateModuleSet(string location)

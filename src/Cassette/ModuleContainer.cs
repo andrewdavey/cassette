@@ -25,14 +25,17 @@ namespace Cassette
             get { return modules; }
         }
 
-        public IEnumerable<T> AddDependenciesAndSort(IEnumerable<T> modules)
+        public IEnumerable<T> ConcatDependencies(T module)
         {
-            var references = new HashSet<T>(modules);
-            foreach (var module in modules)
-            {
-                AddModulesReferencedBy(module, references);
-            }
-            return references.OrderBy(GetSortIndex);
+            var references = new HashSet<T>();
+            references.Add(module);
+            AddModulesReferencedBy(module, references);
+            return references;
+        }
+
+        public IEnumerable<T> SortModules(IEnumerable<T> modules)
+        {
+            return modules.OrderBy(GetSortIndex);
         }
 
         int GetSortIndex(T module)

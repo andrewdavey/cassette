@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 // CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
 using CreateModuleContainer = System.Func<bool, string, Cassette.IModuleContainer>;
+using Cassette.ModuleProcessing;
 
 namespace Cassette
 {
@@ -19,8 +20,18 @@ namespace Cassette
         readonly Dictionary<Type, Tuple<object, CreateModuleContainer>> moduleSourceResultsByType = new Dictionary<Type, Tuple<object, CreateModuleContainer>>();
         readonly IFileSystem cacheFileSystem;
         readonly Dictionary<Type, object> moduleFactories;
+        readonly Dictionary<Type, List<Action<object>>> customizations = new Dictionary<Type, List<Action<object>>>();
 
-        public void Add<T>(IModuleSource<T> moduleSource)
+        public void Add<T>(params IModuleSource<T>[] moduleSources)
+            where T : Module
+        {
+            foreach (var moduleSource in moduleSources)
+            {
+                Add<T>(moduleSource);
+            }
+        }
+
+        void Add<T>(IModuleSource<T> moduleSource)
             where T : Module
         {
             var result = moduleSource.GetModules(GetModuleFactory<T>(), application);
@@ -107,6 +118,15 @@ namespace Cassette
         ModuleContainer<T> CreateModuleContainer<T>(IEnumerable<T> modules) where T : Module
         {
             var modulesArray = modules.ToArray();
+            List<Action<object>> customizeActions;
+            if (this.customizations.TryGetValue(typeof(T), out customizeActions))
+            {
+                foreach (var customize in customizeActions)
+                foreach (var module in modules)
+                {
+                    customize(module);
+                }
+            }
             ProcessAll(modules);
             return new ModuleContainer<T>(modules);
         }
@@ -133,6 +153,35 @@ namespace Cassette
             where T : Module
         {
             return (IModuleFactory<T>)moduleFactories[typeof(T)];
+        }
+
+        public void Customize<T>(Action<T> action)
+            where T : Module
+        {
+            var list = GetOrCreateCustomizationList<T>();
+            list.Add(module => action((T)module));
+        }
+
+        public void Customize<T>(Func<T, bool> predicate, Action<T> action)
+            where T : Module
+        {
+            var list = GetOrCreateCustomizationList<T>();
+            list.Add(module =>
+            {
+                var typedModule = (T)module;
+                if (predicate(typedModule)) action(typedModule);
+            });
+        }
+
+        List<Action<object>> GetOrCreateCustomizationList<T>()
+            where T : Module
+        {
+            List<Action<object>> list;
+            if (customizations.TryGetValue(typeof(T), out list) == false)
+            {
+                customizations[typeof(T)] = list = new List<Action<object>>();
+            }
+            return list;
         }
     }
 }
