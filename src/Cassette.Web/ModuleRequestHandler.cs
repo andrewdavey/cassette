@@ -22,9 +22,9 @@ namespace Cassette.Web
             get { return false; }
         }
 
-        // TODO: Explicit implement this
-        public void ProcessRequest(HttpContext _)
+        void IHttpHandler.ProcessRequest(HttpContext unused)
         {
+            // The HttpContext is unused because the constructor accepts a more test-friendly RequestContext object.
             ProcessRequest();
         }
 
