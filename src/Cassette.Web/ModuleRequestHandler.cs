@@ -36,7 +36,7 @@ namespace Cassette.Web
             {
                 path = path.Substring(0, index);
             }
-            var module = moduleContainer.FindModuleByPath(path);
+            var module = moduleContainer.FindModuleContainingPath(path);
             var response = requestContext.HttpContext.Response;
             if (module == null)
             {

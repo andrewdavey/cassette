@@ -51,28 +51,28 @@ namespace Cassette
         }
 
         [Fact]
-        public void FindModuleByPathOfModuleReturnsTheModule()
+        public void FindModuleContainingPathOfModuleReturnsTheModule()
         {
             var expectedModule = new Module("test");
             var container = new ModuleContainer<Module>(new[] {
                 expectedModule
             });
-            var actualModule = container.FindModuleByPath("test");
+            var actualModule = container.FindModuleContainingPath("test");
             actualModule.ShouldBeSameAs(expectedModule);
         }
 
         [Fact]
-        public void FindModuleByPathWithWrongPathReturnsNull()
+        public void FindModuleContainingPathWithWrongPathReturnsNull()
         {
             var container = new ModuleContainer<Module>(new[] {
                 new Module("test")
             });
-            var actualModule = container.FindModuleByPath("WRONG");
+            var actualModule = container.FindModuleContainingPath("WRONG");
             actualModule.ShouldBeNull();
         }
 
         [Fact]
-        public void FindModuleByPathOfAssetReturnsTheModule()
+        public void FindModuleContainingPathOfAssetReturnsTheModule()
         {
             var expectedModule = new Module("test");
             var asset = new Mock<IAsset>();
@@ -83,7 +83,7 @@ namespace Cassette
             var container = new ModuleContainer<Module>(new[] {
                 expectedModule
             });
-            var actualModule = container.FindModuleByPath("test/test.js");
+            var actualModule = container.FindModuleContainingPath("test/test.js");
             actualModule.ShouldBeSameAs(expectedModule);
         }
 

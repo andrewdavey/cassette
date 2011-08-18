@@ -3,17 +3,20 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public interface IModuleContainer<T> : IModuleContainer
+    public interface IModuleContainer<T> : ISearchableModuleContainer<T>
         where T : Module
     {
         IEnumerable<T> Modules { get; }
-        T FindModuleByPath(string path);
         IEnumerable<T> ConcatDependencies(T module);
         IEnumerable<T> SortModules(IEnumerable<T> modules);
     }
 
-    public interface IModuleContainer
+    // This type-system trickery allows a List<ISearchableModuleContainer<Module>> to be searched
+    // for any type of Module with the path. But a specific type of container module can still
+    // return its strongly-typed modules.
+    public interface ISearchableModuleContainer<out T>
+        where T : Module
     {
-        IAsset FindAssetByPath(string path);
+        T FindModuleContainingPath(string path);
     }
 }

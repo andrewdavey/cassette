@@ -151,7 +151,7 @@ namespace Cassette
             return from asset in module.Assets
                    from reference in asset.References
                    where reference.Type == AssetReferenceType.DifferentModule
-                   let referencedModule = moduleContainer.FindModuleByPath(reference.ReferencedPath)
+                   let referencedModule = moduleContainer.FindModuleContainingPath(reference.ReferencedPath)
                    select referencedModule.Directory;
         }
 

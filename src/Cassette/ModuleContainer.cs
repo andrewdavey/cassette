@@ -48,20 +48,9 @@ namespace Cassette
             return int.MaxValue;
         }
 
-        public T FindModuleByPath(string path)
+        public T FindModuleContainingPath(string path)
         {
             return modules.FirstOrDefault(module => module.ContainsPath(path));
-        }
-
-        public IAsset FindAssetByPath(string path)
-        {
-            var module = FindModuleByPath(path);
-            if (module != null)
-            {
-                path = path.Substring(module.Directory.Length > 0 ? module.Directory.Length + 1 : 0);
-                return module.FindAssetByPath(path);
-            }
-            return null;
         }
 
         void ValidateAssetReferences()
@@ -89,7 +78,7 @@ namespace Cassette
                     module, 
                     references = new HashSet<T>(module.Assets.SelectMany(a => a.References)
                         .Where(r => r.Type == AssetReferenceType.DifferentModule)
-                        .Select(r => FindModuleByPath(r.ReferencedPath))
+                        .Select(r => FindModuleContainingPath(r.ReferencedPath))
                     ) 
                 }
             ).ToDictionary(x => x.module, x => x.references);

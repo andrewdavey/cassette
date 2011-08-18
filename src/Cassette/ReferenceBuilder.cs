@@ -26,7 +26,7 @@ namespace Cassette
             }
             else
             {
-                var referencedModule = moduleContainer.FindModuleByPath(path);
+                var referencedModule = moduleContainer.FindModuleContainingPath(path);
                 if (referencedModule == null)
                 {
                     throw new ArgumentException("Cannot find an asset module containing the path \"" + path + "\".");

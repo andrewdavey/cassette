@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 // CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
-using CreateModuleContainer = System.Func<bool, string, Cassette.IModuleContainer>;
+using CreateModuleContainer = System.Func<bool, string, Cassette.ISearchableModuleContainer<Cassette.Module>>;
 
 namespace Cassette
 {
@@ -61,7 +61,7 @@ namespace Cassette
             }
         }
 
-        public Dictionary<Type, IModuleContainer> CreateModuleContainers(bool useCache, string applicationVersion)
+        public Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(bool useCache, string applicationVersion)
         {
             return moduleSourceResultsByType.ToDictionary(
                 kvp => kvp.Key,
@@ -69,7 +69,7 @@ namespace Cassette
             );
         }
 
-        IModuleContainer CreateModuleContainer<T>(bool useCache, string applicationVersion)
+        IModuleContainer<T> CreateModuleContainer<T>(bool useCache, string applicationVersion)
             where T : Module
         {
             var finalResult = (ModuleSourceResult<T>)moduleSourceResultsByType[typeof(T)].Item1;
@@ -83,7 +83,7 @@ namespace Cassette
             }
         }
 
-        IModuleContainer GetOrCreateCachedModuleContainer<T>(ModuleSourceResult<T> finalResult, string applicationVersion) where T : Module
+        IModuleContainer<T> GetOrCreateCachedModuleContainer<T>(ModuleSourceResult<T> finalResult, string applicationVersion) where T : Module
         {
             var cache = GetModuleCache<T>();
             if (cache.IsUpToDate(finalResult.LastWriteTimeMax, applicationVersion))

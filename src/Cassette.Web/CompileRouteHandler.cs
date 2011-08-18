@@ -17,12 +17,7 @@ namespace Cassette.Web
         {
             return new CompileRequestHandler(
                 requestContext,
-                application.FindAssetByPath,
-                new Dictionary<string, string>
-                {
-                    { "less", "text/css" },
-                    { "coffee", "text/javascript" }
-                }
+                application.FindModuleContainingPath
             );
         }
     }

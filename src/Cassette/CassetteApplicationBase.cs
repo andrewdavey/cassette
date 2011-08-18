@@ -26,7 +26,7 @@ namespace Cassette
 
         readonly bool isOutputOptimized;
         readonly IFileSystem rootDirectory;
-        readonly Dictionary<Type, IModuleContainer> moduleContainers;
+        readonly Dictionary<Type, ISearchableModuleContainer<Module>> moduleContainers;
         readonly Dictionary<Type, object> moduleFactories;
 
         public bool IsOutputOptimized
@@ -48,7 +48,7 @@ namespace Cassette
         protected IModuleContainer<T> GetModuleContainer<T>()
             where T: Module
         {
-            IModuleContainer container;
+            ISearchableModuleContainer<Module> container;
             if (moduleContainers.TryGetValue(typeof(T), out container))
             {
                 return (IModuleContainer<T>)container;
@@ -59,16 +59,15 @@ namespace Cassette
             }
         }
 
-        public IAsset FindAssetByPath(string path)
+        public Module FindModuleContainingPath(string path)
         {
             foreach (var container in moduleContainers.Values)
             {
-                var asset = container.FindAssetByPath(path);
-                if (asset != null) return asset;
+                var module = container.FindModuleContainingPath(path);
+                if (module != null) return module;
             }
             return null;
         }
-
 
         public abstract string CreateAbsoluteUrl(string path);
         public abstract string CreateModuleUrl(Module module);
@@ -76,7 +75,7 @@ namespace Cassette
         public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
 
 
-        Dictionary<Type, IModuleContainer> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, bool isOutputOptimized, string version)
+        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, bool isOutputOptimized, string version)
         {
             var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, moduleFactories);
             config.Configure(moduleConfiguration);

@@ -8,16 +8,14 @@ namespace Cassette.Web
 {
     public class CompileRequestHandler : IHttpHandler
     {
-        public CompileRequestHandler(RequestContext requestContext, Func<string, IAsset> getAssetForPath, IDictionary<string, string> contentTypeForFileExtension)
+        public CompileRequestHandler(RequestContext requestContext, Func<string, Module> getModuleForPath)
         {
             this.requestContext = requestContext;
-            this.getAssetForPath = getAssetForPath;
-            this.contentTypeForFileExtension = contentTypeForFileExtension;
+            this.getModuleForPath = getModuleForPath;
         }
 
         readonly RequestContext requestContext;
-        readonly Func<string, IAsset> getAssetForPath;
-        readonly IDictionary<string, string> contentTypeForFileExtension;
+        readonly Func<string, Module> getModuleForPath;
 
         public bool IsReusable
         {
@@ -28,24 +26,30 @@ namespace Cassette.Web
         {
             var path = requestContext.RouteData.GetRequiredString("path");
             var response = requestContext.HttpContext.Response;
-            var asset = getAssetForPath(path);
+            var module = getModuleForPath(path);
+            if (module == null)
+            {
+                NotFound(response);
+                return;
+            }
+            var asset = module.FindAssetByPath(path);
             if (asset == null)
             {
-                response.StatusCode = 404;
-                response.End();
+                NotFound(response);
                 return;
             }
 
-            response.ContentType = GetContentType(path);
+            response.ContentType = module.ContentType;
             using (var stream = asset.OpenStream())
             {
                 stream.CopyTo(response.OutputStream);
             }
         }
 
-        string GetContentType(string path)
+        void NotFound(HttpResponseBase response)
         {
-            return contentTypeForFileExtension[Path.GetExtension(path).Substring(1)];
+            response.StatusCode = 404;
+            response.End();
         }
     }
 }
