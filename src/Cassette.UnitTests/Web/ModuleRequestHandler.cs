@@ -70,6 +70,8 @@ namespace Cassette.Web
                 handler.ProcessRequest();
             }
 
+            readonly DateTime start = DateTime.UtcNow;
+
             [Fact]
             public void ModuleAssetContentReturned()
             {
@@ -84,9 +86,9 @@ namespace Cassette.Web
             }
 
             [Fact]
-            public void MaxAgeIsOneYear()
+            public void ExpiresInOneYear()
             {
-                responseCache.Verify(c => c.SetMaxAge(TimeSpan.FromDays(365)));
+                responseCache.Verify(c => c.SetExpires(It.Is<DateTime>(d => (d - start).TotalDays >= 365)));
             }
 
             [Fact]
