@@ -15,7 +15,7 @@ namespace Cassette.Stylesheets
         protected override void Process(IAsset asset, Module module)
         {
             asset.AddAssetTransformer(new CompileAsset(compiler));
-            module.RegisterCompiledAsset(asset, "less");
+            module.RegisterCompiledAsset(asset);
         }
     }
 }
