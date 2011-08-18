@@ -88,7 +88,11 @@ namespace Cassette
             var cache = GetModuleCache<T>();
             if (cache.IsUpToDate(finalResult.LastWriteTimeMax, applicationVersion))
             {
-                return cache.LoadModuleContainer();
+                var loadedModules = cache.LoadModules();
+                var nonPersistentModules = finalResult.Modules.Where(m => m.IsPersistent == false);
+                return new ModuleContainer<T>(
+                    loadedModules.Concat(nonPersistentModules)
+                );
             }
             else
             {

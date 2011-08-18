@@ -40,6 +40,11 @@ namespace Cassette.Scripts
 
         static readonly string fallbackHtml = "<script type=\"text/javascript\">{0} && document.write(unescape('%3Cscript src=\"{1}\"%3E%3C/script%3E'))</script>";
 
+        public override bool IsPersistent
+        {
+            get { return false; }
+        }
+
         public override void Process(ICassetteApplication application)
         {
             // No processing required.

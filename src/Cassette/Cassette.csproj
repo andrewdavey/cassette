@@ -76,7 +76,6 @@
     <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="EmptyCassetteConfiguration.cs" />
-    <None Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
     <Compile Include="ICassetteApplication.cs" />

@@ -39,18 +39,13 @@ namespace Cassette
             }
         }
 
-        public IModuleContainer<T> LoadModuleContainer()
+        public IEnumerable<T> LoadModules()
         {
             var containerElement = LoadContainerElement(fileSystem);
             var moduleElements = containerElement.Elements("module");
             var modules = CreateModules(moduleElements, fileSystem);
 
-            return new ModuleContainer<T>(modules);
-        }
-
-        IModuleContainer<T> EmptyContainer()
-        {
-            return new ModuleContainer<T>(Enumerable.Empty<T>());
+            return modules;
         }
 
         XElement LoadContainerElement(IFileSystem fileSystem)
@@ -118,7 +113,7 @@ namespace Cassette
             fileSystem.DeleteAll();
             SaveContainerXml(moduleContainer);
             SaveVersion(version);
-            foreach (var module in moduleContainer.Modules)
+            foreach (var module in moduleContainer.Modules.Where(m => m.IsPersistent))
             {
                 SaveModule(module, moduleContainer);
             }
@@ -129,7 +124,9 @@ namespace Cassette
             var createManifestVisitor = new CreateManifestVisitor(m => GetModuleReferences(m, moduleContainer));
             var xml = new XDocument(
                 new XElement("container",
-                    moduleContainer.Modules.Select(createManifestVisitor.CreateManifest)
+                    from module in moduleContainer.Modules
+                    where module.IsPersistent
+                    select createManifestVisitor.CreateManifest(module)
                 )
             );
             using (var fileStream = fileSystem.OpenFile(containerFilename, FileMode.Create, FileAccess.Write))

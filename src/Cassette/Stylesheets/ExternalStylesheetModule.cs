@@ -12,6 +12,11 @@ namespace Cassette.Stylesheets
         }
 
         readonly string url;
+
+        public override bool IsPersistent
+        {
+            get { return false; }
+        }
         
         public override void Process(ICassetteApplication application)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -6,7 +7,7 @@ namespace Cassette
         where T : Module
     {
         bool IsUpToDate(DateTime dateTime, string version);
-        IModuleContainer<T> LoadModuleContainer();
+        IEnumerable<T> LoadModules();
         void SaveModuleContainer(IModuleContainer<T> moduleContainer, string version);
     }
 }
