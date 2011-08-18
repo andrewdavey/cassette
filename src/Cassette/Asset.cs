@@ -8,22 +8,24 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(string relativeFilename, Module parentModule, IFileSystem fileSystem)
+        public Asset(string moduleRelativeFilename, Module parentModule, IFileSystem moduleDirectory)
         {
-            if (Path.IsPathRooted(relativeFilename))
+            if (Path.IsPathRooted(moduleRelativeFilename))
             {
                 throw new ArgumentException("Asset filename must be relative to it's module directory.");
             }
 
-            this.relativeFilename = relativeFilename;
+            this.moduleRelativeFilename = moduleRelativeFilename;
+            this.filename = Path.GetFileName(moduleRelativeFilename);
             this.parentModule = parentModule;
-            this.fileSystem = fileSystem;
-            this.hash = HashFileContents(relativeFilename);
+            this.directory = moduleDirectory.NavigateTo(Path.GetDirectoryName(moduleRelativeFilename), false);
+            this.hash = HashFileContents(filename);
         }
 
-        readonly string relativeFilename;
+        readonly string filename;
+        readonly string moduleRelativeFilename;
         readonly Module parentModule;
-        readonly IFileSystem fileSystem;
+        readonly IFileSystem directory;
         readonly byte[] hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
@@ -40,7 +42,7 @@ namespace Cassette
 
             var absoluteFilename = PathUtilities.NormalizePath(Path.Combine(
                 parentModule.Directory,
-                Path.GetDirectoryName(this.relativeFilename),
+                Path.GetDirectoryName(this.moduleRelativeFilename),
                 filename
             ));
             AssetReferenceType type;
@@ -70,7 +72,7 @@ namespace Cassette
 
         public override string SourceFilename
         {
-            get { return relativeFilename; }
+            get { return moduleRelativeFilename; }
         }
 
         public override byte[] Hash
@@ -80,7 +82,7 @@ namespace Cassette
 
         public override IFileSystem Directory
         {
-            get { return fileSystem; }
+            get { return directory; }
         }
 
         public override IEnumerable<AssetReference> References
@@ -91,7 +93,7 @@ namespace Cassette
         byte[] HashFileContents(string filename)
         {
             using (var sha1 = SHA1.Create())
-            using (var fileStream = fileSystem.OpenFile(filename, FileMode.Open, FileAccess.Read))
+            using (var fileStream = directory.OpenFile(filename, FileMode.Open, FileAccess.Read))
             {
                 return sha1.ComputeHash(fileStream);
             }
@@ -104,7 +106,7 @@ namespace Cassette
 
         protected override Stream OpenStreamCore()
         {
-            return fileSystem.OpenFile(relativeFilename, FileMode.Open, FileAccess.Read);
+            return directory.OpenFile(filename, FileMode.Open, FileAccess.Read);
         }
 
         public override void Accept(IAssetVisitor visitor)

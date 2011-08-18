@@ -174,6 +174,21 @@ namespace Cassette
             visitor.Verify(v => v.Visit(asset));
         }
 
+        [Fact]
+        public void WhenSourceFileContainsSomeDirectories_ThenDirectoryNavigatesToDirectoryContainingTheFile()
+        {
+            var root = new Mock<IFileSystem>();
+            var expectedDirectory = new Mock<IFileSystem>();
+            root.Setup(fs => fs.NavigateTo("test\\bar", false))
+              .Returns(expectedDirectory.Object);
+            expectedDirectory.Setup(r => r.OpenFile(It.IsAny<string>(), FileMode.Open, FileAccess.Read))
+                             .Returns(() => new MemoryStream());
+            
+            var asset = new Asset("test\\bar\\foo.js", new Module(""), root.Object);
+
+            asset.Directory.ShouldBeSameAs(expectedDirectory.Object);
+        }
+
         void IDisposable.Dispose()
         {
             root.Delete(true);
