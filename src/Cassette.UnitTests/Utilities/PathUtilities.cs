@@ -7,51 +7,27 @@ namespace Cassette.Utilities
     public class PathUtilities_NormalizePath_Tests
     {
         [Fact]
-        public void Simple_paths_are_joined()
+        public void NormalizedPathRemainsNormalized()
         {
-            PathUtilities.NormalizePath("c:\\", "test").ShouldEqual("c:\\test");
+            PathUtilities.NormalizePath("foo\\bar").ShouldEqual("foo\\bar");
         }
 
         [Fact]
-        public void Current_directory_trailing_slash_is_optional()
+        public void DoubleDotNavigatesUpToParent()
         {
-            PathUtilities.NormalizePath("c:", "test").ShouldEqual("c:\\test");
+            PathUtilities.NormalizePath("foo\\..\\test").ShouldEqual("test");
         }
 
         [Fact]
-        public void Double_dot_joins_parent_directory()
+        public void SingleDotIsIgnored()
         {
-            PathUtilities.NormalizePath("c:\\test", "..\\foo.js").ShouldEqual("c:\\foo.js");
-        }
-
-        [Fact]
-        public void Single_dot_ignored()
-        {
-            PathUtilities.NormalizePath("c:\\test", ".\\foo.js").ShouldEqual("c:\\test\\foo.js");
+            PathUtilities.NormalizePath("test\\.\\foo.js").ShouldEqual("test\\foo.js");
         }
 
         [Fact]
         public void Forward_slashes_allowed()
         {
-            PathUtilities.NormalizePath("c:\\test", "module/foo").ShouldEqual("c:\\test\\module\\foo");
-        }
-
-        [Fact]
-        public void Leading_slash_on_relative_path_not_allowed()
-        {
-            Assert.Throws<ArgumentException>(delegate
-            {
-                PathUtilities.NormalizePath("c:\\test", "\\foo");
-            });
-        }
-
-        [Fact]
-        public void Non_absolute_current_directory_throws_ArgumentException()
-        {
-            Assert.Throws<ArgumentException>(delegate
-            {
-                PathUtilities.NormalizePath("test", "test");
-            });
+            PathUtilities.NormalizePath("test/module/foo").ShouldEqual("test\\module\\foo");
         }
 
         [Fact]
@@ -59,7 +35,7 @@ namespace Cassette.Utilities
         {
             Assert.Throws<ArgumentException>(delegate
             {
-                PathUtilities.NormalizePath("c:\\test", "..\\..\\foo");
+                PathUtilities.NormalizePath("test\\..\\..\\foo");
             });
         }
     }
