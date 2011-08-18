@@ -15,7 +15,7 @@ namespace Cassette.Stylesheets
         }
 
         protected static readonly string linkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
-        static readonly string linkHtmlWithMedia = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
+        protected static readonly string linkHtmlWithMedia = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
 
         public string Media { get; set; }
         public IModuleProcessor<StylesheetModule> Processor { get; set; }

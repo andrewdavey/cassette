@@ -25,7 +25,14 @@ namespace Cassette.Stylesheets
 
         public override IHtmlString Render(ICassetteApplication application)
         {
-            return new HtmlString(string.Format(linkHtml, url));
+            if (string.IsNullOrEmpty(Media))
+            {
+                return new HtmlString(string.Format(linkHtml, url));
+            }
+            else
+            {
+                return new HtmlString(string.Format(linkHtmlWithMedia, url, Media));
+            }
         }
 
         ModuleSourceResult<StylesheetModule> IModuleSource<StylesheetModule>.GetModules(IModuleFactory<StylesheetModule> moduleFactory, ICassetteApplication application)

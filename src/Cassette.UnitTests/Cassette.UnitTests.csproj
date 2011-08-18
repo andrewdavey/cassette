@@ -72,8 +72,10 @@
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\Customize.cs" />
     <Compile Include="Scripts\ExternalScriptModule.cs" />
+    <Compile Include="Stylesheets\CompileLess.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetModule.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptBlock.cs" />
