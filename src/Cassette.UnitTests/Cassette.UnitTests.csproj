@@ -61,6 +61,8 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="DirectorySource.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
+    <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptBlocks.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="ModuleSourceTestBase.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
+    <Compile Include="UI\Assets.cs" />
     <Compile Include="UI\PageAssetManager.cs" />
     <Compile Include="Persistence\CreateManifestVisitor.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
