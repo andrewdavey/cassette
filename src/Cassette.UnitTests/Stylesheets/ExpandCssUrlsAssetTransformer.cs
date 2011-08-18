@@ -82,6 +82,16 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void GivenCssWithDataUri_WhenTransformed_ThenUrlNotChanged()
+        {
+            var css = "p { background-image: url(data:image/png;base64,abc); }";
+            var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(data:image/png;base64,abc); }");
+        }
+
+        [Fact]
         public void GivenCssWithUrlToDifferentDirectory_WhenTransformed_ThenUrlIsExpandedToRootedPath()
         {
             var css = "p { background-image: url(images/test.png); }";

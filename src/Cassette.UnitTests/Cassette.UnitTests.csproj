@@ -79,6 +79,7 @@
     <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="Stylesheets\CompileLess.cs" />
+    <Compile Include="Stylesheets\DataUriGenerator.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetModule.cs" />

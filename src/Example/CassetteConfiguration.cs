@@ -32,7 +32,8 @@ namespace Example
 
             modules.Customize<StylesheetModule>(m => m.Processor = new StylesheetPipeline
             {
-                CompileLess = true
+                CompileLess = true,
+                ConvertImageUrlsToDataUris = true
             });
         }
     }

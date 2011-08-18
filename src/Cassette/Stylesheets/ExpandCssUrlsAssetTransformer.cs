@@ -25,7 +25,7 @@ namespace Cassette.Stylesheets
             RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
         static readonly Regex absoluteUrlRegex = new Regex(
-            @"^(https?:|//)"
+            @"^(https?:|data:|//)"
         );
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)

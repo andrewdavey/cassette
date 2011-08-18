@@ -56,8 +56,10 @@
     <Compile Include="IModuleSource.cs" />
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="ModuleConfiguration.cs" />
+    <Compile Include="ModuleProcessing\AddTransformerToAssets.cs" />
     <Compile Include="ModuleSourceResult.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
+    <Compile Include="Stylesheets\DataUriGenerator.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />
     <Compile Include="Scripts\ScriptPipeline.cs" />

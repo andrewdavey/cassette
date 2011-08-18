@@ -12,6 +12,7 @@ namespace Cassette.Stylesheets
 
         public IAssetTransformer StylesheetMinifier { get; set; }
         public bool CompileLess { get; set; }
+        public bool ConvertImageUrlsToDataUris { get; set; }
 
         public void Process(StylesheetModule module, ICassetteApplication application)
         {
@@ -28,6 +29,10 @@ namespace Cassette.Stylesheets
             {
                 yield return new ParseLessReferences();
                 yield return new CompileLess(new LessCompiler());
+            }
+            if (ConvertImageUrlsToDataUris)
+            {
+                yield return new AddTransformerToAssets(new DataUriGenerator());
             }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
