@@ -74,6 +74,7 @@
     <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
+    <Compile Include="Stylesheets\ParseCssReferences.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptBlock.cs" />
     <Compile Include="UI\PageAssetManager.cs" />
