@@ -2,6 +2,7 @@
 using Moq;
 using Should;
 using Xunit;
+using Cassette.ModuleProcessing;
 
 namespace Cassette.Stylesheets
 {
@@ -77,6 +78,27 @@ namespace Cassette.Stylesheets
                 "<link href=\"/url1\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>" + Environment.NewLine +
                 "<link href=\"/url2\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>"
             );
+        }
+    }
+
+    public class StylesheetModule_Process_Tests
+    {
+        [Fact]
+        public void ProcessorDefaultsToStylesheetPipeline()
+        {
+            new StylesheetModule("").Processor.ShouldBeType<StylesheetPipeline>();
+        }
+
+        [Fact]
+        public void ProcessCallsProcessor()
+        {
+            var module = new StylesheetModule("");
+            var processor = new Mock<IModuleProcessor<StylesheetModule>>();
+            module.Processor = processor.Object;
+            
+            module.Process(Mock.Of<ICassetteApplication>());
+
+            processor.Verify(p => p.Process(module, It.IsAny<ICassetteApplication>()));
         }
     }
 }

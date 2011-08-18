@@ -20,6 +20,19 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void WhenProcessCssReferenceWithoutTrailingSemicolon_ThenAssetAddReferenceIsCalled()
+        {
+            var module = new StylesheetModule("");
+            var css = "/* @reference \"test.css\" */";
+            var asset = AddCssAsset(module, css);
+
+            var processor = new ParseCssReferences();
+            processor.Process(module, Mock.Of<ICassetteApplication>());
+
+            asset.Verify(a => a.AddReference("test.css", -1));
+        }
+
+        [Fact]
         public void WhenProcessSimpleCssReferenceWithSingleQuotes_ThenAssetAddReferenceIsCalled()
         {
             var module = new StylesheetModule("");

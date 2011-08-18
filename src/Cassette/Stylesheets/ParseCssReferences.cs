@@ -18,7 +18,7 @@ namespace Cassette.Stylesheets
             RegexOptions.Singleline
         );
         static readonly Regex referenceRegex = new Regex(
-            @"@reference \s+ (?<quote>[""']) (?<path>.*?) \<quote> \s* ;",
+            @"@reference \s+ (?<quote>[""']) (?<path>.*?) \<quote> \s* ;?",
             RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
 
