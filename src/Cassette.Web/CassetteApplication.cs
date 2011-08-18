@@ -11,7 +11,7 @@ namespace Cassette.Web
     public class CassetteApplication : Cassette.CassetteApplicationBase
     {
         public CassetteApplication(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator)
-            : base(config, sourceFileSystem, cacheFileSystem, isOutputOptmized, version)
+            : base(config, sourceFileSystem, cacheFileSystem, urlGenerator, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;
         }
@@ -24,11 +24,6 @@ namespace Cassette.Web
         public override string CreateAbsoluteUrl(string path)
         {
             return VirtualPathUtility.ToAbsolute("~/" + path);
-        }
-
-        public override string CreateAssetUrl(Module module, IAsset asset)
-        {
-            return urlGenerator.CreateAssetUrl(module, asset);
         }
 
         public override string CreateModuleUrl(Module module)
@@ -70,22 +65,35 @@ namespace Cassette.Web
 
         public void InstallRoutes(RouteCollection routes)
         {
-            // TODO: Only install module routes if output is optimized?
-
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            InstallModuleRoute<ScriptModule>(routes);
-            InstallModuleRoute<StylesheetModule>(routes);
-            InstallModuleRoute<HtmlTemplateModule>(routes);
-            
-            routes.Insert(0, new Route("_assets/compile/{*path}", new CompileRouteHandler(this))); //coffee, less, etc
+            if (IsOutputOptimized)
+            {
+                InstallModuleRoute<ScriptModule>(routes);
+                InstallModuleRoute<StylesheetModule>(routes);
+                InstallModuleRoute<HtmlTemplateModule>(routes);
+            }
+            else
+            {
+                InstallAssetRoute(routes);
+            }
         }
 
         void InstallModuleRoute<T>(RouteCollection routes)
             where T : Module
         {
+            // Insert Cassette's routes at the start of the table, 
+            // to avoid conflicts with the application's own routes.
             var url = urlGenerator.ModuleUrlPattern<T>();
             var handler = new ModuleRouteHandler<T>(GetModuleContainer<T>());
+            routes.Insert(0, new Route(url, handler));
+        }
+
+        void InstallAssetRoute(RouteCollection routes)
+        {
+            // Used to return compiled coffeescript, less, etc.
+            // Insert Cassette's routes at the start of the table, 
+            // to avoid conflicts with the application's own routes.
+            var url = urlGenerator.GetAssetRouteUrl();
+            var handler = new AssetRouteHandler(this);
             routes.Insert(0, new Route(url, handler));
         }
 

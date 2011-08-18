@@ -31,7 +31,7 @@ namespace Cassette.Web
         [Fact]
         public void UrlStartsWithApplicationVirtualDirectory()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/");
         }
@@ -39,7 +39,7 @@ namespace Cassette.Web
         [Fact]
         public void AppendsSlashToVirtualDirectoryWhenMissingFromEnd()
         {
-            var app = new UrlGenerator("/myapp", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/myapp");
             var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/myapp/");
         }
@@ -47,7 +47,7 @@ namespace Cassette.Web
         [Fact]
         public void Inserts_assetsPrefix()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/_assets/");
         }
@@ -55,7 +55,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsLowercasedPluralisedScriptModuleTypeName()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/_assets/scripts/");
         }
@@ -63,7 +63,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsLowercasedPluralisedStylesheetModuleTypeName()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.CreateModuleUrl(StubStylesheetModule("test"));
             url.ShouldStartWith("/_assets/stylesheets/");
         }
@@ -71,7 +71,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsModuleDirectory()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.CreateModuleUrl(StubScriptModule("test"));
             url.ShouldStartWith("/_assets/scripts/test");
         }
@@ -79,7 +79,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsModuleDirectoryWithBackSlashesConvertedToForwardSlashes()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.CreateModuleUrl(StubScriptModule("test\\foo\\bar"));
             url.ShouldStartWith("/_assets/scripts/test/foo/bar");
         }
@@ -87,7 +87,7 @@ namespace Cassette.Web
         [Fact]
         public void AppendsModuleHashHexString()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.CreateModuleUrl(StubScriptModule("test\\foo\\bar"));
             url.ShouldEqual("/_assets/scripts/test/foo/bar_010203");
         }
@@ -101,7 +101,7 @@ namespace Cassette.Web
             var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
@@ -114,7 +114,7 @@ namespace Cassette.Web
             var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            var app = new UrlGenerator("/myapp", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/myapp");
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
@@ -127,7 +127,7 @@ namespace Cassette.Web
             var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            var app = new UrlGenerator("/myapp", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/myapp");
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
@@ -140,7 +140,7 @@ namespace Cassette.Web
             var module = new Module("test\\foo\\bar");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            var app = new UrlGenerator("/myapp", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/myapp");
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
@@ -153,7 +153,7 @@ namespace Cassette.Web
             var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
@@ -166,7 +166,7 @@ namespace Cassette.Web
             var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("sub\\asset.js");
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
@@ -180,7 +180,7 @@ namespace Cassette.Web
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("sub\\asset.js");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
 
             var url = app.CreateAssetUrl(module, asset.Object);
 
@@ -188,17 +188,17 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void WhenAssetThatRequiresCompilation_ThenUrlIsToCompiler()
+        public void CreateAssetCompileUrlReturnsCompileUrl()
         {
             var module = new Module("test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
-            var app = new UrlGenerator("/", new[] { "coffee" });
+            var app = new UrlGenerator("/");
 
-            var url = app.CreateAssetUrl(module, asset.Object);
+            var url = app.CreateAssetCompileUrl(module, asset.Object);
 
-            url.ShouldEqual("/_assets/compile/test/asset.coffee?01020f10");
+            url.ShouldEqual("/_assets/get/test/asset.coffee?01020f10");
         }
     }
 
@@ -207,7 +207,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsConventionalScriptModuleName()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.ModuleUrlPattern<ScriptModule>();
             url.ShouldEqual("_assets/scripts/{*path}");
         }
@@ -215,7 +215,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsConventionalStylesheetModuleName()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.ModuleUrlPattern<StylesheetModule>();
             url.ShouldEqual("_assets/stylesheets/{*path}");
         }
@@ -223,7 +223,7 @@ namespace Cassette.Web
         [Fact]
         public void InsertsConventionalHtmlTemplateModuleName()
         {
-            var app = new UrlGenerator("/", Enumerable.Empty<string>());
+            var app = new UrlGenerator("/");
             var url = app.ModuleUrlPattern<HtmlTemplateModule>();
             url.ShouldEqual("_assets/htmltemplates/{*path}");
         }

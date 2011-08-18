@@ -6,10 +6,10 @@ namespace Cassette
     {
         IFileSystem RootDirectory { get; }
         bool IsOutputOptimized { get; }
+        IUrlGenerator UrlGenerator { get; }
 
         IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
         string CreateModuleUrl(Module module);
-        string CreateAssetUrl(Module module, IAsset asset);
         string CreateAbsoluteUrl(string path);
     }
 }

@@ -36,7 +36,9 @@ namespace Cassette.Scripts
             {
                 var scripts = string.Join(Environment.NewLine, 
                     from asset in Assets
-                    let url = application.CreateAssetUrl(this, asset)
+                    let url = IsCompiledAsset(asset)
+                        ? application.UrlGenerator.CreateAssetCompileUrl(this, asset)
+                        : application.UrlGenerator.CreateAssetUrl(this, asset)
                     select string.Format(scriptHtml, url)
                 );
                 return new HtmlString(scripts);

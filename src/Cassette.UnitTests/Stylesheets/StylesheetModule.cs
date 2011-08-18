@@ -10,6 +10,8 @@ namespace Cassette.Stylesheets
         public StylesheetModule_Render_Tests()
         {
             application = new Mock<ICassetteApplication>();
+            var urlGenerator = new Mock<IUrlGenerator>();
+            application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);
             module = new StylesheetModule("test");
             asset1 = Mock.Of<IAsset>();
             asset2 = Mock.Of<IAsset>();
@@ -17,8 +19,8 @@ namespace Cassette.Stylesheets
             module.Assets.Add(asset2);
 
             application.Setup(a => a.CreateModuleUrl(module)).Returns("/url");
-            application.Setup(a => a.CreateAssetUrl(module, asset1)).Returns("/url1");
-            application.Setup(a => a.CreateAssetUrl(module, asset2)).Returns("/url2");
+            urlGenerator.Setup(g => g.CreateAssetUrl(module, asset1)).Returns("/url1");
+            urlGenerator.Setup(g => g.CreateAssetUrl(module, asset2)).Returns("/url2");
         }
 
         readonly Mock<ICassetteApplication> application;

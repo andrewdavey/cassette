@@ -93,7 +93,7 @@ namespace Cassette.Web
                 ShouldOptimizeOutput(),
                 GetConfigurationVersion(configuration, HttpRuntime.AppDomainAppVirtualPath),
                 // TODO: remove the hard coded compileable asset array.
-                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath, new[] { "coffee", "less" })
+                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath)
             );
         }
 

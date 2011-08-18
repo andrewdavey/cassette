@@ -44,7 +44,9 @@ namespace Cassette.Stylesheets
                 var hasMedia = string.IsNullOrEmpty(Media);
                 var scripts = string.Join(Environment.NewLine,
                     from asset in Assets
-                    let url = application.CreateAssetUrl(this, asset)
+                    let url = IsCompiledAsset(asset)
+                        ? application.UrlGenerator.CreateAssetCompileUrl(this, asset)
+                        : application.UrlGenerator.CreateAssetUrl(this, asset)
                     select hasMedia ? string.Format(linkHtml, url) 
                                     : string.Format(linkHtmlWithMedia, url, Media)
                 );

@@ -38,7 +38,7 @@ namespace Cassette.IntegrationTests
                 new IsolatedStorageFileSystem(storage),
                 isOutputOptmized: true,
                 version: Guid.NewGuid().ToString(), // unique version
-                urlGenerator: new UrlGenerator("/", new[] { "coffee", "less" })
+                urlGenerator: new UrlGenerator("/")
             );
         }
 

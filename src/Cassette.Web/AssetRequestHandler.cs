@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Web;
 using System.Web.Routing;
 
 namespace Cassette.Web
 {
-    public class CompileRequestHandler : IHttpHandler
+    public class AssetRequestHandler : IHttpHandler
     {
-        public CompileRequestHandler(RequestContext requestContext, Func<string, Module> getModuleForPath)
+        public AssetRequestHandler(RequestContext requestContext, Func<string, Module> getModuleForPath)
         {
             this.requestContext = requestContext;
             this.getModuleForPath = getModuleForPath;
@@ -32,6 +30,11 @@ namespace Cassette.Web
                 NotFound(response);
                 return;
             }
+            // Asset path must be relative to the Module. So remove the module's path from the start.
+            if (module.Directory.Length > 0)
+            {
+                path = path.Substring(module.Directory.Length + 1); // +1 to also remove the slash.
+            }
             var asset = module.FindAssetByPath(path);
             if (asset == null)
             {
@@ -39,6 +42,11 @@ namespace Cassette.Web
                 return;
             }
 
+            SendAsset(response, module, asset);
+        }
+
+        void SendAsset(HttpResponseBase response, Module module, IAsset asset)
+        {
             response.ContentType = module.ContentType;
             using (var stream = asset.OpenStream())
             {

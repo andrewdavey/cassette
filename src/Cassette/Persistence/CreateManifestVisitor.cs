@@ -26,9 +26,16 @@ namespace Cassette.Persistence
         {
             moduleElement = new XElement("module",
                 new XAttribute("directory", module.Directory),
-                new XAttribute("hash", module.Assets[0].Hash.ToHexString()),
+                new XAttribute("hash", ModuleHash(module)),
                 ReferenceElements(module)
             );
+        }
+
+        string ModuleHash(Module module)
+        {
+            return module.Assets.Count == 0
+                ? ""
+                : module.Assets[0].Hash.ToHexString();
         }
 
         IEnumerable<XElement> ReferenceElements(Module module)

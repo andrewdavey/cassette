@@ -11,10 +11,11 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        public CassetteApplicationBase(ICassetteConfiguration configuration, IFileSystem rootDirectory, IFileSystem cacheDirectory, bool isOutputOptimized, string version)
+        public CassetteApplicationBase(ICassetteConfiguration configuration, IFileSystem rootDirectory, IFileSystem cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
         {
             this.rootDirectory = rootDirectory;
             this.isOutputOptimized = isOutputOptimized;
+            this.urlGenerator = urlGenerator;
             this.moduleFactories = CreateModuleFactories();
             this.moduleContainers = CreateModuleContainers(
                 configuration,
@@ -26,6 +27,7 @@ namespace Cassette
 
         readonly bool isOutputOptimized;
         readonly IFileSystem rootDirectory;
+        readonly IUrlGenerator urlGenerator;
         readonly Dictionary<Type, ISearchableModuleContainer<Module>> moduleContainers;
         readonly Dictionary<Type, object> moduleFactories;
 
@@ -37,6 +39,11 @@ namespace Cassette
         public IFileSystem RootDirectory
         {
             get { return rootDirectory; }
+        }
+
+        public IUrlGenerator UrlGenerator
+        {
+            get { return urlGenerator; }
         }
 
         public IReferenceBuilder<T> CreateReferenceBuilder<T>()
@@ -71,7 +78,6 @@ namespace Cassette
 
         public abstract string CreateAbsoluteUrl(string path);
         public abstract string CreateModuleUrl(Module module);
-        public abstract string CreateAssetUrl(Module module, IAsset asset);
         public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
 
 

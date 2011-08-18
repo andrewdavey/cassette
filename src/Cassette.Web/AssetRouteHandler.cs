@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Cassette.Web
 {
-    public class CompileRouteHandler : IRouteHandler
+    public class AssetRouteHandler : IRouteHandler
     {
-        public CompileRouteHandler(CassetteApplication application)
+        public AssetRouteHandler(CassetteApplication application)
         {
             this.application = application;
         }
@@ -15,7 +15,7 @@ namespace Cassette.Web
 
         public IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
-            return new CompileRequestHandler(
+            return new AssetRequestHandler(
                 requestContext,
                 application.FindModuleContainingPath
             );

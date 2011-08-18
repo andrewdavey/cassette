@@ -16,6 +16,7 @@ namespace Cassette
         readonly string directory;
         IList<IAsset> assets = new List<IAsset>();
         HashSet<Module> references = new HashSet<Module>();
+        Dictionary<IAsset, string> compiledAssets = new Dictionary<IAsset, string>();
 
         public string Directory
         {
@@ -75,6 +76,16 @@ namespace Cassette
         public virtual IHtmlString Render(ICassetteApplication application)
         {
             return new HtmlString("");
+        }
+
+        public void RegisterCompiledAsset(IAsset asset, string fileExtension)
+        {
+            compiledAssets.Add(asset, fileExtension);
+        }
+
+        protected bool IsCompiledAsset(IAsset asset)
+        {
+            return compiledAssets.ContainsKey(asset);
         }
 
         public void Dispose()
