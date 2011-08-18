@@ -21,5 +21,11 @@ namespace Cassette.Scripts
             var module = factory.CreateModule("test");
             module.Directory.ShouldEqual("test");
         }
+
+        [Fact]
+        public void CreateExternalModuleReturnsExternalScriptModule()
+        {
+            new ScriptModuleFactory().CreateExternalModule("http://test.com/api.js").ShouldBeType<ExternalScriptModule>();
+        }
     }
 }

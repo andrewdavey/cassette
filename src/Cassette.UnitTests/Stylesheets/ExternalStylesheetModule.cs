@@ -12,30 +12,30 @@ namespace Cassette.Stylesheets
         [Fact]
         public void IsPersistentReturnsFalse()
         {
-            new ExternalStylesheetModule("http://test.com/asset.js").IsPersistent.ShouldBeFalse();
+            new ExternalStylesheetModule("http://test.com/asset.css").IsPersistent.ShouldBeFalse();
         }
 
         [Fact]
         public void RenderReturnsHtmlLinkElementWithUrlAsHref()
         {
-            var module = new ExternalStylesheetModule("http://test.com/asset.js");
+            var module = new ExternalStylesheetModule("http://test.com/asset.css");
             var html = module.Render(Mock.Of<ICassetteApplication>());
-            html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.js\" type=\"text/css\" rel=\"stylesheet\"/>");
+            html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.css\" type=\"text/css\" rel=\"stylesheet\"/>");
         }
 
         [Fact]
         public void GivenMediaNotEmpty_RenderReturnsHtmlLinkElementWithMediaAttribute()
         {
-            var module = new ExternalStylesheetModule("http://test.com/asset.js");
+            var module = new ExternalStylesheetModule("http://test.com/asset.css");
             module.Media = "print";
             var html = module.Render(Mock.Of<ICassetteApplication>());
-            html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.js\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>");
+            html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.css\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>");
         }
 
         [Fact]
         public void ProcessDoesNothing()
         {
-            var module = new ExternalStylesheetModule("http://test.com/asset.js");
+            var module = new ExternalStylesheetModule("http://test.com/asset.css");
             var processor = new Mock<IModuleProcessor<StylesheetModule>>();
             module.Processor = processor.Object;
             module.Process(Mock.Of<ICassetteApplication>());
@@ -46,7 +46,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CanActAsAModuleSourceOfItself()
         {
-            var module = new ExternalStylesheetModule("http://test.com/asset.js");
+            var module = new ExternalStylesheetModule("http://test.com/asset.css");
             var result = (module as IModuleSource<StylesheetModule>).GetModules(Mock.Of<IModuleFactory<StylesheetModule>>(), Mock.Of<ICassetteApplication>());
             
             result.LastWriteTimeMax.ShouldEqual(DateTime.MinValue);
