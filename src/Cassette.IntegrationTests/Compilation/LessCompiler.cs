@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using Cassette.Stylesheets;
 using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.Stylesheets
+namespace Cassette
 {
     public class LessCompiler_Compile
     {

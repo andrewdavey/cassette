@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CassetteApplication.cs" />
+    <Compile Include="Compilation\CoffeeScriptCompiler.cs" />
+    <Compile Include="Compilation\LessCompiler.cs" />
     <Compile Include="IsolatedStorageFileSystem.cs" />
     <Compile Include="StreamExtensions.cs" />
     <None Include="ModuleCache.cs" />

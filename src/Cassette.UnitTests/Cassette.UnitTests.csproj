@@ -61,7 +61,6 @@
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="ModuleSourceTestBase.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
-    <Compile Include="Scripts\CoffeeScriptCompiler.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <None Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplateModule.cs" />
@@ -82,7 +81,6 @@
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
-    <Compile Include="Stylesheets\LessCompiler.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="ModuleProcessing\Pipeline.cs" />

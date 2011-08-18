@@ -1,8 +1,9 @@
-﻿using Should;
-using Xunit;
+﻿using Cassette.Scripts;
 using Moq;
+using Should;
+using Xunit;
 
-namespace Cassette.Scripts
+namespace Cassette
 {
     public class CoffeeScriptCompiler_tests
     {
