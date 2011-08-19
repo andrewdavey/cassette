@@ -44,7 +44,7 @@ namespace Cassette
 
         public DateTime GetLastWriteTimeUtc(string filename)
         {
-            return File.GetLastWriteTimeUtc(filename);
+            return File.GetLastWriteTimeUtc(GetAbsolutePath(filename));
         }
 
         public string GetAbsolutePath(string filename)

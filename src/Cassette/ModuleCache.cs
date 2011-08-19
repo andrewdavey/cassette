@@ -27,8 +27,9 @@ namespace Cassette
             if (!fileSystem.FileExists(containerFilename)) return false;
             if (!fileSystem.FileExists(versionFilename)) return false;
             var lastWriteTime = fileSystem.GetLastWriteTimeUtc(containerFilename);
-            return lastWriteTime >= dateTime 
-                && IsSameVersion(version);
+            return lastWriteTime >= dateTime
+                && IsSameVersion(version)
+                && NoFilesMissing();
         }
 
         bool IsSameVersion(string version)
@@ -37,6 +38,20 @@ namespace Cassette
             {
                 return reader.ReadLine() == version;
             }
+        }
+
+        bool NoFilesMissing()
+        {
+            var containerElement = LoadContainerElement(fileSystem);
+            return Enumerable.All(
+                from module in containerElement.Elements("module")
+                from asset in module.Elements("asset")
+                select fileSystem.FileExists(Path.Combine(
+                    module.Attribute("directory").Value,
+                    asset.Attribute("filename").Value
+                )),
+                exist => exist
+            );
         }
 
         public IEnumerable<T> LoadModules()

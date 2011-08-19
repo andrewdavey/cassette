@@ -16,6 +16,13 @@ namespace Cassette
         {
             fileSystem = new Mock<IFileSystem>();
             cache = new ModuleCache<Module>(fileSystem.Object, Mock.Of<IModuleFactory<Module>>());
+
+            // Stub the container XML file content.
+            fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Open, FileAccess.Read))
+                      .Returns(() => @"<?xml version=""1.0""?>
+<container>
+    <module directory="""" hash=""""/>
+</container>".AsStream());
         }
 
         readonly ModuleCache<Module> cache;
@@ -87,6 +94,30 @@ namespace Cassette
                       .Returns(new DateTime(2000, 1, 1));
 
             cache.IsUpToDate(new DateTime(2000, 1, 1), "2.0.0.0").ShouldEqual(false);
+        }
+
+        [Fact]
+        public void GivenPreviouslyUsedAssetNoLongerExists_ThenIsUpToDateReturnsFalse()
+        {
+            var root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(root);
+            try
+            {
+                File.WriteAllText(Path.Combine(root, "version"), "1.0");
+                File.WriteAllText(Path.Combine(root, "container.xml"), 
+                    @"<?xml version=""1.0""?>
+<container>
+    <module directory="""" hash="""">
+        <asset filename=""test.js""/>
+    </module>
+</container>");
+                var cache = new ModuleCache<Module>(new FileSystem(root), Mock.Of<IModuleFactory<Module>>());
+                cache.IsUpToDate(DateTime.UtcNow.AddDays(-1), "1.0").ShouldBeFalse();
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
         }
     }
 
