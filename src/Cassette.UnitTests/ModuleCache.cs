@@ -14,11 +14,12 @@ namespace Cassette
     {
         public ModuleCache_IsUpToDate_Tests()
         {
-            fileSystem = new Mock<IFileSystem>();
-            cache = new ModuleCache<Module>(fileSystem.Object, Mock.Of<IModuleFactory<Module>>());
+            sourceFileSystem = new Mock<IFileSystem>();
+            cacheFileSystem = new Mock<IFileSystem>();
+            cache = new ModuleCache<Module>(cacheFileSystem.Object, Mock.Of<IModuleFactory<Module>>());
 
             // Stub the container XML file content.
-            fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Open, FileAccess.Read))
+            cacheFileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Open, FileAccess.Read))
                       .Returns(() => @"<?xml version=""1.0""?>
 <container>
     <module directory="""" hash=""""/>
@@ -26,97 +27,101 @@ namespace Cassette
         }
 
         readonly ModuleCache<Module> cache;
-        readonly Mock<IFileSystem> fileSystem;
+        readonly Mock<IFileSystem> cacheFileSystem;
+        readonly Mock<IFileSystem> sourceFileSystem;
 
         [Fact]
         public void WhenContainerFileDoesNotExist_ThenIsUpToDateReturnsFalse()
         {
-            fileSystem.Setup(fs => fs.FileExists("container.xml"))
+            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
                       .Returns(false);
-            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0").ShouldEqual(false);
+            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(false);
         }
 
         [Fact]
         public void WhenContainerFileIsOlder_ThenIsUpToDateReturnsFalse()
         {
-            fileSystem.Setup(fs => fs.FileExists("container.xml"))
+            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
+            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
                       .Returns(new DateTime(2000, 1, 1));
-            fileSystem.Setup(fs => fs.FileExists("version"))
+            cacheFileSystem.Setup(fs => fs.FileExists("version"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
                       .Returns("1.0.0.0".AsStream());
 
-            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0").ShouldEqual(false);
+            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(false);
         }
 
         [Fact]
         public void WhenContainerFileIsNewer_ThenIsUpToDateReturnsTrue()
         {
-            fileSystem.Setup(fs => fs.FileExists("container.xml"))
+            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
+            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
                       .Returns(new DateTime(2000, 1, 2));
-            fileSystem.Setup(fs => fs.FileExists("version"))
+            cacheFileSystem.Setup(fs => fs.FileExists("version"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
                       .Returns("1.0.0.0".AsStream());
 
-            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0").ShouldEqual(true);
+            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(true);
         }
 
         [Fact]
         public void WhenContainerFileIsSameAge_ThenIsUpToDateReturnsTrue()
         {
-            fileSystem.Setup(fs => fs.FileExists("container.xml"))
+            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
+            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
                       .Returns(new DateTime(2000, 1, 1));
-            fileSystem.Setup(fs => fs.FileExists("version"))
+            cacheFileSystem.Setup(fs => fs.FileExists("version"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
                       .Returns("1.0.0.0".AsStream());
 
-            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0").ShouldEqual(true);
+            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(true);
         }
 
         [Fact]
         public void WhenVersionNotEqual_ThenIsUpToDateReturnsFalse()
         {
-            fileSystem.Setup(fs => fs.FileExists("version"))
+            cacheFileSystem.Setup(fs => fs.FileExists("version"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
+            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
                       .Returns("1.0.0.0".AsStream());
-            fileSystem.Setup(fs => fs.FileExists("container.xml"))
+            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
                       .Returns(true);
-            fileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
+            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
                       .Returns(new DateTime(2000, 1, 1));
 
-            cache.IsUpToDate(new DateTime(2000, 1, 1), "2.0.0.0").ShouldEqual(false);
+            cache.IsUpToDate(new DateTime(2000, 1, 1), "2.0.0.0", sourceFileSystem.Object).ShouldEqual(false);
         }
 
         [Fact]
         public void GivenPreviouslyUsedAssetNoLongerExists_ThenIsUpToDateReturnsFalse()
         {
-            var root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(root);
+            var cacheDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(cacheDirectory);
+            var sourceDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(sourceDirectory);
             try
             {
-                File.WriteAllText(Path.Combine(root, "version"), "1.0");
-                File.WriteAllText(Path.Combine(root, "container.xml"), 
+                File.WriteAllText(Path.Combine(cacheDirectory, "version"), "1.0");
+                File.WriteAllText(Path.Combine(cacheDirectory, "container.xml"), 
                     @"<?xml version=""1.0""?>
 <container>
     <module directory="""" hash="""">
         <asset filename=""test.js""/>
     </module>
 </container>");
-                var cache = new ModuleCache<Module>(new FileSystem(root), Mock.Of<IModuleFactory<Module>>());
-                cache.IsUpToDate(DateTime.UtcNow.AddDays(-1), "1.0").ShouldBeFalse();
+                var cache = new ModuleCache<Module>(new FileSystem(cacheDirectory), Mock.Of<IModuleFactory<Module>>());
+                cache.IsUpToDate(DateTime.UtcNow.AddDays(-1), "1.0", new FileSystem(sourceDirectory)).ShouldBeFalse();
             }
             finally
             {
-                Directory.Delete(root, true);
+                Directory.Delete(cacheDirectory, true);
+                Directory.Delete(sourceDirectory);
             }
         }
     }

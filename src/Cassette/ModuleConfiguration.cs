@@ -86,7 +86,7 @@ namespace Cassette
         IModuleContainer<T> GetOrCreateCachedModuleContainer<T>(ModuleSourceResult<T> finalResult, string applicationVersion) where T : Module
         {
             var cache = GetModuleCache<T>();
-            if (cache.IsUpToDate(finalResult.LastWriteTimeMax, applicationVersion))
+            if (cache.IsUpToDate(finalResult.LastWriteTimeMax, applicationVersion, application.RootDirectory))
             {
                 var loadedModules = cache.LoadModules();
                 var nonPersistentModules = finalResult.Modules.Where(m => m.IsPersistent == false);

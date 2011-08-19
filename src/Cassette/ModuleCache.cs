@@ -11,42 +11,42 @@ namespace Cassette
     public class ModuleCache<T> : IModuleCache<T>
         where T : Module
     {
-        public ModuleCache(IFileSystem fileSystem, IModuleFactory<T> moduleFactory)
+        public ModuleCache(IFileSystem cacheFileSystem, IModuleFactory<T> moduleFactory)
         {
-            this.fileSystem = fileSystem;
+            this.cacheFileSystem = cacheFileSystem;
             this.moduleFactory = moduleFactory;
         }
 
-        readonly IFileSystem fileSystem;
+        readonly IFileSystem cacheFileSystem;
         readonly IModuleFactory<T> moduleFactory;
         readonly string containerFilename = "container.xml";
         readonly string versionFilename = "version";
 
-        public bool IsUpToDate(DateTime dateTime, string version)
+        public bool IsUpToDate(DateTime dateTime, string version, IFileSystem sourceFileSystem)
         {
-            if (!fileSystem.FileExists(containerFilename)) return false;
-            if (!fileSystem.FileExists(versionFilename)) return false;
-            var lastWriteTime = fileSystem.GetLastWriteTimeUtc(containerFilename);
+            if (!cacheFileSystem.FileExists(containerFilename)) return false;
+            if (!cacheFileSystem.FileExists(versionFilename)) return false;
+            var lastWriteTime = cacheFileSystem.GetLastWriteTimeUtc(containerFilename);
             return lastWriteTime >= dateTime
                 && IsSameVersion(version)
-                && NoFilesMissing();
+                && NoFilesMissing(sourceFileSystem);
         }
 
         bool IsSameVersion(string version)
         {
-            using (var reader = new StreamReader(fileSystem.OpenFile(versionFilename, FileMode.Open, FileAccess.Read)))
+            using (var reader = new StreamReader(cacheFileSystem.OpenFile(versionFilename, FileMode.Open, FileAccess.Read)))
             {
                 return reader.ReadLine() == version;
             }
         }
 
-        bool NoFilesMissing()
+        bool NoFilesMissing(IFileSystem sourceFileSystem)
         {
-            var containerElement = LoadContainerElement(fileSystem);
+            var containerElement = LoadContainerElement(cacheFileSystem);
             return Enumerable.All(
                 from module in containerElement.Elements("module")
                 from asset in module.Elements("asset")
-                select fileSystem.FileExists(Path.Combine(
+                select sourceFileSystem.FileExists(Path.Combine(
                     module.Attribute("directory").Value,
                     asset.Attribute("filename").Value
                 )),
@@ -56,9 +56,9 @@ namespace Cassette
 
         public IEnumerable<T> LoadModules()
         {
-            var containerElement = LoadContainerElement(fileSystem);
+            var containerElement = LoadContainerElement(cacheFileSystem);
             var moduleElements = containerElement.Elements("module");
-            var modules = CreateModules(moduleElements, fileSystem);
+            var modules = CreateModules(moduleElements, cacheFileSystem);
 
             return modules;
         }
@@ -125,7 +125,7 @@ namespace Cassette
 
         public void SaveModuleContainer(IModuleContainer<T> moduleContainer, string version)
         {
-            fileSystem.DeleteAll();
+            cacheFileSystem.DeleteAll();
             SaveContainerXml(moduleContainer);
             SaveVersion(version);
             foreach (var module in moduleContainer.Modules.Where(m => m.IsPersistent))
@@ -144,7 +144,7 @@ namespace Cassette
                     select createManifestVisitor.CreateManifest(module)
                 )
             );
-            using (var fileStream = fileSystem.OpenFile(containerFilename, FileMode.Create, FileAccess.Write))
+            using (var fileStream = cacheFileSystem.OpenFile(containerFilename, FileMode.Create, FileAccess.Write))
             {
                 xml.Save(fileStream);
             }
@@ -152,7 +152,7 @@ namespace Cassette
 
         void SaveVersion(string version)
         {
-            using (var writer = new StreamWriter(fileSystem.OpenFile(versionFilename, FileMode.Create, FileAccess.Write)))
+            using (var writer = new StreamWriter(cacheFileSystem.OpenFile(versionFilename, FileMode.Create, FileAccess.Write)))
             {
                 writer.Write(version);
             }
@@ -174,7 +174,7 @@ namespace Cassette
                 throw new InvalidOperationException("Cannot save a module when assets have not been concatenated into a single asset.");
             }
             var filename = FlattenPathToSingleFilename(module.Directory) + ".module";
-            using (var fileStream = fileSystem.OpenFile(filename, FileMode.Create, FileAccess.Write))
+            using (var fileStream = cacheFileSystem.OpenFile(filename, FileMode.Create, FileAccess.Write))
             {
                 if (module.Assets.Count > 0)
                 {
