@@ -26,10 +26,17 @@ namespace Cassette
         {
             if (!cacheFileSystem.FileExists(containerFilename)) return false;
             if (!cacheFileSystem.FileExists(versionFilename)) return false;
+            
+            if (IsSameVersion(version) == false) return false;
+
             var lastWriteTime = cacheFileSystem.GetLastWriteTimeUtc(containerFilename);
-            return lastWriteTime >= dateTime
-                && IsSameVersion(version)
-                && NoFilesMissing(sourceFileSystem);
+            if (lastWriteTime < dateTime) return false;
+            
+            var containerElement = LoadContainerElement(cacheFileSystem);
+            if (AnyFilesMissing(containerElement, sourceFileSystem)) return false;
+            if (AnyRawFileReferencesChanged(dateTime, containerElement, sourceFileSystem)) return false;
+
+            return true;
         }
 
         bool IsSameVersion(string version)
@@ -40,17 +47,30 @@ namespace Cassette
             }
         }
 
-        bool NoFilesMissing(IFileSystem sourceFileSystem)
+        bool AnyFilesMissing(XElement containerElement, IFileSystem sourceFileSystem)
         {
-            var containerElement = LoadContainerElement(cacheFileSystem);
-            return Enumerable.All(
+            return Enumerable.Any(
                 from module in containerElement.Elements("module")
                 from asset in module.Elements("asset")
-                select sourceFileSystem.FileExists(Path.Combine(
+                let path = Path.Combine(
                     module.Attribute("directory").Value,
                     asset.Attribute("filename").Value
-                )),
-                exist => exist
+                )
+                select sourceFileSystem.FileExists(path),
+
+                exists => !exists
+            );
+        }
+
+        bool AnyRawFileReferencesChanged(DateTime lastWriteTime, XElement containerElement, IFileSystem sourceFileSystem)
+        {
+            return Enumerable.Any(
+                from module in containerElement.Elements("module")
+                from reference in module.Elements("rawFileReference")
+                let filename = reference.Attribute("filename").Value
+                select sourceFileSystem.GetLastWriteTimeUtc(filename) > lastWriteTime,
+
+                changed => changed
             );
         }
 

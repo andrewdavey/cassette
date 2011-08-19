@@ -27,7 +27,8 @@ namespace Cassette.Persistence
             moduleElement = new XElement("module",
                 new XAttribute("directory", module.Directory),
                 new XAttribute("hash", ModuleHash(module)),
-                ReferenceElements(module)
+                ReferenceElements(module),
+                RawFileReferenceElements(module)
             );
         }
 
@@ -43,6 +44,16 @@ namespace Cassette.Persistence
             return from reference in getModuleReferences(module)
                    select new XElement("reference",
                       new XAttribute("path", reference)
+                   );
+        }
+
+        IEnumerable<XElement> RawFileReferenceElements(Module module)
+        {
+            return from asset in module.Assets
+                   from reference in asset.References
+                   where reference.Type == AssetReferenceType.RawFilename
+                   select new XElement("rawFileReference",
+                       new XAttribute("filename", reference.ReferencedPath)
                    );
         }
 

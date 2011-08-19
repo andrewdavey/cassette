@@ -42,5 +42,7 @@ namespace Cassette
         public abstract IEnumerable<AssetReference> References { get; }
 
         public abstract void AddReference(string path, int lineNumber);
+
+        public abstract void AddRawFileReference(string filename);
     }
 }

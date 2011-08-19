@@ -58,6 +58,11 @@ namespace Cassette
             references.Add(new AssetReference(absoluteFilename, this, lineNumber, type));
         }
 
+        public override void AddRawFileReference(string filename)
+        {
+            references.Add(new AssetReference(filename, this, -1, AssetReferenceType.RawFilename));
+        }
+
         void RequireModuleContainsReference(int lineNumber, string filename)
         {
             if (parentModule.ContainsPath(filename)) return;

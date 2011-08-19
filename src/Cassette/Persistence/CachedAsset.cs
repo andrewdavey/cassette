@@ -42,6 +42,11 @@ namespace Cassette.Persistence
             references.Add(new AssetReference(path, this, lineNumber, AssetReferenceType.DifferentModule));
         }
 
+        public void AddRawFileReference(string filename)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddAssetTransformer(IAssetTransformer transformer)
         {
             throw new NotImplementedException();

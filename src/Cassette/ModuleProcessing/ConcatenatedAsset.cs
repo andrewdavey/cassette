@@ -49,7 +49,12 @@ namespace Cassette
 
         public override void AddReference(string path, int lineNumber)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
+        }
+
+        public override void AddRawFileReference(string filename)
+        {
+            throw new NotSupportedException();
         }
 
         protected override Stream OpenStreamCore()

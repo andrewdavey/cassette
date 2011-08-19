@@ -40,6 +40,8 @@ namespace Cassette.Stylesheets
                     var matchedUrlGroup = match.Groups["url"];
                     var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory);
                     ExpandUrl(builder, matchedUrlGroup, relativeFilename);
+
+                    asset.AddRawFileReference(relativeFilename);
                 }
                 return builder.ToString().AsStream();
             };
