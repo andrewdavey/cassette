@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Cassette.ModuleProcessing;
 using Cassette.Utilities;
-using System.Security.Cryptography;
 
 namespace Cassette.Stylesheets
 {
@@ -40,7 +38,8 @@ namespace Cassette.Stylesheets
                 foreach (var match in urlMatches)
                 {
                     var matchedUrlGroup = match.Groups["url"];
-                    ExpandUrl(builder, matchedUrlGroup, currentDirectory);
+                    var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory);
+                    ExpandUrl(builder, matchedUrlGroup, relativeFilename);
                 }
                 return builder.ToString().AsStream();
             };
@@ -72,20 +71,27 @@ namespace Cassette.Stylesheets
                 .OrderByDescending(match => match.Index);
         }
 
-        void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string currentDirectory)
+        void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
+        {
+            var hash = HashFileContents(relativeFilename);
+            var absoluteUrl = application.UrlGenerator.CreateImageUrl(relativeFilename, hash);
+            builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
+            builder.Insert(matchedUrlGroup.Index, absoluteUrl);
+        }
+
+        string HashFileContents(string relativeFilename)
+        {
+            using (var file = application.RootDirectory.OpenFile(relativeFilename, FileMode.Open, FileAccess.Read))
+            {
+                return file.ComputeSHA1Hash().ToHexString();
+            }
+        }
+
+        string GetImageFilename(Group matchedUrlGroup, string currentDirectory)
         {
             var originalUrl = matchedUrlGroup.Value.Trim('"', '\'');
             var relativeUrl = PathUtilities.NormalizePath(Path.Combine(currentDirectory, originalUrl));
-
-            string hash;
-            using (var file = application.RootDirectory.OpenFile(relativeUrl, FileMode.Open, FileAccess.Read))
-            {
-                hash = file.ComputeSHA1Hash().ToHexString();
-            }
-
-            var absoluteUrl = application.UrlGenerator.CreateImageUrl(relativeUrl, hash);
-            builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
-            builder.Insert(matchedUrlGroup.Index, absoluteUrl);
+            return relativeUrl;
         }
     }
 }

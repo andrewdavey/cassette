@@ -2,6 +2,7 @@
 using Moq;
 using Should;
 using Xunit;
+using System.IO;
 
 namespace Cassette.Stylesheets
 {
@@ -11,6 +12,17 @@ namespace Cassette.Stylesheets
         {
             var module = new Module("styles");
             application = new Mock<ICassetteApplication>();
+            var directory = new Mock<IFileSystem>();
+            urlGenerator = new Mock<IUrlGenerator>();
+            application.SetupGet(a => a.RootDirectory)
+                       .Returns(directory.Object);
+            application.SetupGet(a => a.UrlGenerator)
+                       .Returns(urlGenerator.Object);
+            urlGenerator.Setup(u => u.CreateImageUrl(It.IsAny<string>(), It.IsAny<string>()))
+                        .Returns<string, string>((f, h) => "EXPANDED");
+            directory.Setup(d => d.OpenFile(It.IsAny<string>(), FileMode.Open, FileAccess.Read))
+                     .Returns(Stream.Null);
+
             transformer = new ExpandCssUrlsAssetTransformer(module, application.Object);
             asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.css");
@@ -20,45 +32,48 @@ namespace Cassette.Stylesheets
         readonly ExpandCssUrlsAssetTransformer transformer;
         readonly Mock<ICassetteApplication> application;
         readonly Mock<IAsset> asset;
+        readonly Mock<IUrlGenerator> urlGenerator;
 
         [Fact]
-        public void GivenCssWithRelativeUrl_WhenTransformed_ThenUrlIsExpandedToRootedPath()
+        public void GivenCssWithRelativeUrl_WhenTransformed_ThenUrlIsExpanded()
         {
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(/styles/test.png); }");
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateImageUrl("styles\\test.png", It.IsAny<string>()));
         }
 
         [Fact]
-        public void GivenCssWithWhitespaceAroundRelativeUrl_WhenTransformed_ThenUrlIsExpandedToRootedPath()
+        public void GivenCssWithWhitespaceAroundRelativeUrl_WhenTransformed_ThenUrlIsExpanded()
         {
             var css = "p { background-image: url(\n test.png \n); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(\n /styles/test.png \n); }");
+            output.ShouldEqual("p { background-image: url(\n EXPANDED \n); }");
         }
 
         [Fact]
-        public void GivenCssWithDoubleQuotedRelativeUrl_WhenTransformed_ThenUrlIsExpandedToRootedPathWithoutQuotes()
+        public void GivenCssWithDoubleQuotedRelativeUrl_WhenTransformed_ThenUrlIsExpandedWithoutQuotes()
         {
             var css = "p { background-image: url(\"test.png\"); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(/styles/test.png); }");
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
         }
 
         [Fact]
-        public void GivenCssWithSingleQuotedRelativeUrl_WhenTransformed_ThenUrlIsExpandedToRootedPathWithoutQuotes()
+        public void GivenCssWithSingleQuotedRelativeUrl_WhenTransformed_ThenUrlIsExpandedWithoutQuotes()
         {
             var css = "p { background-image: url('test.png'); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(/styles/test.png); }");
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
         }
 
         [Fact]
@@ -92,34 +107,40 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenCssWithUrlToDifferentDirectory_WhenTransformed_ThenUrlIsExpandedToRootedPath()
+        public void GivenCssWithUrlToDifferentDirectory_WhenTransformed_ThenUrlIsExpanded()
         {
             var css = "p { background-image: url(images/test.png); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(/styles/images/test.png); }");
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateImageUrl("styles\\images\\test.png", It.IsAny<string>()));
         }
 
         [Fact]
-        public void GivenCssWithUrlToParentDirectory_WhenTransformed_ThenUrlIsExpandedToRootedPath()
+        public void GivenCssWithUrlToParentDirectory_WhenTransformed_ThenUrlIsExpanded()
         {
             var css = "p { background-image: url(../images/test.png); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(/images/test.png); }");
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateImageUrl("images\\test.png", It.IsAny<string>()));
         }
 
         [Fact]
-        public void GivenAssetInSubDirectoryAndCssWithUrlToParentDirectory_WhenTransformed_ThenUrlIsExpandedToRootedPath()
+        public void GivenAssetInSubDirectoryAndCssWithUrlToParentDirectory_WhenTransformed_ThenUrlIsExpanded()
         {
             asset.SetupGet(a => a.SourceFilename).Returns("sub/asset.css");
             var css = "p { background-image: url(../images/test.png); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(/styles/images/test.png); }");
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateImageUrl("styles\\images\\test.png", It.IsAny<string>()));
         }
 
         void GivenVirtualDirectory(string path)

@@ -65,8 +65,9 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void CssUrlsAreExpanded()
+        public void GivenApplicationIsOutputOptimized_ThenCssUrlsAreExpanded()
         {
+            application.SetupGet(a => a.IsOutputOptimized).Returns(true);
             new StylesheetPipeline().Process(module, application.Object);
             asset2.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(
                 transformer => transformer is ExpandCssUrlsAssetTransformer)
