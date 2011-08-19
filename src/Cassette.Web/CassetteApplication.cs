@@ -8,22 +8,35 @@ using Cassette.UI;
 
 namespace Cassette.Web
 {
-    public class CassetteApplication : Cassette.CassetteApplicationBase
+    public class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator)
+        public CassetteApplication(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
             : base(config, sourceFileSystem, cacheFileSystem, urlGenerator, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;
+            this.getCurrentHttpContext = getCurrentHttpContext;
+            InstallRoutes(routes);
         }
 
         readonly UrlGenerator urlGenerator;
+        readonly Func<HttpContextBase> getCurrentHttpContext;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
 
-        public Func<HttpContextBase> GetHttpContext = GetDefaultHttpContext;
+        public void OnBeginRequest(HttpContextBase httpContext)
+        {
+            var tracker = new PlaceholderTracker();
+            httpContext.Items[PlaceholderTrackerKey] = tracker;
+
+            var response = httpContext.Response;
+            response.Filter = new PlaceholderReplacingResponseFilter(
+                response,
+                tracker
+            );
+        }
 
         public override IPageAssetManager<T> GetPageAssetManager<T>()
         {
-            var items = GetHttpContext().Items;
+            var items = getCurrentHttpContext().Items;
             var key = typeof(IPageAssetManager<T>).FullName;
             if (items.Contains(key))
             {
@@ -41,19 +54,7 @@ namespace Cassette.Web
             }
         }
 
-        public void OnBeginRequest(HttpContextBase httpContext)
-        {
-            var tracker = new PlaceholderTracker();
-            httpContext.Items[PlaceholderTrackerKey] = tracker;
-
-            var response = httpContext.Response;
-            response.Filter = new PlaceholderReplacingResponseFilter(
-                response,
-                tracker
-            );
-        }
-
-        public void InstallRoutes(RouteCollection routes)
+        void InstallRoutes(RouteCollection routes)
         {
             if (IsOutputOptimized)
             {
@@ -92,11 +93,6 @@ namespace Cassette.Web
             var url = urlGenerator.GetAssetRouteUrl();
             var handler = new AssetRouteHandler(this);
             routes.Insert(0, new Route(url, handler));
-        }
-
-        static HttpContextBase GetDefaultHttpContext()
-        {
-            return new HttpContextWrapper(HttpContext.Current);
         }
     }
 }

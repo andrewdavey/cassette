@@ -38,7 +38,9 @@ namespace Cassette.IntegrationTests
                 new IsolatedStorageFileSystem(storage),
                 isOutputOptmized: true,
                 version: Guid.NewGuid().ToString(), // unique version
-                urlGenerator: new UrlGenerator("/")
+                urlGenerator: new UrlGenerator("/"),
+                routes: routes,
+                getCurrentHttpContext: () => Mock.Of<HttpContextBase>()
             );
         }
 
@@ -52,8 +54,7 @@ namespace Cassette.IntegrationTests
                     Exclude = new Regex(@"\.vsdoc\.js$")
                 });
             });
-            application.InstallRoutes(routes);
-
+            
             using (var http = new HttpTestHarness(routes))
             {
                 http.Get("~/_assets/scripts/scripts/module-a");
@@ -71,7 +72,6 @@ namespace Cassette.IntegrationTests
                     Exclude = new Regex(@"\.vsdoc\.js$")
                 });
             });
-            application.InstallRoutes(routes);
 
             using (var http = new HttpTestHarness(routes))
             {

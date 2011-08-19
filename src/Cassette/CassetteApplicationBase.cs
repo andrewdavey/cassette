@@ -46,7 +46,7 @@ namespace Cassette
             get { return urlGenerator; }
         }
 
-        public IReferenceBuilder<T> CreateReferenceBuilder<T>()
+        protected IReferenceBuilder<T> CreateReferenceBuilder<T>()
             where T : Module
         {
             return new ReferenceBuilder<T>(GetModuleContainer<T>(), (IModuleFactory<T>)moduleFactories[typeof(T)]);

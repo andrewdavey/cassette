@@ -45,7 +45,6 @@ namespace Cassette.Web
 
             var configuration = CreateConfiguration();
             CassetteApplication = CreateCassetteApplication(configuration, storage);
-            CassetteApplication.InstallRoutes(RouteTable.Routes);
             
             Assets.Application = CassetteApplication;
         }
@@ -92,7 +91,9 @@ namespace Cassette.Web
                 new IsolatedStorageFileSystem(storage),
                 ShouldOptimizeOutput(),
                 GetConfigurationVersion(configuration, HttpRuntime.AppDomainAppVirtualPath),
-                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath)
+                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
+                RouteTable.Routes,
+                GetCurrentHttpContext
             );
         }
 
@@ -110,6 +111,11 @@ namespace Cassette.Web
                 .Version
                 .ToString();
             return assemblyVersion + "|" + virtualDirectory;
+        }
+
+        static HttpContextBase GetCurrentHttpContext()
+        {
+            return new HttpContextWrapper(HttpContext.Current);
         }
     }
 }
