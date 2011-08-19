@@ -180,11 +180,13 @@ namespace Cassette
 
         IEnumerable<string> GetModuleReferences(Module module, IModuleContainer<T> moduleContainer)
         {
-            return from asset in module.Assets
-                   from reference in asset.References
-                   where reference.Type == AssetReferenceType.DifferentModule
-                   let referencedModule = moduleContainer.FindModuleContainingPath(reference.ReferencedPath)
-                   select referencedModule.Directory;
+            return (
+                from asset in module.Assets
+                from reference in asset.References
+                where reference.Type == AssetReferenceType.DifferentModule
+                let referencedModule = moduleContainer.FindModuleContainingPath(reference.ReferencedPath)
+                select referencedModule.Directory
+            ).Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
         void SaveModule(T module, IModuleContainer<T> moduleContainer)

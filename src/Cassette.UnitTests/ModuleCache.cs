@@ -7,6 +7,7 @@ using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
+using System.Text.RegularExpressions;
 
 namespace Cassette
 {
@@ -287,6 +288,55 @@ namespace Cassette
             {
                 File.Delete(temp);
             }
+        }
+
+        [Fact]
+        public void DuplicateModuleReferencesAreOnlyWrittenOnce()
+        {
+            var moduleA = new Module("module-a");
+            var moduleB = new Module("module-b");
+
+            var assetA = new Mock<IAsset>();
+            assetA.SetupGet(a => a.References).Returns(new[] {
+                new AssetReference("module-b\\1.js", assetA.Object, 0, AssetReferenceType.DifferentModule),
+                new AssetReference("module-b\\2.js", assetA.Object, 0, AssetReferenceType.DifferentModule)
+            });
+            assetA.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            moduleA.Assets.Add(assetA.Object);
+
+            var assetB1 = StubAsset("1.js");
+            var assetB2 = StubAsset("2.js");
+            var assetB = new ConcatenatedAsset(new[] { assetB1.Object, assetB2.Object }, new MemoryStream());
+            moduleB.Assets.Add(assetB);
+
+            var temp = Path.GetTempFileName();
+            try
+            {
+                fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write))
+                            .Returns(() => File.OpenWrite(temp));
+
+                var container = new ModuleContainer<Module>(new[] { moduleA, moduleB });
+                cache.SaveModuleContainer(container, "1.0.0.0");
+
+                var xml = File.ReadAllText(temp);
+                Regex.Matches(xml, Regex.Escape("<reference path=\"module-b\" />")).Count.ShouldEqual(1);
+            }
+            finally
+            {
+                File.Delete(temp);
+            }
+        }
+
+        Mock<IAsset> StubAsset(string filename)
+        {
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
+                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.SetupGet(a => a.SourceFilename)
+                 .Returns(filename);
+            asset.Setup(c => c.OpenStream())
+                 .Returns(Stream.Null);
+            return asset;
         }
     }
 }
