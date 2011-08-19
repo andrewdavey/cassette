@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Cassette.HtmlTemplates;
+﻿using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
@@ -10,24 +9,6 @@ namespace Cassette.Web
 {
     public class UrlGenerator_CreateModuleUrl_Tests
     {
-        ScriptModule StubScriptModule(string path)
-        {
-            var module = new ScriptModule(path);
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            return module;
-        }
-
-        StylesheetModule StubStylesheetModule(string path)
-        {
-            var module = new StylesheetModule(path);
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            return module;
-        }
-
         [Fact]
         public void UrlStartsWithApplicationVirtualDirectory()
         {
@@ -91,6 +72,25 @@ namespace Cassette.Web
             var url = app.CreateModuleUrl(StubScriptModule("test\\foo\\bar"));
             url.ShouldEqual("/_assets/scripts/test/foo/bar_010203");
         }
+
+        ScriptModule StubScriptModule(string path)
+        {
+            var module = new ScriptModule(path);
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
+            module.Assets.Add(asset.Object);
+            return module;
+        }
+
+        StylesheetModule StubStylesheetModule(string path)
+        {
+            var module = new StylesheetModule(path);
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
+            module.Assets.Add(asset.Object);
+            return module;
+        }
+
     }
 
     public class UrlGenerator_CreateAssetUrl_Tests
@@ -221,13 +221,13 @@ namespace Cassette.Web
         }
     }
 
-    public class UrlGenerator_ModuleUrlPattern_Tests
+    public class UrlGenerator_GetModuleRouteUrl_Tests
     {
         [Fact]
         public void InsertsConventionalScriptModuleName()
         {
             var app = new UrlGenerator("/");
-            var url = app.ModuleUrlPattern<ScriptModule>();
+            var url = app.GetModuleRouteUrl<ScriptModule>();
             url.ShouldEqual("_assets/scripts/{*path}");
         }
 
@@ -235,7 +235,7 @@ namespace Cassette.Web
         public void InsertsConventionalStylesheetModuleName()
         {
             var app = new UrlGenerator("/");
-            var url = app.ModuleUrlPattern<StylesheetModule>();
+            var url = app.GetModuleRouteUrl<StylesheetModule>();
             url.ShouldEqual("_assets/stylesheets/{*path}");
         }
 
@@ -243,7 +243,7 @@ namespace Cassette.Web
         public void InsertsConventionalHtmlTemplateModuleName()
         {
             var app = new UrlGenerator("/");
-            var url = app.ModuleUrlPattern<HtmlTemplateModule>();
+            var url = app.GetModuleRouteUrl<HtmlTemplateModule>();
             url.ShouldEqual("_assets/htmltemplates/{*path}");
         }
     }

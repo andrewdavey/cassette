@@ -6,32 +6,43 @@ namespace Cassette.Web
     public class UrlGenerator : IUrlGenerator
     {
         public UrlGenerator(string virtualDirectory)
+            : this(virtualDirectory, "_assets")
         {
-            this.urlRootPath = virtualDirectory.TrimEnd('/');
         }
 
-        readonly string urlRootPath;
-        readonly string assetsPrefix = "_assets";
+        public UrlGenerator(string virtualDirectory, string assetUrlPrefix)
+        {
+            this.virtualDirectory = virtualDirectory.TrimEnd('/');
+            this.assetUrlPrefix = assetUrlPrefix;
+        }
 
-        public string ModuleUrlPattern<T>()
+        readonly string virtualDirectory;
+        readonly string assetUrlPrefix;
+
+        public string GetModuleRouteUrl<T>()
         {
             return string.Format(
                 "{0}/{1}/{{*path}}",
-                assetsPrefix,
+                assetUrlPrefix,
                 ConventionalModulePathName(typeof(T))
             );
         }
 
         public string GetAssetRouteUrl()
         {
-            return assetsPrefix + "/get/{*path}";
+            return assetUrlPrefix + "/get/{*path}";
+        }
+
+        public string GetImageRouteUrl()
+        {
+            return assetUrlPrefix + "/images/{*path}";
         }
 
         public string CreateModuleUrl(Module module)
         {
             return string.Format("{0}/{1}/{2}/{3}_{4}",
-                urlRootPath,
-                assetsPrefix,
+                virtualDirectory,
+                assetUrlPrefix,
                 ConventionalModulePathName(module.GetType()),
                 ConvertToForwardSlashes(module.Directory),
                 module.Assets[0].Hash.ToHexString()
@@ -42,7 +53,7 @@ namespace Cassette.Web
         {
             return string.Format(
                 "{0}/{1}/{2}?{3}",
-                urlRootPath,
+                virtualDirectory,
                 ConvertToForwardSlashes(module.Directory),
                 ConvertToForwardSlashes(asset.SourceFilename),
                 asset.Hash.ToHexString()
@@ -53,8 +64,8 @@ namespace Cassette.Web
         {
             return string.Format(
                 "{0}/{1}/get/{2}/{3}?{4}",
-                urlRootPath,
-                assetsPrefix,
+                virtualDirectory,
+                assetUrlPrefix,
                 ConvertToForwardSlashes(module.Directory),
                 ConvertToForwardSlashes(asset.SourceFilename),
                 asset.Hash.ToHexString()
@@ -68,8 +79,8 @@ namespace Cassette.Web
             var extension = filename.Substring(dotIndex + 1);
 
             return string.Format("{0}/{1}/images/{2}_{3}.{4}",
-                urlRootPath,
-                assetsPrefix,
+                virtualDirectory,
+                assetUrlPrefix,
                 ConvertToForwardSlashes(name),
                 hash,
                 extension

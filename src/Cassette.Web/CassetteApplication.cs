@@ -61,7 +61,7 @@ namespace Cassette.Web
                 InstallModuleRoute<StylesheetModule>(routes);
                 InstallModuleRoute<HtmlTemplateModule>(routes);
 
-                routes.Insert(0, new Route("_assets/images/{*path}", new ImageRouteHandler()));
+                InstallImageRoute(routes);
             }
             else
             {
@@ -74,9 +74,14 @@ namespace Cassette.Web
         {
             // Insert Cassette's routes at the start of the table, 
             // to avoid conflicts with the application's own routes.
-            var url = urlGenerator.ModuleUrlPattern<T>();
+            var url = urlGenerator.GetModuleRouteUrl<T>();
             var handler = new ModuleRouteHandler<T>(GetModuleContainer<T>());
             routes.Insert(0, new Route(url, handler));
+        }
+
+        void InstallImageRoute(RouteCollection routes)
+        {
+            routes.Insert(0, new Route(urlGenerator.GetImageRouteUrl(), new ImageRouteHandler()));
         }
 
         void InstallAssetRoute(RouteCollection routes)
