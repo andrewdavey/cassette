@@ -125,6 +125,34 @@ namespace Cassette
                 Directory.Delete(sourceDirectory);
             }
         }
+
+        [Fact]
+        public void GivenRawFileChangedSinceCacheCreated_ThenIsUpToDateReturnsFalse()
+        {
+            var cacheDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(cacheDirectory);
+            var sourceDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(sourceDirectory);
+            try
+            {
+                File.WriteAllText(Path.Combine(cacheDirectory, "version"), "1.0");
+                File.WriteAllText(Path.Combine(cacheDirectory, "container.xml"),
+                    @"<?xml version=""1.0""?>
+<container>
+    <module directory="""" hash="""">
+        <rawFileReference filename=""test.png""/>
+    </module>
+</container>");
+                File.WriteAllText(Path.Combine(sourceDirectory, "test.png"), "");
+                var cache = new ModuleCache<Module>(new FileSystem(cacheDirectory), Mock.Of<IModuleFactory<Module>>());
+                cache.IsUpToDate(DateTime.UtcNow.AddDays(-1), "1.0", new FileSystem(sourceDirectory)).ShouldBeFalse();
+            }
+            finally
+            {
+                Directory.Delete(cacheDirectory, true);
+                Directory.Delete(sourceDirectory, true);
+            }
+        }
     }
 
     public class ModuleCache_LoadModuleContainer_Tests
@@ -313,7 +341,7 @@ namespace Cassette
             try
             {
                 fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write))
-                            .Returns(() => File.OpenWrite(temp));
+                          .Returns(() => File.OpenWrite(temp));
 
                 var container = new ModuleContainer<Module>(new[] { moduleA, moduleB });
                 cache.SaveModuleContainer(container, "1.0.0.0");
