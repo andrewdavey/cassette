@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Cassette.ModuleProcessing;
 using Cassette.Utilities;
+using System.Security.Cryptography;
 
 namespace Cassette.Stylesheets
 {
@@ -75,7 +76,14 @@ namespace Cassette.Stylesheets
         {
             var originalUrl = matchedUrlGroup.Value.Trim('"', '\'');
             var relativeUrl = PathUtilities.NormalizePath(Path.Combine(currentDirectory, originalUrl));
-            var absoluteUrl = application.CreateAbsoluteUrl(relativeUrl);
+
+            string hash;
+            using (var file = application.RootDirectory.OpenFile(relativeUrl, FileMode.Open, FileAccess.Read))
+            {
+                hash = file.ComputeSHA1Hash().ToHexString();
+            }
+
+            var absoluteUrl = application.UrlGenerator.CreateImageUrl(relativeUrl, hash);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
         }

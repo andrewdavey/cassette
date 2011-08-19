@@ -208,16 +208,16 @@ namespace Cassette.Web
         public void CreateImageUrlPrependsHandlerRoute()
         {
             var generator = new UrlGenerator("/");
-            var url = generator.CreateImageUrl("test.png");
-            url.ShouldEqual("/_assets/images/test.png");
+            var url = generator.CreateImageUrl("test.png", "hash");
+            url.ShouldEqual("/_assets/images/test_hash.png");
         }
 
         [Fact]
         public void ConvertsToForwardSlashes()
         {
             var generator = new UrlGenerator("/");
-            var url = generator.CreateImageUrl("test\\foo.png");
-            url.ShouldEqual("/_assets/images/test/foo.png");
+            var url = generator.CreateImageUrl("test\\foo.png", "hash");
+            url.ShouldEqual("/_assets/images/test/foo_hash.png");
         }
     }
 

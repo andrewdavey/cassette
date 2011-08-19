@@ -61,12 +61,18 @@ namespace Cassette.Web
             );
         }
 
-        public string CreateImageUrl(string filename)
+        public string CreateImageUrl(string filename, string hash)
         {
-            return string.Format("{0}/{1}/images/{2}",
+            var dotIndex = filename.LastIndexOf('.');
+            var name = filename.Substring(0, dotIndex);
+            var extension = filename.Substring(dotIndex + 1);
+
+            return string.Format("{0}/{1}/images/{2}_{3}.{4}",
                 urlRootPath,
                 assetsPrefix,
-                ConvertToForwardSlashes(filename)
+                ConvertToForwardSlashes(name),
+                hash,
+                extension
             );
         }
 
