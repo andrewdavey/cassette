@@ -70,6 +70,8 @@ namespace Cassette.Web
                 InstallModuleRoute<ScriptModule>(routes);
                 InstallModuleRoute<StylesheetModule>(routes);
                 InstallModuleRoute<HtmlTemplateModule>(routes);
+
+                routes.Insert(0, new Route("_assets/images/{*path}", new ImageRouteHandler()));
             }
             else
             {

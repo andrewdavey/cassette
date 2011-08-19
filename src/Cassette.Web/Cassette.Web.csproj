@@ -51,6 +51,8 @@
     <Compile Include="CassetteHttpModule.cs" />
     <Compile Include="AssetRequestHandler.cs" />
     <Compile Include="AssetRouteHandler.cs" />
+    <Compile Include="ImageRequestHandler.cs" />
+    <Compile Include="ImageRouteHandler.cs" />
     <Compile Include="ModuleRequestHandler.cs" />
     <Compile Include="ModuleRouteHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
