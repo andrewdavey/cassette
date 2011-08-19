@@ -9,17 +9,25 @@ namespace Cassette.Stylesheets
 {
     public class DataUriGenerator_Tests
     {
+        public DataUriGenerator_Tests()
+        {
+            directory = new Mock<IFileSystem>();
+            transformer = new DataUriGenerator();
+        }
+
+        Mock<IFileSystem> directory;
+        DataUriGenerator transformer;
+
         [Fact]
         public void TransformReplacesImageUrlWithDataUri()
         {
             var asset = new Mock<IAsset>();
-            var directory = new Mock<IFileSystem>();
+            asset.SetupGet(a => a.SourceFilename).Returns("asset.css");
             asset.SetupGet(a => a.Directory)
                  .Returns(directory.Object);
             directory.Setup(d => d.OpenFile("test.png", FileMode.Open, FileAccess.Read))
                      .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
 
-            var transformer = new DataUriGenerator();
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
 
@@ -33,19 +41,34 @@ namespace Cassette.Stylesheets
         public void FileWithJpgExtensionCreatesImageJpegDataUri()
         {
             var asset = new Mock<IAsset>();
-            var directory = new Mock<IFileSystem>();
+            asset.SetupGet(a => a.SourceFilename).Returns("asset.css");
             asset.SetupGet(a => a.Directory)
                  .Returns(directory.Object);
             directory.Setup(d => d.OpenFile("test.jpg", FileMode.Open, FileAccess.Read))
                      .Returns(() => new MemoryStream());
 
-            var transformer = new DataUriGenerator();
             var css = "p { background-image: url(test.jpg); }";
             var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
 
             getResult().ReadToEnd().ShouldContain("image/jpeg");
         }
-        
+
+        [Fact]
+        public void AssetAddRawFileReferenceIsCalled()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFilename).Returns("asset.css");
+            asset.SetupGet(a => a.Directory)
+                 .Returns(directory.Object);
+            directory.Setup(d => d.OpenFile("test.png", FileMode.Open, FileAccess.Read))
+                     .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
+
+            var css = "p { background-image: url(test.png); }";
+            var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
+            getResult();
+
+            asset.Verify(a => a.AddRawFileReference("test.png"));
+        }
 
         // TODO: Add legacy IE support for data-uris.
         // This is hard because we need to add a css star-hack property after the property with the image.
@@ -57,15 +80,12 @@ namespace Cassette.Stylesheets
         //public void GivenLegacyIESupport_ThenTransformConvertsCssToMultipartDocument()
         //{
         //    var asset = new Mock<IAsset>();
-        //    var directory = new Mock<IFileSystem>();
         //    asset.SetupGet(a => a.Directory)
         //         .Returns(directory.Object);
         //    directory.Setup(d => d.OpenFile("test.png", FileMode.Open, FileAccess.Read))
         //             .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
 
-        //    var application = new Mock<ICassetteApplication>();
-        //    var transformer = new DataUriGenerator(application.Object);
-        //    //transformer.LegacyIESupport = true;
+        //    transformer.LegacyIESupport = true;
         //    var css = "p { background-image: url(test.png); }";
         //    var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
 

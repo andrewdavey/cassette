@@ -40,27 +40,32 @@ namespace Cassette
             // If filename starts with "/" then Path.Combine will ignore the parentModule.Directory.
             // NormalizePath ignores this starting slash, so we get back a nice application relative path.
 
-            var absoluteFilename = PathUtilities.NormalizePath(Path.Combine(
+            var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
                 parentModule.Directory,
-                Path.GetDirectoryName(this.moduleRelativeFilename),
+                Path.GetDirectoryName(moduleRelativeFilename),
                 filename
             ));
             AssetReferenceType type;
-            if (ModuleCouldContain(absoluteFilename))
+            if (ModuleCouldContain(appRelativeFilename))
             {
-                RequireModuleContainsReference(lineNumber, absoluteFilename);
+                RequireModuleContainsReference(lineNumber, appRelativeFilename);
                 type = AssetReferenceType.SameModule;
             }
             else
             {
                 type = AssetReferenceType.DifferentModule;
             }
-            references.Add(new AssetReference(absoluteFilename, this, lineNumber, type));
+            references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
         }
 
         public override void AddRawFileReference(string filename)
         {
-            references.Add(new AssetReference(filename, this, -1, AssetReferenceType.RawFilename));
+            var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
+                parentModule.Directory,
+                Path.GetDirectoryName(moduleRelativeFilename),
+                filename
+            ));
+            references.Add(new AssetReference(appRelativeFilename, this, -1, AssetReferenceType.RawFilename));
         }
 
         void RequireModuleContainsReference(int lineNumber, string filename)

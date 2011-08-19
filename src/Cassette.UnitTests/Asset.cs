@@ -167,6 +167,15 @@ namespace Cassette
         }
 
         [Fact]
+        public void AddRawFileReferenceNormalizesPathToBeAppRelative()
+        {
+            asset.AddRawFileReference("../test.png");
+
+            var reference = asset.References.First();
+            reference.ReferencedPath.ShouldEqual("test.png");
+        }
+
+        [Fact]
         public void AcceptCallsVisitOnVisitor()
         {
             var visitor = new Mock<IAssetVisitor>();

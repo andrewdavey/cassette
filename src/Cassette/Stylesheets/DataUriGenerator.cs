@@ -29,6 +29,8 @@ namespace Cassette.Stylesheets
                 foreach (var match in matches)
                 {
                     match.ReplaceWithin(output);
+
+                    asset.AddRawFileReference(match.Url);
                 }
                 return output.ToString().AsStream();
             };
@@ -50,6 +52,11 @@ namespace Cassette.Stylesheets
             readonly int length;
             readonly string url;
             readonly string extension;
+
+            public string Url
+            {
+                get { return url; }
+            }
 
             string DataUri
             {
