@@ -21,16 +21,6 @@ namespace Cassette.Web
 
         public Func<HttpContextBase> GetHttpContext = GetDefaultHttpContext;
 
-        public override string CreateAbsoluteUrl(string path)
-        {
-            return VirtualPathUtility.ToAbsolute("~/" + path);
-        }
-
-        public override string CreateModuleUrl(Module module)
-        {
-            return urlGenerator.CreateModuleUrl(module);
-        }
-
         public override IPageAssetManager<T> GetPageAssetManager<T>()
         {
             var items = GetHttpContext().Items;

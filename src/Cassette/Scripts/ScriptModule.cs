@@ -29,7 +29,7 @@ namespace Cassette.Scripts
             {
                 // TODO: Extract rendering into pluggable class to allow customization?
                 // Much like the Processor property allows.
-                var url = application.CreateModuleUrl(this);
+                var url = application.UrlGenerator.CreateModuleUrl(this);
                 return new HtmlString(string.Format(scriptHtml, url));
             }
             else

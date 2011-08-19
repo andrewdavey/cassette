@@ -76,10 +76,7 @@ namespace Cassette
             return null;
         }
 
-        public abstract string CreateAbsoluteUrl(string path);
-        public abstract string CreateModuleUrl(Module module);
         public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
-
 
         Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, bool isOutputOptimized, string version)
         {

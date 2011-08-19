@@ -26,7 +26,6 @@ namespace Cassette.Stylesheets
             transformer = new ExpandCssUrlsAssetTransformer(module, application.Object);
             asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.css");
-            GivenVirtualDirectory("/");
         }
 
         readonly ExpandCssUrlsAssetTransformer transformer;
@@ -141,12 +140,6 @@ namespace Cassette.Stylesheets
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateImageUrl("styles\\images\\test.png", It.IsAny<string>()));
-        }
-
-        void GivenVirtualDirectory(string path)
-        {
-            application.Setup(a => a.CreateAbsoluteUrl(It.IsAny<string>()))
-                       .Returns<string>(s => path + s.Replace('\\', '/'));
         }
     }
 }

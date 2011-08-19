@@ -18,7 +18,7 @@ namespace Cassette.Scripts
             module.Assets.Add(asset1);
             module.Assets.Add(asset2);
 
-            application.Setup(a => a.CreateModuleUrl(module)).Returns("/url");
+            urlGenerator.Setup(g => g.CreateModuleUrl(module)).Returns("/url");
             urlGenerator.Setup(g => g.CreateAssetUrl(module, asset1)).Returns("/url1");
             urlGenerator.Setup(g => g.CreateAssetUrl(module, asset2)).Returns("/url2");
         }

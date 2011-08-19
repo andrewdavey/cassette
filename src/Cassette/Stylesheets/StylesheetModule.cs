@@ -29,7 +29,7 @@ namespace Cassette.Stylesheets
         {
             if (application.IsOutputOptimized)
             {
-                var url = application.CreateModuleUrl(this);
+                var url = application.UrlGenerator.CreateModuleUrl(this);
                 if (string.IsNullOrEmpty(Media))
                 {
                     return new HtmlString(string.Format(linkHtml, url));
