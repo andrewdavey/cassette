@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -65,6 +66,10 @@ namespace Cassette
                 Path.GetDirectoryName(moduleRelativeFilename),
                 filename
             ));
+            
+            var alreadyExists = references.Any(r => r.ReferencedPath.Equals(appRelativeFilename, StringComparison.OrdinalIgnoreCase));
+            if (alreadyExists) return;
+
             references.Add(new AssetReference(appRelativeFilename, this, -1, AssetReferenceType.RawFilename));
         }
 

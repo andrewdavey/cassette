@@ -176,6 +176,24 @@ namespace Cassette
         }
 
         [Fact]
+        public void WhenAddRawReferenceTwiceWithSamePath_TheReferencesHasItOnlyOnce()
+        {
+            asset.AddRawFileReference("test.png");
+            asset.AddRawFileReference("test.png");
+
+            asset.References.Count().ShouldEqual(1);
+        }
+
+        [Fact]
+        public void WhenAddRawReferenceTwiceWithSameEffectivePath_TheReferencesHasItOnlyOnce()
+        {
+            asset.AddRawFileReference("../module/test.png");
+            asset.AddRawFileReference("./test.png");
+
+            asset.References.Count().ShouldEqual(1);
+        }
+
+        [Fact]
         public void AcceptCallsVisitOnVisitor()
         {
             var visitor = new Mock<IAssetVisitor>();
