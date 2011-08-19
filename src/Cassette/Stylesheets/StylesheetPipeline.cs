@@ -34,10 +34,10 @@ namespace Cassette.Stylesheets
             {
                 yield return new AddTransformerToAssets(new DataUriGenerator());
             }
-            yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
             if (application.IsOutputOptimized)
             {
+                yield return new ExpandCssUrls();
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);
             }
