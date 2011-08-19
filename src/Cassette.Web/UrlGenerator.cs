@@ -61,6 +61,15 @@ namespace Cassette.Web
             );
         }
 
+        public string CreateImageUrl(string filename)
+        {
+            return string.Format("{0}/{1}/images/{2}",
+                urlRootPath,
+                assetsPrefix,
+                ConvertToForwardSlashes(filename)
+            );
+        }
+
         string ConventionalModulePathName(Type moduleType)
         {
             var name = moduleType.Name;

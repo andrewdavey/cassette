@@ -202,6 +202,25 @@ namespace Cassette.Web
         }
     }
 
+    public class UrlGenerator_CreateImageUrl_Tests
+    {
+        [Fact]
+        public void CreateImageUrlPrependsHandlerRoute()
+        {
+            var generator = new UrlGenerator("/");
+            var url = generator.CreateImageUrl("test.png");
+            url.ShouldEqual("/_assets/images/test.png");
+        }
+
+        [Fact]
+        public void ConvertsToForwardSlashes()
+        {
+            var generator = new UrlGenerator("/");
+            var url = generator.CreateImageUrl("test\\foo.png");
+            url.ShouldEqual("/_assets/images/test/foo.png");
+        }
+    }
+
     public class UrlGenerator_ModuleUrlPattern_Tests
     {
         [Fact]
