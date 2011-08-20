@@ -96,6 +96,29 @@ namespace Cassette.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to var ko = {};
+        ///var stringTrimRegex = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
+        ///
+        ///ko.utils = {
+        ///    stringTrim: function (string) {
+        ///        return (string || &quot;&quot;).replace(stringTrimRegex, &quot;&quot;);
+        ///    }
+        ///};
+        ///
+        ///ko.jsonExpressionRewriting = (function () {
+        ///    var restoreCapturedTokensRegex = /\[ko_token_(\d+)\]/g;
+        ///    var javaScriptAssignmentTarget = /^[\_$a-z][\_$a-z0-9]*(\[.*?\])*(\.[\_$a-z][\_$a-z0-9]*(\[.*?\])*)*$/i;
+        ///    var javaScriptReservedWords = [&quot;true&quot;, &quot;false&quot;];
+        ///
+        ///    function restoreTokens(string, tokens) { [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string jqueryTmplKnockout {
+            get {
+                return ResourceManager.GetString("jqueryTmplKnockout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to //
         ///// LESS - Leaner CSS v1.1.4
         ///// http://lesscss.org
