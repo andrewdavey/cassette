@@ -11,7 +11,7 @@ namespace Cassette.ModuleProcessing
         {
             // Graph topological sort, based on references between assets.
             var assetsByFilename = module.Assets.ToDictionary(
-                a => Path.Combine(module.Directory, a.SourceFilename),
+                a => Path.Combine(module.Path, a.SourceFilename),
                 StringComparer.OrdinalIgnoreCase
             );
             var graph = new Graph<IAsset>(

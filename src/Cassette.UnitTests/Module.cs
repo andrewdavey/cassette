@@ -11,14 +11,14 @@ namespace Cassette
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingBackSlash()
         {
             var module = new Module("test\\");
-            module.Directory.ShouldEqual("test");
+            module.Path.ShouldEqual("test");
         }
 
         [Fact]
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingForwardSlash()
         {
             var module = new Module("test/");
-            module.Directory.ShouldEqual("test");
+            module.Path.ShouldEqual("test");
         }
 
         [Fact]

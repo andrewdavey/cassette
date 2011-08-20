@@ -18,7 +18,7 @@ namespace Cassette.Scripts
         {
             var factory = new ScriptModuleFactory();
             var module = factory.CreateModule("test");
-            module.Directory.ShouldEqual("test");
+            module.Path.ShouldEqual("test");
         }
 
         [Fact]

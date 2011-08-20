@@ -206,7 +206,7 @@ namespace Cassette
         {
             var modules = cache.LoadModules();
 
-            var moduleA = modules.First(m => m.Directory.EndsWith("module-a"));
+            var moduleA = modules.First(m => m.Path.EndsWith("module-a"));
             moduleA.Assets.Count.ShouldEqual(1);
             moduleA.Assets[0].References.Single().ReferencedPath.ShouldEqual("module-b");
             moduleA.Assets[0].Hash.SequenceEqual(new byte[] { 1, 2, 3 }).ShouldBeTrue();
@@ -214,7 +214,7 @@ namespace Cassette
             moduleA.ContainsPath("module-a\\asset-2.js");
             moduleA.ContainsPath("module-a");
 
-            var moduleB = modules.First(m => m.Directory.EndsWith("module-b"));
+            var moduleB = modules.First(m => m.Path.EndsWith("module-b"));
             moduleB.Assets.Count.ShouldEqual(1);
             moduleB.Assets[0].Hash.SequenceEqual(new byte[] { 0xa, 0xb, 0xc }).ShouldBeTrue();
             moduleB.Assets[0].References.Count().ShouldEqual(0);

@@ -10,7 +10,7 @@ namespace Cassette.HtmlTemplates
         {
             var factory = new HtmlTemplateModuleFactory();
             var module = factory.CreateModule("test");
-            module.Directory.ShouldEqual("test");
+            module.Path.ShouldEqual("test");
         }
     }
 }

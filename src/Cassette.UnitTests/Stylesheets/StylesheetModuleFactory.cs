@@ -10,7 +10,7 @@ namespace Cassette.Stylesheets
         {
             var factory = new StylesheetModuleFactory();
             var module = factory.CreateModule("test");
-            module.Directory.ShouldEqual("test");
+            module.Path.ShouldEqual("test");
         }
 
         [Fact]

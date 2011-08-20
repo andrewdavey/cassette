@@ -42,11 +42,11 @@ namespace Cassette
                 // So the path now starts with "/".
             }
 
-            // If filename starts with "/" then Path.Combine will ignore the parentModule.Directory.
+            // If filename starts with "/" then Path.Combine will ignore the parentModule.Path.
             // NormalizePath ignores this starting slash, so we get back a nice application relative path.
 
             var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
-                parentModule.Directory,
+                parentModule.Path,
                 Path.GetDirectoryName(moduleRelativeFilename),
                 assetRelativeFilename
             ));
@@ -66,7 +66,7 @@ namespace Cassette
         public override void AddRawFileReference(string relativeFilename)
         {
             var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
-                parentModule.Directory,
+                parentModule.Path,
                 Path.GetDirectoryName(moduleRelativeFilename),
                 relativeFilename
             ));
@@ -84,7 +84,7 @@ namespace Cassette
             throw new AssetReferenceException(
                 string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    Path.Combine(parentModule.Directory, SourceFilename), lineNumber, assetRelativeFilename
+                    Path.Combine(parentModule.Path, SourceFilename), lineNumber, assetRelativeFilename
                 )
             );
         }
@@ -120,7 +120,7 @@ namespace Cassette
 
         bool ModuleCouldContain(string path)
         {
-            return path.StartsWith(parentModule.Directory, StringComparison.OrdinalIgnoreCase);
+            return path.StartsWith(parentModule.Path, StringComparison.OrdinalIgnoreCase);
         }
 
         protected override Stream OpenStreamCore()

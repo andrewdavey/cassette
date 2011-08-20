@@ -31,9 +31,9 @@ namespace Cassette.Web
                 return;
             }
             // Asset path must be relative to the Module. So remove the module's path from the start.
-            if (module.Directory.Length > 0)
+            if (module.Path.Length > 0)
             {
-                path = path.Substring(module.Directory.Length + 1); // +1 to also remove the slash.
+                path = path.Substring(module.Path.Length + 1); // +1 to also remove the slash.
             }
             var asset = module.FindAssetByPath(path);
             if (asset == null)

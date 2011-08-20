@@ -19,7 +19,7 @@ namespace Cassette
         void IAssetVisitor.Visit(Module module)
         {
             currentModule = module;
-            if (module.Directory.Equals(pathToFind, StringComparison.OrdinalIgnoreCase))
+            if (module.Path.Equals(pathToFind, StringComparison.OrdinalIgnoreCase))
             {
                 isFound = true;
             }
@@ -27,7 +27,7 @@ namespace Cassette
 
         void IAssetVisitor.Visit(IAsset asset)
         {
-            var filename = Path.Combine(currentModule.Directory, asset.SourceFilename);
+            var filename = Path.Combine(currentModule.Path, asset.SourceFilename);
             if (filename.Equals(pathToFind, StringComparison.OrdinalIgnoreCase))
             {
                 isFound = true;

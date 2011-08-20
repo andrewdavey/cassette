@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -10,16 +9,17 @@ namespace Cassette
     {
         public Module(string relativeDirectory)
         {
-            directory = NormalizePath(relativeDirectory);
+            path = NormalizePath(relativeDirectory);
         }
 
-        readonly string directory;
+        readonly string path;
         IList<IAsset> assets = new List<IAsset>();
         readonly HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
+        static readonly char[] slashes = new[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
 
-        public string Directory
+        public string Path
         {
-            get { return directory; }
+            get { return path; }
         }
 
         public IList<IAsset> Assets
@@ -38,24 +38,24 @@ namespace Cassette
 
         public virtual void Process(ICassetteApplication application) { }
 
-        public bool ContainsPath(string path)
+        public bool ContainsPath(string relativePath)
         {
-            return new ModuleContainsPathPredicate().ModuleContainsPath(path, this);
+            return new ModuleContainsPathPredicate().ModuleContainsPath(relativePath, this);
         }
 
-        public IAsset FindAssetByPath(string path)
+        public IAsset FindAssetByPath(string relativePath)
         {
-            var slashes = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-            var pathSegments = path.Split(slashes);
+            var pathSegments = relativePath.Split(slashes);
             return Assets.FirstOrDefault(
-                a => a.SourceFilename.Split(slashes)
-                                     .SequenceEqual(pathSegments, StringComparer.OrdinalIgnoreCase)
+                a => a.SourceFilename
+                      .Split(slashes)
+                      .SequenceEqual(pathSegments, StringComparer.OrdinalIgnoreCase)
             );
         }
 
-        string NormalizePath(string path)
+        string NormalizePath(string relativePath)
         {
-            return path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return relativePath.TrimEnd(slashes);
         }
 
         public void Accept(IAssetVisitor visitor)

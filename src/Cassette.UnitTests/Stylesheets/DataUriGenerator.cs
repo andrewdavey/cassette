@@ -80,7 +80,7 @@ namespace Cassette.Stylesheets
         //public void GivenLegacyIESupport_ThenTransformConvertsCssToMultipartDocument()
         //{
         //    var asset = new Mock<IAsset>();
-        //    asset.SetupGet(a => a.Directory)
+        //    asset.SetupGet(a => a.Path)
         //         .Returns(directory.Object);
         //    directory.Setup(d => d.OpenFile("test.png", FileMode.Open, FileAccess.Read))
         //             .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));

@@ -39,7 +39,7 @@ namespace Cassette.Web
                 virtualDirectory,
                 assetUrlPrefix,
                 ConventionalModulePathName(module.GetType()),
-                ConvertToForwardSlashes(module.Directory),
+                ConvertToForwardSlashes(module.Path),
                 module.Assets[0].Hash.ToHexString()
             );
         }
@@ -49,7 +49,7 @@ namespace Cassette.Web
             return string.Format(
                 "{0}/{1}/{2}?{3}",
                 virtualDirectory,
-                ConvertToForwardSlashes(module.Directory),
+                ConvertToForwardSlashes(module.Path),
                 ConvertToForwardSlashes(asset.SourceFilename),
                 asset.Hash.ToHexString()
             );
@@ -61,7 +61,7 @@ namespace Cassette.Web
                 "{0}/{1}/get/{2}/{3}?{4}",
                 virtualDirectory,
                 assetUrlPrefix,
-                ConvertToForwardSlashes(module.Directory),
+                ConvertToForwardSlashes(module.Path),
                 ConvertToForwardSlashes(asset.SourceFilename),
                 asset.Hash.ToHexString()
             );

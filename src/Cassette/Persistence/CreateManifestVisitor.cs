@@ -25,7 +25,7 @@ namespace Cassette.Persistence
         void IAssetVisitor.Visit(Module module)
         {
             moduleElement = new XElement("module",
-                new XAttribute("directory", module.Directory),
+                new XAttribute("directory", module.Path),
                 new XAttribute("hash", ModuleHash(module)),
                 ReferenceElements(module),
                 RawFileReferenceElements(module)

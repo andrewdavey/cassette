@@ -106,7 +106,7 @@ namespace Cassette
 
         CachedAsset CreateSingleAssetForModule(XElement moduleElement, T module, string moduleFilename, IFileSystem fileSystem)
         {
-            var assetInfos = CreateAssetInfos(moduleElement, module.Directory);
+            var assetInfos = CreateAssetInfos(moduleElement, module.Path);
             var hash = ByteArrayExtensions.FromHexString(moduleElement.Attribute("hash").Value);
             var asset = new CachedAsset(hash, assetInfos, () => fileSystem.OpenFile(moduleFilename, FileMode.Open, FileAccess.Read));
             AddReferencesToAsset(asset, moduleElement);
@@ -179,7 +179,7 @@ namespace Cassette
                 from reference in asset.References
                 where reference.Type == AssetReferenceType.DifferentModule
                 let referencedModule = moduleContainer.FindModuleContainingPath(reference.ReferencedPath)
-                select referencedModule.Directory
+                select referencedModule.Path
             ).Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -189,7 +189,7 @@ namespace Cassette
             {
                 throw new InvalidOperationException("Cannot save a module when assets have not been concatenated into a single asset.");
             }
-            var filename = FlattenPathToSingleFilename(module.Directory) + ".module";
+            var filename = FlattenPathToSingleFilename(module.Path) + ".module";
             using (var fileStream = cacheFileSystem.OpenFile(filename, FileMode.Create, FileAccess.Write))
             {
                 if (module.Assets.Count > 0)
