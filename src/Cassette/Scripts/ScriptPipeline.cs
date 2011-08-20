@@ -3,7 +3,7 @@ using Cassette.ModuleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ScriptPipeline : IModuleProcessor<ScriptModule>
+    public class ScriptPipeline : MutablePipeline<ScriptModule>
     {
         public ScriptPipeline()
         {
@@ -13,15 +13,7 @@ namespace Cassette.Scripts
         public bool CompileCoffeeScript { get; set; }
         public IAssetTransformer Minifier { get; set; }
 
-        public void Process(ScriptModule module, ICassetteApplication application)
-        {
-            foreach (var processor in CreatePipeline(application))
-            {
-                processor.Process(module, application);
-            }
-        }
-
-        IEnumerable<IModuleProcessor<ScriptModule>> CreatePipeline(ICassetteApplication application)
+        protected override IEnumerable<IModuleProcessor<ScriptModule>> CreatePipeline(ScriptModule module, ICassetteApplication application)
         {
             yield return new ParseJavaScriptReferences();
             if (CompileCoffeeScript)

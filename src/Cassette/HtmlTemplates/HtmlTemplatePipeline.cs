@@ -3,17 +3,9 @@ using Cassette.ModuleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplatePipeline : IModuleProcessor<HtmlTemplateModule>
+    public class HtmlTemplatePipeline : MutablePipeline<HtmlTemplateModule>
     {
-        public void Process(HtmlTemplateModule module, ICassetteApplication application)
-        {
-            foreach (var processor in CreatePipeline(application))
-            {
-                processor.Process(module, application);
-            }
-        }
-
-        IEnumerable<IModuleProcessor<HtmlTemplateModule>> CreatePipeline(ICassetteApplication application)
+        protected override IEnumerable<IModuleProcessor<HtmlTemplateModule>> CreatePipeline(HtmlTemplateModule module, ICassetteApplication application)
         {
             yield return new WrapHtmlTemplatesInScriptBlocks();
             if (application.IsOutputOptimized)

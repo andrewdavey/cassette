@@ -3,7 +3,7 @@ using Cassette.ModuleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetPipeline : IModuleProcessor<StylesheetModule>
+    public class StylesheetPipeline : MutablePipeline<StylesheetModule>
     {
         public StylesheetPipeline()
         {
@@ -14,15 +14,7 @@ namespace Cassette.Stylesheets
         public bool CompileLess { get; set; }
         public bool ConvertImageUrlsToDataUris { get; set; }
 
-        public void Process(StylesheetModule module, ICassetteApplication application)
-        {
-            foreach (var processor in CreatePipeline(application))
-            {
-                processor.Process(module, application);
-            }
-        }
-
-        IEnumerable<IModuleProcessor<StylesheetModule>> CreatePipeline(ICassetteApplication application)
+        protected override IEnumerable<IModuleProcessor<StylesheetModule>> CreatePipeline(StylesheetModule module, ICassetteApplication application)
         {
             yield return new ParseCssReferences();
             if (CompileLess)
