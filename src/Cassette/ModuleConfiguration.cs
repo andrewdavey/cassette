@@ -1,7 +1,7 @@
-﻿using System;
+﻿// CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
+using System;
 using System.Collections.Generic;
 using System.Linq;
-// CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
 using CreateModuleContainer = System.Func<bool, string, Cassette.ISearchableModuleContainer<Cassette.Module>>;
 
 namespace Cassette
@@ -26,7 +26,7 @@ namespace Cassette
         {
             foreach (var moduleSource in moduleSources)
             {
-                Add<T>(moduleSource);
+                Add(moduleSource);
             }
         }
 
@@ -75,11 +75,11 @@ namespace Cassette
             var finalResult = (ModuleSourceResult<T>)moduleSourceResultsByType[typeof(T)].Item1;
             if (useCache)
             {
-                return GetOrCreateCachedModuleContainer<T>(finalResult, applicationVersion);
+                return GetOrCreateCachedModuleContainer(finalResult, applicationVersion);
             }
             else
             {
-                return CreateModuleContainer<T>(finalResult.Modules);
+                return CreateModuleContainer(finalResult.Modules);
             }
         }
 
@@ -96,7 +96,7 @@ namespace Cassette
             }
             else
             {
-                var container = CreateModuleContainer<T>(finalResult.Modules);
+                var container = CreateModuleContainer(finalResult.Modules);
                 cache.SaveModuleContainer(container, applicationVersion);
                 return container;
                 // TODO: perhaps return the cached container instance instead?
@@ -108,16 +108,18 @@ namespace Cassette
         {
             var modulesArray = modules.ToArray();
             List<Action<object>> customizeActions;
-            if (this.customizations.TryGetValue(typeof(T), out customizeActions))
+            if (customizations.TryGetValue(typeof(T), out customizeActions))
             {
                 foreach (var customize in customizeActions)
-                foreach (var module in modules)
                 {
-                    customize(module);
+                    foreach (var module in modulesArray)
+                    {
+                        customize(module);
+                    }
                 }
             }
-            ProcessAll(modules);
-            return new ModuleContainer<T>(modules);
+            ProcessAll(modulesArray);
+            return new ModuleContainer<T>(modulesArray);
         }
 
         void ProcessAll<T>(IEnumerable<T> modules)

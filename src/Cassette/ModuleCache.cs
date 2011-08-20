@@ -49,28 +49,22 @@ namespace Cassette
 
         bool AnyFilesMissing(XElement containerElement, IFileSystem sourceFileSystem)
         {
-            return Enumerable.Any(
-                from module in containerElement.Elements("module")
-                from asset in module.Elements("asset")
-                let path = Path.Combine(
-                    module.Attribute("directory").Value,
-                    asset.Attribute("filename").Value
-                )
-                select sourceFileSystem.FileExists(path),
-
-                exists => !exists
+            return (from module in containerElement.Elements("module")
+                    from asset in module.Elements("asset")
+                    let path = Path.Combine(
+                        module.Attribute("directory").Value,
+                        asset.Attribute("filename").Value
+                        )
+                    select sourceFileSystem.FileExists(path)).Any(exists => !exists
             );
         }
 
         bool AnyRawFileReferencesChanged(DateTime lastWriteTime, XElement containerElement, IFileSystem sourceFileSystem)
         {
-            return Enumerable.Any(
-                from module in containerElement.Elements("module")
-                from reference in module.Elements("rawFileReference")
-                let filename = reference.Attribute("filename").Value
-                select sourceFileSystem.GetLastWriteTimeUtc(filename) > lastWriteTime,
-
-                changed => changed
+            return (from module in containerElement.Elements("module")
+                    from reference in module.Elements("rawFileReference")
+                    let filename = reference.Attribute("filename").Value
+                    select sourceFileSystem.GetLastWriteTimeUtc(filename) > lastWriteTime).Any(changed => changed
             );
         }
 
@@ -91,7 +85,7 @@ namespace Cassette
             }
         }
 
-        T[] CreateModules(IEnumerable<XElement> moduleElements, IFileSystem fileSystem)
+        IEnumerable<T> CreateModules(IEnumerable<XElement> moduleElements, IFileSystem fileSystem)
         {
             return (
                 from moduleElement in moduleElements
@@ -150,7 +144,7 @@ namespace Cassette
             SaveVersion(version);
             foreach (var module in moduleContainer.Modules.Where(m => m.IsPersistent))
             {
-                SaveModule(module, moduleContainer);
+                SaveModule(module);
             }
         }
 
@@ -189,7 +183,7 @@ namespace Cassette
             ).Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
-        void SaveModule(T module, IModuleContainer<T> moduleContainer)
+        void SaveModule(T module)
         {
             if (module.Assets.Count > 1)
             {

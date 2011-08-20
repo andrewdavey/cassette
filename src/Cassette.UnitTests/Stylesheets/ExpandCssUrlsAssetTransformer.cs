@@ -1,8 +1,8 @@
-﻿using Cassette.Utilities;
+﻿using System.IO;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
-using System.IO;
 
 namespace Cassette.Stylesheets
 {

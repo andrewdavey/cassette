@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Moq;
 using Should;
 using Xunit;
-using Moq;
 
 namespace Cassette
 {

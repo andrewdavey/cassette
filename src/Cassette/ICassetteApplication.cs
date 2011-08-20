@@ -8,6 +8,6 @@ namespace Cassette
         bool IsOutputOptimized { get; }
         IUrlGenerator UrlGenerator { get; }
 
-        IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
+        IPageAssetManager GetPageAssetManager<T>() where T : Module;
     }
 }

@@ -10,13 +10,12 @@ namespace Cassette
     {
         public Module(string relativeDirectory)
         {
-            this.directory = NormalizePath(relativeDirectory);
+            directory = NormalizePath(relativeDirectory);
         }
 
         readonly string directory;
         IList<IAsset> assets = new List<IAsset>();
-        HashSet<Module> references = new HashSet<Module>();
-        HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
+        readonly HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
 
         public string Directory
         {
@@ -46,19 +45,11 @@ namespace Cassette
 
         public IAsset FindAssetByPath(string path)
         {
-            var slashes = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+            var slashes = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
             var pathSegments = path.Split(slashes);
             return Assets.FirstOrDefault(
                 a => a.SourceFilename.Split(slashes)
                                      .SequenceEqual(pathSegments, StringComparer.OrdinalIgnoreCase)
-            );
-        }
-
-        bool IsModulePath(string path)
-        {
-            return directory.Equals(
-                NormalizePath(path),
-                StringComparison.OrdinalIgnoreCase
             );
         }
 

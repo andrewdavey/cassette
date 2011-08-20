@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Cassette.ModuleProcessing;
 using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
-using System.Text.RegularExpressions;
 
 namespace Cassette
 {

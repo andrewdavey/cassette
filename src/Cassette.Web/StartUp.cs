@@ -44,18 +44,16 @@ namespace Cassette.Web
             storage = IsolatedStorageFile.GetMachineStoreForAssembly();
 
             var configuration = CreateConfiguration();
-            CassetteApplication = CreateCassetteApplication(configuration, storage);
+            CassetteApplication = CreateCassetteApplication(configuration);
             
             Assets.Application = CassetteApplication;
         }
 
         public static void ApplicationShutdown()
         {
-            if (storage != null)
-            {
-                storage.Dispose();
-                storage = null;
-            }
+            if (storage == null) return;
+            storage.Dispose();
+            storage = null;
         }
 
         static ICassetteConfiguration CreateConfigurationByScanningAssembliesForType()
@@ -83,7 +81,7 @@ namespace Cassette.Web
             }
         }
 
-        static CassetteApplication CreateCassetteApplication(ICassetteConfiguration configuration, IsolatedStorageFile storage)
+        static CassetteApplication CreateCassetteApplication(ICassetteConfiguration configuration)
         {
             return new CassetteApplication(
                 configuration,

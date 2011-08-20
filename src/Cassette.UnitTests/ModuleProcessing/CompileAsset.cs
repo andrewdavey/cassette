@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using Cassette.Utilities;
 using Moq;
-using Xunit;
 using Should;
+using Xunit;
 
 namespace Cassette.ModuleProcessing
 {

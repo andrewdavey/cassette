@@ -27,8 +27,7 @@ namespace Cassette
 
         public IEnumerable<T> ConcatDependencies(T module)
         {
-            var references = new HashSet<T>();
-            references.Add(module);
+            var references = new HashSet<T> { module };
             AddModulesReferencedBy(module, references);
             return references;
         }

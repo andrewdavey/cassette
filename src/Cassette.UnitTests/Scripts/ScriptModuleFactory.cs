@@ -1,6 +1,5 @@
 ﻿using Should;
 using Xunit;
-using Moq;
 
 namespace Cassette.Scripts
 {

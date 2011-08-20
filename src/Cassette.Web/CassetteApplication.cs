@@ -34,13 +34,13 @@ namespace Cassette.Web
             );
         }
 
-        public override IPageAssetManager<T> GetPageAssetManager<T>()
+        public override IPageAssetManager GetPageAssetManager<T>()
         {
             var items = getCurrentHttpContext().Items;
-            var key = typeof(IPageAssetManager<T>).FullName;
+            var key = "PageAssetManager:" + typeof(T).FullName;
             if (items.Contains(key))
             {
-                return (IPageAssetManager<T>)items[key];
+                return (IPageAssetManager)items[key];
             }
             else
             {

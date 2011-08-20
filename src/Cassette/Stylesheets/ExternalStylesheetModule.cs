@@ -27,11 +27,11 @@ namespace Cassette.Stylesheets
         {
             if (string.IsNullOrEmpty(Media))
             {
-                return new HtmlString(string.Format(linkHtml, url));
+                return new HtmlString(string.Format(LinkHtml, url));
             }
             else
             {
-                return new HtmlString(string.Format(linkHtmlWithMedia, url, Media));
+                return new HtmlString(string.Format(LinkHtmlWithMedia, url, Media));
             }
         }
 

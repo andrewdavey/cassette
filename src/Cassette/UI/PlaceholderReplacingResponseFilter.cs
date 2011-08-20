@@ -9,7 +9,7 @@ namespace Cassette.UI
         {
             this.response = response;
             this.placeholderTracker = placeholderTracker;
-            this.outputStream = response.Filter;
+            outputStream = response.Filter;
         }
 
         readonly Stream outputStream;

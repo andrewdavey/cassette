@@ -42,7 +42,7 @@ namespace Cassette.Persistence
             references.Add(new AssetReference(path, this, lineNumber, AssetReferenceType.DifferentModule));
         }
 
-        public void AddRawFileReference(string filename)
+        public void AddRawFileReference(string relativeFilename)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Cassette.ModuleProcessing;
 
 namespace Cassette.Scripts

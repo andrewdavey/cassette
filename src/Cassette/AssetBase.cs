@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Cassette.ModuleProcessing;
 
 namespace Cassette
 {
@@ -23,11 +25,10 @@ namespace Cassette
             // Passing an already created stream to the transformers would make deciding who has to 
             // close the stream confusing. Using a Func<Stream> instead allows a transformer to 
             // choose when to create the stream and also then close it.
-            Func<Stream> createStream = OpenStreamCore;
-            foreach (var transformer in transformers)
-            {
-                createStream = transformer.Transform(createStream, this);
-            }
+            var createStream = transformers.Aggregate<IAssetTransformer, Func<Stream>>(
+                OpenStreamCore,
+                (current, transformer) => transformer.Transform(current, this)
+            );
             return createStream();
         }
 
@@ -43,6 +44,6 @@ namespace Cassette
 
         public abstract void AddReference(string path, int lineNumber);
 
-        public abstract void AddRawFileReference(string filename);
+        public abstract void AddRawFileReference(string relativeFilename);
     }
 }

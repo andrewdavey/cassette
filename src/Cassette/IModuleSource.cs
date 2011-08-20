@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Cassette
+﻿namespace Cassette
 {
     public interface IModuleSource<T>
         where T : Module

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Cassette.ModuleProcessing;
 using Moq;
 using Should;
 using Xunit;

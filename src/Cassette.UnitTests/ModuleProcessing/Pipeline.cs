@@ -1,7 +1,7 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using Should;
 using Xunit;
-using System;
 
 namespace Cassette.ModuleProcessing
 {
@@ -52,7 +52,7 @@ namespace Cassette.ModuleProcessing
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new Pipeline<Module>((IModuleProcessor<Module>[])null);
+                new Pipeline<Module>(null);
             });
         }
     }

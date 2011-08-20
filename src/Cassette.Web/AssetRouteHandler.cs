@@ -1,6 +1,5 @@
 ﻿using System.Web;
 using System.Web.Routing;
-using System.Collections.Generic;
 
 namespace Cassette.Web
 {

@@ -14,7 +14,7 @@ namespace Cassette.Scripts
             Processor = new ScriptPipeline();
         }
 
-        protected static readonly string scriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
+        protected static readonly string ScriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
 
         public IModuleProcessor<ScriptModule> Processor { get; set; }
 
@@ -30,7 +30,7 @@ namespace Cassette.Scripts
                 // TODO: Extract rendering into pluggable class to allow customization?
                 // Much like the Processor property allows.
                 var url = application.UrlGenerator.CreateModuleUrl(this);
-                return new HtmlString(string.Format(scriptHtml, url));
+                return new HtmlString(string.Format(ScriptHtml, url));
             }
             else
             {
@@ -39,7 +39,7 @@ namespace Cassette.Scripts
                     let url = IsCompiledAsset(asset)
                         ? application.UrlGenerator.CreateAssetCompileUrl(this, asset)
                         : application.UrlGenerator.CreateAssetUrl(this, asset)
-                    select string.Format(scriptHtml, url)
+                    select string.Format(ScriptHtml, url)
                 );
                 return new HtmlString(scripts);
             }

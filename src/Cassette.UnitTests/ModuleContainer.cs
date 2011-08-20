@@ -1,9 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Scripts;
-using System.Collections.Generic;
 
 namespace Cassette
 {

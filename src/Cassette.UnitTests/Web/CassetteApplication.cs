@@ -1,7 +1,4 @@
-﻿using Moq;
-using Should;
-using Xunit;
-
-namespace Cassette.Web
+﻿namespace Cassette.Web
 {
+    // TODO: Add tests for CassetteApplication
 }

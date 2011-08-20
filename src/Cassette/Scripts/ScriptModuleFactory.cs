@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Cassette.Scripts
+﻿namespace Cassette.Scripts
 {
     public class ScriptModuleFactory : IModuleFactory<ScriptModule>
     {

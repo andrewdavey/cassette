@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Moq;
 using Should;
 using Xunit;

@@ -13,6 +13,6 @@ namespace Cassette
         void AddAssetTransformer(IAssetTransformer transformer);
         Stream OpenStream();
         IFileSystem Directory { get; }
-        void AddRawFileReference(string filename);
+        void AddRawFileReference(string relativeFilename);
     }
 }

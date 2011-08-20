@@ -1,18 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Collections.Generic;
 
 namespace Cassette
 {
     public class IsolatedStorageFileSystem : IFileSystem
     {
-        public IsolatedStorageFileSystem(IsolatedStorageFile storage)
-            : this(storage, "/")
-        {
-        }
-
-        public IsolatedStorageFileSystem(IsolatedStorageFile storage, string basePath)
+        public IsolatedStorageFileSystem(IsolatedStorageFile storage, string basePath = "/")
         {
             this.storage = storage;
             this.basePath = basePath;

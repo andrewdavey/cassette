@@ -1,16 +1,15 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Cassette.Utilities;
-using Moq;
 using Should;
 using Xunit;
-using System.Collections.Generic;
 
 namespace Cassette
 {
     public class ModuleDescriptorReader_Tests
     {
-        List<string> files = new List<string>();
+        readonly List<string> files = new List<string>();
         
         ModuleDescriptorReader GetReader(string descriptor)
         {

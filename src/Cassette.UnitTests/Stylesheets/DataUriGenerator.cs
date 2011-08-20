@@ -15,8 +15,8 @@ namespace Cassette.Stylesheets
             transformer = new DataUriGenerator();
         }
 
-        Mock<IFileSystem> directory;
-        DataUriGenerator transformer;
+        readonly Mock<IFileSystem> directory;
+        readonly DataUriGenerator transformer;
 
         [Fact]
         public void TransformReplacesImageUrlWithDataUri()

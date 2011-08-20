@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Cassette;
 using Cassette.HtmlTemplates;
-using Cassette.ModuleProcessing;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 

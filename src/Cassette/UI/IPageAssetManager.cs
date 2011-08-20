@@ -2,8 +2,7 @@
 
 namespace Cassette.UI
 {
-    public interface IPageAssetManager<T>
-        where T : Module
+    public interface IPageAssetManager
     {
         void Reference(string path, string location = null);
         IHtmlString Render(string location = null);

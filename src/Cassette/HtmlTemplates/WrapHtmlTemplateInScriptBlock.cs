@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Cassette.ModuleProcessing;
 using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates

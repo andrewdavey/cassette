@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using Xunit;
-using Should;
-using Moq;
-using Cassette.Utilities;
-using System.IO;
 using Cassette.ModuleProcessing;
+using Cassette.Utilities;
+using Moq;
+using Should;
+using Xunit;
 
 namespace Cassette.Stylesheets
 {

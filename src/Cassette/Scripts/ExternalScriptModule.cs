@@ -55,13 +55,13 @@ namespace Cassette.Scripts
             if (string.IsNullOrEmpty(fallbackUrl))
             {
                 return new HtmlString(
-                    string.Format(scriptHtml, url)
+                    string.Format(ScriptHtml, url)
                 );
             }
             else
             {
                 return new HtmlString(
-                    string.Format(scriptHtml, url) + 
+                    string.Format(ScriptHtml, url) + 
                     Environment.NewLine + 
                     string.Format(
                         fallbackHtml,

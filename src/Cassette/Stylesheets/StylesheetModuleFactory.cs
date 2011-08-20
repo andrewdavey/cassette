@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Cassette.Stylesheets
+﻿namespace Cassette.Stylesheets
 {
     public class StylesheetModuleFactory : IModuleFactory<StylesheetModule>
     {

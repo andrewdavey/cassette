@@ -10,10 +10,10 @@ namespace Cassette.Utilities
         {
             public T Value;
             public bool Visited;
-            public ISet<Node> Incoming = new HashSet<Node>();
+            public readonly ISet<Node> Incoming = new HashSet<Node>();
         }
 
-        Node[] nodes;
+        readonly Node[] nodes;
 
         public Graph(IEnumerable<T> values, Func<T, IEnumerable<T>> getDependencies)
         {

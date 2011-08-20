@@ -6,7 +6,7 @@ namespace Cassette
 {
     class StubFileSystem : IFileSystem
     {
-        private Dictionary<string, Stream> fileStreams;
+        private readonly Dictionary<string, Stream> fileStreams;
 
         public StubFileSystem(Dictionary<string, Stream> fileStreams)
         {

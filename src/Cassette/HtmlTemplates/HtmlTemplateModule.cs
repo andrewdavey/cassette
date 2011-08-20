@@ -38,7 +38,7 @@ namespace Cassette.HtmlTemplates
             }
         }
 
-        public string RenderAllAssets()
+        string RenderAllAssets()
         {
             var writer = new StringWriter();
             var first = true;

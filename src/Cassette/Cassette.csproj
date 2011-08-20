@@ -110,7 +110,6 @@
     <Compile Include="IModuleFactory.cs" />
     <Compile Include="ModuleProcessing\IModuleProcessor.cs" />
     <Compile Include="ModuleProcessing\ConcatenatedAsset.cs" />
-    <Compile Include="IModuleContainerFactory.cs" />
     <Compile Include="Stylesheets\LessCompileException.cs" />
     <Compile Include="Stylesheets\LessCompiler.cs" />
     <Compile Include="ModuleProcessing\LineBasedAssetReferenceParser.cs" />

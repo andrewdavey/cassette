@@ -5,12 +5,7 @@ namespace Cassette.Web
 {
     public class UrlGenerator : IUrlGenerator
     {
-        public UrlGenerator(string virtualDirectory)
-            : this(virtualDirectory, "_assets")
-        {
-        }
-
-        public UrlGenerator(string virtualDirectory, string assetUrlPrefix)
+        public UrlGenerator(string virtualDirectory, string assetUrlPrefix = "_assets")
         {
             this.virtualDirectory = virtualDirectory.TrimEnd('/');
             this.assetUrlPrefix = assetUrlPrefix;

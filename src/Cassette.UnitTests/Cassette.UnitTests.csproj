@@ -68,7 +68,6 @@
     <Compile Include="ModuleSourceTestBase.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <None Include="FileSystemModuleConfiguration.cs" />
     <Compile Include="HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplateModuleFactory.cs" />
     <Compile Include="ModuleCache.cs" />

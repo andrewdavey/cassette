@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web;
-using Cassette.UI;
 
 namespace Cassette.Web
 {
@@ -10,7 +9,7 @@ namespace Cassette.Web
         
         public void Init(HttpApplication httpApplication)
         {
-            this.application = StartUp.CassetteApplication;
+            application = StartUp.CassetteApplication;
 
             httpApplication.BeginRequest += HttpApplicationBeginRequest;
         }

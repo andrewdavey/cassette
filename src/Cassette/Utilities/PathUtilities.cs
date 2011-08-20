@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Cassette.Utilities
 {
-    public class PathUtilities
+    public static class PathUtilities
     {
         public static string NormalizePath(string path)
         {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Cassette.ModuleProcessing;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.ModuleProcessing;
 
 namespace Cassette.Stylesheets
 {

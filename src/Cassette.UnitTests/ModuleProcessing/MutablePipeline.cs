@@ -126,7 +126,7 @@ namespace Cassette.ModuleProcessing
                 yield return DummyStep;
             }
 
-            public MockStep DummyStep = new MockStep();
+            public readonly MockStep DummyStep = new MockStep();
             public bool CreatePipelineCalled;
         }
 

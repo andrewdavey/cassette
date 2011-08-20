@@ -1,5 +1,4 @@
 ﻿using Cassette.Utilities;
-using Microsoft.Ajax.Utilities;
 using Moq;
 using Should;
 using Xunit;

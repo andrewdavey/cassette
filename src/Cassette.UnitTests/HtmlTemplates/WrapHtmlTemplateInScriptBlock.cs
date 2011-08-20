@@ -9,7 +9,7 @@ namespace Cassette.HtmlTemplates
 {
     public class WrapHtmlTemplateInScriptBlock_Tests
     {
-        HtmlTemplateModule module = new HtmlTemplateModule("test");
+        readonly HtmlTemplateModule module = new HtmlTemplateModule("test");
 
         [Fact]
         public void ScriptBlockIdMatchesAssetFilenameWithoutExtension()
@@ -17,7 +17,7 @@ namespace Cassette.HtmlTemplates
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("test.htm");
 
-            string output = Transform(asset, "<p>test</p>", "text/html");
+            var output = Transform(asset, "<p>test</p>", "text/html");
 
             output.ShouldEqual(
                 "<script id=\"test\" type=\"text/html\">" + Environment.NewLine +
@@ -32,7 +32,7 @@ namespace Cassette.HtmlTemplates
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("test.htm");
 
-            string output = Transform(asset, "<p>test</p>", "text/x-jquery-tmpl");
+            var output = Transform(asset, "<p>test</p>", "text/x-jquery-tmpl");
 
             output.ShouldEqual(
                 "<script id=\"test\" type=\"text/x-jquery-tmpl\">" + Environment.NewLine +

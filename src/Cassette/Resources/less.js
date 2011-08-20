@@ -103,7 +103,8 @@
             if (i < 0) i += length;
 
             for (; i < length; i++) {
-                if (!Object.prototype.hasOwnProperty.call(this, i)) { continue }
+                if (!Object.prototype.hasOwnProperty.call(this, i)) { continue;
+                }
                 if (value === this[i]) return i;
             }
             return -1;
@@ -139,7 +140,8 @@
         less = exports,
     tree = require('less/tree');
     } else {
-        if (typeof (window.less) === 'undefined') { window.less = {} }
+        if (typeof (window.less) === 'undefined') { window.less = {};
+        }
         less = window.less,
     tree = window.less.tree = {};
     }
@@ -211,13 +213,16 @@
 
                     callback(root);
 
-                    if (that.queue.length === 0) { finish() }       // Call `finish` if we're done importing
+                    if (that.queue.length === 0) { finish();
+                    }       // Call `finish` if we're done importing
                 }, env);
             }
         };
 
-        function save() { temp = chunks[j], memo = i, current = i }
-        function restore() { chunks[j] = temp, i = memo, current = i }
+        function save() { temp = chunks[j], memo = i, current = i;
+        }
+        function restore() { chunks[j] = temp, i = memo, current = i;
+        }
 
         function sync() {
             if (i > current) {
@@ -267,13 +272,15 @@
 
                 while (i < endIndex) {
                     c = input.charCodeAt(i);
-                    if (!(c === 32 || c === 10 || c === 9)) { break }
+                    if (!(c === 32 || c === 10 || c === 9)) { break;
+                    }
                     i++;
                 }
                 chunks[j] = chunks[j].slice(length + (i - mem));
                 current = i;
 
-                if (chunks[j].length === 0 && j < chunks.length - 1) { j++ }
+                if (chunks[j].length === 0 && j < chunks.length - 1) { j++;
+                }
 
                 if (typeof (match) === 'string') {
                     return match;
@@ -391,7 +398,7 @@
                         };
                     }
 
-                    return chunks.map(function (c) { return c.join('') }); ;
+                    return chunks.map(function (c) { return c.join(''); }); ;
                 })([[]]);
 
                 // Start with the primary rule.
@@ -445,7 +452,8 @@
 
                             for (var n = e.index, column = -1;
                                  n >= 0 && input.charAt(n) !== '\n';
-                                 n--) { column++ }
+                                 n--) { column++;
+                            }
 
                             throw {
                                 type: e.type,
@@ -489,7 +497,8 @@
                     lines = input.split('\n');
                     line = (input.slice(0, i).match(/\n/g) || "").length + 1;
 
-                    for (var n = i, column = -1; n >= 0 && input.charAt(n) !== '\n'; n--) { column++ }
+                    for (var n = i, column = -1; n >= 0 && input.charAt(n) !== '\n'; n--) { column++;
+                    }
 
                     error = {
                         name: "ParseError",
@@ -507,7 +516,7 @@
                 }
 
                 if (this.imports.queue.length > 0) {
-                    finish = function () { callback(error, root) };
+                    finish = function () { callback(error, root); };
                 } else {
                     callback(error, root);
                 }
@@ -596,7 +605,8 @@
                     quoted: function () {
                         var str, j = i, e;
 
-                        if (input.charAt(j) === '~') { j++, e = true } // Escaped strings
+                        if (input.charAt(j) === '~') { j++, e = true;
+                        } // Escaped strings
                         if (input.charAt(j) !== '"' && input.charAt(j) !== "'") return;
 
                         e && $('~');
@@ -613,7 +623,8 @@
                     //
                     keyword: function () {
                         var k;
-                        if (k = $(/^[A-Za-z-]+/)) { return new (tree.Keyword)(k) }
+                        if (k = $(/^[A-Za-z-]+/)) { return new (tree.Keyword)(k);
+                        }
                     },
 
                     //
@@ -633,10 +644,13 @@
 
                         name = name[1].toLowerCase();
 
-                        if (name === 'url') { return null }
-                        else { i += name.length }
+                        if (name === 'url') { return null;
+                        }
+                        else { i += name.length;
+                        }
 
-                        if (name === 'alpha') { return $(this.alpha) }
+                        if (name === 'alpha') { return $(this.alpha);
+                        }
 
                         $('('); // Parse the '(' and consume whitespace.
 
@@ -644,14 +658,16 @@
 
                         if (!$(')')) return;
 
-                        if (name) { return new (tree.Call)(name, args, index) }
+                        if (name) { return new (tree.Call)(name, args, index);
+                        }
                     },
                     arguments: function () {
                         var args = [], arg;
 
                         while (arg = $(this.expression)) {
                             args.push(arg);
-                            if (!$(',')) { break }
+                            if (!$(',')) { break;
+                            }
                         }
                         return args;
                     },
@@ -690,7 +706,8 @@
                             obj.base64 = $(/^;\s*base64/) || '';
                             obj.data = $(/^,\s*[^)]+/);
 
-                            if (obj.data) { return obj }
+                            if (obj.data) { return obj;
+                            }
                         }
                     },
 
@@ -747,8 +764,10 @@
                     javascript: function () {
                         var str, j = i, e;
 
-                        if (input.charAt(j) === '~') { j++, e = true } // Escaped strings
-                        if (input.charAt(j) !== '`') { return }
+                        if (input.charAt(j) === '~') { j++, e = true;
+                        } // Escaped strings
+                        if (input.charAt(j) !== '`') { return;
+                        }
 
                         e && $('~');
 
@@ -766,7 +785,8 @@
                 variable: function () {
                     var name;
 
-                    if (input.charAt(i) === '@' && (name = $(/^(@[\w-]+)\s*:/))) { return name[1] }
+                    if (input.charAt(i) === '@' && (name = $(/^(@[\w-]+)\s*:/))) { return name[1];
+                    }
                 },
 
                 //
@@ -804,7 +824,8 @@
                     call: function () {
                         var elements = [], e, c, args, index = i, s = input.charAt(i);
 
-                        if (s !== '.' && s !== '#') { return }
+                        if (s !== '.' && s !== '#') { return;
+                        }
 
                         while (e = $(/^[#.](?:[\w-]|\\(?:[a-fA-F0-9]{1,6} ?|[^a-fA-F0-9]))+/)) {
                             elements.push(new (tree.Element)(c, e));
@@ -861,7 +882,8 @@
                                 } else {
                                     params.push({ value: param });
                                 }
-                                if (!$(',')) { break }
+                                if (!$(',')) { break;
+                                }
                             }
                             if (!$(')')) throw new (Error)("Expected )");
 
@@ -926,7 +948,8 @@
                     c = $(this.combinator);
                     e = $(/^(?:[.#]?|:*)(?:[\w-]|\\(?:[a-fA-F0-9]{1,6} ?|[^a-fA-F0-9]))+/) || $('*') || $(this.attribute) || $(/^\([^)@]+\)/) || $(/^(?:\d*\.)?\d+%/);
 
-                    if (e) { return new (tree.Element)(c, e) }
+                    if (e) { return new (tree.Element)(c, e);
+                    }
 
                     if (c.value && c.value[0] === '&') {
                         return new (tree.Element)(c, null);
@@ -947,7 +970,8 @@
 
                     if (c === '>' || c === '+' || c === '~') {
                         i++;
-                        while (input.charAt(i) === ' ') { i++ }
+                        while (input.charAt(i) === ' ') { i++;
+                        }
                         return new (tree.Combinator)(c);
                     } else if (c === '&') {
                         match = '&';
@@ -955,11 +979,13 @@
                         if (input.charAt(i) === ' ') {
                             match = '& ';
                         }
-                        while (input.charAt(i) === ' ') { i++ }
+                        while (input.charAt(i) === ' ') { i++;
+                        }
                         return new (tree.Combinator)(match);
                     } else if (c === ':' && input.charAt(i + 1) === ':') {
                         i += 2;
-                        while (input.charAt(i) === ' ') { i++ }
+                        while (input.charAt(i) === ' ') { i++;
+                        }
                         return new (tree.Combinator)('::');
                     } else if (input.charAt(i - 1) === ' ') {
                         return new (tree.Combinator)(" ");
@@ -981,11 +1007,13 @@
 
                     while (e = $(this.element)) {
                         c = input.charAt(i);
-                        elements.push(e)
-                        if (c === '{' || c === '}' || c === ';' || c === ',') { break }
+                        elements.push(e);
+                        if (c === '{' || c === '}' || c === ';' || c === ',') { break;
+                        }
                     }
 
-                    if (elements.length > 0) { return new (tree.Selector)(elements) }
+                    if (elements.length > 0) { return new (tree.Selector)(elements);
+                    }
                 },
                 tag: function () {
                     return $(/^[a-zA-Z][a-zA-Z-]*[0-9]?/) || $('*');
@@ -999,12 +1027,14 @@
                         if ((op = $(/^[|~*$^]?=/)) &&
                         (val = $(this.entities.quoted) || $(/^[\w-]+/))) {
                             attr = [key, op, val.toCSS ? val.toCSS() : val].join('');
-                        } else { attr = key }
+                        } else { attr = key;
+                        }
                     }
 
                     if (!$(']')) return;
 
-                    if (attr) { return "[" + attr + "]" }
+                    if (attr) { return "[" + attr + "]";
+                    }
                 },
 
                 //
@@ -1033,7 +1063,8 @@
                         while (s = $(this.selector)) {
                             selectors.push(s);
                             $(this.comment);
-                            if (!$(',')) { break }
+                            if (!$(',')) { break;
+                            }
                             $(this.comment);
                         }
                     }
@@ -1050,7 +1081,8 @@
                     var name, value, c = input.charAt(i), important, match;
                     save();
 
-                    if (c === '.' || c === '#' || c === '&') { return }
+                    if (c === '.' || c === '#' || c === '&') { return;
+                    }
 
                     if (name = $(this.variable) || $(this.property)) {
                         if ((name.charAt(0) != '@') && (match = /^([^@+\/'"*`(;{}-]*);/.exec(chunks[j]))) {
@@ -1129,7 +1161,8 @@
                     if ($(',')) {
                         while (e = $(this.expression)) {
                             value.push(e);
-                            if (!$(',')) { break }
+                            if (!$(',')) { break;
+                            }
                         }
                     }
                     return new (tree.Value)(value);
@@ -1148,7 +1181,8 @@
 
                     while (e = $(this.expression)) {
                         expressions.push(e);
-                        if (!$(',')) { break }
+                        if (!$(',')) { break;
+                        }
                     }
 
                     if (expressions.length > 0) {
@@ -1194,7 +1228,8 @@
                 operand: function () {
                     var negate, p = input.charAt(i + 1);
 
-                    if (input.charAt(i) === '-' && (p === '@' || p === '(')) { negate = $('-') }
+                    if (input.charAt(i) === '-' && (p === '@' || p === '(')) { negate = $('-');
+                    }
                     var o = $(this.sub) || $(this.entities.dimension) ||
                         $(this.entities.color) || $(this.entities.variable) ||
                         $(this.entities.call);
@@ -1252,7 +1287,7 @@
                 return this.rgba(r, g, b, 1.0);
             },
             rgba: function (r, g, b, a) {
-                var rgb = [r, g, b].map(function (c) { return number(c) }),
+                var rgb = [r, g, b].map(function (c) { return number(c); }),
             a = number(a);
                 return new (tree.Color)(rgb, a);
             },
@@ -1430,7 +1465,8 @@
                (this.value.toCSS ? this.value.toCSS() : this.value) + ")";
             },
             eval: function (env) {
-                if (this.value.eval) { this.value = this.value.eval(env) }
+                if (this.value.eval) { this.value = this.value.eval(env);
+                }
                 return this;
             }
         };
@@ -1445,7 +1481,7 @@
             toCSS: function () {
                 return this.value;
             },
-            eval: function () { return this }
+            eval: function () { return this; }
         };
 
     })(require('less/tree'));
@@ -1473,7 +1509,7 @@
             // The function should receive the value, not the variable.
             //
             eval: function (env) {
-                var args = this.args.map(function (a) { return a.eval(env) });
+                var args = this.args.map(function (a) { return a.eval(env); });
 
                 if (this.name in tree.functions) { // 1.
                     try {
@@ -1485,7 +1521,7 @@
                     }
                 } else { // 2.
                     return new (tree.Anonymous)(this.name +
-                   "(" + args.map(function (a) { return a.toCSS() }).join(', ') + ")");
+                   "(" + args.map(function (a) { return a.toCSS(); }).join(', ') + ")");
                 }
             },
 
@@ -1525,7 +1561,7 @@
             this.alpha = typeof (a) === 'number' ? a : 1;
         };
         tree.Color.prototype = {
-            eval: function () { return this },
+            eval: function () { return this; },
 
             //
             // If we have some transparency, the only way to represent it
@@ -1603,7 +1639,7 @@
             toCSS: function (env) {
                 return env.compress ? '' : this.value;
             },
-            eval: function () { return this }
+            eval: function () { return this; }
         };
 
     })(require('less/tree'));
@@ -1618,7 +1654,7 @@
         };
 
         tree.Dimension.prototype = {
-            eval: function () { return this },
+            eval: function () { return this; },
             toColor: function () {
                 return new (tree.Color)([this.value, this.value, this.value]);
             },
@@ -1668,9 +1704,9 @@
                 env.frames.shift();
                 return this;
             },
-            variable: function (name) { return tree.Ruleset.prototype.variable.call(this.ruleset, name) },
-            find: function () { return tree.Ruleset.prototype.find.apply(this.ruleset, arguments) },
-            rulesets: function () { return tree.Ruleset.prototype.rulesets.apply(this.ruleset) }
+            variable: function (name) { return tree.Ruleset.prototype.variable.call(this.ruleset, name); },
+            find: function () { return tree.Ruleset.prototype.find.apply(this.ruleset, arguments); },
+            rulesets: function () { return tree.Ruleset.prototype.rulesets.apply(this.ruleset); }
         };
 
     })(require('less/tree'));
@@ -1711,7 +1747,7 @@
     })(require('less/tree'));
     (function (tree) {
 
-        tree.Expression = function (value) { this.value = value };
+        tree.Expression = function (value) { this.value = value; };
         tree.Expression.prototype = {
             eval: function (env) {
                 if (this.value.length > 1) {
@@ -1864,10 +1900,10 @@
 
     (function (tree) {
 
-        tree.Keyword = function (value) { this.value = value };
+        tree.Keyword = function (value) { this.value = value; };
         tree.Keyword.prototype = {
-            eval: function () { return this },
-            toCSS: function () { return this.value }
+            eval: function () { return this; },
+            toCSS: function () { return this.value; }
         };
 
     })(require('less/tree'));
@@ -1885,7 +1921,7 @@
 
                 for (var i = 0; i < env.frames.length; i++) {
                     if ((mixins = env.frames[i].find(this.selector)).length > 0) {
-                        args = this.arguments && this.arguments.map(function (a) { return a.eval(env) });
+                        args = this.arguments && this.arguments.map(function (a) { return a.eval(env); });
                         for (var m = 0; m < mixins.length; m++) {
                             if (mixins[m].match(args, env)) {
                                 try {
@@ -1924,18 +1960,20 @@
             this.rules = rules;
             this._lookups = {};
             this.required = params.reduce(function (count, p) {
-                if (!p.name || (p.name && !p.value)) { return count + 1 }
-                else { return count }
+                if (!p.name || (p.name && !p.value)) { return count + 1;
+                }
+                else { return count;
+                }
             }, 0);
             this.parent = tree.Ruleset.prototype;
             this.frames = [];
         };
         tree.mixin.Definition.prototype = {
-            toCSS: function () { return "" },
-            variable: function (name) { return this.parent.variable.call(this, name) },
-            variables: function () { return this.parent.variables.call(this) },
-            find: function () { return this.parent.find.apply(this, arguments) },
-            rulesets: function () { return this.parent.rulesets.apply(this) },
+            toCSS: function () { return ""; },
+            variable: function (name) { return this.parent.variable.call(this, name); },
+            variables: function () { return this.parent.variables.call(this); },
+            find: function () { return this.parent.find.apply(this, arguments); },
+            rulesets: function () { return this.parent.rulesets.apply(this); },
 
             eval: function (env, args) {
                 var frame = new (tree.Ruleset)(null, []), context, _arguments = [];
@@ -1963,8 +2001,10 @@
             match: function (args, env) {
                 var argsLength = (args && args.length) || 0, len;
 
-                if (argsLength < this.required) { return false }
-                if ((this.required > 0) && (argsLength > this.params.length)) { return false }
+                if (argsLength < this.required) { return false;
+                }
+                if ((this.required > 0) && (argsLength > this.params.length)) { return false;
+                }
 
                 len = Math.min(argsLength, this.arity);
 
@@ -2052,10 +2092,12 @@
 
             if (name.charAt(0) === '@') {
                 this.variable = true;
-            } else { this.variable = false }
+            } else { this.variable = false;
+            }
         };
         tree.Rule.prototype.toCSS = function (env) {
-            if (this.variable) { return "" }
+            if (this.variable) { return "";
+            }
             else {
                 return this.name + (env.compress ? ':' : ': ') +
                this.value.toCSS(env) +
@@ -2076,7 +2118,7 @@
             toCSS: function (env) {
                 return this.a.toCSS(env) + "/" + this.b.toCSS(env);
             },
-            eval: function () { return this }
+            eval: function () { return this; }
         };
 
     })(require('less/tree'));
@@ -2140,7 +2182,8 @@
                 return !args || args.length === 0;
             },
             variables: function () {
-                if (this._variables) { return this._variables }
+                if (this._variables) { return this._variables;
+                }
                 else {
                     return this._variables = this.rules.reduce(function (hash, r) {
                         if (r instanceof tree.Rule && r.variable === true) {
@@ -2154,7 +2197,8 @@
                 return this.variables()[name];
             },
             rulesets: function () {
-                if (this._rulesets) { return this._rulesets }
+                if (this._rulesets) { return this._rulesets;
+                }
                 else {
                     return this._rulesets = this.rules.filter(function (r) {
                         return (r instanceof tree.Ruleset) || (r instanceof tree.mixin.Definition);
@@ -2166,7 +2210,8 @@
                 var rules = [], rule, match,
             key = selector.toCSS();
 
-                if (key in this._lookups) { return this._lookups[key] }
+                if (key in this._lookups) { return this._lookups[key];
+                }
 
                 this.rulesets().forEach(function (rule) {
                     if (rule !== self) {
@@ -2200,7 +2245,7 @@
 
                 if (!this.root) {
                     if (context.length === 0) {
-                        paths = this.selectors.map(function (s) { return [s] });
+                        paths = this.selectors.map(function (s) { return [s]; });
                     } else {
                         this.joinSelectors(paths, context, this.selectors);
                     }
@@ -2308,7 +2353,8 @@
             }
         };
         tree.Selector.prototype.toCSS = function (env) {
-            if (this._css) { return this._css }
+            if (this._css) { return this._css;
+            }
 
             return this._css = this.elements.map(function (e) {
                 if (typeof (e) === 'string') {
@@ -2371,7 +2417,7 @@
     })(require('less/tree'));
     (function (tree) {
 
-        tree.Variable = function (name, index) { this.name = name, this.index = index };
+        tree.Variable = function (name, index) { this.name = name, this.index = index; };
         tree.Variable.prototype = {
             eval: function (env) {
                 var variable, v, name = this.name;
@@ -2384,7 +2430,8 @@
                     if (v = frame.variable(name)) {
                         return v.value.eval(env);
                     }
-                })) { return variable }
+                })) { return variable;
+                }
                 else {
                     throw { message: "variable " + name + " is undefined",
                         index: this.index
@@ -2396,13 +2443,14 @@
     })(require('less/tree'));
     require('less/tree').find = function (obj, fun) {
         for (var i = 0, r; i < obj.length; i++) {
-            if (r = fun.call(obj, obj[i])) { return r }
+            if (r = fun.call(obj, obj[i])) { return r;
+            }
         }
         return null;
     };
     require('less/tree').jsify = function (obj) {
         if (Array.isArray(obj.value) && (obj.value.length > 1)) {
-            return '[' + obj.value.map(function (v) { return v.toCSS(false) }).join(', ') + ']';
+            return '[' + obj.value.map(function (v) { return v.toCSS(false); }).join(', ') + ']';
         } else {
             return obj.toCSS(false);
         }

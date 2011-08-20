@@ -1,6 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Collections.Generic;
 
 namespace Cassette.ModuleProcessing
 {

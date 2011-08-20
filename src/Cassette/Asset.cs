@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using Cassette.Utilities;
 
@@ -11,16 +11,20 @@ namespace Cassette
     {
         public Asset(string moduleRelativeFilename, Module parentModule, IFileSystem moduleDirectory)
         {
+            if (moduleRelativeFilename == null)
+            {
+                throw new ArgumentNullException("moduleRelativeFilename");
+            }
             if (Path.IsPathRooted(moduleRelativeFilename))
             {
                 throw new ArgumentException("Asset filename must be relative to it's module directory.");
             }
 
             this.moduleRelativeFilename = moduleRelativeFilename;
-            this.filename = Path.GetFileName(moduleRelativeFilename);
+            filename = Path.GetFileName(moduleRelativeFilename);
             this.parentModule = parentModule;
-            this.directory = moduleDirectory.NavigateTo(Path.GetDirectoryName(moduleRelativeFilename), false);
-            this.hash = HashFileContents(filename);
+            directory = moduleDirectory.NavigateTo(Path.GetDirectoryName(moduleRelativeFilename), false);
+            hash = HashFileContents();
         }
 
         readonly string filename;
@@ -30,11 +34,11 @@ namespace Cassette
         readonly byte[] hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
-        public override void AddReference(string filename, int lineNumber)
+        public override void AddReference(string assetRelativeFilename, int lineNumber)
         {
-            if (filename.StartsWith("~"))
+            if (assetRelativeFilename.StartsWith("~"))
             {
-                filename = filename.Substring(1);
+                assetRelativeFilename = assetRelativeFilename.Substring(1);
                 // So the path now starts with "/".
             }
 
@@ -44,7 +48,7 @@ namespace Cassette
             var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
                 parentModule.Directory,
                 Path.GetDirectoryName(moduleRelativeFilename),
-                filename
+                assetRelativeFilename
             ));
             AssetReferenceType type;
             if (ModuleCouldContain(appRelativeFilename))
@@ -59,12 +63,12 @@ namespace Cassette
             references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
         }
 
-        public override void AddRawFileReference(string filename)
+        public override void AddRawFileReference(string relativeFilename)
         {
             var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
                 parentModule.Directory,
                 Path.GetDirectoryName(moduleRelativeFilename),
-                filename
+                relativeFilename
             ));
             
             var alreadyExists = references.Any(r => r.ReferencedPath.Equals(appRelativeFilename, StringComparison.OrdinalIgnoreCase));
@@ -73,14 +77,14 @@ namespace Cassette
             references.Add(new AssetReference(appRelativeFilename, this, -1, AssetReferenceType.RawFilename));
         }
 
-        void RequireModuleContainsReference(int lineNumber, string filename)
+        void RequireModuleContainsReference(int lineNumber, string assetRelativeFilename)
         {
-            if (parentModule.ContainsPath(filename)) return;
+            if (parentModule.ContainsPath(assetRelativeFilename)) return;
             
             throw new AssetReferenceException(
                 string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    Path.Combine(parentModule.Directory, SourceFilename), lineNumber, filename
+                    Path.Combine(parentModule.Directory, SourceFilename), lineNumber, assetRelativeFilename
                 )
             );
         }
@@ -105,7 +109,7 @@ namespace Cassette
             get { return references; }
         }
 
-        byte[] HashFileContents(string filename)
+        byte[] HashFileContents()
         {
             using (var sha1 = SHA1.Create())
             using (var fileStream = directory.OpenFile(filename, FileMode.Open, FileAccess.Read))

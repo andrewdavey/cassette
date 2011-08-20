@@ -10,10 +10,10 @@ namespace Cassette.UI
 {
     public class PlaceholderReplacingResponseFilter_tests
     {
-        MemoryStream outputStream;
-        Mock<HttpResponseBase> response;
-        Mock<IPlaceholderTracker> placeholderTracker;
-        PlaceholderReplacingResponseFilter filter;
+        readonly MemoryStream outputStream;
+        readonly Mock<HttpResponseBase> response;
+        readonly Mock<IPlaceholderTracker> placeholderTracker;
+        readonly PlaceholderReplacingResponseFilter filter;
 
         public PlaceholderReplacingResponseFilter_tests()
         {

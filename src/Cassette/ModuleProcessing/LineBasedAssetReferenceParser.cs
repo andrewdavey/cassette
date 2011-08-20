@@ -18,7 +18,7 @@ namespace Cassette.ModuleProcessing
         {
             using (var reader = new StreamReader(asset.OpenStream()))
             {
-                int lineNumber = 0;
+                var lineNumber = 0;
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {

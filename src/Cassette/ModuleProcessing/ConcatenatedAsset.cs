@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.ModuleProcessing
 {
     public class ConcatenatedAsset : AssetBase, IDisposable
     {
@@ -14,7 +14,7 @@ namespace Cassette
 
         public ConcatenatedAsset(IEnumerable<IAsset> children, MemoryStream stream)
         {
-            this.hash = stream.ComputeSHA1Hash();
+            hash = stream.ComputeSHA1Hash();
             this.children = children;
             this.stream = stream;
         }
@@ -52,7 +52,7 @@ namespace Cassette
             throw new NotSupportedException();
         }
 
-        public override void AddRawFileReference(string filename)
+        public override void AddRawFileReference(string relativeFilename)
         {
             throw new NotSupportedException();
         }

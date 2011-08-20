@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System;
 
 namespace Cassette
 {
@@ -9,7 +9,7 @@ namespace Cassette
         public ModuleDescriptorReader(Stream stream, IEnumerable<string> filenames)
         {
             this.stream = stream;
-            this.allFilenames = new HashSet<string>(filenames, StringComparer.OrdinalIgnoreCase);
+            allFilenames = new HashSet<string>(filenames, StringComparer.OrdinalIgnoreCase);
         }
 
         readonly Stream stream;
@@ -17,8 +17,7 @@ namespace Cassette
 
         public IEnumerable<string> ReadFilenames()
         {
-            var filesAdded = new HashSet<string>();
-            filesAdded.Add("module.txt");
+            var filesAdded = new HashSet<string> { "module.txt" };
             using (var reader = new StreamReader(stream))
             {
                 string line;

@@ -11,16 +11,15 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        public CassetteApplicationBase(ICassetteConfiguration configuration, IFileSystem rootDirectory, IFileSystem cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
+        protected CassetteApplicationBase(ICassetteConfiguration configuration, IFileSystem rootDirectory, IFileSystem cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
         {
             this.rootDirectory = rootDirectory;
             this.isOutputOptimized = isOutputOptimized;
             this.urlGenerator = urlGenerator;
-            this.moduleFactories = CreateModuleFactories();
-            this.moduleContainers = CreateModuleContainers(
+            moduleFactories = CreateModuleFactories();
+            moduleContainers = CreateModuleContainers(
                 configuration,
-                cacheDirectory, 
-                isOutputOptimized,
+                cacheDirectory,
                 CombineVersionWithCassetteVersion(version)
             );
         }
@@ -68,17 +67,14 @@ namespace Cassette
 
         public Module FindModuleContainingPath(string path)
         {
-            foreach (var container in moduleContainers.Values)
-            {
-                var module = container.FindModuleContainingPath(path);
-                if (module != null) return module;
-            }
-            return null;
+            return moduleContainers.Values
+                .Select(container => container.FindModuleContainingPath(path))
+                .FirstOrDefault(module => module != null);
         }
 
-        public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
+        public abstract IPageAssetManager GetPageAssetManager<T>() where T : Module;
 
-        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, bool isOutputOptimized, string version)
+        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, string version)
         {
             var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, moduleFactories);
             config.Configure(moduleConfiguration);
@@ -102,7 +98,7 @@ namespace Cassette
         /// </remarks>
         string CombineVersionWithCassetteVersion(string version)
         {
-            return version + "|" + GetType().Assembly.GetName().Version.ToString();
+            return version + "|" + GetType().Assembly.GetName().Version;
         }
 
         void AddDefaultModuleSourcesIfEmpty(ModuleConfiguration moduleConfiguration)

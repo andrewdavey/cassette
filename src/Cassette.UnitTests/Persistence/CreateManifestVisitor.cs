@@ -7,7 +7,7 @@ namespace Cassette.Persistence
 {
     public class CreateManifestVisitor_Tests
     {
-        Module module = new Module("test");
+        readonly Module module = new Module("test");
 
         [Fact]
         public void GivenModuleAndAssets_CreateManifestVisitorCreatesXElement()

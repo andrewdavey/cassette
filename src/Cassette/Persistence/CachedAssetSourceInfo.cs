@@ -33,7 +33,7 @@ namespace Cassette.Persistence
             throw new NotImplementedException();
         }
 
-        public void AddRawFileReference(string filename)
+        public void AddRawFileReference(string relativeFilename)
         {
             throw new NotImplementedException();
         }

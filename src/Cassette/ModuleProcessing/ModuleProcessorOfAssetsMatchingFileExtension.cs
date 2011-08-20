@@ -6,9 +6,9 @@ namespace Cassette.ModuleProcessing
     public abstract class ModuleProcessorOfAssetsMatchingFileExtension<T> : IModuleProcessor<T>
         where T : Module
     {
-        public ModuleProcessorOfAssetsMatchingFileExtension(string fileExtension)
+        protected ModuleProcessorOfAssetsMatchingFileExtension(string fileExtension)
         {
-            this.filenameEndsWith = "." + fileExtension;
+            filenameEndsWith = "." + fileExtension;
         }
 
         readonly string filenameEndsWith;

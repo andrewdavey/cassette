@@ -47,14 +47,14 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetScriptModuleA()
         {
-            var application = CreateApplication(modules =>
+            CreateApplication(modules =>
             {
                 modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
                 {
                     Exclude = new Regex(@"\.vsdoc\.js$")
                 });
             });
-            
+
             using (var http = new HttpTestHarness(routes))
             {
                 http.Get("~/_assets/scripts/scripts/module-a");
@@ -65,7 +65,7 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetScriptModuleB()
         {
-            var application = CreateApplication(modules =>
+            CreateApplication(modules =>
             {
                 modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
                 {

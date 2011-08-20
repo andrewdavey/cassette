@@ -33,7 +33,7 @@ namespace Cassette.Scripts
             if (application.IsOutputOptimized)
             {
                 yield return new ConcatenateAssets();
-                yield return new MinifyAssets(new MicrosoftJavaScriptMinifier());
+                yield return new MinifyAssets(Minifier);
             }
         }
     }
