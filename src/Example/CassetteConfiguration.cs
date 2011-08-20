@@ -34,6 +34,9 @@ namespace Example
                 CompileLess = true,
                 ConvertImageUrlsToDataUris = true
             });
+
+            modules.Customize<HtmlTemplateModule>(m => m.Processor = new JQueryTmplPipeline{KnockoutJS = true});
         }
     }
+
 }
