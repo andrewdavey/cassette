@@ -62,17 +62,36 @@ namespace Cassette.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to /**
-        ///* CoffeeScript Compiler v1.0.1
-        ///* http://coffeescript.org
-        ///*
-        ///* Copyright 2011, Jeremy Ashkenas
-        ///* Released under the MIT License
-        ///*/
-        ///this.CoffeeScript = function () { function require(a) { return require[a] } require[&quot;./helpers&quot;] = new function () { var a = this; (function () { var b, c; a.starts = function (a, b, c) { return b === a.substr(c, b.length) }, a.ends = function (a, b, c) { var d; d = b.length; return b === a.substr(a.length - d - (c || 0), d) }, a.compact = function (a) { var b, c, d, e; [rest of string was truncated]&quot;;.
+        /// * CoffeeScript Compiler v1.1.2
+        /// * http://coffeescript.org
+        /// *
+        /// * Copyright 2011, Jeremy Ashkenas
+        /// * Released under the MIT License
+        /// */
+        ///this.CoffeeScript=function(){function require(a){return require[a]}require[&quot;./helpers&quot;]=new function(){var a=this;(function(){var b,c;a.starts=function(a,b,c){return b===a.substr(c,b.length)},a.ends=function(a,b,c){var d;d=b.length;return b===a.substr(a.length-d-(c||0),d)},a.compact=function(a){var b,c,d,e;e=[];for(c=0,d=a.length;c&lt;d;c++)b=a[c],b&amp;&amp;e.push(b);return e},a.c [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string coffeescript {
             get {
                 return ResourceManager.GetString("coffeescript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to var tags = {
+        ///    &quot;tmpl&quot;: {
+        ///        _default: { $2: &quot;null&quot; },
+        ///        open: &quot;if($notnull_1){__=__.concat($item.nest($1,$2));}&quot;
+        ///        // tmpl target parameter can be of type function, so use $1, not $1a (so not auto detection of functions)
+        ///        // This means that {{tmpl foo}} treats foo as a template (which IS a function).
+        ///        // Explicit parens can be used if foo is a function that returns a template: {{tmpl foo()}}.
+        ///    },
+        ///    &quot;wrap&quot;: {
+        ///        _default: { $2: &quot;null&quot; },
+        ///        open: &quot;$it [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string jqueryTmplCompiler {
+            get {
+                return ResourceManager.GetString("jqueryTmplCompiler", resourceCulture);
             }
         }
         
@@ -90,7 +109,7 @@ namespace Cassette.Properties {
         ///    //
         ///    function require(arg) {
         ///        return window.less[arg.split(&apos;/&apos;)[1]];
-        ///    };
+        ///    }
         ///
         ///
         ///    // ecma-5.js
@@ -100,7 +119,7 @@ namespace Cassette.Properties {
         ///    // dantman Daniel Friesen
         ///
         ///    //
-        ///    // Arr [rest of string was truncated]&quot;;.
+        ///    // Arra [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string less {
             get {

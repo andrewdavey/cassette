@@ -53,6 +53,7 @@
     <Compile Include="DirectorySource.cs" />
     <Compile Include="FileSystemModuleSource.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
+    <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />
     <Compile Include="IModuleSource.cs" />
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="ModuleConfiguration.cs" />
@@ -161,7 +162,9 @@
   <ItemGroup>
     <None Include="Resources\less.js" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\jqueryTmplCompiler.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
