@@ -13,11 +13,11 @@ namespace Cassette.Stylesheets
         {
         }
 
-        static readonly Regex cssCommentRegex = new Regex(
+        static readonly Regex CssCommentRegex = new Regex(
             @"/\*(?<body>.*?)\*/",
             RegexOptions.Singleline
         );
-        static readonly Regex referenceRegex = new Regex(
+        static readonly Regex ReferenceRegex = new Regex(
             @"@reference \s+ (?<quote>[""']) (?<path>.*?) \<quote> \s* ;?",
             RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
@@ -43,13 +43,13 @@ namespace Cassette.Stylesheets
 
         IEnumerable<string> ParseReferences(string css)
         {
-            var commentBodies = cssCommentRegex
+            var commentBodies = CssCommentRegex
                     .Matches(css)
                     .Cast<Match>()
                     .Select(match => match.Groups["body"].Value);
 
             return from body in commentBodies
-                   from match in referenceRegex.Matches(body).Cast<Match>()
+                   from match in ReferenceRegex.Matches(body).Cast<Match>()
                    where match.Groups["path"].Success
                    select match.Groups["path"].Value;
         }

@@ -5,11 +5,11 @@ namespace Cassette.Scripts
 {
     public class ParseCoffeeScriptReferences : LineBasedAssetReferenceParser<Module>
     {
-        public ParseCoffeeScriptReferences() : base("coffee", referenceRegex)
+        public ParseCoffeeScriptReferences() : base("coffee", ReferenceRegex)
         {
         }
 
-        static readonly Regex referenceRegex = new Regex(
+        static readonly Regex ReferenceRegex = new Regex(
             @"#\s*reference\s+(?<quote>[""'])(?<path>.*?)\<quote>",
             RegexOptions.IgnoreCase
         );

@@ -32,9 +32,9 @@ namespace Cassette
             return references;
         }
 
-        public IEnumerable<T> SortModules(IEnumerable<T> modules)
+        public IEnumerable<T> SortModules(IEnumerable<T> modulesToSort)
         {
-            return modules.OrderBy(GetSortIndex);
+            return modulesToSort.OrderBy(GetSortIndex);
         }
 
         int GetSortIndex(T module)

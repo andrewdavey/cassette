@@ -5,7 +5,9 @@ namespace Cassette.Utilities
 {
     public static class StreamExtensions
     {
+// ReSharper disable InconsistentNaming
         public static byte[] ComputeSHA1Hash(this Stream stream)
+// ReSharper restore InconsistentNaming
         {
             using (var sha1 = SHA1.Create())
             {

@@ -15,7 +15,7 @@ namespace Cassette
         readonly string path;
         IList<IAsset> assets = new List<IAsset>();
         readonly HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
-        static readonly char[] slashes = new[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
+        static readonly char[] Slashes = new[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
 
         public string Path
         {
@@ -45,17 +45,17 @@ namespace Cassette
 
         public IAsset FindAssetByPath(string relativePath)
         {
-            var pathSegments = relativePath.Split(slashes);
+            var pathSegments = relativePath.Split(Slashes);
             return Assets.FirstOrDefault(
                 a => a.SourceFilename
-                      .Split(slashes)
+                      .Split(Slashes)
                       .SequenceEqual(pathSegments, StringComparer.OrdinalIgnoreCase)
             );
         }
 
         string NormalizePath(string relativePath)
         {
-            return relativePath.TrimEnd(slashes);
+            return relativePath.TrimEnd(Slashes);
         }
 
         public void Accept(IAssetVisitor visitor)

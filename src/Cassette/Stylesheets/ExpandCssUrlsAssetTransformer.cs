@@ -19,11 +19,11 @@ namespace Cassette.Stylesheets
         readonly Module module;
         readonly ICassetteApplication application;
 
-        static readonly Regex cssUrlRegex = new Regex(
+        static readonly Regex CssUrlRegex = new Regex(
             @"\b url \s* \( \s* (?<url>.*?) \s* \)", 
             RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
-        static readonly Regex absoluteUrlRegex = new Regex(
+        static readonly Regex AbsoluteUrlRegex = new Regex(
             @"^(https?:|data:|//)"
         );
 
@@ -66,10 +66,10 @@ namespace Cassette.Stylesheets
         /// </remarks>
         IEnumerable<Match> UrlMatchesInReverse(string css)
         {
-            return cssUrlRegex
+            return CssUrlRegex
                 .Matches(css)
                 .Cast<Match>()
-                .Where(match => absoluteUrlRegex.IsMatch(match.Groups["url"].Value) == false)
+                .Where(match => AbsoluteUrlRegex.IsMatch(match.Groups["url"].Value) == false)
                 .OrderByDescending(match => match.Index);
         }
 

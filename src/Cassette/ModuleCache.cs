@@ -19,17 +19,17 @@ namespace Cassette
 
         readonly IFileSystem cacheFileSystem;
         readonly IModuleFactory<T> moduleFactory;
-        readonly string containerFilename = "container.xml";
-        readonly string versionFilename = "version";
+        const string ContainerFilename = "container.xml";
+        const string VersionFilename = "version";
 
         public bool IsUpToDate(DateTime dateTime, string version, IFileSystem sourceFileSystem)
         {
-            if (!cacheFileSystem.FileExists(containerFilename)) return false;
-            if (!cacheFileSystem.FileExists(versionFilename)) return false;
+            if (!cacheFileSystem.FileExists(ContainerFilename)) return false;
+            if (!cacheFileSystem.FileExists(VersionFilename)) return false;
             
             if (IsSameVersion(version) == false) return false;
 
-            var lastWriteTime = cacheFileSystem.GetLastWriteTimeUtc(containerFilename);
+            var lastWriteTime = cacheFileSystem.GetLastWriteTimeUtc(ContainerFilename);
             if (lastWriteTime < dateTime) return false;
             
             var containerElement = LoadContainerElement(cacheFileSystem);
@@ -41,7 +41,7 @@ namespace Cassette
 
         bool IsSameVersion(string version)
         {
-            using (var reader = new StreamReader(cacheFileSystem.OpenFile(versionFilename, FileMode.Open, FileAccess.Read)))
+            using (var reader = new StreamReader(cacheFileSystem.OpenFile(VersionFilename, FileMode.Open, FileAccess.Read)))
             {
                 return reader.ReadLine() == version;
             }
@@ -79,7 +79,7 @@ namespace Cassette
 
         XElement LoadContainerElement(IFileSystem fileSystem)
         {
-            using (var containerFile = fileSystem.OpenFile(containerFilename, FileMode.Open, FileAccess.Read))
+            using (var containerFile = fileSystem.OpenFile(ContainerFilename, FileMode.Open, FileAccess.Read))
             {
                 return XDocument.Load(containerFile).Root;
             }
@@ -158,7 +158,7 @@ namespace Cassette
                     select createManifestVisitor.CreateManifest(module)
                 )
             );
-            using (var fileStream = cacheFileSystem.OpenFile(containerFilename, FileMode.Create, FileAccess.Write))
+            using (var fileStream = cacheFileSystem.OpenFile(ContainerFilename, FileMode.Create, FileAccess.Write))
             {
                 xml.Save(fileStream);
             }
@@ -166,7 +166,7 @@ namespace Cassette
 
         void SaveVersion(string version)
         {
-            using (var writer = new StreamWriter(cacheFileSystem.OpenFile(versionFilename, FileMode.Create, FileAccess.Write)))
+            using (var writer = new StreamWriter(cacheFileSystem.OpenFile(VersionFilename, FileMode.Create, FileAccess.Write)))
             {
                 writer.Write(version);
             }

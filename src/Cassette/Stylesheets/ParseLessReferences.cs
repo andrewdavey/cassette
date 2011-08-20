@@ -6,11 +6,11 @@ namespace Cassette.Stylesheets
     public class ParseLessReferences : LineBasedAssetReferenceParser<Module>
     {
         public ParseLessReferences() 
-            : base("less", referenceRegex)
+            : base("less", ReferenceRegex)
         {
         }
 
-        static readonly Regex referenceRegex = new Regex(
+        static readonly Regex ReferenceRegex = new Regex(
             @"// \s* @reference \s+ (?<quote>[""']) (?<path>.*?) \<quote> \s* ;?",
             RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );

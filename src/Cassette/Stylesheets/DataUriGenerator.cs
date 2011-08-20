@@ -10,7 +10,7 @@ namespace Cassette.Stylesheets
 {
     public class DataUriGenerator : IAssetTransformer
     {
-        static readonly Regex urlRegex = new Regex(
+        static readonly Regex UrlRegex = new Regex(
             @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
@@ -20,7 +20,7 @@ namespace Cassette.Stylesheets
             return delegate
             {
                 var css = openSourceStream().ReadToEnd();
-                var matches = urlRegex.Matches(css)
+                var matches = UrlRegex.Matches(css)
                                       .Cast<Match>()
                                       .Select(match => new UrlMatch(asset, match))
                                       .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
