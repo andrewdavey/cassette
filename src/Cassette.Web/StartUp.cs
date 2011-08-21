@@ -51,9 +51,7 @@ namespace Cassette.Web
 
         public static void ApplicationShutdown()
         {
-            if (storage == null) return;
             storage.Dispose();
-            storage = null;
             CassetteApplication.Dispose();
         }
 
