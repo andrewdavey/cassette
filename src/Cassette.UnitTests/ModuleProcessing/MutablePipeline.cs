@@ -117,6 +117,30 @@ namespace Cassette.ModuleProcessing
             pipeline.DummyStep.Updated.ShouldBeTrue();
         }
 
+        [Fact]
+        public void WhenPrependStep_ThenProcessCallsTheStepFirst()
+        {
+            var pipeline = new MockPipeline<Module>();
+            var step = new MockStep();
+            pipeline.Prepend(step);
+
+            pipeline.Process(new Module(""), Mock.Of<ICassetteApplication>());
+
+            (step.CallIndex < pipeline.DummyStep.CallIndex).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void WhenAppendStep_ThenProcessCallsTheStepLast()
+        {
+            var pipeline = new MockPipeline<Module>();
+            var step = new MockStep();
+            pipeline.Append(step);
+
+            pipeline.Process(new Module(""), Mock.Of<ICassetteApplication>());
+
+            (step.CallIndex > pipeline.DummyStep.CallIndex).ShouldBeTrue();
+        }
+
         class MockPipeline<T> : MutablePipeline<T>
             where T : Module
         {

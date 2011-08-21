@@ -21,6 +21,20 @@ namespace Cassette.ModuleProcessing
             }
         }
 
+        public void Prepend(IModuleProcessor<T> step)
+        {
+            pipelineModifiers.Add(
+                steps => (new[] { step }).Concat(steps)
+            );
+        }
+
+        public void Append(IModuleProcessor<T> step)
+        {
+            pipelineModifiers.Add(
+                steps => steps.Concat(new[] { step })
+            );
+        }
+
         public void Remove<TStep>()
             where TStep : IModuleProcessor<T>
         {
