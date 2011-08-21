@@ -2,20 +2,19 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Cassette.Web</id>
-        <version>0.5.4</version>
+        <version>0.6.0</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
         <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
         <projectUrl>https://github.com/andrewdavey/cassette</projectUrl>
-        <description>ASP.NET support for Cassette. Cassette automatically builds JavaScript, CSS and HTML template modules based on the dependencies between files. CoffeeScript is also supported.</description>
+        <description>ASP.NET support for Cassette. Cassette automatically builds JavaScript, CSS and HTML template modules based on the dependencies between files. CoffeeScript and LESS are also supported.</description>
         <tags>web javascript coffeescript css html templates asp.net</tags>
         <dependencies>
-            <dependency id="Cassette" version="0.5.4" />
+            <dependency id="Cassette" version="0.6.0" />
         </dependencies>
     </metadata>
     
     <files>
-        <file src="Web.config.transform" target="content"/>
         <file src="Views\Web.config.transform" target="content\Views"/>
     </files>
 </package>

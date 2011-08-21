@@ -71,7 +71,6 @@
     </None>
     <None Include="packages.config" />
     <None Include="Views\Web.config.transform" />
-    <None Include="Web.config.transform" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

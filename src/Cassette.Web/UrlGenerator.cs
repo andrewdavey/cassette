@@ -46,13 +46,25 @@ namespace Cassette.Web
 
         public string CreateAssetUrl(Module module, IAsset asset)
         {
-            return string.Format(
-                "{0}/{1}/{2}?{3}",
-                virtualDirectory,
-                ConvertToForwardSlashes(module.Path),
-                ConvertToForwardSlashes(asset.SourceFilename),
-                asset.Hash.ToHexString()
-            );
+            if (module.Path.Length == 0)
+            {
+                return string.Format(
+                    "{0}/{1}?{2}",
+                    virtualDirectory,
+                    ConvertToForwardSlashes(asset.SourceFilename),
+                    asset.Hash.ToHexString()
+                );
+            }
+            else
+            {
+                return string.Format(
+                    "{0}/{1}/{2}?{3}",
+                    virtualDirectory,
+                    ConvertToForwardSlashes(module.Path),
+                    ConvertToForwardSlashes(asset.SourceFilename),
+                    asset.Hash.ToHexString()
+                );
+            }
         }
 
         public string CreateAssetCompileUrl(Module module, IAsset asset)

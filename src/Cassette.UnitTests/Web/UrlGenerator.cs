@@ -200,6 +200,21 @@ namespace Cassette.Web
 
             url.ShouldEqual("/_assets/get/test/asset.coffee?01020f10");
         }
+
+        [Fact]
+        public void GivenModulePathIsEmptyString_ThenCreateAssetUrlDoesNotHaveDoubleSlash()
+        {
+            var module = new Module("");
+
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFilename).Returns("sub\\asset.js");
+            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
+            var app = new UrlGenerator("/");
+
+            var url = app.CreateAssetUrl(module, asset.Object);
+
+            url.ShouldEqual("/sub/asset.js?01020f10");
+        }
     }
 
     public class UrlGenerator_CreateImageUrl_Tests
