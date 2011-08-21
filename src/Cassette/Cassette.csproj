@@ -55,6 +55,7 @@
     <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
+    <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\WrapWithJavaScriptElement.cs" />
     <Compile Include="IModuleSource.cs" />
     <Compile Include="IUrlGenerator.cs" />
