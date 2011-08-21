@@ -10,7 +10,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void ProcessCallsCreatePipeline()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             pipeline.Process(new Module(""), Mock.Of<ICassetteApplication>());
             pipeline.CreatePipelineCalled.ShouldBeTrue();
         }
@@ -18,7 +18,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void ProcessCallsStep()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             pipeline.Process(new Module(""), Mock.Of<ICassetteApplication>());
             pipeline.DummyStep.ProcessCalled.ShouldBeTrue();
         }
@@ -26,7 +26,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenRemoveStep_ThenProcessDoesNotCallIt()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             pipeline.Remove<MockStep>();
 
             pipeline.Process(new Module(""), Mock.Of<ICassetteApplication>());
@@ -37,7 +37,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenReplaceStep_ThenProcessCallsNewStep()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var newStep = new MockStep();
             pipeline.Replace<MockStep>(newStep);
 
@@ -49,7 +49,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenReplaceStep_ThenProcessDoesNotCallOldStep()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var newStep = new MockStep();
             pipeline.Replace<MockStep>(newStep);
 
@@ -61,7 +61,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenInsertAfterStep_TheProcessCallsTheNewStep()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var newStep = new MockStep();
             pipeline.InsertAfter<MockStep>(newStep);
 
@@ -73,7 +73,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenInsertAfterStep_TheProcessCallsTheNewStepAfterOriginalStep()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var newStep = new MockStep();
             pipeline.InsertAfter<MockStep>(newStep);
 
@@ -85,7 +85,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenInsertBeforeStep_TheProcessCallsTheNewStep()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var newStep = new MockStep();
             pipeline.InsertBefore<MockStep>(newStep);
 
@@ -97,7 +97,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenInsertBeforeStep_TheProcessCallsTheNewStepBeforeOriginalStep()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var newStep = new MockStep();
             pipeline.InsertBefore<MockStep>(newStep);
 
@@ -109,7 +109,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenUpdateStep_ThenProcessCallsUpdateAction()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             pipeline.Update<MockStep>(step => step.Updated = true);
 
             pipeline.Process(new Module(""), Mock.Of<ICassetteApplication>());
@@ -120,7 +120,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenPrependStep_ThenProcessCallsTheStepFirst()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var step = new MockStep();
             pipeline.Prepend(step);
 
@@ -132,7 +132,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenAppendStep_ThenProcessCallsTheStepLast()
         {
-            var pipeline = new MockPipeline<Module>();
+            var pipeline = new MockPipeline();
             var step = new MockStep();
             pipeline.Append(step);
 
@@ -141,10 +141,9 @@ namespace Cassette.ModuleProcessing
             (step.CallIndex > pipeline.DummyStep.CallIndex).ShouldBeTrue();
         }
 
-        class MockPipeline<T> : MutablePipeline<T>
-            where T : Module
+        class MockPipeline : MutablePipeline<Module>
         {
-            protected override IEnumerable<IModuleProcessor<T>> CreatePipeline(T module, ICassetteApplication application)
+            protected override IEnumerable<IModuleProcessor<Module>> CreatePipeline(Module module, ICassetteApplication application)
             {
                 CreatePipelineCalled = true;
                 yield return DummyStep;
