@@ -29,13 +29,17 @@ namespace Example
 
             modules.Add(new PerSubDirectorySource<HtmlTemplateModule>("HtmlTemplates"));
 
-            modules.Customize<StylesheetModule>(m => m.Processor = new StylesheetPipeline
-            {
-                CompileLess = true,
-                ConvertImageUrlsToDataUris = true
-            });
+            modules.Customize<StylesheetModule>(
+                module => module.Processor = new StylesheetPipeline
+                {
+                    CompileLess = true,
+                    ConvertImageUrlsToDataUris = true
+                }
+            );
 
-            modules.Customize<HtmlTemplateModule>(m => m.Processor = new JQueryTmplPipeline{KnockoutJS = true});
+            modules.Customize<HtmlTemplateModule>(
+                module => module.Processor = new KnockoutJQueryTmplPipeline()
+            );
         }
     }
 
