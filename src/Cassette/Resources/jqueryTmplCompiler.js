@@ -1,4 +1,7 @@
-﻿var tags = {
+﻿// This code was butchered out of https://github.com/jquery/jquery-tmpl
+// It provides just enough to build HTML templates into a JavaScript function.
+
+var tmplTags = {
     "tmpl": {
         _default: { $2: "null" },
         open: "if($notnull_1){__=__.concat($item.nest($1,$2));}"
@@ -41,7 +44,7 @@
 
 function trim(s) {
     return s.replace(/^\s+/, '').replace(/\s+$/, '');
-};
+}
 
 function buildTmplFn(markup) {
     return "function(jQuery, $item) {" +
@@ -58,7 +61,7 @@ function buildTmplFn(markup) {
 				.replace(/\$\{([^\}]*)\}/g, "{{= $1}}")
 				.replace(/\{\{(\/?)(\w+|.)(?:\(((?:[^\}]|\}(?!\}))*?)?\))?(?:\s+(.*?)?)?(\(((?:[^\}]|\}(?!\}))*?)\))?\s*\}\}/g,
 				function (all, slash, type, fnargs, target, parens, args) {
-				    var tag = tags[type], def, expr, exprAutoFnDetect;
+				    var tag = tmplTags[type], def, expr, exprAutoFnDetect;
 				    if (!tag) {
 				        throw "Unknown template tag: " + type;
 				    }
