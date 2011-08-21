@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -13,7 +14,7 @@ namespace Cassette
     // This type-system trickery allows a List<ISearchableModuleContainer<Module>> to be searched
     // for any type of Module with the path. But a specific type of container module can still
     // return its strongly-typed modules.
-    public interface ISearchableModuleContainer<out T>
+    public interface ISearchableModuleContainer<out T> : IDisposable
         where T : Module
     {
         T FindModuleContainingPath(string path);

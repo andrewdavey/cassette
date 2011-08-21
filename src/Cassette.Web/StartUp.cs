@@ -54,6 +54,7 @@ namespace Cassette.Web
             if (storage == null) return;
             storage.Dispose();
             storage = null;
+            CassetteApplication.Dispose();
         }
 
         static ICassetteConfiguration CreateConfigurationByScanningAssembliesForType()

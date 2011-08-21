@@ -45,6 +45,22 @@ namespace Cassette
             get { return urlGenerator; }
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+
+            foreach(var container in moduleContainers.Values)
+            {
+                container.Dispose();
+            }
+            GC.SuppressFinalize(this); 
+        }
+
         protected IReferenceBuilder<T> CreateReferenceBuilder<T>()
             where T : Module
         {

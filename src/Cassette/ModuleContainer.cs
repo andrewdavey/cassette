@@ -121,5 +121,13 @@ namespace Cassette
                 }
             }
         }
+
+        public void Dispose()
+        {
+            foreach (var module in modules)
+            {
+                module.Dispose();
+            }
+        }
     }
 }
