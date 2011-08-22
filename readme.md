@@ -29,3 +29,8 @@ This will add the assembly references and Cassette HTTP module and handler to We
 The head over to the wiki to [Get Started](https://github.com/andrewdavey/cassette/wiki/Getting-Started).
 
 If you have questions, please let [@andrewdavey](http://twitter.com/andrewdavey) know.
+
+## Discussion Group ##
+
+[Join the Discussion Group](http://groups.google.com/group/cassette) to ask questions and learn about new features.
+
