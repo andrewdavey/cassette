@@ -77,6 +77,7 @@ namespace Cassette.Web
         {
             if (cassetteApplication.IsValueCreated)
             {
+                cassetteApplication.Value.Dispose();
                 cassetteApplication = new Lazy<CassetteApplication>(CreateCassetteApplication);
             }
         }
