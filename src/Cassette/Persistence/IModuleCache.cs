@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cassette
+namespace Cassette.Persistence
 {
     public interface IModuleCache<T>
         where T : Module

@@ -88,9 +88,9 @@
     <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
     <Compile Include="ICassetteApplication.cs" />
     <Compile Include="ICassetteConfiguration.cs" />
-    <Compile Include="IModuleCache.cs" />
+    <Compile Include="Persistence\IModuleCache.cs" />
     <Compile Include="IsolatedStorageFileSystem.cs" />
-    <Compile Include="ModuleCache.cs" />
+    <Compile Include="Persistence\ModuleCache.cs" />
     <Compile Include="ModuleContainsPathPredicate.cs" />
     <Compile Include="Stylesheets\MicrosoftStyleSheetMinifier.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />

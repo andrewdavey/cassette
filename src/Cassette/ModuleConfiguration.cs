@@ -1,8 +1,9 @@
-﻿// CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Persistence;
 using CreateModuleContainer = System.Func<bool, string, Cassette.ISearchableModuleContainer<Cassette.Module>>;
+// CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
 
 namespace Cassette
 {

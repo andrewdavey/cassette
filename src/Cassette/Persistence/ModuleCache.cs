@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Cassette.Persistence;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Persistence
 {
     public class ModuleCache<T> : IModuleCache<T>
         where T : Module
