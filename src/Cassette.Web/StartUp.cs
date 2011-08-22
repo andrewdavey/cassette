@@ -26,8 +26,15 @@ namespace Cassette.Web
 {
     public static class StartUp
     {
+        static ICassetteConfiguration configuration;
         static IsolatedStorageFile storage;
-        public static CassetteApplication CassetteApplication { get; private set; }
+        static FileSystemWatcher watcher;
+        static Lazy<CassetteApplication> cassetteApplication;
+
+        public static CassetteApplication CassetteApplication
+        {
+            get { return cassetteApplication.Value; }
+        }
 
         // If using an IoC container, this delegate can be replaced (in Application_Start) to
         // provide an alternative way to create the configuration object.
@@ -43,14 +50,40 @@ namespace Cassette.Web
         {
             storage = IsolatedStorageFile.GetMachineStoreForAssembly();
 
-            var configuration = CreateConfiguration();
-            CassetteApplication = CreateCassetteApplication(configuration);
+            configuration = CreateConfiguration();
+            cassetteApplication = new Lazy<CassetteApplication>(CreateCassetteApplication);
             
-            Assets.Application = CassetteApplication;
+            Assets.GetApplication = () => CassetteApplication;
+
+            if (ShouldOptimizeOutput() == false)
+            {
+                ReloadApplicationOnFileSystemChange();
+            }
+        }
+
+        static void ReloadApplicationOnFileSystemChange()
+        {
+            watcher = new FileSystemWatcher(CassetteApplication.RootDirectory.GetAbsolutePath(""))
+            {
+                IncludeSubdirectories = true,
+                EnableRaisingEvents = true
+            };
+            watcher.Changed += InvalidateCassetteApplication;
+            watcher.Renamed += InvalidateCassetteApplication;
+            watcher.Deleted += InvalidateCassetteApplication;
+        }
+
+        static void InvalidateCassetteApplication(object sender, FileSystemEventArgs e)
+        {
+            if (cassetteApplication.IsValueCreated)
+            {
+                cassetteApplication = new Lazy<CassetteApplication>(CreateCassetteApplication);
+            }
         }
 
         public static void ApplicationShutdown()
         {
+            if (watcher != null) watcher.Dispose();
             storage.Dispose();
             CassetteApplication.Dispose();
         }
@@ -80,7 +113,7 @@ namespace Cassette.Web
             }
         }
 
-        static CassetteApplication CreateCassetteApplication(ICassetteConfiguration configuration)
+        static CassetteApplication CreateCassetteApplication()
         {
             return new CassetteApplication(
                 configuration,

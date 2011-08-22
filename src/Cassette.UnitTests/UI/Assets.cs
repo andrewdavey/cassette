@@ -13,7 +13,7 @@ namespace Cassette.UI
         public void ScriptsReturnsPageAssetManager()
         {
             var application = new Mock<ICassetteApplication>();
-            Assets.Application = application.Object;
+            Assets.GetApplication = () => application.Object;
             var manager = new Mock<IPageAssetManager>();
             application.Setup(a => a.GetPageAssetManager<ScriptModule>())
                        .Returns(manager.Object);
@@ -25,7 +25,7 @@ namespace Cassette.UI
         public void StylesheetsReturnsPageAssetManager()
         {
             var application = new Mock<ICassetteApplication>();
-            Assets.Application = application.Object;
+            Assets.GetApplication = () => application.Object;
             var manager = new Mock<IPageAssetManager>();
             application.Setup(a => a.GetPageAssetManager<StylesheetModule>())
                        .Returns(manager.Object);
@@ -37,7 +37,7 @@ namespace Cassette.UI
         public void HtmlTemplatesReturnsPageAssetManager()
         {
             var application = new Mock<ICassetteApplication>();
-            Assets.Application = application.Object;
+            Assets.GetApplication = () => application.Object;
             var manager = new Mock<IPageAssetManager>();
             application.Setup(a => a.GetPageAssetManager<HtmlTemplateModule>())
                        .Returns(manager.Object);

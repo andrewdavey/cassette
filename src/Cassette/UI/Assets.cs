@@ -1,4 +1,5 @@
-﻿using Cassette.HtmlTemplates;
+﻿using System;
+using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
@@ -6,21 +7,21 @@ namespace Cassette.UI
 {
     public static class Assets
     {
-        public static ICassetteApplication Application;
+        public static Func<ICassetteApplication> GetApplication;
 
         public static IPageAssetManager Scripts
         {
-            get { return Application.GetPageAssetManager<ScriptModule>(); }
+            get { return GetApplication().GetPageAssetManager<ScriptModule>(); }
         }
 
         public static IPageAssetManager Stylesheets
         {
-            get { return Application.GetPageAssetManager<StylesheetModule>(); }
+            get { return GetApplication().GetPageAssetManager<StylesheetModule>(); }
         }
 
         public static IPageAssetManager HtmlTemplates
         {
-            get { return Application.GetPageAssetManager<HtmlTemplateModule>(); }
+            get { return GetApplication().GetPageAssetManager<HtmlTemplateModule>(); }
         }
     }
 }
