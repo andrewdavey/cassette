@@ -4,15 +4,16 @@ using System.IO;
 namespace Cassette
 {
     public class CassetteApplicationContainer<T> : IDisposable
+        where T : ICassetteApplication
     {
-        readonly Func<ICassetteApplication> createApplication;
+        readonly Func<T> createApplication;
         FileSystemWatcher watcher;
-        Lazy<ICassetteApplication> application;
+        Lazy<T> application;
 
-        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication)
+        public CassetteApplicationContainer(Func<T> createApplication)
         {
             this.createApplication = createApplication;
-            application = new Lazy<ICassetteApplication>(createApplication);
+            application = new Lazy<T>(createApplication);
 
             // In production mode we don't expect the asset files to change
             // while the application is running. Changes to assets will involve a 
@@ -28,7 +29,7 @@ namespace Cassette
             }
         }
 
-        public ICassetteApplication Application
+        public T Application
         {
             get
             {
@@ -60,7 +61,7 @@ namespace Cassette
 
                 application.Value.Dispose();
                 // Re-create the lazy object. So the application isn't created until it's asked for.
-                application = new Lazy<ICassetteApplication>(createApplication);
+                application = new Lazy<T>(createApplication);
             }
         }
 
