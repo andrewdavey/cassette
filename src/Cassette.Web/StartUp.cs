@@ -49,6 +49,7 @@ namespace Cassette.Web
         public static void PostApplicationStart()
         {
             storage = IsolatedStorageFile.GetMachineStoreForAssembly();
+            
             configuration = CreateConfiguration();
             applicationContainer = new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);
             
@@ -93,7 +94,7 @@ namespace Cassette.Web
                 new FileSystem(HttpRuntime.AppDomainAppPath),
                 new IsolatedStorageFileSystem(storage),
                 ShouldOptimizeOutput(),
-                GetConfigurationVersion(configuration, HttpRuntime.AppDomainAppVirtualPath),
+                GetConfigurationVersion(HttpRuntime.AppDomainAppVirtualPath),
                 new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
                 RouteTable.Routes,
                 GetCurrentHttpContext
@@ -106,7 +107,7 @@ namespace Cassette.Web
             return (compilation != null && compilation.Debug) == false;
         }
 
-        static string GetConfigurationVersion(ICassetteConfiguration configuration, string virtualDirectory)
+        static string GetConfigurationVersion(string virtualDirectory)
         {
             var assemblyVersion = configuration.GetType()
                 .Assembly
