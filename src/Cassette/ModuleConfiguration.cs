@@ -57,7 +57,7 @@ namespace Cassette
             {
                 moduleSourceResultsByType[typeof(T)] = Tuple.Create<object, CreateModuleContainer>(
                     result,
-                    (useCache, applicationVersion) => CreateModuleContainer<T>(useCache, applicationVersion)
+                    CreateModuleContainer<T>
                 );
             }
         }

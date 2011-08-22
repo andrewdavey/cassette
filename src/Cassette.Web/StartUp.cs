@@ -28,7 +28,6 @@ namespace Cassette.Web
     {
         static ICassetteConfiguration configuration;
         static IsolatedStorageFile storage;
-        static FileSystemWatcher watcher;
         static CassetteApplicationContainer<CassetteApplication> applicationContainer;
  
         public static CassetteApplication CassetteApplication
