@@ -43,19 +43,26 @@ namespace Cassette
 
         Tuple<T, DateTime> CreateModule(string directoryName, IFileSystem directory, IModuleFactory<T> moduleFactory)
         {
-            var lastWriteTimeMax = DateTime.MinValue;
-            var module = moduleFactory.CreateModule(directoryName);
-            foreach (var assetFilename in GetAssetFilenames(directory))
-            {
-                module.Assets.Add(new Asset(assetFilename, module, directory));
+            var filenames = GetAssetFilenames(directory).ToArray();
+            var preSorted = directory.FileExists("module.txt");
 
-                var lastWriteTime = directory.GetLastWriteTimeUtc(assetFilename);
-                if (lastWriteTime > lastWriteTimeMax)
-                {
-                    lastWriteTimeMax = lastWriteTime;
-                }
-            }
+            var module = moduleFactory.CreateModule(directoryName);
+            module.AddAssets(
+                filenames.Select(
+                    assetFilename => new Asset(assetFilename, module, directory)
+                ),
+                preSorted
+            );
+
+            var lastWriteTimeMax = GetLastWriteTimeMax(directory, filenames);
+
             return Tuple.Create(module, lastWriteTimeMax);
+        }
+
+        DateTime GetLastWriteTimeMax(IFileSystem directory, IEnumerable<string> filenames)
+        {
+            var lastWriteTimes = filenames.Select(directory.GetLastWriteTimeUtc);
+            return lastWriteTimes.Concat(new[] {DateTime.MinValue}).Max();
         }
 
         IEnumerable<string> GetAssetFilenames(IFileSystem directory)

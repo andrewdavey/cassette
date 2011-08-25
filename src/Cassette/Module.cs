@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -27,6 +28,17 @@ namespace Cassette
             get { return assets; }
             set { assets = value; }
         }
+
+        public void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
+        {
+            foreach (var asset in newAssets)
+            {
+                assets.Add(asset);
+            }
+            HasSortedAssets = preSorted;
+        }
+
+        bool HasSortedAssets { get; set; }
 
         public string ContentType { get; set; }
         public string Location { get; set; }
@@ -80,6 +92,24 @@ namespace Cassette
         protected bool IsCompiledAsset(IAsset asset)
         {
             return compiledAssets.Contains(asset);
+        }
+
+        public void SortAssetsByDependency()
+        {
+            if (HasSortedAssets) return;
+            // Graph topological sort, based on references between assets.
+            var assetsByFilename = Assets.ToDictionary(
+                a => System.IO.Path.Combine(Path, a.SourceFilename),
+                StringComparer.OrdinalIgnoreCase
+            );
+            var graph = new Graph<IAsset>(
+                Assets,
+                asset => asset.References
+                    .Where(reference => reference.Type == AssetReferenceType.SameModule)
+                    .Select(reference => assetsByFilename[reference.ReferencedPath])
+            );
+            assets = graph.TopologicalSort().ToList();
+            HasSortedAssets = true;
         }
 
         public void Dispose()
