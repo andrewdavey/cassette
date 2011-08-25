@@ -7,6 +7,11 @@ namespace Cassette.ModuleProcessing
 {
     public class MutablePipeline_Tests
     {
+        public MutablePipeline_Tests()
+        {
+            MockStep.count = 0;
+        }
+
         [Fact]
         public void ProcessCallsCreatePipeline()
         {
@@ -179,7 +184,7 @@ namespace Cassette.ModuleProcessing
             public int CallIndex;
             public bool Updated;
 
-            static int count;
+            public static int count;
         }
     }
 }
