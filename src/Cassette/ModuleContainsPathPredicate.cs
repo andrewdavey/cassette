@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -7,7 +8,7 @@ namespace Cassette
     {
         public bool ModuleContainsPath(string pathRelativeToModuleSource, Module module)
         {
-            pathToFind = NormalizePath(pathRelativeToModuleSource);
+            pathToFind = pathRelativeToModuleSource.IsUrl() ? pathRelativeToModuleSource : NormalizePath(pathRelativeToModuleSource);
             module.Accept(this);
             return isFound;
         }

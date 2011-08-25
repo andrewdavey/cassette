@@ -22,6 +22,6 @@
         /// The line number in the asset file that made this reference.
         /// </summary>
         public int SourceLineNumber { get; private set; }
-        public AssetReferenceType Type { get; private set; }
+        public AssetReferenceType Type { get; set; }
     }
 }

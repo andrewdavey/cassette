@@ -13,6 +13,10 @@
         /// <summary>
         /// For example, a reference to an image from a CSS file.
         /// </summary>
-        RawFilename
+        RawFilename,
+        /// <summary>
+        /// A direct reference to a URL.
+        /// </summary>
+        Url
     }
 }

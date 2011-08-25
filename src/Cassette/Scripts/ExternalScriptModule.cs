@@ -6,7 +6,7 @@ namespace Cassette.Scripts
     public class ExternalScriptModule : ScriptModule, IModuleSource<ScriptModule>
     {
         public ExternalScriptModule(string url)
-            : this("", url)
+            : this(url, url)
         {
         }
 

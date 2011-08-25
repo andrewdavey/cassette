@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -18,7 +19,7 @@ namespace Cassette
         
         public void AddReference(string path, string location)
         {
-            if (IsUrl(path))
+            if (path.IsUrl())
             {
                 var modules = GetOrCreateModuleSet(location);
                 modules.Add(moduleFactory.CreateExternalModule(path));
@@ -70,13 +71,6 @@ namespace Cassette
                 modulesByLocation.Add(location, modules);
                 return modules;
             }
-        }
-
-        bool IsUrl(string path)
-        {
-            return path.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
-                || path.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
-                || path.StartsWith("//");
         }
     }
 }

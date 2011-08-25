@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Cassette.Utilities
 {
@@ -12,6 +13,13 @@ namespace Cassette.Utilities
             writer.Flush();
             source.Position = 0;
             return source;
+        }
+
+        public static bool IsUrl(this string s)
+        {
+            return s.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
+                || s.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
+                || s.StartsWith("//");
         }
     }
 }

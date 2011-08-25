@@ -36,31 +36,43 @@ namespace Cassette
 
         public override void AddReference(string assetRelativeFilename, int lineNumber)
         {
-            if (assetRelativeFilename.StartsWith("~"))
+            if (assetRelativeFilename.IsUrl())
             {
-                assetRelativeFilename = assetRelativeFilename.Substring(1);
-                // So the path now starts with "/".
-            }
-
-            // If filename starts with "/" then Path.Combine will ignore the parentModule.Path.
-            // NormalizePath ignores this starting slash, so we get back a nice application relative path.
-
-            var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
-                parentModule.Path,
-                Path.GetDirectoryName(moduleRelativeFilename),
-                assetRelativeFilename
-            ));
-            AssetReferenceType type;
-            if (ModuleCouldContain(appRelativeFilename))
-            {
-                RequireModuleContainsReference(lineNumber, appRelativeFilename);
-                type = AssetReferenceType.SameModule;
+                AddUrlReference(assetRelativeFilename, lineNumber);
             }
             else
             {
-                type = AssetReferenceType.DifferentModule;
+                if (assetRelativeFilename.StartsWith("~"))
+                {
+                    assetRelativeFilename = assetRelativeFilename.Substring(1);
+                    // So the path now starts with "/".
+                }
+
+                // If filename starts with "/" then Path.Combine will ignore the parentModule.Path.
+                // NormalizePath ignores this starting slash, so we get back a nice application relative path.
+
+                var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
+                    parentModule.Path,
+                    Path.GetDirectoryName(moduleRelativeFilename),
+                    assetRelativeFilename
+                ));
+                AssetReferenceType type;
+                if (ModuleCouldContain(appRelativeFilename))
+                {
+                    RequireModuleContainsReference(lineNumber, appRelativeFilename);
+                    type = AssetReferenceType.SameModule;
+                }
+                else
+                {
+                    type = AssetReferenceType.DifferentModule;
+                }
+                references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
             }
-            references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
+        }
+
+        void AddUrlReference(string url, int sourceLineNumber)
+        {
+            references.Add(new AssetReference(url, this, sourceLineNumber, AssetReferenceType.Url));
         }
 
         public override void AddRawFileReference(string relativeFilename)

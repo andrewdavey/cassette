@@ -11,12 +11,13 @@ namespace Cassette
         public ModuleContainer(IEnumerable<T> modules)
         {
             this.modules = modules.ToArray(); // Force eval to prevent repeatedly generating new modules.
+            
             ValidateAssetReferences();
             moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
             sortIndex = BuildSortIndex();
         }
 
-        readonly IEnumerable<T> modules;
+        readonly T[] modules;
         readonly Dictionary<T, HashSet<T>> moduleImmediateReferences;
         readonly Dictionary<T, int> sortIndex;
 

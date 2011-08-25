@@ -120,7 +120,33 @@ namespace Cassette
                 }
             }
             ProcessAll(modulesArray);
-            return new ModuleContainer<T>(modulesArray);
+            return new ModuleContainer<T>(ConvertUrlReferencesToModules(modulesArray));
+        }
+
+        IEnumerable<T> ConvertUrlReferencesToModules<T>(IEnumerable<T> modules) where T : Module
+        {
+            var modulePaths = new HashSet<string>(modules.Select(m => m.Path));
+
+            foreach (var module in modules)
+            {
+                yield return module;
+
+                var urlReferences = module.Assets
+                    .SelectMany(asset => asset.References)
+                    .Where(r => r.Type == AssetReferenceType.Url);
+
+                foreach (var reference in urlReferences)
+                {
+                    if (modulePaths.Contains(reference.ReferencedPath) == false)
+                    {
+                        var urlModule = GetModuleFactory<T>().CreateExternalModule(reference.ReferencedPath);
+                        modulePaths.Add(urlModule.Path);
+                        yield return urlModule;
+                    }
+
+                    reference.Type = AssetReferenceType.DifferentModule;
+                }
+            }
         }
 
         void ProcessAll<T>(IEnumerable<T> modules)
