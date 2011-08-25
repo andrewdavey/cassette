@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.ModuleProcessing;
+using Cassette.Scripts;
+using Moq;
 using Should;
 using Xunit;
 
@@ -78,6 +81,24 @@ namespace Cassette
             {
                 source.GetModules(moduleFactory, application);
             });
+        }
+
+        [Fact]
+        public void WhenProcessorIsSetUsingCustomizeModule_ThenGetModulesReturnsModulesWithThatProcessor()
+        {
+            GivenFiles("scripts/module-a/1.js");
+
+            var source = new PerSubDirectorySource<ScriptModule>("scripts");
+            var factory = new Mock<IModuleFactory<ScriptModule>>();
+            factory.Setup(f => f.CreateModule(It.IsAny<string>()))
+                   .Returns<string>(p => new ScriptModule(p));
+            var processor = Mock.Of<IModuleProcessor<ScriptModule>>();
+
+            source.CustomizeModule = m => m.Processor = processor;
+
+            var result = source.GetModules(factory.Object, application);
+
+            result.Modules.First().Processor.ShouldBeSameAs(processor);
         }
     }
 }

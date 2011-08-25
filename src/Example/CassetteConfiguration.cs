@@ -24,23 +24,18 @@ namespace Example
 
             modules.Add(new DirectorySource<StylesheetModule>("Styles")
             {
-                FilePattern = "*.css;*.less"
-            });
-
-            modules.Add(new PerSubDirectorySource<HtmlTemplateModule>("HtmlTemplates"));
-
-            modules.Customize<StylesheetModule>(
-                module => module.Processor = new StylesheetPipeline
+                FilePattern = "*.css;*.less",
+                CustomizeModule = module => module.Processor = new StylesheetPipeline
                 {
                     CompileLess = true,
                     ConvertImageUrlsToDataUris = true
                 }
-            );
+            });
 
-            modules.Customize<HtmlTemplateModule>(
-                module => module.Processor = new KnockoutJQueryTmplPipeline()
-            );
+            modules.Add(new PerSubDirectorySource<HtmlTemplateModule>("HtmlTemplates")
+            {
+                CustomizeModule = module => module.Processor = new KnockoutJQueryTmplPipeline()
+            });
         }
     }
-
 }

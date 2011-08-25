@@ -14,6 +14,7 @@ namespace Cassette
         /// </summary>
         public string FilePattern { get; set; }
         public Regex Exclude { get; set; }
+        public Action<T> CustomizeModule { get; set; }
 
         public ModuleSourceResult<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
         {
@@ -30,8 +31,19 @@ namespace Cassette
             ).ToArray();
 
             var modules = modulesAndLastWriteTimes.Select(t => t.Item1);
+            CustomizeModules(modules);
             var lastWriteTimeMax = modulesAndLastWriteTimes.Max(t => t.Item2);
             return new ModuleSourceResult<T>(modules, lastWriteTimeMax);
+        }
+
+        void CustomizeModules(IEnumerable<T> modules)
+        {
+            if (CustomizeModule == null) return;
+
+            foreach (var module in modules)
+            {
+                CustomizeModule(module);
+            }
         }
 
         protected abstract IEnumerable<string> GetModuleDirectoryPaths(ICassetteApplication application);
