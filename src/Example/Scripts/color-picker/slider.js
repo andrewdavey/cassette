@@ -11,7 +11,7 @@
     this.ko.bindingHandlers['slider'] = {
 
         init: function (element, valueAccessor) {
-            initialValue = ko.utils.unwrapObservable(valueAccessor());
+            var initialValue = ko.utils.unwrapObservable(valueAccessor());
             // Create the jQuery UI slider.
             $(element).slider({
                 min: 0,

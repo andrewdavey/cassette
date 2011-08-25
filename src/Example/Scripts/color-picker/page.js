@@ -1,5 +1,6 @@
 ﻿/// <reference path="../lib/jquery.js" />
 /// <reference path="../lib/knockout.js" />
+/// <reference path="../app/namespace.js" />
 /// <reference path="ColorPickerViewModel.js" />
 
 $(function () {

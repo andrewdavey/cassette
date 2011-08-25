@@ -88,4 +88,4 @@
 
     });
 
-}).call(this);
+}).call(window);

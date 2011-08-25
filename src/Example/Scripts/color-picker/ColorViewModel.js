@@ -1,7 +1,7 @@
 ﻿/// <reference path="../app/namespace.js" />
+/// <reference path="../app/Event.js" />
 /// <reference path="../lib/Class.js" />
 /// <reference path="../lib/jquery.js" />
-/// <reference path="../app/Event.js" />
 /// <reference path="helpers.js" />
 
 (function () {
