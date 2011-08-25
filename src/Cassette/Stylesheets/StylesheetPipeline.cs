@@ -8,6 +8,7 @@ namespace Cassette.Stylesheets
         public StylesheetPipeline()
         {
             StylesheetMinifier = new MicrosoftStyleSheetMinifier();
+            CompileLess = true;
         }
 
         public IAssetTransformer StylesheetMinifier { get; set; }

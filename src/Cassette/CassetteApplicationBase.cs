@@ -137,7 +137,7 @@ namespace Cassette
         {
             return new DirectorySource<ScriptModule>("")
             {
-                FilePattern = "*.js",
+                FilePattern = "*.js;*.coffee",
                 Exclude = new Regex("-vsdoc\\.js$")
             };
         }
@@ -146,7 +146,7 @@ namespace Cassette
         {
             return new DirectorySource<StylesheetModule>("")
             {
-                FilePattern = "*.css"
+                FilePattern = "*.css;*.less"
             };
         }
 

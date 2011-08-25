@@ -8,6 +8,7 @@ namespace Cassette.Scripts
         public ScriptPipeline()
         {
             Minifier = new MicrosoftJavaScriptMinifier();
+            CompileCoffeeScript = true;
         }
 
         public bool CompileCoffeeScript { get; set; }
