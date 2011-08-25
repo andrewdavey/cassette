@@ -21,29 +21,32 @@ namespace Cassette.ModuleProcessing
             }
         }
 
-        public void Prepend(IModuleProcessor<T> step)
+        public MutablePipeline<T> Prepend(IModuleProcessor<T> step)
         {
             pipelineModifiers.Add(
                 steps => (new[] { step }).Concat(steps)
             );
+            return this;
         }
 
-        public void Append(IModuleProcessor<T> step)
+        public MutablePipeline<T> Append(IModuleProcessor<T> step)
         {
             pipelineModifiers.Add(
                 steps => steps.Concat(new[] { step })
             );
+            return this;
         }
 
-        public void Remove<TStep>()
+        public MutablePipeline<T> Remove<TStep>()
             where TStep : IModuleProcessor<T>
         {
             pipelineModifiers.Add(
                 steps => steps.Where(step => (step is TStep) == false)
             );
+            return this;
         }
 
-        public void Replace<TStep>(IModuleProcessor<T> newStep)
+        public MutablePipeline<T> Replace<TStep>(IModuleProcessor<T> newStep)
             where TStep : IModuleProcessor<T>
         {
             pipelineModifiers.Add(
@@ -51,9 +54,10 @@ namespace Cassette.ModuleProcessing
                     step => step is TStep ? newStep : step
                 )
             );
+            return this;
         }
 
-        public void InsertAfter<TStep>(IModuleProcessor<T> newStep)
+        public MutablePipeline<T> InsertAfter<TStep>(IModuleProcessor<T> newStep)
             where TStep : IModuleProcessor<T>
         {
             pipelineModifiers.Add(
@@ -63,9 +67,10 @@ namespace Cassette.ModuleProcessing
                         : new[] { step }
                 )
             );
+            return this;
         }
 
-        public void InsertBefore<TStep>(IModuleProcessor<T> newStep)
+        public MutablePipeline<T> InsertBefore<TStep>(IModuleProcessor<T> newStep)
             where TStep : IModuleProcessor<T>
         {
             pipelineModifiers.Add(
@@ -75,9 +80,10 @@ namespace Cassette.ModuleProcessing
                         : new[] { step }
                 )
             );
+            return this;
         }
 
-        public void Update<TStep>(Action<TStep> update)
+        public MutablePipeline<T> Update<TStep>(Action<TStep> update)
             where TStep : IModuleProcessor<T>
         {
             pipelineModifiers.Add(
@@ -90,6 +96,7 @@ namespace Cassette.ModuleProcessing
                     return steps;
                 }
             );
+            return this;
         }
 
         protected abstract IEnumerable<IModuleProcessor<T>> CreatePipeline(T module, ICassetteApplication application);

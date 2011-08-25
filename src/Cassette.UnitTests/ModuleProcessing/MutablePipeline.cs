@@ -141,6 +141,20 @@ namespace Cassette.ModuleProcessing
             (step.CallIndex > pipeline.DummyStep.CallIndex).ShouldBeTrue();
         }
 
+        [Fact]
+        public void CanChainModifications()
+        {
+            var pipeline = new MockPipeline();
+            var step1 = new MockStep();
+            var step2 = new MockStep();
+            pipeline.Append(step1).Append(step2);
+
+            pipeline.Process(new Module(""), Mock.Of<ICassetteApplication>());
+
+            step1.CallIndex.ShouldEqual(1);
+            step2.CallIndex.ShouldEqual(2);
+        }
+
         class MockPipeline : MutablePipeline<Module>
         {
             protected override IEnumerable<IModuleProcessor<Module>> CreatePipeline(Module module, ICassetteApplication application)
