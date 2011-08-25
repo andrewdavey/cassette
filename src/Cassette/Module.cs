@@ -15,6 +15,7 @@ namespace Cassette
 
         readonly string path;
         IList<IAsset> assets = new List<IAsset>();
+        bool hasSortedAssets;
         readonly HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
         static readonly char[] Slashes = new[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
 
@@ -35,10 +36,8 @@ namespace Cassette
             {
                 assets.Add(asset);
             }
-            HasSortedAssets = preSorted;
+            hasSortedAssets = preSorted;
         }
-
-        bool HasSortedAssets { get; set; }
 
         public string ContentType { get; set; }
         public string Location { get; set; }
@@ -96,7 +95,7 @@ namespace Cassette
 
         public void SortAssetsByDependency()
         {
-            if (HasSortedAssets) return;
+            if (hasSortedAssets) return;
             // Graph topological sort, based on references between assets.
             var assetsByFilename = Assets.ToDictionary(
                 a => System.IO.Path.Combine(Path, a.SourceFilename),
@@ -109,7 +108,7 @@ namespace Cassette
                     .Select(reference => assetsByFilename[reference.ReferencedPath])
             );
             assets = graph.TopologicalSort().ToList();
-            HasSortedAssets = true;
+            hasSortedAssets = true;
         }
 
         public void Dispose()
