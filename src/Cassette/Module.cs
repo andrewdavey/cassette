@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Cassette.ModuleProcessing;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -27,7 +28,19 @@ namespace Cassette
         public IList<IAsset> Assets
         {
             get { return assets; }
-            set { assets = value; }
+        }
+
+        public string ContentType { get; set; }
+
+        public string Location { get; set; }
+
+        public virtual bool IsPersistent
+        {
+            get { return true; }
+        }
+
+        public virtual void Process(ICassetteApplication application)
+        {
         }
 
         public void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
@@ -38,16 +51,6 @@ namespace Cassette
             }
             hasSortedAssets = preSorted;
         }
-
-        public string ContentType { get; set; }
-        public string Location { get; set; }
-
-        public virtual bool IsPersistent
-        {
-            get { return true; }
-        }
-
-        public virtual void Process(ICassetteApplication application) { }
 
         public bool ContainsPath(string relativePath)
         {
@@ -62,11 +65,6 @@ namespace Cassette
                       .Split(Slashes)
                       .SequenceEqual(pathSegments, StringComparer.OrdinalIgnoreCase)
             );
-        }
-
-        string NormalizePath(string relativePath)
-        {
-            return relativePath.TrimEnd(Slashes);
         }
 
         public void Accept(IAssetVisitor visitor)
@@ -111,12 +109,25 @@ namespace Cassette
             hasSortedAssets = true;
         }
 
+        public void ConcatenateAssets()
+        {
+            assets = new List<IAsset>(new[]
+            { 
+                new ConcatenatedAsset(assets)
+            });
+        }
+
         public void Dispose()
         {
             foreach (var asset in assets.OfType<IDisposable>())
             {
                 asset.Dispose();
             }
+        }
+
+        string NormalizePath(string relativePath)
+        {
+            return relativePath.TrimEnd(Slashes);
         }
     }
 }

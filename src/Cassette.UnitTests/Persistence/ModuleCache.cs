@@ -335,7 +335,7 @@ namespace Cassette.Persistence
 
             var assetB1 = StubAsset("1.js");
             var assetB2 = StubAsset("2.js");
-            var assetB = new ConcatenatedAsset(new[] { assetB1.Object, assetB2.Object }, new MemoryStream());
+            var assetB = new ConcatenatedAsset(new[] { assetB1.Object, assetB2.Object });
             moduleB.Assets.Add(assetB);
 
             var temp = Path.GetTempFileName();

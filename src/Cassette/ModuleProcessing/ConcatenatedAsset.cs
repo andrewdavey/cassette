@@ -12,11 +12,11 @@ namespace Cassette.ModuleProcessing
         readonly IEnumerable<IAsset> children;
         readonly MemoryStream stream;
 
-        public ConcatenatedAsset(IEnumerable<IAsset> children, MemoryStream stream)
+        public ConcatenatedAsset(IEnumerable<IAsset> children)
         {
+            this.children = children.ToArray();
+            stream = CopyAssetsIntoSingleStream(this.children);
             hash = stream.ComputeSHA1Hash();
-            this.children = children;
-            this.stream = stream;
         }
 
         public override void Accept(IAssetVisitor visitor)
@@ -69,6 +69,50 @@ namespace Cassette.ModuleProcessing
         public void Dispose()
         {
             stream.Dispose();
+        }
+
+        MemoryStream CopyAssetsIntoSingleStream(IEnumerable<IAsset> assets)
+        {
+            var outputStream = new MemoryStream();
+            var writer = new StreamWriter(outputStream);
+            var isFirstAsset = true;
+            foreach (var asset in assets)
+            {
+                if (isFirstAsset)
+                {
+                    isFirstAsset = false;
+                }
+                else
+                {
+                    writer.WriteLine();
+                }
+                WriteAsset(asset, writer);
+            }
+
+            writer.Flush();
+            outputStream.Position = 0;
+            return outputStream;
+        }
+
+        void WriteAsset(IAsset asset, StreamWriter writer)
+        {
+            using (var reader = new StreamReader(asset.OpenStream()))
+            {
+                var isFirstLine = true;
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (isFirstLine)
+                    {
+                        isFirstLine = false;
+                    }
+                    else
+                    {
+                        writer.WriteLine();
+                    }
+                    writer.Write(line);
+                }
+            }
         }
     }
 }

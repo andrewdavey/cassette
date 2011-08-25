@@ -13,11 +13,11 @@ namespace Cassette
     {
         public ConcatenatedAsset_Tests()
         {
-            stream = new MemoryStream(new byte[] { 1, 2, 3 });
-            asset = new ConcatenatedAsset(Enumerable.Empty<IAsset>(), stream);
+            var child = new Mock<IAsset>();
+            child.Setup(c => c.OpenStream()).Returns(() => new MemoryStream(new byte[] {1, 2, 3}));
+            asset = new ConcatenatedAsset(new[] {child.Object});
         }
 
-        readonly MemoryStream stream;
         readonly ConcatenatedAsset asset;
 
         [Fact]
@@ -33,7 +33,7 @@ namespace Cassette
 
         public void Dispose()
         {
-            stream.Dispose();
+            asset.Dispose();
         }
     }
 
@@ -42,10 +42,11 @@ namespace Cassette
         public GivenConcatenatedAsset_WithTwoChildren()
         {
             child1 = new Mock<IAsset>();
+            child1.Setup(c => c.OpenStream()).Returns(() => Stream.Null);
             child2 = new Mock<IAsset>();
+            child2.Setup(c => c.OpenStream()).Returns(() => Stream.Null);
             asset = new ConcatenatedAsset(
-                new[] { child1.Object, child2.Object },
-                new MemoryStream()
+                new[] { child1.Object, child2.Object }
             );
         }
 
