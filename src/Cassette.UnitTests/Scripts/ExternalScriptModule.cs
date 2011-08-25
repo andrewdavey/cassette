@@ -111,14 +111,14 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void CanCreateAdHocExternalScriptModule()
+        public void CanCreateAdHocExternalScriptModuleWithOnlyAUrl()
         {
             var module = new ExternalScriptModule("http://test.com/api.js");
-            module.Path.ShouldEqual("");
+            module.Path.ShouldEqual("http://test.com/api.js");
         }
 
         [Fact]
-        public void CanCreateExternalScriptModuleWithOnlyAUrl()
+        public void CanCreateNamedExternalScriptModule()
         {
             var module = new ExternalScriptModule("api", "http://test.com/api.js");
             module.Path.ShouldEqual("api");

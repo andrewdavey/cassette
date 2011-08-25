@@ -194,6 +194,33 @@ namespace Cassette
         }
 
         [Fact]
+        public void WhenAddReferenceToUrl_ThenReferenceIsDifferentModule()
+        {
+            var url = "http://maps.google.com/maps/api/js?v=3.2&sensor=false";
+            asset.AddReference(url, 1);
+            asset.References.First().ReferencedPath.ShouldEqual(url);
+            asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
+        }
+
+        [Fact]
+        public void WhenAddReferenceToHttpsUrl_ThenReferenceIsDifferentModule()
+        {
+            var url = "https://maps.google.com/maps/api/js?v=3.2&sensor=false";
+            asset.AddReference(url, 1);
+            asset.References.First().ReferencedPath.ShouldEqual(url);
+            asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
+        }
+
+        [Fact]
+        public void WhenAddReferenceToProtocolRelativeUrl_ThenReferenceIsDifferentModule()
+        {
+            var url = "//maps.google.com/maps/api/js?v=3.2&sensor=false";
+            asset.AddReference(url, 1);
+            asset.References.First().ReferencedPath.ShouldEqual(url);
+            asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
+        }
+
+        [Fact]
         public void AcceptCallsVisitOnVisitor()
         {
             var visitor = new Mock<IAssetVisitor>();
