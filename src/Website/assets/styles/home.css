@@ -3,7 +3,7 @@
 .banner {
     max-width: 960px;
     margin: 0 auto;
-    height: 390px;
+    min-height: 390px;
 }
 .banner h1 {
     font-family: "Droid Sans" , sans-serif;
@@ -99,7 +99,7 @@
     background-color: #fafafa;
 }
 .file-details {
-    width: 310px;
+    width: 305px;
     padding: 10px;
     display: table-cell;
     vertical-align: top;
