@@ -1,0 +1,43 @@
+﻿/* @reference "page.css"; */
+
+.main .documentation {
+    display: table;
+    width: 100%;
+    padding: 0;
+    background-color: #fafafa;
+}
+
+.documentation .tree {
+    display: table-cell;
+    width: 250px;
+    border-right: 1px solid #ccc;
+}
+
+.documentation .item {
+    display: table-cell;
+    padding: 10px;
+}
+
+.tree ul {
+    padding: 0;
+    margin: 0;
+}
+
+.tree > ul {
+    margin: 1em;
+}
+
+.tree li {
+    list-style-type: none;
+    background-image: url(images/page.png);
+    background-repeat: no-repeat;
+    background-position: left 0;
+    padding: 0 0 0 20px;
+    line-height: 16px;
+    margin-bottom: 5px;
+}
+
+.tree li > ul {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}

@@ -1,10 +1,44 @@
 ﻿@{
     ViewBag.Title = "Cassette Documentation";
 }
-
+@functions {
+    string Doc(string path)
+    {
+        return Url.RouteUrl("Documentation", new { path });
+    }
+}
 <div class="main">
     <h1>Documentation</h1>
     <div class="content documentation">
-        
+        <div class="tree">
+            <ul>
+                <li><a href="@Doc("")">Getting Started</a></li>
+                <li>
+                    <a href="@Doc("scripts")">Scripts</a>
+                    <ul>
+                        <li><a href="@Doc("scripts/coffeescript")">CoffeeScript</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="@Doc("stylesheets")">Stylesheets</a>
+                    <ul>
+                        <li><a href="@Doc("stylesheets/less")">LESS</a></li>
+                        <li><a href="@Doc("stylesheets/data-uris")">Data-URIs</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="@Doc("html-templates")">HTML Templates</a>
+                    <ul>
+                        <li><a href="@Doc("html-templates/compilation")">Server-side compilation</a></li>
+                        <li><a href="@Doc("html-templates/knockoutjs")">KnockoutJS</a></li>
+                    </ul>
+                </li>
+                <li><a href="@Doc("how-it-works")">How it works</a></li>
+                <li><a href="@Doc("advanced")">Advanced</a></li>
+            </ul>
+        </div>
+        <div class="item">
+            @Html.Partial((string)ViewBag.ChildView)
+        </div>
     </div>
 </div>

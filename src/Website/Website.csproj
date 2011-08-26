@@ -69,9 +69,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\styles\code.css" />
+    <Content Include="assets\styles\documentation.css" />
     <Content Include="assets\styles\download.css" />
     <Content Include="assets\styles\home.css" />
     <Content Include="assets\styles\images\background.gif" />
+    <Content Include="assets\styles\images\bullet_toggle_minus.png" />
+    <Content Include="assets\styles\images\bullet_toggle_plus.png" />
+    <Content Include="assets\styles\images\folder.png" />
+    <Content Include="assets\styles\images\page.png" />
     <Content Include="assets\styles\images\screencast.jpg" />
     <Content Include="assets\styles\module.txt" />
     <Content Include="assets\styles\normalize.css" />
@@ -111,6 +116,27 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\GettingStarted.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Scripts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Scripts_CoffeeScript.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Stylesheets.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Stylesheets_Less.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Stylesheets_DataUris.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\HtmlTemplates.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
