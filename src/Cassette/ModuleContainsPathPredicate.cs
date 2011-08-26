@@ -39,7 +39,7 @@ namespace Cassette
         {
             return path
                 .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                .Replace("\\", "/");
         }
     }
 }

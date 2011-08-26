@@ -6,7 +6,7 @@ namespace Cassette.Stylesheets
     public class ExternalStylesheetModule : StylesheetModule, IModuleSource<StylesheetModule>
     {
         public ExternalStylesheetModule(string url)
-            : base("")
+            : base(url)
         {
             this.url = url;
         }

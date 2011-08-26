@@ -11,17 +11,31 @@ namespace Cassette.UI
 
         public static IPageAssetManager Scripts
         {
-            get { return GetApplication().GetPageAssetManager<ScriptModule>(); }
+            get { return Application.GetPageAssetManager<ScriptModule>(); }
         }
 
         public static IPageAssetManager Stylesheets
         {
-            get { return GetApplication().GetPageAssetManager<StylesheetModule>(); }
+            get { return Application.GetPageAssetManager<StylesheetModule>(); }
         }
 
         public static IPageAssetManager HtmlTemplates
         {
-            get { return GetApplication().GetPageAssetManager<HtmlTemplateModule>(); }
+            get { return Application.GetPageAssetManager<HtmlTemplateModule>(); }
+        }
+
+        static ICassetteApplication Application
+        {
+            get
+            {
+                if (GetApplication == null)
+                {
+                    // We rely on Cassette.Web (or some other) integration library to hook up its application object.
+                    // If the delegate is null then the developer probably forgot to reference the integration library.
+                    throw new InvalidOperationException("A Cassette application has not been assigned. Make sure a Cassette integration library has been referenced. For example, reference Cassette.Web.dll");
+                }
+                return GetApplication();
+            }
         }
     }
 }
