@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cassette.Utilities;
+using System.IO;
 
 namespace Cassette
 {
@@ -26,6 +27,15 @@ namespace Cassette
             }
             else
             {
+                if (path.StartsWith("/"))
+                {
+                    path = "~" + path;
+                }
+                else if (path.StartsWith("~") == false)
+                {
+                    path = Path.Combine("~", path);
+                }
+
                 var referencedModule = moduleContainer.FindModuleContainingPath(path);
                 if (referencedModule == null)
                 {

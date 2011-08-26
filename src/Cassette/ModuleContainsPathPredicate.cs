@@ -1,14 +1,13 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Cassette.Utilities;
 
 namespace Cassette
 {
     public class ModuleContainsPathPredicate : IAssetVisitor
     {
-        public bool ModuleContainsPath(string pathRelativeToModuleSource, Module module)
+        public bool ModuleContainsPath(string path, Module module)
         {
-            pathToFind = pathRelativeToModuleSource.IsUrl() ? pathRelativeToModuleSource : NormalizePath(pathRelativeToModuleSource);
+            pathToFind = path.IsUrl() ? path : NormalizePath(path, module);
             module.Accept(this);
             return isFound;
         }
@@ -20,7 +19,7 @@ namespace Cassette
         void IAssetVisitor.Visit(Module module)
         {
             currentModule = module;
-            if (module.Path.Equals(pathToFind, StringComparison.OrdinalIgnoreCase))
+            if (IsMatch(module.Path))
             {
                 isFound = true;
             }
@@ -29,17 +28,28 @@ namespace Cassette
         void IAssetVisitor.Visit(IAsset asset)
         {
             var filename = Path.Combine(currentModule.Path, asset.SourceFilename);
-            if (filename.Equals(pathToFind, StringComparison.OrdinalIgnoreCase))
+            if (IsMatch(filename))
             {
                 isFound = true;
             }
         }
 
-        string NormalizePath(string path)
+        string NormalizePath(string path, Module module)
         {
-            return path
-                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                .Replace("\\", "/");
+            path = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (path.StartsWith("~"))
+            {
+                return path.Substring(2);
+            }
+            else
+            {
+                return Path.Combine(module.Path, path);
+            }
+        }
+
+        bool IsMatch(string path)
+        {
+            return PathUtilities.PathsEqual(path, pathToFind);
         }
     }
 }

@@ -101,7 +101,7 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().ReferencedPath.ShouldEqual("module\\another.js");
+            asset.References.First().ReferencedPath.ShouldEqual("~\\module\\another.js");
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace Cassette
         {
             asset.AddReference("../another/test.js", 1);
 
-            asset.References.First().ReferencedPath.ShouldEqual("another\\test.js");
+            asset.References.First().ReferencedPath.ShouldEqual("~\\another\\test.js");
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace Cassette
             asset.AddReference("/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.ReferencedPath.ShouldEqual("another\\test.js");
+            reference.ReferencedPath.ShouldEqual("~\\another\\test.js");
             reference.Type.ShouldEqual(AssetReferenceType.DifferentModule);
         }
 
@@ -154,7 +154,7 @@ namespace Cassette
             asset.AddReference("~/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.ReferencedPath.ShouldEqual("another\\test.js");
+            reference.ReferencedPath.ShouldEqual("~\\another\\test.js");
         }
 
         [Fact]
@@ -176,7 +176,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void WhenAddRawReferenceTwiceWithSamePath_TheReferencesHasItOnlyOnce()
+        public void WhenAddRawReferenceTwiceWithSamePath_ThenReferencesHasItOnlyOnce()
         {
             asset.AddRawFileReference("test.png");
             asset.AddRawFileReference("test.png");
@@ -185,7 +185,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void WhenAddRawReferenceTwiceWithSameEffectivePath_TheReferencesHasItOnlyOnce()
+        public void WhenAddRawReferenceTwiceWithSameEffectivePath_ThenReferencesHasItOnlyOnce()
         {
             asset.AddRawFileReference("../module/test.png");
             asset.AddRawFileReference("./test.png");

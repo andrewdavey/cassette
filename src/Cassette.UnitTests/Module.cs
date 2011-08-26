@@ -31,7 +31,7 @@ namespace Cassette
             asset.Setup(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);
 
-            module.ContainsPath("test\\asset.js").ShouldBeTrue();
+            module.ContainsPath("~\\test\\asset.js").ShouldBeTrue();
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Cassette
             asset.Setup(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);
 
-            module.ContainsPath("test/asset.js").ShouldBeTrue();
+            module.ContainsPath("~/test/asset.js").ShouldBeTrue();
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace Cassette
             asset.Setup(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);
 
-            module.ContainsPath("TEST\\ASSET.js").ShouldBeTrue();
+            module.ContainsPath("~\\TEST\\ASSET.js").ShouldBeTrue();
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Cassette
         {
             var module = new Module("test");
 
-            module.ContainsPath("test\\not-in-module.js").ShouldBeFalse();
+            module.ContainsPath("~\\test\\not-in-module.js").ShouldBeFalse();
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Cassette
         {
             var module = new Module("test");
 
-            module.ContainsPath("test").ShouldBeTrue();
+            module.ContainsPath("~\\test").ShouldBeTrue();
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Cassette
         {
             var module = new Module("test");
 
-            module.ContainsPath("TEST").ShouldBeTrue();
+            module.ContainsPath("~\\TEST").ShouldBeTrue();
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Cassette
         {
             var module = new Module("test");
 
-            module.ContainsPath("test\\").ShouldBeTrue();
+            module.ContainsPath("~\\test\\").ShouldBeTrue();
         }
 
         [Fact]

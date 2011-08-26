@@ -22,7 +22,7 @@ namespace Cassette.Web
 
         public void ProcessRequest(HttpContext _)
         {
-            var path = requestContext.RouteData.GetRequiredString("path");
+            var path = "~/" + requestContext.RouteData.GetRequiredString("path");
             var response = requestContext.HttpContext.Response;
             var module = getModuleForPath(path);
             if (module == null)
@@ -30,11 +30,7 @@ namespace Cassette.Web
                 NotFound(response);
                 return;
             }
-            // Asset path must be relative to the Module. So remove the module's path from the start.
-            if (module.Path.Length > 0)
-            {
-                path = path.Substring(module.Path.Length + 1); // +1 to also remove the slash.
-            }
+            
             var asset = module.FindAssetByPath(path);
             if (asset == null)
             {

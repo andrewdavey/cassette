@@ -1,9 +1,16 @@
-﻿namespace Cassette
+﻿using System;
+
+namespace Cassette
 {
     public class AssetReference
     {
         public AssetReference(string referencedPath, IAsset sourceAsset, int sourceLineNumber, AssetReferenceType type)
         {
+            if ((type == AssetReferenceType.DifferentModule || type == AssetReferenceType.SameModule)
+                && referencedPath.StartsWith("~")==false)
+            {
+                throw new ArgumentException("Referenced path must be application relative and start with a \"~\".");
+            }
             ReferencedPath = referencedPath;
             SourceAsset = sourceAsset;
             SourceLineNumber = sourceLineNumber;

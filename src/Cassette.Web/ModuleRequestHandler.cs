@@ -59,7 +59,7 @@ namespace Cassette.Web
 
         T FindModule()
         {
-            var path = routeData.GetRequiredString("path");
+            var path = Path.Combine("~", routeData.GetRequiredString("path"));
             path = RemoveTrailingHashFromPath(path);
             return moduleContainer.FindModuleContainingPath(path);
         }

@@ -41,13 +41,13 @@ namespace Cassette.ModuleProcessing
             asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
             asset1.SetupGet(a => a.References).Returns(new[] 
             {
-                new AssetReference("other1.js", asset1.Object, 0, AssetReferenceType.DifferentModule)
+                new AssetReference("~\\other1.js", asset1.Object, 0, AssetReferenceType.DifferentModule)
             });
             asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
             asset2.SetupGet(a => a.References).Returns(new[]
             { 
-                new AssetReference("other1.js", asset2.Object, 0, AssetReferenceType.DifferentModule),
-                new AssetReference("other2.js", asset2.Object, 0, AssetReferenceType.DifferentModule) 
+                new AssetReference("~\\other1.js", asset2.Object, 0, AssetReferenceType.DifferentModule),
+                new AssetReference("~\\other2.js", asset2.Object, 0, AssetReferenceType.DifferentModule) 
             });
             module.Assets.Add(asset1.Object);
             module.Assets.Add(asset2.Object);
@@ -58,7 +58,7 @@ namespace Cassette.ModuleProcessing
             module.Assets[0].References
                 .Select(r => r.ReferencedPath)
                 .OrderBy(f => f)
-                .SequenceEqual(new[] { "other1.js", "other1.js", "other2.js" })
+                .SequenceEqual(new[] { "~\\other1.js", "~\\other1.js", "~\\other2.js" })
                 .ShouldBeTrue();
         }
     }

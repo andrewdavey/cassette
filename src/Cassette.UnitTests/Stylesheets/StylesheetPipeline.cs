@@ -11,9 +11,9 @@ namespace Cassette.Stylesheets
     public class StylesheetPipeline_Tests
     {
         [Fact]
-        public void CompileLessDefaultsToFalse()
+        public void CompileLessDefaultsToTrue()
         {
-            new StylesheetPipeline().CompileLess.ShouldBeFalse();
+            new StylesheetPipeline().CompileLess.ShouldBeTrue();
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace Cassette.Stylesheets
             asset2.Setup(a => a.OpenStream())
                   .Returns(() => "p { color: White; }".AsStream());
             asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("asset2.css", asset1.Object, -1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~\\asset2.css", asset1.Object, -1, AssetReferenceType.SameModule) });
         }
 
         protected readonly Mock<IAsset> asset1;

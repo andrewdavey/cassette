@@ -36,5 +36,19 @@ namespace Cassette.Utilities
             }
             return string.Join(Path.DirectorySeparatorChar.ToString(), stack.Reverse());
         }
+
+        public static bool PathsEqual(string path1, string path2)
+        {
+            if (path1 == null && path2 == null)
+            {
+                return true;
+            }
+            if (path1 == null || path2 == null)
+            {
+                return false;
+            }
+            var slashes = new[] {Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar};
+            return path1.Split(slashes).SequenceEqual(path2.Split(slashes), StringComparer.OrdinalIgnoreCase);
+        }
     }
 }

@@ -52,14 +52,26 @@ namespace Cassette
             hasSortedAssets = preSorted;
         }
 
-        public bool ContainsPath(string relativePath)
+        public bool ContainsPath(string path)
         {
-            return new ModuleContainsPathPredicate().ModuleContainsPath(relativePath, this);
+            return new ModuleContainsPathPredicate().ModuleContainsPath(path, this);
         }
 
-        public IAsset FindAssetByPath(string relativePath)
+        public IAsset FindAssetByPath(string path)
         {
-            var pathSegments = relativePath.Split(Slashes);
+            if (path.StartsWith("~"))
+            {
+                // Asset path must be relative to the Module. So remove the module's path from the start.
+                if (Path.Length > 0)
+                {
+                    path = path.Substring(Path.Length + 3); // +3 to also remove the "~/ModulePath/" prefix.
+                }
+                else
+                {
+                    path = path.Substring(2); // +2 to remove the "~/" prefix.
+                }
+            }
+            var pathSegments = path.Split(Slashes);
             return Assets.FirstOrDefault(
                 a => a.SourceFilename
                       .Split(Slashes)
@@ -96,7 +108,7 @@ namespace Cassette
             if (hasSortedAssets) return;
             // Graph topological sort, based on references between assets.
             var assetsByFilename = Assets.ToDictionary(
-                a => System.IO.Path.Combine(Path, a.SourceFilename),
+                a => System.IO.Path.Combine("~", Path, a.SourceFilename),
                 StringComparer.OrdinalIgnoreCase
             );
             var graph = new Graph<IAsset>(

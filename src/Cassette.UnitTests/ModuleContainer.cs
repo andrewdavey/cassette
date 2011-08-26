@@ -23,14 +23,14 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("module-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentModule) });
             module.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
                 new ModuleContainer<Module>(new[] { module });
             });
-            exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\". Cannot find \"fail\\fail.js\".");
+            exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\". Cannot find \"~\\fail\\fail.js\".");
         }
 
         [Fact]
@@ -40,14 +40,14 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("module-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentModule) });
             module.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
                 new ModuleContainer<Module>(new[] { module });
             });
-            exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\", line 42. Cannot find \"fail\\fail.js\".");
+            exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\", line 42. Cannot find \"~\\fail\\fail.js\".");
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace Cassette
             var container = new ModuleContainer<Module>(new[] {
                 expectedModule
             });
-            var actualModule = container.FindModuleContainingPath("test");
+            var actualModule = container.FindModuleContainingPath("~/test");
             actualModule.ShouldBeSameAs(expectedModule);
         }
 
@@ -67,7 +67,7 @@ namespace Cassette
             var container = new ModuleContainer<Module>(new[] {
                 new Module("test")
             });
-            var actualModule = container.FindModuleContainingPath("WRONG");
+            var actualModule = container.FindModuleContainingPath("~/WRONG");
             actualModule.ShouldBeNull();
         }
 
@@ -83,7 +83,7 @@ namespace Cassette
             var container = new ModuleContainer<Module>(new[] {
                 expectedModule
             });
-            var actualModule = container.FindModuleContainingPath("test/test.js");
+            var actualModule = container.FindModuleContainingPath("~/test/test.js");
             actualModule.ShouldBeSameAs(expectedModule);
         }
 
@@ -94,7 +94,7 @@ namespace Cassette
             var asset1 = new Mock<IAsset>();
             SetupAsset("a.js", asset1);
             asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("~\\module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
             module1.Assets.Add(asset1.Object);
 
             var module2 = new Module("module-2");
@@ -115,14 +115,14 @@ namespace Cassette
             var asset1 = new Mock<IAsset>();
             SetupAsset("a.js", asset1);
             asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("~\\module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
             module1.Assets.Add(asset1.Object);
 
             var module2 = new Module("module-2");
             var asset2 = new Mock<IAsset>();
             SetupAsset("b.js", asset2);
             asset2.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-3\\c.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("~\\module-3\\c.js", asset1.Object, 1, AssetReferenceType.DifferentModule) });
             module2.Assets.Add(asset2.Object);
 
             var module3 = new Module("module-3");
@@ -145,8 +145,8 @@ namespace Cassette
             SetupAsset("a.js", asset1);
             asset1.SetupGet(a => a.References)
                   .Returns(new[] { 
-                      new AssetReference("module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule),
-                      new AssetReference("module-3\\c.js", asset1.Object, 1, AssetReferenceType.DifferentModule)
+                      new AssetReference("~\\module-2\\b.js", asset1.Object, 1, AssetReferenceType.DifferentModule),
+                      new AssetReference("~\\module-3\\c.js", asset1.Object, 1, AssetReferenceType.DifferentModule)
                   });
             module1.Assets.Add(asset1.Object);
 
@@ -154,14 +154,14 @@ namespace Cassette
             var asset2 = new Mock<IAsset>();
             SetupAsset("b.js", asset2);
             asset2.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-4\\d.js", asset2.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("~\\module-4\\d.js", asset2.Object, 1, AssetReferenceType.DifferentModule) });
             module2.Assets.Add(asset2.Object);
 
             var module3 = new Module("module-3");
             var asset3 = new Mock<IAsset>();
             SetupAsset("c.js", asset3);
             asset3.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("module-4\\d.js", asset3.Object, 1, AssetReferenceType.DifferentModule) });
+                  .Returns(new[] { new AssetReference("~\\module-4\\d.js", asset3.Object, 1, AssetReferenceType.DifferentModule) });
             module3.Assets.Add(asset3.Object);
 
             var module4 = new Module("module-4");

@@ -21,7 +21,7 @@ namespace Cassette
             }
 
             this.moduleRelativeFilename = moduleRelativeFilename;
-            filename = Path.GetFileName(moduleRelativeFilename);
+            filename = Path.GetFileName(this.moduleRelativeFilename);
             this.parentModule = parentModule;
             directory = moduleDirectory.NavigateTo(Path.GetDirectoryName(moduleRelativeFilename), false);
             hash = HashFileContents();
@@ -42,22 +42,28 @@ namespace Cassette
             }
             else
             {
+                string appRelativeFilename;
                 if (assetRelativeFilename.StartsWith("~"))
                 {
-                    assetRelativeFilename = assetRelativeFilename.Substring(1);
-                    // So the path now starts with "/".
+                    appRelativeFilename = assetRelativeFilename;
                 }
+                else if (assetRelativeFilename.StartsWith("/"))
+                {
+                    appRelativeFilename = "~" + assetRelativeFilename;
+                }
+                else
+                {
+                    var subDirectory = Path.GetDirectoryName(moduleRelativeFilename);
+                    appRelativeFilename = "~/" + Path.Combine(
+                        parentModule.Path,
+                        subDirectory,
+                        assetRelativeFilename
+                    );
+                }
+                appRelativeFilename = PathUtilities.NormalizePath(appRelativeFilename);
 
-                // If filename starts with "/" then Path.Combine will ignore the parentModule.Path.
-                // NormalizePath ignores this starting slash, so we get back a nice application relative path.
-
-                var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
-                    parentModule.Path,
-                    Path.GetDirectoryName(moduleRelativeFilename),
-                    assetRelativeFilename
-                ));
                 AssetReferenceType type;
-                if (ModuleCouldContain(appRelativeFilename))
+                if (ParentModuleCouldContain(appRelativeFilename))
                 {
                     RequireModuleContainsReference(lineNumber, appRelativeFilename);
                     type = AssetReferenceType.SameModule;
@@ -89,18 +95,6 @@ namespace Cassette
             references.Add(new AssetReference(appRelativeFilename, this, -1, AssetReferenceType.RawFilename));
         }
 
-        void RequireModuleContainsReference(int lineNumber, string assetRelativeFilename)
-        {
-            if (parentModule.ContainsPath(assetRelativeFilename)) return;
-            
-            throw new AssetReferenceException(
-                string.Format(
-                    "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    Path.Combine(parentModule.Path, SourceFilename), lineNumber, assetRelativeFilename
-                )
-            );
-        }
-
         public override string SourceFilename
         {
             get { return moduleRelativeFilename; }
@@ -130,9 +124,24 @@ namespace Cassette
             }
         }
 
-        bool ModuleCouldContain(string path)
+        bool ParentModuleCouldContain(string path)
         {
-            return path.StartsWith(parentModule.Path, StringComparison.OrdinalIgnoreCase);
+            path = path.Substring(2); // Remove the "~/" prefix.
+            if (path.Length < parentModule.Path.Length) return false;
+            path = path.Substring(0, parentModule.Path.Length);
+            return PathUtilities.PathsEqual(path, parentModule.Path);
+        }
+
+        void RequireModuleContainsReference(int lineNumber, string path)
+        {
+            if (parentModule.ContainsPath(path)) return;
+            
+            throw new AssetReferenceException(
+                string.Format(
+                    "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
+                    Path.Combine(parentModule.Path, SourceFilename), lineNumber, path
+                )
+            );
         }
 
         protected override Stream OpenStreamCore()

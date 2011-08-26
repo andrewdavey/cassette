@@ -171,7 +171,7 @@ namespace Cassette.Persistence
                     new XElement("asset",
                         new XAttribute("filename", "asset-2.js")
                     ),
-                    new XElement("reference", new XAttribute("path", "module-b"))
+                    new XElement("reference", new XAttribute("path", "~\\module-b"))
                 ),
                 new XElement("module",
                     new XAttribute("directory", "module-b"),
@@ -208,7 +208,7 @@ namespace Cassette.Persistence
 
             var moduleA = modules.First(m => m.Path.EndsWith("module-a"));
             moduleA.Assets.Count.ShouldEqual(1);
-            moduleA.Assets[0].References.Single().ReferencedPath.ShouldEqual("module-b");
+            moduleA.Assets[0].References.Single().ReferencedPath.ShouldEqual("~\\module-b");
             moduleA.Assets[0].Hash.SequenceEqual(new byte[] { 1, 2, 3 }).ShouldBeTrue();
             moduleA.ContainsPath("module-a\\asset-1.js");
             moduleA.ContainsPath("module-a\\asset-2.js");
@@ -292,7 +292,7 @@ namespace Cassette.Persistence
 
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.References).Returns(new[] {
-                new AssetReference("module-b", assetA.Object, 0, AssetReferenceType.DifferentModule)
+                new AssetReference("~\\module-b", assetA.Object, 0, AssetReferenceType.DifferentModule)
             });
             assetA.Setup(a => a.OpenStream()).Returns(Stream.Null);
             moduleA.Assets.Add(assetA.Object);
@@ -327,8 +327,8 @@ namespace Cassette.Persistence
 
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.References).Returns(new[] {
-                new AssetReference("module-b\\1.js", assetA.Object, 0, AssetReferenceType.DifferentModule),
-                new AssetReference("module-b\\2.js", assetA.Object, 0, AssetReferenceType.DifferentModule)
+                new AssetReference("~\\module-b\\1.js", assetA.Object, 0, AssetReferenceType.DifferentModule),
+                new AssetReference("~\\module-b\\2.js", assetA.Object, 0, AssetReferenceType.DifferentModule)
             });
             assetA.Setup(a => a.OpenStream()).Returns(Stream.Null);
             moduleA.Assets.Add(assetA.Object);
