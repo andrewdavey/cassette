@@ -1,0 +1,47 @@
+﻿.top {
+    height: 77px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+.logo {
+    font-family: "Droid Sans", sans-serif;
+    font-weight: 700;
+    font-size: 2em;
+    color: #EFEFEF;
+    text-shadow: white 0 0 1px;
+    letter-spacing: -1px;
+    line-height: 77px;
+    text-decoration: none;
+}
+.logo:visited {
+    color: #EFEFEF;    
+}
+.top .wrap {
+    position: relative;
+}
+.top .links {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+    display: table;
+}
+.top .links li {
+    list-style-type: none;
+    padding: 0;
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 30px;
+}
+.top .links a {
+    color: #B4B4B4;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.top .links a:hover {
+    color: #fff;
+}

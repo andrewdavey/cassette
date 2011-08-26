@@ -1,0 +1,40 @@
+﻿html {
+    background: #f0f0f0 url(images/background.gif) repeat-x top center;
+}
+body {
+    font-family: Calibri, sans-serif;
+}
+.main {
+    max-width: 960px;
+    margin: 0 auto 2em auto;
+}
+p.last {
+    margin-bottom: 0;
+}
+h1, h2 {
+    font-family: "Droid Sans" , sans-serif;
+}
+.main h1 {
+    color: #fff;
+    font-size: 3.4em;
+    text-shadow: 0 1px 0 #323231;
+    letter-spacing: -1px;
+    margin: .75em 0;   
+}
+.main h2 {
+    color: #323231;
+}
+.main p + h2 {
+    margin-top: 1.5em; 
+}
+.main .content {
+    background-color: #fff;
+    padding: 2em;
+    border-radius: 10px;
+    min-height: 300px;
+    box-shadow: #aaa 0 0 3px;
+}
+.main .content p {
+    margin: 0 0 .5em 0;
+    line-height: 1.4em;
+}

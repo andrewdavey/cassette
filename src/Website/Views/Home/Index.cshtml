@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Cassette - Automagic asset management for .NET web apps";
+}
+<div class="banner">
+    <h1>Asset management for .NET web apps</h1>
+    <div class="about">
+        <div class="intro">
+            <p>Dumping your scripts into a folder is no way to manage your client-side code!</p>
+            <p>Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS and HTML templates.</p>
+            <p>It's flexible, extensible and optimized for developer happiness.</p>
+            <p class="last"><a class="download" href="@Url.RouteUrl("Download")">Download Now</a> Or read on to see Cassette in action...</p>
+        </div>
+        <div class="screencast">
+            <a href="#">5 Minute Introduction</a>
+        </div>
+    </div>
+</div>
+
+<div class="home-main">
+
+    <div class="section">
+        <div class="file-details">
+            <h2>Easy to use</h2>
+            <p>Cassette's <code>Assets</code> helper works in view pages, layouts and partials.</p>
+            <p>Reference the scripts you directly require.</p>
+            <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
+            <p class="minor"><a href="#">Stylesheets</a> and <a href="#">HTML Templates</a> are also supported</p>
+        </div>
+        <div class="file">
+            <pre><code><span class="code-tag">@@{</span>
+  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/app/page.js"</span>);
+<span class="code-tag">}</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+  <span class="code-tag">@@</span><span class="code-type">Assets</span>.Scripts.Render()
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+  ...
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="file-details">
+            <h2>Debug runtime output</h2>
+            <p>When <strong><code>debug="true"</code></strong> in Web.config:</p>
+            <ul>
+                <li>Cassette detects <a href="#">file references</a>.</li>
+                <li>All the required scripts are included in the correct order.</li>
+                <li>The hash of each file is append to each URL as a "cache-breaker".</li>
+            </ul>
+            <p class="minor">The SHA-1 hash is used. The output here has been shortened to fit on screen.</p>
+        </div>
+        <div class="file">
+            <pre><code><span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/lib/jquery.js?a4babad4b"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/lib/jquery-ui.js?53dd39212"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/app/tools.js?4d03ae0b"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/app/widgets.js?cf319fe0b"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/app/page.js?485f05e21"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+  ...
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="file-details">
+            <h2>Production runtime output</h2>
+            <p>With a single change to Web.config, <strong><code>debug="false"</code></strong>, Cassette switches into high performance mode.</p>
+            <ul>
+                <li>Cassette <em>concatenates</em> and <em>minifies</em> the scripts into "modules".</li>
+                <li>HTTP output is <em>compressed</em>.</li>
+                <li>Aggressive cache headers are sent. So browsers download each module only once.</li>
+                <li>Hash included in the URL. So new versions have different URLs.</li>
+            </ul>
+        </div>
+        <div class="file">
+            <pre><code><span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/_assets/scripts/Scripts/lib_4bad47afb"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/_assets/scripts/Scripts/app_b7c29fecc"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+  ...
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+        </div>
+    </div>
+
+    <div class="section more">
+        <h2>So much more</h2>
+        <p>This introduction has only scratched the surface of what Cassette can do.</p>
+        <ul>
+            <li>CoffeeScript is built-in. Just add <code>.coffee</code> files to your project and Cassette will compile them.</li>
+            <li>LESS files are automatically compiled into CSS.</li>
+            <li>Cassette has an extensible "asset pipeline". Learn how to extend and customize asset processing.</li>
+        </ul>
+        <p>
+            Get Cassette! It's free, open source software - <a href="https://raw.github.com/andrewdavey/cassette/HEAD/license.txt">MIT License</a>.
+        </p>
+        <p class="last">
+            <a class="download" href="@Url.RouteUrl("Download")">Download Now</a>
+            and also please spread the word:
+            <span style="position: relative; top: 5px;">
+                <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset management for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
+                <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
+            </span>
+        </p>
+    </div>
+</div>

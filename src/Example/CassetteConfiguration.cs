@@ -22,7 +22,7 @@ namespace Example
                 }
             );
 
-            modules.Add(new DirectorySource<StylesheetModule>("Styles")
+            modules.Add(new PerSubDirectorySource<StylesheetModule>("Styles")
             {
                 FilePattern = "*.css;*.less",
                 CustomizeModule = module => module.Processor = new StylesheetPipeline

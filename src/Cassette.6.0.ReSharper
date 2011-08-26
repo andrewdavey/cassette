@@ -5,7 +5,16 @@
     <Sharing>SOLUTION</Sharing>
     <CSS>
       <FormatSettings />
-      <Naming2 />
+      <Naming2>
+        <UserRule Name="CSS_PROPERTY_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+        <UserRule Name="CSS_FUNCTION_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+        <UserRule Name="CSS_MEDIA_FEATURE_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+        <UserRule Name="CSS_TYPE_SELECTOR_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+        <UserRule Name="CSS_CLASS_SELECTOR_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+        <UserRule Name="CSS_PSEUDO_CLASS_SELECTOR_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+        <UserRule Name="CSS_PSEUDO_ELEMENT_SELECTOR_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+        <UserRule Name="CSS_PSEUDO_FUNCTION_SELECTOR_NAME" Inspect="True" Prefix="" Suffix="" Style="aa_bb" />
+      </Naming2>
     </CSS>
     <CSharp>
       <FormatSettings>
