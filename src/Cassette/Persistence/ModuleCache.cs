@@ -178,7 +178,7 @@ namespace Cassette.Persistence
                 from reference in asset.References
                 where reference.Type == AssetReferenceType.DifferentModule
                 let referencedModule = moduleContainer.FindModuleContainingPath(reference.ReferencedPath)
-                select referencedModule.Path
+                select Path.Combine("~", referencedModule.Path)
             ).Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
