@@ -1,4 +1,5 @@
 ﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Cassette Documentation";
 }
 @functions {
@@ -10,7 +11,7 @@
 <div class="main">
     <div class="content documentation">
         <div class="item">
-            @Html.Partial((string)ViewBag.ChildView)
+            @RenderBody()
         </div>
         <div class="tree">
             <h2>Documentation</h2>
@@ -36,11 +37,10 @@
                         <li><a href="@Doc("html-templates/knockoutjs")">KnockoutJS</a></li>
                     </ul>
                 </li>
-                <li><a href="@Doc("how-it-works")">How it works</a></li>
                 <li>
                     <a href="@Doc("advanced")">Advanced</a>
                     <ul>
-                        <li><a href="#">Custom module definitions</a></li>
+                        <li><a href="@Doc("advanced/manual-module-definition")">Custom module definitions</a></li>
                     </ul>
                 </li>
             </ul>

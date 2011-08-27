@@ -6,17 +6,23 @@ namespace Website.Controllers
     {
         public ActionResult Index(string path)
         {
-            if (string.IsNullOrEmpty(path)) path = "GettingStarted";
-            path = path.Replace('/', '_').Replace("-", "");
+            string viewName;
+            if (string.IsNullOrEmpty(path))
+            {
+                viewName = "GettingStarted";
+            }
+            else
+            {
+                viewName = path.Replace('/', '_').Replace("-", "");
+            }
 
-            var result = ViewEngines.Engines.FindPartialView(ControllerContext, path);
+            var result = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
             if (result.View == null)
             {
                 return HttpNotFound();
             }
 
-            ViewBag.ChildView = path;
-            return View();
+            return View(viewName);
         }
     }
 }

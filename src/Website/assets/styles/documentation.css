@@ -11,7 +11,8 @@
 .main .documentation h1 {
     color: #323231;
     text-shadow: none;
-    margin: .4em 0 .2em 0;
+    margin: .0 0 .2em 0;
+    font-size: 2em;
 }
 
 .documentation h2 {
@@ -24,21 +25,22 @@
 
 .documentation .tree {
     display: table-cell;
-    padding: 0 2em;
-    width: 250px;
+    padding: 0 1.5em;
+    width: 220px;
     border-left: 1px solid #ccc;
     vertical-align: top;
     background-color: #f0f0f0;
     border-radius: 0 10px 10px 0;
+    font-size: 11pt;
 }
 
 .tree h2 {
-    margin-top: 2.1em;
+    margin-top: 1.8em;
 }
 
 .documentation .item {
     display: table-cell;
-    padding: 0 2em;
+    padding: 2em;
     vertical-align: top;
 }
 
@@ -48,18 +50,18 @@
 }
 
 .tree li {
+    display: block;
     list-style-type: none;
     background-image: url(images/page.png);
     background-repeat: no-repeat;
     background-position: left 0;
-    padding: 0 0 0 20px;
+    padding: 0 0 5px 20px;
     line-height: 16px;
-    margin-bottom: 5px;
+    margin: 5px 0;
 }
 
 .tree li > ul {
-    margin-top: 5px;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .documentation pre {
