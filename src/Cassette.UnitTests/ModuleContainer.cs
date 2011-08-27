@@ -183,5 +183,17 @@ namespace Cassette
             var results = container.SortModules(new[] { externalModule });
             results.SequenceEqual(new[] { externalModule }).ShouldBeTrue();
         }
+
+        [Fact]
+        public void GivenModuleWithReferenceToAnotherModule_ModulesAreSortedInDependencyOrder()
+        {
+            var module1 = new Module("module1");
+            var module2 = new Module("module2");
+            module1.AddReferences(new[] {"~\\module2"});
+
+            var container = new ModuleContainer<Module>(new[] {module1, module2});
+            var sorted = container.SortModules(new[] { module1, module2});
+            sorted.SequenceEqual(new[] {module2, module1}).ShouldBeTrue();
+        }
     }
 }
