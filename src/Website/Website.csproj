@@ -141,6 +141,18 @@
   <ItemGroup>
     <Content Include="Views\Documentation\_ViewStart.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\HtmlTemplates_Compilation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\HtmlTemplates_KnockoutJS.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Advanced.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Advanced_ManualModuleDefinition.cshtml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
