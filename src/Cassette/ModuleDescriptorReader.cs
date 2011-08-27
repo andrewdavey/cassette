@@ -82,7 +82,10 @@ namespace Cassette
             {
                 if (assetFilenames.Contains(line))
                 {
-                    throw new Exception(string.Format("The file \"{0}\" cannot appear twice in module descriptor.", line));
+                    throw new Exception(string.Format(
+                        "The file \"{0}\" cannot appear twice in module descriptor.",
+                        line
+                    ));
                 }
                 assetFilenames.Add(line);
             }
