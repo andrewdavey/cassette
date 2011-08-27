@@ -63,7 +63,9 @@
     <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleProcessing\AddTransformerToAssets.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
-    <Compile Include="ModuleSourceResult.cs" />
+    <Compile Include="Persistence\CachedModuleContainer.cs" />
+    <Compile Include="Persistence\ICacheableAsset.cs" />
+    <Compile Include="Persistence\ModuleManifestReader.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="Stylesheets\DataUriGenerator.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
@@ -105,7 +107,6 @@
     <Compile Include="Persistence\CachedAsset.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
-    <Compile Include="Persistence\CreateManifestVisitor.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />

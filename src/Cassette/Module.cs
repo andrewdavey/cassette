@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml.Linq;
 using Cassette.ModuleProcessing;
 using Cassette.Utilities;
+using Cassette.Persistence;
 
 namespace Cassette
 {
@@ -34,9 +36,19 @@ namespace Cassette
 
         public string Location { get; set; }
 
-        public virtual bool IsPersistent
+        public byte[] Hash
         {
-            get { return true; }
+            get
+            {
+                if (Assets.Count == 1)
+                {
+                    return Assets[0].Hash;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Module Hash is only available when the module contains a single asset.");
+                }
+            }
         }
 
         public virtual void Process(ICassetteApplication application)
@@ -115,7 +127,7 @@ namespace Cassette
                 Assets,
                 asset => asset.References
                     .Where(reference => reference.Type == AssetReferenceType.SameModule)
-                    .Select(reference => assetsByFilename[reference.ReferencedPath])
+                    .Select(reference => assetsByFilename[reference.Path])
             );
             assets = graph.TopologicalSort().ToList();
             hasSortedAssets = true;
@@ -140,6 +152,32 @@ namespace Cassette
         string NormalizePath(string relativePath)
         {
             return relativePath.TrimEnd(Slashes);
+        }
+
+        public virtual IEnumerable<XElement> CreateCacheManifest()
+        {
+            var element = new XElement("Module",
+                new XAttribute("Path", Path),
+                new XAttribute("Hash", Hash.ToHexString())
+            );
+            if (string.IsNullOrEmpty(Location) == false)
+            {
+                element.Add(new XAttribute("Location", Location));
+            }
+            if (string.IsNullOrEmpty(ContentType) == false)
+            {
+                element.Add(new XAttribute("ContentType", ContentType));
+            }
+            var asset = assets.OfType<ICacheableAsset>().SingleOrDefault();
+            if (asset!= null)
+            {
+                element.Add(asset.CreateCacheManifest());
+            }
+            yield return element;
+        }
+
+        public virtual void InitializeFromManifest(XElement element)
+        {       
         }
     }
 }

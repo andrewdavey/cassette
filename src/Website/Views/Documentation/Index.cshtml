@@ -8,9 +8,12 @@
     }
 }
 <div class="main">
-    <h1>Documentation</h1>
     <div class="content documentation">
+        <div class="item">
+            @Html.Partial((string)ViewBag.ChildView)
+        </div>
         <div class="tree">
+            <h2>Documentation</h2>
             <ul>
                 <li><a href="@Doc("")">Getting Started</a></li>
                 <li>
@@ -34,11 +37,13 @@
                     </ul>
                 </li>
                 <li><a href="@Doc("how-it-works")">How it works</a></li>
-                <li><a href="@Doc("advanced")">Advanced</a></li>
+                <li>
+                    <a href="@Doc("advanced")">Advanced</a>
+                    <ul>
+                        <li><a href="#">Custom module definitions</a></li>
+                    </ul>
+                </li>
             </ul>
-        </div>
-        <div class="item">
-            @Html.Partial((string)ViewBag.ChildView)
         </div>
     </div>
 </div>

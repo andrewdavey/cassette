@@ -56,7 +56,7 @@ namespace Cassette.ModuleProcessing
             processor.Process(module, Mock.Of<ICassetteApplication>());
 
             module.Assets[0].References
-                .Select(r => r.ReferencedPath)
+                .Select(r => r.Path)
                 .OrderBy(f => f)
                 .SequenceEqual(new[] { "~\\other1.js", "~\\other1.js", "~\\other2.js" })
                 .ShouldBeTrue();

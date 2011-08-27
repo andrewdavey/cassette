@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
+using System.Xml.Linq;
 
 namespace Cassette.Stylesheets
 {
@@ -13,11 +15,19 @@ namespace Cassette.Stylesheets
 
         readonly string url;
 
-        public override bool IsPersistent
+        public override IEnumerable<XElement> CreateCacheManifest()
         {
-            get { return false; }
+            var element = new XElement("ExternalModule",
+                new XAttribute("Url", url),
+                new XAttribute("ContentType", ContentType)
+            );
+            if (string.IsNullOrEmpty(Media) == false)
+            {
+                element.Add(new XAttribute("Media", Media));
+            }
+            yield return element;
         }
-        
+
         public override void Process(ICassetteApplication application)
         {
             // No processing required.
@@ -35,9 +45,9 @@ namespace Cassette.Stylesheets
             }
         }
 
-        ModuleSourceResult<StylesheetModule> IModuleSource<StylesheetModule>.GetModules(IModuleFactory<StylesheetModule> moduleFactory, ICassetteApplication application)
+        IEnumerable<StylesheetModule> IModuleSource<StylesheetModule>.GetModules(IModuleFactory<StylesheetModule> moduleFactory, ICassetteApplication application)
         {
-            return new ModuleSourceResult<StylesheetModule>(new[] { this }, DateTime.MinValue);
+            yield return this;
         }
     }
 }

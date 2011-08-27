@@ -30,3 +30,9 @@ code {
 .string {
     color: #a00;
 }
+.comment {
+    color: #008000;
+}
+.keyword {
+    color: #00c;
+}

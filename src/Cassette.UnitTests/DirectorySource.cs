@@ -18,8 +18,8 @@ namespace Cassette
             var source = new DirectorySource<Module>("module-a");
 
             var result = source.GetModules(moduleFactory, application);
-            result.Modules.Count().ShouldEqual(1);
-            result.Modules.First().Assets.Count.ShouldEqual(1);
+            result.Count().ShouldEqual(1);
+            result.First().Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Cassette
             var source = new DirectorySource<Module>("module-a", "module-b");
 
             var result = source.GetModules(moduleFactory, application);
-            result.Modules.Count().ShouldEqual(2);
+            result.Count().ShouldEqual(2);
         }
     }
 }

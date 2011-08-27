@@ -7,17 +7,33 @@ namespace Cassette.Persistence
 {
     public class CachedAsset : IAsset
     {
-        public CachedAsset(byte[] hash, IEnumerable<IAsset> children, Func<Stream> openStream)
+        public CachedAsset(string filename, byte[] hash, IEnumerable<IAsset> children, IFileSystem moduleDirectory)
         {
+            this.filename = filename;
             this.hash = hash;
+            this.moduleDirectory = moduleDirectory;
             this.children = children.ToArray();
-            this.openStream = openStream;
         }
 
+        readonly string filename;
         readonly byte[] hash;
+        readonly IFileSystem moduleDirectory;
         readonly IEnumerable<IAsset> children;
-        readonly Func<Stream> openStream;
-        readonly List<AssetReference> references = new List<AssetReference>();
+
+        public byte[] Hash
+        {
+            get { return hash; }
+        }
+
+        public IEnumerable<AssetReference> References
+        {
+            get { return children.SelectMany(asset => asset.References); }
+        }
+
+        public Stream OpenStream()
+        {
+            return moduleDirectory.OpenFile(filename, FileMode.Open, FileAccess.Read);
+        }
 
         public void Accept(IAssetVisitor visitor)
         {
@@ -27,19 +43,15 @@ namespace Cassette.Persistence
             }
         }
 
+
         public string SourceFilename
         {
             get { throw new NotImplementedException(); }
         }
 
-        public IEnumerable<AssetReference> References
-        {
-            get { return references; }
-        }
-
         public void AddReference(string path, int lineNumber)
         {
-            references.Add(new AssetReference(path, this, lineNumber, AssetReferenceType.DifferentModule));
+            throw new NotImplementedException();
         }
 
         public void AddRawFileReference(string relativeFilename)
@@ -51,17 +63,6 @@ namespace Cassette.Persistence
         {
             throw new NotImplementedException();
         }
-
-        public Stream OpenStream()
-        {
-            return openStream();
-        }
-
-        public byte[] Hash
-        {
-            get { return hash; }
-        }
-
 
         public IFileSystem Directory
         {

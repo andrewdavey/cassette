@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Cassette.ModuleProcessing;
+using System.Xml.Linq;
 
 namespace Cassette.Stylesheets
 {
@@ -51,6 +53,25 @@ namespace Cassette.Stylesheets
                                     : string.Format(LinkHtmlWithMedia, url, Media)
                 );
                 return new HtmlString(scripts);
+            }
+        }
+
+        public override IEnumerable<XElement> CreateCacheManifest()
+        {
+            var element = base.CreateCacheManifest().Single();
+            if (string.IsNullOrEmpty(Media) == false)
+            {
+                element.Add(new XAttribute("Media", Media));
+            }
+            yield return element;
+        }
+
+        public override void InitializeFromManifest(XElement moduleElement)
+        {
+            var media = moduleElement.Attribute("Media");
+            if (media != null)
+            {
+                Media = media.Value;
             }
         }
     }

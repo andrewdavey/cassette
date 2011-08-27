@@ -91,13 +91,20 @@ namespace Cassette.Web
             return new CassetteApplication(
                 configuration,
                 new FileSystem(HttpRuntime.AppDomainAppPath),
-                new IsolatedStorageFileSystem(storage),
+                GetCacheDirectory(),
                 ShouldOptimizeOutput(),
                 GetConfigurationVersion(HttpRuntime.AppDomainAppVirtualPath),
                 new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
                 RouteTable.Routes,
                 GetCurrentHttpContext
             );
+        }
+
+        static IFileSystem GetCacheDirectory()
+        {
+            return new IsolatedStorageFileSystem(storage);
+            // TODO: Add configuration setting to use App_Data
+            //return new FileSystem(Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data", ".CassetteCache"));
         }
 
         static bool ShouldOptimizeOutput()

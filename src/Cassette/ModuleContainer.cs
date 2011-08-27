@@ -11,7 +11,7 @@ namespace Cassette
         public ModuleContainer(IEnumerable<T> modules)
         {
             this.modules = modules.ToArray(); // Force eval to prevent repeatedly generating new modules.
-            
+
             ValidateAssetReferences();
             moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
             sortIndex = BuildSortIndex();
@@ -59,7 +59,7 @@ namespace Cassette
                            from asset in module.Assets
                            from reference in asset.References
                            where reference.Type == AssetReferenceType.DifferentModule
-                              && modules.Any(m => m.ContainsPath(reference.ReferencedPath)) == false
+                              && modules.Any(m => m.ContainsPath(reference.Path)) == false
                            select CreateAssetReferenceNotFoundMessage(reference);
 
             var message = string.Join(Environment.NewLine, notFound);
@@ -77,8 +77,9 @@ namespace Cassette
                 { 
                     module, 
                     references = new HashSet<T>(module.Assets.SelectMany(a => a.References)
-                        .Where(r => r.Type == AssetReferenceType.DifferentModule)
-                        .Select(r => FindModuleContainingPath(r.ReferencedPath))
+                        .Where(r => r.Type == AssetReferenceType.DifferentModule
+                                 || r.Type == AssetReferenceType.Url)
+                        .Select(r => FindModuleContainingPath(r.Path))
                     ) 
                 }
             ).ToDictionary(x => x.module, x => x.references);
@@ -98,14 +99,14 @@ namespace Cassette
             {
                 return string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    reference.SourceAsset.SourceFilename, reference.SourceLineNumber, reference.ReferencedPath
+                    reference.SourceAsset.SourceFilename, reference.SourceLineNumber, reference.Path
                 );
             }
             else
             {
                 return string.Format(
                     "Reference error in \"{0}\". Cannot find \"{1}\".",
-                    reference.SourceAsset.SourceFilename, reference.ReferencedPath
+                    reference.SourceAsset.SourceFilename, reference.Path
                 );
             }
         }

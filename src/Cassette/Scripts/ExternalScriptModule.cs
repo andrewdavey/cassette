@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
+using System.Xml.Linq;
 
 namespace Cassette.Scripts
 {
@@ -40,9 +42,12 @@ namespace Cassette.Scripts
 
         static readonly string fallbackHtml = "<script type=\"text/javascript\">{0} && document.write(unescape('%3Cscript src=\"{1}\"%3E%3C/script%3E'))</script>";
 
-        public override bool IsPersistent
+        public override IEnumerable<XElement> CreateCacheManifest()
         {
-            get { return false; }
+            yield return new XElement("ExternalModule",
+                new XAttribute("Url", url),
+                new XAttribute("ContentType", ContentType)
+            );
         }
 
         public override void Process(ICassetteApplication application)
@@ -72,9 +77,9 @@ namespace Cassette.Scripts
             }
         }
 
-        ModuleSourceResult<ScriptModule> IModuleSource<ScriptModule>.GetModules(IModuleFactory<ScriptModule> moduleFactory, ICassetteApplication application)
+        IEnumerable<ScriptModule> IModuleSource<ScriptModule>.GetModules(IModuleFactory<ScriptModule> moduleFactory, ICassetteApplication application)
         {
-            return new ModuleSourceResult<ScriptModule>(new[] { this }, DateTime.MinValue);
+            yield return this;
         }
     }
 }

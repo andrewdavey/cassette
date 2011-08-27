@@ -18,35 +18,35 @@ namespace Cassette
 
         public bool FileExists(string filename)
         {
-            return storage.FileExists(GetFullPath(filename));
+            return storage.FileExists(GetAbsolutePath(filename));
         }
 
         public Stream OpenFile(string filename, FileMode mode, FileAccess access)
         {
-            return storage.OpenFile(GetFullPath(filename), mode, access);
+            return storage.OpenFile(GetAbsolutePath(filename), mode, access);
         }
 
         public void DeleteAll()
         {
             foreach (var filename in storage.GetFileNames(basePath + "/*"))
             {
-                storage.DeleteFile(GetFullPath(filename));
+                storage.DeleteFile(GetAbsolutePath(filename));
             }
         }
 
         public DateTime GetLastWriteTimeUtc(string filename)
         {
-            return storage.GetLastWriteTime(GetFullPath(filename)).UtcDateTime;
+            return storage.GetLastWriteTime(GetAbsolutePath(filename)).UtcDateTime;
         }
 
-        string GetFullPath(string path)
+        public string GetAbsolutePath(string path)
         {
             return Path.Combine(basePath, path);
         }
 
         public IFileSystem NavigateTo(string path, bool createIfNotExists)
         {
-            var fullPath = GetFullPath(path);
+            var fullPath = GetAbsolutePath(path);
             if (storage.DirectoryExists(fullPath) == false)
             {
                 if (createIfNotExists)
@@ -81,9 +81,9 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public string GetAbsolutePath(string path)
+        public bool DirectoryExists(string path)
         {
-            throw new NotImplementedException();
+            return storage.DirectoryExists(GetAbsolutePath(path));
         }
     }
 }

@@ -3,77 +3,68 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Cassette.Utilities;
 
 namespace Cassette.Persistence
 {
     public class ModuleCache<T> : IModuleCache<T>
         where T : Module
     {
-        public ModuleCache(IFileSystem cacheFileSystem, IModuleFactory<T> moduleFactory)
+        public ModuleCache(IFileSystem cacheDirectory, IModuleFactory<T> moduleFactory)
         {
-            this.cacheFileSystem = cacheFileSystem;
+            this.cacheDirectory = cacheDirectory;
             this.moduleFactory = moduleFactory;
         }
 
-        readonly IFileSystem cacheFileSystem;
+        readonly IFileSystem cacheDirectory;
         readonly IModuleFactory<T> moduleFactory;
         const string ContainerFilename = "container.xml";
         const string VersionFilename = "version";
 
-        public bool IsUpToDate(DateTime dateTime, string version, IFileSystem sourceFileSystem)
+        public bool LoadContainerIfUpToDate(int expectedAssetCount, string version, IFileSystem sourceFileSystem, out IModuleContainer<T> container)
         {
-            if (!cacheFileSystem.FileExists(ContainerFilename)) return false;
-            if (!cacheFileSystem.FileExists(VersionFilename)) return false;
-            
-            if (IsSameVersion(version) == false) return false;
+            container = null;
+            if (!cacheDirectory.FileExists(ContainerFilename)) return false;
+            if (!cacheDirectory.FileExists(VersionFilename)) return false;
+            if (!IsSameVersion(version)) return false;
 
-            var lastWriteTime = cacheFileSystem.GetLastWriteTimeUtc(ContainerFilename);
-            if (lastWriteTime < dateTime) return false;
+            var lastWriteTime = cacheDirectory.GetLastWriteTimeUtc(ContainerFilename);
             
-            var containerElement = LoadContainerElement(cacheFileSystem);
-            if (AnyFilesMissing(containerElement, sourceFileSystem)) return false;
-            if (AnyRawFileReferencesChanged(dateTime, containerElement, sourceFileSystem)) return false;
-
-            return true;
+            var modules = LoadModules();
+            var cachedContainer = new CachedModuleContainer<T>(modules);
+            if (cachedContainer.IsUpToDate(expectedAssetCount, lastWriteTime, sourceFileSystem))
+            {
+                container = cachedContainer;
+                return true;
+            }
+            
+            return false;
         }
 
         bool IsSameVersion(string version)
         {
-            using (var reader = new StreamReader(cacheFileSystem.OpenFile(VersionFilename, FileMode.Open, FileAccess.Read)))
+            using (var reader = new StreamReader(cacheDirectory.OpenFile(VersionFilename, FileMode.Open, FileAccess.Read)))
             {
                 return reader.ReadLine() == version;
             }
         }
 
-        bool AnyFilesMissing(XElement containerElement, IFileSystem sourceFileSystem)
+        IEnumerable<T> LoadModules()
         {
-            return (from module in containerElement.Elements("module")
-                    from asset in module.Elements("asset")
-                    let path = Path.Combine(
-                        module.Attribute("directory").Value,
-                        asset.Attribute("filename").Value
-                        )
-                    select sourceFileSystem.FileExists(path)).Any(exists => !exists
-            );
+            var containerElement = LoadContainerElement(cacheDirectory);
+            var reader = new ModuleManifestReader<T>(cacheDirectory, moduleFactory);
+            return reader.CreateModules(containerElement);
         }
 
-        bool AnyRawFileReferencesChanged(DateTime lastWriteTime, XElement containerElement, IFileSystem sourceFileSystem)
+        public IModuleContainer<T> SaveModuleContainer(IEnumerable<T> modules, string version)
         {
-            return (from module in containerElement.Elements("module")
-                    from reference in module.Elements("rawFileReference")
-                    let filename = reference.Attribute("filename").Value
-                    select sourceFileSystem.GetLastWriteTimeUtc(filename) > lastWriteTime).Any(changed => changed
-            );
-        }
-
-        public IEnumerable<T> LoadModules()
-        {
-            var containerElement = LoadContainerElement(cacheFileSystem);
-            var moduleElements = containerElement.Elements("module");
-            var modules = CreateModules(moduleElements, cacheFileSystem);
-
-            return modules;
+            cacheDirectory.DeleteAll();
+            SaveContainerXml(modules);
+            SaveVersion(version);
+            foreach (var module in modules)
+            {
+                SaveModule(module);
+            }
+            return new CachedModuleContainer<T>(modules);
         }
 
         XElement LoadContainerElement(IFileSystem fileSystem)
@@ -84,80 +75,14 @@ namespace Cassette.Persistence
             }
         }
 
-        IEnumerable<T> CreateModules(IEnumerable<XElement> moduleElements, IFileSystem fileSystem)
+        void SaveContainerXml(IEnumerable<T> modules)
         {
-            return (
-                from moduleElement in moduleElements
-                select CreateModule(moduleElement, fileSystem)
-            ).ToArray();
-        }
-
-        T CreateModule(XElement moduleElement, IFileSystem fileSystem)
-        {
-            var directory = moduleElement.Attribute("directory").Value;
-            var filename = FlattenPathToSingleFilename(directory) + ".module";
-            var module = moduleFactory.CreateModule(directory);
-
-            var singleAsset = CreateSingleAssetForModule(moduleElement, module, filename, fileSystem);
-            module.Assets.Add(singleAsset);
-            return module;
-        }
-
-        CachedAsset CreateSingleAssetForModule(XElement moduleElement, T module, string moduleFilename, IFileSystem fileSystem)
-        {
-            var assetInfos = CreateAssetInfos(moduleElement, module.Path);
-            var hash = ByteArrayExtensions.FromHexString(moduleElement.Attribute("hash").Value);
-            var asset = new CachedAsset(hash, assetInfos, () => fileSystem.OpenFile(moduleFilename, FileMode.Open, FileAccess.Read));
-            AddReferencesToAsset(asset, moduleElement);
-            return asset;
-        }
-
-        void AddReferencesToAsset(IAsset asset, XElement moduleElement)
-        {
-            var modulePaths =
-                from element in moduleElement.Elements("reference")
-                select element.Attribute("path").Value;
-
-            foreach (var path in modulePaths)
-            {
-                asset.AddReference(path, 0);
-            }
-        }
-
-        IEnumerable<CachedAssetSourceInfo> CreateAssetInfos(XElement moduleElement, string directory)
-        {
-            return moduleElement.Elements("asset").Select(a => CreateAssetInfo(a, directory));
-        }
-
-        CachedAssetSourceInfo CreateAssetInfo(XElement assetElement, string directory)
-        {
-            var relativeFilename = assetElement.Attribute("filename").Value;
-            var absoluteFilename = Path.Combine(directory, relativeFilename);
-            return new CachedAssetSourceInfo(absoluteFilename);
-        }
-
-        public void SaveModuleContainer(IModuleContainer<T> moduleContainer, string version)
-        {
-            cacheFileSystem.DeleteAll();
-            SaveContainerXml(moduleContainer);
-            SaveVersion(version);
-            foreach (var module in moduleContainer.Modules.Where(m => m.IsPersistent))
-            {
-                SaveModule(module);
-            }
-        }
-
-        void SaveContainerXml(IModuleContainer<T> moduleContainer)
-        {
-            var createManifestVisitor = new CreateManifestVisitor(m => GetModuleReferences(m, moduleContainer));
             var xml = new XDocument(
                 new XElement("container",
-                    from module in moduleContainer.Modules
-                    where module.IsPersistent
-                    select createManifestVisitor.CreateManifest(module)
+                    modules.SelectMany(module => module.CreateCacheManifest())
                 )
             );
-            using (var fileStream = cacheFileSystem.OpenFile(ContainerFilename, FileMode.Create, FileAccess.Write))
+            using (var fileStream = cacheDirectory.OpenFile(ContainerFilename, FileMode.Create, FileAccess.Write))
             {
                 xml.Save(fileStream);
             }
@@ -165,47 +90,39 @@ namespace Cassette.Persistence
 
         void SaveVersion(string version)
         {
-            using (var writer = new StreamWriter(cacheFileSystem.OpenFile(VersionFilename, FileMode.Create, FileAccess.Write)))
+            using (var writer = new StreamWriter(cacheDirectory.OpenFile(VersionFilename, FileMode.Create, FileAccess.Write)))
             {
                 writer.Write(version);
             }
-        }
-
-        IEnumerable<string> GetModuleReferences(Module module, IModuleContainer<T> moduleContainer)
-        {
-            return (
-                from asset in module.Assets
-                from reference in asset.References
-                where reference.Type == AssetReferenceType.DifferentModule
-                let referencedModule = moduleContainer.FindModuleContainingPath(reference.ReferencedPath)
-                select Path.Combine("~", referencedModule.Path)
-            ).Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
         void SaveModule(T module)
         {
             if (module.Assets.Count > 1)
             {
-                throw new InvalidOperationException("Cannot save a module when assets have not been concatenated into a single asset.");
+                throw new InvalidOperationException("Cannot cache a module when assets have not been concatenated into a single asset.");
             }
-            var filename = FlattenPathToSingleFilename(module.Path) + ".module";
-            using (var fileStream = cacheFileSystem.OpenFile(filename, FileMode.Create, FileAccess.Write))
+            if (module.Assets.Count == 0)
             {
-                if (module.Assets.Count > 0)
+                return; // Skip external URL modules.
+            }
+
+            var filename = ModuleAssetCacheFilename(module);
+            using (var fileStream = cacheDirectory.OpenFile(filename, FileMode.Create, FileAccess.Write))
+            {
+                using (var dataStream = module.Assets[0].OpenStream())
                 {
-                    using (var dataStream = module.Assets[0].OpenStream())
-                    {
-                        dataStream.CopyTo(fileStream);
-                    }
-                    fileStream.Flush();
+                    dataStream.CopyTo(fileStream);
                 }
+                fileStream.Flush();
             }
         }
 
-        string FlattenPathToSingleFilename(string path)
+        internal static string ModuleAssetCacheFilename(Module module)
         {
-            return path.Replace(Path.DirectorySeparatorChar, '`')
-                       .Replace(Path.AltDirectorySeparatorChar, '`');
+            return module.Path.Replace(Path.DirectorySeparatorChar, '`')
+                       .Replace(Path.AltDirectorySeparatorChar, '`') 
+                 + ".module";
         }
     }
 }

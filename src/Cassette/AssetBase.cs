@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Cassette.ModuleProcessing;
+using Cassette.Persistence;
 
 namespace Cassette
 {
     /// <summary>
     /// Base class for <see cref="Asset"/> and <see cref="ConcatenatedAsset"/>.
     /// </summary>
-    public abstract class AssetBase : IAsset
+    public abstract class AssetBase : IAsset, ICacheableAsset
     {
         readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
 
@@ -45,5 +47,7 @@ namespace Cassette
         public abstract void AddReference(string path, int lineNumber);
 
         public abstract void AddRawFileReference(string relativeFilename);
+
+        public abstract IEnumerable<XElement> CreateCacheManifest();
     }
 }

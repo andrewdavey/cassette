@@ -19,7 +19,7 @@ namespace Cassette
             var source = new PerSubDirectorySource<Module>("scripts");
             var result = source.GetModules(moduleFactory, application);
 
-            var module = result.Modules.First();
+            var module = result.First();
             module.Assets.Count.ShouldEqual(0);
         }
 
@@ -31,7 +31,7 @@ namespace Cassette
             var source = new PerSubDirectorySource<Module>("scripts");
             var result = source.GetModules(moduleFactory, application);
             
-            var modules = result.Modules.ToArray();
+            var modules = result.ToArray();
             modules.Length.ShouldEqual(2);
         }
 
@@ -43,7 +43,7 @@ namespace Cassette
             var source = new PerSubDirectorySource<Module>("scripts") { FilePattern = "*.js" };
             var result = source.GetModules(moduleFactory, application);
 
-            var module = result.Modules.First();
+            var module = result.First();
             module.Assets.Count.ShouldEqual(1);
         }
 
@@ -55,7 +55,7 @@ namespace Cassette
             var source = new PerSubDirectorySource<Module>("scripts") { FilePattern = "*.htm;*.html" };
             var result = source.GetModules(moduleFactory, application);
 
-            var module = result.Modules.First();
+            var module = result.First();
             module.Assets.Count.ShouldEqual(1);
         }
 
@@ -69,7 +69,7 @@ namespace Cassette
 
             var result = source.GetModules(moduleFactory, application);
 
-            var module = result.Modules.First();
+            var module = result.First();
             module.Assets.Count.ShouldEqual(1);
         }
 
@@ -98,7 +98,7 @@ namespace Cassette
 
             var result = source.GetModules(factory.Object, application);
 
-            result.Modules.First().Processor.ShouldBeSameAs(processor);
+            result.First().Processor.ShouldBeSameAs(processor);
         }
     }
 }

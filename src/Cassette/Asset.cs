@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -84,15 +85,24 @@ namespace Cassette
         public override void AddRawFileReference(string relativeFilename)
         {
             var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
+                "~",
                 parentModule.Path,
                 Path.GetDirectoryName(moduleRelativeFilename),
                 relativeFilename
             ));
             
-            var alreadyExists = references.Any(r => r.ReferencedPath.Equals(appRelativeFilename, StringComparison.OrdinalIgnoreCase));
+            var alreadyExists = references.Any(r => r.Path.Equals(appRelativeFilename, StringComparison.OrdinalIgnoreCase));
             if (alreadyExists) return;
 
             references.Add(new AssetReference(appRelativeFilename, this, -1, AssetReferenceType.RawFilename));
+        }
+
+        public override IEnumerable<XElement> CreateCacheManifest()
+        {
+            yield return new XElement("Asset",
+                new XAttribute("Path", SourceFilename),
+                references.Select(reference => reference.CreateCacheManifest())
+            );
         }
 
         public override string SourceFilename

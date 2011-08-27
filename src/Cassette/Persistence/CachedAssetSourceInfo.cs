@@ -12,6 +12,7 @@ namespace Cassette.Persistence
         }
 
         readonly string filename;
+        readonly List<AssetReference> references = new List<AssetReference>();
 
         public string SourceFilename
         {
@@ -25,7 +26,12 @@ namespace Cassette.Persistence
 
         public IEnumerable<AssetReference> References
         {
-            get { throw new NotImplementedException(); }
+            get { return references; }
+        }
+
+        public void AddReferences(IEnumerable<AssetReference> references)
+        {
+            this.references.AddRange(references);
         }
 
         public void AddReference(string path, int lineNumber)

@@ -24,7 +24,7 @@
             <p>Cassette's <code>Assets</code> helper works in view pages, layouts and partials.</p>
             <p>Reference the scripts you directly require.</p>
             <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
-            <p class="minor"><a href="#">Stylesheets</a> and <a href="#">HTML Templates</a> are also supported</p>
+            <p class="minor"><a href="@Url.RouteUrl("Documentation", new{path="stylesheets"})">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new{path="html-templates"})">HTML Templates</a> are also supported</p>
         </div>
         <div class="file">
             <pre><code><span class="code-tag">@@{</span>
@@ -49,7 +49,7 @@
             <h2>Debug runtime output</h2>
             <p>When <strong><code>debug="true"</code></strong> in Web.config:</p>
             <ul>
-                <li>Cassette detects <a href="#">file references</a>.</li>
+                <li>Cassette detects <a href="@Url.RouteUrl("Documentation", new{path="scripts"})">file references</a>.</li>
                 <li>All the required scripts are included in the correct order.</li>
                 <li>The hash of each file is append to each URL as a "cache-breaker".</li>
             </ul>

@@ -101,7 +101,7 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().ReferencedPath.ShouldEqual("~\\module\\another.js");
+            asset.References.First().Path.ShouldEqual("~\\module\\another.js");
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace Cassette
         {
             asset.AddReference("../another/test.js", 1);
 
-            asset.References.First().ReferencedPath.ShouldEqual("~\\another\\test.js");
+            asset.References.First().Path.ShouldEqual("~\\another\\test.js");
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace Cassette
             asset.AddReference("/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.ReferencedPath.ShouldEqual("~\\another\\test.js");
+            reference.Path.ShouldEqual("~\\another\\test.js");
             reference.Type.ShouldEqual(AssetReferenceType.DifferentModule);
         }
 
@@ -154,7 +154,7 @@ namespace Cassette
             asset.AddReference("~/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.ReferencedPath.ShouldEqual("~\\another\\test.js");
+            reference.Path.ShouldEqual("~\\another\\test.js");
         }
 
         [Fact]
@@ -172,7 +172,7 @@ namespace Cassette
             asset.AddRawFileReference("../test.png");
 
             var reference = asset.References.First();
-            reference.ReferencedPath.ShouldEqual("test.png");
+            reference.Path.ShouldEqual("~\\test.png");
         }
 
         [Fact]
@@ -198,7 +198,7 @@ namespace Cassette
         {
             var url = "http://maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
-            asset.References.First().ReferencedPath.ShouldEqual(url);
+            asset.References.First().Path.ShouldEqual(url);
             asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
         }
 
@@ -207,7 +207,7 @@ namespace Cassette
         {
             var url = "https://maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
-            asset.References.First().ReferencedPath.ShouldEqual(url);
+            asset.References.First().Path.ShouldEqual(url);
             asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
         }
 
@@ -216,7 +216,7 @@ namespace Cassette
         {
             var url = "//maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
-            asset.References.First().ReferencedPath.ShouldEqual(url);
+            asset.References.First().Path.ShouldEqual(url);
             asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
         }
 
@@ -244,6 +244,51 @@ namespace Cassette
         }
 
         void IDisposable.Dispose()
+        {
+            root.Delete(true);
+        }
+    }
+
+    public class Asset_CreateCacheManifest_Tests : IDisposable
+    {
+        public Asset_CreateCacheManifest_Tests()
+        {
+            root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            root.CreateSubdirectory("module");
+            filename = Path.Combine(root.FullName, "module", "test.js");
+            // Write some testable content to the file.
+            File.WriteAllText(filename, "asset content");
+            var fileSystem = new FileSystem(root.FullName);
+
+            var module = new Module("module");
+            asset = new Asset("test.js", module, fileSystem.NavigateTo("module", false));
+            module.Assets.Add(asset);
+
+            File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
+            var another = new Asset("another.js", module, fileSystem.NavigateTo("module", false));
+            module.Assets.Add(another);
+        }
+
+        readonly string filename;
+        readonly Asset asset;
+        readonly DirectoryInfo root;
+
+        [Fact]
+        public void CreateCacheManifestReturnsSingleXElement()
+        {
+            var element = asset.CreateCacheManifest().Single();
+            element.Name.LocalName.ShouldEqual("Asset");
+        }
+
+        [Fact]
+        public void GivenAssetHasReference_ThenXElementHasReferenceChildElement()
+        {
+            asset.AddReference("another.js", 1);
+            var element = asset.CreateCacheManifest().Single();
+            element.Element("Reference").ShouldNotBeNull();
+        }
+
+        public void Dispose()
         {
             root.Delete(true);
         }

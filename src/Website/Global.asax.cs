@@ -17,7 +17,7 @@ namespace Website
             routes.MapRoute("Home", "", new { controller = "Home", action = "Index" });
             routes.MapRoute("Download", "download", new { controller = "Home", action = "Download" });
             routes.MapRoute("Contact", "contact", new { controller = "Home", action = "Contact" });
-            routes.MapRoute("Documentation", "documentation/{*path}", new { controller = "Documentation", action = "Index" });
+            routes.MapRoute("Documentation", "documentation/{*path}", new { controller = "Documentation", action = "Index", path="" });
 
             routes.MapRoute(
                 "Default", // Route name

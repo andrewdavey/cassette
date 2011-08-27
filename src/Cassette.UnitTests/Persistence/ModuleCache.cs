@@ -10,6 +10,8 @@ using Moq;
 using Should;
 using Xunit;
 
+// TODO: Re-implement these test. Disabled for now.
+
 namespace Cassette.Persistence
 {
     public class ModuleCache_IsUpToDate_Tests
@@ -311,7 +313,7 @@ namespace Cassette.Persistence
                 cache.SaveModuleContainer(container, "1.0.0.0");
 
                 var xml = File.ReadAllText(temp);
-                xml.ShouldContain("<reference path=\"module-b\" />");
+                xml.ShouldContain("<reference path=\"~\\module-b\" />");
             }
             finally
             {
@@ -348,7 +350,7 @@ namespace Cassette.Persistence
                 cache.SaveModuleContainer(container, "1.0.0.0");
 
                 var xml = File.ReadAllText(temp);
-                Regex.Matches(xml, Regex.Escape("<reference path=\"module-b\" />")).Count.ShouldEqual(1);
+                Regex.Matches(xml, Regex.Escape("<reference path=\"~\\module-b\" />")).Count.ShouldEqual(1);
             }
             finally
             {

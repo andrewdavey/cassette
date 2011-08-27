@@ -10,9 +10,32 @@ namespace Cassette.Stylesheets
     public class ExternalStylesheetModule_Tests
     {
         [Fact]
-        public void IsPersistentReturnsFalse()
+        public void CreateCacheManifestReturnsExternalModuleElement()
         {
-            new ExternalStylesheetModule("http://test.com/asset.css").IsPersistent.ShouldBeFalse();
+            var element = new ExternalStylesheetModule("http://test.com/api.css").CreateCacheManifest().Single();
+            element.Name.LocalName.ShouldEqual("ExternalModule");
+        }
+
+        [Fact]
+        public void CreateCacheManifestReturnsExternalModuleElementWithUrlAttribute()
+        {
+            var element = new ExternalStylesheetModule("http://test.com/api.css").CreateCacheManifest().Single();
+            element.Attribute("Url").Value.ShouldEqual("http://test.com/api.css");
+        }
+
+        [Fact]
+        public void CreateCacheManifestReturnsExternalModuleElementWithContentTypeAttribute()
+        {
+            var element = new ExternalStylesheetModule("http://test.com/api.js").CreateCacheManifest().Single();
+            element.Attribute("ContentType").Value.ShouldEqual("text/css");
+        }
+
+        [Fact]
+        public void CreateCacheManifestReturnsExternalModuleElementWithMediaAttribute()
+        {
+            var module = new ExternalStylesheetModule("http://test.com/api.js") {Media = "print"};
+            var element = module.CreateCacheManifest().Single();
+            element.Attribute("Media").Value.ShouldEqual("print");
         }
 
         [Fact]
@@ -49,8 +72,7 @@ namespace Cassette.Stylesheets
             var module = new ExternalStylesheetModule("http://test.com/asset.css");
             var result = (module as IModuleSource<StylesheetModule>).GetModules(Mock.Of<IModuleFactory<StylesheetModule>>(), Mock.Of<ICassetteApplication>());
             
-            result.LastWriteTimeMax.ShouldEqual(DateTime.MinValue);
-            result.Modules.SequenceEqual(new[] { module }).ShouldBeTrue();
+            result.SequenceEqual(new[] { module }).ShouldBeTrue();
         }
     }
 }

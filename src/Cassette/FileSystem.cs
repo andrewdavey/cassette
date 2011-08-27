@@ -25,6 +25,11 @@ namespace Cassette
             return File.Exists(GetAbsolutePath(filename));
         }
 
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(GetAbsolutePath(path));
+        }
+
         public void DeleteAll()
         {
             foreach (var directory in Directory.GetDirectories(rootDirectory))

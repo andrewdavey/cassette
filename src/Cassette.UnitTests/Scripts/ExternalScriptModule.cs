@@ -22,9 +22,24 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void IsPersistentIsFalse()
+        public void CreateCacheManifestReturnsExternalModuleElement()
         {
-            new ExternalScriptModule("http://test.com/api.js").IsPersistent.ShouldBeFalse();
+            var element = new ExternalScriptModule("http://test.com/api.js").CreateCacheManifest().Single();
+            element.Name.LocalName.ShouldEqual("ExternalModule");
+        }
+
+        [Fact]
+        public void CreateCacheManifestReturnsExternalModuleElementWithUrlAttribute()
+        {
+            var element = new ExternalScriptModule("http://test.com/api.js").CreateCacheManifest().Single();
+            element.Attribute("Url").Value.ShouldEqual("http://test.com/api.js");
+        }
+
+        [Fact]
+        public void CreateCacheManifestReturnsExternalModuleElementWithContentTypeAttribute()
+        {
+            var element = new ExternalScriptModule("http://test.com/api.js").CreateCacheManifest().Single();
+            element.Attribute("ContentType").Value.ShouldEqual("text/javascript");
         }
 
         [Fact]
@@ -44,8 +59,7 @@ namespace Cassette.Scripts
             var module = new ExternalScriptModule("http://test.com/asset.js");
             var result = (module as IModuleSource<ScriptModule>).GetModules(Mock.Of<IModuleFactory<ScriptModule>>(), Mock.Of<ICassetteApplication>());
 
-            result.LastWriteTimeMax.ShouldEqual(DateTime.MinValue);
-            result.Modules.SequenceEqual(new[] { module }).ShouldBeTrue();
+            result.SequenceEqual(new[] { module }).ShouldBeTrue();
         }
 
         [Fact]

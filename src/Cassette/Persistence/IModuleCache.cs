@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Cassette.Persistence
 {
     public interface IModuleCache<T>
         where T : Module
     {
-        bool IsUpToDate(DateTime dateTime, string version, IFileSystem sourceFileSystem);
-        IEnumerable<T> LoadModules();
-        void SaveModuleContainer(IModuleContainer<T> moduleContainer, string version);
+        bool LoadContainerIfUpToDate(int expectedAssetCount, string version, IFileSystem sourceFileSystem, out IModuleContainer<T> container);
+        IModuleContainer<T> SaveModuleContainer(IEnumerable<T> modules, string version);
     }
 }

@@ -44,12 +44,12 @@ namespace Cassette
             Tuple<object, CreateModuleContainer> existingTuple;
             if (moduleSourceResultsByType.TryGetValue(typeof(T), out existingTuple))
             {
-                var existingResult = (ModuleSourceResult<T>)existingTuple.Item1;
+                var existingResult = (IEnumerable<T>)existingTuple.Item1;
                 var existingAction = existingTuple.Item2;
-                // Update the existing result by merging in the new result.
+                // Concat the two module collections.
                 // Keep the existing initialization action.
                 moduleSourceResultsByType[typeof(T)] = Tuple.Create(
-                    (object)existingResult.Merge(result),
+                    (object)existingResult.Concat(result),
                     existingAction
                 );
             }
@@ -73,35 +73,30 @@ namespace Cassette
         IModuleContainer<T> CreateModuleContainer<T>(bool useCache, string applicationVersion)
             where T : Module
         {
-            var finalResult = (ModuleSourceResult<T>)moduleSourceResultsByType[typeof(T)].Item1;
+            var modules = (IEnumerable<T>)moduleSourceResultsByType[typeof(T)].Item1;
             if (useCache)
             {
-                return GetOrCreateCachedModuleContainer(finalResult, applicationVersion);
+                return GetOrCreateCachedModuleContainer(modules, applicationVersion);
             }
             else
             {
-                return CreateModuleContainer(finalResult.Modules);
+                return CreateModuleContainer(modules);
             }
         }
 
-        IModuleContainer<T> GetOrCreateCachedModuleContainer<T>(ModuleSourceResult<T> finalResult, string applicationVersion) where T : Module
+        IModuleContainer<T> GetOrCreateCachedModuleContainer<T>(IEnumerable<T> modules, string applicationVersion) where T : Module
         {
             var cache = GetModuleCache<T>();
-            if (cache.IsUpToDate(finalResult.LastWriteTimeMax, applicationVersion, application.RootDirectory))
+            IModuleContainer<T> container;
+            var assetCount = modules.SelectMany(m => m.Assets).Count();
+            if (cache.LoadContainerIfUpToDate(assetCount, applicationVersion, application.RootDirectory, out container))
             {
-                var loadedModules = cache.LoadModules();
-                var nonPersistentModules = finalResult.Modules.Where(m => m.IsPersistent == false);
-                return new ModuleContainer<T>(
-                    loadedModules.Concat(nonPersistentModules)
-                );
+                return container;
             }
             else
             {
-                var container = CreateModuleContainer(finalResult.Modules);
-                cache.SaveModuleContainer(container, applicationVersion);
-                return container;
-                // TODO: perhaps return the cached container instance instead?
-                // This may be more consistent with the cache-hit scenario above.
+                container = CreateModuleContainer(modules);
+                return cache.SaveModuleContainer(container.Modules, applicationVersion);
             }
         }
 
@@ -137,14 +132,12 @@ namespace Cassette
 
                 foreach (var reference in urlReferences)
                 {
-                    if (modulePaths.Contains(reference.ReferencedPath) == false)
+                    if (modulePaths.Contains(reference.Path) == false)
                     {
-                        var urlModule = GetModuleFactory<T>().CreateExternalModule(reference.ReferencedPath);
+                        var urlModule = GetModuleFactory<T>().CreateExternalModule(reference.Path);
                         modulePaths.Add(urlModule.Path);
                         yield return urlModule;
                     }
-
-                    reference.Type = AssetReferenceType.DifferentModule;
                 }
             }
         }

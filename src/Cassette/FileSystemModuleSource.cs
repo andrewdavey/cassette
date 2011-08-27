@@ -16,11 +16,11 @@ namespace Cassette
         public Regex Exclude { get; set; }
         public Action<T> CustomizeModule { get; set; }
 
-        public ModuleSourceResult<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
+        public IEnumerable<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
         {
             var root = application.RootDirectory;
 
-            var modulesAndLastWriteTimes = (
+            var modules = (
                 from subDirectoryName in GetModuleDirectoryPaths(application)
                 where IsNotHidden(root, subDirectoryName)
                 select CreateModule(
@@ -30,10 +30,8 @@ namespace Cassette
                 )
             ).ToArray();
 
-            var modules = modulesAndLastWriteTimes.Select(t => t.Item1);
             CustomizeModules(modules);
-            var lastWriteTimeMax = modulesAndLastWriteTimes.Max(t => t.Item2);
-            return new ModuleSourceResult<T>(modules, lastWriteTimeMax);
+            return modules;
         }
 
         void CustomizeModules(IEnumerable<T> modules)
@@ -53,7 +51,7 @@ namespace Cassette
             return directory.GetAttributes(path).HasFlag(FileAttributes.Hidden) == false;
         }
 
-        Tuple<T, DateTime> CreateModule(string directoryName, IFileSystem directory, IModuleFactory<T> moduleFactory)
+        T CreateModule(string directoryName, IFileSystem directory, IModuleFactory<T> moduleFactory)
         {
             var filenames = GetAssetFilenames(directory).ToArray();
             var preSorted = directory.FileExists("module.txt");
@@ -66,15 +64,7 @@ namespace Cassette
                 preSorted
             );
 
-            var lastWriteTimeMax = GetLastWriteTimeMax(directory, filenames);
-
-            return Tuple.Create(module, lastWriteTimeMax);
-        }
-
-        DateTime GetLastWriteTimeMax(IFileSystem directory, IEnumerable<string> filenames)
-        {
-            var lastWriteTimes = filenames.Select(directory.GetLastWriteTimeUtc);
-            return lastWriteTimes.Concat(new[] {DateTime.MinValue}).Max();
+            return module;
         }
 
         IEnumerable<string> GetAssetFilenames(IFileSystem directory)

@@ -7,7 +7,10 @@ namespace Website
     {
         public void Configure(ModuleConfiguration moduleConfiguration)
         {
-            moduleConfiguration.Add(new DirectorySource<StylesheetModule>("assets/styles"));
+            moduleConfiguration.Add(new DirectorySource<StylesheetModule>("assets/styles")
+            {
+                FilePattern = "*.css"
+            });
         }
     }
 }

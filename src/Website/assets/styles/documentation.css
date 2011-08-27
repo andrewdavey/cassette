@@ -5,26 +5,46 @@
     width: 100%;
     padding: 0;
     background-color: #fafafa;
+    margin-top: 2em;
+}
+
+.main .documentation h1 {
+    color: #323231;
+    text-shadow: none;
+    margin: .4em 0 .2em 0;
+}
+
+.documentation h2 {
+    margin: 0 0 .5em 0;
+}
+
+.main pre + h2 {
+    margin-top: 1.5em;
 }
 
 .documentation .tree {
     display: table-cell;
+    padding: 0 2em;
     width: 250px;
-    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    vertical-align: top;
+    background-color: #f0f0f0;
+    border-radius: 0 10px 10px 0;
+}
+
+.tree h2 {
+    margin-top: 2.1em;
 }
 
 .documentation .item {
     display: table-cell;
-    padding: 10px;
+    padding: 0 2em;
+    vertical-align: top;
 }
 
 .tree ul {
     padding: 0;
     margin: 0;
-}
-
-.tree > ul {
-    margin: 1em;
 }
 
 .tree li {
@@ -40,4 +60,9 @@
 .tree li > ul {
     margin-top: 5px;
     margin-bottom: 10px;
+}
+
+.documentation pre {
+    border: 1px solid #ccc;
+    margin-bottom: .5em;
 }
