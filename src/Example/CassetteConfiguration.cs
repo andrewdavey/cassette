@@ -8,7 +8,7 @@ namespace Example
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(ModuleConfiguration modules)
+        public void Configure(ModuleConfiguration modules, ICassetteApplication application)
         {
             modules.Add(
                 new PerSubDirectorySource<ScriptModule>("Scripts")

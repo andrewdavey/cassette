@@ -16,5 +16,6 @@
     
     <files>
         <file src="Views\Web.config.transform" target="content\Views"/>
+        <file src="CassetteConfiguration.cs.pp" target="content"/>
     </files>
 </package>

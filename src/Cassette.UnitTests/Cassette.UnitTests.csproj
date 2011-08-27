@@ -105,7 +105,7 @@
     <Compile Include="StubFileSystem.cs" />
     <Compile Include="Stylesheets\StylesheetModule.cs" />
     <Compile Include="Stylesheets\StylesheetModuleFactory.cs" />
-    <Compile Include="UI\PlaceholderReplacingResponseFilter.cs" />
+    <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />

@@ -29,7 +29,7 @@ namespace Cassette.IntegrationTests
         CassetteApplication CreateApplication(Action<ModuleConfiguration> configure)
         {
             var config = new Mock<ICassetteConfiguration>();
-            config.Setup(c => c.Configure(It.IsAny<ModuleConfiguration>()))
+            config.Setup(c => c.Configure(It.IsAny<ModuleConfiguration>(), It.IsAny<ICassetteApplication>()))
                   .Callback<ModuleConfiguration>(configure);
 
             return new CassetteApplication(

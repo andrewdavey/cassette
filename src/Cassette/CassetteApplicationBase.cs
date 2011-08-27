@@ -24,15 +24,16 @@ namespace Cassette
             );
         }
 
-        readonly bool isOutputOptimized;
+        bool isOutputOptimized;
         readonly IFileSystem rootDirectory;
-        readonly IUrlGenerator urlGenerator;
+        IUrlGenerator urlGenerator;
         readonly Dictionary<Type, ISearchableModuleContainer<Module>> moduleContainers;
         readonly Dictionary<Type, object> moduleFactories;
 
         public bool IsOutputOptimized
         {
             get { return isOutputOptimized; }
+            set { isOutputOptimized = value; }
         }
 
         public IFileSystem RootDirectory
@@ -43,6 +44,11 @@ namespace Cassette
         public IUrlGenerator UrlGenerator
         {
             get { return urlGenerator; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("UrlGenerator cannot be null.");
+                urlGenerator = value;
+            }
         }
 
         public void Dispose()
@@ -93,7 +99,7 @@ namespace Cassette
         Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, string version)
         {
             var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, moduleFactories);
-            config.Configure(moduleConfiguration);
+            config.Configure(moduleConfiguration, this);
             AddDefaultModuleSourcesIfEmpty(moduleConfiguration);
             return moduleConfiguration.CreateModuleContainers(isOutputOptimized, version);
         }

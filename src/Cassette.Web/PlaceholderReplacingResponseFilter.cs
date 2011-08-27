@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using System.Web;
+using Cassette.UI;
 
-namespace Cassette.UI
+namespace Cassette.Web
 {
     public class PlaceholderReplacingResponseFilter : MemoryStream
     {

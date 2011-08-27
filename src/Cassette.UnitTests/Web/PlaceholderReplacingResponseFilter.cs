@@ -2,20 +2,21 @@
 using System.Linq;
 using System.Text;
 using System.Web;
+using Cassette.UI;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.UI
+namespace Cassette.Web
 {
-    public class PlaceholderReplacingResponseFilter_tests
+    public class PlaceholderReplacingResponseFilter_Tests
     {
         readonly MemoryStream outputStream;
         readonly Mock<HttpResponseBase> response;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
         readonly PlaceholderReplacingResponseFilter filter;
 
-        public PlaceholderReplacingResponseFilter_tests()
+        public PlaceholderReplacingResponseFilter_Tests()
         {
             outputStream = new MemoryStream();
             response = new Mock<HttpResponseBase>();
