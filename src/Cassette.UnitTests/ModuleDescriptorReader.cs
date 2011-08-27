@@ -16,33 +16,33 @@ namespace Cassette
             return new ModuleDescriptorReader(descriptor.AsStream(), files);
         }
 
-        void FilesExist(params string[] filenames)
+        void FilesExist(params string[] result)
         {
-            files.AddRange(filenames);
+            files.AddRange(result);
         }
 
         [Fact]
         public void SkipsBlankLines()
         {
             var reader = GetReader("\r\n\t\n ");
-            var filenames = reader.ReadFilenames();
-            filenames.ShouldBeEmpty();
+            var result = reader.Read();
+            result.AssetFilenames.ShouldBeEmpty();
         }
 
         [Fact]
         public void SkipsComments()
         {
             var reader = GetReader("#comment");
-            var filenames = reader.ReadFilenames();
-            filenames.ShouldBeEmpty();
+            var result = reader.Read();
+            result.AssetFilenames.ShouldBeEmpty();
         }
 
         [Fact]
         public void SkipsCommentsWithLeadingWhitespace()
         {
             var reader = GetReader("#comment with leading space");
-            var filenames = reader.ReadFilenames();
-            filenames.ShouldBeEmpty();
+            var result = reader.Read();
+            result.AssetFilenames.ShouldBeEmpty();
         }
 
         [Fact]
@@ -50,8 +50,8 @@ namespace Cassette
         {
             FilesExist("test1.js", "test2.js");
             var reader = GetReader("test1.js\ntest2.js");
-            var filenames = reader.ReadFilenames();
-            filenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace Cassette
             var reader = GetReader("test1.js\ntest2.js");
             Assert.Throws<FileNotFoundException>(delegate
             {
-                reader.ReadFilenames().ToArray();
+                reader.Read();
             });
         }
 
@@ -70,8 +70,8 @@ namespace Cassette
         {
             FilesExist("test.js");
             var reader = GetReader("test.js # comment");
-            var filenames = reader.ReadFilenames();
-            filenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -79,8 +79,8 @@ namespace Cassette
         {
             FilesExist("test1.js", "test2.js");
             var reader = GetReader("*");
-            var filenames = reader.ReadFilenames();
-            filenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -88,8 +88,44 @@ namespace Cassette
         {
             FilesExist("test1.js", "test2.js");
             var reader = GetReader("test1.js\n*");
-            var filenames = reader.ReadFilenames();
-            filenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenAssetsSectionReadReturnsAssetFilenames()
+        {
+            FilesExist("test.js");
+            var reader = GetReader("[assets]\ntest.js");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenAssetsSectionWithTrailingCommentReadReturnsAssetFilenames()
+        {
+            FilesExist("test.js");
+            var reader = GetReader("[assets]#comment\ntest.js");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenReferencesSectionReadReturnsReferences()
+        {
+            var reader = GetReader("[references]\n../lib/other.js");
+            var result = reader.Read();
+            result.References.SequenceEqual(new[]{"../lib/other.js"}).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenBothAssetsAndReferencesSectionsReadReturnsBoth()
+        {
+            FilesExist("test.js");
+            var reader = GetReader("[assets]\ntest.js\n[references]\n../lib/other.js");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
+            result.References.SequenceEqual(new[] { "../lib/other.js" }).ShouldBeTrue();
         }
     }
 }

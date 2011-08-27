@@ -61,6 +61,7 @@
     <Compile Include="IModuleSource.cs" />
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="ModuleConfiguration.cs" />
+    <Compile Include="ModuleDescriptor.cs" />
     <Compile Include="ModuleProcessing\AddTransformerToAssets.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
     <Compile Include="Persistence\CachedModuleContainer.cs" />
