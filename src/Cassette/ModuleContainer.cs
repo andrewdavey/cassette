@@ -60,7 +60,7 @@ namespace Cassette
                            from reference in module.References
                            where modules.Any(m => m.ContainsPath(reference)) == false
                            select string.Format(
-                               "Reference error in module descriptor for \"{0}\". Cannot find \"{1}\"",
+                               "Reference error in module descriptor for \"{0}\". Cannot find \"{1}\".",
                                module.Path,
                                reference
                            );

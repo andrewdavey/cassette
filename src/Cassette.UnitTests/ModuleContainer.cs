@@ -195,5 +195,18 @@ namespace Cassette
             var sorted = container.SortModules(new[] { module1, module2});
             sorted.SequenceEqual(new[] {module2, module1}).ShouldBeTrue();
         }
+
+        [Fact]
+        public void GivenModuleWithInvalid_ConstructorThrowsException()
+        {
+            var module1 = new Module("module1");
+            module1.AddReferences(new[] { "~\\module2" });
+
+            var exception = Assert.Throws<AssetReferenceException>(delegate
+            {
+                new ModuleContainer<Module>(new[] {module1});
+            });
+            exception.Message.ShouldEqual("Reference error in module descriptor for \"module1\". Cannot find \"~\\module2\".");
+        }
     }
 }
