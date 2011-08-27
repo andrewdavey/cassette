@@ -53,21 +53,24 @@ namespace Cassette
 
         T CreateModule(string directoryName, IFileSystem directory, IModuleFactory<T> moduleFactory)
         {
-            var filenames = GetAssetFilenames(directory).ToArray();
-            var preSorted = directory.FileExists("module.txt");
+            var descriptor = GetAssetFilenames(directory);
 
             var module = moduleFactory.CreateModule(directoryName);
+            if (descriptor.References.Any())
+            {
+                module.AddReferences(descriptor.References);
+            }
             module.AddAssets(
-                filenames.Select(
+                descriptor.AssetFilenames.Select(
                     assetFilename => new Asset(assetFilename, module, directory)
                 ),
-                preSorted
+                descriptor.AssetsSorted
             );
 
             return module;
         }
 
-        IEnumerable<string> GetAssetFilenames(IFileSystem directory)
+        ModuleDescriptor GetAssetFilenames(IFileSystem directory)
         {
             if (directory.FileExists("module.txt"))
             {
@@ -75,16 +78,20 @@ namespace Cassette
             }
             else
             {
-                return GetAssetFilenamesByConfiguration(directory);
+                return new ModuleDescriptor(
+                    GetAssetFilenamesByConfiguration(directory),
+                    false, // assets are not sorted yet
+                    Enumerable.Empty<string>() // no explicit references
+                );
             }
         }
 
-        IEnumerable<string> GetAssetFilenamesFromModuleDescriptorFile(IFileSystem directory)
+        ModuleDescriptor GetAssetFilenamesFromModuleDescriptorFile(IFileSystem directory)
         {
             using (var file = directory.OpenFile("module.txt", FileMode.Open, FileAccess.Read))
             {
                 var reader = new ModuleDescriptorReader(file, GetAssetFilenamesByConfiguration(directory));
-                return reader.Read().AssetFilenames;
+                return reader.Read();
             }
         }
 
@@ -104,7 +111,7 @@ namespace Cassette
             {
                 filenames = filenames.Where(f => Exclude.IsMatch(f) == false);
             }
-            return filenames.Except(new[] {"module.txt"});
+            return filenames.Except(new[] {"module.txt"}).ToArray();
         }
     }
 }

@@ -253,6 +253,20 @@ namespace Cassette
             element.Attribute("Location").Value.ShouldEqual("body");
         }
 
+        [Fact]
+        public void WhenReferencesAdded_ThenCreateCacheManifestContainsReferenceElements()
+        {
+            var module = new Module("");
+            module.AddReferences(new[] { "~\\test1", "~\\test2" });
+            
+            var element = module.CreateCacheManifest().Single();
+            var referenceElements = element.Elements("Reference").ToArray();
+
+            referenceElements.Length.ShouldEqual(2);
+            referenceElements[0].Attribute("Path").Value.ShouldEqual("~\\test1");
+            referenceElements[1].Attribute("Path").Value.ShouldEqual("~\\test2");
+        }
+
         Mock<IAsset> StubAsset()
         {
             var asset = new Mock<IAsset>();

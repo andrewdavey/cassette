@@ -34,7 +34,7 @@ namespace Cassette
                     ProcessLine(line);
                 }
             }
-            return new ModuleDescriptor(assetFilenames, references);
+            return new ModuleDescriptor(assetFilenames, true, references);
         }
 
         void ProcessLine(string line)

@@ -37,13 +37,27 @@ namespace Cassette.Persistence
             var pathAttribute = moduleElement.Attribute("Path");
             var hashAttribute = moduleElement.Attribute("Hash");
             var assetElements = moduleElement.Elements("Asset");
+            var referenceElements = moduleElement.Elements("Reference");
             if (pathAttribute == null || hashAttribute == null) throw new ArgumentException("Invalid module manifest data.");
 
             var module = moduleFactory.CreateModule(pathAttribute.Value);
             AssignModuleContentType(module, moduleElement);
             AddCachedAssetToModule(assetElements, hashAttribute, module);
+            AddReferencesToModule(referenceElements, module);
             module.InitializeFromManifest(moduleElement);
             return module;
+        }
+
+        void AddReferencesToModule(IEnumerable<XElement> referenceElements, T module)
+        {
+            var references = new List<string>();
+            foreach (var element in referenceElements)
+            {
+                var pathAttribute = element.Attribute("Path");
+                if (pathAttribute == null) throw new ArgumentException("Invalid module manifest data.");
+                references.Add(pathAttribute.Value);
+            }
+            module.AddReferences(references);
         }
 
         protected virtual T CreateExternalModule(XElement moduleElement)

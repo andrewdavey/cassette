@@ -12,6 +12,7 @@ namespace Cassette
         {
             this.modules = modules.ToArray(); // Force eval to prevent repeatedly generating new modules.
 
+            ValidateModuleReferences();
             ValidateAssetReferences();
             moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
             sortIndex = BuildSortIndex();
@@ -53,6 +54,23 @@ namespace Cassette
             return modules.FirstOrDefault(module => module.ContainsPath(path));
         }
 
+        void ValidateModuleReferences()
+        {
+            var notFound = from module in modules
+                           from reference in module.References
+                           where modules.Any(m => m.ContainsPath(reference)) == false
+                           select string.Format(
+                               "Reference error in module descriptor for \"{0}\". Cannot find \"{1}\"",
+                               module.Path,
+                               reference
+                           );
+            var message = string.Join(Environment.NewLine, notFound);
+            if (message.Length > 0)
+            {
+                throw new AssetReferenceException(message);
+            }
+        }
+
         void ValidateAssetReferences()
         {
             var notFound = from module in modules
@@ -79,7 +97,9 @@ namespace Cassette
                     references = new HashSet<T>(module.Assets.SelectMany(a => a.References)
                         .Where(r => r.Type == AssetReferenceType.DifferentModule
                                  || r.Type == AssetReferenceType.Url)
-                        .Select(r => FindModuleContainingPath(r.Path))
+                        .Select(r => r.Path)
+                        .Concat(module.References)
+                        .Select(FindModuleContainingPath)
                     ) 
                 }
             ).ToDictionary(x => x.module, x => x.references);
