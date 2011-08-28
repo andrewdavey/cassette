@@ -9,11 +9,17 @@ namespace Cassette
         readonly Func<T> createApplication;
         FileSystemWatcher watcher;
         Lazy<T> application;
+        bool creationFailed;
 
         public CassetteApplicationContainer(Func<T> createApplication)
         {
             this.createApplication = createApplication;
-            application = new Lazy<T>(createApplication);
+            application = new Lazy<T>(CreateApplication);
+        }
+
+        public CassetteApplicationContainer(Func<T> createApplication, string rootDirectoryToWatch)
+            : this(createApplication)
+        {
 
             // In production mode we don't expect the asset files to change
             // while the application is running. Changes to assets will involve a 
@@ -22,11 +28,7 @@ namespace Cassette
             // In development mode, asset files will likely change while application is
             // running. So watch the file system and recycle the application object 
             // when files are created/changed/deleted/etc.
-            var shouldWatchFileSystem = application.Value.IsOutputOptimized == false;
-            if (shouldWatchFileSystem)
-            {
-                StartWatchingFileSystem();
-            }
+            StartWatchingFileSystem(rootDirectoryToWatch);
         }
 
         public T Application
@@ -37,10 +39,9 @@ namespace Cassette
             }
         }
 
-        void StartWatchingFileSystem()
+        void StartWatchingFileSystem(string rootDirectoryToWatch)
         {
-            var rootDirectory = application.Value.RootDirectory.GetAbsolutePath("");
-            watcher = new FileSystemWatcher(rootDirectory)
+            watcher = new FileSystemWatcher(rootDirectoryToWatch)
             {
                 IncludeSubdirectories = true,
                 EnableRaisingEvents = true
@@ -53,15 +54,42 @@ namespace Cassette
 
         void RecycleApplication(object sender, FileSystemEventArgs e)
         {
-            if (application.IsValueCreated == false) return; // Already recycled, awaiting first creation.
+            if (IsPendingCreation) return; // Already recycled, awaiting first creation.
 
             lock (this)
             {
-                if (!application.IsValueCreated) return;
+                if (IsPendingCreation) return;
 
-                application.Value.Dispose();
+                if (creationFailed)
+                {
+                    creationFailed = false;
+                }
+                else
+                {
+                    application.Value.Dispose();
+                }
                 // Re-create the lazy object. So the application isn't created until it's asked for.
-                application = new Lazy<T>(createApplication);
+                application = new Lazy<T>(CreateApplication);
+            }
+        }
+
+        bool IsPendingCreation
+        {
+            get { return creationFailed == false && application.IsValueCreated == false; }
+        }
+
+        T CreateApplication()
+        {
+            try
+            {
+                var app = createApplication();
+                creationFailed = false;
+                return app;
+            }
+            catch
+            {
+                creationFailed = true;
+                throw;
             }
         }
 
