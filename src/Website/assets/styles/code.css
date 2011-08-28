@@ -3,10 +3,10 @@
     margin: 0;
 }
 pre code {
-    font-size: 10pt;
+    font-size: 9pt;
 }
 code {
-    font-family: Consolas;
+    font-family: Inconsolata, fixed;
 }
 .open-tag, .close-tag {
     color: #00a;

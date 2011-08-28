@@ -1,4 +1,4 @@
-﻿/* @reference "http://fonts.googleapis.com/css?family=Droid+Sans:700"; */
+﻿/* @reference "http://fonts.googleapis.com/css?family=Droid+Sans:700|Inconsolata"; */
 
 .banner {
     max-width: 960px;
@@ -6,7 +6,7 @@
     min-height: 390px;
 }
 .banner h1 {
-    font-family: "Droid Sans" , sans-serif;
+    font-family: "Droid Sans", sans-serif;
     color: #fff;
     font-size: 3.4em;
     text-shadow: 0 1px 0 #323231;
@@ -35,7 +35,6 @@
     line-height: 100px;
     text-decoration: none;
     font-size: 1.5em;
-    box-shadow: #ddd 0 0 4px;
     text-shadow: #777 0 0 3px;
 }
 .banner p {
@@ -99,7 +98,7 @@
     background-color: #fafafa;
 }
 .file-details {
-    width: 305px;
+    width: 300px;
     padding: 10px;
     display: table-cell;
     vertical-align: top;
