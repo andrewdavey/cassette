@@ -63,6 +63,7 @@
     <Compile Include="DirectorySource.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptBlocks.cs" />
+    <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
     <Compile Include="ModuleSourceTestBase.cs" />

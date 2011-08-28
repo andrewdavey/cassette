@@ -193,7 +193,7 @@ namespace Cassette
 
             var container = new ModuleContainer<Module>(new[] {module1, module2});
             var sorted = container.SortModules(new[] { module1, module2});
-            sorted.SequenceEqual(new[] {module2, module1}).ShouldBeTrue();
+            sorted.SequenceEqual(new[] { module2, module1 }).ShouldBeTrue();
         }
 
         [Fact]

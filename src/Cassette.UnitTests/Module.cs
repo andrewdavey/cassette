@@ -277,4 +277,47 @@ namespace Cassette
             return asset;
         }
     }
+
+    public class Module_AddReferences_Tests
+    {
+        [Fact]
+        public void StoresReferences()
+        {
+            var module = new Module("module");
+            module.AddReferences(new[] { "~\\test", "~\\other" });
+            module.References.SequenceEqual(new[] { "~\\test", "~\\other" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void ReferenceStartingWithSlashIsConvertedToAppRelative()
+        {
+            var module = new Module("module");
+            module.AddReferences(new[] { "/test" });
+            module.References.Single().ShouldEqual("~\\test");
+        }
+
+        [Fact]
+        public void ModuleRelativePathIsConvertedToAppRelative()
+        {
+            var module = new Module("module");
+            module.AddReferences(new[] { "../lib" });
+            module.References.Single().ShouldEqual("~\\lib");
+        }
+
+        [Fact]
+        public void TrailingSlashIsRemoved()
+        {
+            var module = new Module("module");
+            module.AddReferences(new[] { "../lib/" });
+            module.References.Single().ShouldEqual("~\\lib");
+        }
+
+        [Fact]
+        public void UrlIsNotConverted()
+        {
+            var module = new Module("module");
+            module.AddReferences(new[] { "http://test.com/" });
+            module.References.Single().ShouldEqual("http://test.com/");
+        }
+    }
 }

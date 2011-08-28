@@ -72,7 +72,29 @@ namespace Cassette
 
         public void AddReferences(IEnumerable<string> references)
         {
-            this.references.AddRange(references);
+            this.references.AddRange(references.Select(ConvertReferenceToAppRelative));
+        }
+
+        string ConvertReferenceToAppRelative(string reference)
+        {
+            if (reference.IsUrl()) return reference;
+
+            if (reference.StartsWith("~"))
+            {
+                return PathUtilities.NormalizePath(reference);
+            }
+            else if (reference.StartsWith("/"))
+            {
+                return PathUtilities.NormalizePath("~" + reference);
+            }
+            else
+            {
+                return PathUtilities.NormalizePath(System.IO.Path.Combine(
+                    "~",
+                    Path,
+                    reference
+                ));
+            }
         }
 
         public bool ContainsPath(string path)

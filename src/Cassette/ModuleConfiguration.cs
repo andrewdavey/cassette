@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Persistence;
+using Cassette.Utilities;
 using CreateModuleContainer = System.Func<bool, string, Cassette.ISearchableModuleContainer<Cassette.Module>>;
 // CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
 
@@ -120,11 +121,20 @@ namespace Cassette
 
         IEnumerable<T> ConvertUrlReferencesToModules<T>(IEnumerable<T> modules) where T : Module
         {
-            var modulePaths = new HashSet<string>(modules.Select(m => m.Path));
+            var modulePaths = new HashSet<string>(modules.Select(m => m.Path), StringComparer.OrdinalIgnoreCase);
 
             foreach (var module in modules)
             {
                 yield return module;
+
+                foreach (var reference in module.References)
+                {
+                    if (reference.IsUrl() == false) continue;
+                    if (modulePaths.Contains(reference)) continue;
+                    
+                    modulePaths.Add(reference);
+                    yield return GetModuleFactory<T>().CreateExternalModule(reference);
+                }
 
                 var urlReferences = module.Assets
                     .SelectMany(asset => asset.References)
@@ -132,12 +142,11 @@ namespace Cassette
 
                 foreach (var reference in urlReferences)
                 {
-                    if (modulePaths.Contains(reference.Path) == false)
-                    {
-                        var urlModule = GetModuleFactory<T>().CreateExternalModule(reference.Path);
-                        modulePaths.Add(urlModule.Path);
-                        yield return urlModule;
-                    }
+                    if (modulePaths.Contains(reference.Path)) continue;
+
+                    var urlModule = GetModuleFactory<T>().CreateExternalModule(reference.Path);
+                    modulePaths.Add(urlModule.Path);
+                    yield return urlModule;
                 }
             }
         }
