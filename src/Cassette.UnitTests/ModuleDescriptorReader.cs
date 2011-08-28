@@ -86,10 +86,10 @@ namespace Cassette
         [Fact]
         public void AsteriskIncludesAllFilesNotAlreadyadded()
         {
-            FilesExist("test1.js", "test2.js");
-            var reader = GetReader("test1.js\n*");
+            FilesExist("test1.js", "test2.js", "test3.js");
+            var reader = GetReader("test2.js\n*");
             var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
+            result.AssetFilenames.SequenceEqual(new[] { "test2.js", "test1.js", "test3.js" }).ShouldBeTrue();
         }
 
         [Fact]

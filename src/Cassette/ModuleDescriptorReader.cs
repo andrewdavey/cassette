@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Cassette
 {
@@ -19,7 +20,7 @@ namespace Cassette
 
         readonly Stream stream;
         readonly HashSet<string> allAssetfilenames;
-        readonly SortedSet<string> assetFilenames = new SortedSet<string>();
+        readonly List<string> assetFilenames = new List<string>();
         readonly HashSet<string> references = new HashSet<string>(); 
         readonly Dictionary<string, Action<string>> sectionLineParsers;
         string currentSection = "assets";
@@ -73,7 +74,7 @@ namespace Cassette
         {
             if (line == "*")
             {
-                foreach (var filename in allAssetfilenames)
+                foreach (var filename in allAssetfilenames.Except(assetFilenames))
                 {
                     assetFilenames.Add(filename);
                 }
