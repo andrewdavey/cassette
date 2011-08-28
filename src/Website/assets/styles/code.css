@@ -1,12 +1,8 @@
 ﻿pre {
     padding: .5em;
     margin: 0;
-}
-pre code {
-    font-size: 9pt;
-}
-code {
     font-family: Inconsolata, fixed;
+    font-size: 9pt;
 }
 .open-tag, .close-tag {
     color: #00a;

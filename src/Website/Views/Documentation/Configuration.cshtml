@@ -1,2 +1,18 @@
 ﻿<h1>Configuration</h1>
-<p>Documentation under construction. Please check back soon!</p>
+<p>Cassette uses code-based configuration to define asset modules and what processing to apply to them.
+Your web application must contain a public class that implements <code>Cassette.ICassetteConfiguration</code>.</p>
+<p>During application start-up, Cassette will create your configuration class and call the <code>Configure</code> method.</p>
+<p>Here's the outline of a configuration class:</p>
+<pre><code><span class="keyword">using</span> Cassette;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
+    {
+        <span class="comment">// Put configuration here</span>
+    }
+}</code></pre>
+<p class="minor">The <code>Cassette.Web</code> nuget package adds the <code>CassetteConfiguration.cs</code> file to your project.</p>
+
+<h2>Next...</h2>
+<p>Add some <a href="@Url.RouteUrl("Documentation", new { path = "configuration/module-sources" })">module sources</a> to the configuration.</p>

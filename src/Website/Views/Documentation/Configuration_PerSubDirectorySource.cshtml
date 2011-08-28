@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Module Source Configuration";
+}
+<h1>PerSubDirectorySource&lt;TModule&gt;</h1>
+<p>This module source will create module for each immediate sub-directory of the given source path.
+The source path is relative to the application root directory.</p>
+<p>The <code>FilePattern</code> property is a semicolon separated string that defines which file types to include in the modules.</p>
+<p>The optional <code>Exclude</code> property is a regular expression used to exclude files.</p>
+<p>Here's an example:</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
+{
+    moduleConfiguration.Add(
+        <span class="keyword">new</span> <span class="code-type">PerSubDirectorySource</span>&lt;<span class="code-type">ScriptModule</span>&gt;(<span class="string">"Scripts"</span>)
+        {
+            FilePattern = <span class="string">"*.js;*.coffee"</span>,
+            Exclude = <span class="keyword">new</span> <span class="code-type">Regex</span>(<span class="string">"-vsdoc\\.js$"</span>) <span class="comment">// Excludes the VS documentation files</span>
+        }
+    );
+}</code></pre>
+<p>So if your file system looks like:</p>
+<pre>Scripts/
+  - lib/
+      - jquery.js
+      - knockout.js
+  - app/
+      - widgets/
+          - menu.js
+          - calendar.js
+      - page.js
+      - widget.js
+</pre>
+<p>Then a module is created for <code>Scripts/lib</code> and <code>Scripts/app</code>. The app module contains the assets
+from the widgets sub-directory.</p>
+<p>Note: Any hidden folders, such as <code>.svn</code>, are ignored by PerSubDirectorySource.</p>

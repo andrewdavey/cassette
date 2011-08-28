@@ -1,2 +1,26 @@
 ﻿<h1>Getting Started</h1>
-<p>Documentation under construction. Please check back soon!</p>
+<ol>
+    <li>Add the <code>Cassette.Web</code> nuget package to your ASP.NET 4.0 application.</li>
+    <li>Grok the basics of <a href="@Url.RouteUrl("Documentation", new { path = "getting-started/assets-and-modules" })">assets and modules</a>.</li>
+    <li>Read the <a href="@Url.RouteUrl("Documentation", new { path = "configuration" })">configuration documentation</a>.</li>
+    <li>Use the <code>Assets</code> helpers in your view pages to reference modules and render their HTML elements.
+    Here's a quick example. Please see the rest of the documentation for more details.
+    <pre><code><span class="code-tag">@@{</span>
+      <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/app/page.js"</span>);
+    <span class="code-tag">}</span>
+    <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+      <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+      <span class="code-tag">@@</span><span class="code-type">Assets</span>.Stylesheets.Render()
+      <span class="code-tag">@@</span><span class="code-type">Assets</span>.Scripts.Render()
+    <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+      ...
+    <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+    </li>
+</ol>
+
+<h2>Questions?</h2>
+<p>Please visit the <a href="http://groups.google.com/group/cassette">Cassette Google Group</a> to ask for help.</p>

@@ -11,7 +11,7 @@ body {
 p.last {
     margin-bottom: 0;
 }
-h1, h2 {
+h1, h2, h3 {
     font-family: "Droid Sans" , sans-serif;
 }
 .main h1 {
@@ -21,11 +21,14 @@ h1, h2 {
     letter-spacing: -1px;
     margin: .75em 0;   
 }
-.main h2 {
+.main h2, .main h3 {
     color: #323231;
 }
-.main p + h2 {
+.main p + h2, .main ul + h2 {
     margin-top: 1.5em; 
+}
+.main p + h3, .main ul + h3 {
+    margin: 1.5em 0 .5em 0;
 }
 .main .content {
     background-color: #fff;
