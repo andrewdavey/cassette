@@ -202,7 +202,15 @@ namespace Cassette.Web
         {
             var generator = new UrlGenerator("/");
             var url = generator.CreateImageUrl("~/test.png", "hash");
-            url.ShouldEqual("/_assets/images/test_hash.png");
+            url.ShouldStartWith("/_assets/images/");
+        }
+
+        [Fact]
+        public void CreateImageUrlConvertsFileExtensinDotToUnderscore()
+        {
+            var generator = new UrlGenerator("/");
+            var url = generator.CreateImageUrl("~/test.png", "hash");
+            url.ShouldStartWith("/_assets/images/test_hash_png");
         }
 
         [Fact]
@@ -210,7 +218,7 @@ namespace Cassette.Web
         {
             var generator = new UrlGenerator("/");
             var url = generator.CreateImageUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("/_assets/images/test/foo_hash.png");
+            url.ShouldEqual("/_assets/images/test/foo_hash_png");
         }
     }
 

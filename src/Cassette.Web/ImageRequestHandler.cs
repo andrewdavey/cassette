@@ -35,7 +35,7 @@ namespace Cassette.Web
         public void ProcessRequest(HttpContext unused)
         {
             var path = routeData.GetRequiredString("path");
-            var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+\.(?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
+            var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+_(?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
             if (match.Success == false)
             {
                 response.StatusCode = 404;
