@@ -24,12 +24,7 @@ namespace Cassette.Persistence
         public IEnumerable<T> CreateModules(XElement rootElement)
         {
             var moduleElements = rootElement.Elements("Module");
-            var modules = moduleElements.Select(CreateModule);
-            
-            var externalModuleElements = rootElement.Elements("ExternalModule");
-            var externalModules = externalModuleElements.Select(CreateExternalModule);
-
-            return modules.Concat(externalModules);
+            return moduleElements.Select(CreateModule);
         }
 
         protected virtual T CreateModule(XElement moduleElement)
@@ -58,17 +53,6 @@ namespace Cassette.Persistence
                 references.Add(pathAttribute.Value);
             }
             module.AddReferences(references);
-        }
-
-        protected virtual T CreateExternalModule(XElement moduleElement)
-        {
-            var urlAttribute = moduleElement.Attribute("Url");
-            if (urlAttribute == null) throw new ArgumentException("Invalid external module manifest data. The \"Url\" attribute is missing.");
-
-            var module = moduleFactory.CreateExternalModule(urlAttribute.Value);
-            AssignModuleContentType(module, moduleElement);
-            module.InitializeFromManifest(moduleElement);
-            return module;
         }
 
         void AssignModuleContentType(Module module, XElement moduleElement)

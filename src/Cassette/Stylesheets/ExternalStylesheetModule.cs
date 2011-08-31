@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Web;
 using System.Xml.Linq;
 
@@ -17,15 +16,8 @@ namespace Cassette.Stylesheets
 
         public override IEnumerable<XElement> CreateCacheManifest()
         {
-            var element = new XElement("ExternalModule",
-                new XAttribute("Url", url),
-                new XAttribute("ContentType", ContentType)
-            );
-            if (string.IsNullOrEmpty(Media) == false)
-            {
-                element.Add(new XAttribute("Media", Media));
-            }
-            yield return element;
+            // External modules do not require caching.
+            yield break;
         }
 
         public override void Process(ICassetteApplication application)

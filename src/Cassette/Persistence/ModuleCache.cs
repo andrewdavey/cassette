@@ -20,7 +20,7 @@ namespace Cassette.Persistence
         const string ContainerFilename = "container.xml";
         const string VersionFilename = "version";
 
-        public bool LoadContainerIfUpToDate(int expectedAssetCount, string version, IFileSystem sourceFileSystem, out IModuleContainer<T> container)
+        public bool LoadContainerIfUpToDate(IEnumerable<T> externalModules, int expectedAssetCount, string version, IFileSystem sourceFileSystem, out IModuleContainer<T> container)
         {
             container = null;
             if (!cacheDirectory.FileExists(ContainerFilename)) return false;
@@ -29,7 +29,7 @@ namespace Cassette.Persistence
 
             var lastWriteTime = cacheDirectory.GetLastWriteTimeUtc(ContainerFilename);
             
-            var modules = LoadModules();
+            var modules = LoadModules().Concat(externalModules);
             var cachedContainer = new CachedModuleContainer<T>(modules);
             if (cachedContainer.IsUpToDate(expectedAssetCount, lastWriteTime, sourceFileSystem))
             {

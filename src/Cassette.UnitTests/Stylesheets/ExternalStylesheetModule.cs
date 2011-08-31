@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Cassette.ModuleProcessing;
 using Moq;
 using Should;
@@ -10,32 +9,10 @@ namespace Cassette.Stylesheets
     public class ExternalStylesheetModule_Tests
     {
         [Fact]
-        public void CreateCacheManifestReturnsExternalModuleElement()
+        public void CreateCacheManifestReturnsEmpty()
         {
-            var element = new ExternalStylesheetModule("http://test.com/api.css").CreateCacheManifest().Single();
-            element.Name.LocalName.ShouldEqual("ExternalModule");
-        }
-
-        [Fact]
-        public void CreateCacheManifestReturnsExternalModuleElementWithUrlAttribute()
-        {
-            var element = new ExternalStylesheetModule("http://test.com/api.css").CreateCacheManifest().Single();
-            element.Attribute("Url").Value.ShouldEqual("http://test.com/api.css");
-        }
-
-        [Fact]
-        public void CreateCacheManifestReturnsExternalModuleElementWithContentTypeAttribute()
-        {
-            var element = new ExternalStylesheetModule("http://test.com/api.js").CreateCacheManifest().Single();
-            element.Attribute("ContentType").Value.ShouldEqual("text/css");
-        }
-
-        [Fact]
-        public void CreateCacheManifestReturnsExternalModuleElementWithMediaAttribute()
-        {
-            var module = new ExternalStylesheetModule("http://test.com/api.js") {Media = "print"};
-            var element = module.CreateCacheManifest().Single();
-            element.Attribute("Media").Value.ShouldEqual("print");
+            var module = new ExternalStylesheetModule("http://test.com/api.css");
+            module.CreateCacheManifest().ShouldBeEmpty();
         }
 
         [Fact]

@@ -45,18 +45,16 @@ namespace Cassette.Scripts
             return "~/" + name;
         }
 
-        readonly string url;
-        readonly string fallbackUrl;
-        readonly string javaScriptCondition;
+        string url;
+        string fallbackUrl;
+        string javaScriptCondition;
 
         static readonly string fallbackHtml = "<script type=\"text/javascript\">{0} && document.write(unescape('%3Cscript src=\"{1}\"%3E%3C/script%3E'))</script>";
 
         public override IEnumerable<XElement> CreateCacheManifest()
         {
-            yield return new XElement("ExternalModule",
-                new XAttribute("Url", url),
-                new XAttribute("ContentType", ContentType)
-            );
+            // External modules do not require caching.
+            yield break;
         }
 
         public override void Process(ICassetteApplication application)

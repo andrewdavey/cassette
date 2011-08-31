@@ -22,24 +22,10 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void CreateCacheManifestReturnsExternalModuleElement()
+        public void CreateCacheManifestReturnsEmpty()
         {
-            var element = new ExternalScriptModule("http://test.com/api.js").CreateCacheManifest().Single();
-            element.Name.LocalName.ShouldEqual("ExternalModule");
-        }
-
-        [Fact]
-        public void CreateCacheManifestReturnsExternalModuleElementWithUrlAttribute()
-        {
-            var element = new ExternalScriptModule("http://test.com/api.js").CreateCacheManifest().Single();
-            element.Attribute("Url").Value.ShouldEqual("http://test.com/api.js");
-        }
-
-        [Fact]
-        public void CreateCacheManifestReturnsExternalModuleElementWithContentTypeAttribute()
-        {
-            var element = new ExternalScriptModule("http://test.com/api.js").CreateCacheManifest().Single();
-            element.Attribute("ContentType").Value.ShouldEqual("text/javascript");
+            var module = new ExternalScriptModule("http://test.com/api.js");
+            module.CreateCacheManifest().ShouldBeEmpty();
         }
 
         [Fact]
@@ -68,6 +54,20 @@ namespace Cassette.Scripts
             var module = new ExternalScriptModule("http://test.com/asset.js");
             var html = module.Render(Mock.Of<ICassetteApplication>());
             html.ToHtmlString().ShouldEqual("<script src=\"http://test.com/asset.js\" type=\"text/javascript\"></script>");
+        }
+
+        [Fact]
+        public void GivenModuleHasName_ContainsPathOfThatNameReturnsTrue()
+        {
+            var module = new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
+            module.ContainsPath("~/GoogleMapsApi").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenModuleHasName_PathIsApplicationRelativeFormOfTheName()
+        {
+            var module = new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
+            module.Path.ShouldEqual("~/GoogleMapsApi");
         }
     }
 

@@ -19,7 +19,8 @@ namespace Example
                 new ExternalScriptModule("twitter", "http://platform.twitter.com/widgets.js")
                 {
                     Location = "body"
-                }
+                },
+                new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false")
             );
 
             modules.Add(new DirectorySource<StylesheetModule>("Styles")

@@ -106,7 +106,7 @@ namespace Cassette
             }
         }
 
-        public bool ContainsPath(string path)
+        public virtual bool ContainsPath(string path)
         {
             return new ModuleContainsPathPredicate().ModuleContainsPath(path, this);
         }

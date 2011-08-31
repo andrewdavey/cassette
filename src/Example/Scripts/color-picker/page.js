@@ -2,6 +2,7 @@
 /// <reference path="../lib/knockout.js" />
 /// <reference path="../app/namespace.js" />
 /// <reference path="ColorPickerViewModel.js" />
+/// <reference path="~\GoogleMapsApi"/>
 
 $(function () {
     // Entry point of page code.
