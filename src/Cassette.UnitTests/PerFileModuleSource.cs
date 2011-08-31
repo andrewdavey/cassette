@@ -20,11 +20,31 @@ namespace Cassette
         }
 
         [Fact]
-        public void GetModulesReturnsModuleForFile()
+        public void GivenBasePathIsEmptyString_GetModulesReturnsModuleForFile()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
             var modules = GetModules(new PerFileModuleSource<Module>(""));
+
+            modules[0].Path.ShouldEqual("~/test");
+        }
+
+        [Fact]
+        public void GivenBasePathIsAppRoot_ThenGetModulesReturnsModuleForFile()
+        {
+            File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
+
+            var modules = GetModules(new PerFileModuleSource<Module>("~"));
+
+            modules[0].Path.ShouldEqual("~/test");
+        }
+
+        [Fact]
+        public void GivenBasePathIsAppRootSlash_ThenGetModulesReturnsModuleForFile()
+        {
+            File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
+
+            var modules = GetModules(new PerFileModuleSource<Module>("~/"));
 
             modules[0].Path.ShouldEqual("~/test");
         }
@@ -69,6 +89,7 @@ namespace Cassette
             var modules = GetModules(new PerFileModuleSource<Module>("path"));
 
             modules[0].Path.ShouldEqual("~/path/sub/test");
+            modules[0].Assets[0].SourceFilename.ShouldEqual("~/path/sub/test.js");
         }
 
         [Fact]

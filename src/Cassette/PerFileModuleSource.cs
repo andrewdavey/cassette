@@ -12,7 +12,18 @@ namespace Cassette
 
         public PerFileModuleSource(string basePath)
         {
-            this.basePath = basePath;
+            if (basePath.StartsWith("~"))
+            {
+                this.basePath = basePath.TrimEnd('/', '\\');
+            }
+            else if (basePath.StartsWith("/"))
+            {
+                this.basePath = "~";
+            }
+            else
+            {
+                this.basePath = "~/" + basePath.TrimEnd('/', '\\');
+            }
         }
 
         public string FilePattern { get; set; }
@@ -21,11 +32,18 @@ namespace Cassette
 
         public IEnumerable<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
         {
-            var directory = application.RootDirectory.NavigateTo(basePath, false);
+            var directory = GetDirectoryForBasePath(application);
             var filenames = GetFilenames(directory);
 
             return from filename in filenames
                    select CreateModule(filename, moduleFactory, directory);
+        }
+
+        IFileSystem GetDirectoryForBasePath(ICassetteApplication application)
+        {
+            return basePath.Length == 1
+                       ? application.RootDirectory
+                       : application.RootDirectory.NavigateTo(basePath.Substring(2), false);
         }
 
         IEnumerable<string> GetFilenames(IFileSystem directory)
@@ -53,8 +71,13 @@ namespace Cassette
         T CreateModule(string filename, IModuleFactory<T> moduleFactory, IFileSystem directory)
         {
             var name = RemoveFileExtension(filename);
-            var module = moduleFactory.CreateModule(PathUtilities.CombineWithForwardSlashes("~", basePath, name));
-            module.AddAssets(new[] { new Asset("~/" + filename, module, directory.GetFile(filename)) }, true);
+            var module = moduleFactory.CreateModule(PathUtilities.CombineWithForwardSlashes(basePath, name));
+            var asset = new Asset(
+                PathUtilities.CombineWithForwardSlashes(basePath, filename),
+                module,
+                directory.GetFile(filename)
+            );
+            module.AddAssets(new[] { asset }, true);
             return module;
         }
 
