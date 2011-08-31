@@ -7,6 +7,11 @@ namespace Cassette.Utilities
 {
     public static class PathUtilities
     {
+        public static string CombineWithForwardSlashes(params string[] paths)
+        {
+            return Path.Combine(paths).Replace('\\', '/');
+        }
+
         public static string NormalizePath(string path)
         {
             var slashes = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };

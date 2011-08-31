@@ -49,7 +49,7 @@ namespace Cassette
 
         public string GetAbsolutePath(string filename)
         {
-            return PathUtilities.NormalizePath(Path.Combine(rootDirectory, filename));
+            return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(rootDirectory, filename));
         }
 
         string ToRelativePath(string fullPath)

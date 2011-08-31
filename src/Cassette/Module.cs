@@ -96,7 +96,7 @@ namespace Cassette
             }
             else
             {
-                return PathUtilities.NormalizePath(System.IO.Path.Combine(
+                return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
                     "~",
                     Path,
                     reference
@@ -160,7 +160,7 @@ namespace Cassette
             if (hasSortedAssets) return;
             // Graph topological sort, based on references between assets.
             var assetsByFilename = Assets.ToDictionary(
-                a => System.IO.Path.Combine("~", Path, a.SourceFilename),
+                a => PathUtilities.CombineWithForwardSlashes("~", Path, a.SourceFilename),
                 StringComparer.OrdinalIgnoreCase
             );
             var graph = new Graph<IAsset>(

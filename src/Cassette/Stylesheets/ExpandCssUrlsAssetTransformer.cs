@@ -57,7 +57,7 @@ namespace Cassette.Stylesheets
 
         string GetCurrentDirectory(IAsset asset)
         {
-            return Path.Combine(module.Path, Path.GetDirectoryName(asset.SourceFilename));
+            return PathUtilities.CombineWithForwardSlashes(module.Path, Path.GetDirectoryName(asset.SourceFilename));
         }
 
         /// <remarks>
@@ -92,7 +92,7 @@ namespace Cassette.Stylesheets
         string GetImageFilename(Group matchedUrlGroup, string currentDirectory)
         {
             var originalUrl = matchedUrlGroup.Value.Trim('"', '\'');
-            var relativeUrl = PathUtilities.NormalizePath(Path.Combine(currentDirectory, originalUrl));
+            var relativeUrl = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(currentDirectory, originalUrl));
             return relativeUrl;
         }
     }

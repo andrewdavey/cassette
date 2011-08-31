@@ -33,7 +33,7 @@ namespace Cassette
                 }
                 else if (path.StartsWith("~") == false)
                 {
-                    path = Path.Combine("~", path);
+                    path = PathUtilities.CombineWithForwardSlashes("~", path);
                 }
 
                 var referencedModule = moduleContainer.FindModuleContainingPath(path);

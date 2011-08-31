@@ -27,7 +27,7 @@ namespace Cassette
 
         void IAssetVisitor.Visit(IAsset asset)
         {
-            var filename = Path.Combine(currentModule.Path, asset.SourceFilename);
+            var filename = PathUtilities.CombineWithForwardSlashes(currentModule.Path, asset.SourceFilename);
             if (IsMatch(filename))
             {
                 isFound = true;
@@ -43,7 +43,7 @@ namespace Cassette
             }
             else
             {
-                return Path.Combine(module.Path, path);
+                return PathUtilities.CombineWithForwardSlashes(module.Path, path);
             }
         }
 

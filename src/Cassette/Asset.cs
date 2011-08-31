@@ -55,7 +55,7 @@ namespace Cassette
                 else
                 {
                     var subDirectory = Path.GetDirectoryName(moduleRelativeFilename);
-                    appRelativeFilename = "~/" + Path.Combine(
+                    appRelativeFilename = "~/" + PathUtilities.CombineWithForwardSlashes(
                         parentModule.Path,
                         subDirectory,
                         assetRelativeFilename
@@ -84,7 +84,7 @@ namespace Cassette
 
         public override void AddRawFileReference(string relativeFilename)
         {
-            var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
+            var appRelativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
                 "~",
                 parentModule.Path,
                 Path.GetDirectoryName(moduleRelativeFilename),
@@ -149,7 +149,7 @@ namespace Cassette
             throw new AssetReferenceException(
                 string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    Path.Combine(parentModule.Path, SourceFilename), lineNumber, path
+                    PathUtilities.CombineWithForwardSlashes(parentModule.Path, SourceFilename), lineNumber, path
                 )
             );
         }
