@@ -21,7 +21,7 @@ namespace Cassette
                 throw new ArgumentException("Asset filename must be relative to it's module directory.");
             }
 
-            this.moduleRelativeFilename = moduleRelativeFilename;
+            this.moduleRelativeFilename = PathUtilities.NormalizePath(moduleRelativeFilename);
             filename = Path.GetFileName(this.moduleRelativeFilename);
             this.parentModule = parentModule;
             directory = moduleDirectory.NavigateTo(Path.GetDirectoryName(moduleRelativeFilename), false);

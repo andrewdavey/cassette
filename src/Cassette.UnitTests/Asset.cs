@@ -35,6 +35,15 @@ namespace Cassette
         readonly FileSystem fileSystem;
 
         [Fact]
+        public void ConstructorNormalizesPath()
+        {
+            root.CreateSubdirectory("module\\test");
+            File.WriteAllText(Path.Combine(root.FullName, "module", "test", "bar.js"), "");
+            var asset = new Asset("test\\bar.js", module, fileSystem.NavigateTo("module", false));
+            asset.SourceFilename.ShouldEqual("test/bar.js");
+        }
+
+        [Fact]
         public void OpenStream_OpensTheFile()
         {
             using (var stream = asset.OpenStream())
