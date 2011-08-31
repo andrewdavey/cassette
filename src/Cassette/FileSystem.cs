@@ -32,7 +32,9 @@ namespace Cassette
 
         public IFile GetFile(string filename)
         {
-            return new FileWrapper(filename, this);
+            var subDirectoryPath = Path.GetDirectoryName(filename);
+            var subDirectory = NavigateTo(subDirectoryPath, false);
+            return new FileWrapper(Path.GetFileName(filename), subDirectory);
         }
 
         public void DeleteAll()
@@ -103,9 +105,9 @@ namespace Cassette
     public class FileWrapper : IFile
     {
         readonly string filename;
-        readonly FileSystem directory;
+        readonly IFileSystem directory;
 
-        public FileWrapper(string filename, FileSystem directory)
+        public FileWrapper(string filename, IFileSystem directory)
         {
             this.filename = filename;
             this.directory = directory;

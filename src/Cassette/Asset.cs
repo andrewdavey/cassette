@@ -55,8 +55,7 @@ namespace Cassette
                     if (BelongsToSingletonAsset)
                     {
                         appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
-                            "~",
-                            Path.GetDirectoryName(parentModule.Path),
+                            Path.GetDirectoryName(applicationRelativeFilename),
                             assetRelativeFilename
                         );
                     }
@@ -147,9 +146,7 @@ namespace Cassette
 
         bool ParentModuleCouldContain(string path)
         {
-            if (path.Length < parentModule.Path.Length) return false;
-            path = path.Substring(0, parentModule.Path.Length);
-            return PathUtilities.PathsEqual(path, parentModule.Path);
+            return parentModule.PathIsPrefixOf(path);
         }
 
         void RequireModuleContainsReference(int lineNumber, string path)
@@ -159,7 +156,7 @@ namespace Cassette
             throw new AssetReferenceException(
                 string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    PathUtilities.CombineWithForwardSlashes(parentModule.Path, SourceFilename), lineNumber, path
+                    applicationRelativeFilename, lineNumber, path
                 )
             );
         }

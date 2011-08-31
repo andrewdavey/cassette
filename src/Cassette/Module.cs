@@ -31,7 +31,6 @@ namespace Cassette
         IList<IAsset> assets = new List<IAsset>();
         bool hasSortedAssets;
         readonly HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
-        static readonly char[] Slashes = new[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
         readonly List<string> references = new List<string>();
 
         public string Path
@@ -114,23 +113,8 @@ namespace Cassette
 
         public IAsset FindAssetByPath(string path)
         {
-            if (path.StartsWith("~"))
-            {
-                // Asset path must be relative to the Module. So remove the module's path from the start.
-                if (Path.Length > 0)
-                {
-                    path = path.Substring(Path.Length + 3); // +3 to also remove the "~/ModulePath/" prefix.
-                }
-                else
-                {
-                    path = path.Substring(2); // +2 to remove the "~/" prefix.
-                }
-            }
-            var pathSegments = path.Split(Slashes);
             return Assets.FirstOrDefault(
-                a => a.SourceFilename
-                      .Split(Slashes)
-                      .SequenceEqual(pathSegments, StringComparer.OrdinalIgnoreCase)
+                a => PathUtilities.PathsEqual(a.SourceFilename, path)
             );
         }
 
@@ -223,6 +207,13 @@ namespace Cassette
 
         public virtual void InitializeFromManifest(XElement element)
         {       
+        }
+
+        internal bool PathIsPrefixOf(string path)
+        {
+            if (path.Length < Path.Length) return false;
+            var prefix = path.Substring(0, Path.Length);
+            return PathUtilities.PathsEqual(prefix, Path);
         }
     }
 }

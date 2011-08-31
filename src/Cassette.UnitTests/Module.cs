@@ -129,10 +129,10 @@ namespace Cassette
         {
             var module = new Module("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFilename).Returns("asset.js");
+            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
             module.Assets.Add(asset.Object);
 
-            module.FindAssetByPath("asset.js").ShouldBeSameAs(asset.Object);
+            module.FindAssetByPath("~/test/asset.js").ShouldBeSameAs(asset.Object);
         }
 
         [Fact]
@@ -140,7 +140,18 @@ namespace Cassette
         {
             var module = new Module("~/test");
 
-            module.FindAssetByPath("notfound.js").ShouldBeNull();
+            module.FindAssetByPath("~/test/notfound.js").ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenAssetInSubDirectory_WhenFindAssetByPathWithBackSlashes_ThenAssetWithMatchingFilenameIsReturned()
+        {
+            var module = new Module("~/test");
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.SourceFilename).Returns("~/test/sub/asset.js");
+            module.Assets.Add(asset.Object);
+
+            module.FindAssetByPath("~\\test\\sub\\asset.js").ShouldBeSameAs(asset.Object);
         }
 
         [Fact]
@@ -148,21 +159,10 @@ namespace Cassette
         {
             var module = new Module("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
+            asset.Setup(a => a.SourceFilename).Returns("~/test/sub/asset.js");
             module.Assets.Add(asset.Object);
 
-            module.FindAssetByPath("sub\\asset.js").ShouldBeSameAs(asset.Object);
-        }
-
-        [Fact]
-        public void GivenAssetInSubDirectory_WhenFindAssetByPathWithForwardSlashes_ThenAssetWithMatchingFilenameIsReturned()
-        {
-            var module = new Module("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
-            module.Assets.Add(asset.Object);
-
-            module.FindAssetByPath("sub/asset.js").ShouldBeSameAs(asset.Object);
+            module.FindAssetByPath("~/test/sub/asset.js").ShouldBeSameAs(asset.Object);
         }
 
         [Fact]
@@ -199,7 +199,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] {1, 2, 3});
             module.Assets.Add(asset.Object);
-            module.Hash.SequenceEqual(new byte[] {1, 2, 3});
+            module.Hash.SequenceEqual(new byte[] {1, 2, 3}).ShouldBeTrue();
         }
 
         [Fact]

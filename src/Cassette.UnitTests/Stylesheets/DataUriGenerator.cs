@@ -29,7 +29,26 @@ namespace Cassette.Stylesheets
                      .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
 
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+
+            var expectedBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+            getResult().ReadToEnd().ShouldEqual(
+                "p { background-image: url(data:image/png;base64," + expectedBase64 + "); }"
+            );
+        }
+
+        [Fact]
+        public void ImageUrlCanHaveSubDirectory()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFilename).Returns("~/styles/jquery-ui/jquery-ui.css");
+            asset.SetupGet(a => a.Directory)
+                 .Returns(directory.Object);
+            directory.Setup(d => d.OpenFile("images/test.png", FileMode.Open, FileAccess.Read))
+                     .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
+
+            var css = "p { background-image: url(images/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
 
             var expectedBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
             getResult().ReadToEnd().ShouldEqual(
@@ -48,7 +67,7 @@ namespace Cassette.Stylesheets
                      .Returns(() => new MemoryStream());
 
             var css = "p { background-image: url(test.jpg); }";
-            var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
 
             getResult().ReadToEnd().ShouldContain("image/jpeg");
         }
@@ -64,7 +83,7 @@ namespace Cassette.Stylesheets
                      .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
 
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
             getResult();
 
             asset.Verify(a => a.AddRawFileReference("test.png"));
@@ -87,7 +106,7 @@ namespace Cassette.Stylesheets
 
         //    transformer.LegacyIESupport = true;
         //    var css = "p { background-image: url(test.png); }";
-        //    var getResult = transformer.Transform(() => css.AsStream(), asset.Object);
+        //    var getResult = transformer.Transform(css.AsStream, asset.Object);
 
         //    var expectedBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         //    getResult().ReadToEnd().ShouldEqual(

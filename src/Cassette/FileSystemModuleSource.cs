@@ -63,7 +63,11 @@ namespace Cassette
             }
             module.AddAssets(
                 descriptor.AssetFilenames.Select(
-                    assetFilename => new Asset(PathUtilities.CombineWithForwardSlashes(module.Path, assetFilename), module, directory.GetFile(assetFilename))
+                    assetFilename => new Asset(
+                        PathUtilities.CombineWithForwardSlashes(module.Path, assetFilename),
+                        module,
+                        directory.GetFile(assetFilename)
+                    )
                 ),
                 descriptor.AssetsSorted
             );
