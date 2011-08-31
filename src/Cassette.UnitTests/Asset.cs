@@ -17,9 +17,9 @@ namespace Cassette
             filename = Path.Combine(root.FullName, "module", "test.js");
             // Write some testable content to the file.
             File.WriteAllText(filename, "asset content");
-            var fileSystem = new FileSystem(root.FullName);
+            fileSystem = new FileSystem(root.FullName);
 
-            var module = new Module("module");
+            module = new Module("module");
             asset = new Asset("test.js", module, fileSystem.GetFile("module\\test.js"));
             module.Assets.Add(asset);
 
@@ -31,6 +31,17 @@ namespace Cassette
         readonly string filename;
         readonly Asset asset;
         readonly DirectoryInfo root;
+        readonly Module module;
+        readonly FileSystem fileSystem;
+
+        [Fact]
+        public void ConstructorNormalizesPath()
+        {
+            root.CreateSubdirectory("module\\test");
+            File.WriteAllText(Path.Combine(root.FullName, "module", "test", "bar.js"), "");
+            var asset = new Asset("test\\bar.js", module, fileSystem.NavigateTo("module", false));
+            asset.SourceFilename.ShouldEqual("test/bar.js");
+        }
 
         [Fact]
         public void OpenStream_OpensTheFile()
@@ -95,13 +106,25 @@ namespace Cassette
             }
         }
 
-
         [Fact]
         public void AddReferenceToSiblingFilename_ExpandsFilenameToAbsolutePath()
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~\\module\\another.js");
+            asset.References.First().Path.ShouldEqual("~/module/another.js");
+        }
+
+        [Fact]
+        public void AddReferenceToSiblingFilenameInSubDirectory_ExpandsFilenameToAbsolutePath()
+        {
+            root.CreateSubdirectory("module\\sub");
+            File.WriteAllText(Path.Combine(root.FullName, "module", "sub", "another.js"), "");
+            var another = new Asset("sub/another.js", module, fileSystem.NavigateTo("module", false));
+            module.Assets.Add(another);
+
+            asset.AddReference("sub\\another.js", 1);
+
+            asset.References.First().Path.ShouldEqual("~/module/sub/another.js");
         }
 
         [Fact]
@@ -127,7 +150,7 @@ namespace Cassette
         {
             asset.AddReference("../another/test.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~\\another\\test.js");
+            asset.References.First().Path.ShouldEqual("~/another/test.js");
         }
 
         [Fact]
@@ -144,7 +167,7 @@ namespace Cassette
             asset.AddReference("/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~\\another\\test.js");
+            reference.Path.ShouldEqual("~/another/test.js");
             reference.Type.ShouldEqual(AssetReferenceType.DifferentModule);
         }
 
@@ -154,7 +177,7 @@ namespace Cassette
             asset.AddReference("~/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~\\another\\test.js");
+            reference.Path.ShouldEqual("~/another/test.js");
         }
 
         [Fact]
@@ -172,7 +195,7 @@ namespace Cassette
             asset.AddRawFileReference("../test.png");
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~\\test.png");
+            reference.Path.ShouldEqual("~/test.png");
         }
 
         [Fact]

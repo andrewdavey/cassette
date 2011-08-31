@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Routing;
@@ -71,15 +73,14 @@ namespace Cassette.Web
         static ICassetteConfiguration CreateConfigurationByScanningAssembliesForType()
         {
             // Scan all assemblies for implementation of the interface and create instance.
-            var types = from filename in Directory.GetFiles(HttpRuntime.BinDirectory, "*.dll")
-                        let assembly = Assembly.LoadFrom(filename)
+            var types = from assembly in LoadAllAssemblies()
                         from type in assembly.GetExportedTypes()
                         where type.IsClass
                            && !type.IsAbstract
                            && type != typeof(EmptyCassetteConfiguration)
                            && typeof(ICassetteConfiguration).IsAssignableFrom(type)
                         select type;
-
+            
             var configType = types.FirstOrDefault();
             if (configType == null)
             {
@@ -90,6 +91,28 @@ namespace Cassette.Web
             else
             {
                 return (ICassetteConfiguration)Activator.CreateInstance(configType);
+            }
+        }
+
+        static IEnumerable<Assembly> LoadAllAssemblies()
+        {
+            const int COR_E_ASSEMBLYEXPECTED = -2146234344;
+            foreach (var filename in Directory.GetFiles(HttpRuntime.BinDirectory, "*.dll"))
+            {
+                Assembly assembly;
+                try
+                {
+                    assembly = Assembly.LoadFrom(filename);
+                }
+                catch (BadImageFormatException exception)
+                {
+                    if (Marshal.GetHRForException(exception) == COR_E_ASSEMBLYEXPECTED) // Was not a managed DLL.
+                    {
+                        continue;
+                    }
+                    throw;
+                }
+                yield return assembly;
             }
         }
 

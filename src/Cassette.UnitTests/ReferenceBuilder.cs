@@ -25,7 +25,7 @@ namespace Cassette
         public void WhenAddReferenceToModuleDirectory_ThenGetModulesReturnTheModule()
         {
             var module = new ScriptModule("test");
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~\\test"))
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
             moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module })
@@ -43,7 +43,7 @@ namespace Cassette
         {
             var module = new ScriptModule("test");
             module.Location = "body";
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~\\test"))
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
             moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module })
@@ -62,9 +62,9 @@ namespace Cassette
             var module1 = new ScriptModule("test1");
             var module2 = new ScriptModule("test2");
             module1.Location = "body";
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~\\test1"))
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test1"))
                            .Returns(module1);
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~\\test2"))
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test2"))
                            .Returns(module2);
             moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module1 });
@@ -93,7 +93,7 @@ namespace Cassette
             var moduleA = new ScriptModule("a");
             var moduleB = new ScriptModule("b");
 
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~\\a"))
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/a"))
                            .Returns(moduleA);
             moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { moduleB, moduleA });
@@ -149,7 +149,7 @@ namespace Cassette
         public void WhenAddReferenceWithLocation_ThenGetModulesForThatLocationReturnsTheModule()
         {
             var module = new ScriptModule("test");
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~\\test"))
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
             moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module });

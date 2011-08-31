@@ -21,7 +21,7 @@ namespace Cassette
                 throw new ArgumentException("Asset filename must be relative to it's module directory.");
             }
 
-            this.moduleRelativeFilename = moduleRelativeFilename;
+            this.moduleRelativeFilename = PathUtilities.NormalizePath(moduleRelativeFilename);
             this.parentModule = parentModule;
             this.file = file;
             hash = HashFileContents();
@@ -54,7 +54,7 @@ namespace Cassette
                 {
                     if (BelongsToSingletonAsset)
                     {
-                        appRelativeFilename = "~/" + Path.Combine(
+                        appRelativeFilename = "~/" + PathUtilities.CombineWithForwardSlashes(
                             Path.GetDirectoryName(parentModule.Path),
                             assetRelativeFilename
                         );
@@ -62,7 +62,7 @@ namespace Cassette
                     else
                     {
                         var subDirectory = Path.GetDirectoryName(moduleRelativeFilename);
-                        appRelativeFilename = "~/" + Path.Combine(
+                        appRelativeFilename = "~/" + PathUtilities.CombineWithForwardSlashes(
                             parentModule.Path,
                             subDirectory,
                             assetRelativeFilename
@@ -97,7 +97,7 @@ namespace Cassette
 
         public override void AddRawFileReference(string relativeFilename)
         {
-            var appRelativeFilename = PathUtilities.NormalizePath(Path.Combine(
+            var appRelativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
                 "~",
                 parentModule.Path,
                 Path.GetDirectoryName(moduleRelativeFilename),
@@ -162,7 +162,7 @@ namespace Cassette
             throw new AssetReferenceException(
                 string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    Path.Combine(parentModule.Path, SourceFilename), lineNumber, path
+                    PathUtilities.CombineWithForwardSlashes(parentModule.Path, SourceFilename), lineNumber, path
                 )
             );
         }

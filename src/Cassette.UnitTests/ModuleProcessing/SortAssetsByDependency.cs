@@ -13,7 +13,7 @@ namespace Cassette.ModuleProcessing
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~\\test\\b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("b.js");
             module.Assets.Add(assetA.Object);
@@ -33,7 +33,7 @@ namespace Cassette.ModuleProcessing
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~\\TEST\\B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("b.js");
             module.Assets.Add(assetA.Object);
@@ -53,7 +53,7 @@ namespace Cassette.ModuleProcessing
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~\\TEST\\B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("b.js");
             module.AddAssets(new[] {assetA.Object, assetB.Object}, preSorted: true);

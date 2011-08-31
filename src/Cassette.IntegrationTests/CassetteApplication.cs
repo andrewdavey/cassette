@@ -32,8 +32,6 @@ namespace Cassette.IntegrationTests
             config.Setup(c => c.Configure(It.IsAny<ModuleConfiguration>(), It.IsAny<ICassetteApplication>()))
                   .Callback(configure);
 
-            var context = Mock.Of<HttpContextBase>();
-
             return new CassetteApplication(
                 config.Object,
                 new FileSystem(Path.GetFullPath(@"..\..\assets")),
@@ -42,7 +40,7 @@ namespace Cassette.IntegrationTests
                 version: Guid.NewGuid().ToString(), // unique version
                 urlGenerator: new UrlGenerator("/"),
                 routes: routes,
-                getCurrentHttpContext: () => context
+                getCurrentHttpContext: () => Mock.Of<HttpContextBase>()
             );
         }
 
@@ -50,12 +48,11 @@ namespace Cassette.IntegrationTests
         public void CanGetScriptModuleA()
         {
             CreateApplication((modules, app) =>
-            {
                 modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
                 {
                     Exclude = new Regex(@"\.vsdoc\.js$")
-                });
-            });
+                })
+            );
 
             using (var http = new HttpTestHarness(routes))
             {
@@ -68,12 +65,11 @@ namespace Cassette.IntegrationTests
         public void CanGetScriptModuleB()
         {
             CreateApplication((modules, app) =>
-            {
                 modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
                 {
                     Exclude = new Regex(@"\.vsdoc\.js$")
-                });
-            });
+                })
+            );
 
             using (var http = new HttpTestHarness(routes))
             {
