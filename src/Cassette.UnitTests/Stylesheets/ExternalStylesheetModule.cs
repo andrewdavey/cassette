@@ -9,6 +9,27 @@ namespace Cassette.Stylesheets
     public class ExternalStylesheetModule_Tests
     {
         [Fact]
+        public void CanCreateNamedModule()
+        {
+            var module = new ExternalStylesheetModule("~/name", "http://url.com/");
+            module.Path.ShouldEqual("~/name");
+        }
+
+        [Fact]
+        public void CreateNamedModule_ThenPathIsAppRelative()
+        {
+            var module = new ExternalStylesheetModule("name", "http://url.com/");
+            module.Path.ShouldEqual("~/name");
+        }
+
+        [Fact]
+        public void CreateWithOnlyUrl_ThenPathIsUrl()
+        {
+            var module = new ExternalStylesheetModule("http://test.com/api.css");
+            module.Path.ShouldEqual("http://test.com/api.css");
+        }
+
+        [Fact]
         public void CreateCacheManifestReturnsEmpty()
         {
             var module = new ExternalStylesheetModule("http://test.com/api.css");

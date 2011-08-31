@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web;
 using System.Xml.Linq;
+using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
@@ -8,6 +9,12 @@ namespace Cassette.Stylesheets
     {
         public ExternalStylesheetModule(string url)
             : base(url)
+        {
+            this.url = url;
+        }
+
+        public ExternalStylesheetModule(string name, string url) 
+            : base(PathUtilities.AppRelative(name))
         {
             this.url = url;
         }

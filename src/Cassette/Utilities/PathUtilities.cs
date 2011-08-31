@@ -39,7 +39,7 @@ namespace Cassette.Utilities
                     stack.Push(part);
                 }
             }
-            return string.Join("/", stack.Reverse());
+            return String.Join("/", stack.Reverse());
         }
 
         public static bool PathsEqual(string path1, string path2)
@@ -54,6 +54,14 @@ namespace Cassette.Utilities
             }
             var slashes = new[] {Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar};
             return path1.Split(slashes).SequenceEqual(path2.Split(slashes), StringComparer.OrdinalIgnoreCase);
+        }
+
+        public static string AppRelative(string path)
+        {
+            if (path.IsUrl()) return path;
+            if (path.StartsWith("~")) return path;
+            if (path.StartsWith("/")) return "~" + path;
+            return "~/" + path;
         }
     }
 }
