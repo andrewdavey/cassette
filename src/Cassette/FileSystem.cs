@@ -30,6 +30,11 @@ namespace Cassette
             return Directory.Exists(GetAbsolutePath(path));
         }
 
+        public IFile GetFile(string filename)
+        {
+            return new FileWrapper(filename, this);
+        }
+
         public void DeleteAll()
         {
             foreach (var directory in Directory.GetDirectories(rootDirectory))
@@ -92,6 +97,28 @@ namespace Cassette
         public FileAttributes GetAttributes(string path)
         {
             return File.GetAttributes(GetAbsolutePath(path));
+        }
+    }
+
+    public class FileWrapper : IFile
+    {
+        readonly string filename;
+        readonly FileSystem directory;
+
+        public FileWrapper(string filename, FileSystem directory)
+        {
+            this.filename = filename;
+            this.directory = directory;
+        }
+
+        public IFileSystem Directory
+        {
+            get { return directory; }
+        }
+
+        public Stream Open(FileMode mode, FileAccess access)
+        {
+            return directory.OpenFile(filename, mode, access);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Cassette
 {
@@ -30,12 +31,19 @@ namespace Cassette
 
         public DateTime GetLastWriteTimeUtc(string filename)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();    
         }
 
         public IFileSystem NavigateTo(string path, bool createIfNotExists)
         {
-            throw new NotImplementedException();
+            return new StubFileSystem(
+                fileStreams
+                    .Where(f => f.Key.StartsWith(path))
+                    .ToDictionary(
+                        kvp => kvp.Key.Substring(path.Length == 0 ? 0 : path.Length + 1),
+                        kvp => kvp.Value
+                    )
+                );
         }
 
         public IEnumerable<string> GetDirectories(string relativePath)
@@ -48,14 +56,19 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetFiles(string directory)
+        public IFile GetFile(string filename)
         {
             throw new NotImplementedException();
         }
 
+        public IEnumerable<string> GetFiles(string directory)
+        {
+            return fileStreams.Keys;
+        }
+
         public IEnumerable<string> GetFiles(string directory, string searchPattern)
         {
-            throw new NotImplementedException();
+            return fileStreams.Keys.Where(key => key.EndsWith(searchPattern.Substring(1)));
         }
 
 

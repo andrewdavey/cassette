@@ -67,6 +67,7 @@
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
     <Compile Include="ModuleSourceTestBase.cs" />
+    <Compile Include="PerFileModuleSource.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="HtmlTemplateModule.cs" />

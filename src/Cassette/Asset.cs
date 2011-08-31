@@ -10,7 +10,7 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(string moduleRelativeFilename, Module parentModule, IFileSystem moduleDirectory)
+        public Asset(string moduleRelativeFilename, Module parentModule, IFile file)
         {
             if (moduleRelativeFilename == null)
             {
@@ -22,16 +22,14 @@ namespace Cassette
             }
 
             this.moduleRelativeFilename = moduleRelativeFilename;
-            filename = Path.GetFileName(this.moduleRelativeFilename);
             this.parentModule = parentModule;
-            directory = moduleDirectory.NavigateTo(Path.GetDirectoryName(moduleRelativeFilename), false);
+            this.file = file;
             hash = HashFileContents();
         }
 
-        readonly string filename;
         readonly string moduleRelativeFilename;
         readonly Module parentModule;
-        readonly IFileSystem directory;
+        readonly IFile file;
         readonly byte[] hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
@@ -54,12 +52,22 @@ namespace Cassette
                 }
                 else
                 {
-                    var subDirectory = Path.GetDirectoryName(moduleRelativeFilename);
-                    appRelativeFilename = "~/" + Path.Combine(
-                        parentModule.Path,
-                        subDirectory,
-                        assetRelativeFilename
-                    );
+                    if (BelongsToSingletonAsset)
+                    {
+                        appRelativeFilename = "~/" + Path.Combine(
+                            Path.GetDirectoryName(parentModule.Path),
+                            assetRelativeFilename
+                        );
+                    }
+                    else
+                    {
+                        var subDirectory = Path.GetDirectoryName(moduleRelativeFilename);
+                        appRelativeFilename = "~/" + Path.Combine(
+                            parentModule.Path,
+                            subDirectory,
+                            assetRelativeFilename
+                        );
+                    }
                 }
                 appRelativeFilename = PathUtilities.NormalizePath(appRelativeFilename);
 
@@ -75,6 +83,11 @@ namespace Cassette
                 }
                 references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
             }
+        }
+
+        bool BelongsToSingletonAsset
+        {
+            get { return moduleRelativeFilename.Length == 0; }
         }
 
         void AddUrlReference(string url, int sourceLineNumber)
@@ -117,7 +130,7 @@ namespace Cassette
 
         public override IFileSystem Directory
         {
-            get { return directory; }
+            get { return file.Directory; }
         }
 
         public override IEnumerable<AssetReference> References
@@ -128,7 +141,7 @@ namespace Cassette
         byte[] HashFileContents()
         {
             using (var sha1 = SHA1.Create())
-            using (var fileStream = directory.OpenFile(filename, FileMode.Open, FileAccess.Read))
+            using (var fileStream = file.Open(FileMode.Open, FileAccess.Read))
             {
                 return sha1.ComputeHash(fileStream);
             }
@@ -156,7 +169,7 @@ namespace Cassette
 
         protected override Stream OpenStreamCore()
         {
-            return directory.OpenFile(filename, FileMode.Open, FileAccess.Read);
+            return file.Open(FileMode.Open, FileAccess.Read);
         }
 
         public override void Accept(IAssetVisitor visitor)

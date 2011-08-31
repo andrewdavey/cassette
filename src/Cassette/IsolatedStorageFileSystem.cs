@@ -85,5 +85,34 @@ namespace Cassette
         {
             return storage.DirectoryExists(GetAbsolutePath(path));
         }
+
+        public IFile GetFile(string filename)
+        {
+            return new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this);
+        }
+    }
+
+    public class IsolatedStorageFileWrapper : IFile
+    {
+        readonly string filename;
+        readonly IsolatedStorageFile storage;
+        readonly IsolatedStorageFileSystem directory;
+
+        public IsolatedStorageFileWrapper(string filename, IsolatedStorageFile storage, IsolatedStorageFileSystem directory)
+        {
+            this.filename = filename;
+            this.storage = storage;
+            this.directory = directory;
+        }
+
+        public IFileSystem Directory
+        {
+            get { return directory; }
+        }
+
+        public Stream Open(FileMode mode, FileAccess access)
+        {
+            return storage.OpenFile(filename, mode, access);
+        }
     }
 }

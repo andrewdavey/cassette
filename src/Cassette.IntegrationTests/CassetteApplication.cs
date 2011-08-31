@@ -26,11 +26,13 @@ namespace Cassette.IntegrationTests
         readonly IsolatedStorageFile storage;
         readonly RouteCollection routes;
 
-        CassetteApplication CreateApplication(Action<ModuleConfiguration> configure)
+        CassetteApplication CreateApplication(Action<ModuleConfiguration, ICassetteApplication> configure)
         {
             var config = new Mock<ICassetteConfiguration>();
             config.Setup(c => c.Configure(It.IsAny<ModuleConfiguration>(), It.IsAny<ICassetteApplication>()))
-                  .Callback<ModuleConfiguration>(configure);
+                  .Callback(configure);
+
+            var context = Mock.Of<HttpContextBase>();
 
             return new CassetteApplication(
                 config.Object,
@@ -40,14 +42,14 @@ namespace Cassette.IntegrationTests
                 version: Guid.NewGuid().ToString(), // unique version
                 urlGenerator: new UrlGenerator("/"),
                 routes: routes,
-                getCurrentHttpContext: () => Mock.Of<HttpContextBase>()
+                getCurrentHttpContext: () => context
             );
         }
 
         [Fact]
         public void CanGetScriptModuleA()
         {
-            CreateApplication(modules =>
+            CreateApplication((modules, app) =>
             {
                 modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
                 {
@@ -65,7 +67,7 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetScriptModuleB()
         {
-            CreateApplication(modules =>
+            CreateApplication((modules, app) =>
             {
                 modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
                 {

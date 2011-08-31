@@ -139,26 +139,26 @@ namespace Cassette
             }
         }
 
-        DirectorySource<ScriptModule> DefaultScriptModuleSource()
+        IModuleSource<ScriptModule> DefaultScriptModuleSource()
         {
-            return new DirectorySource<ScriptModule>("")
+            return new PerFileModuleSource<ScriptModule>("")
             {
                 FilePattern = "*.js;*.coffee",
                 Exclude = new Regex("-vsdoc\\.js$")
             };
         }
 
-        DirectorySource<StylesheetModule> DefaultStylesheetModuleSource()
+        IModuleSource<StylesheetModule> DefaultStylesheetModuleSource()
         {
-            return new DirectorySource<StylesheetModule>("")
+            return new PerFileModuleSource<StylesheetModule>("")
             {
                 FilePattern = "*.css;*.less"
             };
         }
 
-        DirectorySource<HtmlTemplateModule> DefaultHtmlTemplateModuleSource()
+        IModuleSource<HtmlTemplateModule> DefaultHtmlTemplateModuleSource()
         {
-            return new DirectorySource<HtmlTemplateModule>("")
+            return new PerFileModuleSource<HtmlTemplateModule>("")
             {
                 FilePattern = "*.htm;*.html"
             };

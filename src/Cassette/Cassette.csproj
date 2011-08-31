@@ -58,12 +58,14 @@
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\WrapWithJavaScriptElement.cs" />
+    <Compile Include="IFile.cs" />
     <Compile Include="IModuleSource.cs" />
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleDescriptor.cs" />
     <Compile Include="ModuleProcessing\AddTransformerToAssets.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
+    <Compile Include="PerFileModuleSource.cs" />
     <Compile Include="Persistence\CachedModuleContainer.cs" />
     <Compile Include="Persistence\ICacheableAsset.cs" />
     <Compile Include="Persistence\ModuleManifestReader.cs" />

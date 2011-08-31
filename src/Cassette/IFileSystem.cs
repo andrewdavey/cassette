@@ -17,5 +17,6 @@ namespace Cassette
         FileAttributes GetAttributes(string path);
         string GetAbsolutePath(string path);
         bool DirectoryExists(string path);
+        IFile GetFile(string filename);
     }
 }

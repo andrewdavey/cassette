@@ -20,11 +20,11 @@ namespace Cassette
             var fileSystem = new FileSystem(root.FullName);
 
             var module = new Module("module");
-            asset = new Asset("test.js", module, fileSystem.NavigateTo("module", false));
+            asset = new Asset("test.js", module, fileSystem.GetFile("module\\test.js"));
             module.Assets.Add(asset);
 
             File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
-            var another = new Asset("another.js", module, fileSystem.NavigateTo("module", false));
+            var another = new Asset("another.js", module, fileSystem.GetFile("module\\another.js"));
             module.Assets.Add(another);
         }
 
@@ -228,21 +228,6 @@ namespace Cassette
             visitor.Verify(v => v.Visit(asset));
         }
 
-        [Fact]
-        public void WhenSourceFileContainsSomeDirectories_ThenDirectoryNavigatesToDirectoryContainingTheFile()
-        {
-            var root = new Mock<IFileSystem>();
-            var expectedDirectory = new Mock<IFileSystem>();
-            root.Setup(fs => fs.NavigateTo("test\\bar", false))
-              .Returns(expectedDirectory.Object);
-            expectedDirectory.Setup(r => r.OpenFile(It.IsAny<string>(), FileMode.Open, FileAccess.Read))
-                             .Returns(() => new MemoryStream());
-            
-            var asset = new Asset("test\\bar\\foo.js", new Module(""), root.Object);
-
-            asset.Directory.ShouldBeSameAs(expectedDirectory.Object);
-        }
-
         void IDisposable.Dispose()
         {
             root.Delete(true);
@@ -261,11 +246,11 @@ namespace Cassette
             var fileSystem = new FileSystem(root.FullName);
 
             var module = new Module("module");
-            asset = new Asset("test.js", module, fileSystem.NavigateTo("module", false));
+            asset = new Asset("test.js", module, fileSystem.GetFile("module\\test.js"));
             module.Assets.Add(asset);
 
             File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
-            var another = new Asset("another.js", module, fileSystem.NavigateTo("module", false));
+            var another = new Asset("another.js", module, fileSystem.GetFile("module\\another.js"));
             module.Assets.Add(another);
         }
 
