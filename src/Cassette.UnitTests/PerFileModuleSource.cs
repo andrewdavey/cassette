@@ -57,7 +57,7 @@ namespace Cassette
 
             var modules = GetModules(new PerFileModuleSource<Module>("path"));
 
-            modules[0].Path.ShouldEqual("path\\test.js");
+            modules[0].Path.ShouldEqual("path/test.js");
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Cassette
 
             var modules = GetModules(new PerFileModuleSource<Module>("path"));
 
-            modules[0].Path.ShouldEqual("path\\sub\\test.js");
+            modules[0].Path.ShouldEqual("path/sub/test.js");
         }
 
         [Fact]

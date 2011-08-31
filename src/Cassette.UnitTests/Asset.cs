@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -15,16 +16,14 @@ namespace Cassette
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
             root.CreateSubdirectory("module");
             filename = Path.Combine(root.FullName, "module", "test.js");
-            // Write some testable content to the file.
-            File.WriteAllText(filename, "asset content");
             fileSystem = new FileSystem(root.FullName);
 
             module = new Module("module");
-            asset = new Asset("test.js", module, fileSystem.GetFile("module\\test.js"));
+            asset = new Asset("test.js", module, StubFile("asset content"));
             module.Assets.Add(asset);
 
             File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
-            var another = new Asset("another.js", module, fileSystem.GetFile("module\\another.js"));
+            var another = new Asset("another.js", module, StubFile());
             module.Assets.Add(another);
         }
 
@@ -34,12 +33,20 @@ namespace Cassette
         readonly Module module;
         readonly FileSystem fileSystem;
 
+        IFile StubFile(string content = "")
+        {
+            var file = new Mock<IFile>();
+            file.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>()))
+                .Returns(() => content.AsStream());
+            return file.Object;
+        }
+
         [Fact]
         public void ConstructorNormalizesPath()
         {
             root.CreateSubdirectory("module\\test");
             File.WriteAllText(Path.Combine(root.FullName, "module", "test", "bar.js"), "");
-            var asset = new Asset("test\\bar.js", module, fileSystem.NavigateTo("module", false));
+            var asset = new Asset("test\\bar.js", module, StubFile());
             asset.SourceFilename.ShouldEqual("test/bar.js");
         }
 
@@ -60,7 +67,7 @@ namespace Cassette
         {
             byte[] expectedHash;
             using (var sha1 = SHA1.Create())
-            using (var fileStream = File.OpenRead(filename))
+            using (var fileStream = "asset content".AsStream())
             {
                 expectedHash = sha1.ComputeHash(fileStream);
             }
@@ -119,7 +126,7 @@ namespace Cassette
         {
             root.CreateSubdirectory("module\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "module", "sub", "another.js"), "");
-            var another = new Asset("sub/another.js", module, fileSystem.NavigateTo("module", false));
+            var another = new Asset("sub/another.js", module, StubFile());
             module.Assets.Add(another);
 
             asset.AddReference("sub\\another.js", 1);
