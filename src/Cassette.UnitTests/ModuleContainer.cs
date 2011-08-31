@@ -206,7 +206,7 @@ namespace Cassette
             {
                 new ModuleContainer<Module>(new[] {module1});
             });
-            exception.Message.ShouldEqual("Reference error in module descriptor for \"module1\". Cannot find \"~\\module2\".");
+            exception.Message.ShouldEqual("Reference error in module descriptor for \"module1\". Cannot find \"~/module2\".");
         }
     }
 }

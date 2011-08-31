@@ -23,6 +23,20 @@ namespace Cassette
         }
 
         [Fact]
+        public void ConstructorNormalizesToForwardSlashes()
+        {
+            var module = new Module("test/foo\\bar");
+            module.Path.ShouldEqual("test/foo/bar");
+        }
+
+        [Fact]
+        public void ConstructorDoesNotNormalizeUrls()
+        {
+            var module = new Module("http://test.com/api.js");
+            module.Path.ShouldEqual("http://test.com/api.js");
+        }
+
+        [Fact]
         public void ContainsPathOfAssetInModule_ReturnsTrue()
         {
             var module = new Module("test");
@@ -263,8 +277,8 @@ namespace Cassette
             var referenceElements = element.Elements("Reference").ToArray();
 
             referenceElements.Length.ShouldEqual(2);
-            referenceElements[0].Attribute("Path").Value.ShouldEqual("~\\test1");
-            referenceElements[1].Attribute("Path").Value.ShouldEqual("~\\test2");
+            referenceElements[0].Attribute("Path").Value.ShouldEqual("~/test1");
+            referenceElements[1].Attribute("Path").Value.ShouldEqual("~/test2");
         }
 
         Mock<IAsset> StubAsset()
@@ -285,7 +299,7 @@ namespace Cassette
         {
             var module = new Module("module");
             module.AddReferences(new[] { "~\\test", "~\\other" });
-            module.References.SequenceEqual(new[] { "~\\test", "~\\other" }).ShouldBeTrue();
+            module.References.SequenceEqual(new[] { "~/test", "~/other" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -293,7 +307,7 @@ namespace Cassette
         {
             var module = new Module("module");
             module.AddReferences(new[] { "/test" });
-            module.References.Single().ShouldEqual("~\\test");
+            module.References.Single().ShouldEqual("~/test");
         }
 
         [Fact]
@@ -301,7 +315,7 @@ namespace Cassette
         {
             var module = new Module("module");
             module.AddReferences(new[] { "../lib" });
-            module.References.Single().ShouldEqual("~\\lib");
+            module.References.Single().ShouldEqual("~/lib");
         }
 
         [Fact]
@@ -309,7 +323,7 @@ namespace Cassette
         {
             var module = new Module("module");
             module.AddReferences(new[] { "../lib/" });
-            module.References.Single().ShouldEqual("~\\lib");
+            module.References.Single().ShouldEqual("~/lib");
         }
 
         [Fact]

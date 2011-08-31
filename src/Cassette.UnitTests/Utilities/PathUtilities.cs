@@ -9,29 +9,29 @@ namespace Cassette.Utilities
         [Fact]
         public void NormalizedPathRemainsNormalized()
         {
-            PathUtilities.NormalizePath("foo\\bar").ShouldEqual("foo\\bar");
+            PathUtilities.NormalizePath("foo/bar").ShouldEqual("foo/bar");
         }
 
         [Fact]
         public void DoubleDotNavigatesUpToParent()
         {
-            PathUtilities.NormalizePath("foo\\..\\test").ShouldEqual("test");
+            PathUtilities.NormalizePath("foo/../test").ShouldEqual("test");
         }
 
         [Fact]
         public void SingleDotIsIgnored()
         {
-            PathUtilities.NormalizePath("test\\.\\foo.js").ShouldEqual("test\\foo.js");
+            PathUtilities.NormalizePath("test/./foo.js").ShouldEqual("test/foo.js");
         }
 
         [Fact]
-        public void Forward_slashes_allowed()
+        public void BackSlashesConvertedToForwardSlashes()
         {
-            PathUtilities.NormalizePath("test/module/foo").ShouldEqual("test\\module\\foo");
+            PathUtilities.NormalizePath("test\\module\\foo").ShouldEqual("test/module/foo");
         }
 
         [Fact]
-        public void Too_many_dotdots_throws_ArgumentException()
+        public void TooManyDotDotsThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(delegate
             {

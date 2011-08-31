@@ -95,13 +95,12 @@ namespace Cassette
             }
         }
 
-
         [Fact]
         public void AddReferenceToSiblingFilename_ExpandsFilenameToAbsolutePath()
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~\\module\\another.js");
+            asset.References.First().Path.ShouldEqual("~/module/another.js");
         }
 
         [Fact]
@@ -127,7 +126,7 @@ namespace Cassette
         {
             asset.AddReference("../another/test.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~\\another\\test.js");
+            asset.References.First().Path.ShouldEqual("~/another/test.js");
         }
 
         [Fact]
@@ -144,7 +143,7 @@ namespace Cassette
             asset.AddReference("/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~\\another\\test.js");
+            reference.Path.ShouldEqual("~/another/test.js");
             reference.Type.ShouldEqual(AssetReferenceType.DifferentModule);
         }
 
@@ -154,7 +153,7 @@ namespace Cassette
             asset.AddReference("~/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~\\another\\test.js");
+            reference.Path.ShouldEqual("~/another/test.js");
         }
 
         [Fact]
@@ -172,7 +171,7 @@ namespace Cassette
             asset.AddRawFileReference("../test.png");
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~\\test.png");
+            reference.Path.ShouldEqual("~/test.png");
         }
 
         [Fact]

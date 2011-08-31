@@ -132,7 +132,8 @@ namespace Cassette
                         fileSystem
                     );
                 });
-                var fullPathOfSourceFile = Path.Combine(moduleA.FullName, "test.less");
+                // TODO: Perhaps the app relative path would make more sense here?
+                var fullPathOfSourceFile = Path.Combine(moduleA.FullName, "test.less").Replace('\\', '/');
                 exception.Message.ShouldContain(fullPathOfSourceFile);
             }
             finally
@@ -159,7 +160,8 @@ namespace Cassette
                         fileSystem
                     );
                 });
-                var fullPathOfSourceFile = Path.Combine(moduleA.FullName, "test.less");
+                // TODO: Perhaps the app relative path would make more sense here?
+                var fullPathOfSourceFile = Path.Combine(moduleA.FullName, "test.less").Replace('\\', '/');
                 exception.Message.ShouldContain(fullPathOfSourceFile);
             }
             finally

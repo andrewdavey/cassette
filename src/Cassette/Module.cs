@@ -13,7 +13,14 @@ namespace Cassette
     {
         public Module(string relativeDirectory)
         {
-            path = NormalizePath(relativeDirectory);
+            if (relativeDirectory.IsUrl())
+            {
+                path = relativeDirectory;
+            }
+            else
+            {
+                path = PathUtilities.NormalizePath(relativeDirectory);
+            }
         }
 
         readonly string path;
@@ -180,11 +187,6 @@ namespace Cassette
             {
                 asset.Dispose();
             }
-        }
-
-        string NormalizePath(string relativePath)
-        {
-            return relativePath.TrimEnd(Slashes);
         }
 
         public virtual IEnumerable<XElement> CreateCacheManifest()
