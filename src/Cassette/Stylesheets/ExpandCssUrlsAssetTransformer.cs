@@ -57,7 +57,7 @@ namespace Cassette.Stylesheets
 
         string GetCurrentDirectory(IAsset asset)
         {
-            return PathUtilities.CombineWithForwardSlashes(module.Path, Path.GetDirectoryName(asset.SourceFilename));
+            return Path.GetDirectoryName(asset.SourceFilename);
         }
 
         /// <remarks>
@@ -81,9 +81,9 @@ namespace Cassette.Stylesheets
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
         }
 
-        string HashFileContents(string relativeFilename)
+        string HashFileContents(string applicationRelativeFilename)
         {
-            using (var file = application.RootDirectory.OpenFile(relativeFilename, FileMode.Open, FileAccess.Read))
+            using (var file = application.RootDirectory.OpenFile(applicationRelativeFilename.Substring(2), FileMode.Open, FileAccess.Read))
             {
                 return file.ComputeSHA1Hash().ToHexString();
             }

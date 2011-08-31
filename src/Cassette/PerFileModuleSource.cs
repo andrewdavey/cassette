@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using System.Text.RegularExpressions;
 using Cassette.Utilities;
 
@@ -53,11 +52,16 @@ namespace Cassette
 
         T CreateModule(string filename, IModuleFactory<T> moduleFactory, IFileSystem directory)
         {
-            var index = filename.LastIndexOf('.');
-            var name = filename.Substring(0, index);
+            var name = RemoveFileExtension(filename);
             var module = moduleFactory.CreateModule(PathUtilities.CombineWithForwardSlashes("~", basePath, name));
             module.AddAssets(new[] { new Asset("~/" + filename, module, directory.GetFile(filename)) }, true);
             return module;
+        }
+
+        string RemoveFileExtension(string filename)
+        {
+            var index = filename.LastIndexOf('.');
+            return (index >= 0) ? filename.Substring(0, index) : filename;
         }
     }
 }

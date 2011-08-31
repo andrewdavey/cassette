@@ -52,41 +52,30 @@ namespace Cassette
                 }
                 else
                 {
-                    if (BelongsToSingletonAsset)
-                    {
-                        appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
-                            Path.GetDirectoryName(applicationRelativeFilename),
-                            assetRelativeFilename
-                        );
-                    }
-                    else
-                    {
-                        var subDirectory = Path.GetDirectoryName(applicationRelativeFilename);
-                        appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
-                            subDirectory,
-                            assetRelativeFilename
-                        );
-                    }
+                    var subDirectory = Path.GetDirectoryName(applicationRelativeFilename);
+                    appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
+                        subDirectory,
+                        assetRelativeFilename
+                    );
                 }
                 appRelativeFilename = PathUtilities.NormalizePath(appRelativeFilename);
-
-                AssetReferenceType type;
-                if (ParentModuleCouldContain(appRelativeFilename))
-                {
-                    RequireModuleContainsReference(lineNumber, appRelativeFilename);
-                    type = AssetReferenceType.SameModule;
-                }
-                else
-                {
-                    type = AssetReferenceType.DifferentModule;
-                }
-                references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
+                AddModuleReference(lineNumber, appRelativeFilename);
             }
         }
 
-        bool BelongsToSingletonAsset
+        void AddModuleReference(int lineNumber, string appRelativeFilename)
         {
-            get { return applicationRelativeFilename.Length == 0; }
+            AssetReferenceType type;
+            if (ParentModuleCouldContain(appRelativeFilename))
+            {
+                RequireModuleContainsReference(lineNumber, appRelativeFilename);
+                type = AssetReferenceType.SameModule;
+            }
+            else
+            {
+                type = AssetReferenceType.DifferentModule;
+            }
+            references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
         }
 
         void AddUrlReference(string url, int sourceLineNumber)

@@ -25,7 +25,7 @@ namespace Cassette.Stylesheets
 
             transformer = new ExpandCssUrlsAssetTransformer(module, application.Object);
             asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.css");
+            asset.SetupGet(a => a.SourceFilename).Returns("~/styles/asset.css");
         }
 
         readonly ExpandCssUrlsAssetTransformer transformer;
@@ -132,7 +132,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenAssetInSubDirectoryAndCssWithUrlToParentDirectory_WhenTransformed_ThenUrlIsExpanded()
         {
-            asset.SetupGet(a => a.SourceFilename).Returns("sub/asset.css");
+            asset.SetupGet(a => a.SourceFilename).Returns("~/styles/sub/asset.css");
             var css = "p { background-image: url(../images/test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
