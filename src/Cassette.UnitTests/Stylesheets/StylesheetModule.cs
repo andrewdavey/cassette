@@ -14,15 +14,15 @@ namespace Cassette.Stylesheets
             application = new Mock<ICassetteApplication>();
             var urlGenerator = new Mock<IUrlGenerator>();
             application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);
-            module = new StylesheetModule("test");
+            module = new StylesheetModule("~/test");
             asset1 = Mock.Of<IAsset>();
             asset2 = Mock.Of<IAsset>();
             module.Assets.Add(asset1);
             module.Assets.Add(asset2);
 
             urlGenerator.Setup(g => g.CreateModuleUrl(module)).Returns("/url");
-            urlGenerator.Setup(g => g.CreateAssetUrl(module, asset1)).Returns("/url1");
-            urlGenerator.Setup(g => g.CreateAssetUrl(module, asset2)).Returns("/url2");
+            urlGenerator.Setup(g => g.CreateAssetUrl(asset1)).Returns("/url1");
+            urlGenerator.Setup(g => g.CreateAssetUrl(asset2)).Returns("/url2");
         }
 
         readonly Mock<ICassetteApplication> application;
@@ -87,13 +87,13 @@ namespace Cassette.Stylesheets
         [Fact]
         public void ProcessorDefaultsToStylesheetPipeline()
         {
-            new StylesheetModule("").Processor.ShouldBeType<StylesheetPipeline>();
+            new StylesheetModule("~").Processor.ShouldBeType<StylesheetPipeline>();
         }
 
         [Fact]
         public void ProcessCallsProcessor()
         {
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var processor = new Mock<IModuleProcessor<StylesheetModule>>();
             module.Processor = processor.Object;
             
@@ -108,7 +108,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CreateCacheManifestIncludesMediaAttribute()
         {
-            var module = new StylesheetModule("")
+            var module = new StylesheetModule("~")
             {
                 Media = "print"
             };

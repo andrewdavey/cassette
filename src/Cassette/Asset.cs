@@ -10,24 +10,24 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(string moduleRelativeFilename, Module parentModule, IFile file)
+        public Asset(string applicationRelativeFilename, Module parentModule, IFile file)
         {
-            if (moduleRelativeFilename == null)
+            if (applicationRelativeFilename == null)
             {
-                throw new ArgumentNullException("moduleRelativeFilename");
+                throw new ArgumentNullException("applicationRelativeFilename");
             }
-            if (Path.IsPathRooted(moduleRelativeFilename))
+            if (applicationRelativeFilename.StartsWith("~") == false)
             {
-                throw new ArgumentException("Asset filename must be relative to it's module directory.");
+                throw new ArgumentException("Asset filename in application relative form (starting with '~').");
             }
 
-            this.moduleRelativeFilename = PathUtilities.NormalizePath(moduleRelativeFilename);
+            this.applicationRelativeFilename = PathUtilities.NormalizePath(applicationRelativeFilename);
             this.parentModule = parentModule;
             this.file = file;
             hash = HashFileContents();
         }
 
-        readonly string moduleRelativeFilename;
+        readonly string applicationRelativeFilename;
         readonly Module parentModule;
         readonly IFile file;
         readonly byte[] hash;
@@ -54,16 +54,16 @@ namespace Cassette
                 {
                     if (BelongsToSingletonAsset)
                     {
-                        appRelativeFilename = "~/" + PathUtilities.CombineWithForwardSlashes(
+                        appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
+                            "~",
                             Path.GetDirectoryName(parentModule.Path),
                             assetRelativeFilename
                         );
                     }
                     else
                     {
-                        var subDirectory = Path.GetDirectoryName(moduleRelativeFilename);
-                        appRelativeFilename = "~/" + PathUtilities.CombineWithForwardSlashes(
-                            parentModule.Path,
+                        var subDirectory = Path.GetDirectoryName(applicationRelativeFilename);
+                        appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
                             subDirectory,
                             assetRelativeFilename
                         );
@@ -87,7 +87,7 @@ namespace Cassette
 
         bool BelongsToSingletonAsset
         {
-            get { return moduleRelativeFilename.Length == 0; }
+            get { return applicationRelativeFilename.Length == 0; }
         }
 
         void AddUrlReference(string url, int sourceLineNumber)
@@ -98,9 +98,7 @@ namespace Cassette
         public override void AddRawFileReference(string relativeFilename)
         {
             var appRelativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
-                "~",
-                parentModule.Path,
-                Path.GetDirectoryName(moduleRelativeFilename),
+                Path.GetDirectoryName(applicationRelativeFilename),
                 relativeFilename
             ));
             
@@ -120,7 +118,7 @@ namespace Cassette
 
         public override string SourceFilename
         {
-            get { return moduleRelativeFilename; }
+            get { return applicationRelativeFilename; }
         }
 
         public override byte[] Hash
@@ -149,7 +147,6 @@ namespace Cassette
 
         bool ParentModuleCouldContain(string path)
         {
-            path = path.Substring(2); // Remove the "~/" prefix.
             if (path.Length < parentModule.Path.Length) return false;
             path = path.Substring(0, parentModule.Path.Length);
             return PathUtilities.PathsEqual(path, parentModule.Path);

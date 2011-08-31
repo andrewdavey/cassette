@@ -9,13 +9,13 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void GivenTwoAssetsWhereADependsOnB_WhenSorted_ThenBIsBeforeAInModule()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
+            assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("b.js");
+            assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
             module.Assets.Add(assetA.Object);
             module.Assets.Add(assetB.Object);
 
@@ -29,13 +29,13 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void GivenTwoAssetsWhereADependsOnBByDifferentlyCasedFilename_WhenSorted_ThenBIsBeforeAInModule()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
+            assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("b.js");
+            assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
             module.Assets.Add(assetA.Object);
             module.Assets.Add(assetB.Object);
 
@@ -49,13 +49,13 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenModuleHasSortedAssets_ThenProcessDoesNotReorderAssets()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("a.js");
+            assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("b.js");
+            assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
             module.AddAssets(new[] {assetA.Object, assetB.Object}, preSorted: true);
             
             var sorter = new SortAssetsByDependency();

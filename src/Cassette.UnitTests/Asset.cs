@@ -18,12 +18,11 @@ namespace Cassette
             filename = Path.Combine(root.FullName, "module", "test.js");
             fileSystem = new FileSystem(root.FullName);
 
-            module = new Module("module");
-            asset = new Asset("test.js", module, StubFile("asset content"));
+            module = new Module("~/module");
+            asset = new Asset("~/module/test.js", module, StubFile("asset content"));
             module.Assets.Add(asset);
 
-            File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
-            var another = new Asset("another.js", module, StubFile());
+            var another = new Asset("~/module/another.js", module, StubFile());
             module.Assets.Add(another);
         }
 
@@ -46,8 +45,8 @@ namespace Cassette
         {
             root.CreateSubdirectory("module\\test");
             File.WriteAllText(Path.Combine(root.FullName, "module", "test", "bar.js"), "");
-            var asset = new Asset("test\\bar.js", module, StubFile());
-            asset.SourceFilename.ShouldEqual("test/bar.js");
+            var asset = new Asset("~\\module\\test\\bar.js", module, StubFile());
+            asset.SourceFilename.ShouldEqual("~/module/test/bar.js");
         }
 
         [Fact]
@@ -126,7 +125,7 @@ namespace Cassette
         {
             root.CreateSubdirectory("module\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "module", "sub", "another.js"), "");
-            var another = new Asset("sub/another.js", module, StubFile());
+            var another = new Asset("~/module/sub/another.js", module, StubFile());
             module.Assets.Add(another);
 
             asset.AddReference("sub\\another.js", 1);
@@ -139,7 +138,6 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
             asset.References.First().SourceLineNumber.ShouldEqual(1);
         }
 
@@ -148,7 +146,6 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            var expectedFilename = Path.Combine(Path.GetDirectoryName(filename), "another.js");
             asset.References.First().Type.ShouldEqual(AssetReferenceType.SameModule);
         }
 
@@ -275,12 +272,12 @@ namespace Cassette
             File.WriteAllText(filename, "asset content");
             var fileSystem = new FileSystem(root.FullName);
 
-            var module = new Module("module");
-            asset = new Asset("test.js", module, fileSystem.GetFile("module\\test.js"));
+            var module = new Module("~/module");
+            asset = new Asset("~/module/test.js", module, fileSystem.GetFile("module\\test.js"));
             module.Assets.Add(asset);
 
             File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
-            var another = new Asset("another.js", module, fileSystem.GetFile("module\\another.js"));
+            var another = new Asset("~/module/another.js", module, fileSystem.GetFile("module\\another.js"));
             module.Assets.Add(another);
         }
 

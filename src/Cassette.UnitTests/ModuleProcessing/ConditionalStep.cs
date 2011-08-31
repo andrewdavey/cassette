@@ -9,7 +9,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenPredicateReturnsTrue_ThenChildrenAreProcessed()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var app = Mock.Of<ICassetteApplication>();
             var child1 = new Mock<IModuleProcessor<Module>>();
             var child2 = new Mock<IModuleProcessor<Module>>();
@@ -24,7 +24,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void WhenPredicateReturnsFalse_ThenChildrenAreNotProcessed()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var app = Mock.Of<ICassetteApplication>();
             var child1 = new Mock<IModuleProcessor<Module>>();
             var child2 = new Mock<IModuleProcessor<Module>>();
@@ -39,7 +39,7 @@ namespace Cassette.ModuleProcessing
         [Fact]
         public void ModuleBeingProcessedIsPassedToThePredicate()
         {
-            var expected = new Module("test");
+            var expected = new Module("~/test");
             Module actual = null;
             var conditionalStep = new ConditionalStep<Module>(
                 (m, a) => { actual = m; return false; }
@@ -54,7 +54,7 @@ namespace Cassette.ModuleProcessing
         public void ApplicationBeingProcessedIsPassedToThePredicate()
         {
             var application = Mock.Of<ICassetteApplication>();
-            var module = new Module("test");
+            var module = new Module("~/test");
             ICassetteApplication actual = null;
             var conditionalStep = new ConditionalStep<Module>(
                 (m, a) => { actual = a; return false; }

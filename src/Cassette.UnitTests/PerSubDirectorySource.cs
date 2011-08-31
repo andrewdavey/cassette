@@ -74,16 +74,16 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenBaseDirectoryHashForwardSlashes_ThenGetModuleReturnsModuleWithNormalizedPath()
+        public void GivenBaseDirectoryHasBackSlashes_ThenGetModuleReturnsModuleWithNormalizedPath()
         {
             GivenFiles("scripts/lib/module-a/1.js");
 
-            var source = new PerSubDirectorySource<Module>("scripts/lib/");
+            var source = new PerSubDirectorySource<Module>("scripts\\lib\\");
             var result = source.GetModules(moduleFactory, application);
 
             var modules = result.ToArray();
-            modules[0].Path.ShouldEqual("scripts/lib/module-a");
-            modules[0].Assets[0].SourceFilename.ShouldEqual("1.js");
+            modules[0].Path.ShouldEqual("~/scripts/lib/module-a");
+            modules[0].Assets[0].SourceFilename.ShouldEqual("~/scripts/lib/module-a/1.js");
         }
 
         [Fact]

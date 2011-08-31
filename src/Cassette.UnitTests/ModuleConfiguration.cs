@@ -11,7 +11,7 @@ namespace Cassette
         [Fact]
         public void GivenModuleHasUrlReference_ThenCreateModuleContainersGeneratesExternalModuleForTheUrl()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             module.AddReferences(new[] { "http://test.com/api.js" });
 
             var externalModule = new Module("http://test.com/api.js");

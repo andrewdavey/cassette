@@ -9,8 +9,8 @@ namespace Cassette.HtmlTemplates
         public void CreateModule_ReturnsHtmlTemplateModuleWithDirectorySet()
         {
             var factory = new HtmlTemplateModuleFactory();
-            var module = factory.CreateModule("test");
-            module.Path.ShouldEqual("test");
+            var module = factory.CreateModule("~/test");
+            module.Path.ShouldEqual("~/test");
         }
     }
 }

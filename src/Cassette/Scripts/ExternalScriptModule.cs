@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web;
 using System.Xml.Linq;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -13,7 +14,7 @@ namespace Cassette.Scripts
         }
 
         public ExternalScriptModule(string name, string url)
-            : base(name)
+            : base(AppRelative(name))
         {
             if (url == null) throw new ArgumentNullException("url");
             if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
@@ -22,7 +23,7 @@ namespace Cassette.Scripts
         }
 
         public ExternalScriptModule(string name, string url, string javaScriptCondition, string fallbackUrl)
-            : base(name)
+            : base(AppRelative(name))
         {
             if (url == null) throw new ArgumentNullException("url");
             if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
@@ -34,6 +35,14 @@ namespace Cassette.Scripts
             this.url = url;
             this.fallbackUrl = fallbackUrl;
             this.javaScriptCondition = javaScriptCondition;
+        }
+
+        static string AppRelative(string name)
+        {
+            if (name.IsUrl()) return name;
+            if (name.StartsWith("~")) return name;
+            if (name.StartsWith("/")) return "~" + name;
+            return "~/" + name;
         }
 
         readonly string url;

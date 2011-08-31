@@ -9,7 +9,7 @@ namespace Cassette.Scripts
         public void CreateModuleReturnsScriptModule()
         {
             var factory = new ScriptModuleFactory();
-            var module = factory.CreateModule("test");
+            var module = factory.CreateModule("~/test");
             module.ShouldBeType<ScriptModule>();
         }
 
@@ -17,8 +17,8 @@ namespace Cassette.Scripts
         public void CreateModuleAssignsScriptModuleDirectory()
         {
             var factory = new ScriptModuleFactory();
-            var module = factory.CreateModule("test");
-            module.Path.ShouldEqual("test");
+            var module = factory.CreateModule("~/test");
+            module.Path.ShouldEqual("~/test");
         }
 
         [Fact]

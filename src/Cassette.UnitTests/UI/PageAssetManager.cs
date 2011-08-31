@@ -32,7 +32,7 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToPath_WhenRender_ThenModuleRenderOutputReturned()
         {
-            var module = new Mock<Module>("stub");
+            var module = new Mock<Module>("~/stub");
             referenceBuilder.Setup(b => b.GetModules(null)).Returns(new[] { module.Object });
             module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                   .Returns(new HtmlString("output"));
@@ -46,7 +46,7 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenModuleRenderOutputReturned()
         {
-            var module = new Mock<Module>("stub");
+            var module = new Mock<Module>("~/stub");
             module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                   .Returns(new HtmlString("output"));
             referenceBuilder.Setup(b => b.GetModules("body")).Returns(new[] { module.Object });
@@ -60,10 +60,10 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToTwoPaths_WhenRender_ThenModuleRenderOutputsSeparatedByNewLinesReturned()
         {
-            var module1 = new Mock<Module>("stub1");
+            var module1 = new Mock<Module>("~/stub1");
             module1.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                   .Returns(new HtmlString("output1"));
-            var module2 = new Mock<Module>("stub2");
+            var module2 = new Mock<Module>("~/stub2");
             module2.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
                    .Returns(new HtmlString("output2"));
             referenceBuilder.Setup(b => b.GetModules(null))

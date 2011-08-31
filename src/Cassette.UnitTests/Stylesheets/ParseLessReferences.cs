@@ -23,7 +23,7 @@ namespace Cassette.Stylesheets
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(lessSource.AsStream());
-            var module = new Module("");
+            var module = new Module("~");
             module.Assets.Add(asset.Object);
 
             var processor = new ParseLessReferences();

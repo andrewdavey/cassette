@@ -9,7 +9,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void WhenProcessSimpleCssReference_ThenAssetAddReferenceIsCalled()
         {
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var css = "/* @reference \"test.css\"; */";
             var asset = AddCssAsset(module, css);
 
@@ -22,7 +22,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void WhenProcessCssReferenceWithoutTrailingSemicolon_ThenAssetAddReferenceIsCalled()
         {
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var css = "/* @reference \"test.css\" */";
             var asset = AddCssAsset(module, css);
 
@@ -35,7 +35,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void WhenProcessSimpleCssReferenceWithSingleQuotes_ThenAssetAddReferenceIsCalled()
         {
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var css = "/* @reference 'test.css'; */";
             var asset = AddCssAsset(module, css);
 
@@ -48,7 +48,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void WhenProcessTwoCssReferencesInSameComment_ThenAssetAddReferenceIsCalledTwice()
         {
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var css = "/* @reference \"test1.css\"; \n @reference \"test2.css\"; */";
             var asset = AddCssAsset(module, css);
 
@@ -62,7 +62,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void WhenProcessTwoCssReferencesInDifferentComments_ThenAssetAddReferenceIsCalledTwice()
         {
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var css = "/* @reference \"test1.css\"; */\n/* @reference \"test2.css\"; */";
             var asset = AddCssAsset(module, css);
 

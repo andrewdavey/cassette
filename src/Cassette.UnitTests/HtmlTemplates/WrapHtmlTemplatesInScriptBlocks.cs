@@ -8,7 +8,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void ProcessAddsTransformerToEachAsset()
         {
-            var module = new HtmlTemplateModule("");
+            var module = new HtmlTemplateModule("~");
             var asset = new Mock<IAsset>();
             module.Assets.Add(asset.Object);
 

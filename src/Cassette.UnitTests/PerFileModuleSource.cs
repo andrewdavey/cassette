@@ -26,7 +26,7 @@ namespace Cassette
 
             var modules = GetModules(new PerFileModuleSource<Module>(""));
 
-            modules[0].Path.ShouldEqual("test.js");
+            modules[0].Path.ShouldEqual("~/test");
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Cassette
 
             var modules = GetModules(new PerFileModuleSource<Module>(""));
 
-            modules[0].Assets[0].SourceFilename.ShouldEqual("");
+            modules[0].Assets[0].SourceFilename.ShouldEqual("~/test.js");
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace Cassette
 
             var modules = GetModules(new PerFileModuleSource<Module>("path"));
 
-            modules[0].Path.ShouldEqual("path/test.js");
+            modules[0].Path.ShouldEqual("~/path/test");
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Cassette
 
             var modules = GetModules(new PerFileModuleSource<Module>("path"));
 
-            modules[0].Path.ShouldEqual("path/sub/test.js");
+            modules[0].Path.ShouldEqual("~/path/sub/test");
         }
 
         [Fact]
@@ -86,8 +86,8 @@ namespace Cassette
             );
 
             modules.Length.ShouldEqual(2);
-            modules[0].Path.ShouldEqual("test1.js");
-            modules[1].Path.ShouldEqual("test2.js");
+            modules[0].Path.ShouldEqual("~/test1");
+            modules[1].Path.ShouldEqual("~/test2");
         }
 
         [Fact]
@@ -104,8 +104,8 @@ namespace Cassette
             );
 
             modules.Length.ShouldEqual(2);
-            modules[0].Path.ShouldEqual("test1.js");
-            modules[1].Path.ShouldEqual("test2.coffee");
+            modules[0].Path.ShouldEqual("~/test1");
+            modules[1].Path.ShouldEqual("~/test2");
         }
 
         [Fact]

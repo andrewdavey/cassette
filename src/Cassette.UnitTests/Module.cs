@@ -11,22 +11,22 @@ namespace Cassette
         [Fact]
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingBackSlash()
         {
-            var module = new Module("test\\");
-            module.Path.ShouldEqual("test");
+            var module = new Module("~\\test\\");
+            module.Path.ShouldEqual("~/test");
         }
 
         [Fact]
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingForwardSlash()
         {
-            var module = new Module("test/");
-            module.Path.ShouldEqual("test");
+            var module = new Module("~/test/");
+            module.Path.ShouldEqual("~/test");
         }
 
         [Fact]
         public void ConstructorNormalizesToForwardSlashes()
         {
-            var module = new Module("test/foo\\bar");
-            module.Path.ShouldEqual("test/foo/bar");
+            var module = new Module("~/test/foo\\bar");
+            module.Path.ShouldEqual("~/test/foo/bar");
         }
 
         [Fact]
@@ -37,13 +37,22 @@ namespace Cassette
         }
 
         [Fact]
+        public void ModulePathMustBeApplicationRelative()
+        {
+            Assert.Throws<ArgumentException>(delegate
+            {
+                new Module("fail");
+            });
+        }
+
+        [Fact]
         public void ContainsPathOfAssetInModule_ReturnsTrue()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFilename).Returns("asset.js");
+            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
             module.Assets.Add(asset.Object);
 
             module.ContainsPath("~\\test\\asset.js").ShouldBeTrue();
@@ -52,11 +61,11 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetInModuleWithForwardSlash_ReturnsTrue()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFilename).Returns("asset.js");
+            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
             module.Assets.Add(asset.Object);
 
             module.ContainsPath("~/test/asset.js").ShouldBeTrue();
@@ -65,11 +74,11 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetInModuleWithDifferentCasing_ReturnsTrue()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFilename).Returns("asset.js");
+            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
             module.Assets.Add(asset.Object);
 
             module.ContainsPath("~\\TEST\\ASSET.js").ShouldBeTrue();
@@ -78,7 +87,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetNotInModule_ReturnsFalse()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
 
             module.ContainsPath("~\\test\\not-in-module.js").ShouldBeFalse();
         }
@@ -86,7 +95,15 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheModuleItself_ReturnsTrue()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
+
+            module.ContainsPath("~/test").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void ContainsPathOfJustTheModuleItselfWithBackSlashes_ReturnsTrue()
+        {
+            var module = new Module("~/test");
 
             module.ContainsPath("~\\test").ShouldBeTrue();
         }
@@ -94,7 +111,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheModuleItselfWithDifferentCasing_ReturnsTrue()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
 
             module.ContainsPath("~\\TEST").ShouldBeTrue();
         }
@@ -102,7 +119,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheModuleItselfWithTrailingSlash_ReturnsTrue()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
 
             module.ContainsPath("~\\test\\").ShouldBeTrue();
         }
@@ -110,7 +127,7 @@ namespace Cassette
         [Fact]
         public void FindAssetByPathReturnsAssetWithMatchingFilename()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("asset.js");
             module.Assets.Add(asset.Object);
@@ -121,7 +138,7 @@ namespace Cassette
         [Fact]
         public void WhenFindAssetByPathNotFound_ThenNullReturned()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
 
             module.FindAssetByPath("notfound.js").ShouldBeNull();
         }
@@ -129,7 +146,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetInSubDirectory_WhenFindAssetByPath_ThenAssetWithMatchingFilenameIsReturned()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
             module.Assets.Add(asset.Object);
@@ -140,7 +157,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetInSubDirectory_WhenFindAssetByPathWithForwardSlashes_ThenAssetWithMatchingFilenameIsReturned()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("sub\\asset.js");
             module.Assets.Add(asset.Object);
@@ -152,7 +169,7 @@ namespace Cassette
         public void AcceptCallsVisitOnVistor()
         {
             var visitor = new Mock<IAssetVisitor>();
-            var module = new Module("test");
+            var module = new Module("~/test");
 
             module.Accept(visitor.Object);
 
@@ -163,7 +180,7 @@ namespace Cassette
         public void AcceptCallsAcceptForEachAsset()
         {
             var visitor = new Mock<IAssetVisitor>();
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             module.Assets.Add(asset1.Object);
@@ -178,7 +195,7 @@ namespace Cassette
         [Fact]
         public void HashIsHashOfFirstAsset()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] {1, 2, 3});
             module.Assets.Add(asset.Object);
@@ -188,7 +205,7 @@ namespace Cassette
         [Fact]
         public void HashThrowsInvalidOperationExceptionWhenMoreThanOneAsset()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             module.Assets.Add(Mock.Of<IAsset>());
             module.Assets.Add(Mock.Of<IAsset>());
             Assert.Throws<InvalidOperationException>(delegate
@@ -200,7 +217,7 @@ namespace Cassette
         [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
-            var module = new Module("");
+            var module = new Module("~");
             var asset1 = new Mock<IDisposable>();
             var asset2 = new Mock<IDisposable>();
             var asset3 = new Mock<IAsset>(); // Not disposable; Tests for incorrect casting to IDisposable.
@@ -220,7 +237,7 @@ namespace Cassette
         [Fact]
         public void ElementNameIsModule()
         {
-            var module = new Module("");
+            var module = new Module("~");
             module.Assets.Add(StubAsset().Object);
             var element = module.CreateCacheManifest().Single();
             element.Name.LocalName.ShouldEqual("Module");
@@ -229,16 +246,16 @@ namespace Cassette
         [Fact]
         public void ElementHasPathAttribute()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             module.Assets.Add(StubAsset().Object);
             var element = module.CreateCacheManifest().Single();
-            element.Attribute("Path").Value.ShouldEqual("test");
+            element.Attribute("Path").Value.ShouldEqual("~/test");
         }
 
         [Fact]
         public void ElementHasContentTypeAttribute()
         {
-            var module = new Module("") {ContentType = "text/test"};
+            var module = new Module("~") {ContentType = "text/test"};
             module.Assets.Add(StubAsset().Object);
             var element = module.CreateCacheManifest().Single();
             element.Attribute("ContentType").Value.ShouldEqual("text/test");
@@ -247,7 +264,7 @@ namespace Cassette
         [Fact]
         public void HashAttributeIsHexStringOfModuleHash()
         {
-            var module = new Module("");
+            var module = new Module("~");
             var asset = StubAsset();
             asset.SetupGet(a => a.Hash).Returns(new byte[] {1, 2, 0xff});
             module.Assets.Add(asset.Object);
@@ -261,7 +278,7 @@ namespace Cassette
         [Fact]
         public void WhenLocationSet_ThenCreateCacheManifestAddLocationAttribute()
         {
-            var module = new Module("") {Location = "body"};
+            var module = new Module("~") {Location = "body"};
             module.Assets.Add(StubAsset().Object);
             var element = module.CreateCacheManifest().Single();
             element.Attribute("Location").Value.ShouldEqual("body");
@@ -270,7 +287,7 @@ namespace Cassette
         [Fact]
         public void WhenReferencesAdded_ThenCreateCacheManifestContainsReferenceElements()
         {
-            var module = new Module("");
+            var module = new Module("~");
             module.AddReferences(new[] { "~\\test1", "~\\test2" });
             
             var element = module.CreateCacheManifest().Single();
@@ -297,7 +314,7 @@ namespace Cassette
         [Fact]
         public void StoresReferences()
         {
-            var module = new Module("module");
+            var module = new Module("~/module");
             module.AddReferences(new[] { "~\\test", "~\\other" });
             module.References.SequenceEqual(new[] { "~/test", "~/other" }).ShouldBeTrue();
         }
@@ -305,7 +322,7 @@ namespace Cassette
         [Fact]
         public void ReferenceStartingWithSlashIsConvertedToAppRelative()
         {
-            var module = new Module("module");
+            var module = new Module("~/module");
             module.AddReferences(new[] { "/test" });
             module.References.Single().ShouldEqual("~/test");
         }
@@ -313,7 +330,7 @@ namespace Cassette
         [Fact]
         public void ModuleRelativePathIsConvertedToAppRelative()
         {
-            var module = new Module("module");
+            var module = new Module("~/module");
             module.AddReferences(new[] { "../lib" });
             module.References.Single().ShouldEqual("~/lib");
         }
@@ -321,7 +338,7 @@ namespace Cassette
         [Fact]
         public void TrailingSlashIsRemoved()
         {
-            var module = new Module("module");
+            var module = new Module("~/module");
             module.AddReferences(new[] { "../lib/" });
             module.References.Single().ShouldEqual("~/lib");
         }
@@ -329,7 +346,7 @@ namespace Cassette
         [Fact]
         public void UrlIsNotConverted()
         {
-            var module = new Module("module");
+            var module = new Module("~/module");
             module.AddReferences(new[] { "http://test.com/" });
             module.References.Single().ShouldEqual("http://test.com/");
         }

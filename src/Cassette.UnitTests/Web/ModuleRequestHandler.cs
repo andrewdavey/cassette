@@ -57,7 +57,7 @@ namespace Cassette.Web
         {
             public GivenModuleExists_WhenProcessRequest()
             {
-                var module = new Module("test") { ContentType = "expected-content-type" };
+                var module = new Module("~/test") { ContentType = "expected-content-type" };
                 var asset = new Mock<IAsset>();
                 asset.Setup(a => a.OpenStream())
                      .Returns(() => "asset-content".AsStream());
@@ -122,7 +122,7 @@ namespace Cassette.Web
         {
             public GivenModuleExistsAndIfNonMatchHeaderIsEqualAssetHash_WhenProcessRequest()
             {
-                var module = new Module("test");
+                var module = new Module("~/test");
                 var asset = new Mock<IAsset>();
                 asset.Setup(a => a.OpenStream())
                      .Returns(() => "asset-content".AsStream());
@@ -147,7 +147,7 @@ namespace Cassette.Web
         {
             public GivenModuleExistsAndIfNonMatchHeaderIsNotEqualAssetHash_WhenProcessRequest()
             {
-                var module = new Module("test");
+                var module = new Module("~/test");
                 var asset = new Mock<IAsset>();
                 asset.Setup(a => a.OpenStream())
                      .Returns(() => "asset-content".AsStream());

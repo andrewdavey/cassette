@@ -9,8 +9,8 @@ namespace Cassette.Stylesheets
         public void CreateModuleReturnsStylesheetModuleWithDirectorySet()
         {
             var factory = new StylesheetModuleFactory();
-            var module = factory.CreateModule("test");
-            module.Path.ShouldEqual("test");
+            var module = factory.CreateModule("~/test");
+            module.Path.ShouldEqual("~/test");
         }
 
         [Fact]

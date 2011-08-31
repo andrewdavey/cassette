@@ -48,7 +48,7 @@ namespace Cassette.Stylesheets
                     from asset in Assets
                     let url = IsCompiledAsset(asset)
                         ? application.UrlGenerator.CreateAssetCompileUrl(this, asset)
-                        : application.UrlGenerator.CreateAssetUrl(this, asset)
+                        : application.UrlGenerator.CreateAssetUrl(asset)
                     select hasMedia ? string.Format(LinkHtml, url) 
                                     : string.Format(LinkHtmlWithMedia, url, Media)
                 );

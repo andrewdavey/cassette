@@ -10,7 +10,7 @@ namespace Cassette.Stylesheets
     {
         public ExpandCssUrlsAssetTransformer_Tests()
         {
-            var module = new Module("styles");
+            var module = new Module("~/styles");
             application = new Mock<ICassetteApplication>();
             var directory = new Mock<IFileSystem>();
             urlGenerator = new Mock<IUrlGenerator>();
@@ -42,7 +42,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateImageUrl("styles/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateImageUrl("~/styles/test.png", It.IsAny<string>()));
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateImageUrl("styles/images/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateImageUrl("~/styles/images/test.png", It.IsAny<string>()));
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateImageUrl("images/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateImageUrl("~/images/test.png", It.IsAny<string>()));
         }
 
         [Fact]
@@ -139,7 +139,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateImageUrl("styles/images/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateImageUrl("~/styles/images/test.png", It.IsAny<string>()));
         }
     }
 }

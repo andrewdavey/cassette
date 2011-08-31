@@ -243,7 +243,7 @@ namespace Cassette.Persistence
         [Fact]
         public void SaveWritesContainerXmlFile()
         {
-            var module = new Module("");
+            var module = new Module("~");
             var asset1 = new Mock<IAsset>();
             asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
             asset1.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
@@ -261,7 +261,7 @@ namespace Cassette.Persistence
         [Fact]
         public void ModuleHashIsSavedInContainerXml()
         {
-            var module = new Module("test");
+            var module = new Module("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
@@ -289,8 +289,8 @@ namespace Cassette.Persistence
         [Fact]
         public void ModuleReferencesAreSavedInContainerXml()
         {
-            var moduleA = new Module("module-a");
-            var moduleB = new Module("module-b");
+            var moduleA = new Module("~/module-a");
+            var moduleB = new Module("~/module-b");
 
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.References).Returns(new[] {
@@ -324,8 +324,8 @@ namespace Cassette.Persistence
         [Fact]
         public void DuplicateModuleReferencesAreOnlyWrittenOnce()
         {
-            var moduleA = new Module("module-a");
-            var moduleB = new Module("module-b");
+            var moduleA = new Module("~/module-a");
+            var moduleB = new Module("~/module-b");
 
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.References).Returns(new[] {

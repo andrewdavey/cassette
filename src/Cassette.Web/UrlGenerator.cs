@@ -39,48 +39,40 @@ namespace Cassette.Web
                 virtualDirectory,
                 assetUrlPrefix,
                 ConventionalModulePathName(module.GetType()),
-                ConvertToForwardSlashes(module.Path),
+                module.Path.Substring(2),
                 module.Assets[0].Hash.ToHexString()
             );
         }
 
-        public string CreateAssetUrl(Module module, IAsset asset)
+        public string CreateAssetUrl(IAsset asset)
         {
-            if (module.Path.Length == 0)
-            {
-                return string.Format(
-                    "{0}/{1}?{2}",
-                    virtualDirectory,
-                    ConvertToForwardSlashes(asset.SourceFilename),
-                    asset.Hash.ToHexString()
-                );
-            }
-            else
-            {
-                return string.Format(
-                    "{0}/{1}/{2}?{3}",
-                    virtualDirectory,
-                    ConvertToForwardSlashes(module.Path),
-                    ConvertToForwardSlashes(asset.SourceFilename),
-                    asset.Hash.ToHexString()
-                );
-            }
+            return string.Format(
+                "{0}/{1}?{2}",
+                virtualDirectory,
+                asset.SourceFilename.Substring(2),
+                asset.Hash.ToHexString()
+            );
         }
 
         public string CreateAssetCompileUrl(Module module, IAsset asset)
         {
             return string.Format(
-                "{0}/{1}/get/{2}/{3}?{4}",
+                "{0}/{1}/get/{2}?{3}",
                 virtualDirectory,
                 assetUrlPrefix,
-                ConvertToForwardSlashes(module.Path),
-                ConvertToForwardSlashes(asset.SourceFilename),
+                asset.SourceFilename.Substring(2),
                 asset.Hash.ToHexString()
             );
         }
 
         public string CreateImageUrl(string filename, string hash)
         {
+            if (filename.StartsWith("~") == false)
+            {
+                throw new ArgumentException("Image filename must be application relative (starting with '~').");
+            }
+
+            filename = filename.Substring(2); // Remove the "~/"
             var dotIndex = filename.LastIndexOf('.');
             var name = filename.Substring(0, dotIndex);
             var extension = filename.Substring(dotIndex + 1);

@@ -14,11 +14,9 @@ namespace Cassette
 
         string pathToFind;
         bool isFound;
-        Module currentModule;
 
         void IAssetVisitor.Visit(Module module)
         {
-            currentModule = module;
             if (IsMatch(module.Path))
             {
                 isFound = true;
@@ -27,8 +25,7 @@ namespace Cassette
 
         void IAssetVisitor.Visit(IAsset asset)
         {
-            var filename = PathUtilities.CombineWithForwardSlashes(currentModule.Path, asset.SourceFilename);
-            if (IsMatch(filename))
+            if (IsMatch(asset.SourceFilename))
             {
                 isFound = true;
             }
@@ -39,7 +36,7 @@ namespace Cassette
             path = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (path.StartsWith("~"))
             {
-                return path.Substring(2);
+                return path;
             }
             else
             {

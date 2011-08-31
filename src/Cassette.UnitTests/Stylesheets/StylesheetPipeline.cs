@@ -28,18 +28,18 @@ namespace Cassette.Stylesheets
         public StylesheetPipeline_Process_TestBase()
         {
             application = new Mock<ICassetteApplication>();            
-            module = new StylesheetModule("");
+            module = new StylesheetModule("~");
             asset1 = new Mock<IAsset>();
             asset2 = new Mock<IAsset>();
             module.Assets.Add(asset1.Object);
             module.Assets.Add(asset2.Object);
 
             asset1.SetupGet(a => a.SourceFilename)
-                  .Returns("asset1.css");
+                  .Returns("~/asset1.css");
             asset1.Setup(a => a.OpenStream())
                   .Returns(() => "/* @reference \"asset2.css\"; */".AsStream());
             asset2.SetupGet(a => a.SourceFilename)
-                  .Returns("asset2.css");
+                  .Returns("~/asset2.css");
             asset2.Setup(a => a.OpenStream())
                   .Returns(() => "p { color: White; }".AsStream());
             asset1.SetupGet(a => a.References)

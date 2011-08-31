@@ -10,7 +10,7 @@ namespace Cassette.Stylesheets
         public void GivenACompiler_WhenProcessCalled_ThenCompileAssetTransformerAddedToLessAsset()
         {
             var processor = new CompileLess(Mock.Of<ICompiler>());
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("test.less");
             module.Assets.Add(asset.Object);
@@ -24,7 +24,7 @@ namespace Cassette.Stylesheets
         public void GivenACompiler_WhenProcessCalled_ThenCompileAssetTransformerNotAddedToCssAsset()
         {
             var processor = new CompileLess(Mock.Of<ICompiler>());
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("test.css");
             module.Assets.Add(asset.Object);

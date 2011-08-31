@@ -24,7 +24,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToModuleDirectory_ThenGetModulesReturnTheModule()
         {
-            var module = new ScriptModule("test");
+            var module = new ScriptModule("~/test");
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
             moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
@@ -41,7 +41,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToModuleDirectoryWithLocation_ThenGetModulesThatLocationReturnTheModule()
         {
-            var module = new ScriptModule("test");
+            var module = new ScriptModule("~/test");
             module.Location = "body";
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
@@ -59,8 +59,8 @@ namespace Cassette
         [Fact]
         public void OnlyModulesMatchingLocationAreReturnedByGetModules()
         {
-            var module1 = new ScriptModule("test1");
-            var module2 = new ScriptModule("test2");
+            var module1 = new ScriptModule("~/test1");
+            var module2 = new ScriptModule("~/test2");
             module1.Location = "body";
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test1"))
                            .Returns(module1);
@@ -90,8 +90,8 @@ namespace Cassette
         [Fact]
         public void GivenModuleAReferencesModuleB_WhenAddReferenceToModuleA_ThenGetModulesReturnsBoth()
         {
-            var moduleA = new ScriptModule("a");
-            var moduleB = new ScriptModule("b");
+            var moduleA = new ScriptModule("~/a");
+            var moduleB = new ScriptModule("~/b");
 
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/a"))
                            .Returns(moduleA);
@@ -148,7 +148,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceWithLocation_ThenGetModulesForThatLocationReturnsTheModule()
         {
-            var module = new ScriptModule("test");
+            var module = new ScriptModule("~/test");
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
             moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))

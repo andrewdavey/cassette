@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -25,7 +26,7 @@ namespace Cassette
                 where IsNotHidden(root, subDirectoryName)
                 select CreateModule(
                     subDirectoryName,
-                    root.NavigateTo(subDirectoryName, false),
+                    root.NavigateTo(subDirectoryName.Substring(2), false),
                     moduleFactory
                 )
             ).ToArray();
@@ -48,7 +49,7 @@ namespace Cassette
 
         bool IsNotHidden(IFileSystem directory, string path)
         {
-            return directory.GetAttributes(path).HasFlag(FileAttributes.Hidden) == false;
+            return directory.GetAttributes(path.Substring(2)).HasFlag(FileAttributes.Hidden) == false;
         }
 
         T CreateModule(string directoryName, IFileSystem directory, IModuleFactory<T> moduleFactory)
@@ -62,7 +63,7 @@ namespace Cassette
             }
             module.AddAssets(
                 descriptor.AssetFilenames.Select(
-                    assetFilename => new Asset(assetFilename, module, directory.GetFile(assetFilename))
+                    assetFilename => new Asset(PathUtilities.CombineWithForwardSlashes(module.Path, assetFilename), module, directory.GetFile(assetFilename))
                 ),
                 descriptor.AssetsSorted
             );
@@ -112,6 +113,11 @@ namespace Cassette
                 filenames = filenames.Where(f => Exclude.IsMatch(f) == false);
             }
             return filenames.Except(new[] {"module.txt"}).ToArray();
+        }
+
+        protected string EnsureApplicationRelativePath(string path)
+        {
+            return path.StartsWith("~") ? path : ("~/" + path);
         }
     }
 }

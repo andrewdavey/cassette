@@ -9,7 +9,7 @@ namespace Cassette.Stylesheets
         public void ProcessAddsExpandCssUrlsAssetTransformerToEachAsset()
         {
             var processor = new ExpandCssUrls();
-            var module = new StylesheetModule("");
+            var module = new StylesheetModule("~");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             module.Assets.Add(asset1.Object);

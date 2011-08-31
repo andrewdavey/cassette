@@ -135,7 +135,7 @@ namespace Cassette.Scripts
         public void CanCreateNamedExternalScriptModule()
         {
             var module = new ExternalScriptModule("api", "http://test.com/api.js");
-            module.Path.ShouldEqual("api");
+            module.Path.ShouldEqual("~/api");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Cassette
 {
@@ -14,7 +15,7 @@ namespace Cassette
 
         protected override IEnumerable<string> GetModuleDirectoryPaths(ICassetteApplication application)
         {
-            return application.RootDirectory.GetDirectories(baseDirectory);
+            return application.RootDirectory.GetDirectories(baseDirectory).Select(EnsureApplicationRelativePath);
         }
     }
 }

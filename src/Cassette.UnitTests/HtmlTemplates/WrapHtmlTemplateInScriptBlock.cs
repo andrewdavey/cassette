@@ -9,7 +9,7 @@ namespace Cassette.HtmlTemplates
 {
     public class WrapHtmlTemplateInScriptBlock_Tests
     {
-        readonly HtmlTemplateModule module = new HtmlTemplateModule("test");
+        readonly HtmlTemplateModule module = new HtmlTemplateModule("~/test");
 
         [Fact]
         public void ScriptBlockIdMatchesAssetFilenameWithoutExtension()

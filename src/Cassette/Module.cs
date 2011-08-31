@@ -11,15 +11,19 @@ namespace Cassette
 {
     public class Module : IDisposable
     {
-        public Module(string relativeDirectory)
+        public Module(string applicationRelativePath)
         {
-            if (relativeDirectory.IsUrl())
+            if (applicationRelativePath.IsUrl())
             {
-                path = relativeDirectory;
+                path = applicationRelativePath;
             }
             else
             {
-                path = PathUtilities.NormalizePath(relativeDirectory);
+                if (applicationRelativePath.StartsWith("~") == false)
+                {
+                    throw new ArgumentException("Module path must be application relative (starting with a '~').");
+                }
+                path = PathUtilities.NormalizePath(applicationRelativePath);
             }
         }
 
@@ -97,7 +101,6 @@ namespace Cassette
             else
             {
                 return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
-                    "~",
                     Path,
                     reference
                 ));
@@ -160,7 +163,7 @@ namespace Cassette
             if (hasSortedAssets) return;
             // Graph topological sort, based on references between assets.
             var assetsByFilename = Assets.ToDictionary(
-                a => PathUtilities.CombineWithForwardSlashes("~", Path, a.SourceFilename),
+                a => a.SourceFilename,
                 StringComparer.OrdinalIgnoreCase
             );
             var graph = new Graph<IAsset>(

@@ -12,7 +12,7 @@ namespace Cassette.HtmlTemplates
         public void GivenApplicationIsNotOutputOptimized_WhenRender_ThenEachAssetIsOutputAsIs()
         {
             var application = new Mock<ICassetteApplication>();
-            var module = new HtmlTemplateModule("test");
+            var module = new HtmlTemplateModule("~/test");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             asset1.SetupGet(a => a.SourceFilename).Returns("template-1.htm");
@@ -32,7 +32,7 @@ namespace Cassette.HtmlTemplates
         public void WhenAssetInSubDirectories_ThenRenderTemplateReturnsIdBackSlashesReplacedWithDashes()
         {
             var application = new Mock<ICassetteApplication>();
-            var module = new HtmlTemplateModule("test");
+            var module = new HtmlTemplateModule("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("sub\\template-1.htm");
 
@@ -47,7 +47,7 @@ namespace Cassette.HtmlTemplates
         public void WhenAssetInSubDirectories_ThenRenderTemplateReturnsIdForwardSlashesReplacedWithDashes()
         {
             var application = new Mock<ICassetteApplication>();
-            var module = new HtmlTemplateModule("test");
+            var module = new HtmlTemplateModule("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("sub/template-2.htm");
 
@@ -63,7 +63,7 @@ namespace Cassette.HtmlTemplates
         {
             var application = new Mock<ICassetteApplication>();
             application.SetupGet(a => a.IsOutputOptimized).Returns(true);
-            var module = new HtmlTemplateModule("test");
+            var module = new HtmlTemplateModule("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.OpenStream()).Returns(() => "output".AsStream());
             module.Assets.Add(asset.Object);

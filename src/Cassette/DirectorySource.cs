@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -7,7 +8,9 @@ namespace Cassette
     {
         public DirectorySource(params string[] relativeDirectoryPaths)
         {
-            this.relativeDirectoryPaths = relativeDirectoryPaths;
+            this.relativeDirectoryPaths = relativeDirectoryPaths
+                .Select(EnsureApplicationRelativePath)
+                .ToArray();
         }
 
         readonly string[] relativeDirectoryPaths;

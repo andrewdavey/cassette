@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -52,8 +53,10 @@ namespace Cassette
 
         T CreateModule(string filename, IModuleFactory<T> moduleFactory, IFileSystem directory)
         {
-            var module = moduleFactory.CreateModule(Path.Combine(basePath, filename));
-            module.AddAssets(new[] { new Asset("", module, directory.GetFile(filename)) }, true);
+            var index = filename.LastIndexOf('.');
+            var name = filename.Substring(0, index);
+            var module = moduleFactory.CreateModule(PathUtilities.CombineWithForwardSlashes("~", basePath, name));
+            module.AddAssets(new[] { new Asset("~/" + filename, module, directory.GetFile(filename)) }, true);
             return module;
         }
     }

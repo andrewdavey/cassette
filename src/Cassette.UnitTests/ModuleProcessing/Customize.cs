@@ -14,7 +14,7 @@ namespace Cassette.ModuleProcessing
             var step = new Customize<StylesheetModule>(
                 m => m.Media = "print"    
             );
-            var module = new StylesheetModule("test");
+            var module = new StylesheetModule("~/test");
 
             step.Process(module, Mock.Of<ICassetteApplication>());
 

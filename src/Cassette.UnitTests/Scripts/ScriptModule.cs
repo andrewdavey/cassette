@@ -12,15 +12,15 @@ namespace Cassette.Scripts
             application = new Mock<ICassetteApplication>();
             var urlGenerator = new Mock<IUrlGenerator>();
             application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);
-            module = new ScriptModule("test");
+            module = new ScriptModule("~/test");
             asset1 = Mock.Of<IAsset>();
             asset2 = Mock.Of<IAsset>();
             module.Assets.Add(asset1);
             module.Assets.Add(asset2);
 
             urlGenerator.Setup(g => g.CreateModuleUrl(module)).Returns("/url");
-            urlGenerator.Setup(g => g.CreateAssetUrl(module, asset1)).Returns("/url1");
-            urlGenerator.Setup(g => g.CreateAssetUrl(module, asset2)).Returns("/url2");
+            urlGenerator.Setup(g => g.CreateAssetUrl(asset1)).Returns("/url1");
+            urlGenerator.Setup(g => g.CreateAssetUrl(asset2)).Returns("/url2");
         }
 
         readonly Mock<ICassetteApplication> application;
