@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.Utilities;
@@ -126,6 +127,62 @@ namespace Cassette
             var result = reader.Read();
             result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
             result.References.SequenceEqual(new[] { "../lib/other.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenExternalSectionWithUrl_WhenRead_ThenResultHasExternalUrl()
+        {
+            var reader = GetReader("[external]\nurl = http://test.com/api.js");
+            var result = reader.Read();
+            result.ExternalUrl.ShouldEqual("http://test.com/api.js");
+        }
+
+        [Fact]
+        public void GivenExternalSectionWithNonUrlContent_WhenRead_ThenThrowException()
+        {
+            var reader = GetReader("[external]\nurl = fail");
+            Assert.Throws<Exception>(delegate
+            {
+                reader.Read();
+            });
+        }
+
+        [Fact]
+        public void GivenExternalSectionWithMoreThanOneUrlLine_WhenRead_ThenThrowException()
+        {
+            var reader = GetReader("[external]\nurl = http://test.com/api1.js\nurl = http://test.com/api2.js");
+            Assert.Throws<Exception>(delegate
+            {
+                reader.Read();
+            });
+        }
+
+        [Fact]
+        public void GivenFallbackConditionSection_WhenRead_ThenResultHasFallbackCondition()
+        {
+            var reader = GetReader("[external]\nurl = http://test.com/api.js\nfallbackCondition = !window.API");
+            var result = reader.Read();
+            result.FallbackCondition.ShouldEqual("!window.API");
+        }
+
+        [Fact]
+        public void GivenExternalSectionWithMoreThanOneFallbackConditionLine_WhenRead_ThenThrowException()
+        {
+            var reader = GetReader("[external]\nurl = http://test.com/api1.js\nfallbackCondition = !window.API\nfallbackCondition = !window.API");
+            Assert.Throws<Exception>(delegate
+            {
+                reader.Read();
+            });
+        }
+
+        [Fact]
+        public void GivenExternalSectionWithFallbackConditionButNoUrl_WhenRead_ThenThrowException()
+        {
+            var reader = GetReader("[external]\nfallbackCondition = !window.API");
+            Assert.Throws<Exception>(delegate
+            {
+                reader.Read();
+            });
         }
     }
 }

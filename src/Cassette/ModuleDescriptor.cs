@@ -7,12 +7,16 @@ namespace Cassette
         readonly IEnumerable<string> assetFilenames;
         readonly bool assetsSorted;
         readonly IEnumerable<string> references;
+        readonly string externalUrl;
+        readonly string fallbackCondition;
 
-        public ModuleDescriptor(IEnumerable<string> assetFilenames, bool assetsSorted, IEnumerable<string> references)
+        public ModuleDescriptor(IEnumerable<string> assetFilenames, bool assetsSorted, IEnumerable<string> references, string externalUrl = null, string fallbackCondition = null)
         {
             this.assetFilenames = assetFilenames;
             this.assetsSorted = assetsSorted;
             this.references = references;
+            this.externalUrl = externalUrl;
+            this.fallbackCondition = fallbackCondition;
         }
 
         public IEnumerable<string> AssetFilenames
@@ -28,6 +32,16 @@ namespace Cassette
         public IEnumerable<string> References
         {
             get { return references; }
+        }
+
+        public string ExternalUrl
+        {
+            get { return externalUrl; }
+        }
+
+        public string FallbackCondition
+        {
+            get { return fallbackCondition; }
         }
     }
 }
