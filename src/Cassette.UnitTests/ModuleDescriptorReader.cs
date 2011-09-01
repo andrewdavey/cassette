@@ -5,6 +5,7 @@ using System.Linq;
 using Cassette.Utilities;
 using Should;
 using Xunit;
+using Moq;
 
 namespace Cassette
 {
@@ -14,7 +15,12 @@ namespace Cassette
         
         ModuleDescriptorReader GetReader(string descriptor)
         {
-            return new ModuleDescriptorReader(descriptor.AsStream(), files);
+            var source = new Mock<IFile>();
+            source
+                .Setup(s => s.Open(FileMode.Open, FileAccess.Read))
+                .Returns(() => descriptor.AsStream());
+
+            return new ModuleDescriptorReader(source.Object, files);
         }
 
         void FilesExist(params string[] result)

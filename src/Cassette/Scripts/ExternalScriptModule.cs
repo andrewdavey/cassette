@@ -43,6 +43,12 @@ namespace Cassette.Scripts
 
         static readonly string fallbackHtml = "<script type=\"text/javascript\">{0} && document.write(unescape('%3Cscript src=\"{1}\"%3E%3C/script%3E'))</script>";
 
+        public void AddFallback(string fallbackCondition, IEnumerable<Asset> fallbacAssets)
+        {
+            javaScriptCondition = fallbackCondition;
+            AddAssets(fallbacAssets, true);
+        }
+
         public override IEnumerable<XElement> CreateCacheManifest()
         {
             // External modules do not require caching.

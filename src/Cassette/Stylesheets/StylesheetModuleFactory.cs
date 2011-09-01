@@ -11,5 +11,10 @@
         {
             return new ExternalStylesheetModule(url);
         }
+
+        public StylesheetModule CreateExternalModule(string name, ModuleDescriptor moduleDescriptor)
+        {
+            return new ExternalStylesheetModule(name, moduleDescriptor.ExternalUrl);
+        }
     }
 }

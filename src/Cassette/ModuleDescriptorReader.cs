@@ -9,9 +9,9 @@ namespace Cassette
 {
     public class ModuleDescriptorReader
     {
-        public ModuleDescriptorReader(Stream stream, IEnumerable<string> allAssetfilenames)
+        public ModuleDescriptorReader(IFile sourceFile, IEnumerable<string> allAssetfilenames)
         {
-            this.stream = stream;
+            this.sourceFile = sourceFile;
             this.allAssetfilenames = new HashSet<string>(allAssetfilenames, StringComparer.OrdinalIgnoreCase);
             sectionLineParsers = new Dictionary<string, Action<string>>
             {
@@ -20,8 +20,8 @@ namespace Cassette
                 { "external", ParseExternal }
             };
         }
-
-        readonly Stream stream;
+            
+        readonly IFile sourceFile;
         readonly HashSet<string> allAssetfilenames;
         readonly List<string> assetFilenames = new List<string>();
         readonly HashSet<string> references = new HashSet<string>(); 
@@ -32,6 +32,7 @@ namespace Cassette
 
         public ModuleDescriptor Read()
         {
+            using (var stream = sourceFile.Open(FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
                 string line;

@@ -54,28 +54,35 @@ namespace Cassette
 
         T CreateModule(string directoryName, IFileSystem directory, IModuleFactory<T> moduleFactory)
         {
-            var descriptor = GetAssetFilenames(directory);
+            var descriptor = GetModuleDescriptor(directory);
 
-            var module = moduleFactory.CreateModule(directoryName);
-            if (descriptor.References.Any())
+            if (descriptor.ExternalUrl != null)
             {
-                module.AddReferences(descriptor.References);
+                return moduleFactory.CreateExternalModule(directoryName, descriptor);
             }
-            module.AddAssets(
-                descriptor.AssetFilenames.Select(
-                    assetFilename => new Asset(
-                        PathUtilities.CombineWithForwardSlashes(module.Path, assetFilename),
-                        module,
-                        directory.GetFile(assetFilename)
-                    )
-                ),
-                descriptor.AssetsSorted
-            );
+            else
+            {
+                var module = moduleFactory.CreateModule(directoryName);
+                if (descriptor.References.Any())
+                {
+                    module.AddReferences(descriptor.References);
+                }
+                module.AddAssets(
+                    descriptor.AssetFilenames.Select(
+                        assetFilename => new Asset(
+                            PathUtilities.CombineWithForwardSlashes(module.Path, assetFilename),
+                            module,
+                            directory.GetFile(assetFilename)
+                        )
+                    ),
+                    descriptor.AssetsSorted
+                );
 
-            return module;
+                return module;
+            }
         }
 
-        ModuleDescriptor GetAssetFilenames(IFileSystem directory)
+        ModuleDescriptor GetModuleDescriptor(IFileSystem directory)
         {
             if (directory.FileExists("module.txt"))
             {
@@ -93,11 +100,9 @@ namespace Cassette
 
         ModuleDescriptor GetAssetFilenamesFromModuleDescriptorFile(IFileSystem directory)
         {
-            using (var file = directory.OpenFile("module.txt", FileMode.Open, FileAccess.Read))
-            {
-                var reader = new ModuleDescriptorReader(file, GetAssetFilenamesByConfiguration(directory));
-                return reader.Read();
-            }
+            var file = directory.GetFile("module.txt");
+            var reader = new ModuleDescriptorReader(file, GetAssetFilenamesByConfiguration(directory));
+            return reader.Read();
         }
 
         IEnumerable<string> GetAssetFilenamesByConfiguration(IFileSystem directory)

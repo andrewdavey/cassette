@@ -61,6 +61,7 @@
     <Compile Include="Asset.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="DirectorySource.cs" />
+    <Compile Include="FileSystemModuleSource.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptBlocks.cs" />
     <Compile Include="ModuleConfiguration.cs" />

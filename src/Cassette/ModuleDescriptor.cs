@@ -19,6 +19,8 @@ namespace Cassette
             this.fallbackCondition = fallbackCondition;
         }
 
+        public IFile SourceFile { get; set; }
+
         public IEnumerable<string> AssetFilenames
         {
             get { return assetFilenames; }

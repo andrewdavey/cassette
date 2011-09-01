@@ -13,5 +13,10 @@ namespace Cassette.HtmlTemplates
         {
             throw new NotSupportedException("External HTML template modules are not supported.");
         }
+
+        public HtmlTemplateModule CreateExternalModule(string name, ModuleDescriptor moduleDescriptor)
+        {
+            throw new NotSupportedException("External HTML template modules are not supported.");
+        }
     }
 }
