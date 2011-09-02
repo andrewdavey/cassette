@@ -85,9 +85,10 @@ namespace Cassette
 
         ModuleDescriptor GetModuleDescriptor(IDirectory directory)
         {
-            if (directory.FileExists("module.txt"))
+            var moduleDescriptorFile = directory.GetFile("module.txt");
+            if (moduleDescriptorFile.Exists)
             {
-                return GetAssetFilenamesFromModuleDescriptorFile(directory);
+                return GetAssetFilenamesFromModuleDescriptorFile(moduleDescriptorFile);
             }
             else
             {
@@ -99,10 +100,9 @@ namespace Cassette
             }
         }
 
-        ModuleDescriptor GetAssetFilenamesFromModuleDescriptorFile(IDirectory directory)
+        ModuleDescriptor GetAssetFilenamesFromModuleDescriptorFile(IFile moduleDescriptorFile)
         {
-            var file = directory.GetFile("module.txt");
-            var reader = new ModuleDescriptorReader(file, GetAssetFilenamesByConfiguration(directory));
+            var reader = new ModuleDescriptorReader(moduleDescriptorFile, GetAssetFilenamesByConfiguration(moduleDescriptorFile.Directory));
             return reader.Read();
         }
 

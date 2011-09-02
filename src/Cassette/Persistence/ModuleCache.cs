@@ -14,18 +14,22 @@ namespace Cassette.Persistence
         {
             this.cacheDirectory = cacheDirectory;
             this.moduleFactory = moduleFactory;
+            containerFile = cacheDirectory.GetFile(ContainerFilename);
+            versionFile = cacheDirectory.GetFile(VersionFilename);
         }
 
         readonly IDirectory cacheDirectory;
         readonly IModuleFactory<T> moduleFactory;
+        readonly IFile containerFile;
+        readonly IFile versionFile;
         const string ContainerFilename = "container.xml";
         const string VersionFilename = "version";
 
         public bool LoadContainerIfUpToDate(IEnumerable<T> externalModules, int expectedAssetCount, string version, IDirectory sourceFileSystem, out IModuleContainer<T> container)
         {
             container = null;
-            if (!cacheDirectory.FileExists(ContainerFilename)) return false;
-            if (!cacheDirectory.FileExists(VersionFilename)) return false;
+            if (!containerFile.Exists) return false;
+            if (!versionFile.Exists) return false;
             if (!IsSameVersion(version)) return false;
 
             var lastWriteTime = cacheDirectory.GetLastWriteTimeUtc(ContainerFilename);
@@ -43,7 +47,7 @@ namespace Cassette.Persistence
 
         bool IsSameVersion(string version)
         {
-            using (var reader = new StreamReader(cacheDirectory.OpenFile(VersionFilename, FileMode.Open, FileAccess.Read)))
+            using (var reader = new StreamReader(versionFile.Open(FileMode.Open, FileAccess.Read)))
             {
                 return reader.ReadLine() == version;
             }
@@ -70,9 +74,9 @@ namespace Cassette.Persistence
 
         XElement LoadContainerElement(IDirectory fileSystem)
         {
-            using (var containerFile = fileSystem.OpenFile(ContainerFilename, FileMode.Open, FileAccess.Read))
+            using (var containerFileStream = containerFile.Open(FileMode.Open, FileAccess.Read))
             {
-                return XDocument.Load(containerFile).Root;
+                return XDocument.Load(containerFileStream).Root;
             }
         }
 
@@ -83,7 +87,7 @@ namespace Cassette.Persistence
                     modules.SelectMany(module => module.CreateCacheManifest())
                 )
             );
-            using (var fileStream = cacheDirectory.OpenFile(ContainerFilename, FileMode.Create, FileAccess.Write))
+            using (var fileStream = containerFile.Open(FileMode.Create, FileAccess.Write))
             {
                 xml.Save(fileStream);
             }
@@ -91,7 +95,7 @@ namespace Cassette.Persistence
 
         void SaveVersion(string version)
         {
-            using (var writer = new StreamWriter(cacheDirectory.OpenFile(VersionFilename, FileMode.Create, FileAccess.Write)))
+            using (var writer = new StreamWriter(versionFile.Open(FileMode.Create, FileAccess.Write)))
             {
                 writer.Write(version);
             }
@@ -108,8 +112,8 @@ namespace Cassette.Persistence
                 return; // Skip external URL modules.
             }
 
-            var filename = ModuleAssetCacheFilename(module);
-            using (var fileStream = cacheDirectory.OpenFile(filename, FileMode.Create, FileAccess.Write))
+            var file = cacheDirectory.GetFile(ModuleAssetCacheFilename(module));
+            using (var fileStream = file.Open(FileMode.Create, FileAccess.Write))
             {
                 using (var dataStream = module.Assets[0].OpenStream())
                 {

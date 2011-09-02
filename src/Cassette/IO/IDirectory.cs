@@ -7,8 +7,6 @@ namespace Cassette.IO
     public interface IDirectory
     {
         IDirectory NavigateTo(string path, bool createIfNotExists);
-        bool FileExists(string filename);
-        Stream OpenFile(string filename, FileMode mode, FileAccess access);
         void DeleteAll();
         DateTime GetLastWriteTimeUtc(string filename);
         IEnumerable<string> GetDirectories(string relativePath);

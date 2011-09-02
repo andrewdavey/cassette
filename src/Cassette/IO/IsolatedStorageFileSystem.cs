@@ -25,5 +25,10 @@ namespace Cassette.IO
         {
             return storage.OpenFile(filename, mode, access);
         }
+
+        public bool Exists
+        {
+            get { return storage.FileExists(filename); }
+        }
     }
 }

@@ -15,16 +15,6 @@ namespace Cassette
             this.fileStreams = fileStreams;
         }
 
-        public Stream OpenFile(string filename, FileMode mode, FileAccess access)
-        {
-            return fileStreams[filename];
-        }
-
-        public bool FileExists(string filename)
-        {
-            return fileStreams.ContainsKey(filename);
-        }
-
         public void DeleteAll()
         {
             fileStreams.Clear();

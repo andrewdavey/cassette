@@ -15,16 +15,6 @@ namespace Cassette.IO
 
         readonly string rootDirectory;
 
-        public Stream OpenFile(string filename, FileMode mode, FileAccess access)
-        {
-            return File.Open(GetAbsolutePath(filename), mode, access);
-        }
-
-        public bool FileExists(string filename)
-        {
-            return File.Exists(GetAbsolutePath(filename));
-        }
-
         public bool DirectoryExists(string path)
         {
             return Directory.Exists(GetAbsolutePath(path));
@@ -34,7 +24,7 @@ namespace Cassette.IO
         {
             var subDirectoryPath = Path.GetDirectoryName(filename);
             var subDirectory = NavigateTo(subDirectoryPath, false);
-            return new FileSystemFile(Path.GetFileName(filename), subDirectory);
+            return new FileSystemFile(GetAbsolutePath(filename), subDirectory);
         }
 
         public void DeleteAll()

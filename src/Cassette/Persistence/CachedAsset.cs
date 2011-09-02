@@ -8,17 +8,15 @@ namespace Cassette.Persistence
 {
     public class CachedAsset : IAsset
     {
-        public CachedAsset(string filename, byte[] hash, IEnumerable<IAsset> children, IDirectory moduleDirectory)
+        public CachedAsset(IFile file, byte[] hash, IEnumerable<IAsset> children)
         {
-            this.filename = filename;
+            this.file = file;
             this.hash = hash;
-            this.moduleDirectory = moduleDirectory;
             this.children = children.ToArray();
         }
 
-        readonly string filename;
         readonly byte[] hash;
-        readonly IDirectory moduleDirectory;
+        readonly IFile file;
         readonly IEnumerable<IAsset> children;
 
         public byte[] Hash
@@ -33,7 +31,7 @@ namespace Cassette.Persistence
 
         public Stream OpenStream()
         {
-            return moduleDirectory.OpenFile(filename, FileMode.Open, FileAccess.Read);
+            return file.Open(FileMode.Open, FileAccess.Read);
         }
 
         public void Accept(IAssetVisitor visitor)

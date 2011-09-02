@@ -16,16 +16,6 @@ namespace Cassette.IO
         readonly IsolatedStorageFile storage;
         readonly string basePath;
 
-        public bool FileExists(string filename)
-        {
-            return storage.FileExists(GetAbsolutePath(filename));
-        }
-
-        public Stream OpenFile(string filename, FileMode mode, FileAccess access)
-        {
-            return storage.OpenFile(GetAbsolutePath(filename), mode, access);
-        }
-
         public void DeleteAll()
         {
             foreach (var filename in storage.GetFileNames(basePath + "/*"))

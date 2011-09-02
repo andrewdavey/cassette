@@ -13,18 +13,18 @@ namespace Cassette
     {
         public LessCompiler_Compile()
         {
-            fileSystem = new Mock<IDirectory>();
-            fileSystem.Setup(fs => fs.NavigateTo(It.IsAny<string>(), false))
-                      .Returns(fileSystem.Object);
+            directory = new Mock<IDirectory>();
+            directory.Setup(fs => fs.NavigateTo(It.IsAny<string>(), false))
+                      .Returns(directory.Object);
         }
 
-        readonly Mock<IDirectory> fileSystem;
+        readonly Mock<IDirectory> directory;
 
         [Fact]
         public void Compile_converts_LESS_into_CSS()
         {
             var compiler = new LessCompiler();
-            var css = compiler.Compile("@color: #4d926f; #header { color: @color; }", "test.less", fileSystem.Object);
+            var css = compiler.Compile("@color: #4d926f; #header { color: @color; }", "test.less", directory.Object);
             css.ShouldEqual("#header {\n  color: #4d926f;\n}\n");
         }
 
@@ -34,7 +34,7 @@ namespace Cassette
             var compiler = new LessCompiler();
             var exception = Assert.Throws<LessCompileException>(delegate
             {
-                compiler.Compile("#unclosed_rule {", "test.less", fileSystem.Object);
+                compiler.Compile("#unclosed_rule {", "test.less", directory.Object);
             });
             exception.Message.ShouldEqual("Less compile error in test.less:\r\nMissing closing `}`");
         }
@@ -45,7 +45,7 @@ namespace Cassette
             var compiler = new LessCompiler();
             var exception = Assert.Throws<LessCompileException>(delegate
             {
-                compiler.Compile("#fail { - }", "test.less", fileSystem.Object);
+                compiler.Compile("#fail { - }", "test.less", directory.Object);
             });
             exception.Message.ShouldEqual("Less compile error in test.less:\r\nSyntax Error on line 1");
         }
@@ -53,13 +53,17 @@ namespace Cassette
         [Fact]
         public void Can_Compile_LESS_that_imports_another_LESS_file()
         {
-            fileSystem.Setup(fs => fs.OpenFile("lib.less", FileMode.Open, FileAccess.Read))
-                      .Returns(() => "@color: red;".AsStream());
+            var file = new Mock<IFile>();
+            directory.Setup(d => d.GetFile("lib.less"))
+                     .Returns(file.Object);
+            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
+                .Returns(() => "@color: red;".AsStream());
+
             var compiler = new LessCompiler();
             var css = compiler.Compile(
                 "@import \"lib\";\nbody{ color: @color }",
                 "test.less",
-                fileSystem.Object
+                directory.Object
             );
             css.ShouldEqual("body {\n  color: red;\n}\n");
         }
@@ -67,14 +71,17 @@ namespace Cassette
         [Fact]
         public void Can_Compile_LESS_that_imports_another_LESS_file_from_different_directory()
         {
-            fileSystem.Setup(fs => fs.OpenFile("../module-b/lib.less", FileMode.Open, FileAccess.Read))
-                      .Returns(() => "@color: red;".AsStream());
+            var file = new Mock<IFile>();
+            directory.Setup(d => d.GetFile("../module-b/lib.less"))
+                     .Returns(file.Object);
+            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
+                .Returns(() => "@color: red;".AsStream());
 
             var compiler = new LessCompiler();
             var css = compiler.Compile(
                 "@import \"../module-b/lib.less\";\nbody{ color: @color }",
                 @"c:\module-a\test.less",
-                fileSystem.Object
+                directory.Object
             );
             css.ShouldEqual("body {\n  color: red;\n}\n");
         }

@@ -8,7 +8,7 @@ namespace Cassette.Stylesheets
         {
             foreach (var asset in module.Assets)
             {
-                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(module, application));
+                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(application));
             }
         }
     }

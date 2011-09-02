@@ -20,8 +20,9 @@ namespace Cassette.IntegrationTests
                 }
 
                 var fileSystem = new IsolatedStorageDirectory(store);
-                fileSystem.FileExists("test.txt").ShouldBeTrue();
-                using (var reader = new StreamReader(fileSystem.OpenFile("test.txt", FileMode.Open, FileAccess.Read)))
+                var file = fileSystem.GetFile("test.txt");
+                file.Exists.ShouldBeTrue();
+                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
                 {
                     reader.ReadToEnd().ShouldEqual("test");
                 }
@@ -46,8 +47,9 @@ namespace Cassette.IntegrationTests
                 var fileSystem = new IsolatedStorageDirectory(store);
                 var subFileSystem = fileSystem.NavigateTo("sub", false);
 
-                subFileSystem.FileExists("test.txt").ShouldBeTrue();
-                using (var reader = new StreamReader(subFileSystem.OpenFile("test.txt", FileMode.Open, FileAccess.Read)))
+                var file = subFileSystem.GetFile("test.txt");
+                file.Exists.ShouldBeTrue();
+                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
                 {
                     reader.ReadToEnd().ShouldEqual("test");
                 }

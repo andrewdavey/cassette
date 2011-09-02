@@ -69,10 +69,9 @@ namespace Cassette.Persistence
             var children = assetElements.Select(CreateCachedAssetSourceInfo);
 
             var cachedAsset = new CachedAsset(
-                filename,
+                rootDirectory.GetFile(filename),
                 hash,
-                children,
-                rootDirectory
+                children
             );
             module.Assets.Add(cachedAsset);
         }

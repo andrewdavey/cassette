@@ -20,7 +20,12 @@ namespace Cassette.IO
 
         public Stream Open(FileMode mode, FileAccess access)
         {
-            return directory.OpenFile(filename, mode, access);
+            return File.Open(filename, mode, access);
+        }
+
+        public bool Exists
+        {
+            get { return File.Exists(filename); }
         }
     }
 }

@@ -13,5 +13,7 @@ namespace Cassette.IO
         /// Opens a stream to the file.
         /// </summary>
         Stream Open(FileMode mode, FileAccess access);
+
+        bool Exists { get; }
     }
 }

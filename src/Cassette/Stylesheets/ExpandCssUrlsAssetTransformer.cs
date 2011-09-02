@@ -10,13 +10,11 @@ namespace Cassette.Stylesheets
 {
     public class ExpandCssUrlsAssetTransformer : IAssetTransformer
     {
-        public ExpandCssUrlsAssetTransformer(Module module, ICassetteApplication application)
+        public ExpandCssUrlsAssetTransformer(ICassetteApplication application)
         {
-            this.module = module;
             this.application = application;
         }
 
-        readonly Module module;
         readonly ICassetteApplication application;
 
         static readonly Regex CssUrlRegex = new Regex(
@@ -83,17 +81,17 @@ namespace Cassette.Stylesheets
 
         string HashFileContents(string applicationRelativeFilename)
         {
-            using (var file = application.RootDirectory.OpenFile(applicationRelativeFilename.Substring(2), FileMode.Open, FileAccess.Read))
+            var file = application.RootDirectory.GetFile(applicationRelativeFilename.Substring(2));
+            using (var fileStream = file.Open(FileMode.Open, FileAccess.Read))
             {
-                return file.ComputeSHA1Hash().ToHexString();
+                return fileStream.ComputeSHA1Hash().ToHexString();
             }
         }
 
         string GetImageFilename(Group matchedUrlGroup, string currentDirectory)
         {
             var originalUrl = matchedUrlGroup.Value.Trim('"', '\'');
-            var relativeUrl = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(currentDirectory, originalUrl));
-            return relativeUrl;
+            return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(currentDirectory, originalUrl));
         }
     }
 }

@@ -75,7 +75,7 @@ namespace Cassette.Stylesheets
             string source;
             try
             {
-                using (var reader = new StreamReader(currentDirectory.OpenFile(href, FileMode.Open, FileAccess.Read)))
+                using (var reader = new StreamReader(currentDirectory.GetFile(href).Open(FileMode.Open, FileAccess.Read)))
                 {
                     source = reader.ReadToEnd();
                 }
