@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace Cassette.IO
@@ -8,7 +7,6 @@ namespace Cassette.IO
     {
         IDirectory NavigateTo(string path, bool createIfNotExists);
         void DeleteAll();
-        DateTime GetLastWriteTimeUtc(string filename);
         IEnumerable<string> GetDirectories(string relativePath);
         IEnumerable<string> GetFiles(string directory);
         IEnumerable<string> GetFiles(string directory, string searchPattern);

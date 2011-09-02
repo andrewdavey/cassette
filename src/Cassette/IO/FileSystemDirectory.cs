@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,11 +36,6 @@ namespace Cassette.IO
             {
                 File.Delete(filename);
             }
-        }
-
-        public DateTime GetLastWriteTimeUtc(string filename)
-        {
-            return File.GetLastWriteTimeUtc(GetAbsolutePath(filename));
         }
 
         public string GetAbsolutePath(string filename)

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Cassette.IO
 {
@@ -26,6 +27,11 @@ namespace Cassette.IO
         public bool Exists
         {
             get { return File.Exists(filename); }
+        }
+
+        public DateTime LastWriteTimeUtc
+        {
+            get { return File.GetLastWriteTimeUtc(filename); }
         }
     }
 }

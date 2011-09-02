@@ -61,9 +61,10 @@ namespace Cassette.Persistence
             {
                 if (FilesMissing) return;
 
-                if (currentDirectory.GetFile(asset.SourceFilename).Exists)
+                var file = currentDirectory.GetFile(asset.SourceFilename);
+                if (file.Exists)
                 {
-                    var writeTime = currentDirectory.GetLastWriteTimeUtc(asset.SourceFilename);
+                    var writeTime = file.LastWriteTimeUtc;
                     if (writeTime > max)
                     {
                         max = writeTime;

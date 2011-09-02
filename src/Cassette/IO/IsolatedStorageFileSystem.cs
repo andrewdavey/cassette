@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.IsolatedStorage;
 
 namespace Cassette.IO
@@ -29,6 +30,11 @@ namespace Cassette.IO
         public bool Exists
         {
             get { return storage.FileExists(filename); }
+        }
+
+        public DateTime LastWriteTimeUtc
+        {
+            get { return storage.GetLastWriteTime(filename).UtcDateTime; }
         }
     }
 }

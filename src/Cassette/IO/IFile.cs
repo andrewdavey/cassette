@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Cassette.IO
 {
@@ -15,5 +16,7 @@ namespace Cassette.IO
         Stream Open(FileMode mode, FileAccess access);
 
         bool Exists { get; }
+
+        DateTime LastWriteTimeUtc { get; }
     }
 }

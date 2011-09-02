@@ -24,11 +24,6 @@ namespace Cassette.IO
             }
         }
 
-        public DateTime GetLastWriteTimeUtc(string filename)
-        {
-            return storage.GetLastWriteTime(GetAbsolutePath(filename)).UtcDateTime;
-        }
-
         public string GetAbsolutePath(string path)
         {
             return Path.Combine(basePath, path);

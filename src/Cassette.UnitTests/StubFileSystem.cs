@@ -20,11 +20,6 @@ namespace Cassette
             fileStreams.Clear();
         }
 
-        public DateTime GetLastWriteTimeUtc(string filename)
-        {
-            throw new NotImplementedException();    
-        }
-
         public IDirectory NavigateTo(string path, bool createIfNotExists)
         {
             return new StubFileSystem(

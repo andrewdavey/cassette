@@ -32,11 +32,9 @@ namespace Cassette.Persistence
             if (!versionFile.Exists) return false;
             if (!IsSameVersion(version)) return false;
 
-            var lastWriteTime = cacheDirectory.GetLastWriteTimeUtc(ContainerFilename);
-            
             var modules = LoadModules().Concat(externalModules);
             var cachedContainer = new CachedModuleContainer<T>(modules);
-            if (cachedContainer.IsUpToDate(expectedAssetCount, lastWriteTime, sourceFileSystem))
+            if (cachedContainer.IsUpToDate(expectedAssetCount, containerFile.LastWriteTimeUtc, sourceFileSystem))
             {
                 container = cachedContainer;
                 return true;
