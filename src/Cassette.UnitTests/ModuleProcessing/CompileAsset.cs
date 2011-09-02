@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cassette.IO;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -34,7 +35,7 @@ namespace Cassette.ModuleProcessing
         ICompiler StubCompiler(string expectedSourceInput, string compilerOutput)
         {
             var compiler = new Mock<ICompiler>();
-            compiler.Setup(c => c.Compile(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IFileSystem>()))
+            compiler.Setup(c => c.Compile(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDirectory>()))
                     .Returns(compilerOutput);
             return compiler.Object;
         }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cassette.IO;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -12,7 +13,7 @@ namespace Cassette.Stylesheets
         {
             var module = new Module("~/styles");
             application = new Mock<ICassetteApplication>();
-            var directory = new Mock<IFileSystem>();
+            var directory = new Mock<IDirectory>();
             urlGenerator = new Mock<IUrlGenerator>();
             application.SetupGet(a => a.RootDirectory)
                        .Returns(directory.Object);

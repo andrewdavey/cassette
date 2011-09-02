@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Cassette.IO;
 using Cassette.ModuleProcessing;
 using Cassette.Persistence;
 
@@ -40,7 +41,7 @@ namespace Cassette
 
         public abstract byte[] Hash { get; }
 
-        public abstract IFileSystem Directory { get; }
+        public abstract IDirectory Directory { get; }
 
         public abstract IEnumerable<AssetReference> References { get; }
 

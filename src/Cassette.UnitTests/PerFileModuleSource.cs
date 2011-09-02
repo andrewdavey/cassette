@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
@@ -11,12 +12,12 @@ namespace Cassette
     public class PerFileModuleSource_Tests : IDisposable
     {
         readonly DirectoryInfo root;
-        readonly IFileSystem fileSystem;
+        readonly IDirectory fileSystem;
 
         public PerFileModuleSource_Tests()
         {
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            fileSystem = new FileSystem(root.FullName);
+            fileSystem = new FileSystemDirectory(root.FullName);
         }
 
         [Fact]

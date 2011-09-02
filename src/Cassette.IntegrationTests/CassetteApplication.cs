@@ -5,6 +5,7 @@ using System.IO.IsolatedStorage;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
+using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Web;
 using Moq;
@@ -34,8 +35,8 @@ namespace Cassette.IntegrationTests
 
             return new CassetteApplication(
                 config.Object,
-                new FileSystem(Path.GetFullPath(@"..\..\assets")),
-                new IsolatedStorageFileSystem(storage),
+                new FileSystemDirectory(Path.GetFullPath(@"..\..\assets")),
+                new IsolatedStorageDirectory(storage),
                 isOutputOptmized: true,
                 version: Guid.NewGuid().ToString(), // unique version
                 urlGenerator: new UrlGenerator("/"),

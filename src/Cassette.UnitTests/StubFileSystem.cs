@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Cassette.IO;
 
 namespace Cassette
 {
-    class StubFileSystem : IFileSystem
+    class StubFileSystem : IDirectory
     {
         private readonly Dictionary<string, Stream> fileStreams;
 
@@ -34,7 +35,7 @@ namespace Cassette
             throw new NotImplementedException();    
         }
 
-        public IFileSystem NavigateTo(string path, bool createIfNotExists)
+        public IDirectory NavigateTo(string path, bool createIfNotExists)
         {
             return new StubFileSystem(
                 fileStreams

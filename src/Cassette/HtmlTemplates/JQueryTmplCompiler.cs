@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cassette.IO;
 using Jurassic;
 
 namespace Cassette.HtmlTemplates
@@ -13,7 +14,7 @@ namespace Cassette.HtmlTemplates
 
         protected readonly ScriptEngine ScriptEngine;
 
-        public string Compile(string source, string filename, IFileSystem currentDirectory)
+        public string Compile(string source, string filename, IDirectory currentDirectory)
         {
             var function = CreateFunction(source);
             return string.Format(

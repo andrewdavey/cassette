@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 
-namespace Cassette
+namespace Cassette.IO
 {
-    public class IsolatedStorageFileSystem : IFileSystem
+    public class IsolatedStorageDirectory : IDirectory
     {
-        public IsolatedStorageFileSystem(IsolatedStorageFile storage, string basePath = "/")
+        public IsolatedStorageDirectory(IsolatedStorageFile storage, string basePath = "/")
         {
             this.storage = storage;
             this.basePath = basePath;
@@ -44,7 +44,7 @@ namespace Cassette
             return Path.Combine(basePath, path);
         }
 
-        public IFileSystem NavigateTo(string path, bool createIfNotExists)
+        public IDirectory NavigateTo(string path, bool createIfNotExists)
         {
             var fullPath = GetAbsolutePath(path);
             if (storage.DirectoryExists(fullPath) == false)
@@ -58,7 +58,7 @@ namespace Cassette
                     throw new DirectoryNotFoundException("Directory not found: " + fullPath);
                 }
             }
-            return new IsolatedStorageFileSystem(storage, fullPath);
+            return new IsolatedStorageDirectory(storage, fullPath);
         }
 
         public IEnumerable<string> GetFiles(string directory)
@@ -89,30 +89,6 @@ namespace Cassette
         public IFile GetFile(string filename)
         {
             return new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this);
-        }
-    }
-
-    public class IsolatedStorageFileWrapper : IFile
-    {
-        readonly string filename;
-        readonly IsolatedStorageFile storage;
-        readonly IsolatedStorageFileSystem directory;
-
-        public IsolatedStorageFileWrapper(string filename, IsolatedStorageFile storage, IsolatedStorageFileSystem directory)
-        {
-            this.filename = filename;
-            this.storage = storage;
-            this.directory = directory;
-        }
-
-        public IFileSystem Directory
-        {
-            get { return directory; }
-        }
-
-        public Stream Open(FileMode mode, FileAccess access)
-        {
-            return storage.OpenFile(filename, mode, access);
         }
     }
 }

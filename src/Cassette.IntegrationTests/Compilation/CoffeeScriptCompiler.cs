@@ -1,4 +1,5 @@
-﻿using Cassette.Scripts;
+﻿using Cassette.IO;
+using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
@@ -12,7 +13,7 @@ namespace Cassette
         {
             var source = "x = 1";
             var compiler = new CoffeeScriptCompiler();
-            var javaScript = compiler.Compile(source, "test.coffee", Mock.Of<IFileSystem>());
+            var javaScript = compiler.Compile(source, "test.coffee", Mock.Of<IDirectory>());
             javaScript.ShouldEqual("(function() {\n  var x;\n  x = 1;\n}).call(this);\n");
         }
 
@@ -23,7 +24,7 @@ namespace Cassette
             var compiler = new CoffeeScriptCompiler();
             var exception = Assert.Throws<CoffeeScriptCompileException>(delegate
             {
-                compiler.Compile(source, "test.coffee", Mock.Of<IFileSystem>());
+                compiler.Compile(source, "test.coffee", Mock.Of<IDirectory>());
             });
             exception.SourcePath.ShouldEqual("test.coffee");
         }

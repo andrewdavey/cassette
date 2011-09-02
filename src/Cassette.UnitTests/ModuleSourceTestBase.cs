@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Cassette.IO;
 using Moq;
 
 namespace Cassette
@@ -41,7 +42,7 @@ namespace Cassette
         {
             var mockApplication = new Mock<ICassetteApplication>();
             mockApplication.Setup(app => app.RootDirectory)
-                           .Returns(new FileSystem(root));
+                           .Returns(new FileSystemDirectory(root));
             return mockApplication.Object;
         }
 

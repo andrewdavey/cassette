@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Cassette.IO;
 
 namespace Cassette.Persistence
 {
     public class ModuleCache<T> : IModuleCache<T>
         where T : Module
     {
-        public ModuleCache(IFileSystem cacheDirectory, IModuleFactory<T> moduleFactory)
+        public ModuleCache(IDirectory cacheDirectory, IModuleFactory<T> moduleFactory)
         {
             this.cacheDirectory = cacheDirectory;
             this.moduleFactory = moduleFactory;
         }
 
-        readonly IFileSystem cacheDirectory;
+        readonly IDirectory cacheDirectory;
         readonly IModuleFactory<T> moduleFactory;
         const string ContainerFilename = "container.xml";
         const string VersionFilename = "version";
 
-        public bool LoadContainerIfUpToDate(IEnumerable<T> externalModules, int expectedAssetCount, string version, IFileSystem sourceFileSystem, out IModuleContainer<T> container)
+        public bool LoadContainerIfUpToDate(IEnumerable<T> externalModules, int expectedAssetCount, string version, IDirectory sourceFileSystem, out IModuleContainer<T> container)
         {
             container = null;
             if (!cacheDirectory.FileExists(ContainerFilename)) return false;
@@ -67,7 +68,7 @@ namespace Cassette.Persistence
             return new CachedModuleContainer<T>(modules);
         }
 
-        XElement LoadContainerElement(IFileSystem fileSystem)
+        XElement LoadContainerElement(IDirectory fileSystem)
         {
             using (var containerFile = fileSystem.OpenFile(ContainerFilename, FileMode.Open, FileAccess.Read))
             {

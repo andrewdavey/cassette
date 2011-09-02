@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Cassette.IO;
 
 namespace Cassette.Persistence
 {
     public class CachedAsset : IAsset
     {
-        public CachedAsset(string filename, byte[] hash, IEnumerable<IAsset> children, IFileSystem moduleDirectory)
+        public CachedAsset(string filename, byte[] hash, IEnumerable<IAsset> children, IDirectory moduleDirectory)
         {
             this.filename = filename;
             this.hash = hash;
@@ -17,7 +18,7 @@ namespace Cassette.Persistence
 
         readonly string filename;
         readonly byte[] hash;
-        readonly IFileSystem moduleDirectory;
+        readonly IDirectory moduleDirectory;
         readonly IEnumerable<IAsset> children;
 
         public byte[] Hash
@@ -64,7 +65,7 @@ namespace Cassette.Persistence
             throw new NotImplementedException();
         }
 
-        public IFileSystem Directory
+        public IDirectory Directory
         {
             get { throw new NotImplementedException(); }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Cassette.IO;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -11,11 +12,11 @@ namespace Cassette.Stylesheets
     {
         public DataUriGenerator_Tests()
         {
-            directory = new Mock<IFileSystem>();
+            directory = new Mock<IDirectory>();
             transformer = new DataUriGenerator();
         }
 
-        readonly Mock<IFileSystem> directory;
+        readonly Mock<IDirectory> directory;
         readonly DataUriGenerator transformer;
 
         [Fact]

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Cassette.IO;
 
 namespace Cassette
 {
@@ -12,7 +13,7 @@ namespace Cassette
         void AddReference(string path, int lineNumber);
         void AddAssetTransformer(IAssetTransformer transformer);
         Stream OpenStream();
-        IFileSystem Directory { get; }
+        IDirectory Directory { get; }
         void AddRawFileReference(string relativeFilename);
     }
 }

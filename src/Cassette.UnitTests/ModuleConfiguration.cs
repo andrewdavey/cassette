@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cassette.IO;
 using Should;
 using Xunit;
 using Moq;
@@ -29,7 +30,7 @@ namespace Cassette
 
             var config = new ModuleConfiguration(
                 Mock.Of<ICassetteApplication>(),
-                Mock.Of<IFileSystem>(),
+                Mock.Of<IDirectory>(),
                 moduleFactories
             );
             config.Add(moduleSource.Object);

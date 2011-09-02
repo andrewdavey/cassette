@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Cassette.IO;
 using Cassette.ModuleProcessing;
 using Cassette.Utilities;
 using Moq;

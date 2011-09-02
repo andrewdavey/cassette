@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Cassette.IO;
 
 namespace Cassette.Persistence
 {
@@ -60,7 +61,7 @@ namespace Cassette.Persistence
         }
 
 
-        public IFileSystem Directory
+        public IDirectory Directory
         {
             get { throw new NotImplementedException(); }
         }

@@ -1,11 +1,12 @@
 ﻿using System;
+using Cassette.IO;
 using Cassette.UI;
 
 namespace Cassette
 {
     public interface ICassetteApplication : IDisposable
     {
-        IFileSystem RootDirectory { get; }
+        IDirectory RootDirectory { get; }
         bool IsOutputOptimized { get; set; }
         IUrlGenerator UrlGenerator { get; set; }
 

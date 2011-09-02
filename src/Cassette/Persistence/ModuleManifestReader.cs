@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.Persistence
@@ -12,10 +13,10 @@ namespace Cassette.Persistence
     public class ModuleManifestReader<T>
         where T : Module
     {
-        readonly IFileSystem rootDirectory;
+        readonly IDirectory rootDirectory;
         readonly IModuleFactory<T> moduleFactory;
 
-        public ModuleManifestReader(IFileSystem rootDirectory, IModuleFactory<T> moduleFactory)
+        public ModuleManifestReader(IDirectory rootDirectory, IModuleFactory<T> moduleFactory)
         {
             this.rootDirectory = rootDirectory;
             this.moduleFactory = moduleFactory;

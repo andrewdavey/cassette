@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.IO;
 using Cassette.Persistence;
 using Cassette.Utilities;
 using CreateModuleContainer = System.Func<bool, string, Cassette.ISearchableModuleContainer<Cassette.Module>>;
@@ -10,7 +11,7 @@ namespace Cassette
 {
     public class ModuleConfiguration
     {
-        public ModuleConfiguration(ICassetteApplication application, IFileSystem cacheDirectory, Dictionary<Type, object> moduleFactories)
+        public ModuleConfiguration(ICassetteApplication application, IDirectory cacheDirectory, Dictionary<Type, object> moduleFactories)
         {
             this.application = application;
             this.cacheDirectory = cacheDirectory;
@@ -19,7 +20,7 @@ namespace Cassette
 
         readonly ICassetteApplication application;
         readonly Dictionary<Type, Tuple<object, CreateModuleContainer>> moduleSourceResultsByType = new Dictionary<Type, Tuple<object, CreateModuleContainer>>();
-        readonly IFileSystem cacheDirectory;
+        readonly IDirectory cacheDirectory;
         readonly Dictionary<Type, object> moduleFactories;
         readonly Dictionary<Type, List<Action<object>>> customizations = new Dictionary<Type, List<Action<object>>>();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Cassette.IO;
 using Jurassic;
 using Jurassic.Library;
 
@@ -17,10 +18,10 @@ namespace Cassette.Stylesheets
         }
 
         readonly ScriptEngine engine;
-        readonly Stack<IFileSystem> currentDirectories = new Stack<IFileSystem>();
+        readonly Stack<IDirectory> currentDirectories = new Stack<IDirectory>();
         readonly Stack<string> currentFilenames = new Stack<string>();
 
-        public string Compile(string lessSource, string sourceFilename, IFileSystem fileSystem)
+        public string Compile(string lessSource, string sourceFilename, IDirectory fileSystem)
         {
             lock (engine)
             {
@@ -45,7 +46,7 @@ namespace Cassette.Stylesheets
             }
         }
 
-        CompileResult CompileImpl(string lessSource, string sourceFilename, IFileSystem fileSystem)
+        CompileResult CompileImpl(string lessSource, string sourceFilename, IDirectory fileSystem)
         {
             currentFilenames.Push(fileSystem.GetAbsolutePath(sourceFilename));
             currentDirectories.Push(fileSystem);

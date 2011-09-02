@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.IO;
 
 namespace Cassette.Persistence
 {
@@ -11,7 +12,7 @@ namespace Cassette.Persistence
         {
         }
 
-        public bool IsUpToDate(int expectedAssetCount, DateTime dateTime, IFileSystem sourceDirectory)
+        public bool IsUpToDate(int expectedAssetCount, DateTime dateTime, IDirectory sourceDirectory)
         {
             if (expectedAssetCount != Modules.SelectMany(m => m.Assets).Count()) return false;
 
@@ -25,10 +26,10 @@ namespace Cassette.Persistence
 
         class MaxLastWriteCollector : IAssetVisitor
         {
-            readonly IFileSystem rootDirectory;
-            IFileSystem currentDirectory;
+            readonly IDirectory rootDirectory;
+            IDirectory currentDirectory;
 
-            public MaxLastWriteCollector(IFileSystem rootDirectory)
+            public MaxLastWriteCollector(IDirectory rootDirectory)
             {
                 this.rootDirectory = rootDirectory;
             }

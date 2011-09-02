@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.IO;
 using Cassette.Utilities;
 using Jurassic;
 using Jurassic.Library;
@@ -15,7 +16,7 @@ namespace Cassette.Scripts
 
         readonly Lazy<ScriptEngine> scriptEngine;
 
-        public string Compile(string coffeeScriptSource, string filename, IFileSystem currentDirectory)
+        public string Compile(string coffeeScriptSource, string filename, IDirectory currentDirectory)
         {
             var callCoffeeCompile =
                 "(function() { try { return CoffeeScript.compile('"

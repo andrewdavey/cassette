@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Routing;
 using Cassette.HtmlTemplates;
+using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.UI;
@@ -10,7 +11,7 @@ namespace Cassette.Web
 {
     public class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(ICassetteConfiguration config, IFileSystem sourceFileSystem, IFileSystem cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
+        public CassetteApplication(ICassetteConfiguration config, IDirectory sourceFileSystem, IDirectory cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
             : base(config, sourceFileSystem, cacheFileSystem, urlGenerator, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;

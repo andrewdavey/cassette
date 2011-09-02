@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Cassette.IO;
 using Cassette.Stylesheets;
 using Cassette.Utilities;
 using Moq;
@@ -12,12 +13,12 @@ namespace Cassette
     {
         public LessCompiler_Compile()
         {
-            fileSystem = new Mock<IFileSystem>();
+            fileSystem = new Mock<IDirectory>();
             fileSystem.Setup(fs => fs.NavigateTo(It.IsAny<string>(), false))
                       .Returns(fileSystem.Object);
         }
 
-        readonly Mock<IFileSystem> fileSystem;
+        readonly Mock<IDirectory> fileSystem;
 
         [Fact]
         public void Compile_converts_LESS_into_CSS()
@@ -97,7 +98,7 @@ namespace Cassette
                     "@import \"../_base.less\";\n@color: red; p { height: @size; }"
                 );
 
-                var fileSystem = new FileSystem(moduleA.FullName);
+                var fileSystem = new FileSystemDirectory(moduleA.FullName);
 
                 var compiler = new LessCompiler();
                 var css = compiler.Compile(
@@ -121,7 +122,7 @@ namespace Cassette
             {
                 var moduleA = root.CreateSubdirectory("module-a");
                 var moduleB = root.CreateSubdirectory("module-b");
-                var fileSystem = new FileSystem(moduleA.FullName);
+                var fileSystem = new FileSystemDirectory(moduleA.FullName);
 
                 var compiler = new LessCompiler();
                 var exception = Assert.Throws<FileNotFoundException>(delegate
@@ -149,7 +150,7 @@ namespace Cassette
             try
             {
                 var moduleA = root.CreateSubdirectory("module-a");
-                var fileSystem = new FileSystem(moduleA.FullName);
+                var fileSystem = new FileSystemDirectory(moduleA.FullName);
 
                 var compiler = new LessCompiler();
                 var exception = Assert.Throws<DirectoryNotFoundException>(delegate

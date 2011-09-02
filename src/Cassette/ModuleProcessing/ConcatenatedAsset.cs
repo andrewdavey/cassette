@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Cassette.IO;
 using Cassette.Utilities;
 using Cassette.Persistence;
 
@@ -39,7 +40,7 @@ namespace Cassette.ModuleProcessing
             get { return string.Join(";", children.Select(c => c.SourceFilename)); }
         }
 
-        public override IFileSystem Directory
+        public override IDirectory Directory
         {
             get { throw new NotImplementedException(); }
         }

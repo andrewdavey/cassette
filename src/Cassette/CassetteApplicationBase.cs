@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.HtmlTemplates;
+using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.UI;
@@ -11,7 +12,7 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(ICassetteConfiguration configuration, IFileSystem rootDirectory, IFileSystem cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
+        protected CassetteApplicationBase(ICassetteConfiguration configuration, IDirectory rootDirectory, IDirectory cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
         {
             this.rootDirectory = rootDirectory;
             this.isOutputOptimized = isOutputOptimized;
@@ -25,7 +26,7 @@ namespace Cassette
         }
 
         bool isOutputOptimized;
-        readonly IFileSystem rootDirectory;
+        readonly IDirectory rootDirectory;
         IUrlGenerator urlGenerator;
         readonly Dictionary<Type, ISearchableModuleContainer<Module>> moduleContainers;
         readonly Dictionary<Type, object> moduleFactories;
@@ -36,7 +37,7 @@ namespace Cassette
             set { isOutputOptimized = value; }
         }
 
-        public IFileSystem RootDirectory
+        public IDirectory RootDirectory
         {
             get { return rootDirectory; }
         }
@@ -96,7 +97,7 @@ namespace Cassette
 
         public abstract IPageAssetManager GetPageAssetManager<T>() where T : Module;
 
-        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IFileSystem cacheDirectory, string version)
+        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IDirectory cacheDirectory, string version)
         {
             var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, moduleFactories);
             config.Configure(moduleConfiguration, this);

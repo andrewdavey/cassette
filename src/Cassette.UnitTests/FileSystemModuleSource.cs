@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cassette.IO;
 using Should;
 using Xunit;
 using Moq;
@@ -30,7 +31,7 @@ namespace Cassette
             application = new Mock<ICassetteApplication>();
             application
                 .Setup(a => a.RootDirectory)
-                .Returns(new FileSystem(root.FullName));
+                .Returns(new FileSystemDirectory(root.FullName));
         }
 
         [Fact]

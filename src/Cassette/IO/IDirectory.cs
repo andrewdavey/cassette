@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Cassette
+namespace Cassette.IO
 {
-    public interface IFileSystem
+    public interface IDirectory
     {
-        IFileSystem NavigateTo(string path, bool createIfNotExists);
+        IDirectory NavigateTo(string path, bool createIfNotExists);
         bool FileExists(string filename);
         Stream OpenFile(string filename, FileMode mode, FileAccess access);
         void DeleteAll();

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -39,14 +40,14 @@ namespace Cassette
                    select CreateModule(filename, moduleFactory, directory);
         }
 
-        IFileSystem GetDirectoryForBasePath(ICassetteApplication application)
+        IDirectory GetDirectoryForBasePath(ICassetteApplication application)
         {
             return basePath.Length == 1
                        ? application.RootDirectory
                        : application.RootDirectory.NavigateTo(basePath.Substring(2), false);
         }
 
-        IEnumerable<string> GetFilenames(IFileSystem directory)
+        IEnumerable<string> GetFilenames(IDirectory directory)
         {
             IEnumerable<string> filenames;
             if (string.IsNullOrEmpty(FilePattern))
@@ -68,7 +69,7 @@ namespace Cassette
             return filenames;
         }
 
-        T CreateModule(string filename, IModuleFactory<T> moduleFactory, IFileSystem directory)
+        T CreateModule(string filename, IModuleFactory<T> moduleFactory, IDirectory directory)
         {
             var name = RemoveFileExtension(filename);
             var module = moduleFactory.CreateModule(PathUtilities.CombineWithForwardSlashes(basePath, name));

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
@@ -160,7 +161,7 @@ namespace Cassette
         Mock<ICassetteApplication> CreateApplication()
         {
             var app = new Mock<ICassetteApplication>();
-            var directory = new Mock<IFileSystem>();
+            var directory = new Mock<IDirectory>();
             directory.Setup(d => d.GetAbsolutePath(""))
                      .Returns(rootPath);
             app.SetupGet(a => a.RootDirectory).Returns(directory.Object);

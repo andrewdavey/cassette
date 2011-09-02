@@ -1,13 +1,13 @@
 ﻿using System.IO;
 
-namespace Cassette
+namespace Cassette.IO
 {
     public interface IFile
     {
         /// <summary>
         /// The directory containing the file.
         /// </summary>
-        IFileSystem Directory { get; }
+        IDirectory Directory { get; }
 
         /// <summary>
         /// Opens a stream to the file.

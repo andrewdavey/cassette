@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Routing;
+using Cassette.IO;
 using Cassette.UI;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
@@ -120,7 +121,7 @@ namespace Cassette.Web
         {
             return new CassetteApplication(
                 configuration,
-                new FileSystem(HttpRuntime.AppDomainAppPath),
+                new FileSystemDirectory(HttpRuntime.AppDomainAppPath),
                 GetCacheDirectory(),
                 ShouldOptimizeOutput(),
                 GetConfigurationVersion(HttpRuntime.AppDomainAppVirtualPath),
@@ -130,9 +131,9 @@ namespace Cassette.Web
             );
         }
 
-        static IFileSystem GetCacheDirectory()
+        static IDirectory GetCacheDirectory()
         {
-            return new IsolatedStorageFileSystem(storage);
+            return new IsolatedStorageDirectory(storage);
             // TODO: Add configuration setting to use App_Data
             //return new FileSystem(Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data", ".CassetteCache"));
         }

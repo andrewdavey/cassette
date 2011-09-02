@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.IO
 {
-    public class FileSystem : IFileSystem
+    public class FileSystemDirectory : IDirectory
     {
-        public FileSystem(string rootDirectory)
+        public FileSystemDirectory(string rootDirectory)
         {
             this.rootDirectory = rootDirectory.TrimEnd('\\', '/');
         }
@@ -34,7 +34,7 @@ namespace Cassette
         {
             var subDirectoryPath = Path.GetDirectoryName(filename);
             var subDirectory = NavigateTo(subDirectoryPath, false);
-            return new FileWrapper(Path.GetFileName(filename), subDirectory);
+            return new FileSystemFile(Path.GetFileName(filename), subDirectory);
         }
 
         public void DeleteAll()
@@ -64,7 +64,7 @@ namespace Cassette
             return fullPath.Substring(rootDirectory.Length + 1);
         }
 
-        public IFileSystem NavigateTo(string path, bool createIfNotExists)
+        public IDirectory NavigateTo(string path, bool createIfNotExists)
         {
             var fullPath = GetAbsolutePath(path);
             if (Directory.Exists(fullPath) == false)
@@ -78,7 +78,7 @@ namespace Cassette
                     throw new DirectoryNotFoundException("Directory not found: " + fullPath);
                 }
             }
-            return new FileSystem(fullPath);
+            return new FileSystemDirectory(fullPath);
         }
 
         public IEnumerable<string> GetDirectories(string relativePath)
@@ -99,28 +99,6 @@ namespace Cassette
         public FileAttributes GetAttributes(string path)
         {
             return File.GetAttributes(GetAbsolutePath(path));
-        }
-    }
-
-    public class FileWrapper : IFile
-    {
-        readonly string filename;
-        readonly IFileSystem directory;
-
-        public FileWrapper(string filename, IFileSystem directory)
-        {
-            this.filename = filename;
-            this.directory = directory;
-        }
-
-        public IFileSystem Directory
-        {
-            get { return directory; }
-        }
-
-        public Stream Open(FileMode mode, FileAccess access)
-        {
-            return directory.OpenFile(filename, mode, access);
         }
     }
 }

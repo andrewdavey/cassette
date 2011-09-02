@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Xml.Linq;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -114,7 +115,7 @@ namespace Cassette
             get { return hash; }
         }
 
-        public override IFileSystem Directory
+        public override IDirectory Directory
         {
             get { return file.Directory; }
         }

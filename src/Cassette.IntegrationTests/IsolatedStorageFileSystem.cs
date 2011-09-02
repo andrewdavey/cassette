@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.IO.IsolatedStorage;
+using Cassette.IO;
 using Should;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace Cassette.IntegrationTests
                     writer.Flush();
                 }
 
-                var fileSystem = new IsolatedStorageFileSystem(store);
+                var fileSystem = new IsolatedStorageDirectory(store);
                 fileSystem.FileExists("test.txt").ShouldBeTrue();
                 using (var reader = new StreamReader(fileSystem.OpenFile("test.txt", FileMode.Open, FileAccess.Read)))
                 {
@@ -42,7 +43,7 @@ namespace Cassette.IntegrationTests
                     writer.Flush();
                 }
 
-                var fileSystem = new IsolatedStorageFileSystem(store);
+                var fileSystem = new IsolatedStorageDirectory(store);
                 var subFileSystem = fileSystem.NavigateTo("sub", false);
 
                 subFileSystem.FileExists("test.txt").ShouldBeTrue();

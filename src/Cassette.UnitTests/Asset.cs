@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Cassette.IO;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -16,7 +17,7 @@ namespace Cassette
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
             root.CreateSubdirectory("module");
             filename = Path.Combine(root.FullName, "module", "test.js");
-            fileSystem = new FileSystem(root.FullName);
+            fileSystem = new FileSystemDirectory(root.FullName);
 
             module = new Module("~/module");
             asset = new Asset("~/module/test.js", module, StubFile("asset content"));
@@ -30,7 +31,7 @@ namespace Cassette
         readonly Asset asset;
         readonly DirectoryInfo root;
         readonly Module module;
-        readonly FileSystem fileSystem;
+        readonly FileSystemDirectory fileSystem;
 
         IFile StubFile(string content = "")
         {
@@ -270,7 +271,7 @@ namespace Cassette
             filename = Path.Combine(root.FullName, "module", "test.js");
             // Write some testable content to the file.
             File.WriteAllText(filename, "asset content");
-            var fileSystem = new FileSystem(root.FullName);
+            var fileSystem = new FileSystemDirectory(root.FullName);
 
             var module = new Module("~/module");
             asset = new Asset("~/module/test.js", module, fileSystem.GetFile("module\\test.js"));

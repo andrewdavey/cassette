@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -47,12 +48,12 @@ namespace Cassette
 
         protected abstract IEnumerable<string> GetModuleDirectoryPaths(ICassetteApplication application);
 
-        bool IsNotHidden(IFileSystem directory, string path)
+        bool IsNotHidden(IDirectory directory, string path)
         {
             return directory.GetAttributes(path.Substring(2)).HasFlag(FileAttributes.Hidden) == false;
         }
 
-        T CreateModule(string directoryName, IFileSystem directory, IModuleFactory<T> moduleFactory)
+        T CreateModule(string directoryName, IDirectory directory, IModuleFactory<T> moduleFactory)
         {
             var descriptor = GetModuleDescriptor(directory);
 
@@ -82,7 +83,7 @@ namespace Cassette
             }
         }
 
-        ModuleDescriptor GetModuleDescriptor(IFileSystem directory)
+        ModuleDescriptor GetModuleDescriptor(IDirectory directory)
         {
             if (directory.FileExists("module.txt"))
             {
@@ -98,14 +99,14 @@ namespace Cassette
             }
         }
 
-        ModuleDescriptor GetAssetFilenamesFromModuleDescriptorFile(IFileSystem directory)
+        ModuleDescriptor GetAssetFilenamesFromModuleDescriptorFile(IDirectory directory)
         {
             var file = directory.GetFile("module.txt");
             var reader = new ModuleDescriptorReader(file, GetAssetFilenamesByConfiguration(directory));
             return reader.Read();
         }
 
-        IEnumerable<string> GetAssetFilenamesByConfiguration(IFileSystem directory)
+        IEnumerable<string> GetAssetFilenamesByConfiguration(IDirectory directory)
         {
             IEnumerable<string> filenames;
             if (string.IsNullOrWhiteSpace(FilePattern))
