@@ -93,6 +93,21 @@ namespace Cassette
             modules[0].Assets[0].SourceFilename.ShouldEqual("~/path/sub/test.js");
         }
 
+
+        [Fact]
+        public void GivenSearchingOnlyTopLevelAndFileInSubDirectory_ThenGetModulesIgnoresFile()
+        {
+            root.CreateSubdirectory("path\\sub");
+            File.WriteAllText(Path.Combine(root.FullName, "path\\sub\\test.js"), "");
+
+            var modules = GetModules(new PerFileModuleSource<Module>("path")
+            {
+                SearchOption = SearchOption.TopDirectoryOnly
+            });
+
+            modules.Length.ShouldEqual(0);
+        }
+
         [Fact]
         public void WhenAFilePatternSet_ThenGetModulesReturnsModuleForEachFileMatchingFilePattern()
         {

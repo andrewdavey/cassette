@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using Cassette.IO;
+using Cassette.Scripts;
+using Moq;
 using Should;
 using Xunit;
-using Moq;
-using Cassette.Scripts;
-using System.IO;
 
 namespace Cassette
 {
     class FileSystemModuleSource_Tests : IDisposable
     {
+        public FileSystemModuleSource_Tests()
+        {
+            root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            root.CreateSubdirectory("test");
+            application = new Mock<ICassetteApplication>();
+            application
+                .Setup(a => a.RootDirectory)
+                .Returns(new FileSystemDirectory(root.FullName));
+        }
+
         DirectoryInfo root;
         Mock<ICassetteApplication> application;
 
@@ -22,16 +31,6 @@ namespace Cassette
             {
                 yield return "~/test";
             }
-        }
-
-        public FileSystemModuleSource_Tests()
-        {
-            root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            root.CreateSubdirectory("test");
-            application = new Mock<ICassetteApplication>();
-            application
-                .Setup(a => a.RootDirectory)
-                .Returns(new FileSystemDirectory(root.FullName));
         }
 
         [Fact]
@@ -51,6 +50,33 @@ namespace Cassette
             var modules = source.GetModules(factory.Object, application.Object).ToArray();
 
             modules[0].ShouldBeType<ExternalScriptModule>();
+        }
+
+        [Fact]
+        public void SearchOptionPropertyDefaultsToAllDirectories()
+        {
+            var source = new TestableFileSystemModuleSource();
+            source.SearchOption.ShouldEqual(SearchOption.AllDirectories);
+        }
+
+        [Fact]
+        public void GivenSearchOptionIsTopDirectoryOnly_WhenGetModules_ThenFilesInSubDirectoriesAreIgnored()
+        {
+            root.CreateSubdirectory("test\\sub");
+            File.WriteAllText(Path.Combine(root.FullName, "test", "test1.txt"), "");
+            File.WriteAllText(Path.Combine(root.FullName, "test", "sub", "test2.txt"), "");
+            
+            var factory = new Mock<IModuleFactory<Module>>();
+            factory
+                .Setup(f => f.CreateModule("~/test"))
+                .Returns(new Module("~"));
+
+            var source = new DirectorySource<Module>("~/test")
+            {
+                SearchOption = SearchOption.TopDirectoryOnly
+            };
+            var modules = source.GetModules(factory.Object, application.Object);
+            modules.First().Assets.Count.ShouldEqual(1);
         }
 
         public void Dispose()

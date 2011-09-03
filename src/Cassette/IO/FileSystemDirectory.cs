@@ -70,14 +70,14 @@ namespace Cassette.IO
             return Directory.EnumerateDirectories(GetAbsolutePath(relativePath)).Select(ToRelativePath);
         }
 
-        public IEnumerable<string> GetFiles(string directory)
+        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption)
         {
-            return Directory.GetFiles(GetAbsolutePath(directory), "*", SearchOption.AllDirectories).Select(ToRelativePath);
+            return Directory.GetFiles(GetAbsolutePath(directory), "*", searchOption).Select(ToRelativePath);
         }
 
-        public IEnumerable<string> GetFiles(string directory, string searchPattern)
+        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern)
         {
-            return Directory.GetFiles(GetAbsolutePath(directory), searchPattern, SearchOption.AllDirectories).Select(ToRelativePath);
+            return Directory.GetFiles(GetAbsolutePath(directory), searchPattern, searchOption).Select(ToRelativePath);
         }
 
         public FileAttributes GetAttributes(string path)

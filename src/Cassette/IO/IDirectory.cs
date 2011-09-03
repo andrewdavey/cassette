@@ -8,8 +8,8 @@ namespace Cassette.IO
         IDirectory NavigateTo(string path, bool createIfNotExists);
         void DeleteAll();
         IEnumerable<string> GetDirectories(string relativePath);
-        IEnumerable<string> GetFiles(string directory);
-        IEnumerable<string> GetFiles(string directory, string searchPattern);
+        IEnumerable<string> GetFiles(string directory, SearchOption searchOption);
+        IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern);
         FileAttributes GetAttributes(string path);
         string GetAbsolutePath(string path);
         bool DirectoryExists(string path);

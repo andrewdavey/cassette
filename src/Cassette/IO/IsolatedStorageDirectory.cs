@@ -46,12 +46,12 @@ namespace Cassette.IO
             return new IsolatedStorageDirectory(storage, fullPath);
         }
 
-        public IEnumerable<string> GetFiles(string directory)
+        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetFiles(string directory, string searchPattern)
+        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern)
         {
             throw new NotImplementedException();
         }

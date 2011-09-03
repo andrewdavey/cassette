@@ -11,12 +11,24 @@ namespace Cassette
     public abstract class FileSystemModuleSource<T> : IModuleSource<T>
         where T : Module
     {
+        protected FileSystemModuleSource()
+        {
+            SearchOption = SearchOption.AllDirectories;
+        }
+
         /// <summary>
         /// The file pattern used to find files e.g. "*.js;*.coffee"
         /// </summary>
         public string FilePattern { get; set; }
+        
         public Regex Exclude { get; set; }
+
         public Action<T> CustomizeModule { get; set; }
+
+        /// <summary>
+        /// Defaults to <see cref="System.IO.SearchOption.AllDirectories"/>.
+        /// </summary>
+        public SearchOption SearchOption { get; set; }
 
         public IEnumerable<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
         {
@@ -111,12 +123,12 @@ namespace Cassette
             IEnumerable<string> filenames;
             if (string.IsNullOrWhiteSpace(FilePattern))
             {
-                filenames = directory.GetFiles("");
+                filenames = directory.GetFiles("", SearchOption);
             }
             else
             {
                 var patterns = FilePattern.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                filenames = patterns.SelectMany(pattern => directory.GetFiles("", pattern)).Distinct();
+                filenames = patterns.SelectMany(pattern => directory.GetFiles("", SearchOption, pattern)).Distinct();
             }
             if (Exclude != null)
             {

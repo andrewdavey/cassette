@@ -3,16 +3,16 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.IO;
 using Cassette.Utilities;
+using System.IO;
 
 namespace Cassette
 {
     public class PerFileModuleSource<T> : IModuleSource<T>
         where T : Module
     {
-        readonly string basePath;
-
         public PerFileModuleSource(string basePath)
         {
+            SearchOption = SearchOption.AllDirectories;
             if (basePath.StartsWith("~"))
             {
                 this.basePath = basePath.TrimEnd('/', '\\');
@@ -27,9 +27,13 @@ namespace Cassette
             }
         }
 
+        readonly string basePath;
+
         public string FilePattern { get; set; }
 
         public Regex Exclude { get; set; }
+
+        public SearchOption SearchOption { get; set; }
 
         public IEnumerable<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
         {
@@ -52,13 +56,13 @@ namespace Cassette
             IEnumerable<string> filenames;
             if (string.IsNullOrEmpty(FilePattern))
             {
-                filenames = directory.GetFiles("");
+                filenames = directory.GetFiles("", SearchOption);
             }
             else
             {
                 var patterns = FilePattern.Split(';', ',');
                 filenames = patterns.SelectMany(
-                    pattern => directory.GetFiles("", pattern)
+                    pattern => directory.GetFiles("", SearchOption, pattern)
                 );
             }
 

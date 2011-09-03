@@ -47,12 +47,12 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetFiles(string directory)
+        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption)
         {
             return fileStreams.Keys;
         }
 
-        public IEnumerable<string> GetFiles(string directory, string searchPattern)
+        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern)
         {
             return fileStreams.Keys.Where(key => key.EndsWith(searchPattern.Substring(1)));
         }
