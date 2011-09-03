@@ -41,8 +41,8 @@ namespace Cassette.IntegrationTests
             Directory.CreateDirectory(cacheDirectory);
             try
             {
-                var fileSystem = new FileSystem(cacheDirectory);
-                var cache = new ModuleCache<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
+                var directory = new FileSystem(cacheDirectory);
+                var cache = new ModuleCache<ScriptModule>(directory, new ScriptModuleFactory(getFullPath));
 
                 var container = StubModuleContainerWithRootedModule();
                 ConcatentateAssets(container);
@@ -85,14 +85,14 @@ namespace Cassette.IntegrationTests
             Directory.CreateDirectory(cacheDirectory);
             try
             {
-                var fileSystem = new FileSystem(cacheDirectory);
-                var writer = new ModuleContainerWriter<ScriptModule>(fileSystem);
-                var reader = new ModuleContainerReader<ScriptModule>(fileSystem, new ScriptModuleFactory(getFullPath));
+                var directory = new FileSystemDirectory(cacheDirectory);
+                var writer = new ModuleContainerWriter<ScriptModule>(directory);
+                var reader = new ModuleContainerReader<ScriptModule>(directory, new ScriptModuleFactory(getFullPath));
                 
                 var container = StubModuleContainerWithSubDirectoryModule();
                 ConcatentateAssets(container);
                 writer.Save(container);
-                var loadedContainer = reader.Load(fileSystem);
+                var loadedContainer = reader.Load(directory);
 
                 loadedContainer.LastWriteTime.ShouldEqual(now);
                 loadedContainer.First().Assets.Count.ShouldEqual(1);

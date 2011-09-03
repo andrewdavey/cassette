@@ -19,15 +19,15 @@ namespace Cassette.IntegrationTests
                     writer.Flush();
                 }
 
-                var fileSystem = new IsolatedStorageDirectory(store);
-                var file = fileSystem.GetFile("test.txt");
+                var directory = new IsolatedStorageDirectory(store);
+                var file = directory.GetFile("test.txt");
                 file.Exists.ShouldBeTrue();
                 using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
                 {
                     reader.ReadToEnd().ShouldEqual("test");
                 }
 
-                fileSystem.DeleteAll();
+                directory.DeleteAll();
                 store.FileExists("test.txt").ShouldBeFalse();
             }
         }
@@ -44,17 +44,17 @@ namespace Cassette.IntegrationTests
                     writer.Flush();
                 }
 
-                var fileSystem = new IsolatedStorageDirectory(store);
-                var subFileSystem = fileSystem.NavigateTo("sub", false);
+                var directory = new IsolatedStorageDirectory(store);
+                var subDirectory = directory.NavigateTo("sub", false);
 
-                var file = subFileSystem.GetFile("test.txt");
+                var file = subDirectory.GetFile("test.txt");
                 file.Exists.ShouldBeTrue();
                 using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
                 {
                     reader.ReadToEnd().ShouldEqual("test");
                 }
 
-                subFileSystem.DeleteAll();
+                subDirectory.DeleteAll();
                 store.FileExists("sub\\test.txt").ShouldBeFalse();
             }
         }
