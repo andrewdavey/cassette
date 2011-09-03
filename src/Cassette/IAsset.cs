@@ -6,14 +6,28 @@ namespace Cassette
 {
     public interface IAsset
     {
-        void Accept(IAssetVisitor visitor);
+        /// <summary>
+        /// The application relative path of the asset.
+        /// </summary>
         string SourceFilename { get; }
+
+        /// <summary>
+        /// The hash of the original asset contents, before any transformations are applied.
+        /// </summary>
         byte[] Hash { get; }
-        IEnumerable<AssetReference> References { get; }
-        void AddReference(string path, int lineNumber);
-        void AddAssetTransformer(IAssetTransformer transformer);
-        Stream OpenStream();
+
         IFile SourceFile { get; }
+        IEnumerable<AssetReference> References { get; }
+
+        void Accept(IAssetVisitor visitor);
+        void AddAssetTransformer(IAssetTransformer transformer);
+        void AddReference(string path, int lineNumber);
         void AddRawFileReference(string relativeFilename);
+
+        /// <summary>
+        /// Opens a new stream to read the transformed contents of the asset.
+        /// </summary>
+        /// <returns>A readable <see cref="Stream"/>.</returns>
+        Stream OpenStream();
     }
 }
