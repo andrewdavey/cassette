@@ -37,11 +37,11 @@ namespace Cassette
 
         protected abstract Stream OpenStreamCore();
 
+        public abstract IFile SourceFile { get; }
+
         public abstract string SourceFilename { get; }
 
         public abstract byte[] Hash { get; }
-
-        public abstract IDirectory Directory { get; }
 
         public abstract IEnumerable<AssetReference> References { get; }
 

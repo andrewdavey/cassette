@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Cassette.IO;
 using Cassette.Utilities;
 using Cassette.Persistence;
 
@@ -30,6 +29,11 @@ namespace Cassette.ModuleProcessing
             }
         }
 
+        public override IO.IFile SourceFile
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public override byte[] Hash
         {
             get { return hash; }
@@ -38,11 +42,6 @@ namespace Cassette.ModuleProcessing
         public override string SourceFilename
         {
             get { return string.Join(";", children.Select(c => c.SourceFilename)); }
-        }
-
-        public override IDirectory Directory
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public override IEnumerable<AssetReference> References

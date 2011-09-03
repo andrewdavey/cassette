@@ -55,13 +55,12 @@ namespace Cassette.Persistence
             throw new NotImplementedException();
         }
 
-        public byte[] Hash
+        public IFile SourceFile
         {
             get { throw new NotImplementedException(); }
         }
 
-
-        public IDirectory Directory
+        public byte[] Hash
         {
             get { throw new NotImplementedException(); }
         }

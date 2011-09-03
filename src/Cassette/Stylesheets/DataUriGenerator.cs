@@ -86,7 +86,7 @@ namespace Cassette.Stylesheets
 
             string GetBase64EncodedData()
             {
-                var file = sourceAsset.Directory.GetFile(url);
+                var file = sourceAsset.SourceFile.Directory.GetFile(url);
                 using (var fileStream = file.Open(FileMode.Open, FileAccess.Read))
                 using (var temp = new MemoryStream())
                 using (var base64Stream = new CryptoStream(temp, new ToBase64Transform(), CryptoStreamMode.Write))

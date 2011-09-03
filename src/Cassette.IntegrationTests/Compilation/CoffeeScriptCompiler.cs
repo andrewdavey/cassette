@@ -13,7 +13,7 @@ namespace Cassette
         {
             var source = "x = 1";
             var compiler = new CoffeeScriptCompiler();
-            var javaScript = compiler.Compile(source, "test.coffee", Mock.Of<IDirectory>());
+            var javaScript = compiler.Compile(source, Mock.Of<IFile>());
             javaScript.ShouldEqual("(function() {\n  var x;\n  x = 1;\n}).call(this);\n");
         }
 
@@ -22,9 +22,12 @@ namespace Cassette
         {
             var source = "'unclosed string";
             var compiler = new CoffeeScriptCompiler();
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath)
+                .Returns("test.coffee");
             var exception = Assert.Throws<CoffeeScriptCompileException>(delegate
             {
-                compiler.Compile(source, "test.coffee", Mock.Of<IDirectory>());
+                compiler.Compile(source, file.Object);
             });
             exception.SourcePath.ShouldEqual("test.coffee");
         }

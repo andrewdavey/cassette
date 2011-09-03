@@ -18,17 +18,15 @@ namespace Cassette.Stylesheets
         }
 
         readonly ScriptEngine engine;
-        readonly Stack<IDirectory> currentDirectories = new Stack<IDirectory>();
-        readonly Stack<string> currentFilenames = new Stack<string>();
+        readonly Stack<IFile> currentFiles = new Stack<IFile>();
 
-        public string Compile(string lessSource, string sourceFilename, IDirectory fileSystem)
+        public string Compile(string lessSource, IFile sourceFile)
         {
             lock (engine)
             {
-                currentDirectories.Clear();
-                currentFilenames.Clear();
+                currentFiles.Clear();
 
-                var result = CompileImpl(lessSource, sourceFilename, fileSystem);
+                var result = CompileImpl(lessSource, sourceFile);
                 if (result.Css != null)
                 {
                     return result.Css;
@@ -38,7 +36,7 @@ namespace Cassette.Stylesheets
                     throw new LessCompileException(
                         string.Format(
                             "Less compile error in {0}:\r\n{1}", 
-                            sourceFilename, 
+                            sourceFile.FullPath, 
                             result.ErrorMessage
                         )
                     );
@@ -46,10 +44,9 @@ namespace Cassette.Stylesheets
             }
         }
 
-        CompileResult CompileImpl(string lessSource, string sourceFilename, IDirectory fileSystem)
+        CompileResult CompileImpl(string lessSource, IFile file)
         {
-            currentFilenames.Push(fileSystem.GetAbsolutePath(sourceFilename));
-            currentDirectories.Push(fileSystem);
+            currentFiles.Push(file);
             
             var parser = (ObjectInstance)engine.Evaluate("(new window.less.Parser)");
             var callback = new CompileResult(engine);
@@ -60,60 +57,66 @@ namespace Cassette.Stylesheets
             catch (JavaScriptException ex)
             {
                 var message = ((ObjectInstance)ex.ErrorObject).GetPropertyValue("message").ToString();
-                throw new LessCompileException(string.Format("Less compile error in {0}:\r\n{1}", sourceFilename, message));
+                throw new LessCompileException(
+                    string.Format(
+                        "Less compile error in {0}:\r\n{1}",
+                        file.FullPath,
+                        message
+                    )
+                );
             }
 
-            currentFilenames.Pop();
-            currentDirectories.Pop();
+            currentFiles.Pop();
             return callback;
         }
 
         void LoadStylesheet(ObjectInstance options, FunctionInstance callback)
         {
             var href = options.GetPropertyValue("href").ToString();
-            var currentDirectory = currentDirectories.Peek();
+            var referencingFile = currentFiles.Peek();
             string source;
+            IFile file;
             try
             {
-                using (var reader = new StreamReader(currentDirectory.GetFile(href).Open(FileMode.Open, FileAccess.Read)))
+                file = referencingFile.Directory.GetFile(href);
+                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
                 {
                     source = reader.ReadToEnd();
                 }
             }
             catch (FileNotFoundException ex)
             {
-                throw FileNotFoundExceptionWithSourceFilename(ex);
+                throw FileNotFoundExceptionWithSourceFilename(referencingFile, ex);
             }
             catch (DirectoryNotFoundException ex)
             {
-                throw DirectoryNotFoundExceptionWithSourceFilename(ex);
+                throw DirectoryNotFoundExceptionWithSourceFilename(referencingFile, ex);
             }
-            var newDirectory = currentDirectory.NavigateTo(Path.GetDirectoryName(href), false);
-            var result = CompileImpl(source, href, newDirectory);
+            var result = CompileImpl(source, file);
             callback.Call(Null.Value, result.Root);
         }
 
-        FileNotFoundException FileNotFoundExceptionWithSourceFilename(FileNotFoundException ex)
+        FileNotFoundException FileNotFoundExceptionWithSourceFilename(IFile file, FileNotFoundException ex)
         {
             return new FileNotFoundException(
                 string.Format(
                     "{0}{1}Referenced by an @import in '{2}'.",
                     ex.Message,
                     Environment.NewLine,
-                    currentFilenames.Peek()
+                    file.FullPath
                 ),
                 ex
             );
         }
 
-        DirectoryNotFoundException DirectoryNotFoundExceptionWithSourceFilename(DirectoryNotFoundException ex)
+        DirectoryNotFoundException DirectoryNotFoundExceptionWithSourceFilename(IFile file, DirectoryNotFoundException ex)
         {
             return new DirectoryNotFoundException(
                 string.Format(
                     "{0}{1}Referenced by an @import in '{2}'.",
                     ex.Message,
                     Environment.NewLine,
-                    currentFilenames.Peek()
+                    file.FullPath
                 ),
                 ex
             );

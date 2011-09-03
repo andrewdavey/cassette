@@ -16,10 +16,13 @@ namespace Cassette.Stylesheets
 
             directory = new Mock<IDirectory>();
             asset = new Mock<IAsset>();
+            var file = new Mock<IFile>();
             asset.SetupGet(a => a.SourceFilename)
                  .Returns("asset.css");
-            asset.SetupGet(a => a.Directory)
-                 .Returns(directory.Object);
+            asset.SetupGet(a => a.SourceFile)
+                 .Returns(file.Object);
+            file.SetupGet(f => f.Directory)
+                .Returns(directory.Object);
         }
 
         readonly Mock<IAsset> asset;

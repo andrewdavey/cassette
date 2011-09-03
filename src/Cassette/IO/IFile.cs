@@ -10,13 +10,15 @@ namespace Cassette.IO
         /// </summary>
         IDirectory Directory { get; }
 
+        bool Exists { get; }
+
+        DateTime LastWriteTimeUtc { get; }
+
+        string FullPath { get; }
+     
         /// <summary>
         /// Opens a stream to the file.
         /// </summary>
         Stream Open(FileMode mode, FileAccess access);
-
-        bool Exists { get; }
-
-        DateTime LastWriteTimeUtc { get; }
     }
 }

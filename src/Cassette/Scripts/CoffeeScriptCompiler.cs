@@ -16,7 +16,7 @@ namespace Cassette.Scripts
 
         readonly Lazy<ScriptEngine> scriptEngine;
 
-        public string Compile(string coffeeScriptSource, string filename, IDirectory currentDirectory)
+        public string Compile(string coffeeScriptSource, IFile sourceFile)
         {
             var callCoffeeCompile =
                 "(function() { try { return CoffeeScript.compile('"
@@ -38,11 +38,17 @@ namespace Cassette.Scripts
                 var error = result as ErrorInstance;
                 if (error != null)
                 {
-                    throw new CoffeeScriptCompileException(error.Message + " in " + filename, filename);
+                    throw new CoffeeScriptCompileException(
+                        error.Message + " in " + sourceFile.FullPath,
+                        sourceFile.FullPath
+                    );
                 }
                 else
                 {
-                    throw new CoffeeScriptCompileException("Unknown CoffeeScript compilation failure.", filename);
+                    throw new CoffeeScriptCompileException(
+                        "Unknown CoffeeScript compilation failure.",
+                        sourceFile.FullPath
+                    );
                 }
             }
         }

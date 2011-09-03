@@ -22,6 +22,11 @@ namespace Cassette.IO
             get { return directory; }
         }
 
+        public string FullPath
+        {
+            get { return filename; }
+        }
+
         public Stream Open(FileMode mode, FileAccess access)
         {
             return storage.OpenFile(filename, mode, access);

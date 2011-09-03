@@ -35,7 +35,7 @@ namespace Cassette.ModuleProcessing
         ICompiler StubCompiler(string expectedSourceInput, string compilerOutput)
         {
             var compiler = new Mock<ICompiler>();
-            compiler.Setup(c => c.Compile(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDirectory>()))
+            compiler.Setup(c => c.Compile(It.IsAny<string>(), It.IsAny<IFile>()))
                     .Returns(compilerOutput);
             return compiler.Object;
         }

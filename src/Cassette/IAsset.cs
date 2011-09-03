@@ -13,7 +13,7 @@ namespace Cassette
         void AddReference(string path, int lineNumber);
         void AddAssetTransformer(IAssetTransformer transformer);
         Stream OpenStream();
-        IDirectory Directory { get; }
+        IFile SourceFile { get; }
         void AddRawFileReference(string relativeFilename);
     }
 }

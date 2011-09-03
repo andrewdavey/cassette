@@ -34,6 +34,11 @@ namespace Cassette
         readonly byte[] hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
+        public override IFile SourceFile
+        {
+            get { return file; }
+        }
+
         public override void AddReference(string assetRelativeFilename, int lineNumber)
         {
             if (assetRelativeFilename.IsUrl())
@@ -113,11 +118,6 @@ namespace Cassette
         public override byte[] Hash
         {
             get { return hash; }
-        }
-
-        public override IDirectory Directory
-        {
-            get { return file.Directory; }
         }
 
         public override IEnumerable<AssetReference> References

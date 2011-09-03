@@ -19,6 +19,11 @@ namespace Cassette.Persistence
         readonly IFile file;
         readonly IEnumerable<IAsset> children;
 
+        public IFile SourceFile
+        {
+            get { return file; }
+        }
+
         public byte[] Hash
         {
             get { return hash; }
@@ -61,11 +66,6 @@ namespace Cassette.Persistence
         public void AddAssetTransformer(IAssetTransformer transformer)
         {
             throw new NotImplementedException();
-        }
-
-        public IDirectory Directory
-        {
-            get { throw new NotImplementedException(); }
         }
     }
 }

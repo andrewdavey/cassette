@@ -14,12 +14,12 @@ namespace Cassette.HtmlTemplates
 
         protected readonly ScriptEngine ScriptEngine;
 
-        public string Compile(string source, string filename, IDirectory currentDirectory)
+        public string Compile(string source, IFile sourceFile)
         {
             var function = CreateFunction(source);
             return string.Format(
                 "$.template(\"{0}\", {1});",
-                Path.GetFileNameWithoutExtension(filename),
+                Path.GetFileNameWithoutExtension(sourceFile.FullPath),
                 function
             );
         }

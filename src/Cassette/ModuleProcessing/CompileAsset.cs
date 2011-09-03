@@ -19,7 +19,7 @@ namespace Cassette.ModuleProcessing
             {
                 using (var input = new StreamReader(openSourceStream()))
                 {
-                    var css = compiler.Compile(input.ReadToEnd(), asset.SourceFilename, asset.Directory);
+                    var css = compiler.Compile(input.ReadToEnd(), asset.SourceFile);
                     return css.AsStream();
                 }
             };
