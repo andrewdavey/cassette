@@ -20,6 +20,11 @@ namespace Cassette.Persistence
             get { return filename; }
         }
 
+        public bool HasTransformers
+        {
+            get { return false; }
+        }
+
         public void Accept(IAssetVisitor visitor)
         {
             visitor.Visit(this);

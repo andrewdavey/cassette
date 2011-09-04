@@ -17,6 +17,7 @@ namespace Cassette.Scripts
         protected static readonly string ScriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
 
         public IModuleProcessor<ScriptModule> Processor { get; set; }
+        public IModuleHtmlRenderer<ScriptModule> Renderer { get; set; }
 
         public override void Process(ICassetteApplication application)
         {
@@ -25,6 +26,7 @@ namespace Cassette.Scripts
 
         public override IHtmlString Render(ICassetteApplication application)
         {
+            return Renderer.Render(this);
             if (application.IsOutputOptimized)
             {
                 // TODO: Extract rendering into pluggable class to allow customization?

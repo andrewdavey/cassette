@@ -76,6 +76,14 @@ namespace Cassette
         }
 
         [Fact]
+        public void WhenAddAssetTransformer_ThenHasTransformersIsTrue()
+        {
+            asset.AddAssetTransformer(Mock.Of<IAssetTransformer>());
+
+            asset.HasTransformers.ShouldBeTrue();
+        }
+
+        [Fact]
         public void WhenAddAssetTransformer_ThenOpenStreamReturnsTransformedStream()
         {
             Stream transformedStream = null;

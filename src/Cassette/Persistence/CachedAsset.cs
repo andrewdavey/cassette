@@ -34,6 +34,11 @@ namespace Cassette.Persistence
             get { return children.SelectMany(asset => asset.References); }
         }
 
+        public bool HasTransformers
+        {
+            get { return false; }
+        }
+
         public Stream OpenStream()
         {
             return file.Open(FileMode.Open, FileAccess.Read);

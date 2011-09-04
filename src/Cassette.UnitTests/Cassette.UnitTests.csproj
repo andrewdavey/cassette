@@ -79,8 +79,11 @@
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="ModuleProcessing\Customize.cs" />
+    <Compile Include="Scripts\DebugScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
+    <Compile Include="Scripts\ScriptModuleHtmlRenderer.cs" />
+    <Compile Include="Scripts\ScriptPipeline.cs" />
     <Compile Include="Stylesheets\CompileLess.cs" />
     <Compile Include="Stylesheets\DataUriGenerator.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />

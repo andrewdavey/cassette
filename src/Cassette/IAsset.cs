@@ -18,6 +18,7 @@ namespace Cassette
 
         IFile SourceFile { get; }
         IEnumerable<AssetReference> References { get; }
+        bool HasTransformers { get; }
 
         void Accept(IAssetVisitor visitor);
         void AddAssetTransformer(IAssetTransformer transformer);

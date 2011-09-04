@@ -58,6 +58,7 @@
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\WrapWithJavaScriptElement.cs" />
+    <Compile Include="IModuleHtmlRenderer.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\IFile.cs" />
     <Compile Include="IModuleSource.cs" />
@@ -72,6 +73,10 @@
     <Compile Include="Persistence\ICacheableAsset.cs" />
     <Compile Include="Persistence\ModuleManifestReader.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
+    <Compile Include="Scripts\AssignScriptModuleRenderer.cs" />
+    <Compile Include="Scripts\DebugScriptModuleHtmlRenderer.cs" />
+    <Compile Include="Scripts\HtmlConstants.cs" />
+    <Compile Include="Scripts\ScriptModuleHtmlRenderer.cs" />
     <Compile Include="Stylesheets\DataUriGenerator.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />
