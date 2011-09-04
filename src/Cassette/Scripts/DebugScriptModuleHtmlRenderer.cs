@@ -17,13 +17,14 @@ namespace Cassette.Scripts
         {
             var assetScripts = 
                 from asset in module.Assets
-                select string.Format(
-                    HtmlConstants.ScriptHtml,
-                    urlGenerator.CreateAssetUrl(asset)
-                    );
+                let url = asset.HasTransformers
+                    ? urlGenerator.CreateAssetCompileUrl(module, asset)
+                    : urlGenerator.CreateAssetUrl(asset)
+                select string.Format(HtmlConstants.ScriptHtml, url);
 
-            var html = string.Join(Environment.NewLine, assetScripts);
-            return new HtmlString(html);
+            return new HtmlString(
+                string.Join(Environment.NewLine, assetScripts)
+            );
         }
     }
 }
