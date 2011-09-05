@@ -33,10 +33,6 @@ namespace Cassette.ModuleProcessing
                     {
                         asset.AddReference(match.Groups["path"].Value, lineNumber);
                     }
-                    else
-                    {
-                        break;
-                    }
                 }
             }
         }
