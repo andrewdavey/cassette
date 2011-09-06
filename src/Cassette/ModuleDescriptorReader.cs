@@ -42,7 +42,7 @@ namespace Cassette
                     ProcessLine(line);
                 }
             }
-            return new ModuleDescriptor(assetFilenames, true, references, externalUrl, fallbackCondition);
+            return new ModuleDescriptor(sourceFile, assetFilenames, true, references, externalUrl, fallbackCondition);
         }
 
         void ProcessLine(string line)

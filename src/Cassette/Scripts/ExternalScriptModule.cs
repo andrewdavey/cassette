@@ -34,7 +34,7 @@ namespace Cassette.Scripts
             
             this.url = url;
             this.javaScriptFallbackCondition = javaScriptFallbackCondition;
-            this.fallbackUrl = fallbackUrl;
+            this.fallbackUrl = PathUtilities.AppRelative(fallbackUrl);
         }
 
         readonly string url;

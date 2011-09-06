@@ -105,9 +105,7 @@ namespace Cassette
             else
             {
                 return new ModuleDescriptor(
-                    GetAssetFilenamesByConfiguration(directory),
-                    false, // assets are not sorted yet
-                    Enumerable.Empty<string>() // no explicit references
+                    GetAssetFilenamesByConfiguration(directory)
                 );
             }
         }
