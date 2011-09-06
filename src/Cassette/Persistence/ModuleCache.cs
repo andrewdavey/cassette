@@ -53,7 +53,7 @@ namespace Cassette.Persistence
 
         IEnumerable<T> LoadModules()
         {
-            var containerElement = LoadContainerElement(cacheDirectory);
+            var containerElement = LoadContainerElement();
             var reader = new ModuleManifestReader<T>(cacheDirectory, moduleFactory);
             return reader.CreateModules(containerElement);
         }
@@ -70,7 +70,7 @@ namespace Cassette.Persistence
             return new CachedModuleContainer<T>(modules);
         }
 
-        XElement LoadContainerElement(IDirectory fileSystem)
+        XElement LoadContainerElement()
         {
             using (var containerFileStream = containerFile.Open(FileMode.Open, FileAccess.Read))
             {

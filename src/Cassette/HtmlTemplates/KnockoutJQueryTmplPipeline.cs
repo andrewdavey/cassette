@@ -7,9 +7,22 @@ namespace Cassette.HtmlTemplates
     {
         protected override IEnumerable<IModuleProcessor<HtmlTemplateModule>> CreatePipeline(HtmlTemplateModule module, ICassetteApplication application)
         {
-            yield return new AddTransformerToAssets(new CompileAsset(new KnockoutJQueryTmplCompiler()));
+            // Compile each template into JavaScript.
+            yield return new AddTransformerToAssets(
+                new CompileAsset(new KnockoutJQueryTmplCompiler())
+            );
+            yield return new Customize<HtmlTemplateModule>(
+                m => m.ContentType = "text/javascript"
+            );
+            yield return new AddTransformerToAssets(
+                new WrapJQueryTemplateInInitializer(module)
+            );
+            // Join all the JavaScript together
             yield return new ConcatenateAssets();
-            yield return new AddTransformerToAssets(new WrapWithJavaScriptElement());
+            // Assign the renderer to output a link to the module.
+            yield return new AssignRenderer(
+                new RemoteHtmlTemplateModuleRenderer(application.UrlGenerator)
+            );
         }
     }
 }

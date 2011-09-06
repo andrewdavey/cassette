@@ -7,11 +7,7 @@ namespace Cassette.HtmlTemplates
     {
         protected override IEnumerable<IModuleProcessor<HtmlTemplateModule>> CreatePipeline(HtmlTemplateModule module, ICassetteApplication application)
         {
-            yield return new WrapHtmlTemplatesInScriptBlocks();
-            if (application.IsOutputOptimized)
-            {
-                yield return new ConcatenateAssets();
-            }
+            yield return new AssignRenderer(new InlineHtmlTemplateModuleRenderer());
         }
     }
 }

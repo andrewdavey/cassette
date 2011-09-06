@@ -91,7 +91,7 @@ namespace Cassette.Web
 
             var encoding = request.Headers["Accept-Encoding"];
             response.Filter = EncodeStreamAndAppendResponseHeaders(response.Filter, encoding);
-
+            
             using (var assetStream = module.Assets[0].OpenStream())
             {
                 assetStream.CopyTo(response.OutputStream);

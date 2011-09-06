@@ -34,6 +34,7 @@ namespace Cassette.Stylesheets
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);
             }
+            yield return new AssignRenderer();
         }
     }
 }

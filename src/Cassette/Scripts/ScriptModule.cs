@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Web;
+﻿using System.Web;
 using Cassette.ModuleProcessing;
 
 namespace Cassette.Scripts
@@ -14,9 +12,8 @@ namespace Cassette.Scripts
             Processor = new ScriptPipeline();
         }
 
-        protected static readonly string ScriptHtml = "<script src=\"{0}\" type=\"text/javascript\"></script>";
-
         public IModuleProcessor<ScriptModule> Processor { get; set; }
+
         public IModuleHtmlRenderer<ScriptModule> Renderer { get; set; }
 
         public override void Process(ICassetteApplication application)
@@ -24,27 +21,9 @@ namespace Cassette.Scripts
             Processor.Process(this, application);
         }
 
-        public override IHtmlString Render(ICassetteApplication application)
+        public override IHtmlString Render()
         {
             return Renderer.Render(this);
-            if (application.IsOutputOptimized)
-            {
-                // TODO: Extract rendering into pluggable class to allow customization?
-                // Much like the Processor property allows.
-                var url = application.UrlGenerator.CreateModuleUrl(this);
-                return new HtmlString(string.Format(ScriptHtml, url));
-            }
-            else
-            {
-                var scripts = string.Join(Environment.NewLine, 
-                    from asset in Assets
-                    let url = IsCompiledAsset(asset)
-                        ? application.UrlGenerator.CreateAssetCompileUrl(this, asset)
-                        : application.UrlGenerator.CreateAssetUrl(asset)
-                    select string.Format(ScriptHtml, url)
-                );
-                return new HtmlString(scripts);
-            }
         }
     }
 }

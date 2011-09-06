@@ -47,7 +47,7 @@ namespace Cassette
             get { return urlGenerator; }
             set
             {
-                if (value == null) throw new ArgumentNullException("UrlGenerator cannot be null.");
+                if (value == null) throw new ArgumentNullException("value", "UrlGenerator cannot be null.");
                 urlGenerator = value;
             }
         }

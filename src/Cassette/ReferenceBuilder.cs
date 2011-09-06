@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cassette.Utilities;
-using System.IO;
 
 namespace Cassette
 {

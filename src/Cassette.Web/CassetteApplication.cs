@@ -46,8 +46,7 @@ namespace Cassette.Web
             else
             {
                 var manager = new PageAssetManager<T>(
-                    CreateReferenceBuilder<T>(), 
-                    this,
+                    CreateReferenceBuilder<T>(),
                     (IPlaceholderTracker)items[PlaceholderTrackerKey]
                 );
                 items[key] = manager;
@@ -57,18 +56,13 @@ namespace Cassette.Web
 
         void InstallRoutes(RouteCollection routes)
         {
-            if (IsOutputOptimized)
-            {
-                InstallModuleRoute<ScriptModule>(routes);
-                InstallModuleRoute<StylesheetModule>(routes);
-                InstallModuleRoute<HtmlTemplateModule>(routes);
+            InstallModuleRoute<ScriptModule>(routes);
+            InstallModuleRoute<StylesheetModule>(routes);
+            InstallModuleRoute<HtmlTemplateModule>(routes);
 
-                InstallImageRoute(routes);
-            }
-            else
-            {
-                InstallAssetRoute(routes);
-            }
+            InstallImageRoute(routes);
+
+            InstallAssetRoute(routes);
         }
 
         void InstallModuleRoute<T>(RouteCollection routes)

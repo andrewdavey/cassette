@@ -63,7 +63,9 @@
     <Compile Include="DirectorySource.cs" />
     <Compile Include="FileSystemModuleSource.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
-    <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptBlocks.cs" />
+    <Compile Include="HtmlTemplates\InlineHtmlTemplateModuleRenderer.cs" />
+    <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
+    <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
@@ -71,8 +73,6 @@
     <Compile Include="PerFileModuleSource.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <Compile Include="HtmlTemplateModule.cs" />
-    <Compile Include="HtmlTemplateModuleFactory.cs" />
     <None Include="Persistence\ModuleCache.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="ModuleProcessing\CompileAsset.cs" />
@@ -81,11 +81,13 @@
     <Compile Include="ModuleProcessing\Customize.cs" />
     <Compile Include="Scripts\DebugScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptModule.cs" />
+    <Compile Include="Scripts\ExternalScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="Scripts\ScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\ScriptPipeline.cs" />
     <Compile Include="Stylesheets\CompileLess.cs" />
     <Compile Include="Stylesheets\DataUriGenerator.cs" />
+    <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetModule.cs" />
@@ -93,7 +95,7 @@
     <Compile Include="Stylesheets\MicrosoftStyleSheetMinifier.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
-    <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptBlock.cs" />
+    <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="UI\Assets.cs" />
     <Compile Include="UI\PageAssetManager.cs" />

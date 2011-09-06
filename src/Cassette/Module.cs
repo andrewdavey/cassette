@@ -127,7 +127,7 @@ namespace Cassette
             }
         }
 
-        public virtual IHtmlString Render(ICassetteApplication application)
+        public virtual IHtmlString Render()
         {
             return new HtmlString("");
         }

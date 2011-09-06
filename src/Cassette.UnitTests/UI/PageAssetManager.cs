@@ -12,7 +12,7 @@ namespace Cassette.UI
         {
             referenceBuilder = new Mock<IReferenceBuilder<Module>>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
-            manager = new PageAssetManager<Module>(referenceBuilder.Object, Mock.Of<ICassetteApplication>(), placeholderTracker.Object);
+            manager = new PageAssetManager<Module>(referenceBuilder.Object, placeholderTracker.Object);
 
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
                               .Returns(new HtmlString("output"));
@@ -34,7 +34,7 @@ namespace Cassette.UI
         {
             var module = new Mock<Module>("~/stub");
             referenceBuilder.Setup(b => b.GetModules(null)).Returns(new[] { module.Object });
-            module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
+            module.Setup(m => m.Render())
                   .Returns(new HtmlString("output"));
             manager.Reference("test");
 
@@ -47,7 +47,7 @@ namespace Cassette.UI
         public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenModuleRenderOutputReturned()
         {
             var module = new Mock<Module>("~/stub");
-            module.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
+            module.Setup(m => m.Render())
                   .Returns(new HtmlString("output"));
             referenceBuilder.Setup(b => b.GetModules("body")).Returns(new[] { module.Object });
             manager.Reference("test");
@@ -61,10 +61,10 @@ namespace Cassette.UI
         public void GivenAddReferenceToTwoPaths_WhenRender_ThenModuleRenderOutputsSeparatedByNewLinesReturned()
         {
             var module1 = new Mock<Module>("~/stub1");
-            module1.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
+            module1.Setup(m => m.Render())
                   .Returns(new HtmlString("output1"));
             var module2 = new Mock<Module>("~/stub2");
-            module2.Setup(m => m.Render(It.IsAny<ICassetteApplication>()))
+            module2.Setup(m => m.Render())
                    .Returns(new HtmlString("output2"));
             referenceBuilder.Setup(b => b.GetModules(null))
                             .Returns(new[] { module1.Object, module2.Object });

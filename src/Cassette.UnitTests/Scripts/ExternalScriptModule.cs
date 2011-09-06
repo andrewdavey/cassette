@@ -10,18 +10,6 @@ namespace Cassette.Scripts
     public class ExternalScriptModule_Tests
     {
         [Fact]
-        public void GivenExternalScriptModuleWithFallback_ThenRenderReturnsFallbackScript()
-        {
-            var module = new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", "/api.js");
-            var html = module.Render(Mock.Of<ICassetteApplication>());
-            html.ToHtmlString().ShouldEqual(
-                @"<script src=""http://test.com/api.js"" type=""text/javascript""></script>" + 
-                Environment.NewLine + 
-                @"<script type=""text/javascript"">!window.api && document.write(unescape('%3Cscript src=""/api.js""%3E%3C/script%3E'))</script>"
-            );
-        }
-
-        [Fact]
         public void CreateCacheManifestReturnsEmpty()
         {
             var module = new ExternalScriptModule("http://test.com/api.js");
@@ -29,14 +17,16 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void ProcessDoesNothing()
+        public void ProcessCallsProcessor()
         {
             var module = new ExternalScriptModule("http://test.com/asset.js");
             var processor = new Mock<IModuleProcessor<ScriptModule>>();
-            module.Processor = processor.Object;
-            module.Process(Mock.Of<ICassetteApplication>());
+            var application = Mock.Of<ICassetteApplication>();
 
-            processor.Verify(p => p.Process(It.IsAny<ScriptModule>(), It.IsAny<ICassetteApplication>()), Times.Never());
+            module.Processor = processor.Object;
+            module.Process(application);
+
+            processor.Verify(p => p.Process(module, application));
         }
 
         [Fact]
@@ -46,14 +36,6 @@ namespace Cassette.Scripts
             var result = (module as IModuleSource<ScriptModule>).GetModules(Mock.Of<IModuleFactory<ScriptModule>>(), Mock.Of<ICassetteApplication>());
 
             result.SequenceEqual(new[] { module }).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void GivenNoFallbackUrl_ThenRenderReturnsTheScriptElement()
-        {
-            var module = new ExternalScriptModule("http://test.com/asset.js");
-            var html = module.Render(Mock.Of<ICassetteApplication>());
-            html.ToHtmlString().ShouldEqual("<script src=\"http://test.com/asset.js\" type=\"text/javascript\"></script>");
         }
 
         [Fact]
