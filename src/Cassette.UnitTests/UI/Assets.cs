@@ -1,4 +1,5 @@
-﻿using Cassette.HtmlTemplates;
+﻿using System;
+using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
@@ -45,5 +46,34 @@ namespace Cassette.UI
             Assets.HtmlTemplates.ShouldEqual(manager.Object);
         }
 
+        [Fact]
+        public void GivenGetApplicationIsNull_WhenGetScripts_ThenThrowInvalidOperationException()
+        {
+            Assets.GetApplication = null;
+            Assert.Throws<InvalidOperationException>(delegate
+            {
+                var _ = Assets.Scripts;
+            });
+        }
+
+        [Fact]
+        public void GivenGetApplicationIsNull_WhenGetStylesheets_ThenThrowInvalidOperationException()
+        {
+            Assets.GetApplication = null;
+            Assert.Throws<InvalidOperationException>(delegate
+            {
+                var _ = Assets.Stylesheets;
+            });
+        }
+
+        [Fact]
+        public void GivenGetApplicationIsNull_WhenGetHtmlTemplates_ThenThrowInvalidOperationException()
+        {
+            Assets.GetApplication = null;
+            Assert.Throws<InvalidOperationException>(delegate
+            {
+                var _ = Assets.HtmlTemplates;
+            });
+        }
     }
 }
