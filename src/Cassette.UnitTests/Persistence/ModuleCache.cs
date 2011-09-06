@@ -1,374 +1,93 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
+﻿using System.IO;
 using Cassette.IO;
-using Cassette.ModuleProcessing;
-using Cassette.Utilities;
+using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
 
-// TODO: Re-implement these test. Disabled for now.
-
 namespace Cassette.Persistence
 {
-    public class ModuleCache_IsUpToDate_Tests
+    public class ModuleCache_Tests
     {
-        public ModuleCache_IsUpToDate_Tests()
-        {
-            sourceFileSystem = new Mock<IFileSystem>();
-            cacheFileSystem = new Mock<IFileSystem>();
-            cache = new ModuleCache<Module>(cacheFileSystem.Object, Mock.Of<IModuleFactory<Module>>());
-
-            // Stub the container XML file content.
-            cacheFileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Open, FileAccess.Read))
-                      .Returns(() => @"<?xml version=""1.0""?>
-<container>
-    <module directory="""" hash=""""/>
-</container>".AsStream());
-        }
-
-        readonly ModuleCache<Module> cache;
-        readonly Mock<IFileSystem> cacheFileSystem;
-        readonly Mock<IFileSystem> sourceFileSystem;
-
         [Fact]
-        public void WhenContainerFileDoesNotExist_ThenIsUpToDateReturnsFalse()
+        public void GivenExternalModuleHasNoFallbackAssets_WhenLoadContainerIfUpToDate_ThenItReturnsTrue()
         {
-            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
-                      .Returns(false);
-            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(false);
-        }
-
-        [Fact]
-        public void WhenContainerFileIsOlder_ThenIsUpToDateReturnsFalse()
-        {
-            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
-                      .Returns(new DateTime(2000, 1, 1));
-            cacheFileSystem.Setup(fs => fs.FileExists("version"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
-                      .Returns("1.0.0.0".AsStream());
-
-            cache.IsUpToDate(new DateTime(2000, 1, 2), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(false);
-        }
-
-        [Fact]
-        public void WhenContainerFileIsNewer_ThenIsUpToDateReturnsTrue()
-        {
-            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
-                      .Returns(new DateTime(2000, 1, 2));
-            cacheFileSystem.Setup(fs => fs.FileExists("version"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
-                      .Returns("1.0.0.0".AsStream());
-
-            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(true);
-        }
-
-        [Fact]
-        public void WhenContainerFileIsSameAge_ThenIsUpToDateReturnsTrue()
-        {
-            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
-                      .Returns(new DateTime(2000, 1, 1));
-            cacheFileSystem.Setup(fs => fs.FileExists("version"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
-                      .Returns("1.0.0.0".AsStream());
-
-            cache.IsUpToDate(new DateTime(2000, 1, 1), "1.0.0.0", sourceFileSystem.Object).ShouldEqual(true);
-        }
-
-        [Fact]
-        public void WhenVersionNotEqual_ThenIsUpToDateReturnsFalse()
-        {
-            cacheFileSystem.Setup(fs => fs.FileExists("version"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.OpenFile("version", FileMode.Open, FileAccess.Read))
-                      .Returns("1.0.0.0".AsStream());
-            cacheFileSystem.Setup(fs => fs.FileExists("container.xml"))
-                      .Returns(true);
-            cacheFileSystem.Setup(fs => fs.GetLastWriteTimeUtc("container.xml"))
-                      .Returns(new DateTime(2000, 1, 1));
-
-            cache.IsUpToDate(new DateTime(2000, 1, 1), "2.0.0.0", sourceFileSystem.Object).ShouldEqual(false);
-        }
-
-        [Fact]
-        public void GivenPreviouslyUsedAssetNoLongerExists_ThenIsUpToDateReturnsFalse()
-        {
-            var cacheDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(cacheDirectory);
-            var sourceDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(sourceDirectory);
-            try
+            using (var sourceDir = new TempDirectory())
+            using (var cacheDir = new TempDirectory())
             {
-                File.WriteAllText(Path.Combine(cacheDirectory, "version"), "1.0");
-                File.WriteAllText(Path.Combine(cacheDirectory, "container.xml"), 
-                    @"<?xml version=""1.0""?>
-<container>
-    <module directory="""" hash="""">
-        <asset filename=""test.js""/>
-    </module>
-</container>");
-                var cache = new ModuleCache<Module>(new FileSystem(cacheDirectory), Mock.Of<IModuleFactory<Module>>());
-                cache.IsUpToDate(DateTime.UtcNow.AddDays(-1), "1.0", new FileSystem(sourceDirectory)).ShouldBeFalse();
-            }
-            finally
-            {
-                Directory.Delete(cacheDirectory, true);
-                Directory.Delete(sourceDirectory);
+                var cache = new ModuleCache<ScriptModule>(new FileSystemDirectory(cacheDir), new ScriptModuleFactory());
+                cache.SaveModuleContainer(new[] { new ExternalScriptModule("test", "http://test.com/") }, "version");
+
+                // Load from cache. New instance of module to simulate real world use.
+                IModuleContainer<ScriptModule> container;
+                var isUpToDate = cache.LoadContainerIfUpToDate(
+                    new[] { new ExternalScriptModule("test", "http://test.com/") },
+                    "version",
+                    new FileSystemDirectory(sourceDir),
+                    out container
+                );
+
+                isUpToDate.ShouldBeTrue();
             }
         }
 
         [Fact]
-        public void GivenRawFileChangedSinceCacheCreated_ThenIsUpToDateReturnsFalse()
+        public void GivenExternalModuleWithFallbackAssets_WhenLoadContainerIfUpToDate_ThenModuleAssetsIsModifiedToContainCachedAsset()
         {
-            var cacheDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(cacheDirectory);
-            var sourceDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(sourceDirectory);
-            try
+            using (var sourceDir = new TempDirectory())
+            using (var cacheDir = new TempDirectory())
             {
-                File.WriteAllText(Path.Combine(cacheDirectory, "version"), "1.0");
-                File.WriteAllText(Path.Combine(cacheDirectory, "container.xml"),
-                    @"<?xml version=""1.0""?>
-<container>
-    <module directory="""" hash="""">
-        <rawFileReference filename=""test.png""/>
-    </module>
-</container>");
-                File.WriteAllText(Path.Combine(sourceDirectory, "test.png"), "");
-                var cache = new ModuleCache<Module>(new FileSystem(cacheDirectory), Mock.Of<IModuleFactory<Module>>());
-                cache.IsUpToDate(DateTime.UtcNow.AddDays(-1), "1.0", new FileSystem(sourceDirectory)).ShouldBeFalse();
-            }
-            finally
-            {
-                Directory.Delete(cacheDirectory, true);
-                Directory.Delete(sourceDirectory, true);
-            }
-        }
-    }
+                WriteCache(cacheDir, sourceDir);
 
-    public class ModuleCache_LoadModuleContainer_Tests
-    {
-        public ModuleCache_LoadModuleContainer_Tests()
-        {
-            var containerXml = new XDocument(new XElement("container",
-                new XAttribute("lastWriteTime", DateTime.UtcNow.Ticks),
-                new XElement("module",
-                    new XAttribute("directory", "module-a"),
-                    new XAttribute("hash", "010203"),
-                    new XElement("asset",
-                        new XAttribute("filename", "asset-1.js")
-                    ),
-                    new XElement("asset",
-                        new XAttribute("filename", "asset-2.js")
-                    ),
-                    new XElement("reference", new XAttribute("path", "~\\module-b"))
-                ),
-                new XElement("module",
-                    new XAttribute("directory", "module-b"),
-                    new XAttribute("hash", "0a0b0c"),
-                    new XElement("asset",
-                        new XAttribute("filename", "asset-3.js")
-                    ),
-                    new XElement("asset",
-                        new XAttribute("filename", "asset-4.js")
-                    )
-                )
-            ));
-            var fileStreams = new Dictionary<string, Stream>
-            {
-                { "container.xml", containerXml.ToString().AsStream() },
-                { "module-a", "module-a".AsStream() },
-                { "module-b", "module-b".AsStream() }
-            };
-            var fileSystem = new StubFileSystem(fileStreams);
+                var externalModule = CreateExternalModuleWithFallbackAssets(sourceDir);
 
-            var moduleFactory = new Mock<IModuleFactory<Module>>();
-            moduleFactory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                         .Returns<string>(path => new Module(path));
+                var cache = new ModuleCache<ScriptModule>(new FileSystemDirectory(cacheDir), new ScriptModuleFactory());
+                IModuleContainer<ScriptModule> container;
+                var isUpToDate = cache.LoadContainerIfUpToDate(new[] { externalModule }, "version", new FileSystemDirectory(sourceDir), out container);
 
-            cache = new ModuleCache<Module>(fileSystem, moduleFactory.Object);
-        }
+                isUpToDate.ShouldBeTrue();
 
-        readonly ModuleCache<Module> cache;
-
-        [Fact]
-        public void LoadModuleContainer_ReturnsModuleContainer()
-        {
-            var modules = cache.LoadModules();
-
-            var moduleA = modules.First(m => m.Path.EndsWith("module-a"));
-            moduleA.Assets.Count.ShouldEqual(1);
-            moduleA.Assets[0].References.Single().ReferencedPath.ShouldEqual("~\\module-b");
-            moduleA.Assets[0].Hash.SequenceEqual(new byte[] { 1, 2, 3 }).ShouldBeTrue();
-            moduleA.ContainsPath("module-a\\asset-1.js");
-            moduleA.ContainsPath("module-a\\asset-2.js");
-            moduleA.ContainsPath("module-a");
-
-            var moduleB = modules.First(m => m.Path.EndsWith("module-b"));
-            moduleB.Assets.Count.ShouldEqual(1);
-            moduleB.Assets[0].Hash.SequenceEqual(new byte[] { 0xa, 0xb, 0xc }).ShouldBeTrue();
-            moduleB.Assets[0].References.Count().ShouldEqual(0);
-            moduleB.ContainsPath("module-b\\asset-3.js");
-            moduleB.ContainsPath("module-b\\asset-4.js");
-            moduleB.ContainsPath("module-b");
-        }
-    }
-
-    public class ModuleCache_SaveModuleContainer_Tests
-    {
-        public ModuleCache_SaveModuleContainer_Tests()
-        {
-            fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(fs => fs.OpenFile(It.IsAny<string>(), FileMode.Create, FileAccess.Write))
-                      .Returns(Stream.Null);
-
-            cache = new ModuleCache<Module>(fileSystem.Object, Mock.Of<IModuleFactory<Module>>());
-        }
-
-        readonly ModuleCache<Module> cache;
-        readonly Mock<IFileSystem> fileSystem;
-
-        [Fact]
-        public void SaveWritesContainerXmlFile()
-        {
-            var module = new Module("~");
-            var asset1 = new Mock<IAsset>();
-            asset1.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            asset1.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            asset1.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            module.Assets.Add(asset1.Object);
-            var container = new ModuleContainer<Module>(new[] { module });
-
-            cache.SaveModuleContainer(container, "1.0.0.0");
-
-            fileSystem.Verify(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write));
-            fileSystem.Verify(fs => fs.OpenFile("version", FileMode.Create, FileAccess.Write));
-            fileSystem.Verify(fs => fs.OpenFile(".module", FileMode.Create, FileAccess.Write));
-        }
-
-        [Fact]
-        public void ModuleHashIsSavedInContainerXml()
-        {
-            var module = new Module("~/test");
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            module.Assets.Add(asset.Object);
-
-            var temp = Path.GetTempFileName();
-            try
-            {
-                fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write))
-                          .Returns(() => File.OpenWrite(temp));
-
-                var container = new ModuleContainer<Module>(new[] { module });
-                cache.SaveModuleContainer(container, "1.0.0.0");
-
-                var xml = File.ReadAllText(temp);
-                xml.ShouldContain("<module directory=\"test\" hash=\"010203\" />");
-            }
-            finally
-            {
-                File.Delete(temp);
+                // Check that the external module's Asset is overwritten with the cached copy.
+                externalModule.Assets.Count.ShouldEqual(1);
+                externalModule.Assets[0].ShouldBeType<CachedAsset>();
             }
         }
 
-        [Fact]
-        public void ModuleReferencesAreSavedInContainerXml()
+        void WriteCache(TempDirectory cacheDir, TempDirectory sourceDir)
         {
-            var moduleA = new Module("~/module-a");
-            var moduleB = new Module("~/module-b");
+            // External module with two source assets.
+            Directory.CreateDirectory(Path.Combine(sourceDir, "test"));
+            File.WriteAllText(Path.Combine(sourceDir, "test", "asset1.js"), "");
+            File.WriteAllText(Path.Combine(sourceDir, "test", "asset2.js"), "");
+            var module = CreateExternalModuleWithFallbackAssets(sourceDir);
 
-            var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.References).Returns(new[] {
-                new AssetReference("~\\module-b", assetA.Object, 0, AssetReferenceType.DifferentModule)
-            });
-            assetA.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            moduleA.Assets.Add(assetA.Object);
+            // Process the module to concatenate the assets.
+            // This is so we can cache the module to disk.
+            var application = new Mock<ICassetteApplication>();
+            application.SetupGet(a => a.IsOutputOptimized).Returns(true);
+            module.Process(application.Object);
 
-            var assetB = new Mock<IAsset>();
-            assetB.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            moduleB.Assets.Add(assetB.Object);
-
-            var temp = Path.GetTempFileName();
-            try
-            {
-                fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write))
-                            .Returns(() => File.OpenWrite(temp));
-
-                var container = new ModuleContainer<Module>(new[] { moduleA, moduleB });
-                cache.SaveModuleContainer(container, "1.0.0.0");
-
-                var xml = File.ReadAllText(temp);
-                xml.ShouldContain("<reference path=\"~\\module-b\" />");
-            }
-            finally
-            {
-                File.Delete(temp);
-            }
+            // Create the cache on disk.
+            var cache = new ModuleCache<ScriptModule>(new FileSystemDirectory(cacheDir), new ScriptModuleFactory());
+            cache.SaveModuleContainer(new[] { module }, "version");
         }
 
-        [Fact]
-        public void DuplicateModuleReferencesAreOnlyWrittenOnce()
+        ExternalScriptModule CreateExternalModuleWithFallbackAssets(TempDirectory sourceDir)
         {
-            var moduleA = new Module("~/module-a");
-            var moduleB = new Module("~/module-b");
-
-            var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.References).Returns(new[] {
-                new AssetReference("~\\module-b\\1.js", assetA.Object, 0, AssetReferenceType.DifferentModule),
-                new AssetReference("~\\module-b\\2.js", assetA.Object, 0, AssetReferenceType.DifferentModule)
-            });
-            assetA.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            moduleA.Assets.Add(assetA.Object);
-
-            var assetB1 = StubAsset("1.js");
-            var assetB2 = StubAsset("2.js");
-            var assetB = new ConcatenatedAsset(new[] { assetB1.Object, assetB2.Object });
-            moduleB.Assets.Add(assetB);
-
-            var temp = Path.GetTempFileName();
-            try
-            {
-                fileSystem.Setup(fs => fs.OpenFile("container.xml", FileMode.Create, FileAccess.Write))
-                          .Returns(() => File.OpenWrite(temp));
-
-                var container = new ModuleContainer<Module>(new[] { moduleA, moduleB });
-                cache.SaveModuleContainer(container, "1.0.0.0");
-
-                var xml = File.ReadAllText(temp);
-                Regex.Matches(xml, Regex.Escape("<reference path=\"~\\module-b\" />")).Count.ShouldEqual(1);
-            }
-            finally
-            {
-                File.Delete(temp);
-            }
-        }
-
-        Mock<IAsset> StubAsset(string filename)
-        {
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.SetupGet(a => a.SourceFilename)
-                 .Returns(filename);
-            asset.Setup(c => c.OpenStream())
-                 .Returns(Stream.Null);
-            return asset;
+            var module = new ExternalScriptModule("~/test", "http://test.com/");
+            var testDir = new FileSystemDirectory(sourceDir).NavigateTo("test", false);
+            var asset1 = new Asset(
+                "~/test/asset1.js",
+                module,
+                new FileSystemFile(Path.Combine(sourceDir, "test", "asset1.js"), testDir)
+            );
+            var asset2 = new Asset(
+                "~/test/asset1.js",
+                module,
+                new FileSystemFile(Path.Combine(sourceDir, "test", "asset2.js"), testDir)
+            );
+            module.AddFallback("", new[] { asset1, asset2 });
+            return module;
         }
     }
 }

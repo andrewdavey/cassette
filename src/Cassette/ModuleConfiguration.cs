@@ -90,9 +90,7 @@ namespace Cassette
         {
             var cache = GetModuleCache<T>();
             IModuleContainer<T> container;
-            var assetCount = modules.SelectMany(m => m.Assets).Count();
-            var externalModules = modules.Where(m => m is IModuleSource<T>);
-            if (cache.LoadContainerIfUpToDate(externalModules, assetCount, applicationVersion, application.RootDirectory, out container))
+            if (cache.LoadContainerIfUpToDate(modules, applicationVersion, application.RootDirectory, out container))
             {
                 return container;
             }

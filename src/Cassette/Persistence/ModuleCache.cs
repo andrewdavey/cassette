@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Cassette.IO;
+using Cassette.Utilities;
 
 namespace Cassette.Persistence
 {
@@ -25,14 +26,19 @@ namespace Cassette.Persistence
         const string ContainerFilename = "container.xml";
         const string VersionFilename = "version";
 
-        public bool LoadContainerIfUpToDate(IEnumerable<T> externalModules, int expectedAssetCount, string version, IDirectory sourceFileSystem, out IModuleContainer<T> container)
+        public bool LoadContainerIfUpToDate(IEnumerable<T> unprocessedSourceModules, string version, IDirectory sourceFileSystem, out IModuleContainer<T> container)
         {
             container = null;
             if (!containerFile.Exists) return false;
             if (!versionFile.Exists) return false;
             if (!IsSameVersion(version)) return false;
 
-            var modules = LoadModules().Concat(externalModules);
+            var expectedAssetCount = unprocessedSourceModules.SelectMany(m => m.Assets).Count();
+            var externalModules = unprocessedSourceModules.Where(m => m is IExternalModule);
+
+            var modules = LoadModules(externalModules);
+            if (modules == null) return false;
+
             var cachedContainer = new CachedModuleContainer<T>(modules);
             if (cachedContainer.IsUpToDate(expectedAssetCount, containerFile.LastWriteTimeUtc, sourceFileSystem))
             {
@@ -51,11 +57,45 @@ namespace Cassette.Persistence
             }
         }
 
-        IEnumerable<T> LoadModules()
+        IEnumerable<T> LoadModules(IEnumerable<T> externalModules)
         {
             var containerElement = LoadContainerElement();
+
+            foreach (var externalModule in externalModules)
+            {
+                if (TryAssignCachedAssetToExternalModule(externalModule, containerElement) == false)
+                {
+                    return null;
+                }
+            }
+
             var reader = new ModuleManifestReader<T>(cacheDirectory, moduleFactory);
-            return reader.CreateModules(containerElement);
+            return reader.CreateModules(containerElement).Concat(externalModules);
+        }
+
+        bool TryAssignCachedAssetToExternalModule(T externalModule, XElement containerElement)
+        {
+            if (externalModule.Assets.Count == 0) return true;
+
+            var hash = Enumerable.FirstOrDefault(
+                from e in containerElement.Elements("ExternalModule")
+                let pathAttribute = e.Attribute("Path")
+                where pathAttribute != null && pathAttribute.Value == externalModule.Path
+                let hashAttribute = e.Attribute("Hash")
+                where hashAttribute != null
+                select ByteArrayExtensions.FromHexString(hashAttribute.Value)
+            );
+
+            if (hash == null) return false;
+
+            var filename = ModuleAssetCacheFilename(externalModule);
+            var file = cacheDirectory.GetFile(filename);
+            if (file.Exists == false) return false;
+
+            var cachedAsset = new CachedAsset(file, hash, externalModule.Assets.ToArray());
+            externalModule.Assets.Clear();
+            externalModule.Assets.Add(cachedAsset);
+            return true;
         }
 
         public IModuleContainer<T> SaveModuleContainer(IEnumerable<T> modules, string version)
@@ -123,9 +163,10 @@ namespace Cassette.Persistence
 
         internal static string ModuleAssetCacheFilename(Module module)
         {
-            return module.Path.Replace(Path.DirectorySeparatorChar, '`')
-                       .Replace(Path.AltDirectorySeparatorChar, '`') 
-                 + ".module";
+            return module.Path
+                .Replace(Path.DirectorySeparatorChar, '`')
+                .Replace(Path.AltDirectorySeparatorChar, '`')
+                + ".module";
         }
     }
 }

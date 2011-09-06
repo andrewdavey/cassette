@@ -6,7 +6,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptModule : ScriptModule, IModuleSource<ScriptModule>
+    public class ExternalScriptModule : ScriptModule, IModuleSource<ScriptModule>, IExternalModule
     {
         public ExternalScriptModule(string url)
             : this(url, url)
@@ -59,10 +59,14 @@ namespace Cassette.Scripts
 
         public override IEnumerable<XElement> CreateCacheManifest()
         {
-            // TODO: When fallback assets exist then cache as a regular module.
-
-            // External modules do not require caching.
-            yield break;
+            if (Assets.Count == 1)
+            {
+                yield return new XElement(
+                    "ExternalModule",
+                    new XAttribute("Path", Path),
+                    new XAttribute("Hash", Assets[0].Hash.ToHexString())
+                );
+            }
         }
 
         public override void Process(ICassetteApplication application)

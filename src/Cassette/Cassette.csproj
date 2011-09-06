@@ -62,6 +62,7 @@
     <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
+    <Compile Include="IExternalModule.cs" />
     <Compile Include="IModuleHtmlRenderer.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\IFile.cs" />

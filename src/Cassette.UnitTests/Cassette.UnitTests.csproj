@@ -71,9 +71,11 @@
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
     <Compile Include="ModuleSourceTestBase.cs" />
     <Compile Include="PerFileModuleSource.cs" />
+    <Compile Include="Persistence\ModuleCache.cs" />
+    <Compile Include="Persistence\TempDirectory.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <None Include="Persistence\ModuleCache.cs" />
+    <None Include="Persistence\_ModuleCache.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="ModuleProcessing\CompileAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />

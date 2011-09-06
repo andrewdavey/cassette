@@ -5,7 +5,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class ExternalStylesheetModule : StylesheetModule, IModuleSource<StylesheetModule>
+    public class ExternalStylesheetModule : StylesheetModule, IModuleSource<StylesheetModule>, IExternalModule
     {
         public ExternalStylesheetModule(string url)
             : base(url)
