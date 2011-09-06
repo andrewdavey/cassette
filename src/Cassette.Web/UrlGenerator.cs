@@ -88,6 +88,13 @@ namespace Cassette.Web
 
         string ConventionalModulePathName(Type moduleType)
         {
+            // ExternalScriptModule subclasses ScriptModule, but we want the name to still be "scripts"
+            // So walk up the inheritance chain until we get to something that directly inherits from Module.
+            while (moduleType.BaseType != typeof(Module))
+            {
+                moduleType = moduleType.BaseType;
+            }
+
             var name = moduleType.Name;
             name = name.Substring(0, name.Length - "Module".Length);
             return name.ToLowerInvariant() + "s";
