@@ -11,17 +11,19 @@ namespace Cassette
 {
     public class ModuleConfiguration
     {
-        public ModuleConfiguration(ICassetteApplication application, IDirectory cacheDirectory, Dictionary<Type, object> moduleFactories)
+        public ModuleConfiguration(ICassetteApplication application, IDirectory cacheDirectory, Dictionary<Type, object> moduleFactories, string version)
         {
             this.application = application;
             this.cacheDirectory = cacheDirectory;
             this.moduleFactories = moduleFactories;
+            this.version = version;
         }
 
         readonly ICassetteApplication application;
         readonly Dictionary<Type, Tuple<object, CreateModuleContainer>> moduleSourceResultsByType = new Dictionary<Type, Tuple<object, CreateModuleContainer>>();
         readonly IDirectory cacheDirectory;
         readonly Dictionary<Type, object> moduleFactories;
+        readonly string version;
         readonly Dictionary<Type, List<Action<object>>> customizations = new Dictionary<Type, List<Action<object>>>();
 
         public void Add<T>(params IModuleSource<T>[] moduleSources)
@@ -90,14 +92,14 @@ namespace Cassette
         {
             var cache = GetModuleCache<T>();
             IModuleContainer<T> container;
-            if (cache.LoadContainerIfUpToDate(modules, applicationVersion, application.RootDirectory, out container))
+            if (cache.LoadContainerIfUpToDate(modules, out container))
             {
                 return container;
             }
             else
             {
                 container = CreateModuleContainer(modules);
-                return cache.SaveModuleContainer(container.Modules, applicationVersion);
+                return cache.SaveModuleContainer(container.Modules);
             }
         }
 
@@ -164,8 +166,8 @@ namespace Cassette
             where T : Module
         {
             return new ModuleCache<T>(
-                cacheDirectory.NavigateTo(typeof(T).Name, true),
-                GetModuleFactory<T>()
+                version,
+                cacheDirectory.NavigateTo(typeof(T).Name, true)
             );
         }
 

@@ -75,7 +75,6 @@
     <Compile Include="Persistence\TempDirectory.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <None Include="Persistence\_ModuleCache.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="ModuleProcessing\CompileAsset.cs" />
     <Compile Include="ModuleProcessing\ConcatenateAssets.cs" />

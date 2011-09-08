@@ -31,7 +31,8 @@ namespace Cassette
             var config = new ModuleConfiguration(
                 Mock.Of<ICassetteApplication>(),
                 Mock.Of<IDirectory>(),
-                moduleFactories
+                moduleFactories, 
+                ""
             );
             config.Add(moduleSource.Object);
 

@@ -99,7 +99,7 @@ namespace Cassette
 
         Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IDirectory cacheDirectory, string version)
         {
-            var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, moduleFactories);
+            var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, moduleFactories, version);
             config.Configure(moduleConfiguration, this);
             AddDefaultModuleSourcesIfEmpty(moduleConfiguration);
             return moduleConfiguration.CreateModuleContainers(isOutputOptimized, version);

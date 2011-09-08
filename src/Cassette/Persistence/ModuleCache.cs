@@ -11,98 +11,136 @@ namespace Cassette.Persistence
     public class ModuleCache<T> : IModuleCache<T>
         where T : Module
     {
-        public ModuleCache(IDirectory cacheDirectory, IModuleFactory<T> moduleFactory)
+        public ModuleCache(string version, IDirectory cacheDirectory)
         {
+            this.version = version;
             this.cacheDirectory = cacheDirectory;
-            this.moduleFactory = moduleFactory;
             containerFile = cacheDirectory.GetFile(ContainerFilename);
-            versionFile = cacheDirectory.GetFile(VersionFilename);
         }
 
-        readonly IDirectory cacheDirectory;
-        readonly IModuleFactory<T> moduleFactory;
-        readonly IFile containerFile;
-        readonly IFile versionFile;
         const string ContainerFilename = "container.xml";
-        const string VersionFilename = "version";
 
-        public bool LoadContainerIfUpToDate(IEnumerable<T> unprocessedSourceModules, string version, IDirectory sourceFileSystem, out IModuleContainer<T> container)
+        readonly string version;
+        readonly IDirectory cacheDirectory;
+        readonly IFile containerFile;
+
+        public bool LoadContainerIfUpToDate(IEnumerable<T> unprocessedSourceModules, out IModuleContainer<T> container)
         {
             container = null;
+
             if (!containerFile.Exists) return false;
-            if (!versionFile.Exists) return false;
-            if (!IsSameVersion(version)) return false;
 
-            var expectedAssetCount = unprocessedSourceModules.SelectMany(m => m.Assets).Count();
-            var externalModules = unprocessedSourceModules.Where(m => m is IExternalModule);
+            if (!CacheFileIsOlderThanAssets(unprocessedSourceModules)) return false;
 
-            var modules = LoadModules(externalModules);
-            if (modules == null) return false;
+            var containerXml = LoadContainerElement();
 
-            var cachedContainer = new CachedModuleContainer<T>(modules);
-            if (cachedContainer.IsUpToDate(expectedAssetCount, containerFile.LastWriteTimeUtc, sourceFileSystem))
+            if (!IsSameVersion(containerXml)) return false;
+
+            if (!IsSameAssetCount(unprocessedSourceModules, containerXml)) return false;
+
+            var assignCachedAssets = (
+                from module in unprocessedSourceModules
+                select CreateCachedAsset(module, containerXml)
+            ).ToArray();
+
+            if (assignCachedAssets.Any(c => c == null)) return false;
+
+            foreach (var assignCachedAsset in assignCachedAssets)
             {
-                container = cachedContainer;
-                return true;
-            }
-            
-            return false;
-        }
-
-        bool IsSameVersion(string version)
-        {
-            using (var reader = new StreamReader(versionFile.Open(FileMode.Open, FileAccess.Read)))
-            {
-                return reader.ReadLine() == version;
-            }
-        }
-
-        IEnumerable<T> LoadModules(IEnumerable<T> externalModules)
-        {
-            var containerElement = LoadContainerElement();
-
-            foreach (var externalModule in externalModules)
-            {
-                if (TryAssignCachedAssetToExternalModule(externalModule, containerElement) == false)
-                {
-                    return null;
-                }
+                assignCachedAsset();
             }
 
-            var reader = new ModuleManifestReader<T>(cacheDirectory, moduleFactory);
-            return reader.CreateModules(containerElement).Concat(externalModules);
-        }
-
-        bool TryAssignCachedAssetToExternalModule(T externalModule, XElement containerElement)
-        {
-            if (externalModule.Assets.Count == 0) return true;
-
-            var hash = Enumerable.FirstOrDefault(
-                from e in containerElement.Elements("ExternalModule")
-                let pathAttribute = e.Attribute("Path")
-                where pathAttribute != null && pathAttribute.Value == externalModule.Path
-                let hashAttribute = e.Attribute("Hash")
-                where hashAttribute != null
-                select ByteArrayExtensions.FromHexString(hashAttribute.Value)
-            );
-
-            if (hash == null) return false;
-
-            var filename = ModuleAssetCacheFilename(externalModule);
-            var file = cacheDirectory.GetFile(filename);
-            if (file.Exists == false) return false;
-
-            var cachedAsset = new CachedAsset(file, hash, externalModule.Assets.ToArray());
-            externalModule.Assets.Clear();
-            externalModule.Assets.Add(cachedAsset);
+            container = new ModuleContainer<T>(unprocessedSourceModules);
             return true;
         }
 
-        public IModuleContainer<T> SaveModuleContainer(IEnumerable<T> modules, string version)
+        bool CacheFileIsOlderThanAssets(IEnumerable<T> unprocessedSourceModules)
+        {
+            var finder = new AssetLastWriteTimeFinder();
+            finder.Visit(unprocessedSourceModules);
+            return containerFile.LastWriteTimeUtc >= finder.MaxLastWriteTimeUtc;
+        }
+
+        bool IsSameVersion(XElement containerXml)
+        {
+            var versionAttribute = containerXml.Attribute("Version");
+            if (versionAttribute == null) return false;
+
+            return versionAttribute.Value == version;
+        }
+
+        bool IsSameAssetCount(IEnumerable<T> unprocessedSourceModules, XElement containerXml)
+        {
+            var assetCountAttribute = containerXml.Attribute("AssetCount");
+            if (assetCountAttribute == null) return false;
+            
+            int assetCount;
+            if (int.TryParse(assetCountAttribute.Value, out assetCount) == false) return false;
+            
+            var assetCounter = new AssetCounter();
+            assetCounter.Visit(unprocessedSourceModules);
+
+            return assetCount == assetCounter.Count;
+        }
+
+        Action CreateCachedAsset(T module, XElement containerElement)
+        {
+            var moduleElement = GetModuleElement(module, containerElement);
+            if (moduleElement == null) return null;
+
+            var hash = GetHash(moduleElement);
+            if (hash == null) return null;
+
+            var filename = ModuleAssetCacheFilename(module);
+            var file = cacheDirectory.GetFile(filename);
+            if (module.Assets.Count > 0 && !file.Exists) return null;
+
+            var references = GetModuleReferences(moduleElement);
+
+            var childAssets = module.Assets.ToArray();
+            return () =>
+            {
+                if (module.Assets.Count > 0)
+                {
+                    module.Assets.Clear();
+                    module.Assets.Add(new CachedAsset(file, hash, childAssets));
+                }
+                module.AddReferences(references);
+            };
+        }
+
+        string[] GetModuleReferences(XElement moduleElement)
+        {
+            return (
+                from e in moduleElement.Elements("Reference")
+                let pathAttribute = e.Attribute("Path")
+                where pathAttribute != null
+                select pathAttribute.Value
+            ).ToArray();
+        }
+
+        XElement GetModuleElement(T module, XElement containerElement)
+        {
+            return (
+                from e in containerElement.Elements("Module")
+                let pathAttribute = e.Attribute("Path")
+                where pathAttribute != null
+                   && pathAttribute.Value == module.Path
+                select e
+            ).FirstOrDefault();
+        }
+
+        byte[] GetHash(XElement moduleElement)
+        {
+            var attribute = moduleElement.Attribute("Hash");
+            if (attribute == null) return null;
+            return ByteArrayExtensions.FromHexString(attribute.Value);
+        }
+
+        public IModuleContainer<T> SaveModuleContainer(IEnumerable<T> modules)
         {
             cacheDirectory.DeleteAll();
             SaveContainerXml(modules);
-            SaveVersion(version);
             foreach (var module in modules)
             {
                 SaveModule(module);
@@ -122,20 +160,13 @@ namespace Cassette.Persistence
         {
             var xml = new XDocument(
                 new XElement("container",
+                    new XAttribute("version", version),
                     modules.SelectMany(module => module.CreateCacheManifest())
                 )
             );
             using (var fileStream = containerFile.Open(FileMode.Create, FileAccess.Write))
             {
                 xml.Save(fileStream);
-            }
-        }
-
-        void SaveVersion(string version)
-        {
-            using (var writer = new StreamWriter(versionFile.Open(FileMode.Create, FileAccess.Write)))
-            {
-                writer.Write(version);
             }
         }
 
@@ -163,10 +194,68 @@ namespace Cassette.Persistence
 
         internal static string ModuleAssetCacheFilename(Module module)
         {
-            return module.Path
+            return module.Path.Substring(2) // Remove the "~/" prefix
                 .Replace(Path.DirectorySeparatorChar, '`')
                 .Replace(Path.AltDirectorySeparatorChar, '`')
                 + ".module";
+        }
+    }
+
+    class AssetLastWriteTimeFinder : IAssetVisitor
+    {
+        DateTime max;
+
+        public DateTime MaxLastWriteTimeUtc
+        {
+            get { return max; }
+        }
+
+        public void Visit(Module module)
+        {
+        }
+
+        public void Visit(IAsset asset)
+        {
+            var lastWriteTimeUtc = asset.SourceFile.LastWriteTimeUtc;
+            if (lastWriteTimeUtc > MaxLastWriteTimeUtc)
+            {
+                max = lastWriteTimeUtc;
+            }
+        }
+
+        public void Visit(IEnumerable<Module> unprocessedSourceModules)
+        {
+            foreach (var module in unprocessedSourceModules)
+            {
+                module.Accept(this);
+            }
+        }
+    }
+
+    class AssetCounter : IAssetVisitor
+    {
+        int count;
+
+        public int Count
+        {
+            get { return count; }
+        }
+
+        public void Visit(Module module)
+        {
+        }
+
+        public void Visit(IAsset asset)
+        {
+            count = Count + 1;
+        }
+
+        public void Visit(IEnumerable<Module> unprocessedSourceModules)
+        {
+            foreach (var module in unprocessedSourceModules)
+            {
+                module.Accept(this);
+            }
         }
     }
 }

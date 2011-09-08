@@ -25,6 +25,8 @@ namespace Cassette
             this.applicationRelativeFilename = PathUtilities.NormalizePath(applicationRelativeFilename);
             this.parentModule = parentModule;
             this.file = file;
+
+            // TODO: Compute hash lazily to avoid IO when actually loading cached asset instead.
             hash = HashFileContents();
         }
 

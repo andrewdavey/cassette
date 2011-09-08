@@ -31,7 +31,7 @@ namespace Cassette
         IList<IAsset> assets = new List<IAsset>();
         bool hasSortedAssets;
         readonly HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
-        readonly List<string> references = new List<string>();
+        readonly HashSet<string> references = new HashSet<string>();
 
         public string Path
         {
@@ -82,7 +82,10 @@ namespace Cassette
 
         public void AddReferences(IEnumerable<string> references)
         {
-            this.references.AddRange(references.Select(ConvertReferenceToAppRelative));
+            foreach (var reference in references)
+            {
+                this.references.Add(ConvertReferenceToAppRelative(reference));
+            }
         }
 
         string ConvertReferenceToAppRelative(string reference)
