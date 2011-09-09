@@ -16,6 +16,8 @@ namespace Cassette.Scripts
 # reference ""another1.js""
 # reference 'another2.coffee'
 # reference ""/another3.coffee""
+# <reference path=""another4.coffee""/>
+# <reference path='another5.coffee'/>
 
 class Foo
 ";
@@ -30,6 +32,8 @@ class Foo
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.coffee", 3));
             asset.Verify(a => a.AddReference("/another3.coffee", 4));
+            asset.Verify(a => a.AddReference("another4.coffee", 5));
+            asset.Verify(a => a.AddReference("another5.coffee", 6));
         }
     }
 }
