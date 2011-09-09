@@ -71,15 +71,10 @@ namespace Cassette.Persistence
 
             if (files.Length == 0) return true;
 
-            if (files.All(f => f.Exists))
-            {
-                var maxLastWriteTimeUtc = files.Select(f => f.LastWriteTimeUtc).Max();
-                return maxLastWriteTimeUtc <= containerFile.LastWriteTimeUtc;
-            }
-            else
-            {
-                return false;
-            }
+            if (files.Any(f => !f.Exists)) return false;
+
+            var maxLastWriteTimeUtc = files.Select(f => f.LastWriteTimeUtc).Max();
+            return maxLastWriteTimeUtc <= containerFile.LastWriteTimeUtc;
         }
 
         bool CacheFileIsOlderThanAssets(IEnumerable<T> unprocessedSourceModules)
