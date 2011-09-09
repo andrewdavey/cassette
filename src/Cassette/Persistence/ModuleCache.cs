@@ -30,24 +30,22 @@ namespace Cassette.Persistence
         {
             if (!containerFile.Exists) return false;
 
-            if (!CacheFileIsOlderThanAssets(unprocessedSourceModules)) return false;
+            var modules = unprocessedSourceModules.ToArray();
+            if (CacheFileIsOlderThanAnyAsset(modules)) return false;
 
             var containerXml = LoadContainerElement();
-
             if (!IsSameVersion(containerXml)) return false;
+            if (!IsSameAssetCount(modules, containerXml)) return false;
+            if (!FilesAreUpToDate(containerXml)) return false;
 
-            if (!IsSameAssetCount(unprocessedSourceModules, containerXml)) return false;
-
-            if (!FilesAreUpToDate(unprocessedSourceModules, containerXml)) return false;
-
-            var assignCachedAssets = (
-                from module in unprocessedSourceModules
+            var moduleInitializationActions = (
+                from module in modules
                 select CreateModuleInitializationAction(module, containerXml)
             ).ToArray();
 
-            if (assignCachedAssets.Any(c => c == null)) return false;
+            if (moduleInitializationActions.Any(c => c == null)) return false;
 
-            foreach (var assignCachedAsset in assignCachedAssets)
+            foreach (var assignCachedAsset in moduleInitializationActions)
             {
                 assignCachedAsset();
             }
@@ -55,7 +53,7 @@ namespace Cassette.Persistence
             return true;
         }
 
-        bool FilesAreUpToDate(IEnumerable<T> modules, XElement containerXml)
+        bool FilesAreUpToDate(XElement containerXml)
         {
             var filePaths = (
                 from e in containerXml.Descendants("File")
@@ -77,11 +75,11 @@ namespace Cassette.Persistence
             return maxLastWriteTimeUtc <= containerFile.LastWriteTimeUtc;
         }
 
-        bool CacheFileIsOlderThanAssets(IEnumerable<T> unprocessedSourceModules)
+        bool CacheFileIsOlderThanAnyAsset(IEnumerable<T> unprocessedSourceModules)
         {
             var finder = new AssetLastWriteTimeFinder();
             finder.Visit(unprocessedSourceModules);
-            return containerFile.LastWriteTimeUtc >= finder.MaxLastWriteTimeUtc;
+            return containerFile.LastWriteTimeUtc < finder.MaxLastWriteTimeUtc;
         }
 
         bool IsSameVersion(XElement containerXml)
@@ -118,7 +116,7 @@ namespace Cassette.Persistence
             var file = cacheDirectory.GetFile(filename);
             if (module.Assets.Count > 0 && !file.Exists) return null;
 
-            var references = GetModuleReferences(moduleElement);
+            var references = GetModuleReferences(moduleElement).ToArray();
 
             var childAssets = module.Assets.ToArray();
             return () =>
@@ -132,14 +130,12 @@ namespace Cassette.Persistence
             };
         }
 
-        string[] GetModuleReferences(XElement moduleElement)
+        IEnumerable<string> GetModuleReferences(XElement moduleElement)
         {
-            return (
-                from e in moduleElement.Elements("Reference")
-                let pathAttribute = e.Attribute("Path")
-                where pathAttribute != null
-                select pathAttribute.Value
-            ).ToArray();
+            return from e in moduleElement.Elements("Reference")
+                   let pathAttribute = e.Attribute("Path")
+                   where pathAttribute != null
+                   select pathAttribute.Value;
         }
 
         XElement GetModuleElement(T module, XElement containerElement)
@@ -265,64 +261,6 @@ namespace Cassette.Persistence
                 .Replace(Path.DirectorySeparatorChar, '`')
                 .Replace(Path.AltDirectorySeparatorChar, '`')
                 + ".module";
-        }
-    }
-
-    class AssetLastWriteTimeFinder : IAssetVisitor
-    {
-        DateTime max;
-
-        public DateTime MaxLastWriteTimeUtc
-        {
-            get { return max; }
-        }
-
-        public void Visit(Module module)
-        {
-        }
-
-        public void Visit(IAsset asset)
-        {
-            var lastWriteTimeUtc = asset.SourceFile.LastWriteTimeUtc;
-            if (lastWriteTimeUtc > MaxLastWriteTimeUtc)
-            {
-                max = lastWriteTimeUtc;
-            }
-        }
-
-        public void Visit(IEnumerable<Module> unprocessedSourceModules)
-        {
-            foreach (var module in unprocessedSourceModules)
-            {
-                module.Accept(this);
-            }
-        }
-    }
-
-    class AssetCounter : IAssetVisitor
-    {
-        int count;
-
-        public int Count
-        {
-            get { return count; }
-        }
-
-        public void Visit(Module module)
-        {
-        }
-
-        public void Visit(IAsset asset)
-        {
-            count = Count + 1;
-        }
-
-        public void Visit(IEnumerable<Module> unprocessedSourceModules)
-        {
-            foreach (var module in unprocessedSourceModules)
-            {
-                module.Accept(this);
-            }
         }
     }
 }
