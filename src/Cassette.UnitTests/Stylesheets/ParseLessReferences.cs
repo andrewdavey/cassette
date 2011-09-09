@@ -16,10 +16,6 @@ namespace Cassette.Stylesheets
 // @reference ""another1.less"";
 // @reference '/another2.less';
 // @reference '../test/another3.less';
-
-#foo {}
-// References are only allowed at the top of the file. Ignore others...
-// @reference ""ignored.less"";
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(lessSource.AsStream());
@@ -32,7 +28,6 @@ namespace Cassette.Stylesheets
             asset.Verify(a => a.AddReference("another1.less", 2));
             asset.Verify(a => a.AddReference("/another2.less", 3));
             asset.Verify(a => a.AddReference("../test/another3.less", 4));
-            asset.Verify(a => a.AddReference("ignored.less", It.IsAny<int>()), Times.Never());
         }
     }
 }
