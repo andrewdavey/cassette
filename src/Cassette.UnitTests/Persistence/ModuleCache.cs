@@ -2,13 +2,14 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Cassette.IO;
 using Cassette.ModuleProcessing;
 using Cassette.Scripts;
+using Cassette.Utilities;
+using Moq;
 using Should;
 using Xunit;
-using Moq;
-using System.Threading;
 
 namespace Cassette.Persistence
 {
@@ -59,6 +60,22 @@ namespace Cassette.Persistence
 
                 var xml = File.ReadAllText(Path.Combine(cacheDir, "container.xml"));
                 xml.ShouldContain("<Module Path=\"~/test\"");
+            }
+        }
+
+        [Fact]
+        public void GivenModuleWithReference_WhenSaveContainer_ThenXmlHasReferenceElement()
+        {
+            using (var cacheDir = new TempDirectory())
+            {
+                var cache = new ModuleCache<Module>("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
+                var module = new Module("~/test");
+                module.AddReferences(new[] { "~/other" });
+                
+                cache.SaveModuleContainer(new ModuleContainer<Module>(new[] { module, new Module("~/other")  }));
+
+                var xml = File.ReadAllText(Path.Combine(cacheDir, "container.xml"));
+                xml.ShouldContain("<Reference Path=\"~/other\"");
             }
         }
 
@@ -121,8 +138,13 @@ namespace Cassette.Persistence
                       .Returns(new[] { reference1, reference2 });
                 module1.Assets.Add(asset1.Object);
 
-                module2.Assets.Add(StubAsset("~/module-2/asset2.js").Object);
-                module2.Assets.Add(StubAsset("~/module-2/asset3.js").Object);
+                module2.Assets.Add(
+                    new ConcatenatedAsset(new[]
+                    {
+                        StubAsset("~/module-2/asset2.js").Object, 
+                        StubAsset("~/module-2/asset3.js").Object
+                    })
+                );
 
                 cache.SaveModuleContainer(new ModuleContainer<Module>(new[] { module1, module2 }));
 
@@ -143,8 +165,11 @@ namespace Cassette.Persistence
                 var reference = new AssetReference("~/module-1/asset2.js", asset1.Object, -1, AssetReferenceType.SameModule);
                 asset1.SetupGet(a => a.References)
                       .Returns(new[] { reference });
-                module.Assets.Add(asset1.Object);
-                module.Assets.Add(asset2.Object);
+                module.Assets.Add(new ConcatenatedAsset(new[]
+                {
+                    asset1.Object,
+                    asset2.Object
+                }));
 
                 cache.SaveModuleContainer(new ModuleContainer<Module>(new[] { module }));
 
@@ -191,6 +216,55 @@ namespace Cassette.Persistence
                 var xml = File.ReadAllText(Path.Combine(cacheDir, "container.xml"));
                 xml.ShouldContain("<File Path=\"~/images/test.png\" />");
             }                
+        }
+
+        [Fact]
+        public void GivenModuleWithAsset_WhenSaveContainer_ThenModuleFileSavedWithContentsOfAsset()
+        {
+            using (var cacheDir = new TempDirectory())
+            {
+                var cache = new ModuleCache<Module>("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
+                var module = new Module("~/test");
+                var asset = StubAsset();
+                asset.Setup(a => a.OpenStream())
+                     .Returns(() => "ASSET-DATA".AsStream());
+                module.Assets.Add(asset.Object);
+
+                cache.SaveModuleContainer(new ModuleContainer<Module>(new[] { module }));
+
+                var savedData = File.ReadAllText(Path.Combine(cacheDir, "test.module"));
+                savedData.ShouldEqual("ASSET-DATA");
+            }
+        }
+
+        [Fact]
+        public void GivenModuleWithNoAssets_WhenSaveContainer_ThenNoModuleFileCreated()
+        {
+            using (var cacheDir = new TempDirectory())
+            {
+                var cache = new ModuleCache<Module>("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
+                var module = new Module("~/test");
+
+                cache.SaveModuleContainer(new ModuleContainer<Module>(new[] { module }));
+
+                File.Exists(Path.Combine(cacheDir, "test.module")).ShouldBeFalse();
+            }
+        }
+
+        [Fact]
+        public void GivenModuleWithTwoAssets_WhenSaveContainer_ThenExceptionThrownBecauseAssetsMustBeConcatenatedBeforeCaching()
+        {
+            using (var cacheDir = new TempDirectory())
+            {
+                var cache = new ModuleCache<Module>("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
+                var module = new Module("~/test");
+                module.Assets.Add(StubAsset().Object);
+                module.Assets.Add(StubAsset().Object);
+
+                Assert.Throws<InvalidOperationException>(
+                    () => cache.SaveModuleContainer(new ModuleContainer<Module>(new[] { module }))
+                );
+            }
         }
 
         Mock<IAsset> StubAsset(string path = null)
@@ -331,7 +405,7 @@ namespace Cassette.Persistence
                 var result = cache.InitializeModulesFromCacheIfUpToDate(sourceModules);
 
                 result.ShouldBeTrue();
-                moduleWithAsset.Assets[0].ShouldBeType<CachedAsset>();
+                moduleWithAsset.Assets[0].OpenStream().ReadToEnd().ShouldEqual("asset");
             }
         }
 

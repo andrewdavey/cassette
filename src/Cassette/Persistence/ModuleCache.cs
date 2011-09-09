@@ -42,7 +42,7 @@ namespace Cassette.Persistence
 
             var assignCachedAssets = (
                 from module in unprocessedSourceModules
-                select CreateCachedAsset(module, containerXml)
+                select CreateModuleInitializationAction(module, containerXml)
             ).ToArray();
 
             if (assignCachedAssets.Any(c => c == null)) return false;
@@ -106,7 +106,7 @@ namespace Cassette.Persistence
             return assetCount == assetCounter.Count;
         }
 
-        Action CreateCachedAsset(T module, XElement containerElement)
+        Action CreateModuleInitializationAction(T module, XElement containerElement)
         {
             var moduleElement = GetModuleElement(module, containerElement);
             if (moduleElement == null) return null;
@@ -164,6 +164,10 @@ namespace Cassette.Persistence
         {
             cacheDirectory.DeleteAll();
             SaveContainerXml(moduleContainer);
+            foreach (var module in moduleContainer.Modules)
+            {
+                SaveModule(module);
+            }
         }
 
         XElement LoadContainerElement()
@@ -196,13 +200,18 @@ namespace Cassette.Persistence
 
         XElement CreateModuleElement(T module, IModuleContainer<T> moduleContainer)
         {
-            var references = (
-                from asset in module.Assets
-                from r in asset.References
-                where r.Type == AssetReferenceType.DifferentModule || r.Type == AssetReferenceType.Url
-                select moduleContainer.FindModuleContainingPath(r.Path).Path
-            ).Distinct();
+            var referenceElements = CreateReferenceElements(module, moduleContainer);
+            var fileElements = CreateFileElements(module);
+            return new XElement(
+                "Module",
+                new XAttribute("Path", module.Path),
+                referenceElements,
+                fileElements
+            );
+        }
 
+        IEnumerable<XElement> CreateFileElements(T module)
+        {
             var fileReferences = (
                 from asset in module.Assets
                 from r in asset.References
@@ -210,16 +219,22 @@ namespace Cassette.Persistence
                 select r.Path
             ).Distinct();
 
-            return new XElement(
-                "Module",
-                new XAttribute("Path", module.Path),
+            return from file in fileReferences
+                   select new XElement("File", new XAttribute("Path", file));
+        }
 
-                from reference in references
-                select new XElement("Reference", new XAttribute("Path", reference)),
+        IEnumerable<XElement> CreateReferenceElements(T module, IModuleContainer<T> moduleContainer)
+        {
+            var references = (
+                from asset in module.Assets
+                from r in asset.References
+                where r.Type == AssetReferenceType.DifferentModule || r.Type == AssetReferenceType.Url
+                select moduleContainer.FindModuleContainingPath(r.Path).Path
+            ).Concat(module.References)
+             .Distinct();
 
-                from file in fileReferences
-                select new XElement("File", new XAttribute("Path", file))
-            );
+            return from reference in references
+                   select new XElement("Reference", new XAttribute("Path", reference));
         }
 
         void SaveModule(T module)
