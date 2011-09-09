@@ -69,6 +69,8 @@ namespace Cassette.Persistence
                 .Select(sourceDirectory.GetFile)
                 .ToArray();
 
+            if (files.Length == 0) return true;
+
             if (files.All(f => f.Exists))
             {
                 var maxLastWriteTimeUtc = files.Select(f => f.LastWriteTimeUtc).Max();
