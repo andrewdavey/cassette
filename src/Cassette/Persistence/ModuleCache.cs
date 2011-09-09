@@ -11,10 +11,11 @@ namespace Cassette.Persistence
     public class ModuleCache<T> : IModuleCache<T>
         where T : Module
     {
-        public ModuleCache(string version, IDirectory cacheDirectory)
+        public ModuleCache(string version, IDirectory cacheDirectory, IDirectory sourceDirectory)
         {
             this.version = version;
             this.cacheDirectory = cacheDirectory;
+            this.sourceDirectory = sourceDirectory;
             containerFile = cacheDirectory.GetFile(ContainerFilename);
         }
 
@@ -22,12 +23,11 @@ namespace Cassette.Persistence
 
         readonly string version;
         readonly IDirectory cacheDirectory;
+        readonly IDirectory sourceDirectory;
         readonly IFile containerFile;
 
-        public bool LoadContainerIfUpToDate(IEnumerable<T> unprocessedSourceModules, out IModuleContainer<T> container)
+        public bool InitializeModulesFromCacheIfUpToDate(IEnumerable<T> unprocessedSourceModules)
         {
-            container = null;
-
             if (!containerFile.Exists) return false;
 
             if (!CacheFileIsOlderThanAssets(unprocessedSourceModules)) return false;
@@ -37,6 +37,8 @@ namespace Cassette.Persistence
             if (!IsSameVersion(containerXml)) return false;
 
             if (!IsSameAssetCount(unprocessedSourceModules, containerXml)) return false;
+
+            if (!FilesAreUpToDate(unprocessedSourceModules, containerXml)) return false;
 
             var assignCachedAssets = (
                 from module in unprocessedSourceModules
@@ -50,8 +52,32 @@ namespace Cassette.Persistence
                 assignCachedAsset();
             }
 
-            container = new ModuleContainer<T>(unprocessedSourceModules);
             return true;
+        }
+
+        bool FilesAreUpToDate(IEnumerable<T> modules, XElement containerXml)
+        {
+            var filePaths = (
+                from e in containerXml.Descendants("File")
+                let pathAttribute = e.Attribute("Path")
+                where pathAttribute != null
+                select pathAttribute.Value.Substring(2) // Removes the "~/" prefix
+            );
+
+            var files = filePaths
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Select(sourceDirectory.GetFile)
+                .ToArray();
+
+            if (files.All(f => f.Exists))
+            {
+                var maxLastWriteTimeUtc = files.Select(f => f.LastWriteTimeUtc).Max();
+                return maxLastWriteTimeUtc <= containerFile.LastWriteTimeUtc;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         bool CacheFileIsOlderThanAssets(IEnumerable<T> unprocessedSourceModules)
@@ -137,15 +163,10 @@ namespace Cassette.Persistence
             return ByteArrayExtensions.FromHexString(attribute.Value);
         }
 
-        public IModuleContainer<T> SaveModuleContainer(IEnumerable<T> modules)
+        public void SaveModuleContainer(IModuleContainer<T> moduleContainer)
         {
             cacheDirectory.DeleteAll();
-            SaveContainerXml(modules);
-            foreach (var module in modules)
-            {
-                SaveModule(module);
-            }
-            return new CachedModuleContainer<T>(modules);
+            SaveContainerXml(moduleContainer);
         }
 
         XElement LoadContainerElement()
@@ -156,18 +177,52 @@ namespace Cassette.Persistence
             }
         }
 
-        void SaveContainerXml(IEnumerable<T> modules)
+        void SaveContainerXml(IModuleContainer<T> moduleContainer)
         {
+            var assetCounter = new AssetCounter();
+            assetCounter.Visit(moduleContainer.Modules);
+
             var xml = new XDocument(
-                new XElement("container",
-                    new XAttribute("version", version),
-                    modules.SelectMany(module => module.CreateCacheManifest())
+                new XElement(
+                    "Container",
+                    new XAttribute("Version", version),
+                    new XAttribute("AssetCount", assetCounter.Count),
+                    from module in moduleContainer.Modules
+                    select CreateModuleElement(module, moduleContainer)
                 )
             );
             using (var fileStream = containerFile.Open(FileMode.Create, FileAccess.Write))
             {
                 xml.Save(fileStream);
             }
+        }
+
+        XElement CreateModuleElement(T module, IModuleContainer<T> moduleContainer)
+        {
+            var references = (
+                from asset in module.Assets
+                from r in asset.References
+                where r.Type == AssetReferenceType.DifferentModule || r.Type == AssetReferenceType.Url
+                select moduleContainer.FindModuleContainingPath(r.Path).Path
+            ).Distinct();
+
+            var fileReferences = (
+                from asset in module.Assets
+                from r in asset.References
+                where r.Type == AssetReferenceType.RawFilename
+                select r.Path
+            ).Distinct();
+
+            return new XElement(
+                "Module",
+                new XAttribute("Path", module.Path),
+
+                from reference in references
+                select new XElement("Reference", new XAttribute("Path", reference)),
+
+                from file in fileReferences
+                select new XElement("File", new XAttribute("Path", file))
+            );
         }
 
         void SaveModule(T module)

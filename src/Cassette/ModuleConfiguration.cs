@@ -4,17 +4,18 @@ using System.Linq;
 using Cassette.IO;
 using Cassette.Persistence;
 using Cassette.Utilities;
-using CreateModuleContainer = System.Func<bool, string, Cassette.ISearchableModuleContainer<Cassette.Module>>;
-// CreateModuleContainer    = (useCache, applicationVersion) => ModuleContainer<ModuleType>
+using CreateModuleContainer = System.Func<bool, Cassette.ISearchableModuleContainer<Cassette.Module>>;
+// CreateModuleContainer    = useCache => ModuleContainer<ModuleType>
 
 namespace Cassette
 {
     public class ModuleConfiguration
     {
-        public ModuleConfiguration(ICassetteApplication application, IDirectory cacheDirectory, Dictionary<Type, object> moduleFactories, string version)
+        public ModuleConfiguration(ICassetteApplication application, IDirectory cacheDirectory, IDirectory sourceDirectory, Dictionary<Type, object> moduleFactories, string version)
         {
             this.application = application;
             this.cacheDirectory = cacheDirectory;
+            this.sourceDirectory = sourceDirectory;
             this.moduleFactories = moduleFactories;
             this.version = version;
         }
@@ -22,6 +23,7 @@ namespace Cassette
         readonly ICassetteApplication application;
         readonly Dictionary<Type, Tuple<object, CreateModuleContainer>> moduleSourceResultsByType = new Dictionary<Type, Tuple<object, CreateModuleContainer>>();
         readonly IDirectory cacheDirectory;
+        readonly IDirectory sourceDirectory;
         readonly Dictionary<Type, object> moduleFactories;
         readonly string version;
         readonly Dictionary<Type, List<Action<object>>> customizations = new Dictionary<Type, List<Action<object>>>();
@@ -70,17 +72,17 @@ namespace Cassette
         {
             return moduleSourceResultsByType.ToDictionary(
                 kvp => kvp.Key,
-                kvp => kvp.Value.Item2(useCache, applicationVersion)
+                kvp => kvp.Value.Item2(useCache)
             );
         }
 
-        IModuleContainer<T> CreateModuleContainer<T>(bool useCache, string applicationVersion)
+        IModuleContainer<T> CreateModuleContainer<T>(bool useCache)
             where T : Module
         {
-            var modules = (IEnumerable<T>)moduleSourceResultsByType[typeof(T)].Item1;
+            var modules = ((IEnumerable<T>)moduleSourceResultsByType[typeof(T)].Item1).ToArray();
             if (useCache)
             {
-                return GetOrCreateCachedModuleContainer(modules, applicationVersion);
+                return GetOrCreateCachedModuleContainer(modules);
             }
             else
             {
@@ -88,18 +90,19 @@ namespace Cassette
             }
         }
 
-        IModuleContainer<T> GetOrCreateCachedModuleContainer<T>(IEnumerable<T> modules, string applicationVersion) where T : Module
+        IModuleContainer<T> GetOrCreateCachedModuleContainer<T>(T[] modules) where T : Module
         {
             var cache = GetModuleCache<T>();
-            IModuleContainer<T> container;
-            if (cache.LoadContainerIfUpToDate(modules, out container))
+            if (cache.InitializeModulesFromCacheIfUpToDate(modules))
             {
-                return container;
+                return new ModuleContainer<T>(ConvertUrlReferencesToModules(modules));
             }
             else
             {
-                container = CreateModuleContainer(modules);
-                return cache.SaveModuleContainer(container.Modules);
+                var container = CreateModuleContainer(modules);
+                cache.SaveModuleContainer(container);
+                cache.InitializeModulesFromCacheIfUpToDate(modules);
+                return container;
             }
         }
 
@@ -121,7 +124,7 @@ namespace Cassette
             return new ModuleContainer<T>(ConvertUrlReferencesToModules(modulesArray));
         }
 
-        IEnumerable<T> ConvertUrlReferencesToModules<T>(IEnumerable<T> modules) where T : Module
+        IEnumerable<T> ConvertUrlReferencesToModules<T>(T[] modules) where T : Module
         {
             var modulePaths = new HashSet<string>(modules.Select(m => m.Path), StringComparer.OrdinalIgnoreCase);
 
@@ -167,7 +170,8 @@ namespace Cassette
         {
             return new ModuleCache<T>(
                 version,
-                cacheDirectory.NavigateTo(typeof(T).Name, true)
+                cacheDirectory.NavigateTo(typeof(T).Name, true),
+                sourceDirectory
             );
         }
 
