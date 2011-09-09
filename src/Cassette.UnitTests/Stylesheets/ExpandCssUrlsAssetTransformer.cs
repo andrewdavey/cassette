@@ -13,7 +13,7 @@ namespace Cassette.Stylesheets
         {
             application = new Mock<ICassetteApplication>();
             var directory = new Mock<IDirectory>();
-            var file = new Mock<IFile>();
+            file = new Mock<IFile>();
             urlGenerator = new Mock<IUrlGenerator>();
             application.SetupGet(a => a.RootDirectory)
                        .Returns(directory.Object);
@@ -23,6 +23,7 @@ namespace Cassette.Stylesheets
                         .Returns<string, string>((f, h) => "EXPANDED");
             directory.Setup(d => d.GetFile(It.IsAny<string>()))
                      .Returns(file.Object);
+            file.SetupGet(f => f.Exists).Returns(true);
             file.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
                 .Returns(Stream.Null);
 
@@ -35,6 +36,7 @@ namespace Cassette.Stylesheets
         readonly Mock<ICassetteApplication> application;
         readonly Mock<IAsset> asset;
         readonly Mock<IUrlGenerator> urlGenerator;
+        readonly Mock<IFile> file;
 
         [Fact]
         public void GivenCssWithRelativeUrl_WhenTransformed_ThenUrlIsExpanded()
@@ -46,6 +48,17 @@ namespace Cassette.Stylesheets
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateImageUrl("~/styles/test.png", It.IsAny<string>()));
+        }
+
+        [Fact]
+        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenUrlIsNotExpanded()
+        {
+            file.SetupGet(f => f.Exists).Returns(false);
+            var css = "p { background-image: url(test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(test.png); }");
         }
 
         [Fact]

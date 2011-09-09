@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
@@ -45,6 +46,7 @@ namespace Cassette.Stylesheets
                 length = match.Length;
                 url = match.Groups["path"].Value + "." + match.Groups["extension"].Value;
                 extension = match.Groups["extension"].Value;
+                file = sourceAsset.SourceFile.Directory.GetFile(url);
             }
 
             readonly IAsset sourceAsset;
@@ -52,6 +54,7 @@ namespace Cassette.Stylesheets
             readonly int length;
             readonly string url;
             readonly string extension;
+            readonly IFile file;
 
             public string Url
             {
@@ -86,7 +89,6 @@ namespace Cassette.Stylesheets
 
             string GetBase64EncodedData()
             {
-                var file = sourceAsset.SourceFile.Directory.GetFile(url);
                 using (var fileStream = file.Open(FileMode.Open, FileAccess.Read))
                 using (var temp = new MemoryStream())
                 using (var base64Stream = new CryptoStream(temp, new ToBase64Transform(), CryptoStreamMode.Write))
@@ -101,6 +103,8 @@ namespace Cassette.Stylesheets
 
             public void ReplaceWithin(StringBuilder output)
             {
+                if (!file.Exists) return;
+                
                 output.Remove(index, length);
                 output.Insert(index, DataUri);
             }

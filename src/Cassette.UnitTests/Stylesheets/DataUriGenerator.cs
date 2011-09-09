@@ -81,11 +81,29 @@ namespace Cassette.Stylesheets
             asset.Verify(a => a.AddRawFileReference("test.png"));
         }
 
+        [Fact]
+        public void GivenFileDoesNotExists_WhenTransform_ThenUrlIsNotChanged()
+        {
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.Exists).Returns(false);
+            directory.Setup(d => d.GetFile(It.IsAny<string>()))
+                     .Returns(file.Object);
+
+            var css = "p { background-image: url(test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+
+            getResult().ReadToEnd().ShouldEqual(
+                "p { background-image: url(test.png); }"
+            );
+        }
+
         void StubFile(string filename, byte[] bytes)
         {
             var file = new Mock<IFile>();
             directory.Setup(d => d.GetFile(filename))
                 .Returns(file.Object);
+            file.SetupGet(f => f.Exists)
+                .Returns(true);
             file.Setup(d => d.Open(FileMode.Open, FileAccess.Read))
                 .Returns(() => new MemoryStream(bytes));
         }

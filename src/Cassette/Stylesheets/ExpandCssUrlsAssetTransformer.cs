@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
@@ -74,7 +75,10 @@ namespace Cassette.Stylesheets
         void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
         {
             relativeFilename = RemoveFragment(relativeFilename);
-            var hash = HashFileContents(relativeFilename);
+            var file = application.RootDirectory.GetFile(relativeFilename.Substring(2));
+            if (!file.Exists) return;
+
+            var hash = HashFileContents(file);
             var absoluteUrl = application.UrlGenerator.CreateImageUrl(relativeFilename, hash);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
@@ -87,9 +91,8 @@ namespace Cassette.Stylesheets
             return relativeFilename.Substring(0, index);
         }
 
-        string HashFileContents(string applicationRelativeFilename)
+        string HashFileContents(IFile file)
         {
-            var file = application.RootDirectory.GetFile(applicationRelativeFilename.Substring(2));
             using (var fileStream = file.Open(FileMode.Open, FileAccess.Read))
             {
                 return fileStream.ComputeSHA1Hash().ToHexString();
