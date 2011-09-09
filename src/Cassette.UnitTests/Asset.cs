@@ -16,9 +16,7 @@ namespace Cassette
         {
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
             root.CreateSubdirectory("module");
-            filename = Path.Combine(root.FullName, "module", "test.js");
-            fileSystem = new FileSystemDirectory(root.FullName);
-
+            
             module = new Module("~/module");
             asset = new Asset("~/module/test.js", module, StubFile("asset content"));
             module.Assets.Add(asset);
@@ -27,11 +25,9 @@ namespace Cassette
             module.Assets.Add(another);
         }
 
-        readonly string filename;
         readonly Asset asset;
         readonly DirectoryInfo root;
         readonly Module module;
-        readonly FileSystemDirectory fileSystem;
 
         IFile StubFile(string content = "")
         {
