@@ -29,7 +29,7 @@ namespace Cassette.Web
 {
     public static class StartUp
     {
-        static ICassetteConfiguration configuration;
+        static IEnumerable<ICassetteConfiguration> configurations;
         static IsolatedStorageFile storage;
         static CassetteApplicationContainer<CassetteApplication> applicationContainer;
  
@@ -40,7 +40,7 @@ namespace Cassette.Web
 
         // If using an IoC container, this delegate can be replaced (in Application_Start) to
         // provide an alternative way to create the configuration object.
-        public static Func<ICassetteConfiguration> CreateConfiguration = CreateConfigurationByScanningAssembliesForType;
+        public static Func<IEnumerable<ICassetteConfiguration>> CreateConfigurations = CreateConfigurationsByScanningAssembliesForType;
 
         public static void PreApplicationStart()
         {
@@ -52,7 +52,7 @@ namespace Cassette.Web
         {
             storage = IsolatedStorageFile.GetMachineStoreForAssembly();
             
-            configuration = CreateConfiguration();
+            configurations = CreateConfigurations();
             if (ShouldOptimizeOutput())
             {
                 applicationContainer = new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);                
@@ -71,28 +71,15 @@ namespace Cassette.Web
             applicationContainer.Dispose();
         }
 
-        static ICassetteConfiguration CreateConfigurationByScanningAssembliesForType()
+        static IEnumerable<ICassetteConfiguration> CreateConfigurationsByScanningAssembliesForType()
         {
             // Scan all assemblies for implementation of the interface and create instance.
-            var types = from assembly in LoadAllAssemblies()
-                        from type in assembly.GetExportedTypes()
-                        where type.IsClass
-                           && !type.IsAbstract
-                           && type != typeof(EmptyCassetteConfiguration)
-                           && typeof(ICassetteConfiguration).IsAssignableFrom(type)
-                        select type;
-            
-            var configType = types.FirstOrDefault();
-            if (configType == null)
-            {
-                // No configuration defined. Any attempt to get asset modules later will fail with 
-                // an exception. The exception message will tell the developer to create a configuration class.
-                return new EmptyCassetteConfiguration();
-            }
-            else
-            {
-                return (ICassetteConfiguration)Activator.CreateInstance(configType);
-            }
+            return from assembly in LoadAllAssemblies()
+                   from type in assembly.GetExportedTypes()
+                   where type.IsClass
+                      && !type.IsAbstract
+                      && typeof(ICassetteConfiguration).IsAssignableFrom(type)
+                   select (ICassetteConfiguration)Activator.CreateInstance(type);
         }
 
         static IEnumerable<Assembly> LoadAllAssemblies()
@@ -120,7 +107,7 @@ namespace Cassette.Web
         static CassetteApplication CreateCassetteApplication()
         {
             return new CassetteApplication(
-                configuration,
+                configurations,
                 new FileSystemDirectory(HttpRuntime.AppDomainAppPath),
                 GetCacheDirectory(),
                 ShouldOptimizeOutput(),
@@ -146,12 +133,12 @@ namespace Cassette.Web
 
         static string GetConfigurationVersion(string virtualDirectory)
         {
-            var assemblyVersion = configuration.GetType()
-                .Assembly
-                .GetName()
-                .Version
-                .ToString();
-            return assemblyVersion + "|" + virtualDirectory;
+            var assemblyVersion = configurations.Select(
+                configuration => new AssemblyName(configuration.GetType().Assembly.FullName).Version.ToString()
+            ).Distinct();
+
+            var parts = assemblyVersion.Concat(new[] { virtualDirectory });
+            return string.Join("|", parts);
         }
 
         static HttpContextBase GetCurrentHttpContext()

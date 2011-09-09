@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Handlers;
 using System.Web.Routing;
@@ -12,8 +13,8 @@ namespace Cassette.Web
 {
     public class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(ICassetteConfiguration config, IDirectory sourceFileSystem, IDirectory cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
-            : base(config, sourceFileSystem, cacheFileSystem, urlGenerator, isOutputOptmized, version)
+        public CassetteApplication(IEnumerable<ICassetteConfiguration> configurations, IDirectory sourceFileSystem, IDirectory cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
+            : base(configurations, sourceFileSystem, cacheFileSystem, urlGenerator, isOutputOptmized, version)
         {
             this.urlGenerator = urlGenerator;
             this.getCurrentHttpContext = getCurrentHttpContext;

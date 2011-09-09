@@ -34,7 +34,7 @@ namespace Cassette.IntegrationTests
                   .Callback(configure);
 
             return new CassetteApplication(
-                config.Object,
+                new[] { config.Object },
                 new FileSystemDirectory(Path.GetFullPath(@"..\..\assets")),
                 new IsolatedStorageDirectory(storage),
                 isOutputOptmized: true,

@@ -12,14 +12,14 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(ICassetteConfiguration configuration, IDirectory rootDirectory, IDirectory cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
+        protected CassetteApplicationBase(IEnumerable<ICassetteConfiguration> configurations, IDirectory rootDirectory, IDirectory cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
         {
             this.rootDirectory = rootDirectory;
             this.isOutputOptimized = isOutputOptimized;
             this.urlGenerator = urlGenerator;
             moduleFactories = CreateModuleFactories();
             moduleContainers = CreateModuleContainers(
-                configuration,
+                configurations,
                 cacheDirectory,
                 CombineVersionWithCassetteVersion(version)
             );
@@ -97,10 +97,13 @@ namespace Cassette
 
         public abstract IPageAssetManager GetPageAssetManager<T>() where T : Module;
 
-        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(ICassetteConfiguration config, IDirectory cacheDirectory, string version)
+        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
         {
             var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, rootDirectory, moduleFactories, version);
-            config.Configure(moduleConfiguration, this);
+            foreach (var configuration in configurations)
+            {
+                configuration.Configure(moduleConfiguration, this);
+            }
             AddDefaultModuleSourcesIfEmpty(moduleConfiguration);
             return moduleConfiguration.CreateModuleContainers(isOutputOptimized, version);
         }
