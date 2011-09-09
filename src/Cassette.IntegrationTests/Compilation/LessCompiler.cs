@@ -152,31 +152,5 @@ namespace Cassette
                 root.Delete(true);
             }
         }
-
-        [Fact]
-        public void Importing_less_file_when_directory_not_found_throws_useful_exception()
-        {
-            var root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            try
-            {
-                var moduleA = root.CreateSubdirectory("module-a");
-                file.SetupGet(f => f.Directory)
-                    .Returns(new FileSystemDirectory(moduleA.FullName));
-
-                var compiler = new LessCompiler();
-                var exception = Assert.Throws<DirectoryNotFoundException>(delegate
-                {
-                    compiler.Compile(
-                        "@import \"../MISSING/_file.less\";\nbody{ color: @color }",
-                        file.Object
-                    );
-                });
-                exception.Message.ShouldContain("test.less");
-            }
-            finally
-            {
-                root.Delete(true);
-            }
-        }
     }
 }
