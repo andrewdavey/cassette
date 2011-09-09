@@ -21,9 +21,16 @@ namespace Cassette.IO
 
         public IFile GetFile(string filename)
         {
-            var subDirectoryPath = Path.GetDirectoryName(filename);
-            var subDirectory = NavigateTo(subDirectoryPath, false);
-            return new FileSystemFile(GetAbsolutePath(filename), subDirectory);
+            try
+            {
+                var subDirectoryPath = Path.GetDirectoryName(filename);
+                var subDirectory = NavigateTo(subDirectoryPath, false);
+                return new FileSystemFile(GetAbsolutePath(filename), subDirectory);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return new NonExistentFile(filename);
+            }
         }
 
         public void DeleteAll()

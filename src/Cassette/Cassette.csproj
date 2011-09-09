@@ -68,6 +68,7 @@
     <Compile Include="IO\IFile.cs" />
     <Compile Include="IModuleSource.cs" />
     <Compile Include="IO\IsolatedStorageDirectory.cs" />
+    <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleDescriptor.cs" />
