@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.Web.Handlers;
 using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
@@ -25,6 +26,14 @@ namespace Cassette.Web
 
         public void OnBeginRequest(HttpContextBase httpContext)
         {
+            if (httpContext.CurrentHandler is AssemblyResourceLoader)
+            {
+                // The AssemblyResourceLoader handler (for WebResource.axd requests) prevents further writes via some internal puke code.
+                // This prevents response filters from working. The result is an empty response body!
+                // So don't bother installing a filter for these requests. We don't need to rewrite them anyway.
+                return;
+            }
+
             var tracker = new PlaceholderTracker();
             httpContext.Items[PlaceholderTrackerKey] = tracker;
 
