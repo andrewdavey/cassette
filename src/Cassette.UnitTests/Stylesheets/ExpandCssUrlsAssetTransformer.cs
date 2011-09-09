@@ -49,6 +49,18 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void GivenCssWithUrlWithFragment_WhenTransformed_ThenUrlIsExpanded()
+        {
+            var css = "p { background-image: url(test.png#fragment); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateImageUrl("~/styles/test.png", It.IsAny<string>()));
+        }
+
+        [Fact]
         public void GivenCssWithWhitespaceAroundRelativeUrl_WhenTransformed_ThenUrlIsExpanded()
         {
             var css = "p { background-image: url(\n test.png \n); }";

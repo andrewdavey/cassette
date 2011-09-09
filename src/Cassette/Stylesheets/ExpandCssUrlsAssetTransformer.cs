@@ -73,10 +73,18 @@ namespace Cassette.Stylesheets
 
         void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
         {
+            relativeFilename = RemoveFragment(relativeFilename);
             var hash = HashFileContents(relativeFilename);
             var absoluteUrl = application.UrlGenerator.CreateImageUrl(relativeFilename, hash);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
+        }
+
+        string RemoveFragment(string relativeFilename)
+        {
+            var index = relativeFilename.IndexOf('#');
+            if (index < 0) return relativeFilename;
+            return relativeFilename.Substring(0, index);
         }
 
         string HashFileContents(string applicationRelativeFilename)
