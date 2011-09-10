@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Web;
-using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
