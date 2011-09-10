@@ -21,12 +21,6 @@ namespace Cassette.Stylesheets
 
         readonly string url;
 
-        public override IEnumerable<XElement> CreateCacheManifest()
-        {
-            // External modules do not require caching.
-            yield break;
-        }
-
         public override void Process(ICassetteApplication application)
         {
             // No processing required.

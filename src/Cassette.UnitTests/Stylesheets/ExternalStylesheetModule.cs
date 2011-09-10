@@ -30,13 +30,6 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void CreateCacheManifestReturnsEmpty()
-        {
-            var module = new ExternalStylesheetModule("http://test.com/api.css");
-            module.CreateCacheManifest().ShouldBeEmpty();
-        }
-
-        [Fact]
         public void RenderReturnsHtmlLinkElementWithUrlAsHref()
         {
             var module = new ExternalStylesheetModule("http://test.com/asset.css");

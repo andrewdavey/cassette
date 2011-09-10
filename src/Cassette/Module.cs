@@ -179,39 +179,6 @@ namespace Cassette
             }
         }
 
-        public virtual IEnumerable<XElement> CreateCacheManifest()
-        {
-            var element = new XElement("Module",
-                new XAttribute("Path", Path)
-            );
-            if (Assets.Count == 1)
-            {
-                element.Add(new XAttribute("Hash", Hash.ToHexString()));
-            }
-            if (string.IsNullOrEmpty(Location) == false)
-            {
-                element.Add(new XAttribute("Location", Location));
-            }
-            if (string.IsNullOrEmpty(ContentType) == false)
-            {
-                element.Add(new XAttribute("ContentType", ContentType));
-            }
-            var asset = assets.OfType<ICacheableAsset>().SingleOrDefault();
-            if (asset!= null)
-            {
-                element.Add(asset.CreateCacheManifest());
-            }
-            foreach (var reference in references)
-            {
-                element.Add(new XElement("Reference", new XAttribute("Path", reference)));
-            }
-            yield return element;
-        }
-
-        public virtual void InitializeFromManifest(XElement element)
-        {       
-        }
-
         internal bool PathIsPrefixOf(string path)
         {
             if (path.Length < Path.Length) return false;

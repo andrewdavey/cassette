@@ -10,13 +10,6 @@ namespace Cassette.Scripts
     public class ExternalScriptModule_Tests
     {
         [Fact]
-        public void CreateCacheManifestReturnsEmpty()
-        {
-            var module = new ExternalScriptModule("http://test.com/api.js");
-            module.CreateCacheManifest().ShouldBeEmpty();
-        }
-
-        [Fact]
         public void ProcessCallsProcessor()
         {
             var module = new ExternalScriptModule("http://test.com/asset.js");

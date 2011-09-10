@@ -43,23 +43,4 @@ namespace Cassette.Stylesheets
             processor.Verify(p => p.Process(module, It.IsAny<ICassetteApplication>()));
         }
     }
-
-    public class StylesheetModule_CreateCacheManifest_Tests
-    {
-        [Fact]
-        public void CreateCacheManifestIncludesMediaAttribute()
-        {
-            var module = new StylesheetModule("~")
-            {
-                Media = "print"
-            };
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[0]);
-            module.Assets.Add(asset.Object);
-
-            var element = module.CreateCacheManifest().Single();
-
-            element.Attribute("Media").Value.ShouldEqual("print");
-        }
-    }
 }

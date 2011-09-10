@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -55,18 +54,6 @@ namespace Cassette.Scripts
         {
             this.javaScriptFallbackCondition = javaScriptFallbackCondition;
             AddAssets(fallbackAssets, true);
-        }
-
-        public override IEnumerable<XElement> CreateCacheManifest()
-        {
-            if (Assets.Count == 1)
-            {
-                yield return new XElement(
-                    "ExternalModule",
-                    new XAttribute("Path", Path),
-                    new XAttribute("Hash", Assets[0].Hash.ToHexString())
-                );
-            }
         }
 
         public override void Process(ICassetteApplication application)
