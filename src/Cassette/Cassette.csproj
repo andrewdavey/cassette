@@ -77,7 +77,6 @@
     <Compile Include="PerFileModuleSource.cs" />
     <Compile Include="Persistence\AssetCounter.cs" />
     <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />
-    <Compile Include="Persistence\CachedModuleContainer.cs" />
     <Compile Include="Persistence\ICacheableAsset.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="Scripts\AssignScriptModuleRenderer.cs" />
