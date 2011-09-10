@@ -71,6 +71,11 @@ namespace Cassette.Scripts
             return externalRenderer.Render(this);
         }
 
+        public override bool ContainsPath(string path)
+        {
+            return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
+        }
+
         IEnumerable<ScriptModule> IModuleSource<ScriptModule>.GetModules(IModuleFactory<ScriptModule> moduleFactory, ICassetteApplication application)
         {
             yield return this;

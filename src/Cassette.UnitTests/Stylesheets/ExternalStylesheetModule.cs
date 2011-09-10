@@ -65,5 +65,12 @@ namespace Cassette.Stylesheets
             
             result.SequenceEqual(new[] { module }).ShouldBeTrue();
         }
+
+        [Fact]
+        public void GivenModuleHasName_WhenContainsPathUrl_ThenReturnTrue()
+        {
+            var module = new ExternalStylesheetModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
+            module.ContainsPath("https://maps-api-ssl.google.com/maps/api/js?sensor=false").ShouldBeTrue();
+        }
     }
 }

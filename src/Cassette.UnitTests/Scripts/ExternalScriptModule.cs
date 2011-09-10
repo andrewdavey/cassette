@@ -44,6 +44,13 @@ namespace Cassette.Scripts
             var module = new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
             module.Path.ShouldEqual("~/GoogleMapsApi");
         }
+
+        [Fact]
+        public void GivenModuleHasName_WhenContainsPathUrl_ThenReturnTrue()
+        {
+            var module = new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
+            module.ContainsPath("https://maps-api-ssl.google.com/maps/api/js?sensor=false").ShouldBeTrue();
+        }
     }
 
     public class ExternalScriptModule_ConstructorConstraints

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using Cassette.Utilities;
 
@@ -35,6 +36,11 @@ namespace Cassette.Stylesheets
             {
                 return new HtmlString(string.Format(LinkHtmlWithMedia, url, Media));
             }
+        }
+
+        public override bool ContainsPath(string path)
+        {
+            return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
 
         IEnumerable<StylesheetModule> IModuleSource<StylesheetModule>.GetModules(IModuleFactory<StylesheetModule> moduleFactory, ICassetteApplication application)
