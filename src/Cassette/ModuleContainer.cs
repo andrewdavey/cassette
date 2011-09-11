@@ -57,7 +57,11 @@ namespace Cassette
 
             // Clone the original references dictionary, so we can add the extra
             // implicit references based on array order.
-            var references = new Dictionary<T, HashSet<T>>(moduleImmediateReferences);
+            var references = new Dictionary<T, HashSet<T>>();
+            foreach (var reference in moduleImmediateReferences)
+            {
+                references[reference.Key] = new HashSet<T>(reference.Value);
+            }
             for (int i = 1; i < roots.Count; i++)
             {
                 var module = roots[i];
