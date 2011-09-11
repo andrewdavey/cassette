@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
+using System.Web;
 
 namespace Cassette.Persistence
 {
@@ -235,15 +236,13 @@ namespace Cassette.Persistence
 
         void SaveModule(T module)
         {
+            if (module.Assets.Count == 0) return;
+
             if (module.Assets.Count > 1)
             {
                 throw new InvalidOperationException("Cannot cache a module when assets have not been concatenated into a single asset.");
             }
-            if (module.Assets.Count == 0)
-            {
-                return; // Skip external URL modules.
-            }
-
+            
             var file = cacheDirectory.GetFile(ModuleAssetCacheFilename(module));
             using (var fileStream = file.Open(FileMode.Create, FileAccess.Write))
             {
@@ -257,10 +256,17 @@ namespace Cassette.Persistence
 
         internal static string ModuleAssetCacheFilename(Module module)
         {
-            return module.Path.Substring(2) // Remove the "~/" prefix
-                .Replace(Path.DirectorySeparatorChar, '`')
-                .Replace(Path.AltDirectorySeparatorChar, '`')
-                + ".module";
+            if (module.Path.IsUrl())
+            {
+                return HttpUtility.UrlEncode(module.Path) + ".module";
+            }
+            else
+            {
+                return module.Path.Substring(2) // Remove the "~/" prefix
+                             .Replace(Path.DirectorySeparatorChar, '`')
+                             .Replace(Path.AltDirectorySeparatorChar, '`')
+                           + ".module";
+            }
         }
     }
 }
