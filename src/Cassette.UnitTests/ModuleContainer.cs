@@ -143,10 +143,11 @@ namespace Cassette
         [Fact]
         public void SortModulesToleratesExternalModulesWhichAreNotInTheContainer()
         {
-            var externalModule = new ExternalScriptModule("http://test.com/test.js");
+            var externalModule1 = new ExternalScriptModule("http://test.com/test1.js");
+            var externalModule2 = new ExternalScriptModule("http://test.com/test2.js");
             var container = new ModuleContainer<ScriptModule>(Enumerable.Empty<ScriptModule>());
-            var results = container.IncludeReferencesAndSortModules(new[] { externalModule });
-            results.SequenceEqual(new[] { externalModule }).ShouldBeTrue();
+            var results = container.IncludeReferencesAndSortModules(new[] { externalModule1, externalModule2 });
+            results.SequenceEqual(new[] { externalModule1, externalModule2 }).ShouldBeTrue();
         }
 
         [Fact]

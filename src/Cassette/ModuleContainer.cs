@@ -66,7 +66,12 @@ namespace Cassette
             {
                 var module = roots[i];
                 var previous = modulesArray[i - 1];
-                references[module].Add(previous);
+                HashSet<T> set;
+                if (!references.TryGetValue(module, out set))
+                {
+                    references[module] = set = new HashSet<T>();
+                }
+                set.Add(previous);
             }
             return references;
         }

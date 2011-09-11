@@ -267,6 +267,21 @@ namespace Cassette.Persistence
             }
         }
 
+        [Fact]
+        public void GivenModulePathIsUrl_WhenSaveContainer_ThenModuleFileNameIsEncoded()
+        {
+            using (var cacheDir = new TempDirectory())
+            {
+                var cache = new ModuleCache<Module>("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
+                var module = new Module("http://test.com/api.js");
+                module.Assets.Add(StubAsset().Object);
+
+                cache.SaveModuleContainer(new ModuleContainer<Module>(new[] { module }));
+
+                File.Exists(Path.Combine(cacheDir, "http%3A%2F%2Ftest.com%2Fapi.js.module")).ShouldBeTrue();
+            }
+        }
+
         Mock<IAsset> StubAsset(string path = null)
         {
             var asset = new Mock<IAsset>();
