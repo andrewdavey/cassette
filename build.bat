@@ -1,4 +1,4 @@
-set msbuild=%windir%\Microsoft.NET\v4.0.30319\msbuild.exe
+set msbuild=%windir%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
 
 if exist build\bin. (
 	del /S /Q build\bin\*
@@ -6,4 +6,4 @@ if exist build\bin. (
 	mkdir build\bin
 )
 
-msbuild src\Cassette.Web\Cassette.Web.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\
+%msbuild% src\Cassette.Web\Cassette.Web.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\
