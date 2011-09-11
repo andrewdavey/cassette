@@ -7,8 +7,7 @@ namespace Cassette
         where T : Module
     {
         IEnumerable<T> Modules { get; }
-        IEnumerable<T> ConcatDependencies(T module);
-        IEnumerable<T> SortModules(IEnumerable<T> modules);
+        IEnumerable<T> IncludeReferencesAndSortModules(IEnumerable<T> modules);
     }
 
     // This type-system trickery allows a List<ISearchableModuleContainer<Module>> to be searched

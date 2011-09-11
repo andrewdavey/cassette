@@ -15,38 +15,69 @@ namespace Cassette
             ValidateModuleReferences();
             ValidateAssetReferences();
             moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
-            sortIndex = BuildSortIndex();
         }
 
         readonly T[] modules;
         readonly Dictionary<T, HashSet<T>> moduleImmediateReferences;
-        readonly Dictionary<T, int> sortIndex;
 
         public IEnumerable<T> Modules
         {
             get { return modules; }
         }
 
-        public IEnumerable<T> ConcatDependencies(T module)
+        public IEnumerable<T> IncludeReferencesAndSortModules(IEnumerable<T> modulesToSort)
         {
-            var references = new HashSet<T> { module };
-            AddModulesReferencedBy(module, references);
+            var modulesArray = modulesToSort.ToArray();
+            var references = GetModuleReferencesWithImplicitOrderingIncluded(modulesArray);
+            var all = new HashSet<T>();
+            foreach (var module in modulesArray)
+            {
+                AddModulesReferencedBy(module, all);   
+            }
+            var graph = new Graph<T>(
+                all,
+                module =>
+                {
+                    HashSet<T> set;
+                    if (references.TryGetValue(module, out set)) return set;
+                    return Enumerable.Empty<T>();
+                }
+            );
+            return graph.TopologicalSort();
+        }
+
+        Dictionary<T, HashSet<T>> GetModuleReferencesWithImplicitOrderingIncluded(IList<T> modulesArray)
+        {
+            var roots = modulesArray.Where(m =>
+            {
+                HashSet<T> set;
+                if (moduleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
+                return true;
+            }).ToList();
+
+            // Clone the original references dictionary, so we can add the extra
+            // implicit references based on array order.
+            var references = new Dictionary<T, HashSet<T>>(moduleImmediateReferences);
+            for (int i = 1; i < roots.Count; i++)
+            {
+                var module = roots[i];
+                var previous = modulesArray[i - 1];
+                references[module].Add(previous);
+            }
             return references;
         }
 
-        public IEnumerable<T> SortModules(IEnumerable<T> modulesToSort)
+        void AddModulesReferencedBy(T module, HashSet<T> all)
         {
-            return modulesToSort.OrderBy(GetSortIndex);
-        }
+            if (all.Contains(module)) return;
+            all.Add(module);
 
-        int GetSortIndex(T module)
-        {
-            int index;
-            if (sortIndex.TryGetValue(module, out index))
+            HashSet<T> referencedModules;
+            if (!moduleImmediateReferences.TryGetValue(module, out referencedModules)) return;
+            foreach (var referencedModule in referencedModules)
             {
-                return index;
+                AddModulesReferencedBy(referencedModule, all);
             }
-            return int.MaxValue;
         }
 
         public T FindModuleContainingPath(string path)
@@ -105,14 +136,6 @@ namespace Cassette
             ).ToDictionary(x => x.module, x => x.references);
         }
 
-        Dictionary<T, int> BuildSortIndex()
-        {
-            var graph = new Graph<T>(modules, m => moduleImmediateReferences[m]);
-            return graph.TopologicalSort()
-                .Select((module, index) => new { module, index })
-                .ToDictionary(x => x.module, x => x.index);
-        }
-
         string CreateAssetReferenceNotFoundMessage(AssetReference reference)
         {
             if (reference.SourceLineNumber > 0)
@@ -128,19 +151,6 @@ namespace Cassette
                     "Reference error in \"{0}\". Cannot find \"{1}\".",
                     reference.SourceAsset.SourceFilename, reference.Path
                 );
-            }
-        }
-
-        void AddModulesReferencedBy(T module, HashSet<T> references)
-        {
-            HashSet<T> referencedModules;
-            if (moduleImmediateReferences.TryGetValue(module, out referencedModules))
-            {
-                foreach (var referencedModule in referencedModules)
-                {
-                    AddModulesReferencedBy(referencedModule, references);
-                    references.Add(referencedModule);
-                }
             }
         }
 

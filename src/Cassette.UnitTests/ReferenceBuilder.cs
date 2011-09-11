@@ -27,7 +27,7 @@ namespace Cassette
             var module = new ScriptModule("~/test");
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module })
                            .Verifiable();
             builder.AddReference("test", null);
@@ -45,7 +45,7 @@ namespace Cassette
             module.Location = "body";
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module })
                            .Verifiable();
             builder.AddReference("test", null);
@@ -66,7 +66,7 @@ namespace Cassette
                            .Returns(module1);
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test2"))
                            .Returns(module2);
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module1 });
             builder.AddReference("test1", null);
             builder.AddReference("test2", null);
@@ -95,7 +95,7 @@ namespace Cassette
 
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/a"))
                            .Returns(moduleA);
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { moduleB, moduleA });
 
             builder.AddReference("a", null);
@@ -108,7 +108,7 @@ namespace Cassette
         {
             moduleFactory.Setup(f => f.CreateExternalModule("http://test.com/test.js"))
                          .Returns(new ExternalScriptModule("http://test.com/test.js"));
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
             builder.AddReference("http://test.com/test.js", null);
@@ -122,7 +122,7 @@ namespace Cassette
         {
             moduleFactory.Setup(f => f.CreateExternalModule("https://test.com/test.js"))
                          .Returns(new ExternalScriptModule("https://test.com/test.js"));
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
             builder.AddReference("https://test.com/test.js", null);
@@ -136,7 +136,7 @@ namespace Cassette
         {
             moduleFactory.Setup(f => f.CreateExternalModule("//test.com/test.js"))
                          .Returns(new ExternalScriptModule("//test.com/test.js"));
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns<IEnumerable<ScriptModule>>(all => all);
 
             builder.AddReference("//test.com/test.js", null);
@@ -151,7 +151,7 @@ namespace Cassette
             var module = new ScriptModule("~/test");
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
                            .Returns(module);
-            moduleContainer.Setup(c => c.SortModules(It.IsAny<IEnumerable<ScriptModule>>()))
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<ScriptModule>>()))
                            .Returns(new[] { module });
             builder.AddReference("test", "body");
 

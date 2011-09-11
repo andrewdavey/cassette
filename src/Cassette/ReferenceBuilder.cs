@@ -15,68 +15,58 @@ namespace Cassette
 
         readonly IModuleContainer<T> moduleContainer;
         readonly IModuleFactory<T> moduleFactory;
-        readonly Dictionary<string, HashSet<T>> modulesByLocation = new Dictionary<string, HashSet<T>>();
+        readonly Dictionary<string, List<T>> modulesByLocation = new Dictionary<string, List<T>>();
         
         public void AddReference(string path, string location)
         {
-            if (path.IsUrl())
-            {
-                var modules = GetOrCreateModuleSet(location);
-                modules.Add(moduleFactory.CreateExternalModule(path));
-            }
-            else
-            {
-                if (path.StartsWith("/"))
-                {
-                    path = "~" + path;
-                }
-                else if (path.StartsWith("~") == false)
-                {
-                    path = PathUtilities.CombineWithForwardSlashes("~", path);
-                }
+            path = PathUtilities.AppRelative(path);
 
-                var referencedModule = moduleContainer.FindModuleContainingPath(path);
-                if (referencedModule == null)
-                {
-                    throw new ArgumentException("Cannot find an asset module containing the path \"" + path + "\".");
-                }
-                var allRequiredModules = moduleContainer.ConcatDependencies(referencedModule);
-                foreach (var module in allRequiredModules)
-                {
-                    AddReferenceToModule(module, location);
-                }
+            var module = moduleContainer.FindModuleContainingPath(path);
+            if (module == null && path.IsUrl())
+            {
+                // Ad-hoc external module reference.
+                module = moduleFactory.CreateExternalModule(path);
             }
-        }
 
-        void AddReferenceToModule(T module, string location)
-        {
+            if (module == null)
+            {
+                throw new ArgumentException("Cannot find an asset module containing the path \"" + path + "\".");                
+            }
+
             // Module can define it's own prefered location. Use this when we aren't given
             // an explicit location argument i.e. null.
             if (location == null)
             {
                 location = module.Location;
             }
-            var moduleSet = GetOrCreateModuleSet(location);
-            moduleSet.Add(module);
+
+            AddModule(module, location);
+        }
+
+        void AddModule(T module, string location)
+        {
+            var modules = GetOrCreateModuleSet(location);
+            if (modules.Contains(module)) return;
+            modules.Add(module);
         }
 
         public IEnumerable<T> GetModules(string location)
         {
             var modules = GetOrCreateModuleSet(location);
-            return moduleContainer.SortModules(modules);
+            return moduleContainer.IncludeReferencesAndSortModules(modules);
         }
 
-        HashSet<T> GetOrCreateModuleSet(string location)
+        List<T> GetOrCreateModuleSet(string location)
         {
             location = location ?? ""; // Dictionary doesn't accept null keys.
-            HashSet<T> modules;
+            List<T> modules;
             if (modulesByLocation.TryGetValue(location, out modules))
             {
                 return modules;
             }
             else
             {
-                modules = new HashSet<T>();
+                modules = new List<T>();
                 modulesByLocation.Add(location, modules);
                 return modules;
             }

@@ -7,6 +7,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
+    [System.Diagnostics.DebuggerDisplay("{Path}")]
     public class Module : IDisposable
     {
         public Module(string applicationRelativePath)
