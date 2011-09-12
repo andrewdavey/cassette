@@ -45,6 +45,22 @@ namespace Cassette.Web
             );
         }
 
+        public void OnPostRequestHandlerExecute(HttpContextBase httpContext)
+        {
+            if (httpContext.CurrentHandler is AssemblyResourceLoader)
+            {
+                // The AssemblyResourceLoader handler (for WebResource.axd requests) prevents further writes via some internal puke code.
+                // This prevents response filters from working. The result is an empty response body!
+                // So don't bother installing a filter for these requests. We don't need to rewrite them anyway.
+                return;
+            }
+
+            // Flush here so that our filter (installed in OnBeginRequest) will be called
+            // before the page output is compressed for the cache 
+            // i.e When dynamicCompressionBeforeCache="true" in web.config.
+            httpContext.Response.Flush();
+        }
+
         public override IPageAssetManager GetPageAssetManager<T>()
         {
             var items = getCurrentHttpContext().Items;
