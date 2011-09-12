@@ -25,7 +25,7 @@ namespace Cassette.Web
         readonly Func<HttpContextBase> getCurrentHttpContext;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
 
-        public void OnBeginRequest(HttpContextBase httpContext)
+        public void OnPostMapRequestHandler(HttpContextBase httpContext)
         {
             if (httpContext.CurrentHandler is AssemblyResourceLoader)
             {

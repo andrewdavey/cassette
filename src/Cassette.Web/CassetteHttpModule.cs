@@ -7,14 +7,14 @@ namespace Cassette.Web
     {
         public void Init(HttpApplication httpApplication)
         {
-            httpApplication.BeginRequest += HttpApplicationBeginRequest;
+            httpApplication.PostMapRequestHandler += HttpApplicationPostMapRequestHandler;
             httpApplication.PostRequestHandlerExecute += HttpApplicationPostRequestHandlerExecute;
         }
 
-        void HttpApplicationBeginRequest(object sender, EventArgs e)
+        void HttpApplicationPostMapRequestHandler(object sender, EventArgs e)
         {
             var context = new HttpContextWrapper(((HttpApplication)sender).Context);
-            StartUp.CassetteApplication.OnBeginRequest(context);
+            StartUp.CassetteApplication.OnPostMapRequestHandler(context);
         }
 
         void HttpApplicationPostRequestHandlerExecute(object sender, EventArgs e)
