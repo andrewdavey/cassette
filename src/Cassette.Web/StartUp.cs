@@ -53,14 +53,8 @@ namespace Cassette.Web
             storage = IsolatedStorageFile.GetMachineStoreForAssembly();
             
             configurations = CreateConfigurations();
-            if (ShouldOptimizeOutput())
-            {
-                applicationContainer = new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);                
-            }
-            else
-            {
-                applicationContainer = new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath);                
-            }
+            applicationContainer = ShouldOptimizeOutput() ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication) 
+                                                          : new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath);
             
             Assets.GetApplication = () => CassetteApplication;
         }
