@@ -4,7 +4,7 @@ using System.Linq;
 using Cassette.IO;
 using Cassette.Persistence;
 using Cassette.Utilities;
-using CreateModuleContainer = System.Func<bool, Cassette.ISearchableModuleContainer<Cassette.Module>>;
+using CreateModuleContainer = System.Func<bool, Cassette.IModuleContainer<Cassette.Module>>;
 // CreateModuleContainer    = useCache => ModuleContainer<ModuleType>
 
 namespace Cassette
@@ -68,7 +68,7 @@ namespace Cassette
             }
         }
 
-        public Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(bool useCache, string applicationVersion)
+        public Dictionary<Type, IModuleContainer<Module>> CreateModuleContainers(bool useCache, string applicationVersion)
         {
             return moduleSourceResultsByType.ToDictionary(
                 kvp => kvp.Key,

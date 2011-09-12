@@ -28,7 +28,7 @@ namespace Cassette
         bool isOutputOptimized;
         readonly IDirectory rootDirectory;
         IUrlGenerator urlGenerator;
-        readonly Dictionary<Type, ISearchableModuleContainer<Module>> moduleContainers;
+        readonly Dictionary<Type, IModuleContainer<Module>> moduleContainers;
         readonly Dictionary<Type, object> moduleFactories;
 
         public bool IsOutputOptimized
@@ -77,7 +77,7 @@ namespace Cassette
         protected IModuleContainer<T> GetModuleContainer<T>()
             where T: Module
         {
-            ISearchableModuleContainer<Module> container;
+            IModuleContainer<Module> container;
             if (moduleContainers.TryGetValue(typeof(T), out container))
             {
                 return (IModuleContainer<T>)container;
@@ -97,7 +97,7 @@ namespace Cassette
 
         public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
 
-        Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
+        Dictionary<Type, IModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
         {
             var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, rootDirectory, moduleFactories, version);
             foreach (var configuration in configurations)
