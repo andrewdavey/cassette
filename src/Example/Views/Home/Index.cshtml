@@ -1,7 +1,8 @@
 ﻿@model object
 @{
     ViewBag.Title = "Example Web App";
-
+    
+    Assets.Scripts.PageData("pageViewData", Model);
     Assets.Scripts.Reference("scripts/color-picker");
     Assets.HtmlTemplates.Reference("HtmlTemplates/color-picker");
 }
@@ -49,5 +50,3 @@
     </p>
     <ul data-bind="template: { foreach: savedColors, name: 'ColorListItem' }"></ul>
 </div>
-
-@Html.AssignPageViewData(Model)

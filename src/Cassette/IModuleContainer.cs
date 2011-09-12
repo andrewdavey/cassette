@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
+    // TODO: Clean up these two interfaces by merging them?
     public interface IModuleContainer<out T> : ISearchableModuleContainer<T>
         where T : Module
     {

@@ -43,6 +43,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -83,6 +84,7 @@
     <Compile Include="Scripts\DebugScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
+    <Compile Include="Scripts\PageDataScriptModule.cs" />
     <Compile Include="Scripts\ScriptModuleHtmlRenderer.cs" />
     <Compile Include="Stylesheets\AssignRenderer.cs" />
     <Compile Include="Stylesheets\DataUriGenerator.cs" />
