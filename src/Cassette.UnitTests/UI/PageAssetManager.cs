@@ -12,7 +12,7 @@ namespace Cassette.UI
         {
             referenceBuilder = new Mock<IReferenceBuilder<Module>>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
-            manager = new PageAssetManager<Module>(referenceBuilder.Object, placeholderTracker.Object);
+            manager = new PageAssetManager<Module>(referenceBuilder.Object, placeholderTracker.Object, Mock.Of<IModuleContainer<Module>>(), Mock.Of<IUrlGenerator>());
 
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
                               .Returns(new HtmlString("output"));

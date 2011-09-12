@@ -73,7 +73,9 @@ namespace Cassette.Web
             {
                 var manager = new PageAssetManager<T>(
                     CreateReferenceBuilder<T>(),
-                    (IPlaceholderTracker)items[PlaceholderTrackerKey]
+                    (IPlaceholderTracker)items[PlaceholderTrackerKey],
+                    GetModuleContainer<T>(),
+                    urlGenerator
                 );
                 items[key] = manager;
                 return manager;

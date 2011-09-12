@@ -6,5 +6,6 @@ namespace Cassette.UI
     {
         void Reference(string path, string location = null);
         IHtmlString Render(string location = null);
+        string ModuleUrl(string path);
     }
 }

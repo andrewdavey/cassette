@@ -7,15 +7,19 @@ namespace Cassette.UI
     public class PageAssetManager<T> : IPageAssetManager
         where T : Module
     {
-        public PageAssetManager(IReferenceBuilder<T> referenceBuilder, IPlaceholderTracker placeholderTracker)
+        public PageAssetManager(IReferenceBuilder<T> referenceBuilder, IPlaceholderTracker placeholderTracker, IModuleContainer<T> moduleContainer, IUrlGenerator urlGenerator)
         {
             this.referenceBuilder = referenceBuilder;
             this.placeholderTracker = placeholderTracker;
+            this.moduleContainer = moduleContainer;
+            this.urlGenerator = urlGenerator;
         }
 
         readonly IReferenceBuilder<T> referenceBuilder;
         readonly IPlaceholderTracker placeholderTracker;
-
+        readonly IUrlGenerator urlGenerator;
+        readonly IModuleContainer<T> moduleContainer;
+ 
         public void Reference(string path, string location = null)
         {
             referenceBuilder.AddReference(path, location);
@@ -26,6 +30,16 @@ namespace Cassette.UI
             return placeholderTracker.InsertPlaceholder(
                 () => CreateHtml(location)
             );
+        }
+
+        public string ModuleUrl(string path)
+        {
+            var module = moduleContainer.FindModuleContainingPath(path);
+            if (module == null)
+            {
+                throw new ArgumentException("Cannot find module contain path \"" + path + "\".");
+            }
+            return urlGenerator.CreateModuleUrl(module);
         }
 
         HtmlString CreateHtml(string location)
