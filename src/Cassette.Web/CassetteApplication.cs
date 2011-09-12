@@ -61,13 +61,13 @@ namespace Cassette.Web
             httpContext.Response.Flush();
         }
 
-        public override IPageAssetManager GetPageAssetManager<T>()
+        public override IPageAssetManager<T> GetPageAssetManager<T>()
         {
             var items = getCurrentHttpContext().Items;
             var key = "PageAssetManager:" + typeof(T).FullName;
             if (items.Contains(key))
             {
-                return (IPageAssetManager)items[key];
+                return (IPageAssetManager<T>)items[key];
             }
             else
             {

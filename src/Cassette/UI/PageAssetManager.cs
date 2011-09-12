@@ -4,7 +4,7 @@ using System.Web;
 
 namespace Cassette.UI
 {
-    public class PageAssetManager<T> : IPageAssetManager
+    public class PageAssetManager<T> : IPageAssetManager<T>
         where T : Module
     {
         public PageAssetManager(IReferenceBuilder<T> referenceBuilder, IPlaceholderTracker placeholderTracker, IModuleContainer<T> moduleContainer, IUrlGenerator urlGenerator)

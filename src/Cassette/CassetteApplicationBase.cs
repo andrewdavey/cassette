@@ -95,7 +95,7 @@ namespace Cassette
                 .FirstOrDefault(module => module != null);
         }
 
-        public abstract IPageAssetManager GetPageAssetManager<T>() where T : Module;
+        public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
 
         Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
         {

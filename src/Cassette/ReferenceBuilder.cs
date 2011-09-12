@@ -40,10 +40,10 @@ namespace Cassette
                 location = module.Location;
             }
 
-            AddModule(module, location);
+            AddReference(module, location);
         }
 
-        void AddModule(T module, string location)
+        public void AddReference(T module, string location)
         {
             var modules = GetOrCreateModuleSet(location);
             if (modules.Contains(module)) return;

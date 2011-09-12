@@ -6,6 +6,7 @@ namespace Cassette
         where T : Module
     {
         void AddReference(string path, string location);
+        void AddReference(T module, string location);
         IEnumerable<T> GetModules(string location);
     }
 }
