@@ -83,6 +83,7 @@
     <Compile Include="Scripts\DebugScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptModule.cs" />
     <Compile Include="Scripts\ExternalScriptModuleHtmlRenderer.cs" />
+    <Compile Include="Scripts\InlineScriptModule.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="Scripts\ScriptModuleHtmlRenderer.cs" />
     <Compile Include="Scripts\ScriptPipeline.cs" />

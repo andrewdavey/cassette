@@ -68,7 +68,7 @@ namespace Cassette
             GC.SuppressFinalize(this); 
         }
 
-        protected IReferenceBuilder<T> CreateReferenceBuilder<T>()
+        protected IReferenceBuilder CreateReferenceBuilder<T>()
             where T : Module
         {
             return new ReferenceBuilder<T>(GetModuleContainer<T>(), (IModuleFactory<T>)moduleFactories[typeof(T)]);
@@ -95,7 +95,7 @@ namespace Cassette
                 .FirstOrDefault(module => module != null);
         }
 
-        public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
+        public abstract IPageAssetManager GetPageAssetManager<T>() where T : Module;
 
         Dictionary<Type, ISearchableModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
         {

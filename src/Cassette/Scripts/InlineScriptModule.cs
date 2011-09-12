@@ -3,11 +3,11 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class InlineScriptModule : ScriptModule
+    public class InlineScriptModule : Module
     {
         readonly string scriptContent;
 
-        public InlineScriptModule(string scriptContent) : base("")
+        public InlineScriptModule(string scriptContent)
         {
             this.scriptContent = scriptContent;
         }

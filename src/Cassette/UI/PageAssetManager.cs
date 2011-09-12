@@ -4,10 +4,10 @@ using System.Web;
 
 namespace Cassette.UI
 {
-    public class PageAssetManager<T> : IPageAssetManager<T>
+    public class PageAssetManager<T> : IPageAssetManager
         where T : Module
     {
-        public PageAssetManager(IReferenceBuilder<T> referenceBuilder, IPlaceholderTracker placeholderTracker, IModuleContainer<T> moduleContainer, IUrlGenerator urlGenerator)
+        public PageAssetManager(IReferenceBuilder referenceBuilder, IPlaceholderTracker placeholderTracker, IModuleContainer<T> moduleContainer, IUrlGenerator urlGenerator)
         {
             this.referenceBuilder = referenceBuilder;
             this.placeholderTracker = placeholderTracker;
@@ -15,12 +15,12 @@ namespace Cassette.UI
             this.urlGenerator = urlGenerator;
         }
 
-        readonly IReferenceBuilder<T> referenceBuilder;
+        readonly IReferenceBuilder referenceBuilder;
         readonly IPlaceholderTracker placeholderTracker;
         readonly IUrlGenerator urlGenerator;
         readonly IModuleContainer<T> moduleContainer;
  
-        public IReferenceBuilder<T> ReferenceBuilder
+        public IReferenceBuilder ReferenceBuilder
         {
             get { return referenceBuilder; }
         }

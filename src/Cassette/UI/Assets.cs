@@ -9,17 +9,17 @@ namespace Cassette.UI
     {
         public static Func<ICassetteApplication> GetApplication;
 
-        public static IPageAssetManager<ScriptModule> Scripts
+        public static IPageAssetManager Scripts
         {
             get { return Application.GetPageAssetManager<ScriptModule>(); }
         }
 
-        public static IPageAssetManager<StylesheetModule> Stylesheets
+        public static IPageAssetManager Stylesheets
         {
             get { return Application.GetPageAssetManager<StylesheetModule>(); }
         }
 
-        public static IPageAssetManager<HtmlTemplateModule> HtmlTemplates
+        public static IPageAssetManager HtmlTemplates
         {
             get { return Application.GetPageAssetManager<HtmlTemplateModule>(); }
         }

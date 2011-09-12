@@ -4,7 +4,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class ReferenceBuilder<T> : IReferenceBuilder<T>
+    public class ReferenceBuilder<T> : IReferenceBuilder
         where T: Module
     {
         public ReferenceBuilder(IModuleContainer<T> moduleContainer, IModuleFactory<T> moduleFactory)
@@ -15,7 +15,7 @@ namespace Cassette
 
         readonly IModuleContainer<T> moduleContainer;
         readonly IModuleFactory<T> moduleFactory;
-        readonly Dictionary<string, List<T>> modulesByLocation = new Dictionary<string, List<T>>();
+        readonly Dictionary<string, List<Module>> modulesByLocation = new Dictionary<string, List<Module>>();
         
         public void AddReference(string path, string location)
         {
@@ -43,30 +43,30 @@ namespace Cassette
             AddReference(module, location);
         }
 
-        public void AddReference(T module, string location)
+        public void AddReference(Module module, string location)
         {
             var modules = GetOrCreateModuleSet(location);
             if (modules.Contains(module)) return;
             modules.Add(module);
         }
 
-        public IEnumerable<T> GetModules(string location)
+        public IEnumerable<Module> GetModules(string location)
         {
             var modules = GetOrCreateModuleSet(location);
             return moduleContainer.IncludeReferencesAndSortModules(modules);
         }
 
-        List<T> GetOrCreateModuleSet(string location)
+        List<Module> GetOrCreateModuleSet(string location)
         {
             location = location ?? ""; // Dictionary doesn't accept null keys.
-            List<T> modules;
+            List<Module> modules;
             if (modulesByLocation.TryGetValue(location, out modules))
             {
                 return modules;
             }
             else
             {
-                modules = new List<T>();
+                modules = new List<Module>();
                 modulesByLocation.Add(location, modules);
                 return modules;
             }

@@ -2,11 +2,10 @@
 
 namespace Cassette
 {
-    public interface IReferenceBuilder<T>
-        where T : Module
+    public interface IReferenceBuilder
     {
         void AddReference(string path, string location);
-        void AddReference(T module, string location);
-        IEnumerable<T> GetModules(string location);
+        void AddReference(Module module, string location);
+        IEnumerable<Module> GetModules(string location);
     }
 }

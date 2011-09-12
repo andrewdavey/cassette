@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public interface IModuleContainer<T> : ISearchableModuleContainer<T>
+    public interface IModuleContainer<out T> : ISearchableModuleContainer<T>
         where T : Module
     {
         IEnumerable<T> Modules { get; }
-        IEnumerable<T> IncludeReferencesAndSortModules(IEnumerable<T> modules);
+        IEnumerable<Module> IncludeReferencesAndSortModules(IEnumerable<Module> modules);
     }
 
     // This type-system trickery allows a List<ISearchableModuleContainer<Module>> to be searched

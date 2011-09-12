@@ -26,6 +26,11 @@ namespace Cassette
             }
         }
 
+        protected Module()
+        {
+            // Protected constructor to allow InlineScriptModule to be created without a path.
+        }
+
         readonly string path;
         IList<IAsset> assets = new List<IAsset>();
         bool hasSortedAssets;

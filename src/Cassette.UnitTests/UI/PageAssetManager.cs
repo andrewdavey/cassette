@@ -10,7 +10,7 @@ namespace Cassette.UI
     {
         public PageAssetManager_Tests()
         {
-            referenceBuilder = new Mock<IReferenceBuilder<Module>>();
+            referenceBuilder = new Mock<IReferenceBuilder>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
             manager = new PageAssetManager<Module>(referenceBuilder.Object, placeholderTracker.Object, Mock.Of<IModuleContainer<Module>>(), Mock.Of<IUrlGenerator>());
 
@@ -19,7 +19,7 @@ namespace Cassette.UI
         }
 
         readonly PageAssetManager<Module> manager;
-        readonly Mock<IReferenceBuilder<Module>> referenceBuilder;
+        readonly Mock<IReferenceBuilder> referenceBuilder;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
 
         [Fact]

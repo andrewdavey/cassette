@@ -18,27 +18,27 @@ namespace Cassette
         }
 
         readonly T[] modules;
-        readonly Dictionary<T, HashSet<T>> moduleImmediateReferences;
+        readonly Dictionary<Module, HashSet<Module>> moduleImmediateReferences;
 
         public IEnumerable<T> Modules
         {
             get { return modules; }
         }
 
-        public IEnumerable<T> IncludeReferencesAndSortModules(IEnumerable<T> modulesToSort)
+        public IEnumerable<Module> IncludeReferencesAndSortModules(IEnumerable<Module> modulesToSort)
         {
             var modulesArray = modulesToSort.ToArray();
             var references = GetModuleReferencesWithImplicitOrderingIncluded(modulesArray);
-            var all = new HashSet<T>();
+            var all = new HashSet<Module>();
             foreach (var module in modulesArray)
             {
                 AddModulesReferencedBy(module, all);   
             }
-            var graph = new Graph<T>(
+            var graph = new Graph<Module>(
                 all,
                 module =>
                 {
-                    HashSet<T> set;
+                    HashSet<Module> set;
                     if (references.TryGetValue(module, out set)) return set;
                     return Enumerable.Empty<T>();
                 }
@@ -46,42 +46,42 @@ namespace Cassette
             return graph.TopologicalSort();
         }
 
-        Dictionary<T, HashSet<T>> GetModuleReferencesWithImplicitOrderingIncluded(IList<T> modulesArray)
+        Dictionary<Module, HashSet<Module>> GetModuleReferencesWithImplicitOrderingIncluded(IList<Module> modulesArray)
         {
             var roots = modulesArray.Where(m =>
             {
-                HashSet<T> set;
+                HashSet<Module> set;
                 if (moduleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
                 return true;
             }).ToList();
 
             // Clone the original references dictionary, so we can add the extra
             // implicit references based on array order.
-            var references = new Dictionary<T, HashSet<T>>();
+            var references = new Dictionary<Module, HashSet<Module>>();
             foreach (var reference in moduleImmediateReferences)
             {
-                references[reference.Key] = new HashSet<T>(reference.Value);
+                references[reference.Key] = new HashSet<Module>(reference.Value);
             }
             for (int i = 1; i < roots.Count; i++)
             {
                 var module = roots[i];
                 var previous = modulesArray[i - 1];
-                HashSet<T> set;
+                HashSet<Module> set;
                 if (!references.TryGetValue(module, out set))
                 {
-                    references[module] = set = new HashSet<T>();
+                    references[module] = set = new HashSet<Module>();
                 }
                 set.Add(previous);
             }
             return references;
         }
 
-        void AddModulesReferencedBy(T module, HashSet<T> all)
+        void AddModulesReferencedBy(Module module, HashSet<Module> all)
         {
             if (all.Contains(module)) return;
             all.Add(module);
 
-            HashSet<T> referencedModules;
+            HashSet<Module> referencedModules;
             if (!moduleImmediateReferences.TryGetValue(module, out referencedModules)) return;
             foreach (var referencedModule in referencedModules)
             {
@@ -127,14 +127,14 @@ namespace Cassette
             }
         }
 
-        Dictionary<T, HashSet<T>> BuildModuleImmediateReferenceDictionary()
+        Dictionary<Module, HashSet<Module>> BuildModuleImmediateReferenceDictionary()
         {
             return (
                 from module in modules
                 select new 
                 { 
-                    module, 
-                    references = new HashSet<T>(module.Assets.SelectMany(a => a.References)
+                    module,
+                    references = new HashSet<Module>(module.Assets.SelectMany(a => a.References)
                         .Where(r => r.Type == AssetReferenceType.DifferentModule
                                  || r.Type == AssetReferenceType.Url)
                         .Select(r => r.Path)
@@ -142,7 +142,7 @@ namespace Cassette
                         .Select(FindModuleContainingPath)
                     ) 
                 }
-            ).ToDictionary(x => x.module, x => x.references);
+            ).ToDictionary(x => (Module)x.module, x => x.references);
         }
 
         string CreateAssetReferenceNotFoundMessage(AssetReference reference)
