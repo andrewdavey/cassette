@@ -12,7 +12,8 @@ namespace Cassette.UI
         {
             referenceBuilder = new Mock<IReferenceBuilder>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
-            manager = new PageAssetManager<Module>(referenceBuilder.Object, placeholderTracker.Object, Mock.Of<IModuleContainer<Module>>(), Mock.Of<IUrlGenerator>());
+            application = Mock.Of<ICassetteApplication>();
+            manager = new PageAssetManager<Module>(application, referenceBuilder.Object, placeholderTracker.Object, Mock.Of<IModuleContainer<Module>>());
 
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
                               .Returns(new HtmlString("output"));
@@ -21,6 +22,7 @@ namespace Cassette.UI
         readonly PageAssetManager<Module> manager;
         readonly Mock<IReferenceBuilder> referenceBuilder;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
+        readonly ICassetteApplication application;
 
         [Fact]
         public void WhenAddReference_ThenReferenceBuilderIsCalled()
@@ -34,7 +36,7 @@ namespace Cassette.UI
         {
             var module = new Mock<Module>("~/stub");
             referenceBuilder.Setup(b => b.GetModules(null)).Returns(new[] { module.Object });
-            module.Setup(m => m.Render())
+            module.Setup(m => m.Render(application))
                   .Returns(new HtmlString("output"));
             manager.Reference("test");
 
@@ -47,7 +49,7 @@ namespace Cassette.UI
         public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenModuleRenderOutputReturned()
         {
             var module = new Mock<Module>("~/stub");
-            module.Setup(m => m.Render())
+            module.Setup(m => m.Render(application))
                   .Returns(new HtmlString("output"));
             referenceBuilder.Setup(b => b.GetModules("body")).Returns(new[] { module.Object });
             manager.Reference("test");
@@ -61,10 +63,10 @@ namespace Cassette.UI
         public void GivenAddReferenceToTwoPaths_WhenRender_ThenModuleRenderOutputsSeparatedByNewLinesReturned()
         {
             var module1 = new Mock<Module>("~/stub1");
-            module1.Setup(m => m.Render())
-                  .Returns(new HtmlString("output1"));
+            module1.Setup(m => m.Render(application))
+                   .Returns(new HtmlString("output1"));
             var module2 = new Mock<Module>("~/stub2");
-            module2.Setup(m => m.Render())
+            module2.Setup(m => m.Render(application))
                    .Returns(new HtmlString("output2"));
             referenceBuilder.Setup(b => b.GetModules(null))
                             .Returns(new[] { module1.Object, module2.Object });

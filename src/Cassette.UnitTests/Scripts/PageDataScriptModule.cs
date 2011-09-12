@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Moq;
 using Should;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace Cassette.Scripts
         public void GivenPageDataScriptModuleWithGlobalVariableAndDictionary_WhenRender_ThenJavaScriptGenerated()
         {
             var module = new PageDataScriptModule("app", new Dictionary<string, object> { { "data", "test" } });
-            var html = module.Render().ToHtmlString();
+            var html = module.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
                 "<script type=\"text/javascript\">",
@@ -27,7 +28,7 @@ namespace Cassette.Scripts
         public void GivenPageDataScriptModuleWithGlobalVariableAndData_WhenRender_ThenJavaScriptGenerated()
         {
             var module = new PageDataScriptModule("app", new { data = "test" });
-            var html = module.Render().ToHtmlString();
+            var html = module.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
                 "<script type=\"text/javascript\">",
@@ -47,7 +48,7 @@ namespace Cassette.Scripts
                 data1 = new { sub = "\"quoted\"", list = new[] { 1,2,3 } },
                 data2 = true
             });
-            var html = module.Render().ToHtmlString();
+            var html = module.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
                 "<script type=\"text/javascript\">",

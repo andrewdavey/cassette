@@ -26,7 +26,7 @@ namespace Cassette.Stylesheets
             // No processing required.
         }
 
-        public override IHtmlString Render()
+        public override IHtmlString Render(ICassetteApplication application)
         {
             if (string.IsNullOrEmpty(Media))
             {

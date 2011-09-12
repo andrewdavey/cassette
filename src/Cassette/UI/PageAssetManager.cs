@@ -7,17 +7,17 @@ namespace Cassette.UI
     public class PageAssetManager<T> : IPageAssetManager<T>
         where T : Module
     {
-        public PageAssetManager(IReferenceBuilder referenceBuilder, IPlaceholderTracker placeholderTracker, IModuleContainer<T> moduleContainer, IUrlGenerator urlGenerator)
+        public PageAssetManager(ICassetteApplication application, IReferenceBuilder referenceBuilder, IPlaceholderTracker placeholderTracker, IModuleContainer<T> moduleContainer)
         {
+            this.application = application;
             this.referenceBuilder = referenceBuilder;
             this.placeholderTracker = placeholderTracker;
             this.moduleContainer = moduleContainer;
-            this.urlGenerator = urlGenerator;
         }
 
+        readonly ICassetteApplication application;
         readonly IReferenceBuilder referenceBuilder;
         readonly IPlaceholderTracker placeholderTracker;
-        readonly IUrlGenerator urlGenerator;
         readonly IModuleContainer<T> moduleContainer;
  
         public IReferenceBuilder ReferenceBuilder
@@ -44,14 +44,14 @@ namespace Cassette.UI
             {
                 throw new ArgumentException("Cannot find module contain path \"" + path + "\".");
             }
-            return urlGenerator.CreateModuleUrl(module);
+            return application.UrlGenerator.CreateModuleUrl(module);
         }
 
         HtmlString CreateHtml(string location)
         {
             return new HtmlString(string.Join(Environment.NewLine,
                 referenceBuilder.GetModules(location).Select(
-                    module => module.Render().ToHtmlString()
+                    module => module.Render(application).ToHtmlString()
                 )
             ));
         }

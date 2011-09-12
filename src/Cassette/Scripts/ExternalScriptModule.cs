@@ -65,9 +65,9 @@ namespace Cassette.Scripts
             base.Process(application);
         }
 
-        public override IHtmlString Render()
+        public override IHtmlString Render(ICassetteApplication application)
         {
-            var externalRenderer = new ExternalScriptModuleHtmlRenderer(Renderer);
+            var externalRenderer = new ExternalScriptModuleHtmlRenderer(Renderer, application);
             return externalRenderer.Render(this);
         }
 

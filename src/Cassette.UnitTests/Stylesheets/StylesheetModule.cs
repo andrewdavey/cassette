@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Cassette.ModuleProcessing;
+﻿using Cassette.ModuleProcessing;
 using Moq;
 using Should;
 using Xunit;
@@ -17,7 +16,7 @@ namespace Cassette.Stylesheets
                 Renderer = renderer.Object
             };
 
-            module.Render();
+            module.Render(Mock.Of<ICassetteApplication>());
             
             renderer.Verify(r => r.Render(module));
         }

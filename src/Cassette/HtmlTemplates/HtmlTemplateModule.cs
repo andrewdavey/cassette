@@ -21,7 +21,7 @@ namespace Cassette.HtmlTemplates
             Processor.Process(this, application);
         }
 
-        public override IHtmlString Render()
+        public override IHtmlString Render(ICassetteApplication application)
         {
             return Renderer.Render(this);
         }

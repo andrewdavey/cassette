@@ -1,4 +1,5 @@
 ﻿using System;
+using Moq;
 using Should;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace Cassette.Scripts
         public void GivenInlineScriptModuleWithContent_WhenRender_ThenScriptElementCreatedWithContent()
         {
             var module = new InlineScriptModule("var x = 1;");
-            var html = module.Render().ToHtmlString();
+            var html = module.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
             html.ShouldEqual(
                 "<script type=\"text/javascript\">" + Environment.NewLine + 
                 "var x = 1;" + Environment.NewLine + 

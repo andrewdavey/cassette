@@ -7,10 +7,12 @@ namespace Cassette.Scripts
     public class ExternalScriptModuleHtmlRenderer : IModuleHtmlRenderer<ExternalScriptModule>
     {
         readonly IModuleHtmlRenderer<ScriptModule> fallbackScriptRenderer;
+        readonly ICassetteApplication application;
 
-        public ExternalScriptModuleHtmlRenderer(IModuleHtmlRenderer<ScriptModule> fallbackScriptRenderer)
+        public ExternalScriptModuleHtmlRenderer(IModuleHtmlRenderer<ScriptModule> fallbackScriptRenderer, ICassetteApplication application)
         {
             this.fallbackScriptRenderer = fallbackScriptRenderer;
+            this.application = application;
         }
 
         public IHtmlString Render(ExternalScriptModule module)
@@ -23,15 +25,22 @@ namespace Cassette.Scripts
             }
             else
             {
-                return new HtmlString(
-                    string.Format(
-                        "{1}{0}<script type=\"text/javascript\">{0}if({2}){{{0}{3}{0}}}{0}</script>",
-                        Environment.NewLine,
-                        externalScriptHtml,
-                        module.FallbackCondition,
-                        CreateFallbackScripts(module)
-                    )
-                );
+                if (application.IsOutputOptimized)
+                {
+                    return new HtmlString(
+                        string.Format(
+                            "{1}{0}<script type=\"text/javascript\">{0}if({2}){{{0}{3}{0}}}{0}</script>",
+                            Environment.NewLine,
+                            externalScriptHtml,
+                            module.FallbackCondition,
+                            CreateFallbackScripts(module)
+                            )
+                        );
+                }
+                else
+                {
+                    return fallbackScriptRenderer.Render(module);
+                }
             }
         }
 

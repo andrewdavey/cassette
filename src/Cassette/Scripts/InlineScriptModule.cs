@@ -12,7 +12,7 @@ namespace Cassette.Scripts
             this.scriptContent = scriptContent;
         }
 
-        public override IHtmlString Render()
+        public override IHtmlString Render(ICassetteApplication application)
         {
             return new HtmlString(
                 "<script type=\"text/javascript\">" + Environment.NewLine + 
