@@ -20,6 +20,11 @@ namespace Cassette.UI
         readonly IUrlGenerator urlGenerator;
         readonly IModuleContainer<T> moduleContainer;
  
+        public IReferenceBuilder<T> ReferenceBuilder
+        {
+            get { return referenceBuilder; }
+        }
+
         public void Reference(string path, string location = null)
         {
             referenceBuilder.AddReference(path, location);

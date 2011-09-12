@@ -103,6 +103,7 @@
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="UI\Assets.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
+    <Compile Include="Scripts\InlineScriptModule.cs" />
     <Compile Include="UI\IPageAssetManager.cs" />
     <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Stylesheets\StylesheetModule.cs" />
     <Compile Include="Stylesheets\StylesheetModuleFactory.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />
+    <Compile Include="UI\ScriptModuleExtensions.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Scripts\CoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\CoffeeScriptCompileException.cs" />
