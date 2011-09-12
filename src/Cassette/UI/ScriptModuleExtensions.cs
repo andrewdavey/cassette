@@ -10,12 +10,12 @@ namespace Cassette.UI
             assetManager.ReferenceBuilder.AddReference(new InlineScriptModule(scriptContent), location);
         }
 
-        public static void PageData(this IPageAssetManager<ScriptModule> assetManager, string globalVariable, object data, string location = null)
+        public static void AddPageData(this IPageAssetManager<ScriptModule> assetManager, string globalVariable, object data, string location = null)
         {
             assetManager.ReferenceBuilder.AddReference(new PageDataScriptModule(globalVariable, data), location);
         }
 
-        public static void PageData(this IPageAssetManager<ScriptModule> assetManager, string globalVariable, IDictionary<string, object> data, string location = null)
+        public static void AddPageData(this IPageAssetManager<ScriptModule> assetManager, string globalVariable, IDictionary<string, object> data, string location = null)
         {
             assetManager.ReferenceBuilder.AddReference(new PageDataScriptModule(globalVariable, data), location);
         }
