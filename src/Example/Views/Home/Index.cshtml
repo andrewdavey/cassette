@@ -2,7 +2,10 @@
 @{
     ViewBag.Title = "Example Web App";
     
-    Assets.Scripts.PageData("pageViewData", Model);
+    // Pass the contents of the Model to the client code via an inline script block.
+    Assets.Scripts.AddPageData("pageViewData", Model);
+    
+    // Reference the modules this page needs.
     Assets.Scripts.Reference("scripts/color-picker");
     Assets.HtmlTemplates.Reference("HtmlTemplates/color-picker");
 }
