@@ -66,7 +66,7 @@ namespace Cassette.Stylesheets
                     ex
                 );
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
                 throw new LessCompileException(
                     string.Format("Less compile error in {0}.", file.FullPath),
