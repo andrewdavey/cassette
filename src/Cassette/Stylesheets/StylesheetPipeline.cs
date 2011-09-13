@@ -23,6 +23,7 @@ namespace Cassette.Stylesheets
                 yield return new ParseLessReferences();
                 yield return new CompileLess(new LessCompiler());
             }
+            yield return new ExpandCssUrls();
             if (ConvertImageUrlsToDataUris)
             {
                 yield return new AddTransformerToAssets(new DataUriGenerator());
@@ -30,7 +31,6 @@ namespace Cassette.Stylesheets
             yield return new SortAssetsByDependency();
             if (application.IsOutputOptimized)
             {
-                yield return new ExpandCssUrls();
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);
             }
