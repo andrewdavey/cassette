@@ -27,26 +27,22 @@ namespace Cassette.Web
 
         public void OnPostMapRequestHandler(HttpContextBase httpContext)
         {
-            if (httpContext.CurrentHandler is AssemblyResourceLoader)
+            IPlaceholderTracker tracker;
+            if (HtmlRewritingEnabled)
             {
-                // The AssemblyResourceLoader handler (for WebResource.axd requests) prevents further writes via some internal puke code.
-                // This prevents response filters from working. The result is an empty response body!
-                // So don't bother installing a filter for these requests. We don't need to rewrite them anyway.
-                return;
+                tracker = new PlaceholderTracker();
             }
-
-            var tracker = new PlaceholderTracker();
+            else
+            {
+                tracker = new NullPlacholderTracker();
+            }
             httpContext.Items[PlaceholderTrackerKey] = tracker;
-
-            var response = httpContext.Response;
-            response.Filter = new PlaceholderReplacingResponseFilter(
-                response,
-                tracker
-            );
         }
 
         public void OnPostRequestHandlerExecute(HttpContextBase httpContext)
         {
+            if (!HtmlRewritingEnabled) return;
+            
             if (httpContext.CurrentHandler is AssemblyResourceLoader)
             {
                 // The AssemblyResourceLoader handler (for WebResource.axd requests) prevents further writes via some internal puke code.
@@ -55,30 +51,51 @@ namespace Cassette.Web
                 return;
             }
 
-            // Flush here so that our filter (installed in OnBeginRequest) will be called
-            // before the page output is compressed for the cache 
-            // i.e When dynamicCompressionBeforeCache="true" in web.config.
-            httpContext.Response.Flush();
+            if (!CanRewriteOutput(httpContext)) return;
+
+            var response = httpContext.Response;
+            var tracker = (IPlaceholderTracker)httpContext.Items[PlaceholderTrackerKey];
+            var filter = new PlaceholderReplacingResponseFilter(
+                response,
+                tracker
+            );
+            response.Filter = filter;
         }
 
-        public override IPageAssetManager<T> GetPageAssetManager<T>()
+        bool CanRewriteOutput(HttpContextBase httpContext)
+        {
+            var statusCode = httpContext.Response.StatusCode;
+            if (300 <= statusCode && statusCode < 400) return false;
+            if (statusCode == 401) return false; // 401 gets converted into a redirect by FormsAuthenticationModule.
+
+            return IsHtmlResponse(httpContext);
+        }
+
+        bool IsHtmlResponse(HttpContextBase httpContext)
+        {
+            return httpContext.Response.ContentType == "text/html" ||
+                   httpContext.Response.ContentType == "application/xhtml+xml";
+        }
+
+        protected override IPlaceholderTracker GetPlaceholderTracker()
         {
             var items = getCurrentHttpContext().Items;
-            var key = "PageAssetManager:" + typeof(T).FullName;
+            return (IPlaceholderTracker)items[PlaceholderTrackerKey];
+        }
+
+        protected override IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create)
+        {
+            var items = getCurrentHttpContext().Items;
+            var key = "ReferenceBuilder:" + typeof(T).FullName;
             if (items.Contains(key))
             {
-                return (IPageAssetManager<T>)items[key];
+                return (IReferenceBuilder<T>)items[key];
             }
             else
             {
-                var manager = new PageAssetManager<T>(
-                    CreateReferenceBuilder<T>(),
-                    (IPlaceholderTracker)items[PlaceholderTrackerKey],
-                    GetModuleContainer<T>(),
-                    urlGenerator
-                );
-                items[key] = manager;
-                return manager;
+                var builder = create();
+                items[key] = builder;
+                return builder;
             }
         }
 

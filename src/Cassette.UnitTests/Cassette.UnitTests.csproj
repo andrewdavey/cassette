@@ -101,7 +101,6 @@
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="UI\Assets.cs" />
-    <Compile Include="UI\PageAssetManager.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />

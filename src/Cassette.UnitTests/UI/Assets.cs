@@ -15,8 +15,8 @@ namespace Cassette.UI
         {
             var application = new Mock<ICassetteApplication>();
             Assets.GetApplication = () => application.Object;
-            var manager = new Mock<IPageAssetManager<ScriptModule>>();
-            application.Setup(a => a.GetPageAssetManager<ScriptModule>())
+            var manager = new Mock<IReferenceBuilder<ScriptModule>>();
+            application.Setup(a => a.GetReferenceBuilder<ScriptModule>())
                        .Returns(manager.Object);
 
             Assets.Scripts.ShouldEqual(manager.Object);
@@ -27,8 +27,8 @@ namespace Cassette.UI
         {
             var application = new Mock<ICassetteApplication>();
             Assets.GetApplication = () => application.Object;
-            var manager = new Mock<IPageAssetManager<StylesheetModule>>();
-            application.Setup(a => a.GetPageAssetManager<StylesheetModule>())
+            var manager = new Mock<IReferenceBuilder<StylesheetModule>>();
+            application.Setup(a => a.GetReferenceBuilder<StylesheetModule>())
                        .Returns(manager.Object);
 
             Assets.Stylesheets.ShouldEqual(manager.Object);
@@ -39,8 +39,8 @@ namespace Cassette.UI
         {
             var application = new Mock<ICassetteApplication>();
             Assets.GetApplication = () => application.Object;
-            var manager = new Mock<IPageAssetManager<HtmlTemplateModule>>();
-            application.Setup(a => a.GetPageAssetManager<HtmlTemplateModule>())
+            var manager = new Mock<IReferenceBuilder<HtmlTemplateModule>>();
+            application.Setup(a => a.GetReferenceBuilder<HtmlTemplateModule>())
                        .Returns(manager.Object);
 
             Assets.HtmlTemplates.ShouldEqual(manager.Object);

@@ -106,8 +106,6 @@
     <Compile Include="UI\Assets.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Scripts\InlineScriptModule.cs" />
-    <Compile Include="UI\IPageAssetManager.cs" />
-    <Compile Include="IReferenceBuilder.cs" />
     <Compile Include="ModuleProcessing\ConditionalStep.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModule.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateModuleFactory.cs" />
@@ -120,7 +118,7 @@
     <Compile Include="Stylesheets\MicrosoftStyleSheetMinifier.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />
     <Compile Include="UI\IPlaceholderTracker.cs" />
-    <Compile Include="UI\PageAssetManager.cs" />
+    <Compile Include="UI\IReferenceBuilder.cs" />
     <Compile Include="Persistence\CachedAssetSourceInfo.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />
@@ -148,13 +146,13 @@
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="ModuleProcessing\Pipeline.cs" />
-    <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\ScriptModule.cs" />
     <Compile Include="Scripts\ScriptModuleFactory.cs" />
     <Compile Include="ModuleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="Stylesheets\StylesheetModule.cs" />
     <Compile Include="Stylesheets\StylesheetModuleFactory.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />
+    <Compile Include="UI\ReferenceBuilder.cs" />
     <Compile Include="UI\ScriptModuleExtensions.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Scripts\CoffeeScriptCompiler.cs" />

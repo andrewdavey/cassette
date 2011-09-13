@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace Cassette
+namespace Cassette.UI
 {
-    public interface IReferenceBuilder
+    public interface IReferenceBuilder<T>
+        where T : Module
     {
         void AddReference(string path, string location);
         void AddReference(Module module, string location);

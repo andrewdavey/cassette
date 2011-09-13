@@ -1,23 +1,30 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.UI
 {
-    public class ReferenceBuilder<T> : IReferenceBuilder
+    public class ReferenceBuilder<T> : IReferenceBuilder<T>
         where T: Module
     {
-        public ReferenceBuilder(IModuleContainer<T> moduleContainer, IModuleFactory<T> moduleFactory)
+        public ReferenceBuilder(IModuleContainer<T> moduleContainer, IModuleFactory<T> moduleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
         {
             this.moduleContainer = moduleContainer;
             this.moduleFactory = moduleFactory;
+            this.placeholderTracker = placeholderTracker;
+            this.application = application;
         }
 
         readonly IModuleContainer<T> moduleContainer;
         readonly IModuleFactory<T> moduleFactory;
+        readonly IPlaceholderTracker placeholderTracker;
+        readonly ICassetteApplication application;
         readonly Dictionary<string, List<Module>> modulesByLocation = new Dictionary<string, List<Module>>();
-        
-        public void AddReference(string path, string location)
+        readonly HashSet<string> renderedLocations = new HashSet<string>();
+ 
+        public void AddReference(string path, string location = null)
         {
             path = PathUtilities.AppRelative(path);
 
@@ -54,6 +61,33 @@ namespace Cassette
         {
             var modules = GetOrCreateModuleSet(location);
             return moduleContainer.IncludeReferencesAndSortModules(modules);
+        }
+
+        public IHtmlString Render(string location = null)
+        {
+            renderedLocations.Add(location ?? "");
+            return placeholderTracker.InsertPlaceholder(
+                () => CreateHtml(location)
+            );
+        }
+
+        public string ModuleUrl(string path)
+        {
+            var module = moduleContainer.FindModuleContainingPath(path);
+            if (module == null)
+            {
+                throw new ArgumentException("Cannot find module contain path \"" + path + "\".");
+            }
+            return application.UrlGenerator.CreateModuleUrl(module);
+        }
+
+        HtmlString CreateHtml(string location)
+        {
+            return new HtmlString(string.Join(Environment.NewLine,
+                GetModules(location).Select(
+                    module => module.Render(application).ToHtmlString()
+                )
+            ));
         }
 
         List<Module> GetOrCreateModuleSet(string location)

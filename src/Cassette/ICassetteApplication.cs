@@ -9,7 +9,8 @@ namespace Cassette
         IDirectory RootDirectory { get; }
         bool IsOutputOptimized { get; set; }
         IUrlGenerator UrlGenerator { get; set; }
+        bool HtmlRewritingEnabled { get; set; }
 
-        IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
+        IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Module;
     }
 }

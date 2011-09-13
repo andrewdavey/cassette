@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -28,6 +29,7 @@ namespace Cassette.Web
             response.SetupGet(r => r.ContentType).Returns("text/html");
             response.SetupGet(r => r.Output.Encoding).Returns(Encoding.ASCII);
             response.SetupGet(r => r.Filter).Returns(outputStream);
+            response.SetupGet(r => r.Headers).Returns(new NameValueCollection());
             filter = new PlaceholderReplacingResponseFilter(response.Object, placeholderTracker.Object);
         }
 

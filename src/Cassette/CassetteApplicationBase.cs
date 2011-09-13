@@ -17,6 +17,7 @@ namespace Cassette
             this.rootDirectory = rootDirectory;
             this.isOutputOptimized = isOutputOptimized;
             this.urlGenerator = urlGenerator;
+            HtmlRewritingEnabled = true;
             moduleFactories = CreateModuleFactories();
             moduleContainers = CreateModuleContainers(
                 configurations,
@@ -52,6 +53,15 @@ namespace Cassette
             }
         }
 
+        public bool HtmlRewritingEnabled { get; set; }
+
+        public IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Module
+        {
+            return GetOrCreateReferenceBuilder(CreateReferenceBuilder<T>);
+        }
+
+        protected abstract IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create) where T : Module;
+
         public void Dispose()
         {
             Dispose(true);
@@ -68,11 +78,18 @@ namespace Cassette
             GC.SuppressFinalize(this); 
         }
 
-        protected IReferenceBuilder CreateReferenceBuilder<T>()
+        IReferenceBuilder<T> CreateReferenceBuilder<T>()
             where T : Module
         {
-            return new ReferenceBuilder<T>(GetModuleContainer<T>(), (IModuleFactory<T>)moduleFactories[typeof(T)]);
+            return new ReferenceBuilder<T>(
+                GetModuleContainer<T>(),
+                (IModuleFactory<T>)moduleFactories[typeof(T)],
+                GetPlaceholderTracker(),
+                this
+            );
         }
+
+        protected abstract IPlaceholderTracker GetPlaceholderTracker();
 
         protected IModuleContainer<T> GetModuleContainer<T>()
             where T: Module
@@ -94,8 +111,6 @@ namespace Cassette
                 .Select(container => container.FindModuleContainingPath(path))
                 .FirstOrDefault(module => module != null);
         }
-
-        public abstract IPageAssetManager<T> GetPageAssetManager<T>() where T : Module;
 
         Dictionary<Type, IModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
         {
