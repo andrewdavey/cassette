@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Cassette.Scripts;
-using Cassette.UI;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.UI
 {
     public class ReferenceBuilder_AddReference_Tests
     {
@@ -32,7 +31,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns(new[] { module })
                            .Verifiable();
-            builder.AddReference("test", null);
+            builder.Reference("test", null);
 
             var modules = builder.GetModules(null).ToArray();
 
@@ -50,7 +49,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns(new[] { module })
                            .Verifiable();
-            builder.AddReference("test", null);
+            builder.Reference("test", null);
 
             var modules = builder.GetModules("body").ToArray();
 
@@ -70,8 +69,8 @@ namespace Cassette
                            .Returns(module2);
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns(new[] { module1 });
-            builder.AddReference("test1", null);
-            builder.AddReference("test2", null);
+            builder.Reference("test1", null);
+            builder.Reference("test2", null);
 
             var modules = builder.GetModules("body").ToArray();
             modules.Length.ShouldEqual(1);
@@ -85,7 +84,7 @@ namespace Cassette
 
             Assert.Throws<ArgumentException>(delegate
             {
-                builder.AddReference("test", null);
+                builder.Reference("test", null);
             });
         }
 
@@ -100,7 +99,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns(new[] { moduleB, moduleA });
 
-            builder.AddReference("a", null);
+            builder.Reference("a", null);
 
             builder.GetModules(null).SequenceEqual(new[] { moduleB, moduleA }).ShouldBeTrue();
         }
@@ -113,7 +112,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns<IEnumerable<Module>>(all => all);
 
-            builder.AddReference("http://test.com/test.js", null);
+            builder.Reference("http://test.com/test.js", null);
 
             var module = builder.GetModules(null).First();
             module.ShouldBeType<ExternalScriptModule>();
@@ -127,7 +126,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns<IEnumerable<Module>>(all => all);
 
-            builder.AddReference("https://test.com/test.js", null);
+            builder.Reference("https://test.com/test.js", null);
 
             var module = builder.GetModules(null).First();
             module.ShouldBeType<ExternalScriptModule>();
@@ -141,7 +140,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns<IEnumerable<Module>>(all => all);
 
-            builder.AddReference("//test.com/test.js", null);
+            builder.Reference("//test.com/test.js", null);
 
             var module = builder.GetModules(null).First();
             module.ShouldBeType<ExternalScriptModule>();
@@ -155,9 +154,24 @@ namespace Cassette
                            .Returns(module);
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns(new[] { module });
-            builder.AddReference("test", "body");
+            builder.Reference("test", "body");
 
             builder.GetModules("body").SequenceEqual(new[] { module}).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenLocationAlreadyRendered_WhenAddReferenceToThatLocation_ThenExceptionThrown()
+        {
+            var module = new ScriptModule("~/test");
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
+                           .Returns(module);
+
+            builder.Render("test");
+
+            Assert.Throws<InvalidOperationException>(delegate
+            {
+                builder.Reference("~/test", "test");
+            });
         }
     }
 
@@ -191,7 +205,7 @@ namespace Cassette
             moduleContainer.Setup(c => c.FindModuleContainingPath(It.IsAny<string>()))
                            .Returns(module);
 
-            referenceBuilder.AddReference("test");
+            referenceBuilder.Reference("test");
 
             var html = referenceBuilder.Render();
 
@@ -206,7 +220,7 @@ namespace Cassette
                   .Returns(new HtmlString("output"));
             moduleContainer.Setup(c => c.FindModuleContainingPath(It.IsAny<string>()))
                            .Returns(module.Object);
-            referenceBuilder.AddReference("test");
+            referenceBuilder.Reference("test");
 
             var html = referenceBuilder.Render("body");
 
@@ -227,8 +241,8 @@ namespace Cassette
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/stub2"))
                            .Returns(module2.Object);
 
-            referenceBuilder.AddReference("~/stub1");
-            referenceBuilder.AddReference("~/stub2");
+            referenceBuilder.Reference("~/stub1");
+            referenceBuilder.Reference("~/stub2");
 
             Func<IHtmlString> createHtml = null;
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))

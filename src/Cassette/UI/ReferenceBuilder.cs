@@ -24,7 +24,7 @@ namespace Cassette.UI
         readonly Dictionary<string, List<Module>> modulesByLocation = new Dictionary<string, List<Module>>();
         readonly HashSet<string> renderedLocations = new HashSet<string>();
  
-        public void AddReference(string path, string location = null)
+        public void Reference(string path, string location = null)
         {
             path = PathUtilities.AppRelative(path);
 
@@ -47,11 +47,34 @@ namespace Cassette.UI
                 location = module.Location;
             }
 
-            AddReference(module, location);
+            Reference(module, location);
         }
 
-        public void AddReference(Module module, string location)
+        public void Reference(Module module, string location = null)
         {
+            if (renderedLocations.Contains(location ?? ""))
+            {
+                if (string.IsNullOrEmpty(location))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            "Cannot add a {0} reference. The modules have already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
+                            typeof(T).Name
+                        )
+                    );
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            "Cannot add a {1} reference, for location \"{0}\". This location has already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
+                            location,
+                            typeof(T).Name
+                        )
+                    );
+                }
+            }
+
             var modules = GetOrCreateModuleSet(location);
             if (modules.Contains(module)) return;
             modules.Add(module);
