@@ -1,26 +1,93 @@
 ﻿<h1>Getting Started</h1>
-<ol>
-    <li>Add the <code>Cassette.Web</code> nuget package to your ASP.NET 4.0 application.</li>
-    <li>Grok the basics of <a href="@Url.RouteUrl("Documentation", new { path = "getting-started/assets-and-modules" })">assets and modules</a>.</li>
-    <li>Read the <a href="@Url.RouteUrl("Documentation", new { path = "configuration" })">configuration documentation</a>.</li>
-    <li>Use the <code>Assets</code> helpers in your view pages to reference modules and render their HTML elements.
-    Here's a quick example. Please see the rest of the documentation for more details.
-    <pre><code><span class="code-tag">@@{</span>
-      <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/app/page.js"</span>);
-    <span class="code-tag">}</span>
-    <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<p>
+Add the <code>Cassette.Web</code> nuget package to your ASP.NET 4.0 application.
+Cassette works with both WebForms and MVC projects. The examples here will use Razor views.
+</p>
+<p>
+In your view page, reference scripts and stylesheets using Cassette's <code>Assets</code> helper class.
+</p>
+<pre><code><span class="code-tag">@@{</span>
+    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/jquery.js"</span>);
+    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/page.js"</span>);
+    <span class="code-type">Assets</span>.Stylesheets.Reference(<span class="string">"Styles/page.css"</span>);
+<span class="code-tag">}</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
     <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
-    <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
-      <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-      <span class="code-tag">@@</span><span class="code-type">Assets</span>.Stylesheets.Render()
-      <span class="code-tag">@@</span><span class="code-type">Assets</span>.Scripts.Render()
-    <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
-    <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
-      ...
-    <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
-    <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
-    </li>
-</ol>
+...</code></pre>
+<p class="minor">Reference paths are relative to the application root directory, not the page.</p>
+
+<p>Next, we need say where to render the HTML required to include these scripts and stylesheets in the page.</p>
+<pre><code><span class="code-tag">@@{</span>
+    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/jquery.js"</span>);
+    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/page.js"</span>);
+    <span class="code-type">Assets</span>.Stylesheets.Reference(<span class="string">"Styles/page.css"</span>);
+<span class="code-tag">}</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+    <span class="code-tag">@@</span><span class="code-type">Assets</span>.Stylesheets.Render()
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+    ...
+    <span class="code-tag">@@</span><span class="code-type">Assets</span>.Scripts.Render()
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+
+<p>If you are using master/layout pages then <code>Reference</code>s can be in the content page and <code>Render</code>s in the master/layout.
+You can even reference assets from a partial view and they will be rendered in the layout.
+</p>
+
+<h2>Referencing between files</h2>
+<p>We've referenced both jquery.js and page.js. The order matters because page.js depends on jquery.js.
+So let's make this explicit. In page.js, we can add a reference comment:</p>
+<pre><code><span class="comment">/// &lt;reference path="jquery.js"/&gt;</span>
+$(function() {
+    ...
+});</code></pre>
+<p>
+Cassette parses the reference comments and then inserts all the required assets into the page.
+We can now delete the explicit jQuery reference from the page.
+</p>
+<pre><code><span class="code-tag">@@{</span>
+    <span style="text-decoration: line-through"><span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/jquery.js"</span>);</span>
+    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/page.js"</span>);
+    <span class="code-type">Assets</span>.Stylesheets.Reference(<span class="string">"Styles/page.css"</span>);
+<span class="code-tag">}</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+...</code></pre>
+
+<h2>Configuration</h2>
+<p>Out of the box, Cassette runs in a very simple mode where each asset is treated separately.
+However, referencing many separate files in production is bad for performance.
+So let's configure Cassette to combine assets into modules.
+</p>
+<p>The nuget package added a file to your project called <code>CassetteConfiguration.cs</code>.</p>
+<pre><code>
+<span class="keyword">public class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span> {
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(
+        <span class="code-type">ModuleConfiguration</span> moduleConfiguration,
+        <span class="code-type">ICassetteApplication</span> application)
+    {
+    }
+}</code></pre>
+<p>In the <code>Configure</code> method we can set up how Cassette will work with your assets.</p>
+<p>Let's tell Cassette to treat all the assets as a single module.</p>
+<pre><code>
+<span class="keyword">public class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span> {
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(
+        <span class="code-type">ModuleConfiguration</span> moduleConfiguration,
+        <span class="code-type">ICassetteApplication</span> application)
+    {
+        moduleConfiguration.Add(
+            <span class="keyword">new</span> <span class="code-type">DirectorySource</span>&lt;<span class="code-type">ScriptModule</span>&gt;(<span class="string">"Scripts"</span>)
+            {
+                FilePattern = <span class="string">"*.js"</span>
+            }
+        );
+    }
+}</code></pre>
 
 <h2>Questions?</h2>
 <p>Please visit the <a href="http://groups.google.com/group/cassette">Cassette Google Group</a> to ask for help.</p>
