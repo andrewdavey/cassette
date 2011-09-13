@@ -25,15 +25,8 @@ namespace Cassette.Web
                 throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set ICassetteApplication.HtmlRewritingEnabled to false in the Cassette configuration, or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
             }
 
-            if (IsHtmlResponse)
-            {
-                buffer = ReplacePlaceholders(buffer, offset, count);
-                outputStream.Write(buffer, 0, buffer.Length);
-            }
-            else
-            {
-                outputStream.Write(buffer, offset, count);
-            }
+            buffer = ReplacePlaceholders(buffer, offset, count);
+            outputStream.Write(buffer, 0, buffer.Length);
         }
 
         byte[] ReplacePlaceholders(byte[] buffer, int offset, int count)
@@ -42,15 +35,6 @@ namespace Cassette.Web
             var html = encoding.GetString(buffer, offset, count);
             html = placeholderTracker.ReplacePlaceholders(html);
             return encoding.GetBytes(html);
-        }
-
-        bool IsHtmlResponse
-        {
-            get
-            {
-                return response.ContentType == "text/html" ||
-                       response.ContentType == "application/xhtml+xml";
-            }
         }
     }
 }
