@@ -62,7 +62,15 @@ namespace Cassette.Stylesheets
                         "Less compile error in {0}:\r\n{1}",
                         file.FullPath,
                         message
-                    )
+                    ),
+                    ex
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new LessCompileException(
+                    string.Format("Less compile error in {0}.", file.FullPath),
+                    ex
                 );
             }
 

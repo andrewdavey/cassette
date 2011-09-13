@@ -152,5 +152,24 @@ namespace Cassette
                 root.Delete(true);
             }
         }
+
+        [Fact]
+        public void Using_mixin_from_imported_css_file_throws_exception()
+        {
+            var otherFile = new Mock<IFile>();
+            directory.Setup(d => d.GetFile("lib.css"))
+                     .Returns(otherFile.Object);
+            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
+                     .Returns(() => ".mixin { color: red; }".AsStream());
+
+            var compiler = new LessCompiler();
+            Assert.Throws<LessCompileException>(delegate
+            {
+                compiler.Compile(
+                    "@import \"lib.css\";\nbody{ .mixin; }",
+                    file.Object
+                );
+            });
+        }
     }
 }
