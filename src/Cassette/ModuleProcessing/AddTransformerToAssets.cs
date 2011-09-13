@@ -14,7 +14,6 @@
             foreach (var asset in module.Assets)
             {
                 asset.AddAssetTransformer(assetTransformer);
-                module.RegisterCompiledAsset(asset);                
             }
         }
     }

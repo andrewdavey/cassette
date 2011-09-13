@@ -34,7 +34,6 @@ namespace Cassette
         readonly string path;
         IList<IAsset> assets = new List<IAsset>();
         bool hasSortedAssets;
-        readonly HashSet<IAsset> compiledAssets = new HashSet<IAsset>();
         readonly HashSet<string> references = new HashSet<string>();
 
         public string Path
@@ -137,16 +136,6 @@ namespace Cassette
         public virtual IHtmlString Render(ICassetteApplication application)
         {
             return new HtmlString("");
-        }
-
-        public void RegisterCompiledAsset(IAsset asset)
-        {
-            compiledAssets.Add(asset);
-        }
-
-        protected bool IsCompiledAsset(IAsset asset)
-        {
-            return compiledAssets.Contains(asset);
         }
 
         public void SortAssetsByDependency()
