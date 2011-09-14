@@ -160,7 +160,7 @@ namespace Cassette
 
         IModuleSource<ScriptModule> DefaultScriptModuleSource()
         {
-            return new PerFileModuleSource<ScriptModule>("")
+            return new PerFileSource<ScriptModule>("")
             {
                 FilePattern = "*.js;*.coffee",
                 Exclude = new Regex("-vsdoc\\.js$")
@@ -169,7 +169,7 @@ namespace Cassette
 
         IModuleSource<StylesheetModule> DefaultStylesheetModuleSource()
         {
-            return new PerFileModuleSource<StylesheetModule>("")
+            return new PerFileSource<StylesheetModule>("")
             {
                 FilePattern = "*.css;*.less"
             };
@@ -177,7 +177,7 @@ namespace Cassette
 
         IModuleSource<HtmlTemplateModule> DefaultHtmlTemplateModuleSource()
         {
-            return new PerFileModuleSource<HtmlTemplateModule>("")
+            return new PerFileSource<HtmlTemplateModule>("")
             {
                 FilePattern = "*.htm;*.html"
             };

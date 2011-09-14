@@ -9,12 +9,12 @@ using Xunit;
 
 namespace Cassette
 {
-    public class PerFileModuleSource_Tests : IDisposable
+    public class PerFileSource_Tests : IDisposable
     {
         readonly DirectoryInfo root;
         readonly IDirectory fileSystem;
 
-        public PerFileModuleSource_Tests()
+        public PerFileSource_Tests()
         {
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
             fileSystem = new FileSystemDirectory(root.FullName);
@@ -25,7 +25,7 @@ namespace Cassette
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>(""));
+            var modules = GetModules(new PerFileSource<Module>(""));
 
             modules[0].Path.ShouldEqual("~/test");
         }
@@ -35,7 +35,7 @@ namespace Cassette
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>("~"));
+            var modules = GetModules(new PerFileSource<Module>("~"));
 
             modules[0].Path.ShouldEqual("~/test");
         }
@@ -45,7 +45,7 @@ namespace Cassette
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>("~/"));
+            var modules = GetModules(new PerFileSource<Module>("~/"));
 
             modules[0].Path.ShouldEqual("~/test");
         }
@@ -55,7 +55,7 @@ namespace Cassette
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>(""));
+            var modules = GetModules(new PerFileSource<Module>(""));
 
             modules[0].Assets.Count.ShouldEqual(1);
         }
@@ -65,7 +65,7 @@ namespace Cassette
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>(""));
+            var modules = GetModules(new PerFileSource<Module>(""));
 
             modules[0].Assets[0].SourceFilename.ShouldEqual("~/test.js");
         }
@@ -76,7 +76,7 @@ namespace Cassette
             root.CreateSubdirectory("path");
             File.WriteAllText(Path.Combine(root.FullName, "path\\test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>("path"));
+            var modules = GetModules(new PerFileSource<Module>("path"));
 
             modules[0].Path.ShouldEqual("~/path/test");
         }
@@ -87,7 +87,7 @@ namespace Cassette
             root.CreateSubdirectory("path\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "path\\sub\\test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>("path"));
+            var modules = GetModules(new PerFileSource<Module>("path"));
 
             modules[0].Path.ShouldEqual("~/path/sub/test");
             modules[0].Assets[0].SourceFilename.ShouldEqual("~/path/sub/test.js");
@@ -100,7 +100,7 @@ namespace Cassette
             root.CreateSubdirectory("path\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "path\\sub\\test.js"), "");
 
-            var modules = GetModules(new PerFileModuleSource<Module>("path")
+            var modules = GetModules(new PerFileSource<Module>("path")
             {
                 SearchOption = SearchOption.TopDirectoryOnly
             });
@@ -116,7 +116,7 @@ namespace Cassette
             File.WriteAllText(Path.Combine(root.FullName, "test3.txt"), "");
 
             var modules = GetModules(
-                new PerFileModuleSource<Module>("")
+                new PerFileSource<Module>("")
                 {
                     FilePattern = "*.js"
                 }
@@ -134,7 +134,7 @@ namespace Cassette
             File.WriteAllText(Path.Combine(root.FullName, "test2.coffee"), "");
 
             var modules = GetModules(
-                new PerFileModuleSource<Module>("")
+                new PerFileSource<Module>("")
                 {
                     FilePattern = "*.js;*.coffee"
                 }
@@ -151,7 +151,7 @@ namespace Cassette
             File.WriteAllText(Path.Combine(root.FullName, "test1.js"), "");
 
             var modules = GetModules(
-                new PerFileModuleSource<Module>("")
+                new PerFileSource<Module>("")
                 {
                     Exclude = new Regex("test")
                 }
@@ -165,7 +165,7 @@ namespace Cassette
         {
             File.WriteAllText(Path.Combine(root.FullName, "test1.js"), "");
             var modules = GetModules(
-                new PerFileModuleSource<Module>("")
+                new PerFileSource<Module>("")
             );
             var asset = modules[0].Assets[0];
 
@@ -173,7 +173,7 @@ namespace Cassette
 
         }
 
-        Module[] GetModules(PerFileModuleSource<Module> source)
+        Module[] GetModules(PerFileSource<Module> source)
         {
             var application = StubApplication();
             var factory = StubModuleFactory();

@@ -70,7 +70,7 @@
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
     <Compile Include="ModuleSourceTestBase.cs" />
-    <Compile Include="PerFileModuleSource.cs" />
+    <Compile Include="PerFileSource.cs" />
     <Compile Include="Persistence\ModuleCache.cs" />
     <Compile Include="Persistence\TempDirectory.cs" />
     <Compile Include="PerSubDirectorySource.cs" />

@@ -75,7 +75,7 @@
     <Compile Include="ModuleDescriptor.cs" />
     <Compile Include="ModuleProcessing\AddTransformerToAssets.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
-    <Compile Include="PerFileModuleSource.cs" />
+    <Compile Include="PerFileSource.cs" />
     <Compile Include="Persistence\AssetCounter.cs" />
     <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />
     <Compile Include="Persistence\ICacheableAsset.cs" />

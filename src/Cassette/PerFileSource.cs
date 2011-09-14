@@ -7,10 +7,10 @@ using System.IO;
 
 namespace Cassette
 {
-    public class PerFileModuleSource<T> : IModuleSource<T>
+    public class PerFileSource<T> : IModuleSource<T>
         where T : Module
     {
-        public PerFileModuleSource(string basePath)
+        public PerFileSource(string basePath)
         {
             SearchOption = SearchOption.AllDirectories;
             if (basePath.StartsWith("~"))
