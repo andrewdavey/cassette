@@ -1,0 +1,44 @@
+﻿<h1>Module Descriptor File</h1>
+<p>As an alternative to adding special reference comments into your assets, Cassette supports a "module descriptor file".
+Adding a file called <code>module.txt</code> to a module folder, alongside your assets, allows you to manually define
+the order of assets in the module.</p>
+<p>This is especially useful when creating a module of third-party scripts. It's not ideal to modify them as they
+tend to get entirely overwritten when updated to newer versions.</p>
+<p>At its simplest, a module descriptor is just a list of filenames, relative to the module directory.</p>
+<pre><code>jquery.js
+jquery-ui.js
+underscore.js
+knockout.js</code></pre>
+
+<h2>Module references</h2>
+<p>If your module depends on other modules, then add a references section.</p>
+<pre><code>file1.js
+file2.js
+
+[references]
+~/scripts/lib
+~/scripts/widgets</code></pre>
+
+<h2>External modules</h2>
+<p>
+You may want to use a <abbr title="Content Delivery Network">CDN</abbr> in production, but have the debug-friendly sources available during development.
+</p>
+<p>Here's a example module descriptor file for jQuery, which we are putting into it's own module.</p>
+<pre><code>[external]
+url = //ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js
+fallbackCondition = !window.jQuery
+
+[assets]
+jquery.js</code></pre>
+<p>In a page, we can reference this as:</p>
+<pre><code><span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"~/scripts/jquery"</span>);</code></pre>
+<p>So in debug-mode, we just get a regular local script tag generated:</p>
+<pre><code><span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/scripts/jquery/jquery.js?a4babad4b"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span></code></pre>
+<p>In production-mode, we get the CDN URL, plus a conditional fallback to our own copy of the script.</p>
+<pre><code><span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span>
+if (!window.jQuery) {
+document.write(unescape('%3Cscript src="/_assets/scripts/scripts/jquery_a4babad4b" type="text/javascript"%3E%3C/script%3E'));
+}
+<span class="open-tag">&lt;/</span><span class="tag">script<span class="close-tag">&gt;</span></span>
+</code></pre>
