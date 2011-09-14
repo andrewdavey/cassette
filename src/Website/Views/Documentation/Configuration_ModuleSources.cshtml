@@ -12,8 +12,8 @@ to the <code>ModuleConfiguration</code> object passed to your <code>Configure</c
 <p>A file system module source creates modules from directories. They say which assets to include using file extension matching.</p>
 <p>There are two file system module source types:</p>
 <ul>
-    <li><a><a href="@Url.RouteUrl("Documentation", new { path = "configuration/persubdirectorysource" })">PerSubDirectorySource</a></a></li>
-    <li><a><a href="@Url.RouteUrl("Documentation", new { path = "configuration/directorysource" })">DirectorySource</a></a></li>
+    <li><a><a href="@Url.DocumentationUrl("configuration/persubdirectorysource")">PerSubDirectorySource</a></a></li>
+    <li><a><a href="@Url.DocumentationUrl("configuration/directorysource")">DirectorySource</a></a></li>
 </ul>
 <p>If you do not add any modules sources then Cassette will use default sources.
 These defaults treat the entire application root directory as one module.</p>
@@ -41,5 +41,5 @@ script module and provides a friendly name:</p>
 <p>and:</p>
 <pre><code><span class="comment">/// &lt;reference path="~/twitter"/&gt;</span></code></pre>
 <p>The friendly name is optional, but probably nicer than repeating the URL everywhere in your application.</p>
-<p>Read more about <a href="@Url.RouteUrl("Documentation", new { path = "scripts/external-modules" })">External Script Modules</a>
-and  <a href="@Url.RouteUrl("Documentation", new { path = "stylesheets/external-modules" })">External Stylesheet Modules</a></p>
+<p>Read more about <a href="@Url.DocumentationUrl("scripts/external-modules")">External Script Modules</a>
+and  <a href="@Url.DocumentationUrl("stylesheets/external-modules")">External Stylesheet Modules</a></p>

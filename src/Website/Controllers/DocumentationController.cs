@@ -9,7 +9,7 @@ namespace Website.Controllers
             string viewName;
             if (string.IsNullOrEmpty(path))
             {
-                viewName = "GettingStarted";
+                viewName = "Index";
             }
             else
             {

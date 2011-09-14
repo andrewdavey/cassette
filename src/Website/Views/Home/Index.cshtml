@@ -8,7 +8,7 @@
             <p>Dumping your scripts into a folder is no way to manage your client-side code!</p>
             <p>Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS and HTML templates.</p>
             <p>It's flexible, extensible and optimized for developer happiness.</p>
-            <p class="last"><a class="download" href="@Url.RouteUrl("Download")">Download Now</a> Or read on to see Cassette in action...</p>
+            <p class="last"><a class="call-to-action" href="@Url.RouteUrl("Download")">Download Now</a> Or read on to see Cassette in action...</p>
         </div>
         <div class="screencast">
             <p>Please note: Website still under development.</p>
@@ -25,7 +25,7 @@
             <p>Cassette's <code>Assets</code> helper works in view pages, layouts and partials.</p>
             <p>Reference the scripts you directly require.</p>
             <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
-            <p class="minor"><a href="@Url.RouteUrl("Documentation", new{path="stylesheets"})">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new{path="html-templates"})">HTML Templates</a> are also supported</p>
+            <p class="minor"><a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new{path="html-templates"})">HTML Templates</a> are also supported</p>
         </div>
         <div class="file">
             <pre><code><span class="code-tag">@@{</span>
@@ -50,7 +50,7 @@
             <h2>Debug runtime output</h2>
             <p>When <strong><code>debug="true"</code></strong> in Web.config:</p>
             <ul>
-                <li>Cassette detects <a href="@Url.RouteUrl("Documentation", new{path="scripts"})">file references</a>.</li>
+                <li>Cassette detects <a href="@Url.DocumentationUrl("scripts")">file references</a>.</li>
                 <li>All the required scripts are included in the correct order.</li>
                 <li>The hash of each file is append to each URL as a "cache-breaker".</li>
             </ul>
@@ -113,7 +113,7 @@
                 Get Cassette! It's free, open source software - <a href="https://raw.github.com/andrewdavey/cassette/HEAD/license.txt">MIT License</a>.
             </p>
             <p class="last">
-                <a class="download" href="@Url.RouteUrl("Download")">Download Now</a>
+                <a class="call-to-action" href="@Url.RouteUrl("Download")">Download Now</a>
                 and also please spread the word:
                 <span style="position: relative; top: 5px;">
                     <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset management for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>

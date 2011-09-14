@@ -2,12 +2,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Cassette Documentation";
 }
-@functions {
-    string Doc(string path)
-    {
-        return Url.RouteUrl("Documentation", new { path });
-    }
-}
 <div class="main">
     <div class="content documentation">
         <div class="item">
@@ -17,44 +11,48 @@
             <h2>Documentation</h2>
             <ul>
                 <li>
-                    <a href="@Doc("")">Getting Started</a>
+                    <a href="@Url.DocumentationUrl("")">Index</a>
+                </li>
+                <li>
+                    <a href="@Url.DocumentationUrl("getting-started")">Getting Started</a>
                     <ul>
-                        <li><a href="@Doc("getting-started/assets-and-modules")">Assets and Modules</a></li>
+                        <li><a href="@Url.DocumentationUrl("getting-started/configuration")">Configuration</a></li>
+                        <li><a href="@Url.DocumentationUrl("getting-started/assets-and-modules")">Assets and Modules</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Doc("configuration")">Configuration</a>
+                    <a href="@Url.DocumentationUrl("configuration")">Configuration</a>
                     <ul>
-                        <li><a href="@Doc("configuration/module-sources")">Module Sources</a></li>
-                        <li><a href="@Doc("configuration/persubdirectorysource")">PerSubDirectorySource</a></li>
-                        <li><a href="@Doc("configuration/directorysource")">DirectorySource</a></li>
+                        <li><a href="@Url.DocumentationUrl("configuration/module-sources")">Module Sources</a></li>
+                        <li><a href="@Url.DocumentationUrl("configuration/persubdirectorysource")">PerSubDirectorySource</a></li>
+                        <li><a href="@Url.DocumentationUrl("configuration/directorysource")">DirectorySource</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Doc("scripts")">Scripts</a>
+                    <a href="@Url.DocumentationUrl("scripts")">Scripts</a>
                     <ul>
-                        <li><a href="@Doc("scripts/external-modules")">External Modules</a></li>
-                        <li><a href="@Doc("scripts/coffeescript")">CoffeeScript</a></li>
+                        <li><a href="@Url.DocumentationUrl("scripts/external-modules")">External Modules</a></li>
+                        <li><a href="@Url.DocumentationUrl("scripts/coffeescript")">CoffeeScript</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Doc("stylesheets")">Stylesheets</a>
+                    <a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a>
                     <ul>
-                        <li><a href="@Doc("stylesheets/less")">LESS</a></li>
-                        <li><a href="@Doc("stylesheets/data-uris")">Data-URIs</a></li>
+                        <li><a href="@Url.DocumentationUrl("stylesheets/less")">LESS</a></li>
+                        <li><a href="@Url.DocumentationUrl("stylesheets/data-uris")">Data-URIs</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Doc("html-templates")">HTML Templates</a>
+                    <a href="@Url.DocumentationUrl("html-templates")">HTML Templates</a>
                     <ul>
-                        <li><a href="@Doc("html-templates/compilation")">Server-side compilation</a></li>
-                        <li><a href="@Doc("html-templates/knockoutjs")">KnockoutJS</a></li>
+                        <li><a href="@Url.DocumentationUrl("html-templates/compilation")">Server-side compilation</a></li>
+                        <li><a href="@Url.DocumentationUrl("html-templates/knockoutjs")">KnockoutJS</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Doc("advanced")">Advanced</a>
+                    <a href="@Url.DocumentationUrl("advanced")">Advanced</a>
                     <ul>
-                        <li><a href="@Doc("advanced/manual-module-definition")">Custom module definitions</a></li>
+                        <li><a href="@Url.DocumentationUrl("advanced/manual-module-definition")">Custom module definitions</a></li>
                     </ul>
                 </li>
             </ul>
