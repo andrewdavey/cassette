@@ -69,6 +69,7 @@
     <Compile Include="Views\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\scripts\disqus.js" />
     <Content Include="assets\styles\code.css" />
     <Content Include="assets\styles\documentation.css" />
     <Content Include="assets\styles\download.css" />
@@ -172,13 +173,19 @@
     <Content Include="Views\Documentation\Configuration_ModuleSources.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\GettingStarted_AssetsAndModules.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Documentation\GettingStarted_Configuration.cshtml" />
+    <Content Include="Views\Documentation\GettingStarted_CombineAssetsIntoModules.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\GettingStarted_WebForms.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\GettingStarted_Mvc.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Configuration_PerFileSource.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

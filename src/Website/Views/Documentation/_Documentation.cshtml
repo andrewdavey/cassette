@@ -1,11 +1,14 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Cassette Documentation";
+    Assets.Scripts.Reference("assets/scripts/disqus.js", "body");
 }
 <div class="main">
     <div class="content documentation">
         <div class="item">
             @RenderBody()
+
+            <div id="disqus_thread"></div>
         </div>
         <div class="tree">
             <h2>Documentation</h2>
@@ -16,8 +19,9 @@
                 <li>
                     <a href="@Url.DocumentationUrl("getting-started")">Getting Started</a>
                     <ul>
-                        <li><a href="@Url.DocumentationUrl("getting-started/configuration")">Configuration</a></li>
-                        <li><a href="@Url.DocumentationUrl("getting-started/assets-and-modules")">Assets and Modules</a></li>
+                        <li><a href="@Url.DocumentationUrl("getting-started/combine-assets-into-modules")">Combine assets into modules</a></li>
+                        <li><a href="@Url.DocumentationUrl("getting-started/mvc")">Using Cassette in MVC</a></li>
+                        <li><a href="@Url.DocumentationUrl("getting-started/webforms")">Using Cassette in WebForms</a></li>
                     </ul>
                 </li>
                 <li>
@@ -26,6 +30,7 @@
                         <li><a href="@Url.DocumentationUrl("configuration/module-sources")">Module Sources</a></li>
                         <li><a href="@Url.DocumentationUrl("configuration/persubdirectorysource")">PerSubDirectorySource</a></li>
                         <li><a href="@Url.DocumentationUrl("configuration/directorysource")">DirectorySource</a></li>
+                        <li><a href="@Url.DocumentationUrl("configuration/perfilesource")">PerFileSource</a></li>
                     </ul>
                 </li>
                 <li>

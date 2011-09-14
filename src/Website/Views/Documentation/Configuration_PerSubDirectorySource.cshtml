@@ -1,22 +1,22 @@
 ﻿@{
-    ViewBag.Title = "Module Source Configuration";
+    ViewBag.Title = "PerSubDirectorySource";
 }
-<h1>PerSubDirectorySource&lt;TModule&gt;</h1>
+<h1>PerSubDirectorySource&lt;T&gt;</h1>
 <p>This module source will create module for each immediate sub-directory of the given source path.
 The source path is relative to the application root directory.</p>
 <p>The <code>FilePattern</code> property is a semicolon separated string that defines which file types to include in the modules.</p>
 <p>The optional <code>Exclude</code> property is a regular expression used to exclude files.</p>
+<p>The <code>SearchOption</code> property controls how the <strong>files</strong> are found, not the directories.
+<code>PerSubDirectorySource</code> only creates modules from the top-level sub-directories of the given path.</p>
 <p>Here's an example:</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
-{
-    moduleConfiguration.Add(
-        <span class="keyword">new</span> <span class="code-type">PerSubDirectorySource</span>&lt;<span class="code-type">ScriptModule</span>&gt;(<span class="string">"Scripts"</span>)
-        {
-            FilePattern = <span class="string">"*.js;*.coffee"</span>,
-            Exclude = <span class="keyword">new</span> <span class="code-type">Regex</span>(<span class="string">"-vsdoc\\.js$"</span>) <span class="comment">// Excludes the VS documentation files</span>
-        }
-    );
-}</code></pre>
+<pre><code>moduleConfiguration.Add(
+    <span class="keyword">new</span> <span class="code-type">PerSubDirectorySource</span>&lt;<span class="code-type">ScriptModule</span>&gt;(<span class="string">"Scripts"</span>)
+    {
+        FilePattern = <span class="string">"*.js;*.coffee"</span>,
+        Exclude = <span class="keyword">new</span> <span class="code-type">Regex</span>(<span class="string">"-vsdoc\\.js$"</span>) <span class="comment">// Excludes the VS documentation files</span>
+        SearchOption = <span class="code-type">SearchOption</span>.AllDirectories <span class="comment">// This is the default</span>
+    }
+);</code></pre>
 <p>So if your file system looks like:</p>
 <pre>Scripts/
   - lib/

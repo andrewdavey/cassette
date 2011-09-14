@@ -1,8 +1,11 @@
 ﻿pre {
     padding: .5em;
     margin: 0;
-    font-family: Inconsolata, fixed;
-    font-size: 9pt;
+    font-family: Consolas, Inconsolata, monospace;
+    font-size: 10pt;
+}
+code {
+    font-family: Consolas, Inconsolata, monospace;    
 }
 .open-tag, .close-tag {
     color: #00a;
@@ -18,7 +21,7 @@
 }
 .code-tag {
     color: #000;
-    background-color: #ff8;
+    background-color: rgb(255,255,155);
 }
 .code-type {
     color: #468EA7;
@@ -31,4 +34,7 @@
 }
 .keyword {
     color: #00c;
+}
+.razor-expression {
+    background-color: rgb(231,239,242);
 }

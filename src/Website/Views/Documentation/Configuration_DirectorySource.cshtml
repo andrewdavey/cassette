@@ -1,19 +1,17 @@
 ﻿@{
-    ViewBag.Title = "Module Source Configuration";
+    ViewBag.Title = "DirectorySource";
 }
-<h1>DirectorySource&lt;TModule&gt;</h1>
+<h1>DirectorySource&lt;T&gt;</h1>
 <p>A directory source specifies directory paths to create a modules from. 
 The directory paths are relative to the application root directory.</p>
 <p>The <code>FilePattern</code> property is a semicolon separated string that defines which file types to include in the modules.</p>
 <p>The optional <code>Exclude</code> property is a regular expression used to exclude files.</p>
 <p>Here's an example:</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
-{
-    moduleConfiguration.Add(
-        <span class="keyword">new</span> <span class="code-type">DirectorySource</span>&lt;<span class="code-type">ScriptModule</span>&gt;(<span class="string">"Scripts/lib"</span>, <span class="string">"Scripts/app"</span>)
-        {
-            FilePattern = <span class="string">"*.js;*.coffee"</span>,
-            Exclude = <span class="keyword">new</span> <span class="code-type">Regex</span>(<span class="string">"-vsdoc\\.js$"</span>) <span class="comment">// Excludes the VS documentation files</span>
-        }
-    );
-}</code></pre>
+<pre><code>moduleConfiguration.Add(
+    <span class="keyword">new</span> <span class="code-type">DirectorySource</span>&lt;<span class="code-type">ScriptModule</span>&gt;(<span class="string">"Scripts/lib"</span>, <span class="string">"Scripts/app"</span>)
+    {
+        FilePattern = <span class="string">"*.js;*.coffee"</span>,
+        Exclude = <span class="keyword">new</span> <span class="code-type">Regex</span>(<span class="string">"-vsdoc\\.js$"</span>) <span class="comment">// Excludes the VS documentation files</span>
+        SearchOption = <span class="code-type">SearchOption</span>.TopDirectoryOnly <span class="comment">// The default is AllDirectories</span>
+    }
+);</code></pre>

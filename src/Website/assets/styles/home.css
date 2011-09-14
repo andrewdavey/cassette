@@ -87,6 +87,7 @@
     display: table-cell;
     vertical-align: top;
     border-radius: 0 3px 3px 0;
+    padding: 5px;
 }
 .section ul {
     padding-left: 1.5em;

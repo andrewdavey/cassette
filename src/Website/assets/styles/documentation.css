@@ -68,3 +68,7 @@
     border: 1px solid #ccc;
     margin-bottom: .5em;
 }
+
+#disqus_thread {
+    margin-top: 2em;
+}

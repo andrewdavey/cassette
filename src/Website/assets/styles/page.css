@@ -14,6 +14,7 @@ p.last {
 h1, h2, h3 {
     font-family: "Droid Sans" , sans-serif;
 }
+
 .main h1 {
     color: #fff;
     font-size: 3.4em;
@@ -40,6 +41,15 @@ h1, h2, h3 {
 .main .content p {
     margin: 0 0 .5em 0;
     line-height: 1.4em;
+}
+.main .content dt, .main .content dd {
+    line-height: 1.4em;
+}
+.main .content dd {
+    margin-left: 1em;
+}
+.main .content dd + dt {
+    margin-top: .5em;
 }
 
 .call-to-action {

@@ -10,13 +10,12 @@ to the <code>ModuleConfiguration</code> object passed to your <code>Configure</c
 
 <h2>File system module sources</h2>
 <p>A file system module source creates modules from directories. They say which assets to include using file extension matching.</p>
-<p>There are two file system module source types:</p>
+<p>There are three file system module source types:</p>
 <ul>
     <li><a><a href="@Url.DocumentationUrl("configuration/persubdirectorysource")">PerSubDirectorySource</a></a></li>
     <li><a><a href="@Url.DocumentationUrl("configuration/directorysource")">DirectorySource</a></a></li>
+    <li><a><a href="@Url.DocumentationUrl("configuration/perfilesource")">PerFileSource</a></a></li>
 </ul>
-<p>If you do not add any modules sources then Cassette will use default sources.
-These defaults treat the entire application root directory as one module.</p>
 <p>Here's a quick example. See the previous links for more details.</p>
 <pre><code><span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
 {
@@ -27,6 +26,9 @@ These defaults treat the entire application root directory as one module.</p>
         }
     );
 }</code></pre>
+<p>If you do not add any modules sources then Cassette will use the <code>PerFileSource</code>.
+This treats each asset file as a seperate module. This is not ideal for production, so it's recommended you
+spend some time grouping assets into modules.</p>
 
 <h2>External modules</h2>
 <p>An external URL, such as a file hosted on a <abbr title="Content Delivery Network">CDN</abbr>, can be treated as a module.

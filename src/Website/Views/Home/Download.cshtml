@@ -15,30 +15,8 @@
         <p>Alternatively, fork the source code directly from the GitHub repository:</p>
         <p><a href="https://github.com/andrewdavey/cassette" class="gitforked-button gitforked-forks gitforked-watchers">Fork</a></p>
 
-        <h2>Configuration</h2>
-        <p>
-        The nuget package will create a file called <code>CassetteConfiguration.cs</code>
-        in the root of your web application project.
-        Cassette will work without configuration, but it's recommended that you define one
-        to meet the needs of your application.
-        </p>
-        <p>Read the <a href="@Url.DocumentationUrl("configuration")">Configuration Documentation</a>.</p>
-        <p>
-        <code>Views\Web.config</code> is also updated to make the <code>Cassette.UI</code>
-        namespace available in Razor view pages. If using MVC areas then you will need to copy the
-        namespace addition into each area's <code>Web.config</code>.
-        </p>
-        <pre><code><span class="open-tag">&lt;</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
-    <span class="open-tag">&lt;</span><span class="tag">system.web.webPages.razor</span><span class="close-tag">&gt;</span>
-        <span class="open-tag">&lt;</span><span class="tag">pages</span><span class="close-tag">&gt;</span>
-            <span class="open-tag">&lt;</span><span class="tag">namespaces</span><span class="close-tag">&gt;</span>
-                <span class="comment">...other namespaces...</span>
-                <span class="open-tag">&lt;</span><span class="tag">add</span> <span class="attribute">namespace=</span><span class="attribute-value">"Cassette.UI"</span><span class="close-tag">/&gt;</span>
-            <span class="open-tag">&lt;/</span><span class="tag">namespaces</span><span class="close-tag">&gt;</span>
-        <span class="open-tag">&lt;/</span><span class="tag">pages</span><span class="close-tag">&gt;</span>
-    <span class="open-tag">&lt;/</span><span class="tag">system.web.webPages.razor</span><span class="close-tag">&gt;</span>
-<span class="open-tag">&lt;/</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
-        </code></pre>
-        <p>If using Web Forms as your view engine, then you'll need to update the equivalent namespaces section.</p>
+        <h2>Getting Started</h2>
+        <p>Cassette should work out of the box, without much configuration. The documentation has a handy getting started guide.</p>
+        <p><a class="call-to-action" href="@Url.DocumentationUrl("getting-started")">Read 'Getting Started'</a></p>
     </div>
 </div>
