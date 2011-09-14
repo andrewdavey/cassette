@@ -146,10 +146,10 @@
     <Content Include="Views\Documentation\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\HtmlTemplates_Compilation.cshtml" />
+    <Content Include="Views\Documentation\HtmlTemplates_JQueryTmpl.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\HtmlTemplates_KnockoutJS.cshtml" />
+    <Content Include="Views\Documentation\HtmlTemplates_KnockoutJSJQueryTmpl.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\Configuration.cshtml" />
