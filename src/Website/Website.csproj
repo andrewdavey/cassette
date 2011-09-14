@@ -152,12 +152,6 @@
     <Content Include="Views\Documentation\HtmlTemplates_KnockoutJS.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\Advanced.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Documentation\Advanced_ManualModuleDefinition.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Documentation\Configuration.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\Configuration_PerFileSource.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Configuration_ModuleDescriptorFile.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
