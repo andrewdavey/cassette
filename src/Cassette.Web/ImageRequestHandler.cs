@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
+using System.Diagnostics;
 
 namespace Cassette.Web
 {
@@ -38,6 +39,7 @@ namespace Cassette.Web
             var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+_(?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
             if (match.Success == false)
             {
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, "Invalid image path in URL \"{0}\".", path);
                 response.StatusCode = 404;
                 return;
             }
@@ -47,14 +49,23 @@ namespace Cassette.Web
             var fullPath = server.MapPath("~/" + filename);
             if (File.Exists(fullPath))
             {
-                response.ContentType = ContentTypeFromExtension(extension);
+                var contentType = ContentTypeFromExtension(extension);
+                if (contentType != null)
+                {
+                    Trace.Source.TraceEvent(TraceEventType.Error, 0, "Sending image \"{0}\" with content type {1}.", fullPath, response.ContentType);
+                    response.ContentType = contentType;
+                }
+                else
+                {
+                    Trace.Source.TraceEvent(TraceEventType.Warning, 0, "Could not determine content type for image \"{0}\".", fullPath);
+                }
                 response.Cache.SetCacheability(HttpCacheability.Public);
                 response.Cache.SetExpires(DateTime.Now.AddYears(1));
-                // TODO: handle content type not found (null).
                 response.WriteFile(fullPath);
             }
             else
             {
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, "Image not found \"{0}\".", fullPath);
                 response.StatusCode = 404;
             }
         }

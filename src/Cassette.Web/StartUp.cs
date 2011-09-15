@@ -44,6 +44,7 @@ namespace Cassette.Web
 
         public static void PreApplicationStart()
         {
+            Trace.Source.TraceInformation("Registering CassetteHttpModule.");
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
 
@@ -61,19 +62,28 @@ namespace Cassette.Web
 
         public static void ApplicationShutdown()
         {
+            Trace.Source.TraceInformation("Application shutdown - disposing resources.");
             storage.Dispose();
             applicationContainer.Dispose();
         }
 
         static IEnumerable<ICassetteConfiguration> CreateConfigurationsByScanningAssembliesForType()
         {
+            Trace.Source.TraceInformation("Creating CassetteConfigurations by scanning assemblies.");
             // Scan all assemblies for implementation of the interface and create instance.
             return from assembly in LoadAllAssemblies()
                    from type in assembly.GetExportedTypes()
                    where type.IsClass
                       && !type.IsAbstract
                       && typeof(ICassetteConfiguration).IsAssignableFrom(type)
-                   select (ICassetteConfiguration)Activator.CreateInstance(type);
+                   select CreateConfigurationInstance(type);
+        }
+
+        static ICassetteConfiguration CreateConfigurationInstance(Type type)
+        {
+            Trace.Source.TraceInformation("Creating {0}.", type.FullName);
+
+            return (ICassetteConfiguration)Activator.CreateInstance(type);
         }
 
         static IEnumerable<Assembly> LoadAllAssemblies()
@@ -81,6 +91,8 @@ namespace Cassette.Web
             const int COR_E_ASSEMBLYEXPECTED = -2146234344;
             foreach (var filename in Directory.GetFiles(HttpRuntime.BinDirectory, "*.dll"))
             {
+                Trace.Source.TraceInformation("Scanning \"{0}\" for Cassette configuration classes.", filename);
+
                 Assembly assembly;
                 try
                 {
@@ -90,6 +102,7 @@ namespace Cassette.Web
                 {
                     if (Marshal.GetHRForException(exception) == COR_E_ASSEMBLYEXPECTED) // Was not a managed DLL.
                     {
+                        Trace.Source.TraceInformation("Skipping non-managed DLL \"{0}\".", filename);
                         continue;
                     }
                     throw;
@@ -100,12 +113,23 @@ namespace Cassette.Web
 
         static CassetteApplication CreateCassetteApplication()
         {
+            Trace.Source.TraceInformation("Create Cassette application object.");
+            
+            var sourceDirectory = HttpRuntime.AppDomainAppPath;
+            Trace.Source.TraceInformation("Source directory: {0}", sourceDirectory);
+            
+            var isOutputOptmized = ShouldOptimizeOutput();
+            Trace.Source.TraceInformation("IsOutputOptimized: {0}", isOutputOptmized);
+
+            var version = GetConfigurationVersion(HttpRuntime.AppDomainAppVirtualPath);
+            Trace.Source.TraceInformation("Cache version: {0}", version);
+
             return new CassetteApplication(
                 configurations,
-                new FileSystemDirectory(HttpRuntime.AppDomainAppPath),
+                new FileSystemDirectory(sourceDirectory),
                 GetCacheDirectory(),
-                ShouldOptimizeOutput(),
-                GetConfigurationVersion(HttpRuntime.AppDomainAppVirtualPath),
+                isOutputOptmized,
+                version,
                 new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
                 RouteTable.Routes,
                 GetCurrentHttpContext
@@ -114,6 +138,7 @@ namespace Cassette.Web
 
         static IDirectory GetCacheDirectory()
         {
+            Trace.Source.TraceInformation("Using isolated storage for cache.");
             return new IsolatedStorageDirectory(storage);
             // TODO: Add configuration setting to use App_Data
             //return new FileSystem(Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data", ".CassetteCache"));

@@ -23,10 +23,12 @@ namespace Cassette.Web
         public void ProcessRequest(HttpContext _)
         {
             var path = "~/" + requestContext.RouteData.GetRequiredString("path");
+            Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             var response = requestContext.HttpContext.Response;
             var module = getModuleForPath(path);
             if (module == null)
             {
+                Trace.Source.TraceInformation("Module not found for asset path \"{0}\".", path);
                 NotFound(response);
                 return;
             }
@@ -34,6 +36,7 @@ namespace Cassette.Web
             var asset = module.FindAssetByPath(path);
             if (asset == null)
             {
+                Trace.Source.TraceInformation("Asset not found \"{0}\".", path);
                 NotFound(response);
                 return;
             }

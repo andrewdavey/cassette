@@ -117,12 +117,15 @@ namespace Cassette.Web
             // to avoid conflicts with the application's own routes.
             var url = urlGenerator.GetModuleRouteUrl<T>();
             var handler = new ModuleRouteHandler<T>(GetModuleContainer<T>());
+            Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
             routes.Insert(0, new CassetteRoute(url, handler));
         }
 
         void InstallImageRoute(RouteCollection routes)
         {
-            routes.Insert(0, new CassetteRoute(urlGenerator.GetImageRouteUrl(), new ImageRouteHandler()));
+            var url = urlGenerator.GetImageRouteUrl();
+            Trace.Source.TraceInformation("Installing image route handler for \"{0}\".", url);
+            routes.Insert(0, new CassetteRoute(url, new ImageRouteHandler()));
         }
 
         void InstallAssetRoute(RouteCollection routes)
@@ -132,6 +135,7 @@ namespace Cassette.Web
             // to avoid conflicts with the application's own routes.
             var url = urlGenerator.GetAssetRouteUrl();
             var handler = new AssetRouteHandler(this);
+            Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);
             routes.Insert(0, new CassetteRoute(url, handler));
         }
     }

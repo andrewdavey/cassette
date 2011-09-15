@@ -29,6 +29,7 @@ namespace Cassette.Web
             var module = FindModule();
             if (module == null)
             {
+                Trace.Source.TraceInformation("Module not found \"{0}\".", Path.Combine("~", routeData.GetRequiredString("path")));
                 response.StatusCode = 404;
             }
             else
@@ -60,6 +61,7 @@ namespace Cassette.Web
         T FindModule()
         {
             var path = Path.Combine("~", routeData.GetRequiredString("path"));
+            Trace.Source.TraceInformation("Handling module request for \"{0}\".", path);
             path = RemoveTrailingHashFromPath(path);
             return moduleContainer.FindModuleContainingPath(path);
         }

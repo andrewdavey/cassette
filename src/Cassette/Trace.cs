@@ -2,7 +2,7 @@
 
 namespace Cassette
 {
-    static class Trace
+    public static class Trace
     {
         public static readonly TraceSource Source = new TraceSource("Cassette");
     }

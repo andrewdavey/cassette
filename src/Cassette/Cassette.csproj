@@ -103,6 +103,7 @@
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
+    <Compile Include="Trace.cs" />
     <Compile Include="UI\Assets.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Scripts\InlineScriptModule.cs" />
