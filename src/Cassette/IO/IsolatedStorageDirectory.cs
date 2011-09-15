@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Diagnostics;
 
 namespace Cassette.IO
 {
@@ -20,7 +21,16 @@ namespace Cassette.IO
         {
             foreach (var filename in storage.GetFileNames(basePath + "/*"))
             {
-                storage.DeleteFile(GetAbsolutePath(filename));
+                try
+                {
+                    storage.DeleteFile(GetAbsolutePath(filename));
+                }
+                catch (IsolatedStorageException exception)
+                {
+                    // File created by another user cannot always be deleted by a different user.
+                    // However, they can still be modified. So we'll just skip it.
+                    Trace.Source.TraceEvent(TraceEventType.Error, 0, exception.ToString());
+                }
             }
         }
 
