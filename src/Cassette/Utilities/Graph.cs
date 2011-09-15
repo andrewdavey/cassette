@@ -11,6 +11,8 @@ namespace Cassette.Utilities
             public T Value;
             public bool Visited;
             public readonly ISet<Node> Incoming = new HashSet<Node>();
+            public readonly ISet<Node> Outgoing = new HashSet<Node>();
+            public int Index;
         }
 
         readonly Node[] nodes;
@@ -25,6 +27,7 @@ namespace Cassette.Utilities
                 {
                     var toNode = nodes.First(n => n.Value.Equals(dependency));
                     toNode.Incoming.Add(fromNode);
+                    fromNode.Outgoing.Add(toNode);
                 }
             }
         }
@@ -52,6 +55,93 @@ namespace Cassette.Utilities
             }
 
             results.Add(node.Value);
+        }
+
+        public IEnumerable<ISet<T>> FindCycles()
+        {
+            var connectedSets = GetConnectedSets();
+            var cycles = new List<ISet<T>>();
+            foreach (var connectedSet in connectedSets)
+            {
+                var cycle = FindCycle(connectedSet);
+                if (cycle.Count > 1)
+                {
+                    cycles.Add(cycle);
+                }
+            }
+            return cycles;
+        }
+
+        ISet<T> FindCycle(ISet<Node> connectedSet)
+        {
+            var roots = new List<Node>();
+            foreach (var node in connectedSet)
+            {
+                node.Index = node.Incoming.Count;
+                if (node.Index == 0)
+                {
+                    roots.Add(node);
+                }
+            }
+
+            if (roots.Count == 0) // Totally connected
+            {
+                return new HashSet<T>(connectedSet.Select(n => n.Value));
+            }
+
+            foreach (var root in roots)
+            {
+                DetectCyclesFromNode(root);
+            }
+
+            return new HashSet<T>(
+                connectedSet.Where(node => node.Index < 0)
+                            .Select(n => n.Value)
+            );
+        }
+
+        IEnumerable<ISet<Node>> GetConnectedSets()
+        {
+            foreach (var node in nodes)
+            {
+                node.Visited = false;
+            }
+
+            var sets = new List<ISet<Node>>();
+            foreach (var node in nodes)
+            {
+                if (node.Visited) continue;
+
+                var set = new HashSet<Node>();
+                sets.Add(set);
+                GetConnectedSet(node, set);
+            }
+            return sets;
+        }
+
+        void GetConnectedSet(Node start, ISet<Node> set)
+        {
+            start.Visited = true;
+            set.Add(start);
+            foreach (var node in start.Outgoing)
+            {
+                if (node.Visited) continue;
+
+                GetConnectedSet(node, set);
+            }
+        }
+
+        void DetectCyclesFromNode(Node node)
+        {
+            foreach (var nextNode in node.Outgoing)
+            {
+                nextNode.Index--;
+                if (nextNode.Index == -2)
+                {
+                    return;
+                }
+                DetectCyclesFromNode(nextNode);
+            }
         }
     }
 

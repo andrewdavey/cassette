@@ -91,13 +91,6 @@ namespace Cassette
             });
             exception.Message.ShouldEqual("Reference error in module descriptor for \"~/module1\". Cannot find \"~/module2\".");
         }
-
-        void SetupAsset(string filename, Mock<IAsset> asset)
-        {
-            asset.Setup(a => a.SourceFilename).Returns(filename);
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-        }
     }
 
     public class ModuleContainer_SortModules_Tests
