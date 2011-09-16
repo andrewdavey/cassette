@@ -214,7 +214,7 @@ namespace Cassette.Persistence
                 from r in asset.References
                 where r.Type == AssetReferenceType.RawFilename
                 select r.Path
-            ).Distinct();
+            ).Distinct(StringComparer.OrdinalIgnoreCase);
 
             return from file in fileReferences
                    select new XElement("File", new XAttribute("Path", file));
@@ -228,7 +228,7 @@ namespace Cassette.Persistence
                 where r.Type == AssetReferenceType.DifferentModule || r.Type == AssetReferenceType.Url
                 select moduleContainer.FindModuleContainingPath(r.Path).Path
             ).Concat(module.References)
-             .Distinct();
+             .Distinct(StringComparer.OrdinalIgnoreCase);
 
             return from reference in references
                    select new XElement("Reference", new XAttribute("Path", reference));
@@ -254,7 +254,7 @@ namespace Cassette.Persistence
             }
         }
 
-        internal static string ModuleAssetCacheFilename(Module module)
+        string ModuleAssetCacheFilename(Module module)
         {
             if (module.Path.IsUrl())
             {

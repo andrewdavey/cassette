@@ -34,6 +34,8 @@ namespace Cassette.Utilities
 
         public IEnumerable<T> TopologicalSort()
         {
+            UnVisitAllNodes();
+
             var results = new List<T>();
             var initial = nodes.Where(n => n.Incoming.Count == 0);
             foreach (var node in initial)
@@ -94,10 +96,7 @@ namespace Cassette.Utilities
 
         IEnumerable<ISet<Node>> GetConnectedSets()
         {
-            foreach (var node in nodes)
-            {
-                node.Visited = false;
-            }
+            UnVisitAllNodes();
 
             var sets = new List<ISet<Node>>();
             foreach (var node in nodes)
@@ -109,6 +108,14 @@ namespace Cassette.Utilities
                 GetConnectedSet(node, set);
             }
             return sets;
+        }
+
+        void UnVisitAllNodes()
+        {
+            foreach (var node in nodes)
+            {
+                node.Visited = false;
+            }
         }
 
         void GetConnectedSet(Node start, ISet<Node> set)

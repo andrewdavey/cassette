@@ -79,7 +79,7 @@ namespace Cassette
             for (int i = 1; i < roots.Count; i++)
             {
                 var module = roots[i];
-                var previous = modulesArray[i - 1];
+                var previous = roots[i - 1];
                 HashSet<Module> set;
                 if (!references.TryGetValue(module, out set))
                 {
