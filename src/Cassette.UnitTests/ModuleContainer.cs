@@ -183,6 +183,24 @@ namespace Cassette
             });
         }
 
+        [Fact]
+        public void ImplicitReferenceOrderingMustNotIntroduceCycles()
+        {
+            var ms = Enumerable.Range(0, 5).Select(i => new Module("~/" + i)).ToArray();
+
+            ms[1].AddReferences(new[] { "~/4" });
+            ms[4].AddReferences(new[] { "~/3" });
+
+            var container = new ModuleContainer<Module>(ms);
+            var sorted = container.IncludeReferencesAndSortModules(ms).ToArray();
+
+            sorted[0].ShouldBeSameAs(ms[0]);
+            sorted[1].ShouldBeSameAs(ms[2]);
+            sorted[2].ShouldBeSameAs(ms[3]);
+            sorted[3].ShouldBeSameAs(ms[4]);
+            sorted[4].ShouldBeSameAs(ms[1]);
+        }
+
         void SetupAsset(string filename, Mock<IAsset> asset)
         {
             asset.Setup(a => a.SourceFilename).Returns(filename);

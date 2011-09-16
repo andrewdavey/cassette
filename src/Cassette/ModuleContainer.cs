@@ -60,9 +60,9 @@ namespace Cassette
             );
         }
 
-        Dictionary<Module, HashSet<Module>> GetModuleReferencesWithImplicitOrderingIncluded(IList<Module> modulesArray)
+        Dictionary<Module, HashSet<Module>> GetModuleReferencesWithImplicitOrderingIncluded(IEnumerable<Module> modules)
         {
-            var roots = modulesArray.Where(m =>
+            var roots = modules.Where(m =>
             {
                 HashSet<Module> set;
                 if (moduleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
