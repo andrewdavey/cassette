@@ -124,5 +124,20 @@ namespace Cassette.Utilities
             cycles[0].SetEquals(new[] { 1, 2 }).ShouldBeTrue();
             cycles[1].SetEquals(new[] { 3, 4 }).ShouldBeTrue();
         }
+
+        [Fact]
+        public void _()
+        {
+            var edges = new Dictionary<int, int[]>
+            {
+                { 1, new[]{2} },
+                { 2, new[]{3} },
+                { 3, new int[]{} },
+                { 4, new[]{1} }
+            };
+            var graph = new Graph<int>(new[] { 1, 2, 3, 4 }, i => edges[i]);
+
+            graph.FindCycles().ShouldBeEmpty();
+        }
     }
 }

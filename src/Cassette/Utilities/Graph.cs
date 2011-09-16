@@ -94,6 +94,14 @@ namespace Cassette.Utilities
             );
         }
 
+        void UnVisitAllNodes()
+        {
+            foreach (var node in nodes)
+            {
+                node.Visited = false;
+            }
+        }
+
         IEnumerable<ISet<Node>> GetConnectedSets()
         {
             UnVisitAllNodes();
@@ -107,22 +115,18 @@ namespace Cassette.Utilities
                 sets.Add(set);
                 GetConnectedSet(node, set);
             }
-            return sets;
-        }
-
-        void UnVisitAllNodes()
-        {
-            foreach (var node in nodes)
+            if (sets.Count == 0 && nodes.Length > 0)
             {
-                node.Visited = false;
+                sets.Add(new HashSet<Node>(nodes));
             }
+            return sets;
         }
 
         void GetConnectedSet(Node start, ISet<Node> set)
         {
             start.Visited = true;
             set.Add(start);
-            foreach (var node in start.Outgoing)
+            foreach (var node in start.Outgoing.Concat(start.Incoming))
             {
                 if (node.Visited) continue;
 
