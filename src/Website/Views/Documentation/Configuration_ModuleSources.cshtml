@@ -36,7 +36,7 @@ Cassette can then manage references to the module and generate the HTML to inclu
 <p>External script and stylesheet modules can be added to the configuration. Here's an example that adds an external
 script module and provides a friendly name:</p>
 <pre><code>moduleConfiguration.Add(
-    <span class="keyword">new</span> <span class="code-type">ExternalScriptModule</span>(<span class="string">"twitter"</span>, <span class="string">"http://platform.twitter.com/widgets.js"</span>)</span>
+    <span class="keyword">new</span> <span class="code-type">ExternalScriptModule</span>(<span class="string">"twitter"</span>, <span class="string">"http://platform.twitter.com/widgets.js"</span>)
 );</code></pre>
 <p>Pages and assets can now reference this module by name. For example:</p>
 <pre><code><span class="code-tag">@@{</span> <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"twitter"</span>); <span class="code-tag">}</span></code></pre>
