@@ -34,7 +34,22 @@ namespace Cassette
             {
                 AddModulesReferencedBy(module, all);   
             }
-            var graph = new Graph<Module>(
+            var graph = BuildModuleGraph(references, all);
+            var cycles = graph.FindCycles().ToArray();
+            if (cycles.Length > 0)
+            {
+                var details = string.Join(Environment.NewLine, "[" + cycles.Select(cycle => string.Join(", ", cycle.Select(m => m.Path))) + "]");
+                throw new InvalidOperationException(
+                    "Cycles detected in module dependency graph:" + Environment.NewLine +
+                    details
+                );
+            }
+            return graph.TopologicalSort();
+        }
+
+        Graph<Module> BuildModuleGraph(IDictionary<Module, HashSet<Module>> references, IEnumerable<Module> all)
+        {
+            return new Graph<Module>(
                 all,
                 module =>
                 {
@@ -43,7 +58,6 @@ namespace Cassette
                     return Enumerable.Empty<T>();
                 }
             );
-            return graph.TopologicalSort();
         }
 
         Dictionary<Module, HashSet<Module>> GetModuleReferencesWithImplicitOrderingIncluded(IList<Module> modulesArray)

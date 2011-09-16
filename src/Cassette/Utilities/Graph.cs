@@ -10,9 +10,9 @@ namespace Cassette.Utilities
         {
             public T Value;
             public bool Visited;
+            public int Index;
             public readonly ISet<Node> Incoming = new HashSet<Node>();
             public readonly ISet<Node> Outgoing = new HashSet<Node>();
-            public int Index;
         }
 
         readonly Node[] nodes;
@@ -59,17 +59,9 @@ namespace Cassette.Utilities
 
         public IEnumerable<ISet<T>> FindCycles()
         {
-            var connectedSets = GetConnectedSets();
-            var cycles = new List<ISet<T>>();
-            foreach (var connectedSet in connectedSets)
-            {
-                var cycle = FindCycle(connectedSet);
-                if (cycle.Count > 1)
-                {
-                    cycles.Add(cycle);
-                }
-            }
-            return cycles;
+            return GetConnectedSets()
+                .Select(FindCycle)
+                .Where(cycle => cycle.Count > 1);
         }
 
         ISet<T> FindCycle(ISet<Node> connectedSet)

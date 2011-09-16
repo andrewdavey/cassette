@@ -98,7 +98,7 @@ namespace Cassette.Utilities
         {
             var edges = new Dictionary<int, int[]>
             {
-                { 1, new[]{2,3} },
+                { 1, new[]{2, 3} },
                 { 2, new[]{4} },
                 { 3, new[]{4} },
                 { 4, new[]{1} }

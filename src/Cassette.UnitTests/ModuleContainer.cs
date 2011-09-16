@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Cassette.Scripts;
 using Moq;
 using Should;
@@ -156,7 +157,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenModulesWithNoDependenciesAreReferencedInNonAlphaOrder_WhenSortModules_ThenReferenceOrderIsMaintained()
+        public void GivenModulesWithNoDependenciesAreReferencedInNonAlphaOrder_WhenIncludeReferencesAndSortModules_ThenReferenceOrderIsMaintained()
         {
             var module1 = new Module("~/module1");
             var module2 = new Module("~/module2");
@@ -166,6 +167,51 @@ namespace Cassette
 
             sorted.SequenceEqual(new[] { module2, module1 }).ShouldBeTrue();
         }
+
+        [Fact]
+        public void GivenModulesWithCyclicReferences_WhenIncludeReferencesAndSortModules_ThenExceptionThrown()
+        {
+            var module1 = new Module("~/module1");
+            var module2 = new Module("~/module2");
+            module1.AddReferences(new[] { "~/module2" });
+            module2.AddReferences(new[] { "~/module1" });
+            var container = new ModuleContainer<Module>(new[] { module1, module2 });
+
+            Assert.Throws<InvalidOperationException>(delegate
+            {
+                container.IncludeReferencesAndSortModules(new[] { module2, module1 });
+            });
+        }
+
+        [Fact]
+        public void ARGH()
+        {
+            var module1 = new Module("~/module-a");
+            var filea1 = new Mock<IAsset>();
+            SetupAsset("~/module-a/file1.js", filea1);
+            var filea2 = new Mock<IAsset>();
+            SetupAsset("~/module-a/file2.js", filea2);
+            module1.Assets.Add(filea1.Object);
+            module1.Assets.Add(filea2.Object);
+
+            var module2 = new Module("~/module-b");
+            var fileb1 = new Mock<IAsset>();
+            SetupAsset("~/module-b/file1.js", fileb1);
+            var fileb2 = new Mock<IAsset>();
+            SetupAsset("~/module-b/file2.js", fileb2);
+            fileb2.Setup(f => f.References).Returns(new[]
+            {
+                new AssetReference("~/module-a", fileb2.Object, 0, AssetReferenceType.DifferentModule)
+            });
+            module2.Assets.Add(fileb1.Object);
+            module2.Assets.Add(fileb2.Object);
+
+            var container = new ModuleContainer<Module>(new[] { module2, module1 });
+            var sorted = container.IncludeReferencesAndSortModules(new[] { module2 }).ToArray();
+            sorted[0].ShouldBeSameAs(module1);
+            sorted[1].ShouldBeSameAs(module2);
+        }
+
 
         void SetupAsset(string filename, Mock<IAsset> asset)
         {
