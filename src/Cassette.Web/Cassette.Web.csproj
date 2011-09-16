@@ -47,6 +47,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="CassetteApplication.cs" />
     <None Include="CassetteConfiguration.cs.pp" />
     <Compile Include="CassetteHttpModule.cs" />

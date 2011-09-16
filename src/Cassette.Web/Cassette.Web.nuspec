@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Cassette.Web</id>
-        <version>0.7.1</version>
+        <version>$version$</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
         <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
