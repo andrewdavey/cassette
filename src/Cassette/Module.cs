@@ -152,6 +152,17 @@ namespace Cassette
                     .Where(reference => reference.Type == AssetReferenceType.SameModule)
                     .Select(reference => assetsByFilename[reference.Path])
             );
+            var cycles = graph.FindCycles().ToArray();
+            if (cycles.Length > 0)
+            {
+                var details = string.Join(
+                    Environment.NewLine,
+                    cycles.Select(
+                        cycle => "[" + string.Join(", ", cycle.Select(a => a.SourceFilename)) + "]"
+                    )
+                );
+                throw new InvalidOperationException("Cycles detected in asset references:" + Environment.NewLine + details);
+            }
             assets = graph.TopologicalSort().ToList();
             hasSortedAssets = true;
         }
