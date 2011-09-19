@@ -15,12 +15,12 @@ namespace Cassette
             this.fileStreams = fileStreams;
         }
 
-        public void DeleteAll()
+        public void DeleteContents()
         {
             fileStreams.Clear();
         }
 
-        public IDirectory NavigateTo(string path, bool createIfNotExists)
+        public IDirectory GetDirectory(string path, bool createIfNotExists)
         {
             return new StubFileSystem(
                 fileStreams
@@ -32,7 +32,7 @@ namespace Cassette
                 );
         }
 
-        public IEnumerable<string> GetDirectories(string relativePath)
+        public IEnumerable<string> GetDirectoryPaths(string relativePath)
         {
             throw new NotImplementedException();
         }
@@ -42,24 +42,19 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption)
+        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
         {
-            return fileStreams.Keys;
+            if (searchPattern == "*")
+            {
+                return fileStreams.Keys;
+            }
+            else
+            {
+                return fileStreams.Keys.Where(key => key.EndsWith(searchPattern.Substring(1)));
+            }
         }
-
-        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern)
-        {
-            return fileStreams.Keys.Where(key => key.EndsWith(searchPattern.Substring(1)));
-        }
-
 
         public FileAttributes GetAttributes(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public string GetAbsolutePath(string path)
         {
             throw new NotImplementedException();
         }

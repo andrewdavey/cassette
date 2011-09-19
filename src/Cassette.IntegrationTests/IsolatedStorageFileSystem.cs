@@ -27,7 +27,7 @@ namespace Cassette.IntegrationTests
                     reader.ReadToEnd().ShouldEqual("test");
                 }
 
-                directory.DeleteAll();
+                directory.DeleteContents();
                 store.FileExists("test.txt").ShouldBeFalse();
             }
         }
@@ -45,7 +45,7 @@ namespace Cassette.IntegrationTests
                 }
 
                 var directory = new IsolatedStorageDirectory(store);
-                var subDirectory = directory.NavigateTo("sub", false);
+                var subDirectory = directory.GetDirectory("sub", false);
 
                 var file = subDirectory.GetFile("test.txt");
                 file.Exists.ShouldBeTrue();
@@ -54,7 +54,7 @@ namespace Cassette.IntegrationTests
                     reader.ReadToEnd().ShouldEqual("test");
                 }
 
-                subDirectory.DeleteAll();
+                subDirectory.DeleteContents();
                 store.FileExists("sub\\test.txt").ShouldBeFalse();
             }
         }

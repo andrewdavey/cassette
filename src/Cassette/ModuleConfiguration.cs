@@ -170,7 +170,7 @@ namespace Cassette
         {
             return new ModuleCache<T>(
                 version,
-                cacheDirectory.NavigateTo(typeof(T).Name, true),
+                cacheDirectory.GetDirectory(typeof(T).Name, true),
                 sourceDirectory
             );
         }

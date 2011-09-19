@@ -5,12 +5,13 @@ namespace Cassette.IO
 {
     public interface IDirectory
     {
-        IDirectory NavigateTo(string path, bool createIfNotExists);
-        void DeleteAll();
-        IEnumerable<string> GetDirectories(string relativePath);
-        IEnumerable<string> GetFiles(string directory, SearchOption searchOption);
-        IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern);
-        FileAttributes GetAttributes(string path);
         IFile GetFile(string filename);
+        IDirectory GetDirectory(string path, bool createIfNotExists);
+
+        IEnumerable<string> GetDirectoryPaths(string relativePath);
+        IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern);
+        FileAttributes GetAttributes(string path);
+
+        void DeleteContents();
     }
 }

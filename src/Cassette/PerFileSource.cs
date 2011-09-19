@@ -48,7 +48,7 @@ namespace Cassette
         {
             return basePath.Length == 1
                        ? application.RootDirectory
-                       : application.RootDirectory.NavigateTo(basePath.Substring(2), false);
+                       : application.RootDirectory.GetDirectory(basePath.Substring(2), false);
         }
 
         IEnumerable<string> GetFilenames(IDirectory directory)
@@ -56,13 +56,13 @@ namespace Cassette
             IEnumerable<string> filenames;
             if (string.IsNullOrEmpty(FilePattern))
             {
-                filenames = directory.GetFiles("", SearchOption);
+                filenames = directory.GetFilePaths("", SearchOption, "*");
             }
             else
             {
                 var patterns = FilePattern.Split(';', ',');
                 filenames = patterns.SelectMany(
-                    pattern => directory.GetFiles("", SearchOption, pattern)
+                    pattern => directory.GetFilePaths("", SearchOption, pattern)
                 );
             }
 

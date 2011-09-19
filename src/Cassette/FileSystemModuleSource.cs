@@ -39,7 +39,7 @@ namespace Cassette
                 where IsNotHidden(root, subDirectoryName)
                 select CreateModule(
                     subDirectoryName,
-                    root.NavigateTo(subDirectoryName.Substring(2), false),
+                    root.GetDirectory(subDirectoryName.Substring(2), false),
                     moduleFactory
                 )
             ).ToArray();
@@ -121,12 +121,12 @@ namespace Cassette
             IEnumerable<string> filenames;
             if (string.IsNullOrWhiteSpace(FilePattern))
             {
-                filenames = directory.GetFiles("", SearchOption);
+                filenames = directory.GetFilePaths("", SearchOption, "*");
             }
             else
             {
                 var patterns = FilePattern.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                filenames = patterns.SelectMany(pattern => directory.GetFiles("", SearchOption, pattern)).Distinct();
+                filenames = patterns.SelectMany(pattern => directory.GetFilePaths("", SearchOption, pattern)).Distinct();
             }
             if (Exclude != null)
             {

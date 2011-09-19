@@ -22,18 +22,18 @@ namespace Cassette.IO
         }
 
         [Fact]
-        public void GivenFileDoesNotExist_WhenGetFile_ThenReturnNonExistentFile()
+        public void GivenFileDoesNotExist_WhenGetFile_ThenReturnFileSystemFile()
         {
             using (var path = new TempDirectory())
             {
                 var dir = new FileSystemDirectory(path);
                 var file = dir.GetFile("test.txt");
-                file.ShouldBeType<NonExistentFile>();
+                file.ShouldBeType<FileSystemFile>();
             }
         }
 
         [Fact]
-        public void GivenSubDirectoryDoesNotExists_WhenGetFile_ThenReturnNonExistentFile()
+        public void GivenSubDirectoryDoesNotExist_WhenGetFile_ThenReturnNonExistentFile()
         {
             using (var path = new TempDirectory())
             {
@@ -56,7 +56,7 @@ namespace Cassette.IO
                 File.WriteAllText(Path.Combine(path, "sub\\file2.txt"), "2");
 
                 var dir = new FileSystemDirectory(path);
-                dir.DeleteAll();
+                dir.DeleteContents();
 
                 Directory.GetFiles(path).Length.ShouldEqual(0);
                 Directory.GetDirectories(path).Length.ShouldEqual(0);

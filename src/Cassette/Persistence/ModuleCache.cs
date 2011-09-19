@@ -159,7 +159,7 @@ namespace Cassette.Persistence
 
         public void SaveModuleContainer(IModuleContainer<T> moduleContainer)
         {
-            cacheDirectory.DeleteAll();
+            cacheDirectory.DeleteContents();
             SaveContainerXml(moduleContainer);
             foreach (var module in moduleContainer.Modules)
             {

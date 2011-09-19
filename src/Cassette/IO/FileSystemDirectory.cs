@@ -19,16 +19,9 @@ namespace Cassette.IO
             try
             {
                 var subDirectoryPath = Path.GetDirectoryName(filename);
-                var subDirectory = NavigateTo(subDirectoryPath, false);
+                var subDirectory = GetDirectory(subDirectoryPath, false);
                 var path = GetAbsolutePath(filename);
-                if (File.Exists(path))
-                {
-                    return new FileSystemFile(path, subDirectory);
-                }
-                else
-                {
-                    return new NonExistentFile(path);
-                }
+                return new FileSystemFile(path, subDirectory);
             }
             catch (DirectoryNotFoundException)
             {
@@ -36,7 +29,7 @@ namespace Cassette.IO
             }
         }
 
-        public void DeleteAll()
+        public void DeleteContents()
         {
             foreach (var directory in Directory.GetDirectories(rootDirectory))
             {
@@ -58,7 +51,7 @@ namespace Cassette.IO
             return fullPath.Substring(rootDirectory.Length + 1);
         }
 
-        public IDirectory NavigateTo(string path, bool createIfNotExists)
+        public IDirectory GetDirectory(string path, bool createIfNotExists)
         {
             var fullPath = GetAbsolutePath(path);
             if (Directory.Exists(fullPath) == false)
@@ -75,17 +68,12 @@ namespace Cassette.IO
             return new FileSystemDirectory(fullPath);
         }
 
-        public IEnumerable<string> GetDirectories(string relativePath)
+        public IEnumerable<string> GetDirectoryPaths(string relativePath)
         {
             return Directory.EnumerateDirectories(GetAbsolutePath(relativePath)).Select(ToRelativePath);
         }
 
-        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption)
-        {
-            return Directory.GetFiles(GetAbsolutePath(directory), "*", searchOption).Select(ToRelativePath);
-        }
-
-        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern)
+        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
         {
             return Directory.GetFiles(GetAbsolutePath(directory), searchPattern, searchOption).Select(ToRelativePath);
         }

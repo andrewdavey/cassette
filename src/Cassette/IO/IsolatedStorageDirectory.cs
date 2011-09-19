@@ -17,7 +17,7 @@ namespace Cassette.IO
         readonly IsolatedStorageFile storage;
         readonly string basePath;
 
-        public void DeleteAll()
+        public void DeleteContents()
         {
             foreach (var filename in storage.GetFileNames(basePath + "/*"))
             {
@@ -39,7 +39,7 @@ namespace Cassette.IO
             return Path.Combine(basePath, path);
         }
 
-        public IDirectory NavigateTo(string path, bool createIfNotExists)
+        public IDirectory GetDirectory(string path, bool createIfNotExists)
         {
             var fullPath = GetAbsolutePath(path);
             if (storage.DirectoryExists(fullPath) == false)
@@ -56,17 +56,12 @@ namespace Cassette.IO
             return new IsolatedStorageDirectory(storage, fullPath);
         }
 
-        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption)
+        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetDirectories(string relativePath)
+        public IEnumerable<string> GetDirectoryPaths(string relativePath)
         {
             throw new NotImplementedException();
         }
