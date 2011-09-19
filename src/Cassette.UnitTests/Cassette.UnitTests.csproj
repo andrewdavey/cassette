@@ -66,6 +66,7 @@
     <Compile Include="HtmlTemplates\InlineHtmlTemplateModuleRenderer.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
+    <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleDescriptorReader.cs" />
     <Compile Include="ModuleProcessing\MutablePipeline.cs" />
