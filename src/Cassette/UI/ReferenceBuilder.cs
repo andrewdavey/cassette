@@ -52,32 +52,42 @@ namespace Cassette.UI
 
         public void Reference(Module module, string location = null)
         {
-            if (renderedLocations.Contains(location ?? ""))
+            if (!application.HtmlRewritingEnabled && HasRenderedLocation(location))
             {
-                if (string.IsNullOrEmpty(location))
-                {
-                    throw new InvalidOperationException(
-                        string.Format(
-                            "Cannot add a {0} reference. The modules have already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
-                            typeof(T).Name
-                        )
-                    );
-                }
-                else
-                {
-                    throw new InvalidOperationException(
-                        string.Format(
-                            "Cannot add a {1} reference, for location \"{0}\". This location has already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
-                            location,
-                            typeof(T).Name
-                        )
-                    );
-                }
+                ThrowRewritingRequiredException(location);
             }
 
             var modules = GetOrCreateModuleSet(location);
             if (modules.Contains(module)) return;
             modules.Add(module);
+        }
+
+        bool HasRenderedLocation(string location)
+        {
+            return renderedLocations.Contains(location ?? "");
+        }
+
+        void ThrowRewritingRequiredException(string location)
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        "Cannot add a {0} reference. The modules have already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
+                        typeof(T).Name
+                    )
+                );
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        "Cannot add a {1} reference, for location \"{0}\". This location has already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
+                        location,
+                        typeof(T).Name
+                    )
+                );
+            }
         }
 
         public IEnumerable<Module> GetModules(string location)

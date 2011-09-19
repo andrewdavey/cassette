@@ -9,18 +9,23 @@ using Xunit;
 
 namespace Cassette.UI
 {
-    public class ReferenceBuilder_AddReference_Tests
+    public class ReferenceBuilder_Reference_Tests
     {
-        public ReferenceBuilder_AddReference_Tests()
+        public ReferenceBuilder_Reference_Tests()
         {
             moduleContainer = new Mock<IModuleContainer<ScriptModule>>();
             moduleFactory = new Mock<IModuleFactory<ScriptModule>>();
-            builder = new ReferenceBuilder<ScriptModule>(moduleContainer.Object, moduleFactory.Object, Mock.Of<IPlaceholderTracker>(), Mock.Of<ICassetteApplication>());
+            application = new Mock<ICassetteApplication>();
+            builder = new ReferenceBuilder<ScriptModule>(moduleContainer.Object, moduleFactory.Object, Mock.Of<IPlaceholderTracker>(), application.Object);
+
+            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
+                           .Returns<IEnumerable<Module>>(ms => ms);
         }
 
         readonly ReferenceBuilder<ScriptModule> builder;
         readonly Mock<IModuleContainer<ScriptModule>> moduleContainer;
         readonly Mock<IModuleFactory<ScriptModule>> moduleFactory;
+        readonly Mock<ICassetteApplication> application;
 
         [Fact]
         public void WhenAddReferenceToModuleDirectory_ThenGetModulesReturnTheModule()
@@ -172,6 +177,21 @@ namespace Cassette.UI
             {
                 builder.Reference("~/test", "test");
             });
+        }
+
+        [Fact]
+        public void GivenLocationAlreadyRenderedButHtmlRewrittingEnabled_WhenAddReferenceToThatLocation_ThenModuleStillAdded()
+        {
+            application.SetupGet(a => a.HtmlRewritingEnabled)
+                       .Returns(true);
+            var module = new ScriptModule("~/test");
+            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
+                           .Returns(module);
+            builder.Render("test");
+
+            builder.Reference("~/test", "test");
+
+            builder.GetModules("test").First().ShouldBeSameAs(module);
         }
     }
 
