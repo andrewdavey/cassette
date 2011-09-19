@@ -63,4 +63,19 @@ namespace Cassette.IO
             }
         }
     }
+
+    public class FileSystemDirectory_GetDirectory_Tests
+    {
+        [Fact]
+        public void GivenSubDirectoryDoesNotExist_WhenGetDirectoryWithCreateTrue_ThenDirectoryIsCreated()
+        {
+            using (var path = new TempDirectory())
+            {
+                var dir = new FileSystemDirectory(path);
+                dir.GetDirectory("sub", true);
+
+                Directory.Exists(Path.Combine(path, "sub")).ShouldBeTrue();
+            }
+        }
+    }
 }
