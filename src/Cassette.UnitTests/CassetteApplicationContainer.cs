@@ -162,9 +162,8 @@ namespace Cassette
         {
             var app = new Mock<ICassetteApplication>();
             var directory = new Mock<IDirectory>();
-            directory.Setup(d => d.GetAbsolutePath(""))
-                     .Returns(rootPath);
-            app.SetupGet(a => a.RootDirectory).Returns(directory.Object);
+            app.SetupGet(a => a.RootDirectory)
+               .Returns(directory.Object);
             return app;
         }
 

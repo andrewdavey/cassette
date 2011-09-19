@@ -66,6 +66,7 @@
     <Compile Include="HtmlTemplates\InlineHtmlTemplateModuleRenderer.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
+    <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
     <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="ModuleConfiguration.cs" />
@@ -74,7 +75,7 @@
     <Compile Include="ModuleSourceTestBase.cs" />
     <Compile Include="PerFileSource.cs" />
     <Compile Include="Persistence\ModuleCache.cs" />
-    <Compile Include="Persistence\TempDirectory.cs" />
+    <Compile Include="TempDirectory.cs" />
     <Compile Include="PerSubDirectorySource.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />

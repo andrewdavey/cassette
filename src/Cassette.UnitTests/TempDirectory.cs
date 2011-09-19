@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Cassette.Persistence
+namespace Cassette
 {
     class TempDirectory : IDisposable
     {

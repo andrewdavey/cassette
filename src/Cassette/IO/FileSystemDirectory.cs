@@ -14,18 +14,21 @@ namespace Cassette.IO
 
         readonly string rootDirectory;
 
-        public bool DirectoryExists(string path)
-        {
-            return Directory.Exists(GetAbsolutePath(path));
-        }
-
         public IFile GetFile(string filename)
         {
             try
             {
                 var subDirectoryPath = Path.GetDirectoryName(filename);
                 var subDirectory = NavigateTo(subDirectoryPath, false);
-                return new FileSystemFile(GetAbsolutePath(filename), subDirectory);
+                var path = GetAbsolutePath(filename);
+                if (File.Exists(path))
+                {
+                    return new FileSystemFile(path, subDirectory);
+                }
+                else
+                {
+                    return new NonExistentFile(path);
+                }
             }
             catch (DirectoryNotFoundException)
             {
@@ -45,7 +48,7 @@ namespace Cassette.IO
             }
         }
 
-        public string GetAbsolutePath(string filename)
+        string GetAbsolutePath(string filename)
         {
             return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(rootDirectory, filename));
         }

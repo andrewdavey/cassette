@@ -37,11 +37,6 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public bool DirectoryExists(string relativePath)
-        {
-            throw new NotImplementedException();
-        }
-
         public IFile GetFile(string filename)
         {
             throw new NotImplementedException();

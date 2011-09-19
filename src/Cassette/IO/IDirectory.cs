@@ -11,8 +11,6 @@ namespace Cassette.IO
         IEnumerable<string> GetFiles(string directory, SearchOption searchOption);
         IEnumerable<string> GetFiles(string directory, SearchOption searchOption, string searchPattern);
         FileAttributes GetAttributes(string path);
-        string GetAbsolutePath(string path);
-        bool DirectoryExists(string path);
         IFile GetFile(string filename);
     }
 }

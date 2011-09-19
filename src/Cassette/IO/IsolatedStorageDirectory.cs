@@ -34,7 +34,7 @@ namespace Cassette.IO
             }
         }
 
-        public string GetAbsolutePath(string path)
+        string GetAbsolutePath(string path)
         {
             return Path.Combine(basePath, path);
         }
@@ -74,11 +74,6 @@ namespace Cassette.IO
         public FileAttributes GetAttributes(string path)
         {
             throw new NotImplementedException();
-        }
-
-        public bool DirectoryExists(string path)
-        {
-            return storage.DirectoryExists(GetAbsolutePath(path));
         }
 
         public IFile GetFile(string filename)
