@@ -2,6 +2,9 @@
 // It provides the rewriteTemplate function which is need to rewrite any data-bind attributes
 // in an HTML template before compiling it into JavaScript.
 
+// Knockout JavaScript library v1.2
+// (c) Steven Sanderson - http://knockoutjs.com/
+// License: MIT (http://www.opensource.org/licenses/mit-license.php)
 var ko = {};
 var stringTrimRegex = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
 

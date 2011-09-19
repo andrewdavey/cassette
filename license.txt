@@ -1,19 +1,79 @@
-Copyright (c) 2011 Andrew Davey (andrew@equin.co.uk)
+Cassette
+Copyright 2011 Andrew Davey
+===================================================================
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+===================================================================
+FOSS License Exception
+===================================================================
+
+What is the FOSS License Exception?
+
+This Free and Open Source Software ("FOSS") License Exception allows 
+developers of FOSS applications to include Cassette with their FOSS 
+applications. Cassette is typically licensed pursuant to version 3
+of the General Public License ("GPL"), but this exception permits 
+distribution of Cassette with a developer's FOSS applications licensed 
+under the terms of another FOSS license listed below, even though such 
+other FOSS license may be incompatible with the GPL.
+
+The following terms and conditions describe the circumstances under which 
+this FOSS License Exception applies.
+
+FOSS License Exception Terms and Conditions
+
+Definitions.
+	* "Derivative Work" means a derivative work, as defined under applicable 
+	   copyright law, formed entirely from the Program and one or more FOSS Applications.
+	* "FOSS Application" means a free and open source software application distributed 
+	   subject to a license approved by the Open Source Initiative (OSI) board. A list of 
+	   applicable licenses appears at: http://www.opensource.org/licenses/category.
+	* "FOSS Notice" means a notice placed by Andrew Davey or the Cassette author 
+	   in a copy of the Cassette library stating that such copy of the Cassette library 
+	   may be distributed under Andrew Davey's or Cassette's FOSS License Exception.
+	* "Independent Work" means portions of the Derivative Work that are not derived 
+	   from the Program and can reasonably be considered independent and separate works.
+	* "Program" means a copy of Andrew Davey's Cassette library that contains a FOSS 
+	   Notice.
+
+A FOSS application developer ("you" or "your") may distribute a Derivative Work provided 
+that you and the Derivative Work meet all of the following conditions:
+
+	* You obey the GPL in all respects for the Program and all portions (including 
+	  modifications) of the Program included in the Derivative Work (provided that this 
+	  condition does not apply to Independent Works);
+	* The Derivative Work does not include any work licensed under the GPL other than 
+	  the Program;
+	* You distribute Independent Works subject to a license approved by the OSI which is 
+	  listed in http://www.opensource.org/licenses/category;
+	* You distribute Independent Works in object code or executable form with the complete 
+	  corresponding machine-readable source code on the same medium and under the same 
+	  FOSS license applying to the object code or executable forms;
+	* All works that are aggregated with the Program or the Derivative Work on a medium or 
+	  volume of storage are not derivative works of the Program, Derivative Work or FOSS 
+	  Application, and must reasonably be considered independent and separate works.
+
+Andrew Davey reserves all rights not expressly granted in these terms and conditions. 
+If all of the above conditions are not met, then this FOSS License Exception does not 
+apply to you or your Derivative Work.
+
+
+===================================================================
+Commercial Licensing
+===================================================================
+In addition to this license, Cassette is offered under a commerical license.
+You can learn more about this option by contacting us using: 
+http://getcassette.net/contact

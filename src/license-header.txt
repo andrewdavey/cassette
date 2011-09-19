@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 /*
 Copyright 2011 Andrew Davey
 
@@ -17,24 +17,3 @@ You should have received a copy of the GNU General Public License along with
 Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-
-namespace Cassette.HtmlTemplates
-{
-    public class KnockoutJQueryTmplCompiler : JQueryTmplCompiler
-    {
-        public KnockoutJQueryTmplCompiler()
-        {
-            ScriptEngine.Execute(Properties.Resources.jqueryTmplKnockout);
-        }
-
-        protected override string CreateFunction(string source)
-        {
-            return base.CreateFunction(Rewrite(source));
-        }
-
-        string Rewrite(string source)
-        {
-            return ScriptEngine.CallGlobalFunction<string>("rewriteTemplate", source);
-        }
-    }
-}

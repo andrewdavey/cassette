@@ -5,7 +5,7 @@
         <version>$version$</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
-        <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+        <licenseUrl>http://getcassette.net/licensing</licenseUrl>
         <projectUrl>https://github.com/andrewdavey/cassette</projectUrl>
         <description>Core library for Cassette. Cassette automatically builds JavaScript, CSS and HTML template modules based on the dependencies between files. CoffeeScript and LESS are also supported.</description>
         <tags>web javascript coffeescript css html templates asp.net</tags>

@@ -1,6 +1,15 @@
 ﻿// This code was butchered out of https://github.com/jquery/jquery-tmpl
 // It provides just enough to build HTML templates into a JavaScript function.
 
+/*!
+* jQuery Templates Plugin 1.0.0pre
+* http://github.com/jquery/jquery-tmpl
+* Requires jQuery 1.4.2
+*
+* Copyright Software Freedom Conservancy, Inc.
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*/
 var tmplTags = {
     "tmpl": {
         _default: { $2: "null" },
