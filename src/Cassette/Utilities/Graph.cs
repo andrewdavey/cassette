@@ -156,13 +156,13 @@ namespace Cassette.Utilities
 
         void DetectCyclesFromNode(Node node)
         {
+            if (node.Index > 0)
+            {
+                node.Index--;
+                if (node.Index < 0) return;
+            }
             foreach (var nextNode in node.Outgoing)
             {
-                nextNode.Index--;
-                if (nextNode.Index == -2)
-                {
-                    return;
-                }
                 DetectCyclesFromNode(nextNode);
             }
         }

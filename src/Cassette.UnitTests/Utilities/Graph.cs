@@ -118,10 +118,10 @@ namespace Cassette.Utilities
         {
             var edges = new Dictionary<int, int[]>
             {
-                { 1, new[]{2, 3} },
-                { 2, new[]{4} },
-                { 3, new[]{4} },
-                { 4, new[]{1} }
+                { 1, new[] { 2, 3 } },
+                { 2, new[] { 4 } },
+                { 3, new[] { 4 } },
+                { 4, new[] { 1 } }
             };
             var graph = new Graph<int>(new[] { 1, 2, 3, 4 }, i => edges[i]);
 
@@ -133,10 +133,10 @@ namespace Cassette.Utilities
         {
             var edges = new Dictionary<int, int[]>
             {
-                { 1, new[]{2} },
-                { 2, new[]{1} },
-                { 3, new[]{4} },
-                { 4, new[]{3} }
+                { 1, new[] { 2 } },
+                { 2, new[] { 1 } },
+                { 3, new[] { 4 } },
+                { 4, new[] { 3 } }
             };
             var graph = new Graph<int>(new[] { 1, 2, 3, 4 }, i => edges[i]);
 
@@ -146,18 +146,38 @@ namespace Cassette.Utilities
         }
 
         [Fact]
-        public void _()
+        public void BackReferenceDoesNotCauseCycle()
         {
             var edges = new Dictionary<int, int[]>
             {
-                { 1, new[]{2} },
-                { 2, new[]{3} },
-                { 3, new int[]{} },
-                { 4, new[]{1} }
+                { 1, new[] { 2 } },
+                { 2, new[] { 3 } },
+                { 3, new int[] { } },
+                { 4, new[] { 1 } }
             };
             var graph = new Graph<int>(new[] { 1, 2, 3, 4 }, i => edges[i]);
 
             graph.FindCycles().ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void MoreComplexGraphWithNoCycles()
+        {
+            var edges = new Dictionary<int, int[]>
+            {
+                { 1, new int[] { } },
+                { 2, new int[] { } },
+                { 3, new[] { 1, 2, 5 } },
+                { 4, new[] { 1, 2, 6 } },
+                { 5, new[] { 2 } },
+                { 6, new[] { 2, 3, 7, 5 } },
+                { 7, new[] { 3 } },
+                { 8, new[] { 3 } }
+            };
+            var graph = new Graph<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8 }, i => edges[i]);
+
+            var result = graph.FindCycles().ToArray();
+            result.ShouldBeEmpty();
         }
     }
 }
