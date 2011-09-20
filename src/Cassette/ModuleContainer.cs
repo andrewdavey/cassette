@@ -58,7 +58,7 @@ namespace Cassette
             var cycles = graph.FindCycles().ToArray();
             if (cycles.Length > 0)
             {
-                var details = string.Join(Environment.NewLine, "[" + cycles.Select(cycle => string.Join(", ", cycle.Select(m => m.Path))) + "]");
+                var details = string.Join(Environment.NewLine, cycles.Select(cycle => "[" + string.Join(", ", cycle.Select(m => m.Path) + "]")));
                 throw new InvalidOperationException(
                     "Cycles detected in module dependency graph:" + Environment.NewLine +
                     details
