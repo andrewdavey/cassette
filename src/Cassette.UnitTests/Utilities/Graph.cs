@@ -125,7 +125,8 @@ namespace Cassette.Utilities
             };
             var graph = new Graph<int>(new[] { 1, 2, 3, 4 }, i => edges[i]);
 
-            graph.FindCycles().First().SetEquals(new[] { 1, 2, 3, 4 }).ShouldBeTrue();
+            var cycle = graph.FindCycles().First();
+            cycle.SetEquals(new[] { 1, 2, 3, 4 }).ShouldBeTrue();
         }
 
         [Fact]
@@ -178,6 +179,23 @@ namespace Cassette.Utilities
 
             var result = graph.FindCycles().ToArray();
             result.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void PartialCycle2()
+        {
+            var edges = new Dictionary<int, int[]>
+            {
+                { 1, new[]{4} },
+                { 2, new[]{4} },
+                { 3, new[]{4,6} },
+                { 4, new[]{5} },
+                { 5, new int[]{} },
+                {6,new[]{5}}
+            };
+            var graph = new Graph<int>(new[] { 1, 2, 3, 4, 5,6 }, i => edges[i]);
+
+            graph.FindCycles().ShouldBeEmpty();
         }
     }
 }

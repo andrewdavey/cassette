@@ -26,11 +26,13 @@ namespace Cassette.Utilities
 {
     class Graph<T>
     {
+        [System.Diagnostics.DebuggerDisplay("{Value}")]
         class Node
         {
             public T Value;
             public bool Visited;
             public int Index;
+            public int LowLink;
             public readonly ISet<Node> Incoming = new HashSet<Node>();
             public readonly ISet<Node> Outgoing = new HashSet<Node>();
         }
@@ -81,37 +83,60 @@ namespace Cassette.Utilities
 
         public IEnumerable<ISet<T>> FindCycles()
         {
-            return GetConnectedSets()
-                .Select(FindCycle)
-                .Where(cycle => cycle.Count > 1);
-        }
+            // Tarjan's strongly connected components algorithm
+            // http://en.wikipedia.org/wiki/Tarjan%E2%80%99s_strongly_connected_components_algorithm
 
-        ISet<T> FindCycle(ISet<Node> connectedSet)
-        {
-            var roots = new List<Node>();
-            foreach (var node in connectedSet)
+            var index = 0;
+            var stack = new Stack<Node>();
+            var cycles = new HashSet<ISet<T>>();
+
+            foreach (var node in nodes)
             {
-                node.Index = node.Incoming.Count;
-                if (node.Index == 0)
+                node.Index = -1;
+            }
+
+            foreach (var node in nodes)
+            {
+                if (node.Index == -1)
                 {
-                    roots.Add(node);
+                    StrongConnect(node, stack, ref index, cycles);
                 }
             }
 
-            if (roots.Count == 0) // Totally connected
+            return cycles.Where(c => c.Count > 1); // Singleton sub-graphs are not a cycle for Cassette's purposes.
+        }
+
+        void StrongConnect(Node node, Stack<Node> stack, ref int index, ISet<ISet<T>> outputs)
+        {
+            node.Index = index;
+            node.LowLink = index;
+            index++;
+            stack.Push(node);
+
+            foreach (var next in node.Outgoing)
             {
-                return new HashSet<T>(connectedSet.Select(n => n.Value));
+                if (next.Index == -1)
+                {
+                    StrongConnect(next, stack, ref index, outputs);
+                    node.LowLink = Math.Min(node.LowLink, next.LowLink);
+                }
+                else if (stack.Contains(next))
+                {
+                    node.LowLink = Math.Min(node.LowLink, next.Index);
+                }
             }
 
-            foreach (var root in roots)
+            if (node.LowLink == node.Index)
             {
-                DetectCyclesFromNode(root);
+                var cycle = new HashSet<T>();
+                Node w;
+                do
+                {
+                    w = stack.Pop();
+                    cycle.Add(w.Value);
+                } while (w != node);
+                outputs.Add(cycle);
             }
-
-            return new HashSet<T>(
-                connectedSet.Where(node => node.Index < 0)
-                            .Select(n => n.Value)
-            );
         }
 
         void UnVisitAllNodes()
@@ -121,52 +146,6 @@ namespace Cassette.Utilities
                 node.Visited = false;
             }
         }
-
-        IEnumerable<ISet<Node>> GetConnectedSets()
-        {
-            UnVisitAllNodes();
-
-            var sets = new List<ISet<Node>>();
-            foreach (var node in nodes)
-            {
-                if (node.Visited) continue;
-
-                var set = new HashSet<Node>();
-                sets.Add(set);
-                GetConnectedSet(node, set);
-            }
-            if (sets.Count == 0 && nodes.Length > 0)
-            {
-                sets.Add(new HashSet<Node>(nodes));
-            }
-            return sets;
-        }
-
-        void GetConnectedSet(Node start, ISet<Node> set)
-        {
-            start.Visited = true;
-            set.Add(start);
-            foreach (var node in start.Outgoing.Concat(start.Incoming))
-            {
-                if (node.Visited) continue;
-
-                GetConnectedSet(node, set);
-            }
-        }
-
-        void DetectCyclesFromNode(Node node)
-        {
-            if (node.Index > 0)
-            {
-                node.Index--;
-                if (node.Index < 0) return;
-            }
-            foreach (var nextNode in node.Outgoing)
-            {
-                DetectCyclesFromNode(nextNode);
-            }
-        }
     }
-
 }
 
