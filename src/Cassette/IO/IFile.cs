@@ -39,6 +39,6 @@ namespace Cassette.IO
         /// <summary>
         /// Opens a stream to the file.
         /// </summary>
-        Stream Open(FileMode mode, FileAccess access);
+        Stream Open(FileMode mode, FileAccess access, FileShare fileShare);
     }
 }

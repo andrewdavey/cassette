@@ -61,7 +61,7 @@ namespace Cassette.Persistence
 
         public Stream OpenStream()
         {
-            return file.Open(FileMode.Open, FileAccess.Read);
+            return file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
         public void Accept(IAssetVisitor visitor)

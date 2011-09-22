@@ -150,7 +150,7 @@ namespace Cassette
         byte[] HashFileContents()
         {
             using (var sha1 = SHA1.Create())
-            using (var fileStream = file.Open(FileMode.Open, FileAccess.Read))
+            using (var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 return sha1.ComputeHash(fileStream);
             }
@@ -175,7 +175,7 @@ namespace Cassette
 
         protected override Stream OpenStreamCore()
         {
-            return file.Open(FileMode.Open, FileAccess.Read);
+            return file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
         public override void Accept(IAssetVisitor visitor)

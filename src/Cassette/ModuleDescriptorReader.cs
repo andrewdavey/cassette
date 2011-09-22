@@ -53,7 +53,7 @@ namespace Cassette
 
         public ModuleDescriptor Read()
         {
-            using (var stream = sourceFile.Open(FileMode.Open, FileAccess.Read))
+            using (var stream = sourceFile.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new StreamReader(stream))
             {
                 string line;
