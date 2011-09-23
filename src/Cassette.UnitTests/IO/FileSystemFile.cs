@@ -69,7 +69,7 @@ namespace Cassette.IO
         [Fact]
         public void OpenReturnsFileStream()
         {
-            using (var stream = file.Open(FileMode.Open, FileAccess.Read))
+            using (var stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 stream.ReadToEnd().ShouldEqual("test");
             }

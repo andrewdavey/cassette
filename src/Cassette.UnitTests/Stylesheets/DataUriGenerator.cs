@@ -124,7 +124,7 @@ namespace Cassette.Stylesheets
                 .Returns(file.Object);
             file.SetupGet(f => f.Exists)
                 .Returns(true);
-            file.Setup(d => d.Open(FileMode.Open, FileAccess.Read))
+            file.Setup(d => d.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => new MemoryStream(bytes));
         }
 

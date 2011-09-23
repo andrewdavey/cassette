@@ -44,7 +44,7 @@ namespace Cassette.Stylesheets
             directory.Setup(d => d.GetFile(It.IsAny<string>()))
                      .Returns(file.Object);
             file.SetupGet(f => f.Exists).Returns(true);
-            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
+            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(Stream.Null);
 
             transformer = new ExpandCssUrlsAssetTransformer(application.Object);

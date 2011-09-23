@@ -38,7 +38,7 @@ namespace Cassette
         {
             var source = new Mock<IFile>();
             source
-                .Setup(s => s.Open(FileMode.Open, FileAccess.Read))
+                .Setup(s => s.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => descriptor.AsStream());
 
             return new ModuleDescriptorReader(source.Object, files);

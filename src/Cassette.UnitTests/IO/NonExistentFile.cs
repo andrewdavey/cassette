@@ -43,7 +43,7 @@ namespace Cassette.IO
         [Fact]
         public void OpenThrowsFileNotFoundException()
         {
-            Assert.Throws<FileNotFoundException>(() => file.Open(FileMode.Open, FileAccess.Read));
+            Assert.Throws<FileNotFoundException>(() => file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
         }
 
         [Fact]

@@ -42,7 +42,7 @@ namespace Cassette.IntegrationTests
                 var directory = new IsolatedStorageDirectory(store);
                 var file = directory.GetFile("test.txt");
                 file.Exists.ShouldBeTrue();
-                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
+                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     reader.ReadToEnd().ShouldEqual("test");
                 }
@@ -69,7 +69,7 @@ namespace Cassette.IntegrationTests
 
                 var file = subDirectory.GetFile("test.txt");
                 file.Exists.ShouldBeTrue();
-                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
+                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     reader.ReadToEnd().ShouldEqual("test");
                 }

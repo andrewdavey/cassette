@@ -52,7 +52,7 @@ namespace Cassette
         IFile StubFile(string content = "")
         {
             var file = new Mock<IFile>();
-            file.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>()))
+            file.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), FileShare.ReadWrite))
                 .Returns(() => content.AsStream());
             return file.Object;
         }

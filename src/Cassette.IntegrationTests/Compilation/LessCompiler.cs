@@ -82,7 +82,7 @@ namespace Cassette
             var otherFile = new Mock<IFile>();
             directory.Setup(d => d.GetFile("lib.less"))
                      .Returns(otherFile.Object);
-            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
+            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                      .Returns(() => "@color: red;".AsStream());
 
             var compiler = new LessCompiler();
@@ -99,7 +99,7 @@ namespace Cassette
             var otherFile = new Mock<IFile>();
             directory.Setup(d => d.GetFile("../module-b/lib.less"))
                      .Returns(otherFile.Object);
-            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
+            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => "@color: red;".AsStream());
 
             var compiler = new LessCompiler();
@@ -179,7 +179,7 @@ namespace Cassette
             var otherFile = new Mock<IFile>();
             directory.Setup(d => d.GetFile("lib.css"))
                      .Returns(otherFile.Object);
-            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read))
+            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                      .Returns(() => ".mixin { color: red; }".AsStream());
 
             var compiler = new LessCompiler();
