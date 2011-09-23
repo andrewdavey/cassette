@@ -189,7 +189,7 @@ namespace Cassette.Persistence
 
         XElement LoadContainerElement()
         {
-            using (var containerFileStream = containerFile.Open(FileMode.Open, FileAccess.Read))
+            using (var containerFileStream = containerFile.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 return XDocument.Load(containerFileStream).Root;
             }
@@ -209,7 +209,7 @@ namespace Cassette.Persistence
                     select CreateModuleElement(module, moduleContainer)
                 )
             );
-            using (var fileStream = containerFile.Open(FileMode.Create, FileAccess.Write))
+            using (var fileStream = containerFile.Open(FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 xml.Save(fileStream);
             }
@@ -264,7 +264,7 @@ namespace Cassette.Persistence
             }
             
             var file = cacheDirectory.GetFile(ModuleAssetCacheFilename(module));
-            using (var fileStream = file.Open(FileMode.Create, FileAccess.Write))
+            using (var fileStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using (var dataStream = module.Assets[0].OpenStream())
                 {

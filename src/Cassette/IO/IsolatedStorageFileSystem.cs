@@ -47,9 +47,9 @@ namespace Cassette.IO
             get { return filename; }
         }
 
-        public Stream Open(FileMode mode, FileAccess access)
+        public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
-            return storage.OpenFile(filename, mode, access);
+            return storage.OpenFile(filename, mode, access, fileShare);
         }
 
         public bool Exists

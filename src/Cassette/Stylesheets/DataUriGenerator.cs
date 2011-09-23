@@ -109,7 +109,7 @@ namespace Cassette.Stylesheets
 
             string GetBase64EncodedData()
             {
-                using (var fileStream = file.Open(FileMode.Open, FileAccess.Read))
+                using (var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (var temp = new MemoryStream())
                 using (var base64Stream = new CryptoStream(temp, new ToBase64Transform(), CryptoStreamMode.Write))
                 {
