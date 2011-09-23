@@ -62,6 +62,7 @@
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\DocumentationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LicensingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -81,6 +82,7 @@
     <Content Include="assets\styles\images\logo.png" />
     <Content Include="assets\styles\images\page.png" />
     <Content Include="assets\styles\images\screencast.jpg" />
+    <Content Include="assets\styles\licensing.css" />
     <Content Include="assets\styles\module.txt" />
     <Content Include="assets\styles\normalize.css" />
     <Content Include="assets\styles\page.css" />
@@ -185,7 +187,10 @@
     <Content Include="Views\Documentation\Configuration_ModuleDescriptorFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\Licensing.cshtml" />
+    <Content Include="Views\Licensing\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Licensing\Purchased.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

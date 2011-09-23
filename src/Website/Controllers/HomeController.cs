@@ -34,11 +34,6 @@ namespace Website.Controllers
             return View();
         }
 
-        public ActionResult Licensing()
-        {
-            return View();
-        }
-
         public ActionResult Contact()
         {
             return View();

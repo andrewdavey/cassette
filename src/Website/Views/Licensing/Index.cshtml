@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Licensing";
+}
+@helper PayPalButton(string id) {
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+        <input type="hidden" name="cmd" value="_s-xclick"/>
+        <input type="hidden" name="hosted_button_id" value="@id"/>
+        <button type="submit" class="call-to-action">Buy Now</button>
+    </form>
+}
+
+<div class="main">
+    <h1>Licensing</h1>
+    <div class="content">
+        <h2>Open Source</h2>
+        <p>Cassette is Free Open Source software, distributed under the <a target="_blank" href="http://www.gnu.org/licenses/gpl.txt">GNU General Public License</a>.</p>
+        <p>Please note: A FOSS license exception is included in the <a href="https://raw.github.com/andrewdavey/cassette/master/license.txt">Cassette license</a>.
+        You can use Cassette in a project that has any <a href="http://www.opensource.org/licenses">OSI approved license</a> (MIT, BSD, Apache-2.0, etc).</p>
+        <p>The Cassette source code is available on <a href="https://github.com/andrewdavey/cassette" target="_blank">GitHub</a>.</p>
+
+        <h2>Commercial Use</h2>
+        @if (ViewBag.Discount)
+        {
+            <div class="discount">
+                <p>Thank you for being an early adopter!</p>
+                <p>To reward your support, we're offering a <strong>50% discount</strong> on the commercial licenses.</p>
+                <p>This is a limited time offer, so act now!</p>
+            </div>
+        }
+        <p>Using Cassette in non-open source software requires a separate commercial license, purchased from Equin Limited.</p>
+        <p>The price is based on how many production web servers will be running Cassette.</p>
+
+        <table class="prices">
+            <tr><td>1 Server</td><td>2 Servers</td><td>3 Servers</td><td>4 Servers</td><td>5 Servers or more</td></tr>
+            @if (ViewBag.Discount)
+            {
+            <tr>
+                @foreach(int price in ViewBag.Prices)
+                {
+                    <td><span class="old-price">$@price</span>. 50% Off</td>
+                }
+            </tr>
+            <tr>
+                @foreach (int price in ViewBag.DiscountPrices)
+                {
+                    <td class="discounted-price">$@price</td>
+                }
+            </tr>
+            }
+            else
+            {
+            <tr>
+                @foreach (int price in ViewBag.Prices)
+                {
+                    <td>$@price</td>
+                }
+            </tr>
+            }
+            <tr>
+                @foreach (string id in ViewBag.PayPalButtonIds)
+                {
+                <td>@PayPalButton(id)</td>
+                }
+            </tr>
+        </table>
+
+        <p>A commercial license places no limit on the number of developers and testers using Cassette within a licensed organization.
+        Test and staging servers are also excluded from the licensed server count.</p>
+        <p>If you have any questions about commercial licensing, please contact <a href="mailto:sales@equin.co.uk">sales@equin.co.uk</a>.</p>
+
+        <div class="details">
+            <h3>Technical Support</h3>
+            <p>A commercial license will come with 3 months technical support. This will be primarily in the form of email, IM and phone/skype.
+            Additional support can be purchased after this period.</p>
+        </div>
+
+        <div class="details">
+            <h3>Version Upgrades</h3>
+            <p>A license is valid for all minor version upgrades.</p>
+            <p>For example, a license purchased for v1.0.0 is valid for all versions up to, but excluding, v2.0.0.</p>
+        </div>
+
+        <div class="details">
+            <h3>Adding Servers</h3>
+            <p>If you increase the number of servers using Cassette, we can arrange billing for the price difference.</p>
+        </div>
+
+        <div style="clear:left"></div>
+
+        <h2>Free Licenses</h2>
+        <p>If you are a charity, non-profit organization or start-up then you may be eligible for free or discounted license.
+        Please contact <a href="mailto:sales@equin.co.uk">sales@equin.co.uk</a> to discuss the options.</p>
+
+        <h2>Equin Limited</h2>
+        <p>All commercial aspects of Cassette are managed by Equin Limited.</p>
+        <p>UK company number: 6347232</p>
+<p>Registered office address:</p>
+<address>'Tregea'<br />
+Botallack<br />
+St. Just<br />
+Cornwall<br />
+TR19 7QG<br />
+United Kingdom</address>
+
+        <p>Andrew Davey owns the copyright of Cassette. He has exclusively granted Equin Limited the right to sell commercial
+        licenses and provide related technical support services.</p>
+    </div>
+</div>

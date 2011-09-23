@@ -1,0 +1,54 @@
+﻿.prices {
+    margin: 2em auto 2em;
+    display: block;
+}
+
+.prices td {
+    text-align: center;
+    padding: .3em 1.1em;
+    font-size: 1.2em;
+    border-left: solid 1px #ccc;
+}
+.prices td:first-child {
+    border-left: none;
+}
+
+.prices .call-to-action {
+    margin: 0 auto;
+}
+
+.old-price {
+    text-decoration: line-through;
+}
+
+.discount {
+    background-color: #89c403;
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #89c403), color-stop(1, #77a809) );
+    background: -moz-linear-gradient( center top, #89c403 5%, #77a809 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#89c403', endColorstr='#77a809');
+    color: #fff;
+    font-size: 1.3em;
+    padding: .5em;
+    margin-bottom: 1em;
+}
+.main .discount p {
+    margin-bottom: 0;
+}
+
+.discounted-price {
+    font-weight: bold;
+}
+
+.details {
+    float: left;
+    width: 33%;    
+}
+
+.details h3, .details p {
+    padding-right: 1em;
+}
+
+address {
+    font-style: normal;
+    margin-bottom: 1em;
+}
