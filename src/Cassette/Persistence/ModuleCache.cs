@@ -189,7 +189,7 @@ namespace Cassette.Persistence
 
         XElement LoadContainerElement()
         {
-            using (var containerFileStream = containerFile.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var containerFileStream = containerFile.OpenRead())
             {
                 return XDocument.Load(containerFileStream).Root;
             }

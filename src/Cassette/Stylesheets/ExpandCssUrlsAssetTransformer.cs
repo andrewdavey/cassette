@@ -113,7 +113,7 @@ namespace Cassette.Stylesheets
 
         string HashFileContents(IFile file)
         {
-            using (var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var fileStream = file.OpenRead())
             {
                 return fileStream.ComputeSHA1Hash().ToHexString();
             }

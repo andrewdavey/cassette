@@ -68,6 +68,7 @@
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="IExternalModule.cs" />
     <Compile Include="IModuleHtmlRenderer.cs" />
+    <Compile Include="IO\FileExtensions.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\IFile.cs" />
     <Compile Include="IModuleSource.cs" />
