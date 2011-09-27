@@ -2504,53 +2504,23 @@
         }
     };
 
+    // This function has been heavily simplified to just work with the Jurassic interop
+    // we require. So there's no caching, IE compat, etc. Exceptions are also allowed to be 
+    // thrown, since the XHR function will be synchronous.
     var cache = null;
-
     function loadStyleSheet(sheet, callback, reload, remaining) {
         var url = window.location.href.replace(/[#?].*$/, '');
         var href = sheet.href.replace(/\?.*$/, '');
-        var css = cache && cache.getItem(href);
-        var timestamp = cache && cache.getItem(href + ':timestamp');
-        var styles = { css: css, timestamp: timestamp };
-
-        /*
-        // Stylesheets in IE don't always return the full path
-        if (!/^(https?|file):/.test(href)) {
-            if (href.charAt(0) == "/") {
-                href = window.location.protocol + "//" + window.location.host + href;
-            } else {
-                href = url.slice(0, url.lastIndexOf('/') + 1) + href;
-            }
-        }
-        */
-
-        xhr(sheet.href, '', function (data, lastModified) {
-            /*if (!reload && styles && lastModified &&
-            (new (Date)(lastModified).valueOf() ===
-            new (Date)(styles.timestamp).valueOf())) {
-            // Use local copy
-            createCSS(styles.css, sheet);
-            callback(null, sheet, { local: true, remaining: remaining });
-            } else {*/
-            // Use remote copy (re-parse)
-            //try {
-                new (less.Parser)({
-                    optimization: less.optimization,
-                    paths: [href.replace(/[\w\.-]+$/, '')],
-                    mime: sheet.type
-                }).parse(data, function (e, root) {
-                    if (e) { return error(e, href) }
-                    //try {
-                        callback(root, sheet, { local: false, lastModified: lastModified, remaining: remaining });
-                        //removeNode(document.getElementById('less-error-message:' + extractId(href)));
-                    //} catch (e) {
-                    //    error(e, href);
-                    //}
-                });
-            //} catch (e) {
-            //    error(e, href);
-            //}
-            /*}*/
+        
+        xhr(sheet.href, sheet.type||'', function (data, lastModified) {
+            new (less.Parser)({
+                optimization: less.optimization,
+                paths: [href.replace(/[\w\.-]+$/, '')],
+                mime: sheet.type
+            }).parse(data, function (e, root) {
+                if (e) { throw e; }
+                callback(root, sheet, { local: false, lastModified: lastModified, remaining: remaining });
+            });
         }, function (status, url) {
             throw new (Error)("Couldn't load " + url + " (" + status + ")");
         });
