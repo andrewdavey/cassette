@@ -103,7 +103,8 @@
             if (i < 0) i += length;
 
             for (; i < length; i++) {
-                if (!Object.prototype.hasOwnProperty.call(this, i)) { continue;
+                if (!Object.prototype.hasOwnProperty.call(this, i)) {
+                    continue;
                 }
                 if (value === this[i]) return i;
             }
@@ -140,7 +141,8 @@
         less = exports,
     tree = require('less/tree');
     } else {
-        if (typeof (window.less) === 'undefined') { window.less = {};
+        if (typeof (window.less) === 'undefined') {
+            window.less = {};
         }
         less = window.less,
     tree = window.less.tree = {};
@@ -213,15 +215,18 @@
 
                     callback(root);
 
-                    if (that.queue.length === 0) { finish();
+                    if (that.queue.length === 0) {
+                        finish();
                     }       // Call `finish` if we're done importing
                 }, env);
             }
         };
 
-        function save() { temp = chunks[j], memo = i, current = i;
+        function save() {
+            temp = chunks[j], memo = i, current = i;
         }
-        function restore() { chunks[j] = temp, i = memo, current = i;
+        function restore() {
+            chunks[j] = temp, i = memo, current = i;
         }
 
         function sync() {
@@ -272,14 +277,16 @@
 
                 while (i < endIndex) {
                     c = input.charCodeAt(i);
-                    if (!(c === 32 || c === 10 || c === 9)) { break;
+                    if (!(c === 32 || c === 10 || c === 9)) {
+                        break;
                     }
                     i++;
                 }
                 chunks[j] = chunks[j].slice(length + (i - mem));
                 current = i;
 
-                if (chunks[j].length === 0 && j < chunks.length - 1) { j++;
+                if (chunks[j].length === 0 && j < chunks.length - 1) {
+                    j++;
                 }
 
                 if (typeof (match) === 'string') {
@@ -452,7 +459,8 @@
 
                             for (var n = e.index, column = -1;
                                  n >= 0 && input.charAt(n) !== '\n';
-                                 n--) { column++;
+                                 n--) {
+                                column++;
                             }
 
                             throw {
@@ -497,7 +505,8 @@
                     lines = input.split('\n');
                     line = (input.slice(0, i).match(/\n/g) || "").length + 1;
 
-                    for (var n = i, column = -1; n >= 0 && input.charAt(n) !== '\n'; n--) { column++;
+                    for (var n = i, column = -1; n >= 0 && input.charAt(n) !== '\n'; n--) {
+                        column++;
                     }
 
                     error = {
@@ -605,7 +614,8 @@
                     quoted: function () {
                         var str, j = i, e;
 
-                        if (input.charAt(j) === '~') { j++, e = true;
+                        if (input.charAt(j) === '~') {
+                            j++, e = true;
                         } // Escaped strings
                         if (input.charAt(j) !== '"' && input.charAt(j) !== "'") return;
 
@@ -623,7 +633,8 @@
                     //
                     keyword: function () {
                         var k;
-                        if (k = $(/^[A-Za-z-]+/)) { return new (tree.Keyword)(k);
+                        if (k = $(/^[A-Za-z-]+/)) {
+                            return new (tree.Keyword)(k);
                         }
                     },
 
@@ -644,12 +655,15 @@
 
                         name = name[1].toLowerCase();
 
-                        if (name === 'url') { return null;
+                        if (name === 'url') {
+                            return null;
                         }
-                        else { i += name.length;
+                        else {
+                            i += name.length;
                         }
 
-                        if (name === 'alpha') { return $(this.alpha);
+                        if (name === 'alpha') {
+                            return $(this.alpha);
                         }
 
                         $('('); // Parse the '(' and consume whitespace.
@@ -658,7 +672,8 @@
 
                         if (!$(')')) return;
 
-                        if (name) { return new (tree.Call)(name, args, index);
+                        if (name) {
+                            return new (tree.Call)(name, args, index);
                         }
                     },
                     arguments: function () {
@@ -666,7 +681,8 @@
 
                         while (arg = $(this.expression)) {
                             args.push(arg);
-                            if (!$(',')) { break;
+                            if (!$(',')) {
+                                break;
                             }
                         }
                         return args;
@@ -706,7 +722,8 @@
                             obj.base64 = $(/^;\s*base64/) || '';
                             obj.data = $(/^,\s*[^)]+/);
 
-                            if (obj.data) { return obj;
+                            if (obj.data) {
+                                return obj;
                             }
                         }
                     },
@@ -764,9 +781,11 @@
                     javascript: function () {
                         var str, j = i, e;
 
-                        if (input.charAt(j) === '~') { j++, e = true;
+                        if (input.charAt(j) === '~') {
+                            j++, e = true;
                         } // Escaped strings
-                        if (input.charAt(j) !== '`') { return;
+                        if (input.charAt(j) !== '`') {
+                            return;
                         }
 
                         e && $('~');
@@ -785,7 +804,8 @@
                 variable: function () {
                     var name;
 
-                    if (input.charAt(i) === '@' && (name = $(/^(@[\w-]+)\s*:/))) { return name[1];
+                    if (input.charAt(i) === '@' && (name = $(/^(@[\w-]+)\s*:/))) {
+                        return name[1];
                     }
                 },
 
@@ -824,7 +844,8 @@
                     call: function () {
                         var elements = [], e, c, args, index = i, s = input.charAt(i);
 
-                        if (s !== '.' && s !== '#') { return;
+                        if (s !== '.' && s !== '#') {
+                            return;
                         }
 
                         while (e = $(/^[#.](?:[\w-]|\\(?:[a-fA-F0-9]{1,6} ?|[^a-fA-F0-9]))+/)) {
@@ -882,7 +903,8 @@
                                 } else {
                                     params.push({ value: param });
                                 }
-                                if (!$(',')) { break;
+                                if (!$(',')) {
+                                    break;
                                 }
                             }
                             if (!$(')')) throw new (Error)("Expected )");
@@ -948,7 +970,8 @@
                     c = $(this.combinator);
                     e = $(/^(?:[.#]?|:*)(?:[\w-]|\\(?:[a-fA-F0-9]{1,6} ?|[^a-fA-F0-9]))+/) || $('*') || $(this.attribute) || $(/^\([^)@]+\)/) || $(/^(?:\d*\.)?\d+%/);
 
-                    if (e) { return new (tree.Element)(c, e);
+                    if (e) {
+                        return new (tree.Element)(c, e);
                     }
 
                     if (c.value && c.value[0] === '&') {
@@ -970,7 +993,8 @@
 
                     if (c === '>' || c === '+' || c === '~') {
                         i++;
-                        while (input.charAt(i) === ' ') { i++;
+                        while (input.charAt(i) === ' ') {
+                            i++;
                         }
                         return new (tree.Combinator)(c);
                     } else if (c === '&') {
@@ -979,12 +1003,14 @@
                         if (input.charAt(i) === ' ') {
                             match = '& ';
                         }
-                        while (input.charAt(i) === ' ') { i++;
+                        while (input.charAt(i) === ' ') {
+                            i++;
                         }
                         return new (tree.Combinator)(match);
                     } else if (c === ':' && input.charAt(i + 1) === ':') {
                         i += 2;
-                        while (input.charAt(i) === ' ') { i++;
+                        while (input.charAt(i) === ' ') {
+                            i++;
                         }
                         return new (tree.Combinator)('::');
                     } else if (input.charAt(i - 1) === ' ') {
@@ -1008,11 +1034,13 @@
                     while (e = $(this.element)) {
                         c = input.charAt(i);
                         elements.push(e);
-                        if (c === '{' || c === '}' || c === ';' || c === ',') { break;
+                        if (c === '{' || c === '}' || c === ';' || c === ',') {
+                            break;
                         }
                     }
 
-                    if (elements.length > 0) { return new (tree.Selector)(elements);
+                    if (elements.length > 0) {
+                        return new (tree.Selector)(elements);
                     }
                 },
                 tag: function () {
@@ -1027,13 +1055,15 @@
                         if ((op = $(/^[|~*$^]?=/)) &&
                         (val = $(this.entities.quoted) || $(/^[\w-]+/))) {
                             attr = [key, op, val.toCSS ? val.toCSS() : val].join('');
-                        } else { attr = key;
+                        } else {
+                            attr = key;
                         }
                     }
 
                     if (!$(']')) return;
 
-                    if (attr) { return "[" + attr + "]";
+                    if (attr) {
+                        return "[" + attr + "]";
                     }
                 },
 
@@ -1063,7 +1093,8 @@
                         while (s = $(this.selector)) {
                             selectors.push(s);
                             $(this.comment);
-                            if (!$(',')) { break;
+                            if (!$(',')) {
+                                break;
                             }
                             $(this.comment);
                         }
@@ -1081,7 +1112,8 @@
                     var name, value, c = input.charAt(i), important, match;
                     save();
 
-                    if (c === '.' || c === '#' || c === '&') { return;
+                    if (c === '.' || c === '#' || c === '&') {
+                        return;
                     }
 
                     if (name = $(this.variable) || $(this.property)) {
@@ -1161,7 +1193,8 @@
                     if ($(',')) {
                         while (e = $(this.expression)) {
                             value.push(e);
-                            if (!$(',')) { break;
+                            if (!$(',')) {
+                                break;
                             }
                         }
                     }
@@ -1181,7 +1214,8 @@
 
                     while (e = $(this.expression)) {
                         expressions.push(e);
-                        if (!$(',')) { break;
+                        if (!$(',')) {
+                            break;
                         }
                     }
 
@@ -1228,7 +1262,8 @@
                 operand: function () {
                     var negate, p = input.charAt(i + 1);
 
-                    if (input.charAt(i) === '-' && (p === '@' || p === '(')) { negate = $('-');
+                    if (input.charAt(i) === '-' && (p === '@' || p === '(')) {
+                        negate = $('-');
                     }
                     var o = $(this.sub) || $(this.entities.dimension) ||
                         $(this.entities.color) || $(this.entities.variable) ||
@@ -1465,7 +1500,8 @@
                (this.value.toCSS ? this.value.toCSS() : this.value) + ")";
             },
             eval: function (env) {
-                if (this.value.eval) { this.value = this.value.eval(env);
+                if (this.value.eval) {
+                    this.value = this.value.eval(env);
                 }
                 return this;
             }
@@ -1960,9 +1996,11 @@
             this.rules = rules;
             this._lookups = {};
             this.required = params.reduce(function (count, p) {
-                if (!p.name || (p.name && !p.value)) { return count + 1;
+                if (!p.name || (p.name && !p.value)) {
+                    return count + 1;
                 }
-                else { return count;
+                else {
+                    return count;
                 }
             }, 0);
             this.parent = tree.Ruleset.prototype;
@@ -2001,9 +2039,11 @@
             match: function (args, env) {
                 var argsLength = (args && args.length) || 0, len;
 
-                if (argsLength < this.required) { return false;
+                if (argsLength < this.required) {
+                    return false;
                 }
-                if ((this.required > 0) && (argsLength > this.params.length)) { return false;
+                if ((this.required > 0) && (argsLength > this.params.length)) {
+                    return false;
                 }
 
                 len = Math.min(argsLength, this.arity);
@@ -2092,11 +2132,13 @@
 
             if (name.charAt(0) === '@') {
                 this.variable = true;
-            } else { this.variable = false;
+            } else {
+                this.variable = false;
             }
         };
         tree.Rule.prototype.toCSS = function (env) {
-            if (this.variable) { return "";
+            if (this.variable) {
+                return "";
             }
             else {
                 return this.name + (env.compress ? ':' : ': ') +
@@ -2182,7 +2224,8 @@
                 return !args || args.length === 0;
             },
             variables: function () {
-                if (this._variables) { return this._variables;
+                if (this._variables) {
+                    return this._variables;
                 }
                 else {
                     return this._variables = this.rules.reduce(function (hash, r) {
@@ -2197,7 +2240,8 @@
                 return this.variables()[name];
             },
             rulesets: function () {
-                if (this._rulesets) { return this._rulesets;
+                if (this._rulesets) {
+                    return this._rulesets;
                 }
                 else {
                     return this._rulesets = this.rules.filter(function (r) {
@@ -2210,7 +2254,8 @@
                 var rules = [], rule, match,
             key = selector.toCSS();
 
-                if (key in this._lookups) { return this._lookups[key];
+                if (key in this._lookups) {
+                    return this._lookups[key];
                 }
 
                 this.rulesets().forEach(function (rule) {
@@ -2353,7 +2398,8 @@
             }
         };
         tree.Selector.prototype.toCSS = function (env) {
-            if (this._css) { return this._css;
+            if (this._css) {
+                return this._css;
             }
 
             return this._css = this.elements.map(function (e) {
@@ -2430,7 +2476,8 @@
                     if (v = frame.variable(name)) {
                         return v.value.eval(env);
                     }
-                })) { return variable;
+                })) {
+                    return variable;
                 }
                 else {
                     throw { message: "variable " + name + " is undefined",
@@ -2443,7 +2490,8 @@
     })(require('less/tree'));
     require('less/tree').find = function (obj, fun) {
         for (var i = 0, r; i < obj.length; i++) {
-            if (r = fun.call(obj, obj[i])) { return r;
+            if (r = fun.call(obj, obj[i])) {
+                return r;
             }
         }
         return null;
@@ -2455,5 +2503,57 @@
             return obj.toCSS(false);
         }
     };
+
+    var cache = null;
+
+    function loadStyleSheet(sheet, callback, reload, remaining) {
+        var url = window.location.href.replace(/[#?].*$/, '');
+        var href = sheet.href.replace(/\?.*$/, '');
+        var css = cache && cache.getItem(href);
+        var timestamp = cache && cache.getItem(href + ':timestamp');
+        var styles = { css: css, timestamp: timestamp };
+
+        /*
+        // Stylesheets in IE don't always return the full path
+        if (!/^(https?|file):/.test(href)) {
+            if (href.charAt(0) == "/") {
+                href = window.location.protocol + "//" + window.location.host + href;
+            } else {
+                href = url.slice(0, url.lastIndexOf('/') + 1) + href;
+            }
+        }
+        */
+
+        xhr(sheet.href, '', function (data, lastModified) {
+            /*if (!reload && styles && lastModified &&
+            (new (Date)(lastModified).valueOf() ===
+            new (Date)(styles.timestamp).valueOf())) {
+            // Use local copy
+            createCSS(styles.css, sheet);
+            callback(null, sheet, { local: true, remaining: remaining });
+            } else {*/
+            // Use remote copy (re-parse)
+            //try {
+                new (less.Parser)({
+                    optimization: less.optimization,
+                    paths: [href.replace(/[\w\.-]+$/, '')],
+                    mime: sheet.type
+                }).parse(data, function (e, root) {
+                    if (e) { return error(e, href) }
+                    //try {
+                        callback(root, sheet, { local: false, lastModified: lastModified, remaining: remaining });
+                        //removeNode(document.getElementById('less-error-message:' + extractId(href)));
+                    //} catch (e) {
+                    //    error(e, href);
+                    //}
+                });
+            //} catch (e) {
+            //    error(e, href);
+            //}
+            /*}*/
+        }, function (status, url) {
+            throw new (Error)("Couldn't load " + url + " (" + status + ")");
+        });
+    }
 
 })(window);

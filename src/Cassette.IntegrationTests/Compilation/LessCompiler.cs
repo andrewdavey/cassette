@@ -191,6 +191,22 @@ namespace Cassette
                 );
             });
         }
+
+        [Fact]
+        public void Import_less_file_that_uses_outer_variable()
+        {
+            var otherFile = new Mock<IFile>();
+            directory.Setup(d => d.GetFile("Framework.less"))
+                     .Returns(otherFile.Object);
+            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                     .Returns(() => ".object { padding: @objectpadding; }".AsStream());
+
+            var compiler = new LessCompiler();
+            var result = compiler.Compile(
+                "@objectpadding: 20px;\n@import \"Framework.less\";",
+                file.Object
+            );
+            result.ShouldEqual(".object {\n  padding: 20px;\n}\n");
+        }
     }
 }
-
