@@ -23,11 +23,11 @@ using System.Web.Routing;
 
 namespace Cassette.Web
 {
-    public class ImageRouteHandler : IRouteHandler
+    public class RawFileRouteHandler : IRouteHandler
     {
         public IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
-            return new ImageRequestHandler(requestContext);
+            return new RawFileRequestHandler(requestContext);
         }
     }
 }

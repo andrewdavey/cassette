@@ -99,7 +99,7 @@ namespace Cassette.Stylesheets
             if (!file.Exists) return;
 
             var hash = HashFileContents(file);
-            var absoluteUrl = application.UrlGenerator.CreateImageUrl(relativeFilename, hash);
+            var absoluteUrl = application.UrlGenerator.CreateRawFileUrl(relativeFilename, hash);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
         }

@@ -28,9 +28,9 @@ using System.Diagnostics;
 
 namespace Cassette.Web
 {
-    public class ImageRequestHandler : IHttpHandler
+    public class RawFileRequestHandler : IHttpHandler
     {
-        public ImageRequestHandler(RequestContext requestContext)
+        public RawFileRequestHandler(RequestContext requestContext)
         {
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
@@ -40,13 +40,20 @@ namespace Cassette.Web
         readonly RouteData routeData;
         readonly HttpResponseBase response;
         readonly HttpServerUtilityBase server;
-        readonly Dictionary<string, string> contentTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            { "png", "image/png"},
-            { "jpg", "image/jpeg"},
-            { "jpeg", "image/jpeg"},
-            { "gif", "image/gif"}
-        };
+
+        readonly Dictionary<string, string> contentTypes =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "png", "image/png" },
+                { "jpg", "image/jpeg" },
+                { "jpeg", "image/jpeg" },
+                { "gif", "image/gif" },
+                { "eot", "application/vnd.ms-fontobject" },
+                { "otf", "application/octet-stream" },
+                { "ttf", "application/octet-stream" },
+                { "woff", "application/x-font-woff" },
+                { "svg", "image/svg+xml" }
+            };
 
         public bool IsReusable
         {
@@ -59,7 +66,7 @@ namespace Cassette.Web
             var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+_(?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
             if (match.Success == false)
             {
-                Trace.Source.TraceEvent(TraceEventType.Error, 0, "Invalid image path in URL \"{0}\".", path);
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, "Invalid file path in URL \"{0}\".", path);
                 response.StatusCode = 404;
                 return;
             }
@@ -72,20 +79,21 @@ namespace Cassette.Web
                 var contentType = ContentTypeFromExtension(extension);
                 if (contentType != null)
                 {
-                    Trace.Source.TraceEvent(TraceEventType.Error, 0, "Sending image \"{0}\" with content type {1}.", fullPath, response.ContentType);
-                    response.ContentType = contentType;
+                    Trace.Source.TraceEvent(TraceEventType.Error, 0, "Sending file \"{0}\" with content type {1}.", fullPath, response.ContentType);
                 }
                 else
                 {
-                    Trace.Source.TraceEvent(TraceEventType.Warning, 0, "Could not determine content type for image \"{0}\".", fullPath);
+                    Trace.Source.TraceEvent(TraceEventType.Warning, 0, "Could not determine content type for file \"{0}\". Defaulting to \"application/octet-stream\".", fullPath);
+                    contentType = "application/octet-stream";
                 }
+                response.ContentType = contentType;
                 response.Cache.SetCacheability(HttpCacheability.Public);
                 response.Cache.SetExpires(DateTime.Now.AddYears(1));
                 response.WriteFile(fullPath);
             }
             else
             {
-                Trace.Source.TraceEvent(TraceEventType.Error, 0, "Image not found \"{0}\".", fullPath);
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, "File not found \"{0}\".", fullPath);
                 response.StatusCode = 404;
             }
         }

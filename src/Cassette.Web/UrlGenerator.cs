@@ -48,9 +48,9 @@ namespace Cassette.Web
             return assetUrlPrefix + "/get/{*path}";
         }
 
-        public string GetImageRouteUrl()
+        public string GetRawFileRouteUrl()
         {
-            return assetUrlPrefix + "/images/{*path}";
+            return assetUrlPrefix + "/file/{*path}";
         }
 
         public string CreateModuleUrl(Module module)
@@ -85,7 +85,7 @@ namespace Cassette.Web
             );
         }
 
-        public string CreateImageUrl(string filename, string hash)
+        public string CreateRawFileUrl(string filename, string hash)
         {
             if (filename.StartsWith("~") == false)
             {

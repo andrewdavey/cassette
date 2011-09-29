@@ -143,9 +143,9 @@ namespace Cassette.Web
 
         void InstallImageRoute(RouteCollection routes)
         {
-            var url = urlGenerator.GetImageRouteUrl();
+            var url = urlGenerator.GetRawFileRouteUrl();
             Trace.Source.TraceInformation("Installing image route handler for \"{0}\".", url);
-            routes.Insert(0, new CassetteRoute(url, new ImageRouteHandler()));
+            routes.Insert(0, new CassetteRoute(url, new RawFileRouteHandler()));
         }
 
         void InstallAssetRoute(RouteCollection routes)
