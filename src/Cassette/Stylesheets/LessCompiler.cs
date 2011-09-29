@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Cassette.IO;
+using Cassette.Utilities;
 using Jurassic;
 using Jurassic.Library;
 
@@ -32,9 +33,29 @@ namespace Cassette.Stylesheets
         public LessCompiler()
         {
             engine = new ScriptEngine();
-            engine.Execute("window = {};");
-            engine.SetGlobalFunction("loadStyleSheet", new Action<ObjectInstance, FunctionInstance>(LoadStylesheet));
+            engine.Execute("window = { location: { href: '/', protocol: 'http:', host: 'localhost' } };");
+            engine.SetGlobalFunction("xhr", new Action<ObjectInstance, ObjectInstance, FunctionInstance, FunctionInstance>(Xhr));
             engine.Execute(Properties.Resources.less);
+        }
+
+        void Xhr(ObjectInstance href, ObjectInstance type, FunctionInstance callback, FunctionInstance errorCallback)
+        {
+            var filename = href.ToString();
+            var referencingFile = currentFiles.Peek();
+            try
+            {
+                var file = referencingFile.Directory.GetFile(filename);
+                var content = file.OpenRead().ReadToEnd();
+                callback.Call(Null.Value, content, DateTime.MinValue);
+            }
+            catch (FileNotFoundException ex)
+            {
+                throw FileNotFoundExceptionWithSourceFilename(referencingFile, ex);
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                throw DirectoryNotFoundExceptionWithSourceFilename(referencingFile, ex);
+            }
         }
 
         readonly ScriptEngine engine;
@@ -98,32 +119,6 @@ namespace Cassette.Stylesheets
             return callback;
         }
 
-        void LoadStylesheet(ObjectInstance options, FunctionInstance callback)
-        {
-            var href = options.GetPropertyValue("href").ToString();
-            var referencingFile = currentFiles.Peek();
-            string source;
-            IFile file;
-            try
-            {
-                file = referencingFile.Directory.GetFile(href);
-                using (var reader = new StreamReader(file.OpenRead()))
-                {
-                    source = reader.ReadToEnd();
-                }
-            }
-            catch (FileNotFoundException ex)
-            {
-                throw FileNotFoundExceptionWithSourceFilename(referencingFile, ex);
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                throw DirectoryNotFoundExceptionWithSourceFilename(referencingFile, ex);
-            }
-            var result = CompileImpl(source, file);
-            callback.Call(Null.Value, result.Root);
-        }
-
         FileNotFoundException FileNotFoundExceptionWithSourceFilename(IFile file, FileNotFoundException ex)
         {
             return new FileNotFoundException(
@@ -157,7 +152,6 @@ namespace Cassette.Stylesheets
             {
             }
 
-            public object Root { get; private set; }
             public string Css { get; private set; }
             public string ErrorMessage { get; private set; }
 
@@ -167,7 +161,6 @@ namespace Cassette.Stylesheets
                 if (error == Null.Value)
                 {
                     var tree = (ObjectInstance)argumentValues[1];
-                    Root = tree;
                     Css = tree.CallMemberFunction("toCSS").ToString();
                 }
                 else
@@ -178,5 +171,6 @@ namespace Cassette.Stylesheets
             }
         }
     }
+
 }
 
