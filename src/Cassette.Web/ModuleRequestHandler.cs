@@ -54,7 +54,7 @@ namespace Cassette.Web
             }
             else
             {
-                var actualETag = module.Assets[0].Hash.ToHexString();
+                var actualETag = "\"" + module.Assets[0].Hash.ToHexString() + "\"";
                 var givenETag = request.Headers["If-None-Match"];
                 if (givenETag == actualETag)
                 {
