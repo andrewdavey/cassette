@@ -40,7 +40,7 @@ namespace Cassette.Web
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (response.Headers["Content-Encoding"] != null)
+            if (HttpRuntime.UsingIntegratedPipeline && response.Headers["Content-Encoding"] != null)
             {
                 throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set ICassetteApplication.HtmlRewritingEnabled to false in the Cassette configuration, or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
             }
