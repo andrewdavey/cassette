@@ -20,12 +20,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.Configuration;
 using System.Web.Routing;
 using Cassette.IO;
@@ -91,7 +90,7 @@ namespace Cassette.Web
         {
             Trace.Source.TraceInformation("Creating CassetteConfigurations by scanning assemblies.");
             // Scan all assemblies for implementation of the interface and create instance.
-            return from assembly in LoadAllAssemblies()
+            return from assembly in BuildManager.GetReferencedAssemblies().Cast<Assembly>()
                    from type in assembly.GetExportedTypes()
                    where type.IsClass
                       && !type.IsAbstract
@@ -104,31 +103,6 @@ namespace Cassette.Web
             Trace.Source.TraceInformation("Creating {0}.", type.FullName);
 
             return (ICassetteConfiguration)Activator.CreateInstance(type);
-        }
-
-        static IEnumerable<Assembly> LoadAllAssemblies()
-        {
-            const int COR_E_ASSEMBLYEXPECTED = -2146234344;
-            foreach (var filename in Directory.GetFiles(HttpRuntime.BinDirectory, "*.dll"))
-            {
-                Trace.Source.TraceInformation("Scanning \"{0}\" for Cassette configuration classes.", filename);
-
-                Assembly assembly;
-                try
-                {
-                    assembly = Assembly.LoadFrom(filename);
-                }
-                catch (BadImageFormatException exception)
-                {
-                    if (Marshal.GetHRForException(exception) == COR_E_ASSEMBLYEXPECTED) // Was not a managed DLL.
-                    {
-                        Trace.Source.TraceInformation("Skipping non-managed DLL \"{0}\".", filename);
-                        continue;
-                    }
-                    throw;
-                }
-                yield return assembly;
-            }
         }
 
         static CassetteApplication CreateCassetteApplication()
