@@ -19,7 +19,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
+using System.Web.Handlers;
 using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
@@ -32,7 +34,34 @@ using Xunit;
 
 namespace Cassette.Web
 {
-    public class CassetteApplication_OnPostMapRequestHandler_Tests
+    public class CassetteApplication_Tests
+    {
+        protected static CassetteApplication StubApplication()
+        {
+            return new CassetteApplication(
+                new[] { new StubConfig() },
+                Mock.Of<IDirectory>(),
+                Mock.Of<IDirectory>(),
+                false,
+                "",
+                new UrlGenerator(""),
+                new RouteCollection(),
+                () => null
+            );
+        }
+
+        class StubConfig : ICassetteConfiguration
+        {
+            public void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application)
+            {
+                moduleConfiguration.Add(Mock.Of<IModuleSource<ScriptModule>>());
+                moduleConfiguration.Add(Mock.Of<IModuleSource<StylesheetModule>>());
+                moduleConfiguration.Add(Mock.Of<IModuleSource<HtmlTemplateModule>>());
+            }
+        }
+    }
+
+    public class CassetteApplication_OnPostMapRequestHandler_Tests : CassetteApplication_Tests
     {
         [Fact]
         public void GivenHtmlRewritingEnabled_WhenOnPostMapRequestHandler_ThenPlaceholderTrackerAddedToContextItems()
@@ -63,29 +92,43 @@ namespace Cassette.Web
 
             items[typeof(IPlaceholderTracker).FullName].ShouldBeType<NullPlaceholderTracker>();
         }
+    }
 
-        static CassetteApplication StubApplication()
+    public class CassetteApplication_OnPostRequestHandlerExecute_Tests : CassetteApplication_Tests
+    {
+        [Fact]
+        public void GivenHtmlRewritingDisabled_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
-            return new CassetteApplication(
-                new[] { new StubConfig() },
-                Mock.Of<IDirectory>(),
-                Mock.Of<IDirectory>(),
-                false,
-                "",
-                new UrlGenerator(""),
-                new RouteCollection(),
-                () => null
-            );
+            var application = StubApplication();
+            application.HtmlRewritingEnabled = false;
+
+            var context = new Mock<HttpContextBase>();
+            var response = new Mock<HttpResponseBase>();
+            context.Setup(c => c.Response)
+                   .Returns(response.Object);
+
+            application.OnPostRequestHandlerExecute(context.Object);
+
+            response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Never());
         }
 
-        class StubConfig : ICassetteConfiguration
+        [Fact]
+        public void GivenCurrentHandlerIsAssemblyResourceLoader_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
-            public void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application)
-            {
-                moduleConfiguration.Add(Mock.Of<IModuleSource<ScriptModule>>());
-                moduleConfiguration.Add(Mock.Of<IModuleSource<StylesheetModule>>());
-                moduleConfiguration.Add(Mock.Of<IModuleSource<HtmlTemplateModule>>());
-            }
+            var application = StubApplication();
+            application.HtmlRewritingEnabled = true;
+
+            var context = new Mock<HttpContextBase>();
+            context.SetupGet(c => c.CurrentHandler)
+                   .Returns(new AssemblyResourceLoader());
+
+            var response = new Mock<HttpResponseBase>();
+            context.Setup(c => c.Response)
+                   .Returns(response.Object);
+
+            application.OnPostRequestHandlerExecute(context.Object);
+
+            response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Never());
         }
     }
 }
