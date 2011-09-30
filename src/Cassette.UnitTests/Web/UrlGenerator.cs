@@ -24,6 +24,7 @@ using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;
+using System;
 
 namespace Cassette.Web
 {
@@ -240,12 +241,22 @@ namespace Cassette.Web
             var url = generator.CreateImageUrl("~\\test\\foo.png", "hash");
             url.ShouldEqual("/_assets/images/test/foo_hash_png");
         }
+
+        [Fact]
+        public void ArgumentExceptionThrownWhenFilenameDoesNotStartWithTilde()
+        {
+            var generator = new UrlGenerator("/");
+            Assert.Throws<ArgumentException>(delegate
+            {
+                generator.CreateImageUrl("fail.png", "hash");
+            });
+        }
     }
 
-    public class UrlGenerator_GetModuleRouteUrl_Tests
+    public class UrlGenerator_RouteUrl_Tests
     {
         [Fact]
-        public void InsertsConventionalScriptModuleName()
+        public void GetModuleRouteUrl_InsertsConventionalScriptModuleName()
         {
             var app = new UrlGenerator("/");
             var url = app.GetModuleRouteUrl<ScriptModule>();
@@ -253,7 +264,15 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void InsertsConventionalStylesheetModuleName()
+        public void GetModuleRouteUrl_InsertsConventionalExternalScriptModuleName()
+        {
+            var app = new UrlGenerator("/");
+            var url = app.GetModuleRouteUrl<ExternalScriptModule>();
+            url.ShouldEqual("_assets/scripts/{*path}");
+        }
+
+        [Fact]
+        public void GetModuleRouteUrl_InsertsConventionalStylesheetModuleName()
         {
             var app = new UrlGenerator("/");
             var url = app.GetModuleRouteUrl<StylesheetModule>();
@@ -261,11 +280,27 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void InsertsConventionalHtmlTemplateModuleName()
+        public void GetModuleRouteUrl_InsertsConventionalHtmlTemplateModuleName()
         {
             var app = new UrlGenerator("/");
             var url = app.GetModuleRouteUrl<HtmlTemplateModule>();
             url.ShouldEqual("_assets/htmltemplates/{*path}");
+        }
+
+        [Fact]
+        public void GetAssetRouteUrl_ReturnsRouteUrlWithPathParameter()
+        {
+            var app = new UrlGenerator("/");
+            var url = app.GetAssetRouteUrl();
+            url.ShouldEqual("_assets/get/{*path}");
+        }
+
+        [Fact]
+        public void GetImageRouteUrl_ReturnsRouteUrlWithPathParameter()
+        {
+            var app = new UrlGenerator("/");
+            var url = app.GetImageRouteUrl();
+            url.ShouldEqual("_assets/images/{*path}");
         }
     }
 }
