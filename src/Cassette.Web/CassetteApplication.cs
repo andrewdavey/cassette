@@ -54,7 +54,7 @@ namespace Cassette.Web
             }
             else
             {
-                tracker = new NullPlacholderTracker();
+                tracker = new NullPlaceholderTracker();
             }
             httpContext.Items[PlaceholderTrackerKey] = tracker;
         }

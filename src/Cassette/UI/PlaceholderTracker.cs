@@ -46,18 +46,5 @@ namespace Cassette.UI
             return builder.ToString();
         }
     }
-
-    public class NullPlacholderTracker : IPlaceholderTracker
-    {
-        public IHtmlString InsertPlaceholder(Func<IHtmlString> futureHtml)
-        {
-            return futureHtml();
-        }
-
-        public string ReplacePlaceholders(string html)
-        {
-            return html;
-        }
-    }
 }
 
