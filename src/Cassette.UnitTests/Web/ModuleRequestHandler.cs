@@ -21,6 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.IO.Compression;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
@@ -72,6 +73,19 @@ namespace Cassette.Web
                 requestContext
             );
         }
+
+        protected void SetupTestModule()
+        {
+            var module = new Module("~/test");
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.OpenStream())
+                    .Returns(() => "asset-content".AsStream());
+            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
+            module.Assets.Add(asset.Object);
+            container.Setup(c => c.FindModuleContainingPath("~\\test"))
+                        .Returns(module);
+        }
+
         void IDisposable.Dispose()
         {
             outputStream.Dispose();
@@ -90,8 +104,8 @@ namespace Cassette.Web
             module.Assets.Add(asset.Object);
             container.Setup(c => c.FindModuleContainingPath("~\\test"))
                         .Returns(module);
-                
-            var handler = CreateRequestHandler("test");
+
+            var handler = CreateRequestHandler("test_010203");
             handler.ProcessRequest();
         }
 
@@ -130,6 +144,24 @@ namespace Cassette.Web
         }
     }
 
+    public class GivenModulePathIsMissingHashPostfix_WhenProcessRequest : ModuleRequestHandler_Tests
+    {
+        public GivenModulePathIsMissingHashPostfix_WhenProcessRequest()
+        {
+            SetupTestModule();
+
+            var handler = CreateRequestHandler("test");
+            handler.ProcessRequest();
+        }
+
+        [Fact]
+        public void ModuleAssetContentReturned()
+        {
+            outputStream.Position = 0;
+            outputStream.ReadToEnd().ShouldEqual("asset-content");
+        }
+    }
+
     public class GivenModuleDoesNotExist : ModuleRequestHandler_Tests
     {
         [Fact]
@@ -147,14 +179,7 @@ namespace Cassette.Web
     {
         public GivenModuleExistsAndIfNonMatchHeaderIsEqualAssetHash_WhenProcessRequest()
         {
-            var module = new Module("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.OpenStream())
-                    .Returns(() => "asset-content".AsStream());
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            container.Setup(c => c.FindModuleContainingPath("~\\test"))
-                        .Returns(module);
+            SetupTestModule();
 
             requestHeaders["If-None-Match"] = "\"010203\"";
             var handler = CreateRequestHandler("test");
@@ -172,14 +197,7 @@ namespace Cassette.Web
     {
         public GivenModuleExistsAndIfNonMatchHeaderIsNotEqualAssetHash_WhenProcessRequest()
         {
-            var module = new Module("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.OpenStream())
-                    .Returns(() => "asset-content".AsStream());
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            container.Setup(c => c.FindModuleContainingPath("~\\test"))
-                        .Returns(module);
+            SetupTestModule();
 
             requestHeaders["If-None-Match"] = "xxxxxx";
             var handler = CreateRequestHandler("test");
@@ -194,5 +212,105 @@ namespace Cassette.Web
         }
     }
 
-}
+    public class GivenRequestDeflateEncoding_WhenProcessRequest : ModuleRequestHandler_Tests
+    {
+        public GivenRequestDeflateEncoding_WhenProcessRequest()
+        {
+            requestHeaders.Add("Accept-Encoding", "deflate");
+            response.SetupGet(r => r.Filter).Returns(Stream.Null);
 
+            SetupTestModule();
+
+            var handler = CreateRequestHandler("test");
+            handler.ProcessRequest();
+        }
+
+        [Fact]
+        public void ResponseFilterIsDeflateStream()
+        {
+            response.VerifySet(r => r.Filter = It.IsAny<DeflateStream>());
+        }
+
+        [Fact]
+        public void ContentEncodingHeaderIsDeflate()
+        {
+            response.Verify(r => r.AppendHeader("Content-Encoding", "deflate"));
+        }
+
+        [Fact]
+        public void VeryHeaderIsAcceptEncoding()
+        {
+            response.Verify(r => r.AppendHeader("Vary", "Accept-Encoding"));
+        }
+    }
+
+    public class GivenRequestGZipEncoding_WhenProcessRequest : ModuleRequestHandler_Tests
+    {
+        public GivenRequestGZipEncoding_WhenProcessRequest()
+        {
+            requestHeaders.Add("Accept-Encoding", "gzip");
+            response.SetupGet(r => r.Filter).Returns(Stream.Null);
+
+            SetupTestModule();
+
+            var handler = CreateRequestHandler("test");
+            handler.ProcessRequest();
+        }
+
+        [Fact]
+        public void ResponseFilterIsDeflateStream()
+        {
+            response.VerifySet(r => r.Filter = It.IsAny<GZipStream>());
+        }
+
+        [Fact]
+        public void ContentEncodingHeaderIsDeflate()
+        {
+            response.Verify(r => r.AppendHeader("Content-Encoding", "gzip"));
+        }
+
+        [Fact]
+        public void VeryHeaderIsAcceptEncoding()
+        {
+            response.Verify(r => r.AppendHeader("Vary", "Accept-Encoding"));
+        }
+    }
+
+    public class GivenRequestWithUnrecognizedEncoding_WhenProcessRequest : ModuleRequestHandler_Tests
+    {
+        public GivenRequestWithUnrecognizedEncoding_WhenProcessRequest()
+        {
+            requestHeaders.Add("Accept-Encoding", "unknown");
+            response.SetupGet(r => r.Filter).Returns(Stream.Null);
+
+            SetupTestModule();
+
+            var handler = CreateRequestHandler("test");
+            handler.ProcessRequest();
+        }
+
+        [Fact]
+        public void ResponseFilterIsNotSet()
+        {
+            response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Once()); // Only set once in the test constructor.
+        }
+    }
+
+    public class ModuleRequestHandler_OcdTests : ModuleRequestHandler_Tests
+    {
+        [Fact]
+        public void IsReusableIsFalse()
+        {
+            var handler = CreateRequestHandler("test");
+            handler.IsReusable.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void IHttpHandlerIsExplicitlyImplemented()
+        {
+            var handler = CreateRequestHandler("test") as IHttpHandler;
+            var context = new HttpContext(new HttpRequest("", "http://localhost/", ""), new HttpResponse(new StringWriter()));
+            handler.ProcessRequest(context);
+        }
+    }
+}
