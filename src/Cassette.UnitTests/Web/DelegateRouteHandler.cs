@@ -9,7 +9,7 @@ namespace Cassette.Web
     public class DelegateRouteHandler_Tests
     {
         [Fact]
-        public void GetHttpHandlerCallsDelegatePassingInTheRequestContext()
+        public void GetHttpHandlerCallsDelegatePassingInTheRequestContextAndReturnsTheCreatedHttpHandler()
         {
             RequestContext actualContext = null;
             var stubHandler = Mock.Of<IHttpHandler>();
