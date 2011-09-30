@@ -18,8 +18,75 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Collections.Generic;
+using System.Web;
+using System.Web.Routing;
+using Cassette.HtmlTemplates;
+using Cassette.IO;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
+using Cassette.UI;
+using Moq;
+using Should;
+using Xunit;
+
 namespace Cassette.Web
 {
-    // TODO: Add tests for CassetteApplication
+    public class CassetteApplication_OnPostMapRequestHandler_Tests
+    {
+        [Fact]
+        public void GivenHtmlRewritingEnabled_WhenOnPostMapRequestHandler_ThenPlaceholderTrackerAddedToContextItems()
+        {
+            var application = StubApplication();
+            application.HtmlRewritingEnabled = true;
+
+            var context = new Mock<HttpContextBase>();
+            var items = new Dictionary<string, object>();
+            context.SetupGet(c => c.Items).Returns(items);
+
+            application.OnPostMapRequestHandler(context.Object);
+
+            items[typeof(IPlaceholderTracker).FullName].ShouldBeType<PlaceholderTracker>();
+        }
+
+        [Fact]
+        public void GivenHtmlRewritingDisabled_WhenOnPostMapRequestHandler_ThenNullPlaceholderTrackerAddedToContextItems()
+        {
+            var application = StubApplication();
+            application.HtmlRewritingEnabled = false;
+
+            var context = new Mock<HttpContextBase>();
+            var items = new Dictionary<string, object>();
+            context.SetupGet(c => c.Items).Returns(items);
+
+            application.OnPostMapRequestHandler(context.Object);
+
+            items[typeof(IPlaceholderTracker).FullName].ShouldBeType<NullPlaceholderTracker>();
+        }
+
+        static CassetteApplication StubApplication()
+        {
+            return new CassetteApplication(
+                new[] { new StubConfig() },
+                Mock.Of<IDirectory>(),
+                Mock.Of<IDirectory>(),
+                false,
+                "",
+                new UrlGenerator(""),
+                new RouteCollection(),
+                () => null
+            );
+        }
+
+        class StubConfig : ICassetteConfiguration
+        {
+            public void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application)
+            {
+                moduleConfiguration.Add(Mock.Of<IModuleSource<ScriptModule>>());
+                moduleConfiguration.Add(Mock.Of<IModuleSource<StylesheetModule>>());
+                moduleConfiguration.Add(Mock.Of<IModuleSource<HtmlTemplateModule>>());
+            }
+        }
+    }
 }
 
