@@ -119,6 +119,7 @@
     <Compile Include="Stylesheets\StylesheetModuleFactory.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />
+    <Compile Include="Web\CassetteRoute.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />

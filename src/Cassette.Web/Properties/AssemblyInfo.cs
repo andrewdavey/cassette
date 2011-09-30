@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // See src\SharedAssemblyInfo.cs for assembly metadata shared by all projects.
@@ -39,3 +40,5 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("1038439c-5eae-4483-9051-adca689d2532")]
+
+[assembly: InternalsVisibleTo("Cassette.UnitTests")]
