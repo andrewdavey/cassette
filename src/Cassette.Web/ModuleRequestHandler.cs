@@ -80,7 +80,7 @@ namespace Cassette.Web
 
         T FindModule()
         {
-            var path = Path.Combine("~", routeData.GetRequiredString("path"));
+            var path = "~/" + routeData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling module request for \"{0}\".", path);
             path = RemoveTrailingHashFromPath(path);
             return moduleContainer.FindModuleContainingPath(path);

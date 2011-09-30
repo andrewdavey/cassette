@@ -82,7 +82,7 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             module.Assets.Add(asset.Object);
-            container.Setup(c => c.FindModuleContainingPath("~\\test"))
+            container.Setup(c => c.FindModuleContainingPath("~/test"))
                         .Returns(module);
         }
 
@@ -102,7 +102,7 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             module.Assets.Add(asset.Object);
-            container.Setup(c => c.FindModuleContainingPath("~\\test"))
+            container.Setup(c => c.FindModuleContainingPath("~/test"))
                         .Returns(module);
 
             var handler = CreateRequestHandler("test_010203");
