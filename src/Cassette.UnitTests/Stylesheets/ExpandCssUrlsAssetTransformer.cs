@@ -110,7 +110,7 @@ namespace Cassette.Stylesheets
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            output.ShouldEqual("p { background-image: url(\"EXPANDED\"); }");
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace Cassette.Stylesheets
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            output.ShouldEqual("p { background-image: url('EXPANDED'); }");
         }
 
         [Fact]
@@ -151,6 +151,26 @@ namespace Cassette.Stylesheets
             var output = getResult().ReadToEnd();
 
             output.ShouldEqual("p { background-image: url(data:image/png;base64,abc); }");
+        }
+
+        [Fact]
+        public void GivenCssWithDataUriInDoubleQuotes_WhenTransformed_ThenUrlNotChanged()
+        {
+            var css = "p { background-image: url(\"data:image/png;base64,abc\"); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(\"data:image/png;base64,abc\"); }");
+        }
+
+        [Fact]
+        public void GivenCssWithDataUriInSingleQuotes_WhenTransformed_ThenUrlNotChanged()
+        {
+            var css = "p { background-image: url('data:image/png;base64,abc'); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url('data:image/png;base64,abc'); }");
         }
 
         [Fact]

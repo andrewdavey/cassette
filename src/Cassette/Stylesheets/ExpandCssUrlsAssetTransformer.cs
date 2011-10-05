@@ -39,7 +39,7 @@ namespace Cassette.Stylesheets
         readonly ICassetteApplication application;
 
         static readonly Regex CssUrlRegex = new Regex(
-            @"\b url \s* \( \s* (?<url>.*?) \s* \)", 
+            @"\b url \s* \( \s* (?<quote>['""]?) (?<url>.*?) \<quote> \s* \)", 
             RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
         static readonly Regex AbsoluteUrlRegex = new Regex(
@@ -89,7 +89,8 @@ namespace Cassette.Stylesheets
                 .Matches(css)
                 .Cast<Match>()
                 .Where(match => AbsoluteUrlRegex.IsMatch(match.Groups["url"].Value) == false)
-                .OrderByDescending(match => match.Index);
+                .OrderByDescending(match => match.Index)
+                .ToArray();
         }
 
         void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
