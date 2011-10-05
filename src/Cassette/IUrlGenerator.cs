@@ -25,6 +25,6 @@ namespace Cassette
         string CreateModuleUrl(Module module);
         string CreateAssetUrl(IAsset asset);
         string CreateAssetCompileUrl(Module module, IAsset asset);
-        string CreateImageUrl(string filename, string hash);
+        string CreateRawFileUrl(string filename, string hash);
     }
 }

@@ -222,7 +222,7 @@ namespace Cassette.Web
         public void CreateImageUrlPrependsHandlerRoute()
         {
             var generator = new UrlGenerator("/");
-            var url = generator.CreateImageUrl("~/test.png", "hash");
+            var url = generator.CreateRawFileUrl("~/test.png", "hash");
             url.ShouldStartWith("/_assets/images/");
         }
 
@@ -230,7 +230,7 @@ namespace Cassette.Web
         public void CreateImageUrlConvertsFileExtensinDotToUnderscore()
         {
             var generator = new UrlGenerator("/");
-            var url = generator.CreateImageUrl("~/test.png", "hash");
+            var url = generator.CreateRawFileUrl("~/test.png", "hash");
             url.ShouldStartWith("/_assets/images/test_hash_png");
         }
 
@@ -238,7 +238,7 @@ namespace Cassette.Web
         public void ConvertsToForwardSlashes()
         {
             var generator = new UrlGenerator("/");
-            var url = generator.CreateImageUrl("~\\test\\foo.png", "hash");
+            var url = generator.CreateRawFileUrl("~\\test\\foo.png", "hash");
             url.ShouldEqual("/_assets/images/test/foo_hash_png");
         }
 
@@ -248,7 +248,7 @@ namespace Cassette.Web
             var generator = new UrlGenerator("/");
             Assert.Throws<ArgumentException>(delegate
             {
-                generator.CreateImageUrl("fail.png", "hash");
+                generator.CreateRawFileUrl("fail.png", "hash");
             });
         }
     }
@@ -299,8 +299,8 @@ namespace Cassette.Web
         public void GetImageRouteUrl_ReturnsRouteUrlWithPathParameter()
         {
             var app = new UrlGenerator("/");
-            var url = app.GetImageRouteUrl();
-            url.ShouldEqual("_assets/images/{*path}");
+            var url = app.GetRawFileRouteUrl();
+            url.ShouldEqual("_assets/file/{*path}");
         }
     }
 }

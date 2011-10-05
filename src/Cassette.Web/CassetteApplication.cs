@@ -125,7 +125,7 @@ namespace Cassette.Web
             InstallModuleRoute<StylesheetModule>(routes);
             InstallModuleRoute<HtmlTemplateModule>(routes);
 
-            InstallImageRoute(routes);
+            InstallRawFileRoute(routes);
 
             InstallAssetRoute(routes);
         }
@@ -143,13 +143,13 @@ namespace Cassette.Web
             routes.Insert(0, new CassetteRoute(url, handler));
         }
 
-        void InstallImageRoute(RouteCollection routes)
+        void InstallRawFileRoute(RouteCollection routes)
         {
-            var url = urlGenerator.GetImageRouteUrl();
+            var url = urlGenerator.GetRawFileRouteUrl();
             var handler = new DelegateRouteHandler(
-                requestContext => new ImageRequestHandler(requestContext)
+                requestContext => new RawFileRequestHandler(requestContext)
             );
-            Trace.Source.TraceInformation("Installing image route handler for \"{0}\".", url);
+            Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
             routes.Insert(0, new CassetteRoute(url, handler));
         }
 
