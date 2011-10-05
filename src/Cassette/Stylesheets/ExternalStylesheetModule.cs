@@ -50,11 +50,11 @@ namespace Cassette.Stylesheets
         {
             if (string.IsNullOrEmpty(Media))
             {
-                return new HtmlString(string.Format(LinkHtml, url));
+                return new HtmlString(String.Format(HtmlConstants.LinkHtml, url));
             }
             else
             {
-                return new HtmlString(string.Format(LinkHtmlWithMedia, url, Media));
+                return new HtmlString(String.Format(HtmlConstants.LinkWithMediaHtml, url, Media));
             }
         }
 

@@ -32,9 +32,6 @@ namespace Cassette.Stylesheets
             Processor = new StylesheetPipeline();
         }
 
-        protected static readonly string LinkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
-        protected static readonly string LinkHtmlWithMedia = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
-
         public string Media { get; set; }
         
         public IModuleProcessor<StylesheetModule> Processor { get; set; }
