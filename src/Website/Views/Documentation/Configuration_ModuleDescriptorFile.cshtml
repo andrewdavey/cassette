@@ -10,6 +10,13 @@ jquery-ui.js
 underscore.js
 knockout.js</code></pre>
 
+<h2>Wildcard</h2>
+<p>Cassette supports the use of <code>*</code> as a wildcard to include all files in the module directory that haven't been explicitly defined.</p>
+<p>This is useful when only one or two of the assets in the module need including in a specific order - for example, ensuring that jQuery is included before any of its plugins.</p>
+<pre><code>jquery.js
+file1.js
+*</code></pre>
+
 <h2>Module references</h2>
 <p>If your module depends on other modules, then add a references section.</p>
 <pre><code>file1.js
