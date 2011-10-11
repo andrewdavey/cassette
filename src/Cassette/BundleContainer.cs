@@ -123,7 +123,7 @@ namespace Cassette
             }
         }
 
-        public T FindBundleContainingPath(string path)
+        public Bundle FindBundleContainingPath(string path)
         {
             return bundles.FirstOrDefault(bundle => bundle.ContainsPath(path));
         }

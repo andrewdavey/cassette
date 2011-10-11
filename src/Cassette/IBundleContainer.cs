@@ -27,7 +27,7 @@ namespace Cassette
         where T : Bundle
     {
         IEnumerable<T> Bundles { get; }
-        T FindBundleContainingPath(string path);
+        Bundle FindBundleContainingPath(string path);
         IEnumerable<Bundle> IncludeReferencesAndSortBundles(IEnumerable<Bundle> bundles);
     }
 }

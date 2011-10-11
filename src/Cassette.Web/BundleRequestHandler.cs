@@ -78,7 +78,7 @@ namespace Cassette.Web
             ProcessRequest();
         }
 
-        T FindBundle()
+        Bundle FindBundle()
         {
             var path = "~/" + routeData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling bundle request for \"{0}\".", path);
@@ -106,7 +106,7 @@ namespace Cassette.Web
             response.SuppressContent = true;
         }
 
-        void SendBundle(T bundle, string actualETag)
+        void SendBundle(Bundle bundle, string actualETag)
         {
             response.ContentType = bundle.ContentType;
             CacheLongTime(actualETag);
