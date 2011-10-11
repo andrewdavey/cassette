@@ -25,7 +25,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class BundleContainer<T> : IBundleContainer<T>
+    public class BundleContainer<T> : IBundleContainer
         where T : Bundle
     {
         public BundleContainer(IEnumerable<T> bundles)
@@ -40,7 +40,7 @@ namespace Cassette
         readonly T[] bundles;
         readonly Dictionary<Bundle, HashSet<Bundle>> bundleImmediateReferences;
 
-        public IEnumerable<T> Bundles
+        public IEnumerable<Bundle> Bundles
         {
             get { return bundles; }
         }

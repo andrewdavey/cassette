@@ -33,7 +33,7 @@ namespace Cassette.UI
     {
         public ReferenceBuilder_Reference_Tests()
         {
-            bundleContainer = new Mock<IBundleContainer<ScriptBundle>>();
+            bundleContainer = new Mock<IBundleContainer>();
             bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             application = new Mock<ICassetteApplication>();
             builder = new ReferenceBuilder<ScriptBundle>(bundleContainer.Object, bundleFactory.Object, Mock.Of<IPlaceholderTracker>(), application.Object);
@@ -43,7 +43,7 @@ namespace Cassette.UI
         }
 
         readonly ReferenceBuilder<ScriptBundle> builder;
-        readonly Mock<IBundleContainer<ScriptBundle>> bundleContainer;
+        readonly Mock<IBundleContainer> bundleContainer;
         readonly Mock<IBundleFactory<ScriptBundle>> bundleFactory;
         readonly Mock<ICassetteApplication> application;
 
@@ -219,7 +219,7 @@ namespace Cassette.UI
     {
         public ReferenceBuilder_Render_Tests()
         {
-            bundleContainer = new Mock<IBundleContainer<Bundle>>();
+            bundleContainer = new Mock<IBundleContainer>();
             bundleFactory = new Mock<IBundleFactory<Bundle>>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
             application = Mock.Of<ICassetteApplication>();
@@ -235,7 +235,7 @@ namespace Cassette.UI
         readonly ReferenceBuilder<Bundle> referenceBuilder;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
         readonly ICassetteApplication application;
-        readonly Mock<IBundleContainer<Bundle>> bundleContainer;
+        readonly Mock<IBundleContainer> bundleContainer;
         readonly Mock<IBundleFactory<Bundle>> bundleFactory;
 
         [Fact]

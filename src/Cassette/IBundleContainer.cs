@@ -23,10 +23,9 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public interface IBundleContainer<out T> : IDisposable
-        where T : Bundle
+    public interface IBundleContainer : IDisposable
     {
-        IEnumerable<T> Bundles { get; }
+        IEnumerable<Bundle> Bundles { get; }
         Bundle FindBundleContainingPath(string path);
         IEnumerable<Bundle> IncludeReferencesAndSortBundles(IEnumerable<Bundle> bundles);
     }

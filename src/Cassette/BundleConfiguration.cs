@@ -24,7 +24,7 @@ using System.Linq;
 using Cassette.IO;
 using Cassette.Persistence;
 using Cassette.Utilities;
-using CreateBundleContainer = System.Func<bool, Cassette.IBundleContainer<Cassette.Bundle>>;
+using CreateBundleContainer = System.Func<bool, Cassette.IBundleContainer>;
 // CreateBundleContainer    = useCache => BundleContainer<BundleType>
 
 namespace Cassette
@@ -88,7 +88,7 @@ namespace Cassette
             }
         }
 
-        public Dictionary<Type, IBundleContainer<Bundle>> CreateBundleContainers(bool useCache)
+        public Dictionary<Type, IBundleContainer> CreateBundleContainers(bool useCache)
         {
             return bundleSourceResultsByType.ToDictionary(
                 kvp => kvp.Key,
@@ -96,7 +96,7 @@ namespace Cassette
             );
         }
 
-        IBundleContainer<T> CreateBundleContainer<T>(bool useCache)
+        IBundleContainer CreateBundleContainer<T>(bool useCache)
             where T : Bundle
         {
             var bundles = ((IEnumerable<T>)bundleSourceResultsByType[typeof(T)].Item1).ToArray();
@@ -110,7 +110,7 @@ namespace Cassette
             }
         }
 
-        IBundleContainer<T> GetOrCreateCachedBundleContainer<T>(T[] bundles) where T : Bundle
+        IBundleContainer GetOrCreateCachedBundleContainer<T>(T[] bundles) where T : Bundle
         {
             var cache = GetBundleCache<T>();
             if (cache.InitializeBundlesFromCacheIfUpToDate(bundles))

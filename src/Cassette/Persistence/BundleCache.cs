@@ -177,7 +177,7 @@ namespace Cassette.Persistence
             return ByteArrayExtensions.FromHexString(attribute.Value);
         }
 
-        public void SaveBundleContainer(IBundleContainer<T> bundleContainer)
+        public void SaveBundleContainer(IBundleContainer bundleContainer)
         {
             cacheDirectory.DeleteContents();
             SaveContainerXml(bundleContainer);
@@ -195,7 +195,7 @@ namespace Cassette.Persistence
             }
         }
 
-        void SaveContainerXml(IBundleContainer<T> bundleContainer)
+        void SaveContainerXml(IBundleContainer bundleContainer)
         {
             var assetCounter = new AssetCounter();
             assetCounter.Visit(bundleContainer.Bundles);
@@ -215,7 +215,7 @@ namespace Cassette.Persistence
             }
         }
 
-        XElement CreateBundleElement(T bundle, IBundleContainer<T> bundleContainer)
+        XElement CreateBundleElement(Bundle bundle, IBundleContainer bundleContainer)
         {
             var referenceElements = CreateReferenceElements(bundle, bundleContainer);
             var fileElements = CreateFileElements(bundle);
@@ -227,7 +227,7 @@ namespace Cassette.Persistence
             );
         }
 
-        IEnumerable<XElement> CreateFileElements(T bundle)
+        IEnumerable<XElement> CreateFileElements(Bundle bundle)
         {
             var fileReferences = (
                 from asset in bundle.Assets
@@ -240,7 +240,7 @@ namespace Cassette.Persistence
                    select new XElement("File", new XAttribute("Path", file));
         }
 
-        IEnumerable<XElement> CreateReferenceElements(T bundle, IBundleContainer<T> bundleContainer)
+        IEnumerable<XElement> CreateReferenceElements(Bundle bundle, IBundleContainer bundleContainer)
         {
             var references = (
                 from asset in bundle.Assets
@@ -254,7 +254,7 @@ namespace Cassette.Persistence
                    select new XElement("Reference", new XAttribute("Path", reference));
         }
 
-        void SaveBundle(T bundle)
+        void SaveBundle(Bundle bundle)
         {
             if (bundle.Assets.Count == 0) return;
 

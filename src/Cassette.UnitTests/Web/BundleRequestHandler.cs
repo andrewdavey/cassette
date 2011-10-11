@@ -41,7 +41,7 @@ namespace Cassette.Web
         protected RouteData routeData;
         protected RequestContext requestContext;
         protected Stream outputStream;
-        protected Mock<IBundleContainer<Bundle>> container;
+        protected Mock<IBundleContainer> container;
 
         public BundleRequestHandler_Tests()
         {
@@ -62,7 +62,7 @@ namespace Cassette.Web
 
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            container = new Mock<IBundleContainer<Bundle>>();
+            container = new Mock<IBundleContainer>();
         }
 
         protected BundleRequestHandler<Bundle> CreateRequestHandler(string bundlePath)

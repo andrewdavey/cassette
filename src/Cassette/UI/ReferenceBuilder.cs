@@ -29,7 +29,7 @@ namespace Cassette.UI
     public class ReferenceBuilder<T> : IReferenceBuilder<T>
         where T: Bundle
     {
-        public ReferenceBuilder(IBundleContainer<T> bundleContainer, IBundleFactory<T> bundleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
+        public ReferenceBuilder(IBundleContainer bundleContainer, IBundleFactory<T> bundleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
         {
             this.bundleContainer = bundleContainer;
             this.bundleFactory = bundleFactory;
@@ -37,7 +37,7 @@ namespace Cassette.UI
             this.application = application;
         }
 
-        readonly IBundleContainer<T> bundleContainer;
+        readonly IBundleContainer bundleContainer;
         readonly IBundleFactory<T> bundleFactory;
         readonly IPlaceholderTracker placeholderTracker;
         readonly ICassetteApplication application;

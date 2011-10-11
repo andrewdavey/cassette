@@ -30,7 +30,7 @@ namespace Cassette.Web
     public class BundleRequestHandler<T> : IHttpHandler
         where T : Bundle
     {
-        public BundleRequestHandler(IBundleContainer<T> bundleContainer, RequestContext requestContext)
+        public BundleRequestHandler(IBundleContainer bundleContainer, RequestContext requestContext)
         {
             this.bundleContainer = bundleContainer;
             
@@ -39,7 +39,7 @@ namespace Cassette.Web
             request = requestContext.HttpContext.Request;
         }
 
-        readonly IBundleContainer<T> bundleContainer;
+        readonly IBundleContainer bundleContainer;
         readonly RouteData routeData;
         readonly HttpResponseBase response;
         readonly HttpRequestBase request;

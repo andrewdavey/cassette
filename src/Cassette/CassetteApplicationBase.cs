@@ -49,7 +49,7 @@ namespace Cassette
         bool isOutputOptimized;
         readonly IDirectory rootDirectory;
         IUrlGenerator urlGenerator;
-        readonly Dictionary<Type, IBundleContainer<Bundle>> bundleContainers;
+        readonly Dictionary<Type, IBundleContainer> bundleContainers;
         readonly Dictionary<Type, object> bundleFactories;
 
         public bool IsOutputOptimized
@@ -111,13 +111,13 @@ namespace Cassette
 
         protected abstract IPlaceholderTracker GetPlaceholderTracker();
 
-        protected IBundleContainer<T> GetBundleContainer<T>()
-            where T: Bundle
+        protected IBundleContainer GetBundleContainer<T>()
+            where T : Bundle
         {
-            IBundleContainer<Bundle> container;
+            IBundleContainer container;
             if (bundleContainers.TryGetValue(typeof(T), out container))
             {
-                return (IBundleContainer<T>)container;
+                return container;
             }
             else
             {
@@ -132,7 +132,7 @@ namespace Cassette
                 .FirstOrDefault(bundle => bundle != null);
         }
 
-        Dictionary<Type, IBundleContainer<Bundle>> CreateBundleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
+        Dictionary<Type, IBundleContainer> CreateBundleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
         {
             var bundleConfiguration = new BundleConfiguration(this, cacheDirectory, rootDirectory, bundleFactories, version);
             foreach (var configuration in configurations)

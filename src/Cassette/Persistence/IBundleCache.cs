@@ -26,6 +26,6 @@ namespace Cassette.Persistence
         where T : Bundle
     {
         bool InitializeBundlesFromCacheIfUpToDate(IEnumerable<T> unprocessedSourceBundles);
-        void SaveBundleContainer(IBundleContainer<T> bundleContainer);
+        void SaveBundleContainer(IBundleContainer bundleContainer);
     }
 }
