@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
+    <Compile Include="Configuration\DebugBundleContainerBuilder.cs" />
     <Compile Include="DirectorySource.cs" />
     <Compile Include="FileSystemBundleSource.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />

@@ -20,7 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette
 {
-    public interface IBundleFactory<T>
+    public interface IBundleFactory<out T>
         where T : Bundle
     {
         T CreateBundle(string directory);
