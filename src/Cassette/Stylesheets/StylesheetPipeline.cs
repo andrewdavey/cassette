@@ -19,11 +19,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetPipeline : MutablePipeline<StylesheetModule>
+    public class StylesheetPipeline : MutablePipeline<StylesheetBundle>
     {
         public StylesheetPipeline()
         {
@@ -35,7 +35,7 @@ namespace Cassette.Stylesheets
         public bool CompileLess { get; set; }
         public bool ConvertImageUrlsToDataUris { get; set; }
 
-        protected override IEnumerable<IModuleProcessor<StylesheetModule>> CreatePipeline(StylesheetModule module, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, ICassetteApplication application)
         {
             yield return new ParseCssReferences();
             if (CompileLess)

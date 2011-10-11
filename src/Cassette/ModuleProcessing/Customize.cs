@@ -20,10 +20,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public class Customize<T> : IModuleProcessor<T>
-        where T : Module
+    public class Customize<T> : IBundleProcessor<T>
+        where T : Bundle
     {
         public Customize(Action<T> action)
         {
@@ -33,9 +33,9 @@ namespace Cassette.ModuleProcessing
 
         readonly Action<T> action;
 
-        public void Process(T module, ICassetteApplication application)
+        public void Process(T bundle, ICassetteApplication application)
         {
-            action(module);
+            action(bundle);
         }
     }
 }

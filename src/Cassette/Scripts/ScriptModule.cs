@@ -19,22 +19,22 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Web;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ScriptModule : Module
+    public class ScriptBundle : Bundle
     {
-        public ScriptModule(string directory)
+        public ScriptBundle(string directory)
             : base(directory)
         {
             ContentType = "text/javascript";
             Processor = new ScriptPipeline();
         }
 
-        public IModuleProcessor<ScriptModule> Processor { get; set; }
+        public IBundleProcessor<ScriptBundle> Processor { get; set; }
 
-        public IModuleHtmlRenderer<ScriptModule> Renderer { get; set; }
+        public IBundleHtmlRenderer<ScriptBundle> Renderer { get; set; }
 
         public override void Process(ICassetteApplication application)
         {

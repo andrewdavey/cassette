@@ -19,11 +19,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ScriptPipeline : MutablePipeline<ScriptModule>
+    public class ScriptPipeline : MutablePipeline<ScriptBundle>
     {
         public ScriptPipeline()
         {
@@ -34,7 +34,7 @@ namespace Cassette.Scripts
         public bool CompileCoffeeScript { get; set; }
         public IAssetTransformer Minifier { get; set; }
 
-        protected override IEnumerable<IModuleProcessor<ScriptModule>> CreatePipeline(ScriptModule module, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<ScriptBundle>> CreatePipeline(ScriptBundle bundle, ICassetteApplication application)
         {
             yield return new ParseJavaScriptReferences();
             if (CompileCoffeeScript)
@@ -48,7 +48,7 @@ namespace Cassette.Scripts
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(Minifier);
             }
-            yield return new AssignScriptModuleRenderer();
+            yield return new AssignScriptBundleRenderer();
         }
     }
 }

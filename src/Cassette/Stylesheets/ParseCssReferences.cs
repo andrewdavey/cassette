@@ -22,11 +22,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class ParseCssReferences : ModuleProcessorOfAssetsMatchingFileExtension<StylesheetModule>
+    public class ParseCssReferences : BundleProcessorOfAssetsMatchingFileExtension<StylesheetBundle>
     {
         public ParseCssReferences()
             : base("css")
@@ -42,7 +42,7 @@ namespace Cassette.Stylesheets
             RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
 
-        protected override void Process(IAsset asset, Module module)
+        protected override void Process(IAsset asset, Bundle bundle)
         {
             var css = ReadAllCss(asset);
             foreach (var reference in ParseReferences(css))

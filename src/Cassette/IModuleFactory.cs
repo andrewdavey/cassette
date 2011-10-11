@@ -20,11 +20,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette
 {
-    public interface IModuleFactory<T>
-        where T : Module
+    public interface IBundleFactory<T>
+        where T : Bundle
     {
-        T CreateModule(string directory);
-        T CreateExternalModule(string url);
-        T CreateExternalModule(string name, ModuleDescriptor moduleDescriptor);
+        T CreateBundle(string directory);
+        T CreateExternalBundle(string url);
+        T CreateExternalBundle(string name, BundleDescriptor bundleDescriptor);
     }
 }

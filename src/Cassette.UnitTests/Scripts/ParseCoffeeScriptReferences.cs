@@ -27,7 +27,7 @@ namespace Cassette.Scripts
     public class ParseCoffeeScriptReferences_Tests
     {
         [Fact]
-        public void ProcessAddsReferencesToCoffeeScriptAssetInModule()
+        public void ProcessAddsReferencesToCoffeeScriptAssetInBundle()
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.coffee");
@@ -43,11 +43,11 @@ class Foo
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(coffeeScriptSource.AsStream());
-            var module = new Module("~");
-            module.Assets.Add(asset.Object);
+            var bundle = new Bundle("~");
+            bundle.Assets.Add(asset.Object);
 
             var processor = new ParseCoffeeScriptReferences();
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.coffee", 3));

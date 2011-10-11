@@ -26,7 +26,7 @@ using System.Xml.Linq;
 using Cassette.Utilities;
 using Cassette.Persistence;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class ConcatenatedAsset : AssetBase, IDisposable
     {

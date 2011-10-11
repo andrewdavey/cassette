@@ -24,22 +24,22 @@ using Xunit;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateModuleFactory_Tests
+    public class HtmlTemplateBundleFactory_Tests
     {
         [Fact]
-        public void CreateModule_ReturnsHtmlTemplateModuleWithPathSet()
+        public void CreateBundle_ReturnsHtmlTemplateBundleWithPathSet()
         {
-            var factory = new HtmlTemplateModuleFactory();
-            var module = factory.CreateModule("~/test");
-            module.Path.ShouldEqual("~/test");
+            var factory = new HtmlTemplateBundleFactory();
+            var bundle = factory.CreateBundle("~/test");
+            bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void CreateExternalModuleThrowsException()
+        public void CreateExternalBundleThrowsException()
         {
             Assert.Throws<NotSupportedException>(delegate
             {
-                new HtmlTemplateModuleFactory().CreateExternalModule("");
+                new HtmlTemplateBundleFactory().CreateExternalBundle("");
             });
         }
     }

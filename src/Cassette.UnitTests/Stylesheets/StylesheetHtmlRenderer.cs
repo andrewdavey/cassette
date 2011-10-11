@@ -27,16 +27,16 @@ namespace Cassette.Stylesheets
     public class StylesheetHtmlRenderer_Tests
     {
         [Fact]
-        public void GivenModule_WhenRender_ThenHtmlLinkReturned()
+        public void GivenBundle_WhenRender_ThenHtmlLinkReturned()
         {
-            var module = new StylesheetModule("~/tests");
+            var bundle = new StylesheetBundle("~/tests");
             var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateModuleUrl(module))
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
                         .Returns("URL")
                         .Verifiable();
 
             var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual("<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\"/>");
 
@@ -44,18 +44,18 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenModuleWithMedia_WhenRender_ThenHtmlLinkWithMediaAttributeReturned()
+        public void GivenBundleWithMedia_WhenRender_ThenHtmlLinkWithMediaAttributeReturned()
         {
-            var module = new StylesheetModule("~/tests")
+            var bundle = new StylesheetBundle("~/tests")
             {
                 Media = "MEDIA"
             };
             var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateModuleUrl(module))
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
                         .Returns("URL");
 
             var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual("<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\" media=\"MEDIA\"/>");
         }

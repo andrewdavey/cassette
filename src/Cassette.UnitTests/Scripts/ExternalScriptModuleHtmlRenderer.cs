@@ -26,9 +26,9 @@ using Xunit;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptModuleHtmlRenderer_Tests
+    public class ExternalScriptBundleHtmlRenderer_Tests
     {
-        public ExternalScriptModuleHtmlRenderer_Tests()
+        public ExternalScriptBundleHtmlRenderer_Tests()
         {
             application = new Mock<ICassetteApplication>();
             application.SetupGet(a => a.IsOutputOptimized)
@@ -38,30 +38,30 @@ namespace Cassette.Scripts
         readonly Mock<ICassetteApplication> application;
 
         [Fact]
-        public void WhenRenderExternalScriptModule_ThenHtmlIsScriptElement()
+        public void WhenRenderExternalScriptBundle_ThenHtmlIsScriptElement()
         {
-            var module = new ExternalScriptModule("http://test.com/");
-            var fallbackRenderer = new Mock<IModuleHtmlRenderer<ScriptModule>>();
+            var bundle = new ExternalScriptBundle("http://test.com/");
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
 
-            var renderer = new ExternalScriptModuleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\"></script>");
         }
 
         [Fact]
-        public void WhenRenderExternalScriptModuleWithFallbackAsset_ThenHtmlContainsFallbackScript()
+        public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlContainsFallbackScript()
         {
-            var module = new ExternalScriptModule("http://test.com/");
+            var bundle = new ExternalScriptBundle("http://test.com/");
             var asset = new Mock<IAsset>();
-            module.AddFallback("CONDITION", new[] { asset.Object });
+            bundle.AddFallback("CONDITION", new[] { asset.Object });
 
-            var fallbackRenderer = new Mock<IModuleHtmlRenderer<ScriptModule>>();
-            fallbackRenderer.Setup(r => r.Render(module))
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
+            fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns(new HtmlString("FALLBACK"));
 
-            var renderer = new ExternalScriptModuleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual(
                 "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
@@ -74,37 +74,37 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void WhenRenderExternalScriptModuleWithFallbackAsset_ThenHtmlEscapesFallbackScriptTags()
+        public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlEscapesFallbackScriptTags()
         {
-            var fallbackRenderer = new Mock<IModuleHtmlRenderer<ScriptModule>>();
-            var renderer = new ExternalScriptModuleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var module = new ExternalScriptModule("http://test.com/");
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var bundle = new ExternalScriptBundle("http://test.com/");
             var asset = new Mock<IAsset>();
-            module.AddFallback("CONDITION", new[] { asset.Object });
+            bundle.AddFallback("CONDITION", new[] { asset.Object });
 
-            fallbackRenderer.Setup(r => r.Render(module))
+            fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns(new HtmlString("<script></script>"));
 
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldContain("%3Cscript%3E%3C/script%3E");
         }
 
         [Fact]
-        public void GivenExternalScriptModuleWithFallbackAssetsAndApplicationNotOptimized_WhenRender_ThenOnlyOutputFallbackScripts()
+        public void GivenExternalScriptBundleWithFallbackAssetsAndApplicationNotOptimized_WhenRender_ThenOnlyOutputFallbackScripts()
         {
             application.SetupGet(a => a.IsOutputOptimized).Returns(false);
 
-            var module = new ExternalScriptModule("http://test.com/");
+            var bundle = new ExternalScriptBundle("http://test.com/");
             var asset = new Mock<IAsset>();
-            module.AddFallback("CONDITION", new[] { asset.Object });
+            bundle.AddFallback("CONDITION", new[] { asset.Object });
 
-            var fallbackRenderer = new Mock<IModuleHtmlRenderer<ScriptModule>>();
-            fallbackRenderer.Setup(r => r.Render(module))
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
+            fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns(new HtmlString("<script></script>"));
 
-            var renderer = new ExternalScriptModuleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual("<script></script>");
         }

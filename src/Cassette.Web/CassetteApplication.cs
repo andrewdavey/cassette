@@ -86,7 +86,7 @@ namespace Cassette.Web
         {
             var statusCode = httpContext.Response.StatusCode;
             if (300 <= statusCode && statusCode < 400) return false;
-            if (statusCode == 401) return false; // 401 gets converted into a redirect by FormsAuthenticationModule.
+            if (statusCode == 401) return false; // 401 gets converted into a redirect by FormsAuthenticationBundle.
 
             return IsHtmlResponse(httpContext);
         }
@@ -121,23 +121,23 @@ namespace Cassette.Web
 
         void InstallRoutes(RouteCollection routes)
         {
-            InstallModuleRoute<ScriptModule>(routes);
-            InstallModuleRoute<StylesheetModule>(routes);
-            InstallModuleRoute<HtmlTemplateModule>(routes);
+            InstallBundleRoute<ScriptBundle>(routes);
+            InstallBundleRoute<StylesheetBundle>(routes);
+            InstallBundleRoute<HtmlTemplateBundle>(routes);
 
             InstallRawFileRoute(routes);
 
             InstallAssetRoute(routes);
         }
 
-        void InstallModuleRoute<T>(RouteCollection routes)
-            where T : Module
+        void InstallBundleRoute<T>(RouteCollection routes)
+            where T : Bundle
         {
             // Insert Cassette's routes at the start of the table, 
             // to avoid conflicts with the application's own routes.
-            var url = urlGenerator.GetModuleRouteUrl<T>();
+            var url = urlGenerator.GetBundleRouteUrl<T>();
             var handler = new DelegateRouteHandler(
-                requestContext => new ModuleRequestHandler<T>(GetModuleContainer<T>(), requestContext)
+                requestContext => new BundleRequestHandler<T>(GetBundleContainer<T>(), requestContext)
             );
             Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
             routes.Insert(0, new CassetteRoute(url, handler));
@@ -162,7 +162,7 @@ namespace Cassette.Web
             var handler = new DelegateRouteHandler(
                 requestContext => new AssetRequestHandler(
                     requestContext,
-                    FindModuleContainingPath
+                    FindBundleContainingPath
                 )
             );
             Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);

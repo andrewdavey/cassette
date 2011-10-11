@@ -20,75 +20,75 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Linq;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Moq;
 using Should;
 using Xunit;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptModule_Tests
+    public class ExternalScriptBundle_Tests
     {
         [Fact]
         public void ProcessCallsProcessor()
         {
-            var module = new ExternalScriptModule("http://test.com/asset.js");
-            var processor = new Mock<IModuleProcessor<ScriptModule>>();
+            var bundle = new ExternalScriptBundle("http://test.com/asset.js");
+            var processor = new Mock<IBundleProcessor<ScriptBundle>>();
             var application = Mock.Of<ICassetteApplication>();
 
-            module.Processor = processor.Object;
-            module.Process(application);
+            bundle.Processor = processor.Object;
+            bundle.Process(application);
 
-            processor.Verify(p => p.Process(module, application));
+            processor.Verify(p => p.Process(bundle, application));
         }
 
         [Fact]
-        public void CanActAsAModuleSourceOfItself()
+        public void CanActAsABundleSourceOfItself()
         {
-            var module = new ExternalScriptModule("http://test.com/asset.js");
-            var result = (module as IModuleSource<ScriptModule>).GetModules(Mock.Of<IModuleFactory<ScriptModule>>(), Mock.Of<ICassetteApplication>());
+            var bundle = new ExternalScriptBundle("http://test.com/asset.js");
+            var result = (bundle as IBundleSource<ScriptBundle>).GetBundles(Mock.Of<IBundleFactory<ScriptBundle>>(), Mock.Of<ICassetteApplication>());
 
-            result.SequenceEqual(new[] { module }).ShouldBeTrue();
+            result.SequenceEqual(new[] { bundle }).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenModuleHasName_ContainsPathOfThatNameReturnsTrue()
+        public void GivenBundleHasName_ContainsPathOfThatNameReturnsTrue()
         {
-            var module = new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
-            module.ContainsPath("~/GoogleMapsApi").ShouldBeTrue();
+            var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
+            bundle.ContainsPath("~/GoogleMapsApi").ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenModuleHasName_PathIsApplicationRelativeFormOfTheName()
+        public void GivenBundleHasName_PathIsApplicationRelativeFormOfTheName()
         {
-            var module = new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
-            module.Path.ShouldEqual("~/GoogleMapsApi");
+            var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
+            bundle.Path.ShouldEqual("~/GoogleMapsApi");
         }
 
         [Fact]
-        public void GivenModuleHasName_WhenContainsPathUrl_ThenReturnTrue()
+        public void GivenBundleHasName_WhenContainsPathUrl_ThenReturnTrue()
         {
-            var module = new ExternalScriptModule("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
-            module.ContainsPath("https://maps-api-ssl.google.com/maps/api/js?sensor=false").ShouldBeTrue();
+            var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
+            bundle.ContainsPath("https://maps-api-ssl.google.com/maps/api/js?sensor=false").ShouldBeTrue();
         }
     }
 
-    public class ExternalScriptModule_ConstructorConstraints
+    public class ExternalScriptBundle_ConstructorConstraints
     {
         [Fact]
         public void UrlRequired()
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ExternalScriptModule("api", null, "!window.api", "/api.js");
+                new ExternalScriptBundle("api", null, "!window.api", "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "", "!window.api", "/api.js");
+                new ExternalScriptBundle("api", "", "!window.api", "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", " ", "!window.api", "/api.js");
+                new ExternalScriptBundle("api", " ", "!window.api", "/api.js");
             });
         }
 
@@ -97,15 +97,15 @@ namespace Cassette.Scripts
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", null, "/api.js");
+                new ExternalScriptBundle("api", "http://test.com/api.js", null, "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", "", "/api.js");
+                new ExternalScriptBundle("api", "http://test.com/api.js", "", "/api.js");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", " ", "/api.js");
+                new ExternalScriptBundle("api", "http://test.com/api.js", " ", "/api.js");
             });
         }
 
@@ -114,30 +114,30 @@ namespace Cassette.Scripts
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", null);
+                new ExternalScriptBundle("api", "http://test.com/api.js", "!window.api", null);
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", "");
+                new ExternalScriptBundle("api", "http://test.com/api.js", "!window.api", "");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptModule("api", "http://test.com/api.js", "!window.api", " ");
+                new ExternalScriptBundle("api", "http://test.com/api.js", "!window.api", " ");
             });
         }
 
         [Fact]
-        public void CanCreateAdHocExternalScriptModuleWithOnlyAUrl()
+        public void CanCreateAdHocExternalScriptBundleWithOnlyAUrl()
         {
-            var module = new ExternalScriptModule("http://test.com/api.js");
-            module.Path.ShouldEqual("http://test.com/api.js");
+            var bundle = new ExternalScriptBundle("http://test.com/api.js");
+            bundle.Path.ShouldEqual("http://test.com/api.js");
         }
 
         [Fact]
-        public void CanCreateNamedExternalScriptModule()
+        public void CanCreateNamedExternalScriptBundle()
         {
-            var module = new ExternalScriptModule("api", "http://test.com/api.js");
-            module.Path.ShouldEqual("~/api");
+            var bundle = new ExternalScriptBundle("api", "http://test.com/api.js");
+            bundle.Path.ShouldEqual("~/api");
         }
     }
 }

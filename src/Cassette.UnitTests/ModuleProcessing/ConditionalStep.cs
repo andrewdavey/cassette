@@ -22,46 +22,46 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class ConditionalStep_Tests
     {
         [Fact]
         public void WhenPredicateReturnsTrue_ThenChildrenAreProcessed()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var app = Mock.Of<ICassetteApplication>();
-            var child1 = new Mock<IModuleProcessor<Module>>();
-            var child2 = new Mock<IModuleProcessor<Module>>();
-            var conditionalStep = new ConditionalStep<Module>((m, a) => true, child1.Object, child2.Object);
+            var child1 = new Mock<IBundleProcessor<Bundle>>();
+            var child2 = new Mock<IBundleProcessor<Bundle>>();
+            var conditionalStep = new ConditionalStep<Bundle>((m, a) => true, child1.Object, child2.Object);
 
-            conditionalStep.Process(module, app);
+            conditionalStep.Process(bundle, app);
 
-            child1.Verify(c => c.Process(module, app));
-            child2.Verify(c => c.Process(module, app));
+            child1.Verify(c => c.Process(bundle, app));
+            child2.Verify(c => c.Process(bundle, app));
         }
 
         [Fact]
         public void WhenPredicateReturnsFalse_ThenChildrenAreNotProcessed()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var app = Mock.Of<ICassetteApplication>();
-            var child1 = new Mock<IModuleProcessor<Module>>();
-            var child2 = new Mock<IModuleProcessor<Module>>();
-            var conditionalStep = new ConditionalStep<Module>((m, a) => false, child1.Object, child2.Object);
+            var child1 = new Mock<IBundleProcessor<Bundle>>();
+            var child2 = new Mock<IBundleProcessor<Bundle>>();
+            var conditionalStep = new ConditionalStep<Bundle>((m, a) => false, child1.Object, child2.Object);
 
-            conditionalStep.Process(module, app);
+            conditionalStep.Process(bundle, app);
 
-            child1.Verify(c => c.Process(module, app), Times.Never());
-            child2.Verify(c => c.Process(module, app), Times.Never());
+            child1.Verify(c => c.Process(bundle, app), Times.Never());
+            child2.Verify(c => c.Process(bundle, app), Times.Never());
         }
 
         [Fact]
-        public void ModuleBeingProcessedIsPassedToThePredicate()
+        public void BundleBeingProcessedIsPassedToThePredicate()
         {
-            var expected = new Module("~/test");
-            Module actual = null;
-            var conditionalStep = new ConditionalStep<Module>(
+            var expected = new Bundle("~/test");
+            Bundle actual = null;
+            var conditionalStep = new ConditionalStep<Bundle>(
                 (m, a) => { actual = m; return false; }
             );
             
@@ -74,13 +74,13 @@ namespace Cassette.ModuleProcessing
         public void ApplicationBeingProcessedIsPassedToThePredicate()
         {
             var application = Mock.Of<ICassetteApplication>();
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             ICassetteApplication actual = null;
-            var conditionalStep = new ConditionalStep<Module>(
+            var conditionalStep = new ConditionalStep<Bundle>(
                 (m, a) => { actual = a; return false; }
             );
 
-            conditionalStep.Process(module, application);
+            conditionalStep.Process(bundle, application);
 
             actual.ShouldBeSameAs(application);
         }

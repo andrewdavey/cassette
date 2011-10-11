@@ -31,7 +31,7 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(string applicationRelativeFilename, Module parentModule, IFile file)
+        public Asset(string applicationRelativeFilename, Bundle parentBundle, IFile file)
         {
             if (applicationRelativeFilename == null)
             {
@@ -43,7 +43,7 @@ namespace Cassette
             }
 
             this.applicationRelativeFilename = PathUtilities.NormalizePath(applicationRelativeFilename);
-            this.parentModule = parentModule;
+            this.parentBundle = parentBundle;
             this.file = file;
 
             // TODO: Compute hash lazily to avoid IO when actually loading cached asset instead.
@@ -51,7 +51,7 @@ namespace Cassette
         }
 
         readonly string applicationRelativeFilename;
-        readonly Module parentModule;
+        readonly Bundle parentBundle;
         readonly IFile file;
         readonly byte[] hash;
         readonly List<AssetReference> references = new List<AssetReference>();
@@ -87,21 +87,21 @@ namespace Cassette
                     );
                 }
                 appRelativeFilename = PathUtilities.NormalizePath(appRelativeFilename);
-                AddModuleReference(lineNumber, appRelativeFilename);
+                AddBundleReference(lineNumber, appRelativeFilename);
             }
         }
 
-        void AddModuleReference(int lineNumber, string appRelativeFilename)
+        void AddBundleReference(int lineNumber, string appRelativeFilename)
         {
             AssetReferenceType type;
-            if (ParentModuleCouldContain(appRelativeFilename))
+            if (ParentBundleCouldContain(appRelativeFilename))
             {
-                RequireModuleContainsReference(lineNumber, appRelativeFilename);
-                type = AssetReferenceType.SameModule;
+                RequireBundleContainsReference(lineNumber, appRelativeFilename);
+                type = AssetReferenceType.SameBundle;
             }
             else
             {
-                type = AssetReferenceType.DifferentModule;
+                type = AssetReferenceType.DifferentBundle;
             }
             references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
         }
@@ -156,14 +156,14 @@ namespace Cassette
             }
         }
 
-        bool ParentModuleCouldContain(string path)
+        bool ParentBundleCouldContain(string path)
         {
-            return parentModule.PathIsPrefixOf(path);
+            return parentBundle.PathIsPrefixOf(path);
         }
 
-        void RequireModuleContainsReference(int lineNumber, string path)
+        void RequireBundleContainsReference(int lineNumber, string path)
         {
-            if (parentModule.ContainsPath(path)) return;
+            if (parentBundle.ContainsPath(path)) return;
             
             throw new AssetReferenceException(
                 string.Format(

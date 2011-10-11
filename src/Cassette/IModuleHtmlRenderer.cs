@@ -22,9 +22,9 @@ using System.Web;
 
 namespace Cassette
 {
-    public interface IModuleHtmlRenderer<T>
-        where T : Module
+    public interface IBundleHtmlRenderer<T>
+        where T : Bundle
     {
-        IHtmlString Render(T module);
+        IHtmlString Render(T bundle);
     }
 }

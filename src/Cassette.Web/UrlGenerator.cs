@@ -34,12 +34,12 @@ namespace Cassette.Web
         readonly string virtualDirectory;
         readonly string assetUrlPrefix;
 
-        public string GetModuleRouteUrl<T>()
+        public string GetBundleRouteUrl<T>()
         {
             return string.Format(
                 "{0}/{1}/{{*path}}",
                 assetUrlPrefix,
-                ConventionalModulePathName(typeof(T))
+                ConventionalBundlePathName(typeof(T))
             );
         }
 
@@ -53,14 +53,14 @@ namespace Cassette.Web
             return assetUrlPrefix + "/file/{*path}";
         }
 
-        public string CreateModuleUrl(Module module)
+        public string CreateBundleUrl(Bundle bundle)
         {
             return string.Format("{0}/{1}/{2}/{3}_{4}",
                 virtualDirectory,
                 assetUrlPrefix,
-                ConventionalModulePathName(module.GetType()),
-                module.Path.Substring(2),
-                module.Assets[0].Hash.ToHexString()
+                ConventionalBundlePathName(bundle.GetType()),
+                bundle.Path.Substring(2),
+                bundle.Assets[0].Hash.ToHexString()
             );
         }
 
@@ -74,7 +74,7 @@ namespace Cassette.Web
             );
         }
 
-        public string CreateAssetCompileUrl(Module module, IAsset asset)
+        public string CreateAssetCompileUrl(Bundle bundle, IAsset asset)
         {
             return string.Format(
                 "{0}/{1}/get/{2}?{3}",
@@ -106,17 +106,17 @@ namespace Cassette.Web
             );
         }
 
-        string ConventionalModulePathName(Type moduleType)
+        string ConventionalBundlePathName(Type bundleType)
         {
-            // ExternalScriptModule subclasses ScriptModule, but we want the name to still be "scripts"
-            // So walk up the inheritance chain until we get to something that directly inherits from Module.
-            while (moduleType.BaseType != typeof(Module))
+            // ExternalScriptBundle subclasses ScriptBundle, but we want the name to still be "scripts"
+            // So walk up the inheritance chain until we get to something that directly inherits from Bundle.
+            while (bundleType.BaseType != typeof(Bundle))
             {
-                moduleType = moduleType.BaseType;
+                bundleType = bundleType.BaseType;
             }
 
-            var name = moduleType.Name;
-            name = name.Substring(0, name.Length - "Module".Length);
+            var name = bundleType.Name;
+            name = name.Substring(0, name.Length - "Bundle".Length);
             return name.ToLowerInvariant() + "s";
         }
 

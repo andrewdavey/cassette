@@ -19,13 +19,13 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Web;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetModule : Module
+    public class StylesheetBundle : Bundle
     {
-        public StylesheetModule(string directory)
+        public StylesheetBundle(string directory)
             : base(directory)
         {
             ContentType = "text/css";
@@ -34,9 +34,9 @@ namespace Cassette.Stylesheets
 
         public string Media { get; set; }
         
-        public IModuleProcessor<StylesheetModule> Processor { get; set; }
+        public IBundleProcessor<StylesheetBundle> Processor { get; set; }
 
-        public IModuleHtmlRenderer<StylesheetModule> Renderer { get; set; }
+        public IBundleHtmlRenderer<StylesheetBundle> Renderer { get; set; }
 
         public override void Process(ICassetteApplication application)
         {

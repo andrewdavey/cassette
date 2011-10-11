@@ -25,117 +25,117 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class ModuleContainer<T> : IModuleContainer<T>
-        where T : Module
+    public class BundleContainer<T> : IBundleContainer<T>
+        where T : Bundle
     {
-        public ModuleContainer(IEnumerable<T> modules)
+        public BundleContainer(IEnumerable<T> bundles)
         {
-            this.modules = modules.ToArray(); // Force eval to prevent repeatedly generating new modules.
+            this.bundles = bundles.ToArray(); // Force eval to prevent repeatedly generating new bundles.
 
-            ValidateModuleReferences();
+            ValidateBundleReferences();
             ValidateAssetReferences();
-            moduleImmediateReferences = BuildModuleImmediateReferenceDictionary();
+            bundleImmediateReferences = BuildBundleImmediateReferenceDictionary();
         }
 
-        readonly T[] modules;
-        readonly Dictionary<Module, HashSet<Module>> moduleImmediateReferences;
+        readonly T[] bundles;
+        readonly Dictionary<Bundle, HashSet<Bundle>> bundleImmediateReferences;
 
-        public IEnumerable<T> Modules
+        public IEnumerable<T> Bundles
         {
-            get { return modules; }
+            get { return bundles; }
         }
 
-        public IEnumerable<Module> IncludeReferencesAndSortModules(IEnumerable<Module> modulesToSort)
+        public IEnumerable<Bundle> IncludeReferencesAndSortBundles(IEnumerable<Bundle> bundlesToSort)
         {
-            var modulesArray = modulesToSort.ToArray();
-            var references = GetModuleReferencesWithImplicitOrderingIncluded(modulesArray);
-            var all = new HashSet<Module>();
-            foreach (var module in modulesArray)
+            var bundlesArray = bundlesToSort.ToArray();
+            var references = GetBundleReferencesWithImplicitOrderingIncluded(bundlesArray);
+            var all = new HashSet<Bundle>();
+            foreach (var bundle in bundlesArray)
             {
-                AddModulesReferencedBy(module, all);   
+                AddBundlesReferencedBy(bundle, all);   
             }
-            var graph = BuildModuleGraph(references, all);
+            var graph = BuildBundleGraph(references, all);
             var cycles = graph.FindCycles().ToArray();
             if (cycles.Length > 0)
             {
                 var details = string.Join(Environment.NewLine, cycles.Select(cycle => "[" + string.Join(", ", cycle.Select(m => m.Path) + "]")));
                 throw new InvalidOperationException(
-                    "Cycles detected in module dependency graph:" + Environment.NewLine +
+                    "Cycles detected in bundle dependency graph:" + Environment.NewLine +
                     details
                 );
             }
             return graph.TopologicalSort();
         }
 
-        Graph<Module> BuildModuleGraph(IDictionary<Module, HashSet<Module>> references, IEnumerable<Module> all)
+        Graph<Bundle> BuildBundleGraph(IDictionary<Bundle, HashSet<Bundle>> references, IEnumerable<Bundle> all)
         {
-            return new Graph<Module>(
+            return new Graph<Bundle>(
                 all,
-                module =>
+                bundle =>
                 {
-                    HashSet<Module> set;
-                    if (references.TryGetValue(module, out set)) return set;
+                    HashSet<Bundle> set;
+                    if (references.TryGetValue(bundle, out set)) return set;
                     return Enumerable.Empty<T>();
                 }
             );
         }
 
-        Dictionary<Module, HashSet<Module>> GetModuleReferencesWithImplicitOrderingIncluded(IEnumerable<Module> modules)
+        Dictionary<Bundle, HashSet<Bundle>> GetBundleReferencesWithImplicitOrderingIncluded(IEnumerable<Bundle> bundles)
         {
-            var roots = modules.Where(m =>
+            var roots = bundles.Where(m =>
             {
-                HashSet<Module> set;
-                if (moduleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
+                HashSet<Bundle> set;
+                if (bundleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
                 return true;
             }).ToList();
 
             // Clone the original references dictionary, so we can add the extra
             // implicit references based on array order.
-            var references = new Dictionary<Module, HashSet<Module>>();
-            foreach (var reference in moduleImmediateReferences)
+            var references = new Dictionary<Bundle, HashSet<Bundle>>();
+            foreach (var reference in bundleImmediateReferences)
             {
-                references[reference.Key] = new HashSet<Module>(reference.Value);
+                references[reference.Key] = new HashSet<Bundle>(reference.Value);
             }
             for (int i = 1; i < roots.Count; i++)
             {
-                var module = roots[i];
+                var bundle = roots[i];
                 var previous = roots[i - 1];
-                HashSet<Module> set;
-                if (!references.TryGetValue(module, out set))
+                HashSet<Bundle> set;
+                if (!references.TryGetValue(bundle, out set))
                 {
-                    references[module] = set = new HashSet<Module>();
+                    references[bundle] = set = new HashSet<Bundle>();
                 }
                 set.Add(previous);
             }
             return references;
         }
 
-        void AddModulesReferencedBy(Module module, HashSet<Module> all)
+        void AddBundlesReferencedBy(Bundle bundle, HashSet<Bundle> all)
         {
-            if (all.Contains(module)) return;
-            all.Add(module);
+            if (all.Contains(bundle)) return;
+            all.Add(bundle);
 
-            HashSet<Module> referencedModules;
-            if (!moduleImmediateReferences.TryGetValue(module, out referencedModules)) return;
-            foreach (var referencedModule in referencedModules)
+            HashSet<Bundle> referencedBundles;
+            if (!bundleImmediateReferences.TryGetValue(bundle, out referencedBundles)) return;
+            foreach (var referencedBundle in referencedBundles)
             {
-                AddModulesReferencedBy(referencedModule, all);
+                AddBundlesReferencedBy(referencedBundle, all);
             }
         }
 
-        public T FindModuleContainingPath(string path)
+        public T FindBundleContainingPath(string path)
         {
-            return modules.FirstOrDefault(module => module.ContainsPath(path));
+            return bundles.FirstOrDefault(bundle => bundle.ContainsPath(path));
         }
 
-        void ValidateModuleReferences()
+        void ValidateBundleReferences()
         {
-            var notFound = from module in modules
-                           from reference in module.References
-                           where modules.Any(m => m.ContainsPath(reference)) == false
+            var notFound = from bundle in bundles
+                           from reference in bundle.References
+                           where bundles.Any(m => m.ContainsPath(reference)) == false
                            select string.Format(
-                               "Reference error in module descriptor for \"{0}\". Cannot find \"{1}\".",
-                               module.Path,
+                               "Reference error in bundle descriptor for \"{0}\". Cannot find \"{1}\".",
+                               bundle.Path,
                                reference
                            );
             var message = string.Join(Environment.NewLine, notFound);
@@ -147,11 +147,11 @@ namespace Cassette
 
         void ValidateAssetReferences()
         {
-            var notFound = from module in modules
-                           from asset in module.Assets
+            var notFound = from bundle in bundles
+                           from asset in bundle.Assets
                            from reference in asset.References
-                           where reference.Type == AssetReferenceType.DifferentModule
-                              && modules.Any(m => m.ContainsPath(reference.Path)) == false
+                           where reference.Type == AssetReferenceType.DifferentBundle
+                              && bundles.Any(m => m.ContainsPath(reference.Path)) == false
                            select CreateAssetReferenceNotFoundMessage(reference);
 
             var message = string.Join(Environment.NewLine, notFound);
@@ -161,22 +161,22 @@ namespace Cassette
             }
         }
 
-        Dictionary<Module, HashSet<Module>> BuildModuleImmediateReferenceDictionary()
+        Dictionary<Bundle, HashSet<Bundle>> BuildBundleImmediateReferenceDictionary()
         {
             return (
-                from module in modules
+                from bundle in bundles
                 select new 
                 { 
-                    module,
-                    references = new HashSet<Module>(module.Assets.SelectMany(a => a.References)
-                        .Where(r => r.Type == AssetReferenceType.DifferentModule
+                    bundle,
+                    references = new HashSet<Bundle>(bundle.Assets.SelectMany(a => a.References)
+                        .Where(r => r.Type == AssetReferenceType.DifferentBundle
                                  || r.Type == AssetReferenceType.Url)
                         .Select(r => r.Path)
-                        .Concat(module.References)
-                        .Select(FindModuleContainingPath)
+                        .Concat(bundle.References)
+                        .Select(FindBundleContainingPath)
                     ) 
                 }
-            ).ToDictionary(x => (Module)x.module, x => x.references);
+            ).ToDictionary(x => (Bundle)x.bundle, x => x.references);
         }
 
         string CreateAssetReferenceNotFoundMessage(AssetReference reference)
@@ -199,9 +199,9 @@ namespace Cassette
 
         public void Dispose()
         {
-            foreach (var module in modules)
+            foreach (var bundle in bundles)
             {
-                module.Dispose();
+                bundle.Dispose();
             }
         }
     }

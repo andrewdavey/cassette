@@ -18,48 +18,48 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Moq;
 using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetModule_Render_Tests
+    public class StylesheetBundle_Render_Tests
     {
         [Fact]
         public void RenderCallsRenderer()
         {
-            var renderer = new Mock<IModuleHtmlRenderer<StylesheetModule>>();
-            var module = new StylesheetModule("~/test")
+            var renderer = new Mock<IBundleHtmlRenderer<StylesheetBundle>>();
+            var bundle = new StylesheetBundle("~/test")
             {
                 Renderer = renderer.Object
             };
 
-            module.Render(Mock.Of<ICassetteApplication>());
+            bundle.Render(Mock.Of<ICassetteApplication>());
             
-            renderer.Verify(r => r.Render(module));
+            renderer.Verify(r => r.Render(bundle));
         }
     }
 
-    public class StylesheetModule_Process_Tests
+    public class StylesheetBundle_Process_Tests
     {
         [Fact]
         public void ProcessorDefaultsToStylesheetPipeline()
         {
-            new StylesheetModule("~").Processor.ShouldBeType<StylesheetPipeline>();
+            new StylesheetBundle("~").Processor.ShouldBeType<StylesheetPipeline>();
         }
 
         [Fact]
         public void ProcessCallsProcessor()
         {
-            var module = new StylesheetModule("~");
-            var processor = new Mock<IModuleProcessor<StylesheetModule>>();
-            module.Processor = processor.Object;
+            var bundle = new StylesheetBundle("~");
+            var processor = new Mock<IBundleProcessor<StylesheetBundle>>();
+            bundle.Processor = processor.Object;
             
-            module.Process(Mock.Of<ICassetteApplication>());
+            bundle.Process(Mock.Of<ICassetteApplication>());
 
-            processor.Verify(p => p.Process(module, It.IsAny<ICassetteApplication>()));
+            processor.Verify(p => p.Process(bundle, It.IsAny<ICassetteApplication>()));
         }
     }
 }

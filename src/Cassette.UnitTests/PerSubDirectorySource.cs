@@ -21,7 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Cassette.Scripts;
 using Moq;
 using Should;
@@ -29,107 +29,107 @@ using Xunit;
 
 namespace Cassette
 {
-    public class PerSubDirectorySource_Test : ModuleSourceTestBase
+    public class PerSubDirectorySource_Test : BundleSourceTestBase
     {
         [Fact]
-        public void GivenBaseDirectoryHasEmptyDirectory_ThenGetModulesReturnsEmptyModule()
+        public void GivenBaseDirectoryHasEmptyDirectory_ThenGetBundlesReturnsEmptyBundle()
         {
             Directory.CreateDirectory(Path.Combine(root, "scripts", "empty"));
 
-            var source = new PerSubDirectorySource<Module>("scripts");
-            var result = source.GetModules(moduleFactory, application);
+            var source = new PerSubDirectorySource<Bundle>("scripts");
+            var result = source.GetBundles(bundleFactory, application);
 
-            var module = result.First();
-            module.Assets.Count.ShouldEqual(0);
+            var bundle = result.First();
+            bundle.Assets.Count.ShouldEqual(0);
         }
 
         [Fact]
-        public void GivenBaseDirectoryWithTwoDirectories_ThenGetModulesReturnsTwoModules()
+        public void GivenBaseDirectoryWithTwoDirectories_ThenGetBundlesReturnsTwoBundles()
         {
-            GivenFiles("scripts/module-a/1.js", "scripts/module-b/2.js");
+            GivenFiles("scripts/bundle-a/1.js", "scripts/bundle-b/2.js");
 
-            var source = new PerSubDirectorySource<Module>("scripts");
-            var result = source.GetModules(moduleFactory, application);
+            var source = new PerSubDirectorySource<Bundle>("scripts");
+            var result = source.GetBundles(bundleFactory, application);
             
-            var modules = result.ToArray();
-            modules.Length.ShouldEqual(2);
+            var bundles = result.ToArray();
+            bundles.Length.ShouldEqual(2);
         }
 
         [Fact]
-        public void GivenMixedFileTypes_WhenFilesFiltered_ThenGetModulesFindsOnlyMatchingFiles()
+        public void GivenMixedFileTypes_WhenFilesFiltered_ThenGetBundlesFindsOnlyMatchingFiles()
         {
-            GivenFiles("scripts/module-a/1.js", "scripts/module-a/ignored.txt");
+            GivenFiles("scripts/bundle-a/1.js", "scripts/bundle-a/ignored.txt");
 
-            var source = new PerSubDirectorySource<Module>("scripts") { FilePattern = "*.js" };
-            var result = source.GetModules(moduleFactory, application);
+            var source = new PerSubDirectorySource<Bundle>("scripts") { FilePattern = "*.js" };
+            var result = source.GetBundles(bundleFactory, application);
 
-            var module = result.First();
-            module.Assets.Count.ShouldEqual(1);
+            var bundle = result.First();
+            bundle.Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
-        public void GivenAmbiguousFileFilters_ThenGetModulesFindsFileOnlyOnce()
+        public void GivenAmbiguousFileFilters_ThenGetBundlesFindsFileOnlyOnce()
         {
-            GivenFiles("scripts/module-a/1.html");
+            GivenFiles("scripts/bundle-a/1.html");
 
-            var source = new PerSubDirectorySource<Module>("scripts") { FilePattern = "*.htm;*.html" };
-            var result = source.GetModules(moduleFactory, application);
+            var source = new PerSubDirectorySource<Bundle>("scripts") { FilePattern = "*.htm;*.html" };
+            var result = source.GetBundles(bundleFactory, application);
 
-            var module = result.First();
-            module.Assets.Count.ShouldEqual(1);
+            var bundle = result.First();
+            bundle.Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
-        public void GivenFilesWeDontWantInModule_WhenExclusionProvided_ThenGetModulesDoesntIncludeExcludedFiles()
+        public void GivenFilesWeDontWantInBundle_WhenExclusionProvided_ThenGetBundlesDoesntIncludeExcludedFiles()
         {
-            GivenFiles("scripts/module-a/1.js", "scripts/module-a/1-vsdoc.js");
+            GivenFiles("scripts/bundle-a/1.js", "scripts/bundle-a/1-vsdoc.js");
 
-            var source = new PerSubDirectorySource<Module>("scripts") { FilePattern = "*.js" };
+            var source = new PerSubDirectorySource<Bundle>("scripts") { FilePattern = "*.js" };
             source.Exclude = new Regex("-vsdoc\\.js$");
 
-            var result = source.GetModules(moduleFactory, application);
+            var result = source.GetBundles(bundleFactory, application);
 
-            var module = result.First();
-            module.Assets.Count.ShouldEqual(1);
+            var bundle = result.First();
+            bundle.Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
-        public void GivenBaseDirectoryHasBackSlashes_ThenGetModuleReturnsModuleWithNormalizedPath()
+        public void GivenBaseDirectoryHasBackSlashes_ThenGetBundleReturnsBundleWithNormalizedPath()
         {
-            GivenFiles("scripts/lib/module-a/1.js");
+            GivenFiles("scripts/lib/bundle-a/1.js");
 
-            var source = new PerSubDirectorySource<Module>("scripts\\lib\\");
-            var result = source.GetModules(moduleFactory, application);
+            var source = new PerSubDirectorySource<Bundle>("scripts\\lib\\");
+            var result = source.GetBundles(bundleFactory, application);
 
-            var modules = result.ToArray();
-            modules[0].Path.ShouldEqual("~/scripts/lib/module-a");
-            modules[0].Assets[0].SourceFilename.ShouldEqual("~/scripts/lib/module-a/1.js");
+            var bundles = result.ToArray();
+            bundles[0].Path.ShouldEqual("~/scripts/lib/bundle-a");
+            bundles[0].Assets[0].SourceFilename.ShouldEqual("~/scripts/lib/bundle-a/1.js");
         }
 
         [Fact]
-        public void GivenBaseDirectoryDoesNotExist_ThenGetModulesThrowsException()
+        public void GivenBaseDirectoryDoesNotExist_ThenGetBundlesThrowsException()
         {
-            var source = new PerSubDirectorySource<Module>("missing");
+            var source = new PerSubDirectorySource<Bundle>("missing");
             Assert.Throws<DirectoryNotFoundException>(delegate
             {
-                source.GetModules(moduleFactory, application);
+                source.GetBundles(bundleFactory, application);
             });
         }
 
         [Fact]
-        public void WhenProcessorIsSetUsingCustomizeModule_ThenGetModulesReturnsModulesWithThatProcessor()
+        public void WhenProcessorIsSetUsingCustomizeBundle_ThenGetBundlesReturnsBundlesWithThatProcessor()
         {
-            GivenFiles("scripts/module-a/1.js");
+            GivenFiles("scripts/bundle-a/1.js");
 
-            var source = new PerSubDirectorySource<ScriptModule>("scripts");
-            var factory = new Mock<IModuleFactory<ScriptModule>>();
-            factory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                   .Returns<string>(p => new ScriptModule(p));
-            var processor = Mock.Of<IModuleProcessor<ScriptModule>>();
+            var source = new PerSubDirectorySource<ScriptBundle>("scripts");
+            var factory = new Mock<IBundleFactory<ScriptBundle>>();
+            factory.Setup(f => f.CreateBundle(It.IsAny<string>()))
+                   .Returns<string>(p => new ScriptBundle(p));
+            var processor = Mock.Of<IBundleProcessor<ScriptBundle>>();
 
-            source.CustomizeModule = m => m.Processor = processor;
+            source.CustomizeBundle = m => m.Processor = processor;
 
-            var result = source.GetModules(factory.Object, application);
+            var result = source.GetBundles(factory.Object, application);
 
             result.First().Processor.ShouldBeSameAs(processor);
         }

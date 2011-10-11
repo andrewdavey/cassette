@@ -23,33 +23,33 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class ScriptModuleFactory : IModuleFactory<ScriptModule>
+    public class ScriptBundleFactory : IBundleFactory<ScriptBundle>
     {
-        public ScriptModule CreateModule(string directory)
+        public ScriptBundle CreateBundle(string directory)
         {
-            return new ScriptModule(directory);
+            return new ScriptBundle(directory);
         }
 
-        public ScriptModule CreateExternalModule(string url)
+        public ScriptBundle CreateExternalBundle(string url)
         {
-            return new ExternalScriptModule(url);
+            return new ExternalScriptBundle(url);
         }
 
-        public ScriptModule CreateExternalModule(string name, ModuleDescriptor moduleDescriptor)
+        public ScriptBundle CreateExternalBundle(string name, BundleDescriptor bundleDescriptor)
         {
-            var module = new ExternalScriptModule(name, moduleDescriptor.ExternalUrl);
-            if (moduleDescriptor.FallbackCondition != null)
+            var bundle = new ExternalScriptBundle(name, bundleDescriptor.ExternalUrl);
+            if (bundleDescriptor.FallbackCondition != null)
             {
-                var assets = moduleDescriptor.AssetFilenames.Select(
+                var assets = bundleDescriptor.AssetFilenames.Select(
                     filename => new Asset(
                         PathUtilities.CombineWithForwardSlashes(name, filename),
-                        module,
-                        moduleDescriptor.SourceFile.Directory.GetFile(filename)
+                        bundle,
+                        bundleDescriptor.SourceFile.Directory.GetFile(filename)
                     )
                 );
-                module.AddFallback(moduleDescriptor.FallbackCondition, assets);
+                bundle.AddFallback(bundleDescriptor.FallbackCondition, assets);
             }
-            return module;
+            return bundle;
         }
     }
 }

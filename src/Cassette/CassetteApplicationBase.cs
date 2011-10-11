@@ -38,8 +38,8 @@ namespace Cassette
             this.isOutputOptimized = isOutputOptimized;
             this.urlGenerator = urlGenerator;
             HtmlRewritingEnabled = true;
-            moduleFactories = CreateModuleFactories();
-            moduleContainers = CreateModuleContainers(
+            bundleFactories = CreateBundleFactories();
+            bundleContainers = CreateBundleContainers(
                 configurations,
                 cacheDirectory,
                 CombineVersionWithCassetteVersion(version)
@@ -49,8 +49,8 @@ namespace Cassette
         bool isOutputOptimized;
         readonly IDirectory rootDirectory;
         IUrlGenerator urlGenerator;
-        readonly Dictionary<Type, IModuleContainer<Module>> moduleContainers;
-        readonly Dictionary<Type, object> moduleFactories;
+        readonly Dictionary<Type, IBundleContainer<Bundle>> bundleContainers;
+        readonly Dictionary<Type, object> bundleFactories;
 
         public bool IsOutputOptimized
         {
@@ -75,12 +75,12 @@ namespace Cassette
 
         public bool HtmlRewritingEnabled { get; set; }
 
-        public IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Module
+        public IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle
         {
             return GetOrCreateReferenceBuilder(CreateReferenceBuilder<T>);
         }
 
-        protected abstract IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create) where T : Module;
+        protected abstract IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create) where T : Bundle;
 
         public void Dispose()
         {
@@ -91,7 +91,7 @@ namespace Cassette
         {
             if (!disposing) return;
 
-            foreach(var container in moduleContainers.Values)
+            foreach(var container in bundleContainers.Values)
             {
                 container.Dispose();
             }
@@ -99,11 +99,11 @@ namespace Cassette
         }
 
         IReferenceBuilder<T> CreateReferenceBuilder<T>()
-            where T : Module
+            where T : Bundle
         {
             return new ReferenceBuilder<T>(
-                GetModuleContainer<T>(),
-                (IModuleFactory<T>)moduleFactories[typeof(T)],
+                GetBundleContainer<T>(),
+                (IBundleFactory<T>)bundleFactories[typeof(T)],
                 GetPlaceholderTracker(),
                 this
             );
@@ -111,50 +111,50 @@ namespace Cassette
 
         protected abstract IPlaceholderTracker GetPlaceholderTracker();
 
-        protected IModuleContainer<T> GetModuleContainer<T>()
-            where T: Module
+        protected IBundleContainer<T> GetBundleContainer<T>()
+            where T: Bundle
         {
-            IModuleContainer<Module> container;
-            if (moduleContainers.TryGetValue(typeof(T), out container))
+            IBundleContainer<Bundle> container;
+            if (bundleContainers.TryGetValue(typeof(T), out container))
             {
-                return (IModuleContainer<T>)container;
+                return (IBundleContainer<T>)container;
             }
             else
             {
-                return new ModuleContainer<T>(Enumerable.Empty<T>());
+                return new BundleContainer<T>(Enumerable.Empty<T>());
             }
         }
 
-        public Module FindModuleContainingPath(string path)
+        public Bundle FindBundleContainingPath(string path)
         {
-            return moduleContainers.Values
-                .Select(container => container.FindModuleContainingPath(path))
-                .FirstOrDefault(module => module != null);
+            return bundleContainers.Values
+                .Select(container => container.FindBundleContainingPath(path))
+                .FirstOrDefault(bundle => bundle != null);
         }
 
-        Dictionary<Type, IModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
+        Dictionary<Type, IBundleContainer<Bundle>> CreateBundleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
         {
-            var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, rootDirectory, moduleFactories, version);
+            var bundleConfiguration = new BundleConfiguration(this, cacheDirectory, rootDirectory, bundleFactories, version);
             foreach (var configuration in configurations)
             {
-                configuration.Configure(moduleConfiguration, this);
+                configuration.Configure(bundleConfiguration, this);
             }
-            AddDefaultModuleSourcesIfEmpty(moduleConfiguration);
-            return moduleConfiguration.CreateModuleContainers(isOutputOptimized, version);
+            AddDefaultBundleSourcesIfEmpty(bundleConfiguration);
+            return bundleConfiguration.CreateBundleContainers(isOutputOptimized, version);
         }
 
-        Dictionary<Type, object> CreateModuleFactories()
+        Dictionary<Type, object> CreateBundleFactories()
         {
             return new Dictionary<Type, object>
             {
-                { typeof(ScriptModule), new ScriptModuleFactory() },
-                { typeof(StylesheetModule), new StylesheetModuleFactory() },
-                { typeof(HtmlTemplateModule), new HtmlTemplateModuleFactory() }
+                { typeof(ScriptBundle), new ScriptBundleFactory() },
+                { typeof(StylesheetBundle), new StylesheetBundleFactory() },
+                { typeof(HtmlTemplateBundle), new HtmlTemplateBundleFactory() }
             };
         }
 
         /// <remarks>
-        /// We need module container cache to depend on both the application version
+        /// We need bundle container cache to depend on both the application version
         /// and the Cassette version. So if either is upgraded, then the cache is discarded.
         /// </remarks>
         string CombineVersionWithCassetteVersion(string version)
@@ -162,42 +162,42 @@ namespace Cassette
             return version + "|" + GetType().Assembly.GetName().Version;
         }
 
-        void AddDefaultModuleSourcesIfEmpty(ModuleConfiguration moduleConfiguration)
+        void AddDefaultBundleSourcesIfEmpty(BundleConfiguration bundleConfiguration)
         {
-            if (moduleConfiguration.ContainsModuleSources(typeof(ScriptModule)) == false)
+            if (bundleConfiguration.ContainsBundleSources(typeof(ScriptBundle)) == false)
             {
-                moduleConfiguration.Add(DefaultScriptModuleSource());
+                bundleConfiguration.Add(DefaultScriptBundleSource());
             }
-            if (moduleConfiguration.ContainsModuleSources(typeof(StylesheetModule)) == false)
+            if (bundleConfiguration.ContainsBundleSources(typeof(StylesheetBundle)) == false)
             {
-                moduleConfiguration.Add(DefaultStylesheetModuleSource());
+                bundleConfiguration.Add(DefaultStylesheetBundleSource());
             }
-            if (moduleConfiguration.ContainsModuleSources(typeof(HtmlTemplateModule)) == false)
+            if (bundleConfiguration.ContainsBundleSources(typeof(HtmlTemplateBundle)) == false)
             {
-                moduleConfiguration.Add(DefaultHtmlTemplateModuleSource());
+                bundleConfiguration.Add(DefaultHtmlTemplateBundleSource());
             }
         }
 
-        IModuleSource<ScriptModule> DefaultScriptModuleSource()
+        IBundleSource<ScriptBundle> DefaultScriptBundleSource()
         {
-            return new PerFileSource<ScriptModule>("")
+            return new PerFileSource<ScriptBundle>("")
             {
                 FilePattern = "*.js;*.coffee",
                 Exclude = new Regex("-vsdoc\\.js$")
             };
         }
 
-        IModuleSource<StylesheetModule> DefaultStylesheetModuleSource()
+        IBundleSource<StylesheetBundle> DefaultStylesheetBundleSource()
         {
-            return new PerFileSource<StylesheetModule>("")
+            return new PerFileSource<StylesheetBundle>("")
             {
                 FilePattern = "*.css;*.less"
             };
         }
 
-        IModuleSource<HtmlTemplateModule> DefaultHtmlTemplateModuleSource()
+        IBundleSource<HtmlTemplateBundle> DefaultHtmlTemplateBundleSource()
         {
-            return new PerFileSource<HtmlTemplateModule>("")
+            return new PerFileSource<HtmlTemplateBundle>("")
             {
                 FilePattern = "*.htm;*.html"
             };

@@ -41,171 +41,171 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenBasePathIsEmptyString_GetModulesReturnsModuleForFile()
+        public void GivenBasePathIsEmptyString_GetBundlesReturnsBundleForFile()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>(""));
+            var bundles = GetBundles(new PerFileSource<Bundle>(""));
 
-            modules[0].Path.ShouldEqual("~/test");
+            bundles[0].Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void GivenBasePathIsAppRoot_ThenGetModulesReturnsModuleForFile()
+        public void GivenBasePathIsAppRoot_ThenGetBundlesReturnsBundleForFile()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>("~"));
+            var bundles = GetBundles(new PerFileSource<Bundle>("~"));
 
-            modules[0].Path.ShouldEqual("~/test");
+            bundles[0].Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void GivenBasePathIsAppRootSlash_ThenGetModulesReturnsModuleForFile()
+        public void GivenBasePathIsAppRootSlash_ThenGetBundlesReturnsBundleForFile()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>("~/"));
+            var bundles = GetBundles(new PerFileSource<Bundle>("~/"));
 
-            modules[0].Path.ShouldEqual("~/test");
+            bundles[0].Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void GetModulesReturnsModuleWithSingleAssetForTheFile()
+        public void GetBundlesReturnsBundleWithSingleAssetForTheFile()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>(""));
+            var bundles = GetBundles(new PerFileSource<Bundle>(""));
 
-            modules[0].Assets.Count.ShouldEqual(1);
+            bundles[0].Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
-        public void GetModulesReturnsModuleWithSingleAssetWithEmptySourceFilename()
+        public void GetBundlesReturnsBundleWithSingleAssetWithEmptySourceFilename()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>(""));
+            var bundles = GetBundles(new PerFileSource<Bundle>(""));
 
-            modules[0].Assets[0].SourceFilename.ShouldEqual("~/test.js");
+            bundles[0].Assets[0].SourceFilename.ShouldEqual("~/test.js");
         }
 
         [Fact]
-        public void WhenBasePathSet_ThenGetModulesReturnsModuleForFile()
+        public void WhenBasePathSet_ThenGetBundlesReturnsBundleForFile()
         {
             root.CreateSubdirectory("path");
             File.WriteAllText(Path.Combine(root.FullName, "path\\test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>("path"));
+            var bundles = GetBundles(new PerFileSource<Bundle>("path"));
 
-            modules[0].Path.ShouldEqual("~/path/test");
+            bundles[0].Path.ShouldEqual("~/path/test");
         }
 
         [Fact]
-        public void GivenFileInSubDirectory_ThenGetModulesReturnsModuleForFile()
+        public void GivenFileInSubDirectory_ThenGetBundlesReturnsBundleForFile()
         {
             root.CreateSubdirectory("path\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "path\\sub\\test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>("path"));
+            var bundles = GetBundles(new PerFileSource<Bundle>("path"));
 
-            modules[0].Path.ShouldEqual("~/path/sub/test");
-            modules[0].Assets[0].SourceFilename.ShouldEqual("~/path/sub/test.js");
+            bundles[0].Path.ShouldEqual("~/path/sub/test");
+            bundles[0].Assets[0].SourceFilename.ShouldEqual("~/path/sub/test.js");
         }
 
 
         [Fact]
-        public void GivenSearchingOnlyTopLevelAndFileInSubDirectory_ThenGetModulesIgnoresFile()
+        public void GivenSearchingOnlyTopLevelAndFileInSubDirectory_ThenGetBundlesIgnoresFile()
         {
             root.CreateSubdirectory("path\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "path\\sub\\test.js"), "");
 
-            var modules = GetModules(new PerFileSource<Module>("path")
+            var bundles = GetBundles(new PerFileSource<Bundle>("path")
             {
                 SearchOption = SearchOption.TopDirectoryOnly
             });
 
-            modules.Length.ShouldEqual(0);
+            bundles.Length.ShouldEqual(0);
         }
 
         [Fact]
-        public void WhenAFilePatternSet_ThenGetModulesReturnsModuleForEachFileMatchingFilePattern()
+        public void WhenAFilePatternSet_ThenGetBundlesReturnsBundleForEachFileMatchingFilePattern()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test1.js"), "");
             File.WriteAllText(Path.Combine(root.FullName, "test2.js"), "");
             File.WriteAllText(Path.Combine(root.FullName, "test3.txt"), "");
 
-            var modules = GetModules(
-                new PerFileSource<Module>("")
+            var bundles = GetBundles(
+                new PerFileSource<Bundle>("")
                 {
                     FilePattern = "*.js"
                 }
             );
 
-            modules.Length.ShouldEqual(2);
-            modules[0].Path.ShouldEqual("~/test1");
-            modules[1].Path.ShouldEqual("~/test2");
+            bundles.Length.ShouldEqual(2);
+            bundles[0].Path.ShouldEqual("~/test1");
+            bundles[1].Path.ShouldEqual("~/test2");
         }
 
         [Fact]
-        public void WhenAMultipleFilePatternSet_ThenGetModulesReturnsModuleForEachFileMatchingFilePattern()
+        public void WhenAMultipleFilePatternSet_ThenGetBundlesReturnsBundleForEachFileMatchingFilePattern()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test1.js"), "");
             File.WriteAllText(Path.Combine(root.FullName, "test2.coffee"), "");
 
-            var modules = GetModules(
-                new PerFileSource<Module>("")
+            var bundles = GetBundles(
+                new PerFileSource<Bundle>("")
                 {
                     FilePattern = "*.js;*.coffee"
                 }
             );
 
-            modules.Length.ShouldEqual(2);
-            modules[0].Path.ShouldEqual("~/test1");
-            modules[1].Path.ShouldEqual("~/test2");
+            bundles.Length.ShouldEqual(2);
+            bundles[0].Path.ShouldEqual("~/test1");
+            bundles[1].Path.ShouldEqual("~/test2");
         }
 
         [Fact]
-        public void WhenExcludeSet_ThenGetModulesDoesNotCreateModuleForFileThatMatchesRegex()
+        public void WhenExcludeSet_ThenGetBundlesDoesNotCreateBundleForFileThatMatchesRegex()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test1.js"), "");
 
-            var modules = GetModules(
-                new PerFileSource<Module>("")
+            var bundles = GetBundles(
+                new PerFileSource<Bundle>("")
                 {
                     Exclude = new Regex("test")
                 }
             );
 
-            modules.ShouldBeEmpty();
+            bundles.ShouldBeEmpty();
         }
 
         [Fact]
-        public void WhenGetModules_ThenModuleAssetCanReferenceOtherFiles()
+        public void WhenGetBundles_ThenBundleAssetCanReferenceOtherFiles()
         {
             File.WriteAllText(Path.Combine(root.FullName, "test1.js"), "");
-            var modules = GetModules(
-                new PerFileSource<Module>("")
+            var bundles = GetBundles(
+                new PerFileSource<Bundle>("")
             );
-            var asset = modules[0].Assets[0];
+            var asset = bundles[0].Assets[0];
 
             asset.AddReference("other.js", 1);
 
         }
 
-        Module[] GetModules(PerFileSource<Module> source)
+        Bundle[] GetBundles(PerFileSource<Bundle> source)
         {
             var application = StubApplication();
-            var factory = StubModuleFactory();
-            return source.GetModules(factory, application).ToArray();
+            var factory = StubBundleFactory();
+            return source.GetBundles(factory, application).ToArray();
         }
 
-        IModuleFactory<Module> StubModuleFactory()
+        IBundleFactory<Bundle> StubBundleFactory()
         {
-            var factory = new Mock<IModuleFactory<Module>>();
+            var factory = new Mock<IBundleFactory<Bundle>>();
             factory
-                .Setup(f => f.CreateModule(It.IsAny<string>()))
-                .Returns<string>(path => new Module(path));
+                .Setup(f => f.CreateBundle(It.IsAny<string>()))
+                .Returns<string>(path => new Bundle(path));
             return factory.Object;
         }
 

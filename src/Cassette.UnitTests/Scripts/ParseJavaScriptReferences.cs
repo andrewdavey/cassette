@@ -27,7 +27,7 @@ namespace Cassette.Scripts
     public class ParseJavaScriptReferences_Tests
     {
         [Fact]
-        public void ProcessAddsReferencesToJavaScriptAssetInModule()
+        public void ProcessAddsReferencesToJavaScriptAssetInBundle()
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
@@ -39,11 +39,11 @@ namespace Cassette.Scripts
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(javaScriptSource.AsStream());
-            var module = new Module("~");
-            module.Assets.Add(asset.Object);
+            var bundle = new Bundle("~");
+            bundle.Assets.Add(asset.Object);
 
             var processor = new ParseJavaScriptReferences();
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("/another2.js", 3));

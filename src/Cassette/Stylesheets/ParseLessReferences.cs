@@ -19,11 +19,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Text.RegularExpressions;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class ParseLessReferences : LineBasedAssetReferenceParser<Module>
+    public class ParseLessReferences : LineBasedAssetReferenceParser<Bundle>
     {
         public ParseLessReferences() 
             : base("less", ReferenceRegex)

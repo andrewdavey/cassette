@@ -21,7 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using Moq;
 using Xunit;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class MinifyAssets_Tests
     {
@@ -35,13 +35,13 @@ namespace Cassette.ModuleProcessing
         readonly Mock<IAssetTransformer> minifier;
 
         [Fact]
-        public void ProcessAddsAssetMinifierToAssetInModule()
+        public void ProcessAddsAssetMinifierToAssetInBundle()
         {
-            var module = new Module("~");
+            var bundle = new Bundle("~");
             var asset = new Mock<IAsset>();
-            module.Assets.Add(asset.Object);
+            bundle.Assets.Add(asset.Object);
 
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
             asset.Verify(a => a.AddAssetTransformer(minifier.Object));
         }

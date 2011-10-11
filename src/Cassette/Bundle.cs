@@ -22,15 +22,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Cassette.Utilities;
 
 namespace Cassette
 {
     [System.Diagnostics.DebuggerDisplay("{Path}")]
-    public class Module : IDisposable
+    public class Bundle : IDisposable
     {
-        public Module(string applicationRelativePath)
+        public Bundle(string applicationRelativePath)
         {
             if (applicationRelativePath.IsUrl())
             {
@@ -40,15 +40,15 @@ namespace Cassette
             {
                 if (applicationRelativePath.StartsWith("~") == false)
                 {
-                    throw new ArgumentException("Module path must be application relative (starting with a '~').");
+                    throw new ArgumentException("Bundle path must be application relative (starting with a '~').");
                 }
                 path = PathUtilities.NormalizePath(applicationRelativePath);
             }
         }
 
-        protected Module()
+        protected Bundle()
         {
-            // Protected constructor to allow InlineScriptModule to be created without a path.
+            // Protected constructor to allow InlineScriptBundle to be created without a path.
         }
 
         readonly string path;
@@ -80,7 +80,7 @@ namespace Cassette
                 }
                 else
                 {
-                    throw new InvalidOperationException("Module Hash is only available when the module contains a single asset.");
+                    throw new InvalidOperationException("Bundle Hash is only available when the bundle contains a single asset.");
                 }
             }
         }
@@ -134,7 +134,7 @@ namespace Cassette
 
         public virtual bool ContainsPath(string path)
         {
-            return new ModuleContainsPathPredicate().ModuleContainsPath(path, this);
+            return new BundleContainsPathPredicate().BundleContainsPath(path, this);
         }
 
         public IAsset FindAssetByPath(string path)
@@ -169,7 +169,7 @@ namespace Cassette
             var graph = new Graph<IAsset>(
                 Assets,
                 asset => asset.References
-                    .Where(reference => reference.Type == AssetReferenceType.SameModule)
+                    .Where(reference => reference.Type == AssetReferenceType.SameBundle)
                     .Select(reference => assetsByFilename[reference.Path])
             );
             var cycles = graph.FindCycles().ToArray();

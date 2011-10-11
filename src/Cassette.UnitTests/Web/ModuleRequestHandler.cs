@@ -31,7 +31,7 @@ using Xunit;
 
 namespace Cassette.Web
 {
-    public class ModuleRequestHandler_Tests : IDisposable
+    public class BundleRequestHandler_Tests : IDisposable
     {
         protected Mock<HttpContextBase> httpContext;
         protected Mock<HttpRequestBase> request;
@@ -41,9 +41,9 @@ namespace Cassette.Web
         protected RouteData routeData;
         protected RequestContext requestContext;
         protected Stream outputStream;
-        protected Mock<IModuleContainer<Module>> container;
+        protected Mock<IBundleContainer<Bundle>> container;
 
-        public ModuleRequestHandler_Tests()
+        public BundleRequestHandler_Tests()
         {
             httpContext = new Mock<HttpContextBase>();
             request = new Mock<HttpRequestBase>();
@@ -62,28 +62,28 @@ namespace Cassette.Web
 
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            container = new Mock<IModuleContainer<Module>>();
+            container = new Mock<IBundleContainer<Bundle>>();
         }
 
-        protected ModuleRequestHandler<Module> CreateRequestHandler(string modulePath)
+        protected BundleRequestHandler<Bundle> CreateRequestHandler(string bundlePath)
         {
-            routeData.Values.Add("path", modulePath);
-            return new ModuleRequestHandler<Module>(
+            routeData.Values.Add("path", bundlePath);
+            return new BundleRequestHandler<Bundle>(
                 container.Object,
                 requestContext
             );
         }
 
-        protected void SetupTestModule()
+        protected void SetupTestBundle()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.OpenStream())
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            container.Setup(c => c.FindModuleContainingPath("~/test"))
-                        .Returns(module);
+            bundle.Assets.Add(asset.Object);
+            container.Setup(c => c.FindBundleContainingPath("~/test"))
+                        .Returns(bundle);
         }
 
         void IDisposable.Dispose()
@@ -92,18 +92,18 @@ namespace Cassette.Web
         }
     }
 
-    public class GivenModuleExists_WhenProcessRequest : ModuleRequestHandler_Tests
+    public class GivenBundleExists_WhenProcessRequest : BundleRequestHandler_Tests
     {
-        public GivenModuleExists_WhenProcessRequest()
+        public GivenBundleExists_WhenProcessRequest()
         {
-            var module = new Module("~/test") { ContentType = "expected-content-type" };
+            var bundle = new Bundle("~/test") { ContentType = "expected-content-type" };
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.OpenStream())
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            container.Setup(c => c.FindModuleContainingPath("~/test"))
-                        .Returns(module);
+            bundle.Assets.Add(asset.Object);
+            container.Setup(c => c.FindBundleContainingPath("~/test"))
+                        .Returns(bundle);
 
             var handler = CreateRequestHandler("test_010203");
             handler.ProcessRequest();
@@ -112,14 +112,14 @@ namespace Cassette.Web
         readonly DateTime start = DateTime.UtcNow;
 
         [Fact]
-        public void ModuleAssetContentReturned()
+        public void BundleAssetContentReturned()
         {
             outputStream.Position = 0;
             outputStream.ReadToEnd().ShouldEqual("asset-content");
         }
 
         [Fact]
-        public void ContentTypeIsTheModuleContentType()
+        public void ContentTypeIsTheBundleContentType()
         {
             response.VerifySet(r => r.ContentType = "expected-content-type");
         }
@@ -144,30 +144,30 @@ namespace Cassette.Web
         }
     }
 
-    public class GivenModulePathIsMissingHashPostfix_WhenProcessRequest : ModuleRequestHandler_Tests
+    public class GivenBundlePathIsMissingHashPostfix_WhenProcessRequest : BundleRequestHandler_Tests
     {
-        public GivenModulePathIsMissingHashPostfix_WhenProcessRequest()
+        public GivenBundlePathIsMissingHashPostfix_WhenProcessRequest()
         {
-            SetupTestModule();
+            SetupTestBundle();
 
             var handler = CreateRequestHandler("test");
             handler.ProcessRequest();
         }
 
         [Fact]
-        public void ModuleAssetContentReturned()
+        public void BundleAssetContentReturned()
         {
             outputStream.Position = 0;
             outputStream.ReadToEnd().ShouldEqual("asset-content");
         }
     }
 
-    public class GivenModuleDoesNotExist : ModuleRequestHandler_Tests
+    public class GivenBundleDoesNotExist : BundleRequestHandler_Tests
     {
         [Fact]
         public void HandlerReturns404()
         {
-            var handler = CreateRequestHandler("scripts/unknown-module");
+            var handler = CreateRequestHandler("scripts/unknown-bundle");
 
             handler.ProcessRequest();
 
@@ -175,11 +175,11 @@ namespace Cassette.Web
         }
     }
 
-    public class GivenModuleExistsAndIfNonMatchHeaderIsEqualAssetHash_WhenProcessRequest : ModuleRequestHandler_Tests
+    public class GivenBundleExistsAndIfNonMatchHeaderIsEqualAssetHash_WhenProcessRequest : BundleRequestHandler_Tests
     {
-        public GivenModuleExistsAndIfNonMatchHeaderIsEqualAssetHash_WhenProcessRequest()
+        public GivenBundleExistsAndIfNonMatchHeaderIsEqualAssetHash_WhenProcessRequest()
         {
-            SetupTestModule();
+            SetupTestBundle();
 
             requestHeaders["If-None-Match"] = "\"010203\"";
             var handler = CreateRequestHandler("test");
@@ -193,11 +193,11 @@ namespace Cassette.Web
         }
     }
 
-    public class GivenModuleExistsAndIfNonMatchHeaderIsNotEqualAssetHash_WhenProcessRequest : ModuleRequestHandler_Tests
+    public class GivenBundleExistsAndIfNonMatchHeaderIsNotEqualAssetHash_WhenProcessRequest : BundleRequestHandler_Tests
     {
-        public GivenModuleExistsAndIfNonMatchHeaderIsNotEqualAssetHash_WhenProcessRequest()
+        public GivenBundleExistsAndIfNonMatchHeaderIsNotEqualAssetHash_WhenProcessRequest()
         {
-            SetupTestModule();
+            SetupTestBundle();
 
             requestHeaders["If-None-Match"] = "xxxxxx";
             var handler = CreateRequestHandler("test");
@@ -205,21 +205,21 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void ModuleAssetContentReturned()
+        public void BundleAssetContentReturned()
         {
             outputStream.Position = 0;
             (outputStream.Length > 0).ShouldBeTrue();
         }
     }
 
-    public class GivenRequestDeflateEncoding_WhenProcessRequest : ModuleRequestHandler_Tests
+    public class GivenRequestDeflateEncoding_WhenProcessRequest : BundleRequestHandler_Tests
     {
         public GivenRequestDeflateEncoding_WhenProcessRequest()
         {
             requestHeaders.Add("Accept-Encoding", "deflate");
             response.SetupGet(r => r.Filter).Returns(Stream.Null);
 
-            SetupTestModule();
+            SetupTestBundle();
 
             var handler = CreateRequestHandler("test");
             handler.ProcessRequest();
@@ -244,14 +244,14 @@ namespace Cassette.Web
         }
     }
 
-    public class GivenRequestGZipEncoding_WhenProcessRequest : ModuleRequestHandler_Tests
+    public class GivenRequestGZipEncoding_WhenProcessRequest : BundleRequestHandler_Tests
     {
         public GivenRequestGZipEncoding_WhenProcessRequest()
         {
             requestHeaders.Add("Accept-Encoding", "gzip");
             response.SetupGet(r => r.Filter).Returns(Stream.Null);
 
-            SetupTestModule();
+            SetupTestBundle();
 
             var handler = CreateRequestHandler("test");
             handler.ProcessRequest();
@@ -276,14 +276,14 @@ namespace Cassette.Web
         }
     }
 
-    public class GivenRequestWithUnrecognizedEncoding_WhenProcessRequest : ModuleRequestHandler_Tests
+    public class GivenRequestWithUnrecognizedEncoding_WhenProcessRequest : BundleRequestHandler_Tests
     {
         public GivenRequestWithUnrecognizedEncoding_WhenProcessRequest()
         {
             requestHeaders.Add("Accept-Encoding", "unknown");
             response.SetupGet(r => r.Filter).Returns(Stream.Null);
 
-            SetupTestModule();
+            SetupTestBundle();
 
             var handler = CreateRequestHandler("test");
             handler.ProcessRequest();
@@ -296,7 +296,7 @@ namespace Cassette.Web
         }
     }
 
-    public class ModuleRequestHandler_OcdTests : ModuleRequestHandler_Tests
+    public class BundleRequestHandler_OcdTests : BundleRequestHandler_Tests
     {
         [Fact]
         public void IsReusableIsFalse()

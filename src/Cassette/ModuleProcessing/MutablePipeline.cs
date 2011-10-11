@@ -22,26 +22,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public abstract class MutablePipeline<T> : IModuleProcessor<T>
-        where T : Module
+    public abstract class MutablePipeline<T> : IBundleProcessor<T>
+        where T : Bundle
     {
-        readonly List<Func<IEnumerable<IModuleProcessor<T>>, IEnumerable<IModuleProcessor<T>>>> pipelineModifiers = new List<Func<IEnumerable<IModuleProcessor<T>>, IEnumerable<IModuleProcessor<T>>>>();
+        readonly List<Func<IEnumerable<IBundleProcessor<T>>, IEnumerable<IBundleProcessor<T>>>> pipelineModifiers = new List<Func<IEnumerable<IBundleProcessor<T>>, IEnumerable<IBundleProcessor<T>>>>();
 
-        public void Process(T module, ICassetteApplication application)
+        public void Process(T bundle, ICassetteApplication application)
         {
             var steps = pipelineModifiers.Aggregate(
-                CreatePipeline(module, application),
+                CreatePipeline(bundle, application),
                 (pipeline, modify) => modify(pipeline)
             );
             foreach (var step in steps)
             {
-                step.Process(module, application);
+                step.Process(bundle, application);
             }
         }
 
-        public MutablePipeline<T> Prepend(IModuleProcessor<T> step)
+        public MutablePipeline<T> Prepend(IBundleProcessor<T> step)
         {
             pipelineModifiers.Add(
                 steps => (new[] { step }).Concat(steps)
@@ -49,7 +49,7 @@ namespace Cassette.ModuleProcessing
             return this;
         }
 
-        public MutablePipeline<T> Append(IModuleProcessor<T> step)
+        public MutablePipeline<T> Append(IBundleProcessor<T> step)
         {
             pipelineModifiers.Add(
                 steps => steps.Concat(new[] { step })
@@ -58,7 +58,7 @@ namespace Cassette.ModuleProcessing
         }
 
         public MutablePipeline<T> Remove<TStep>()
-            where TStep : IModuleProcessor<T>
+            where TStep : IBundleProcessor<T>
         {
             pipelineModifiers.Add(
                 steps => steps.Where(step => (step is TStep) == false)
@@ -66,8 +66,8 @@ namespace Cassette.ModuleProcessing
             return this;
         }
 
-        public MutablePipeline<T> Replace<TStep>(IModuleProcessor<T> newStep)
-            where TStep : IModuleProcessor<T>
+        public MutablePipeline<T> Replace<TStep>(IBundleProcessor<T> newStep)
+            where TStep : IBundleProcessor<T>
         {
             pipelineModifiers.Add(
                 steps => steps.Select(
@@ -77,8 +77,8 @@ namespace Cassette.ModuleProcessing
             return this;
         }
 
-        public MutablePipeline<T> InsertAfter<TStep>(IModuleProcessor<T> newStep)
-            where TStep : IModuleProcessor<T>
+        public MutablePipeline<T> InsertAfter<TStep>(IBundleProcessor<T> newStep)
+            where TStep : IBundleProcessor<T>
         {
             pipelineModifiers.Add(
                 steps => steps.SelectMany(
@@ -90,8 +90,8 @@ namespace Cassette.ModuleProcessing
             return this;
         }
 
-        public MutablePipeline<T> InsertBefore<TStep>(IModuleProcessor<T> newStep)
-            where TStep : IModuleProcessor<T>
+        public MutablePipeline<T> InsertBefore<TStep>(IBundleProcessor<T> newStep)
+            where TStep : IBundleProcessor<T>
         {
             pipelineModifiers.Add(
                 steps => steps.SelectMany(
@@ -104,7 +104,7 @@ namespace Cassette.ModuleProcessing
         }
 
         public MutablePipeline<T> Update<TStep>(Action<TStep> update)
-            where TStep : IModuleProcessor<T>
+            where TStep : IBundleProcessor<T>
         {
             pipelineModifiers.Add(
                 steps =>
@@ -119,7 +119,7 @@ namespace Cassette.ModuleProcessing
             return this;
         }
 
-        protected abstract IEnumerable<IModuleProcessor<T>> CreatePipeline(T module, ICassetteApplication application);
+        protected abstract IEnumerable<IBundleProcessor<T>> CreatePipeline(T bundle, ICassetteApplication application);
     }
 }
 

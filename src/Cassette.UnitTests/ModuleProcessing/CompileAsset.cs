@@ -25,7 +25,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class CompileAsset_Tests
     {

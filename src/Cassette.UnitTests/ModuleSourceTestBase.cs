@@ -30,20 +30,20 @@ namespace Cassette
     // to see real IO in a unit test, it's still very fast for our purposes. It's also
     // much easier than mocking out the file system!
 
-    public abstract class ModuleSourceTestBase : IDisposable
+    public abstract class BundleSourceTestBase : IDisposable
     {
-        public ModuleSourceTestBase()
+        public BundleSourceTestBase()
         {
             root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(root);
 
             application = StubApplication();
-            moduleFactory = StubModuleFactory();
+            bundleFactory = StubBundleFactory();
         }
 
         protected readonly string root;
         protected readonly ICassetteApplication application;
-        protected readonly IModuleFactory<Module> moduleFactory;
+        protected readonly IBundleFactory<Bundle> bundleFactory;
 
         protected void GivenFiles(params string[] filenames)
         {
@@ -66,11 +66,11 @@ namespace Cassette
             return mockApplication.Object;
         }
 
-        IModuleFactory<Module> StubModuleFactory()
+        IBundleFactory<Bundle> StubBundleFactory()
         {
-            var factory = new Mock<IModuleFactory<Module>>();
-            factory.Setup(f => f.CreateModule(It.IsAny<string>()))
-                   .Returns<string>(p => new Module(p));
+            var factory = new Mock<IBundleFactory<Bundle>>();
+            factory.Setup(f => f.CreateBundle(It.IsAny<string>()))
+                   .Returns<string>(p => new Bundle(p));
             return factory.Object;
         }
 

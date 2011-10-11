@@ -19,15 +19,15 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplatePipeline : MutablePipeline<HtmlTemplateModule>
+    public class HtmlTemplatePipeline : MutablePipeline<HtmlTemplateBundle>
     {
-        protected override IEnumerable<IModuleProcessor<HtmlTemplateModule>> CreatePipeline(HtmlTemplateModule module, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, ICassetteApplication application)
         {
-            yield return new AssignRenderer(new InlineHtmlTemplateModuleRenderer());
+            yield return new AssignRenderer(new InlineHtmlTemplateBundleRenderer());
         }
     }
 }

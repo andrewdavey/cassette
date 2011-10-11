@@ -25,15 +25,15 @@ using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class ExternalStylesheetModule : StylesheetModule, IModuleSource<StylesheetModule>, IExternalModule
+    public class ExternalStylesheetBundle : StylesheetBundle, IBundleSource<StylesheetBundle>, IExternalBundle
     {
-        public ExternalStylesheetModule(string url)
+        public ExternalStylesheetBundle(string url)
             : base(url)
         {
             this.url = url;
         }
 
-        public ExternalStylesheetModule(string name, string url) 
+        public ExternalStylesheetBundle(string name, string url) 
             : base(PathUtilities.AppRelative(name))
         {
             this.url = url;
@@ -63,7 +63,7 @@ namespace Cassette.Stylesheets
             return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
 
-        IEnumerable<StylesheetModule> IModuleSource<StylesheetModule>.GetModules(IModuleFactory<StylesheetModule> moduleFactory, ICassetteApplication application)
+        IEnumerable<StylesheetBundle> IBundleSource<StylesheetBundle>.GetBundles(IBundleFactory<StylesheetBundle> bundleFactory, ICassetteApplication application)
         {
             yield return this;
         }

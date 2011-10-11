@@ -26,14 +26,14 @@ namespace Cassette.Web
 {
     public class AssetRequestHandler : IHttpHandler
     {
-        public AssetRequestHandler(RequestContext requestContext, Func<string, Module> getModuleForPath)
+        public AssetRequestHandler(RequestContext requestContext, Func<string, Bundle> getBundleForPath)
         {
             this.requestContext = requestContext;
-            this.getModuleForPath = getModuleForPath;
+            this.getBundleForPath = getBundleForPath;
         }
 
         readonly RequestContext requestContext;
-        readonly Func<string, Module> getModuleForPath;
+        readonly Func<string, Bundle> getBundleForPath;
 
         public bool IsReusable
         {
@@ -45,15 +45,15 @@ namespace Cassette.Web
             var path = "~/" + requestContext.RouteData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             var response = requestContext.HttpContext.Response;
-            var module = getModuleForPath(path);
-            if (module == null)
+            var bundle = getBundleForPath(path);
+            if (bundle == null)
             {
-                Trace.Source.TraceInformation("Module not found for asset path \"{0}\".", path);
+                Trace.Source.TraceInformation("Bundle not found for asset path \"{0}\".", path);
                 NotFound(response);
                 return;
             }
             
-            var asset = module.FindAssetByPath(path);
+            var asset = bundle.FindAssetByPath(path);
             if (asset == null)
             {
                 Trace.Source.TraceInformation("Asset not found \"{0}\".", path);
@@ -61,12 +61,12 @@ namespace Cassette.Web
                 return;
             }
 
-            SendAsset(response, module, asset);
+            SendAsset(response, bundle, asset);
         }
 
-        void SendAsset(HttpResponseBase response, Module module, IAsset asset)
+        void SendAsset(HttpResponseBase response, Bundle bundle, IAsset asset)
         {
-            response.ContentType = module.ContentType;
+            response.ContentType = bundle.ContentType;
             using (var stream = asset.OpenStream())
             {
                 stream.CopyTo(response.OutputStream);

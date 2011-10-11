@@ -23,7 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Xml.Linq;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Moq;
 using Should;
 using Xunit;

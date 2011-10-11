@@ -24,14 +24,14 @@ using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collectio
 
 namespace Cassette.Scripts
 {
-    public class PageDataScriptModule : InlineScriptModule
+    public class PageDataScriptBundle : InlineScriptBundle
     {
-        public PageDataScriptModule(string globalVariable, object data)
+        public PageDataScriptBundle(string globalVariable, object data)
             : this(globalVariable, CreateDictionaryOfProperties(data))
         {
         }
 
-        public PageDataScriptModule(string globalVariable, JavaScriptObject data)
+        public PageDataScriptBundle(string globalVariable, JavaScriptObject data)
             : base(BuildScript(globalVariable, data))
         {
         }

@@ -18,11 +18,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class CompileCoffeeScript : ModuleProcessorOfAssetsMatchingFileExtension<Module>
+    public class CompileCoffeeScript : BundleProcessorOfAssetsMatchingFileExtension<Bundle>
     {
         public CompileCoffeeScript(ICompiler coffeeScriptCompiler)
             : base("coffee")
@@ -32,7 +32,7 @@ namespace Cassette.Scripts
 
         readonly ICompiler coffeeScriptCompiler;
 
-        protected override void Process(IAsset asset, Module module)
+        protected override void Process(IAsset asset, Bundle bundle)
         {
             asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler));
         }

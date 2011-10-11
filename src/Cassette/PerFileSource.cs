@@ -27,8 +27,8 @@ using System.IO;
 
 namespace Cassette
 {
-    public class PerFileSource<T> : IModuleSource<T>
-        where T : Module
+    public class PerFileSource<T> : IBundleSource<T>
+        where T : Bundle
     {
         public PerFileSource(string basePath)
         {
@@ -55,13 +55,13 @@ namespace Cassette
 
         public SearchOption SearchOption { get; set; }
 
-        public IEnumerable<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
+        public IEnumerable<T> GetBundles(IBundleFactory<T> bundleFactory, ICassetteApplication application)
         {
             var directory = GetDirectoryForBasePath(application);
             var filenames = GetFilenames(directory);
 
             return from filename in filenames
-                   select CreateModule(filename, moduleFactory, directory);
+                   select CreateBundle(filename, bundleFactory, directory);
         }
 
         IDirectory GetDirectoryForBasePath(ICassetteApplication application)
@@ -93,17 +93,17 @@ namespace Cassette
             return filenames;
         }
 
-        T CreateModule(string filename, IModuleFactory<T> moduleFactory, IDirectory directory)
+        T CreateBundle(string filename, IBundleFactory<T> bundleFactory, IDirectory directory)
         {
             var name = RemoveFileExtension(filename);
-            var module = moduleFactory.CreateModule(PathUtilities.CombineWithForwardSlashes(basePath, name));
+            var bundle = bundleFactory.CreateBundle(PathUtilities.CombineWithForwardSlashes(basePath, name));
             var asset = new Asset(
                 PathUtilities.CombineWithForwardSlashes(basePath, filename),
-                module,
+                bundle,
                 directory.GetFile(filename)
             );
-            module.AddAssets(new[] { asset }, true);
-            return module;
+            bundle.AddAssets(new[] { asset }, true);
+            return bundle;
         }
 
         string RemoveFileExtension(string filename)

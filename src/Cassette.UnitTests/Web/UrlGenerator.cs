@@ -28,13 +28,13 @@ using System;
 
 namespace Cassette.Web
 {
-    public class UrlGenerator_CreateModuleUrl_Tests
+    public class UrlGenerator_CreateBundleUrl_Tests
     {
         [Fact]
         public void UrlStartsWithApplicationVirtualDirectory()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(StubScriptModule("~/test"));
+            var url = app.CreateBundleUrl(StubScriptBundle("~/test"));
             url.ShouldStartWith("/");
         }
 
@@ -42,7 +42,7 @@ namespace Cassette.Web
         public void AppendsSlashToVirtualDirectoryWhenMissingFromEnd()
         {
             var app = new UrlGenerator("/myapp");
-            var url = app.CreateModuleUrl(StubScriptModule("~/test"));
+            var url = app.CreateBundleUrl(StubScriptBundle("~/test"));
             url.ShouldStartWith("/myapp/");
         }
 
@@ -50,66 +50,66 @@ namespace Cassette.Web
         public void Inserts_assetsPrefix()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(StubScriptModule("~/test"));
+            var url = app.CreateBundleUrl(StubScriptBundle("~/test"));
             url.ShouldStartWith("/_assets/");
         }
 
         [Fact]
-        public void InsertsLowercasedPluralisedScriptModuleTypeName()
+        public void InsertsLowercasedPluralisedScriptBundleTypeName()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(StubScriptModule("~/test"));
+            var url = app.CreateBundleUrl(StubScriptBundle("~/test"));
             url.ShouldStartWith("/_assets/scripts/");
         }
 
         [Fact]
-        public void InsertsLowercasedPluralisedStylesheetModuleTypeName()
+        public void InsertsLowercasedPluralisedStylesheetBundleTypeName()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(StubStylesheetModule("~/test"));
+            var url = app.CreateBundleUrl(StubStylesheetBundle("~/test"));
             url.ShouldStartWith("/_assets/stylesheets/");
         }
 
         [Fact]
-        public void InsertsModuleDirectory()
+        public void InsertsBundleDirectory()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(StubScriptModule("~/test"));
+            var url = app.CreateBundleUrl(StubScriptBundle("~/test"));
             url.ShouldStartWith("/_assets/scripts/test");
         }
 
         [Fact]
-        public void InsertsModuleDirectoryWithBackSlashesConvertedToForwardSlashes()
+        public void InsertsBundleDirectoryWithBackSlashesConvertedToForwardSlashes()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(StubScriptModule("~\\test\\foo\\bar"));
+            var url = app.CreateBundleUrl(StubScriptBundle("~\\test\\foo\\bar"));
             url.ShouldStartWith("/_assets/scripts/test/foo/bar");
         }
 
         [Fact]
-        public void AppendsModuleHashHexString()
+        public void AppendsBundleHashHexString()
         {
             var app = new UrlGenerator("/");
-            var url = app.CreateModuleUrl(StubScriptModule("~\\test\\foo\\bar"));
+            var url = app.CreateBundleUrl(StubScriptBundle("~\\test\\foo\\bar"));
             url.ShouldEqual("/_assets/scripts/test/foo/bar_010203");
         }
 
-        ScriptModule StubScriptModule(string path)
+        ScriptBundle StubScriptBundle(string path)
         {
-            var module = new ScriptModule(path);
+            var bundle = new ScriptBundle(path);
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            return module;
+            bundle.Assets.Add(asset.Object);
+            return bundle;
         }
 
-        StylesheetModule StubStylesheetModule(string path)
+        StylesheetBundle StubStylesheetBundle(string path)
         {
-            var module = new StylesheetModule(path);
+            var bundle = new StylesheetBundle(path);
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            module.Assets.Add(asset.Object);
-            return module;
+            bundle.Assets.Add(asset.Object);
+            return bundle;
         }
 
     }
@@ -141,7 +141,7 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void InsertsModuleDirectory()
+        public void InsertsBundleDirectory()
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("~/test/asset.js");
@@ -153,7 +153,7 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void InsertsModuleDirectoryWithBackSlashesConvertedToForwardSlashes()
+        public void InsertsBundleDirectoryWithBackSlashesConvertedToForwardSlashes()
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("~/test/foo/bar/asset.js");
@@ -204,13 +204,13 @@ namespace Cassette.Web
         [Fact]
         public void CreateAssetCompileUrlReturnsCompileUrl()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("~/test/asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
             var app = new UrlGenerator("/");
 
-            var url = app.CreateAssetCompileUrl(module, asset.Object);
+            var url = app.CreateAssetCompileUrl(bundle, asset.Object);
 
             url.ShouldEqual("/_assets/get/test/asset.coffee?01020f10");
         }
@@ -256,34 +256,34 @@ namespace Cassette.Web
     public class UrlGenerator_RouteUrl_Tests
     {
         [Fact]
-        public void GetModuleRouteUrl_InsertsConventionalScriptModuleName()
+        public void GetBundleRouteUrl_InsertsConventionalScriptBundleName()
         {
             var app = new UrlGenerator("/");
-            var url = app.GetModuleRouteUrl<ScriptModule>();
+            var url = app.GetBundleRouteUrl<ScriptBundle>();
             url.ShouldEqual("_assets/scripts/{*path}");
         }
 
         [Fact]
-        public void GetModuleRouteUrl_InsertsConventionalExternalScriptModuleName()
+        public void GetBundleRouteUrl_InsertsConventionalExternalScriptBundleName()
         {
             var app = new UrlGenerator("/");
-            var url = app.GetModuleRouteUrl<ExternalScriptModule>();
+            var url = app.GetBundleRouteUrl<ExternalScriptBundle>();
             url.ShouldEqual("_assets/scripts/{*path}");
         }
 
         [Fact]
-        public void GetModuleRouteUrl_InsertsConventionalStylesheetModuleName()
+        public void GetBundleRouteUrl_InsertsConventionalStylesheetBundleName()
         {
             var app = new UrlGenerator("/");
-            var url = app.GetModuleRouteUrl<StylesheetModule>();
+            var url = app.GetBundleRouteUrl<StylesheetBundle>();
             url.ShouldEqual("_assets/stylesheets/{*path}");
         }
 
         [Fact]
-        public void GetModuleRouteUrl_InsertsConventionalHtmlTemplateModuleName()
+        public void GetBundleRouteUrl_InsertsConventionalHtmlTemplateBundleName()
         {
             var app = new UrlGenerator("/");
-            var url = app.GetModuleRouteUrl<HtmlTemplateModule>();
+            var url = app.GetBundleRouteUrl<HtmlTemplateBundle>();
             url.ShouldEqual("_assets/htmltemplates/{*path}");
         }
 

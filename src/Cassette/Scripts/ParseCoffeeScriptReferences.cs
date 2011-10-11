@@ -19,11 +19,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Text.RegularExpressions;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ParseCoffeeScriptReferences : LineBasedAssetReferenceParser<Module>
+    public class ParseCoffeeScriptReferences : LineBasedAssetReferenceParser<Bundle>
     {
         public ParseCoffeeScriptReferences() : base("coffee", ReferenceRegex)
         {

@@ -28,10 +28,10 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public abstract class FileSystemModuleSource<T> : IModuleSource<T>
-        where T : Module
+    public abstract class FileSystemBundleSource<T> : IBundleSource<T>
+        where T : Bundle
     {
-        protected FileSystemModuleSource()
+        protected FileSystemBundleSource()
         {
             SearchOption = SearchOption.AllDirectories;
         }
@@ -43,96 +43,102 @@ namespace Cassette
         
         public Regex Exclude { get; set; }
 
-        public Action<T> CustomizeModule { get; set; }
+        public Action<T> CustomizeBundle { get; set; }
 
         /// <summary>
         /// Defaults to <see cref="System.IO.SearchOption.AllDirectories"/>.
         /// </summary>
         public SearchOption SearchOption { get; set; }
 
-        public IEnumerable<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application)
+        public IEnumerable<T> GetBundles(IBundleFactory<T> bundleFactory, ICassetteApplication application)
         {
             var root = application.RootDirectory;
 
-            var modules = (
-                from subDirectoryName in GetModuleDirectoryPaths(application)
+            var bundles = (
+                from subDirectoryName in GetBundleDirectoryPaths(application)
                 where IsNotHidden(root, subDirectoryName)
-                select CreateModule(
+                select CreateBundle(
                     subDirectoryName,
                     root.GetDirectory(subDirectoryName.Substring(2), false),
-                    moduleFactory
+                    bundleFactory
                 )
             ).ToArray();
 
-            CustomizeModules(modules);
-            return modules;
+            CustomizeBundles(bundles);
+            return bundles;
         }
 
-        void CustomizeModules(IEnumerable<T> modules)
+        void CustomizeBundles(IEnumerable<T> bundles)
         {
-            if (CustomizeModule == null) return;
+            if (CustomizeBundle == null) return;
 
-            foreach (var module in modules)
+            foreach (var bundle in bundles)
             {
-                CustomizeModule(module);
+                CustomizeBundle(bundle);
             }
         }
 
-        protected abstract IEnumerable<string> GetModuleDirectoryPaths(ICassetteApplication application);
+        protected abstract IEnumerable<string> GetBundleDirectoryPaths(ICassetteApplication application);
 
         bool IsNotHidden(IDirectory directory, string path)
         {
             return directory.GetAttributes(path.Substring(2)).HasFlag(FileAttributes.Hidden) == false;
         }
 
-        T CreateModule(string directoryName, IDirectory directory, IModuleFactory<T> moduleFactory)
+        T CreateBundle(string directoryName, IDirectory directory, IBundleFactory<T> bundleFactory)
         {
-            var descriptor = GetModuleDescriptor(directory);
+            var descriptor = GetBundleDescriptor(directory);
 
             if (descriptor.ExternalUrl != null)
             {
-                return moduleFactory.CreateExternalModule(directoryName, descriptor);
+                return bundleFactory.CreateExternalBundle(directoryName, descriptor);
             }
             else
             {
-                var module = moduleFactory.CreateModule(directoryName);
+                var bundle = bundleFactory.CreateBundle(directoryName);
                 if (descriptor.References.Any())
                 {
-                    module.AddReferences(descriptor.References);
+                    bundle.AddReferences(descriptor.References);
                 }
-                module.AddAssets(
+                bundle.AddAssets(
                     descriptor.AssetFilenames.Select(
                         assetFilename => new Asset(
-                            PathUtilities.CombineWithForwardSlashes(module.Path, assetFilename),
-                            module,
+                            PathUtilities.CombineWithForwardSlashes(bundle.Path, assetFilename),
+                            bundle,
                             directory.GetFile(assetFilename)
                         )
                     ),
                     descriptor.AssetsSorted
                 );
 
-                return module;
+                return bundle;
             }
         }
 
-        ModuleDescriptor GetModuleDescriptor(IDirectory directory)
+        BundleDescriptor GetBundleDescriptor(IDirectory directory)
         {
-            var moduleDescriptorFile = directory.GetFile("module.txt");
-            if (moduleDescriptorFile.Exists)
+            // TODO: Remove the legacy "module.txt" support.
+            var bundleDescriptorFile = directory.GetFile("bundle.txt");
+            var legacyBundleDescriptorFile = directory.GetFile("module.txt");
+            if (bundleDescriptorFile.Exists)
             {
-                return GetAssetFilenamesFromModuleDescriptorFile(moduleDescriptorFile);
+                return GetAssetFilenamesFromBundleDescriptorFile(bundleDescriptorFile);
+            }
+            else if (legacyBundleDescriptorFile.Exists)
+            {
+                return GetAssetFilenamesFromBundleDescriptorFile(legacyBundleDescriptorFile);
             }
             else
             {
-                return new ModuleDescriptor(
+                return new BundleDescriptor(
                     GetAssetFilenamesByConfiguration(directory)
                 );
             }
         }
 
-        ModuleDescriptor GetAssetFilenamesFromModuleDescriptorFile(IFile moduleDescriptorFile)
+        BundleDescriptor GetAssetFilenamesFromBundleDescriptorFile(IFile bundleDescriptorFile)
         {
-            var reader = new ModuleDescriptorReader(moduleDescriptorFile, GetAssetFilenamesByConfiguration(moduleDescriptorFile.Directory));
+            var reader = new BundleDescriptorReader(bundleDescriptorFile, GetAssetFilenamesByConfiguration(bundleDescriptorFile.Directory));
             return reader.Read();
         }
 
@@ -152,7 +158,8 @@ namespace Cassette
             {
                 filenames = filenames.Where(f => Exclude.IsMatch(f) == false);
             }
-            return filenames.Except(new[] {"module.txt"}).ToArray();
+            // TODO: Remove the legacy "module.txt" support.
+            return filenames.Except(new[] { "bundle.txt", "module.txt" }).ToArray();
         }
 
         protected string EnsureApplicationRelativePath(string path)

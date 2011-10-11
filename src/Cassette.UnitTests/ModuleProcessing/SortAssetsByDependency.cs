@@ -23,87 +23,87 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class SortAssetsByDependency_Tests
     {
         [Fact]
-        public void GivenTwoAssetsWhereADependsOnB_WhenSorted_ThenBIsBeforeAInModule()
+        public void GivenTwoAssetsWhereADependsOnB_WhenSorted_ThenBIsBeforeAInBundle()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
-            module.Assets.Add(assetA.Object);
-            module.Assets.Add(assetB.Object);
+            bundle.Assets.Add(assetA.Object);
+            bundle.Assets.Add(assetB.Object);
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(module, Mock.Of<ICassetteApplication>());
+            sorter.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            module.Assets[0].ShouldBeSameAs(assetB.Object);
-            module.Assets[1].ShouldBeSameAs(assetA.Object);
+            bundle.Assets[0].ShouldBeSameAs(assetB.Object);
+            bundle.Assets[1].ShouldBeSameAs(assetA.Object);
         }
 
         [Fact]
-        public void GivenTwoAssetsWhereADependsOnBByDifferentlyCasedFilename_WhenSorted_ThenBIsBeforeAInModule()
+        public void GivenTwoAssetsWhereADependsOnBByDifferentlyCasedFilename_WhenSorted_ThenBIsBeforeAInBundle()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
-            module.Assets.Add(assetA.Object);
-            module.Assets.Add(assetB.Object);
+            bundle.Assets.Add(assetA.Object);
+            bundle.Assets.Add(assetB.Object);
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(module, Mock.Of<ICassetteApplication>());
+            sorter.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            module.Assets[0].ShouldBeSameAs(assetB.Object);
-            module.Assets[1].ShouldBeSameAs(assetA.Object);
+            bundle.Assets[0].ShouldBeSameAs(assetB.Object);
+            bundle.Assets[1].ShouldBeSameAs(assetA.Object);
         }
 
         [Fact]
-        public void WhenModuleHasSortedAssets_ThenProcessDoesNotReorderAssets()
+        public void WhenBundleHasSortedAssets_ThenProcessDoesNotReorderAssets()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
-            module.AddAssets(new[] {assetA.Object, assetB.Object}, preSorted: true);
+            bundle.AddAssets(new[] {assetA.Object, assetB.Object}, preSorted: true);
             
             var sorter = new SortAssetsByDependency();
-            sorter.Process(module, Mock.Of<ICassetteApplication>());
+            sorter.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            module.Assets[0].ShouldBeSameAs(assetA.Object);
-            module.Assets[1].ShouldBeSameAs(assetB.Object);
+            bundle.Assets[0].ShouldBeSameAs(assetA.Object);
+            bundle.Assets[1].ShouldBeSameAs(assetB.Object);
         }
 
         [Fact]
         public void GivenAssetWithCircularReferences_WhenProcess_ThenExceptionThrown()
         {
-            var module = new Module("~/test");
+            var bundle = new Bundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
             assetB.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/test/a.js", assetB.Object, 1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/test/a.js", assetB.Object, 1, AssetReferenceType.SameBundle) });
 
-            module.AddAssets(new[] { assetA.Object, assetB.Object }, preSorted: false);
+            bundle.AddAssets(new[] { assetA.Object, assetB.Object }, preSorted: false);
 
             var sorter = new SortAssetsByDependency();
             Assert.Throws<InvalidOperationException>(
-                () => sorter.Process(module, Mock.Of<ICassetteApplication>())
+                () => sorter.Process(bundle, Mock.Of<ICassetteApplication>())
             );
         }
     }

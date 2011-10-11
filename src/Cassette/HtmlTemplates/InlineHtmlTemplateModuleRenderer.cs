@@ -25,16 +25,16 @@ using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
-    public class InlineHtmlTemplateModuleRenderer : IModuleHtmlRenderer<HtmlTemplateModule>
+    public class InlineHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
     {
-        public IHtmlString Render(HtmlTemplateModule module)
+        public IHtmlString Render(HtmlTemplateBundle bundle)
         {
             var elements = 
-                from asset in module.Assets
+                from asset in bundle.Assets
                 select string.Format(
                     "<script id=\"{0}\" type=\"{1}\">{2}</script>",
-                    module.GetTemplateId(asset),
-                    module.ContentType,
+                    bundle.GetTemplateId(asset),
+                    bundle.ContentType,
                     GetTemplateContent(asset)
                 );
 

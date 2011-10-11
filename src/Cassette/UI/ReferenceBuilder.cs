@@ -27,59 +27,59 @@ using Cassette.Utilities;
 namespace Cassette.UI
 {
     public class ReferenceBuilder<T> : IReferenceBuilder<T>
-        where T: Module
+        where T: Bundle
     {
-        public ReferenceBuilder(IModuleContainer<T> moduleContainer, IModuleFactory<T> moduleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
+        public ReferenceBuilder(IBundleContainer<T> bundleContainer, IBundleFactory<T> bundleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
         {
-            this.moduleContainer = moduleContainer;
-            this.moduleFactory = moduleFactory;
+            this.bundleContainer = bundleContainer;
+            this.bundleFactory = bundleFactory;
             this.placeholderTracker = placeholderTracker;
             this.application = application;
         }
 
-        readonly IModuleContainer<T> moduleContainer;
-        readonly IModuleFactory<T> moduleFactory;
+        readonly IBundleContainer<T> bundleContainer;
+        readonly IBundleFactory<T> bundleFactory;
         readonly IPlaceholderTracker placeholderTracker;
         readonly ICassetteApplication application;
-        readonly Dictionary<string, List<Module>> modulesByLocation = new Dictionary<string, List<Module>>();
+        readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
         readonly HashSet<string> renderedLocations = new HashSet<string>();
  
         public void Reference(string path, string location = null)
         {
             path = PathUtilities.AppRelative(path);
 
-            var module = moduleContainer.FindModuleContainingPath(path);
-            if (module == null && path.IsUrl())
+            var bundle = bundleContainer.FindBundleContainingPath(path);
+            if (bundle == null && path.IsUrl())
             {
-                // Ad-hoc external module reference.
-                module = moduleFactory.CreateExternalModule(path);
+                // Ad-hoc external bundle reference.
+                bundle = bundleFactory.CreateExternalBundle(path);
             }
 
-            if (module == null)
+            if (bundle == null)
             {
-                throw new ArgumentException("Cannot find an asset module containing the path \"" + path + "\".");                
+                throw new ArgumentException("Cannot find an asset bundle containing the path \"" + path + "\".");                
             }
 
-            // Module can define it's own prefered location. Use this when we aren't given
+            // Bundle can define it's own prefered location. Use this when we aren't given
             // an explicit location argument i.e. null.
             if (location == null)
             {
-                location = module.Location;
+                location = bundle.Location;
             }
 
-            Reference(module, location);
+            Reference(bundle, location);
         }
 
-        public void Reference(Module module, string location = null)
+        public void Reference(Bundle bundle, string location = null)
         {
             if (!application.HtmlRewritingEnabled && HasRenderedLocation(location))
             {
                 ThrowRewritingRequiredException(location);
             }
 
-            var modules = GetOrCreateModuleSet(location);
-            if (modules.Contains(module)) return;
-            modules.Add(module);
+            var bundles = GetOrCreateBundleSet(location);
+            if (bundles.Contains(bundle)) return;
+            bundles.Add(bundle);
         }
 
         bool HasRenderedLocation(string location)
@@ -93,7 +93,7 @@ namespace Cassette.UI
             {
                 throw new InvalidOperationException(
                     string.Format(
-                        "Cannot add a {0} reference. The modules have already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
+                        "Cannot add a {0} reference. The bundles have already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
                         typeof(T).Name
                     )
                 );
@@ -110,10 +110,10 @@ namespace Cassette.UI
             }
         }
 
-        public IEnumerable<Module> GetModules(string location)
+        public IEnumerable<Bundle> GetBundles(string location)
         {
-            var modules = GetOrCreateModuleSet(location);
-            return moduleContainer.IncludeReferencesAndSortModules(modules);
+            var bundles = GetOrCreateBundleSet(location);
+            return bundleContainer.IncludeReferencesAndSortBundles(bundles);
         }
 
         public IHtmlString Render(string location = null)
@@ -124,38 +124,38 @@ namespace Cassette.UI
             );
         }
 
-        public string ModuleUrl(string path)
+        public string BundleUrl(string path)
         {
-            var module = moduleContainer.FindModuleContainingPath(path);
-            if (module == null)
+            var bundle = bundleContainer.FindBundleContainingPath(path);
+            if (bundle == null)
             {
-                throw new ArgumentException("Cannot find module contain path \"" + path + "\".");
+                throw new ArgumentException("Cannot find bundle contain path \"" + path + "\".");
             }
-            return application.UrlGenerator.CreateModuleUrl(module);
+            return application.UrlGenerator.CreateBundleUrl(bundle);
         }
 
         HtmlString CreateHtml(string location)
         {
             return new HtmlString(string.Join(Environment.NewLine,
-                GetModules(location).Select(
-                    module => module.Render(application).ToHtmlString()
+                GetBundles(location).Select(
+                    bundle => bundle.Render(application).ToHtmlString()
                 )
             ));
         }
 
-        List<Module> GetOrCreateModuleSet(string location)
+        List<Bundle> GetOrCreateBundleSet(string location)
         {
             location = location ?? ""; // Dictionary doesn't accept null keys.
-            List<Module> modules;
-            if (modulesByLocation.TryGetValue(location, out modules))
+            List<Bundle> bundles;
+            if (bundlesByLocation.TryGetValue(location, out bundles))
             {
-                return modules;
+                return bundles;
             }
             else
             {
-                modules = new List<Module>();
-                modulesByLocation.Add(location, modules);
-                return modules;
+                bundles = new List<Bundle>();
+                bundlesByLocation.Add(location, bundles);
+                return bundles;
             }
         }
     }

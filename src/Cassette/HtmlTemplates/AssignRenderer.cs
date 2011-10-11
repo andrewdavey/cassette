@@ -18,22 +18,22 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class AssignRenderer : IModuleProcessor<HtmlTemplateModule>
+    public class AssignRenderer : IBundleProcessor<HtmlTemplateBundle>
     {
-        public AssignRenderer(IModuleHtmlRenderer<HtmlTemplateModule> renderer)
+        public AssignRenderer(IBundleHtmlRenderer<HtmlTemplateBundle> renderer)
         {
             this.renderer = renderer;
         }
 
-        readonly IModuleHtmlRenderer<HtmlTemplateModule> renderer;
+        readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
 
-        public void Process(HtmlTemplateModule module, ICassetteApplication application)
+        public void Process(HtmlTemplateBundle bundle, ICassetteApplication application)
         {
-            module.Renderer = renderer;
+            bundle.Renderer = renderer;
         }
     }
 }

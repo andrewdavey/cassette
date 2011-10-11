@@ -21,10 +21,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public class LineBasedAssetReferenceParser<T> : ModuleProcessorOfAssetsMatchingFileExtension<T>
-        where T : Module
+    public class LineBasedAssetReferenceParser<T> : BundleProcessorOfAssetsMatchingFileExtension<T>
+        where T : Bundle
     {
         public LineBasedAssetReferenceParser(string fileExtension, Regex referenceRegex)
             : base(fileExtension)
@@ -34,7 +34,7 @@ namespace Cassette.ModuleProcessing
 
         readonly Regex referenceRegex;
 
-        protected override void Process(IAsset asset, Module module)
+        protected override void Process(IAsset asset, Bundle bundle)
         {
             using (var reader = new StreamReader(asset.OpenStream()))
             {

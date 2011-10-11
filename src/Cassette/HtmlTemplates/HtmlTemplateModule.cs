@@ -19,22 +19,22 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Web;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateModule : Module
+    public class HtmlTemplateBundle : Bundle
     {
-        public HtmlTemplateModule(string directory)
+        public HtmlTemplateBundle(string directory)
             : base(directory)
         {
             ContentType = "text/html";
             Processor = new HtmlTemplatePipeline();
         }
 
-        public IModuleProcessor<HtmlTemplateModule> Processor { get; set; }
+        public IBundleProcessor<HtmlTemplateBundle> Processor { get; set; }
         
-        public IModuleHtmlRenderer<HtmlTemplateModule> Renderer { get; set; }
+        public IBundleHtmlRenderer<HtmlTemplateBundle> Renderer { get; set; }
 
         public override void Process(ICassetteApplication application)
         {

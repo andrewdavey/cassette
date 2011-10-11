@@ -25,9 +25,9 @@ namespace Website
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application)
+        public void Configure(BundleConfiguration moduleConfiguration, ICassetteApplication application)
         {
-            moduleConfiguration.Add(new DirectorySource<StylesheetModule>("assets/styles")
+            moduleConfiguration.Add(new DirectorySource<StylesheetBundle>("assets/styles")
             {
                 FilePattern = "*.css"
             });

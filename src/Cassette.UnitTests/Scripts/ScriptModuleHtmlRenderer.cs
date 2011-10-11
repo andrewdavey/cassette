@@ -24,18 +24,18 @@ using Xunit;
 
 namespace Cassette.Scripts
 {
-    public class ScriptModuleHtmlRenderer_Tests
+    public class ScriptBundleHtmlRenderer_Tests
     {
         [Fact]
-        public void GivenRendererWithUrlGenerator_WhenRenderModule_ThenScriptHtmlIsReturned()
+        public void GivenRendererWithUrlGenerator_WhenRenderBundle_ThenScriptHtmlIsReturned()
         {
             var urlGenerator = new Mock<IUrlGenerator>();
-            var renderer = new ScriptModuleHtmlRenderer(urlGenerator.Object);
-            var module = new ScriptModule("~/test");
-            urlGenerator.Setup(g => g.CreateModuleUrl(module))
+            var renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object);
+            var bundle = new ScriptBundle("~/test");
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
                         .Returns("URL");
 
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual("<script src=\"URL\" type=\"text/javascript\"></script>");
         }

@@ -22,21 +22,21 @@ using System.Web;
 
 namespace Cassette.HtmlTemplates
 {
-    public class RemoteHtmlTemplateModuleRenderer : IModuleHtmlRenderer<HtmlTemplateModule>
+    public class RemoteHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
     {
         readonly IUrlGenerator urlGenerator;
 
-        public RemoteHtmlTemplateModuleRenderer(IUrlGenerator urlGenerator)
+        public RemoteHtmlTemplateBundleRenderer(IUrlGenerator urlGenerator)
         {
             this.urlGenerator = urlGenerator;
         }
 
-        public IHtmlString Render(HtmlTemplateModule module)
+        public IHtmlString Render(HtmlTemplateBundle bundle)
         {
             return new HtmlString(
                 string.Format(
                     "<script src=\"{0}\" type=\"text/javascript\"></script>",
-                    urlGenerator.CreateModuleUrl(module)
+                    urlGenerator.CreateBundleUrl(bundle)
                 )
             );
         }

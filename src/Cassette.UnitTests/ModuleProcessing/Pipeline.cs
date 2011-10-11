@@ -23,36 +23,36 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class Pipeline_WithTwoProcessors
     {
         public Pipeline_WithTwoProcessors()
         {
-            step1 = new Mock<IModuleProcessor<Module>>();
-            step2 = new Mock<IModuleProcessor<Module>>();
-            pipeline = new Pipeline<Module>(step1.Object, step2.Object);
+            step1 = new Mock<IBundleProcessor<Bundle>>();
+            step2 = new Mock<IBundleProcessor<Bundle>>();
+            pipeline = new Pipeline<Bundle>(step1.Object, step2.Object);
         }
 
-        readonly Pipeline<Module> pipeline;
-        readonly Mock<IModuleProcessor<Module>> step1;
-        readonly Mock<IModuleProcessor<Module>> step2;
+        readonly Pipeline<Bundle> pipeline;
+        readonly Mock<IBundleProcessor<Bundle>> step1;
+        readonly Mock<IBundleProcessor<Bundle>> step2;
 
         [Fact]
-        public void Pipeline_IsAModuleProcessor()
+        public void Pipeline_IsABundleProcessor()
         {
-            pipeline.ShouldImplement<IModuleProcessor<Module>>();
+            pipeline.ShouldImplement<IBundleProcessor<Bundle>>();
         }
 
         [Fact]
         public void WhenProcess_ThenEachStepIsCalled()
         {
-            var module = new Module("~");
+            var bundle = new Bundle("~");
             var app = Mock.Of<ICassetteApplication>();
-            pipeline.Process(module, app);
+            pipeline.Process(bundle, app);
 
-            step1.Verify(p => p.Process(module, app));
-            step2.Verify(p => p.Process(module, app));
+            step1.Verify(p => p.Process(bundle, app));
+            step2.Verify(p => p.Process(bundle, app));
         }
     }
 
@@ -63,7 +63,7 @@ namespace Cassette.ModuleProcessing
         {
             Assert.Throws<ArgumentException>(delegate
             {
-                new Pipeline<Module>((IModuleProcessor<Module>)null);
+                new Pipeline<Bundle>((IBundleProcessor<Bundle>)null);
             });
         }
 
@@ -72,7 +72,7 @@ namespace Cassette.ModuleProcessing
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new Pipeline<Module>(null);
+                new Pipeline<Bundle>(null);
             });
         }
     }

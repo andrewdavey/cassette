@@ -28,9 +28,9 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class ModuleDescriptorReader
+    public class BundleDescriptorReader
     {
-        public ModuleDescriptorReader(IFile sourceFile, IEnumerable<string> allAssetfilenames)
+        public BundleDescriptorReader(IFile sourceFile, IEnumerable<string> allAssetfilenames)
         {
             this.sourceFile = sourceFile;
             this.allAssetfilenames = new HashSet<string>(allAssetfilenames, StringComparer.OrdinalIgnoreCase);
@@ -51,7 +51,7 @@ namespace Cassette
         string externalUrl;
         string fallbackCondition;
 
-        public ModuleDescriptor Read()
+        public BundleDescriptor Read()
         {
             using (var stream = sourceFile.OpenRead())
             using (var reader = new StreamReader(stream))
@@ -62,7 +62,7 @@ namespace Cassette
                     ProcessLine(line);
                 }
             }
-            return new ModuleDescriptor(sourceFile, assetFilenames, true, references, externalUrl, fallbackCondition);
+            return new BundleDescriptor(sourceFile, assetFilenames, true, references, externalUrl, fallbackCondition);
         }
 
         void ProcessLine(string line)
@@ -86,7 +86,7 @@ namespace Cassette
                 }
                 else
                 {
-                    throw new Exception(string.Format("Unexpected module descriptor section \"{0}\".", line));
+                    throw new Exception(string.Format("Unexpected bundle descriptor section \"{0}\".", line));
                 }
             }
             return false;
@@ -111,7 +111,7 @@ namespace Cassette
                 if (assetFilenames.Contains(line))
                 {
                     throw new Exception(string.Format(
-                        "The file \"{0}\" cannot appear twice in module descriptor.",
+                        "The file \"{0}\" cannot appear twice in bundle descriptor.",
                         line
                     ));
                 }
@@ -120,7 +120,7 @@ namespace Cassette
             else
             {
                 throw new FileNotFoundException(string.Format(
-                    "Cannot find the file \"{0}\", referenced by module descriptor.",
+                    "Cannot find the file \"{0}\", referenced by bundle descriptor.",
                     line
                 ));
             }
@@ -145,24 +145,24 @@ namespace Cassette
                 switch (key)
                 {
                     case "url":
-                        if (externalUrl != null) throw new Exception("The [external] section of module descriptor can only contain one \"url\".");
-                        if (value.IsUrl() == false) throw new Exception("The value \"url\" in module descriptor [external] section must be a URL.");
+                        if (externalUrl != null) throw new Exception("The [external] section of bundle descriptor can only contain one \"url\".");
+                        if (value.IsUrl() == false) throw new Exception("The value \"url\" in bundle descriptor [external] section must be a URL.");
                         externalUrl = value;
                         break;
 
                     case "fallbackCondition":
-                        if (externalUrl==null) throw new Exception("The [external] section of module descriptor must contain a \"url\" property before the \"fallbackCondition\" property.");
-                        if (fallbackCondition != null) throw new Exception("The [external] section of module descriptor can only contain one \"fallbackCondition\".");
+                        if (externalUrl==null) throw new Exception("The [external] section of bundle descriptor must contain a \"url\" property before the \"fallbackCondition\" property.");
+                        if (fallbackCondition != null) throw new Exception("The [external] section of bundle descriptor can only contain one \"fallbackCondition\".");
                         fallbackCondition = value;
                         break;
 
                     default:
-                        throw new Exception("Unexpected property in module descriptor [external] section: " + line);
+                        throw new Exception("Unexpected property in bundle descriptor [external] section: " + line);
                 }
             }
             else
             {
-                throw new Exception("The [external] section of module descriptor must contain key value pairs.");
+                throw new Exception("The [external] section of bundle descriptor must contain key value pairs.");
             }
         }
 

@@ -145,7 +145,7 @@
     <Compile Include="ModuleProcessing\LineBasedAssetReferenceParser.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="ModuleProcessing\MinifyAssets.cs" />
-    <Compile Include="Module.cs" />
+    <Compile Include="Bundle.cs" />
     <Compile Include="ModuleContainer.cs" />
     <Compile Include="ModuleProcessing\ModuleProcessorOfAssetsMatchingFileExtension.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />

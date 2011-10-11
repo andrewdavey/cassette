@@ -23,21 +23,21 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class ModuleContainsPathPredicate : IAssetVisitor
+    public class BundleContainsPathPredicate : IAssetVisitor
     {
-        public bool ModuleContainsPath(string path, Module module)
+        public bool BundleContainsPath(string path, Bundle bundle)
         {
-            pathToFind = path.IsUrl() ? path : NormalizePath(path, module);
-            module.Accept(this);
+            pathToFind = path.IsUrl() ? path : NormalizePath(path, bundle);
+            bundle.Accept(this);
             return isFound;
         }
 
         string pathToFind;
         bool isFound;
 
-        void IAssetVisitor.Visit(Module module)
+        void IAssetVisitor.Visit(Bundle bundle)
         {
-            if (IsMatch(module.Path))
+            if (IsMatch(bundle.Path))
             {
                 isFound = true;
             }
@@ -51,7 +51,7 @@ namespace Cassette
             }
         }
 
-        string NormalizePath(string path, Module module)
+        string NormalizePath(string path, Bundle bundle)
         {
             path = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (path.StartsWith("~"))
@@ -60,7 +60,7 @@ namespace Cassette
             }
             else
             {
-                return PathUtilities.CombineWithForwardSlashes(module.Path, path);
+                return PathUtilities.CombineWithForwardSlashes(bundle.Path, path);
             }
         }
 

@@ -27,192 +27,192 @@ using Xunit;
 
 namespace Cassette
 {
-    public class ModuleContainer_Tests
+    public class BundleContainer_Tests
     {
         [Fact]
-        public void GivenAssetWithUnknownDifferentModuleReference_ThenConstructorThrowsAssetReferenceException()
+        public void GivenAssetWithUnknownDifferentBundleReference_ThenConstructorThrowsAssetReferenceException()
         {
-            var module = new Module("~/module-1");
+            var bundle = new Bundle("~/bundle-1");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("module-1\\a.js");
+            asset.SetupGet(a => a.SourceFilename).Returns("bundle-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentModule) });
-            module.Assets.Add(asset.Object);
+                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentBundle) });
+            bundle.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module });
+                new BundleContainer<Bundle>(new[] { bundle });
             });
-            exception.Message.ShouldEqual("Reference error in \"module-1\\a.js\". Cannot find \"~\\fail\\fail.js\".");
+            exception.Message.ShouldEqual("Reference error in \"bundle-1\\a.js\". Cannot find \"~\\fail\\fail.js\".");
         }
 
         [Fact]
-        public void GivenAssetWithUnknownDifferentModuleReferenceHavingLineNumber_ThenConstructorThrowsAssetReferenceException()
+        public void GivenAssetWithUnknownDifferentBundleReferenceHavingLineNumber_ThenConstructorThrowsAssetReferenceException()
         {
-            var module = new Module("~/module-1");
+            var bundle = new Bundle("~/bundle-1");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("~/module-1/a.js");
+            asset.SetupGet(a => a.SourceFilename).Returns("~/bundle-1/a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentModule) });
-            module.Assets.Add(asset.Object);
+                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentBundle) });
+            bundle.Assets.Add(asset.Object);
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] { module });
+                new BundleContainer<Bundle>(new[] { bundle });
             });
-            exception.Message.ShouldEqual("Reference error in \"~/module-1/a.js\", line 42. Cannot find \"~\\fail\\fail.js\".");
+            exception.Message.ShouldEqual("Reference error in \"~/bundle-1/a.js\", line 42. Cannot find \"~\\fail\\fail.js\".");
         }
 
         [Fact]
-        public void FindModuleContainingPathOfModuleReturnsTheModule()
+        public void FindBundleContainingPathOfBundleReturnsTheBundle()
         {
-            var expectedModule = new Module("~/test");
-            var container = new ModuleContainer<Module>(new[] {
-                expectedModule
+            var expectedBundle = new Bundle("~/test");
+            var container = new BundleContainer<Bundle>(new[] {
+                expectedBundle
             });
-            var actualModule = container.FindModuleContainingPath("~/test");
-            actualModule.ShouldBeSameAs(expectedModule);
+            var actualBundle = container.FindBundleContainingPath("~/test");
+            actualBundle.ShouldBeSameAs(expectedBundle);
         }
 
         [Fact]
-        public void FindModuleContainingPathWithWrongPathReturnsNull()
+        public void FindBundleContainingPathWithWrongPathReturnsNull()
         {
-            var container = new ModuleContainer<Module>(new[] {
-                new Module("~/test")
+            var container = new BundleContainer<Bundle>(new[] {
+                new Bundle("~/test")
             });
-            var actualModule = container.FindModuleContainingPath("~/WRONG");
-            actualModule.ShouldBeNull();
+            var actualBundle = container.FindBundleContainingPath("~/WRONG");
+            actualBundle.ShouldBeNull();
         }
 
         [Fact]
-        public void FindModuleContainingPathOfAssetReturnsTheModule()
+        public void FindBundleContainingPathOfAssetReturnsTheBundle()
         {
-            var expectedModule = new Module("~/test");
+            var expectedBundle = new Bundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.SourceFilename).Returns("~/test/test.js");
-            expectedModule.Assets.Add(asset.Object);
-            var container = new ModuleContainer<Module>(new[] {
-                expectedModule
+            expectedBundle.Assets.Add(asset.Object);
+            var container = new BundleContainer<Bundle>(new[] {
+                expectedBundle
             });
-            var actualModule = container.FindModuleContainingPath("~/test/test.js");
-            actualModule.ShouldBeSameAs(expectedModule);
+            var actualBundle = container.FindBundleContainingPath("~/test/test.js");
+            actualBundle.ShouldBeSameAs(expectedBundle);
         }
 
         [Fact]
-        public void GivenModuleWithInvalid_ConstructorThrowsException()
+        public void GivenBundleWithInvalid_ConstructorThrowsException()
         {
-            var module1 = new Module("~/module1");
-            module1.AddReferences(new[] { "~\\module2" });
+            var bundle1 = new Bundle("~/bundle1");
+            bundle1.AddReferences(new[] { "~\\bundle2" });
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new ModuleContainer<Module>(new[] {module1});
+                new BundleContainer<Bundle>(new[] {bundle1});
             });
-            exception.Message.ShouldEqual("Reference error in module descriptor for \"~/module1\". Cannot find \"~/module2\".");
+            exception.Message.ShouldEqual("Reference error in bundle descriptor for \"~/bundle1\". Cannot find \"~/bundle2\".");
         }
     }
 
-    public class ModuleContainer_SortModules_Tests
+    public class BundleContainer_SortBundles_Tests
     {
         [Fact]
-        public void GivenDiamondReferencing_ThenConcatDependenciesReturnsEachReferencedModuleOnlyOnceInDependencyOrder()
+        public void GivenDiamondReferencing_ThenConcatDependenciesReturnsEachReferencedBundleOnlyOnceInDependencyOrder()
         {
-            var module1 = new Module("~/module-1");
+            var bundle1 = new Bundle("~/bundle-1");
             var asset1 = new Mock<IAsset>();
-            SetupAsset("~/module-1/a.js", asset1);
+            SetupAsset("~/bundle-1/a.js", asset1);
             asset1.SetupGet(a => a.References)
                   .Returns(new[] { 
-                      new AssetReference("~/module-2/b.js", asset1.Object, 1, AssetReferenceType.DifferentModule),
-                      new AssetReference("~/module-3/c.js", asset1.Object, 1, AssetReferenceType.DifferentModule)
+                      new AssetReference("~/bundle-2/b.js", asset1.Object, 1, AssetReferenceType.DifferentBundle),
+                      new AssetReference("~/bundle-3/c.js", asset1.Object, 1, AssetReferenceType.DifferentBundle)
                   });
-            module1.Assets.Add(asset1.Object);
+            bundle1.Assets.Add(asset1.Object);
 
-            var module2 = new Module("~/module-2");
+            var bundle2 = new Bundle("~/bundle-2");
             var asset2 = new Mock<IAsset>();
-            SetupAsset("~/module-2/b.js", asset2);
+            SetupAsset("~/bundle-2/b.js", asset2);
             asset2.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/module-4/d.js", asset2.Object, 1, AssetReferenceType.DifferentModule) });
-            module2.Assets.Add(asset2.Object);
+                  .Returns(new[] { new AssetReference("~/bundle-4/d.js", asset2.Object, 1, AssetReferenceType.DifferentBundle) });
+            bundle2.Assets.Add(asset2.Object);
 
-            var module3 = new Module("~/module-3");
+            var bundle3 = new Bundle("~/bundle-3");
             var asset3 = new Mock<IAsset>();
-            SetupAsset("~/module-3/c.js", asset3);
+            SetupAsset("~/bundle-3/c.js", asset3);
             asset3.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/module-4/d.js", asset3.Object, 1, AssetReferenceType.DifferentModule) });
-            module3.Assets.Add(asset3.Object);
+                  .Returns(new[] { new AssetReference("~/bundle-4/d.js", asset3.Object, 1, AssetReferenceType.DifferentBundle) });
+            bundle3.Assets.Add(asset3.Object);
 
-            var module4 = new Module("~/module-4");
+            var bundle4 = new Bundle("~/bundle-4");
             var asset4 = new Mock<IAsset>();
-            SetupAsset("~/module-4/d.js", asset4);
-            module4.Assets.Add(asset4.Object);
+            SetupAsset("~/bundle-4/d.js", asset4);
+            bundle4.Assets.Add(asset4.Object);
 
-            var container = new ModuleContainer<Module>(new[] { module1, module2, module3, module4 });
+            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2, bundle3, bundle4 });
 
-            container.IncludeReferencesAndSortModules(new[] { module1, module2, module3, module4 })
-                .SequenceEqual(new[] { module4, module2, module3, module1 }).ShouldBeTrue();
+            container.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2, bundle3, bundle4 })
+                .SequenceEqual(new[] { bundle4, bundle2, bundle3, bundle1 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void SortModulesToleratesExternalModulesWhichAreNotInTheContainer()
+        public void SortBundlesToleratesExternalBundlesWhichAreNotInTheContainer()
         {
-            var externalModule1 = new ExternalScriptModule("http://test.com/test1.js");
-            var externalModule2 = new ExternalScriptModule("http://test.com/test2.js");
-            var container = new ModuleContainer<ScriptModule>(Enumerable.Empty<ScriptModule>());
-            var results = container.IncludeReferencesAndSortModules(new[] { externalModule1, externalModule2 });
-            results.SequenceEqual(new[] { externalModule1, externalModule2 }).ShouldBeTrue();
+            var externalBundle1 = new ExternalScriptBundle("http://test.com/test1.js");
+            var externalBundle2 = new ExternalScriptBundle("http://test.com/test2.js");
+            var container = new BundleContainer<ScriptBundle>(Enumerable.Empty<ScriptBundle>());
+            var results = container.IncludeReferencesAndSortBundles(new[] { externalBundle1, externalBundle2 });
+            results.SequenceEqual(new[] { externalBundle1, externalBundle2 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenModuleWithReferenceToAnotherModule_ModulesAreSortedInDependencyOrder()
+        public void GivenBundleWithReferenceToAnotherBundle_BundlesAreSortedInDependencyOrder()
         {
-            var module1 = new Module("~/module1");
-            var module2 = new Module("~/module2");
-            module1.AddReferences(new[] { "~/module2" });
+            var bundle1 = new Bundle("~/bundle1");
+            var bundle2 = new Bundle("~/bundle2");
+            bundle1.AddReferences(new[] { "~/bundle2" });
 
-            var container = new ModuleContainer<Module>(new[] { module1, module2 });
-            var sorted = container.IncludeReferencesAndSortModules(new[] { module1, module2 });
-            sorted.SequenceEqual(new[] { module2, module1 }).ShouldBeTrue();
+            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2 });
+            var sorted = container.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2 });
+            sorted.SequenceEqual(new[] { bundle2, bundle1 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenModulesWithNoDependenciesAreReferencedInNonAlphaOrder_WhenIncludeReferencesAndSortModules_ThenReferenceOrderIsMaintained()
+        public void GivenBundlesWithNoDependenciesAreReferencedInNonAlphaOrder_WhenIncludeReferencesAndSortBundles_ThenReferenceOrderIsMaintained()
         {
-            var module1 = new Module("~/module1");
-            var module2 = new Module("~/module2");
-            var container = new ModuleContainer<Module>(new[] { module1, module2 });
+            var bundle1 = new Bundle("~/bundle1");
+            var bundle2 = new Bundle("~/bundle2");
+            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2 });
             
-            var sorted = container.IncludeReferencesAndSortModules(new[] { module2, module1 });
+            var sorted = container.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
 
-            sorted.SequenceEqual(new[] { module2, module1 }).ShouldBeTrue();
+            sorted.SequenceEqual(new[] { bundle2, bundle1 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenModulesWithCyclicReferences_WhenIncludeReferencesAndSortModules_ThenExceptionThrown()
+        public void GivenBundlesWithCyclicReferences_WhenIncludeReferencesAndSortBundles_ThenExceptionThrown()
         {
-            var module1 = new Module("~/module1");
-            var module2 = new Module("~/module2");
-            module1.AddReferences(new[] { "~/module2" });
-            module2.AddReferences(new[] { "~/module1" });
-            var container = new ModuleContainer<Module>(new[] { module1, module2 });
+            var bundle1 = new Bundle("~/bundle1");
+            var bundle2 = new Bundle("~/bundle2");
+            bundle1.AddReferences(new[] { "~/bundle2" });
+            bundle2.AddReferences(new[] { "~/bundle1" });
+            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2 });
 
             Assert.Throws<InvalidOperationException>(delegate
             {
-                container.IncludeReferencesAndSortModules(new[] { module2, module1 });
+                container.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
             });
         }
 
         [Fact]
         public void ImplicitReferenceOrderingMustNotIntroduceCycles()
         {
-            var ms = Enumerable.Range(0, 5).Select(i => new Module("~/" + i)).ToArray();
+            var ms = Enumerable.Range(0, 5).Select(i => new Bundle("~/" + i)).ToArray();
 
             ms[1].AddReferences(new[] { "~/4" });
             ms[4].AddReferences(new[] { "~/3" });
 
-            var container = new ModuleContainer<Module>(ms);
-            var sorted = container.IncludeReferencesAndSortModules(ms).ToArray();
+            var container = new BundleContainer<Bundle>(ms);
+            var sorted = container.IncludeReferencesAndSortBundles(ms).ToArray();
 
             sorted[0].ShouldBeSameAs(ms[0]);
             sorted[1].ShouldBeSameAs(ms[2]);

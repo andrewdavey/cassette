@@ -27,33 +27,33 @@ namespace Cassette.Scripts
     public class ScriptPipeline_Tests
     {
         [Fact]
-        public void GivenApplicationIsOptimized_WhenProcessModule_ThenRendererIsScriptModuleHtmlRenderer()
+        public void GivenApplicationIsOptimized_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
         {
             var application = new Mock<ICassetteApplication>();
             application.SetupGet(a => a.IsOutputOptimized)
                        .Returns(true);
 
-            var module = new ScriptModule("~/test");
+            var bundle = new ScriptBundle("~/test");
 
             var pipeline = new ScriptPipeline();
-            pipeline.Process(module, application.Object);
+            pipeline.Process(bundle, application.Object);
 
-            module.Renderer.ShouldBeType<ScriptModuleHtmlRenderer>();
+            bundle.Renderer.ShouldBeType<ScriptBundleHtmlRenderer>();
         }
 
         [Fact]
-        public void GivenApplicationIsNotOptimized_WhenProcessModule_ThenRendererIsDebugScriptModuleHtmlRenderer()
+        public void GivenApplicationIsNotOptimized_WhenProcessBundle_ThenRendererIsDebugScriptBundleHtmlRenderer()
         {
             var application = new Mock<ICassetteApplication>();
             application.SetupGet(a => a.IsOutputOptimized)
                        .Returns(false);
 
-            var module = new ScriptModule("~/test");
+            var bundle = new ScriptBundle("~/test");
 
             var pipeline = new ScriptPipeline();
-            pipeline.Process(module, application.Object);
+            pipeline.Process(bundle, application.Object);
 
-            module.Renderer.ShouldBeType<DebugScriptModuleHtmlRenderer>();
+            bundle.Renderer.ShouldBeType<DebugScriptBundleHtmlRenderer>();
         }
     }
 }

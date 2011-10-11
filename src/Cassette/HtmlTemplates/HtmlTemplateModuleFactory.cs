@@ -22,21 +22,21 @@ using System;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateModuleFactory : IModuleFactory<HtmlTemplateModule>
+    public class HtmlTemplateBundleFactory : IBundleFactory<HtmlTemplateBundle>
     {
-        public HtmlTemplateModule CreateModule(string directory)
+        public HtmlTemplateBundle CreateBundle(string directory)
         {
-            return new HtmlTemplateModule(directory);
+            return new HtmlTemplateBundle(directory);
         }
 
-        public HtmlTemplateModule CreateExternalModule(string url)
+        public HtmlTemplateBundle CreateExternalBundle(string url)
         {
-            throw new NotSupportedException("External HTML template modules are not supported.");
+            throw new NotSupportedException("External HTML template bundles are not supported.");
         }
 
-        public HtmlTemplateModule CreateExternalModule(string name, ModuleDescriptor moduleDescriptor)
+        public HtmlTemplateBundle CreateExternalBundle(string name, BundleDescriptor bundleDescriptor)
         {
-            throw new NotSupportedException("External HTML template modules are not supported.");
+            throw new NotSupportedException("External HTML template bundles are not supported.");
         }
     }
 }

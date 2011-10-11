@@ -23,11 +23,11 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class InlineScriptModule : Module
+    public class InlineScriptBundle : Bundle
     {
         readonly string scriptContent;
 
-        public InlineScriptModule(string scriptContent)
+        public InlineScriptBundle(string scriptContent)
         {
             this.scriptContent = scriptContent;
         }

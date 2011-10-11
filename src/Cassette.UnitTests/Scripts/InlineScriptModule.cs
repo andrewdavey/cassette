@@ -25,13 +25,13 @@ using Xunit;
 
 namespace Cassette.Scripts
 {
-    public class InlineScriptModule_Tests
+    public class InlineScriptBundle_Tests
     {
         [Fact]
-        public void GivenInlineScriptModuleWithContent_WhenRender_ThenScriptElementCreatedWithContent()
+        public void GivenInlineScriptBundleWithContent_WhenRender_ThenScriptElementCreatedWithContent()
         {
-            var module = new InlineScriptModule("var x = 1;");
-            var html = module.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
+            var bundle = new InlineScriptBundle("var x = 1;");
+            var html = bundle.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
             html.ShouldEqual(
                 "<script type=\"text/javascript\">" + Environment.NewLine + 
                 "var x = 1;" + Environment.NewLine + 

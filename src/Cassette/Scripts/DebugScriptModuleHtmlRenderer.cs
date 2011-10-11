@@ -24,21 +24,21 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class DebugScriptModuleHtmlRenderer : IModuleHtmlRenderer<ScriptModule>
+    public class DebugScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
     {
-        public DebugScriptModuleHtmlRenderer(IUrlGenerator urlGenerator)
+        public DebugScriptBundleHtmlRenderer(IUrlGenerator urlGenerator)
         {
             this.urlGenerator = urlGenerator;
         }
 
         readonly IUrlGenerator urlGenerator;
 
-        public IHtmlString Render(ScriptModule module)
+        public IHtmlString Render(ScriptBundle bundle)
         {
             var assetScripts = 
-                from asset in module.Assets
+                from asset in bundle.Assets
                 let url = asset.HasTransformers
-                    ? urlGenerator.CreateAssetCompileUrl(module, asset)
+                    ? urlGenerator.CreateAssetCompileUrl(bundle, asset)
                     : urlGenerator.CreateAssetUrl(asset)
                 select string.Format(HtmlConstants.ScriptHtml, url);
 

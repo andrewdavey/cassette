@@ -23,8 +23,8 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public class DirectorySource<T> : FileSystemModuleSource<T>
-        where T : Module
+    public class DirectorySource<T> : FileSystemBundleSource<T>
+        where T : Bundle
     {
         public DirectorySource(params string[] relativeDirectoryPaths)
         {
@@ -35,7 +35,7 @@ namespace Cassette
 
         readonly string[] relativeDirectoryPaths;
 
-        protected override IEnumerable<string> GetModuleDirectoryPaths(ICassetteApplication application)
+        protected override IEnumerable<string> GetBundleDirectoryPaths(ICassetteApplication application)
         {
             return relativeDirectoryPaths;
         }

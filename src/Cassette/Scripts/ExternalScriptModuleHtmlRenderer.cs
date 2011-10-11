@@ -24,22 +24,22 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptModuleHtmlRenderer : IModuleHtmlRenderer<ExternalScriptModule>
+    public class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ExternalScriptBundle>
     {
-        readonly IModuleHtmlRenderer<ScriptModule> fallbackScriptRenderer;
+        readonly IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer;
         readonly ICassetteApplication application;
 
-        public ExternalScriptModuleHtmlRenderer(IModuleHtmlRenderer<ScriptModule> fallbackScriptRenderer, ICassetteApplication application)
+        public ExternalScriptBundleHtmlRenderer(IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer, ICassetteApplication application)
         {
             this.fallbackScriptRenderer = fallbackScriptRenderer;
             this.application = application;
         }
 
-        public IHtmlString Render(ExternalScriptModule module)
+        public IHtmlString Render(ExternalScriptBundle bundle)
         {
-            var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml, module.Url);
+            var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml, bundle.Url);
 
-            if (string.IsNullOrEmpty(module.FallbackCondition))
+            if (string.IsNullOrEmpty(bundle.FallbackCondition))
             {
                 return new HtmlString(externalScriptHtml);
             }
@@ -52,21 +52,21 @@ namespace Cassette.Scripts
                             "{1}{0}<script type=\"text/javascript\">{0}if({2}){{{0}{3}{0}}}{0}</script>",
                             Environment.NewLine,
                             externalScriptHtml,
-                            module.FallbackCondition,
-                            CreateFallbackScripts(module)
+                            bundle.FallbackCondition,
+                            CreateFallbackScripts(bundle)
                             )
                         );
                 }
                 else
                 {
-                    return fallbackScriptRenderer.Render(module);
+                    return fallbackScriptRenderer.Render(bundle);
                 }
             }
         }
 
-        string CreateFallbackScripts(ExternalScriptModule module)
+        string CreateFallbackScripts(ExternalScriptBundle bundle)
         {
-            var scripts = fallbackScriptRenderer.Render(module).ToHtmlString();
+            var scripts = fallbackScriptRenderer.Render(bundle).ToHtmlString();
             return ConvertToDocumentWriteCalls(scripts);
         }
 

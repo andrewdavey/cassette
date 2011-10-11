@@ -23,21 +23,21 @@ using Cassette.Scripts;
 
 namespace Cassette.UI
 {
-    public static class ScriptModuleExtensions
+    public static class ScriptBundleExtensions
     {
-        public static void AddInline(this IReferenceBuilder<ScriptModule> referenceBuilder, string scriptContent, string location = null)
+        public static void AddInline(this IReferenceBuilder<ScriptBundle> referenceBuilder, string scriptContent, string location = null)
         {
-            referenceBuilder.Reference(new InlineScriptModule(scriptContent), location);
+            referenceBuilder.Reference(new InlineScriptBundle(scriptContent), location);
         }
 
-        public static void AddPageData(this IReferenceBuilder<ScriptModule> referenceBuilder, string globalVariable, object data, string location = null)
+        public static void AddPageData(this IReferenceBuilder<ScriptBundle> referenceBuilder, string globalVariable, object data, string location = null)
         {
-            referenceBuilder.Reference(new PageDataScriptModule(globalVariable, data), location);
+            referenceBuilder.Reference(new PageDataScriptBundle(globalVariable, data), location);
         }
 
-        public static void AddPageData(this IReferenceBuilder<ScriptModule> referenceBuilder, string globalVariable, IDictionary<string, object> data, string location = null)
+        public static void AddPageData(this IReferenceBuilder<ScriptBundle> referenceBuilder, string globalVariable, IDictionary<string, object> data, string location = null)
         {
-            referenceBuilder.Reference(new PageDataScriptModule(globalVariable, data), location);
+            referenceBuilder.Reference(new PageDataScriptBundle(globalVariable, data), location);
         }
     }
 }

@@ -29,19 +29,19 @@ namespace Cassette.UI
     {
         public static Func<ICassetteApplication> GetApplication;
 
-        public static IReferenceBuilder<ScriptModule> Scripts
+        public static IReferenceBuilder<ScriptBundle> Scripts
         {
-            get { return Application.GetReferenceBuilder<ScriptModule>(); }
+            get { return Application.GetReferenceBuilder<ScriptBundle>(); }
         }
 
-        public static IReferenceBuilder<StylesheetModule> Stylesheets
+        public static IReferenceBuilder<StylesheetBundle> Stylesheets
         {
-            get { return Application.GetReferenceBuilder<StylesheetModule>(); }
+            get { return Application.GetReferenceBuilder<StylesheetBundle>(); }
         }
 
-        public static IReferenceBuilder<HtmlTemplateModule> HtmlTemplates
+        public static IReferenceBuilder<HtmlTemplateBundle> HtmlTemplates
         {
-            get { return Application.GetReferenceBuilder<HtmlTemplateModule>(); }
+            get { return Application.GetReferenceBuilder<HtmlTemplateBundle>(); }
         }
 
         static ICassetteApplication Application

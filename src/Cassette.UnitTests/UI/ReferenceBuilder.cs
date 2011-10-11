@@ -33,79 +33,79 @@ namespace Cassette.UI
     {
         public ReferenceBuilder_Reference_Tests()
         {
-            moduleContainer = new Mock<IModuleContainer<ScriptModule>>();
-            moduleFactory = new Mock<IModuleFactory<ScriptModule>>();
+            bundleContainer = new Mock<IBundleContainer<ScriptBundle>>();
+            bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             application = new Mock<ICassetteApplication>();
-            builder = new ReferenceBuilder<ScriptModule>(moduleContainer.Object, moduleFactory.Object, Mock.Of<IPlaceholderTracker>(), application.Object);
+            builder = new ReferenceBuilder<ScriptBundle>(bundleContainer.Object, bundleFactory.Object, Mock.Of<IPlaceholderTracker>(), application.Object);
 
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns<IEnumerable<Module>>(ms => ms);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(ms => ms);
         }
 
-        readonly ReferenceBuilder<ScriptModule> builder;
-        readonly Mock<IModuleContainer<ScriptModule>> moduleContainer;
-        readonly Mock<IModuleFactory<ScriptModule>> moduleFactory;
+        readonly ReferenceBuilder<ScriptBundle> builder;
+        readonly Mock<IBundleContainer<ScriptBundle>> bundleContainer;
+        readonly Mock<IBundleFactory<ScriptBundle>> bundleFactory;
         readonly Mock<ICassetteApplication> application;
 
         [Fact]
-        public void WhenAddReferenceToModuleDirectory_ThenGetModulesReturnTheModule()
+        public void WhenAddReferenceToBundleDirectory_ThenGetBundlesReturnTheBundle()
         {
-            var module = new ScriptModule("~/test");
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
-                           .Returns(module);
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns(new[] { module })
+            var bundle = new ScriptBundle("~/test");
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+                           .Returns(bundle);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns(new[] { bundle })
                            .Verifiable();
             builder.Reference("test", null);
 
-            var modules = builder.GetModules(null).ToArray();
+            var bundles = builder.GetBundles(null).ToArray();
 
-            modules[0].ShouldBeSameAs(module);
-            moduleContainer.Verify();
+            bundles[0].ShouldBeSameAs(bundle);
+            bundleContainer.Verify();
         }
 
         [Fact]
-        public void WhenAddReferenceToModuleDirectoryWithLocation_ThenGetModulesThatLocationReturnTheModule()
+        public void WhenAddReferenceToBundleDirectoryWithLocation_ThenGetBundlesThatLocationReturnTheBundle()
         {
-            var module = new ScriptModule("~/test");
-            module.Location = "body";
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
-                           .Returns(module);
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns(new[] { module })
+            var bundle = new ScriptBundle("~/test");
+            bundle.Location = "body";
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+                           .Returns(bundle);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns(new[] { bundle })
                            .Verifiable();
             builder.Reference("test", null);
 
-            var modules = builder.GetModules("body").ToArray();
+            var bundles = builder.GetBundles("body").ToArray();
 
-            modules[0].ShouldBeSameAs(module);
-            moduleContainer.Verify();
+            bundles[0].ShouldBeSameAs(bundle);
+            bundleContainer.Verify();
         }
 
         [Fact]
-        public void OnlyModulesMatchingLocationAreReturnedByGetModules()
+        public void OnlyBundlesMatchingLocationAreReturnedByGetBundles()
         {
-            var module1 = new ScriptModule("~/test1");
-            var module2 = new ScriptModule("~/test2");
-            module1.Location = "body";
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test1"))
-                           .Returns(module1);
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test2"))
-                           .Returns(module2);
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns(new[] { module1 });
+            var bundle1 = new ScriptBundle("~/test1");
+            var bundle2 = new ScriptBundle("~/test2");
+            bundle1.Location = "body";
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test1"))
+                           .Returns(bundle1);
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test2"))
+                           .Returns(bundle2);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns(new[] { bundle1 });
             builder.Reference("test1", null);
             builder.Reference("test2", null);
 
-            var modules = builder.GetModules("body").ToArray();
-            modules.Length.ShouldEqual(1);
-            modules[0].ShouldBeSameAs(module1);
+            var bundles = builder.GetBundles("body").ToArray();
+            bundles.Length.ShouldEqual(1);
+            bundles[0].ShouldBeSameAs(bundle1);
         }
 
         [Fact]
-        public void WhenAddReferenceToNonExistentModule_ThenThrowException()
+        public void WhenAddReferenceToNonExistentBundle_ThenThrowException()
         {
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~\\test")).Returns((ScriptModule)null);
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~\\test")).Returns((ScriptBundle)null);
 
             Assert.Throws<ArgumentException>(delegate
             {
@@ -114,82 +114,82 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenModuleAReferencesModuleB_WhenAddReferenceToModuleA_ThenGetModulesReturnsBoth()
+        public void GivenBundleAReferencesBundleB_WhenAddReferenceToBundleA_ThenGetBundlesReturnsBoth()
         {
-            var moduleA = new ScriptModule("~/a");
-            var moduleB = new ScriptModule("~/b");
+            var bundleA = new ScriptBundle("~/a");
+            var bundleB = new ScriptBundle("~/b");
 
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/a"))
-                           .Returns(moduleA);
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns(new[] { moduleB, moduleA });
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/a"))
+                           .Returns(bundleA);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns(new[] { bundleB, bundleA });
 
             builder.Reference("a", null);
 
-            builder.GetModules(null).SequenceEqual(new[] { moduleB, moduleA }).ShouldBeTrue();
+            builder.GetBundles(null).SequenceEqual(new[] { bundleB, bundleA }).ShouldBeTrue();
         }
 
         [Fact]
-        public void WhenAddReferenceToUrl_ThenGetModulesReturnsAnExternalModule()
+        public void WhenAddReferenceToUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
-            moduleFactory.Setup(f => f.CreateExternalModule("http://test.com/test.js"))
-                         .Returns(new ExternalScriptModule("http://test.com/test.js"));
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns<IEnumerable<Module>>(all => all);
+            bundleFactory.Setup(f => f.CreateExternalBundle("http://test.com/test.js"))
+                         .Returns(new ExternalScriptBundle("http://test.com/test.js"));
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(all => all);
 
             builder.Reference("http://test.com/test.js", null);
 
-            var module = builder.GetModules(null).First();
-            module.ShouldBeType<ExternalScriptModule>();
+            var bundle = builder.GetBundles(null).First();
+            bundle.ShouldBeType<ExternalScriptBundle>();
         }
 
         [Fact]
-        public void WhenAddReferenceToHttpsUrl_ThenGetModulesReturnsAnExternalModule()
+        public void WhenAddReferenceToHttpsUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
-            moduleFactory.Setup(f => f.CreateExternalModule("https://test.com/test.js"))
-                         .Returns(new ExternalScriptModule("https://test.com/test.js"));
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns<IEnumerable<Module>>(all => all);
+            bundleFactory.Setup(f => f.CreateExternalBundle("https://test.com/test.js"))
+                         .Returns(new ExternalScriptBundle("https://test.com/test.js"));
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(all => all);
 
             builder.Reference("https://test.com/test.js", null);
 
-            var module = builder.GetModules(null).First();
-            module.ShouldBeType<ExternalScriptModule>();
+            var bundle = builder.GetBundles(null).First();
+            bundle.ShouldBeType<ExternalScriptBundle>();
         }
 
         [Fact]
-        public void WhenAddReferenceToProtocolRelativeUrl_ThenGetModulesReturnsAnExternalModule()
+        public void WhenAddReferenceToProtocolRelativeUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
-            moduleFactory.Setup(f => f.CreateExternalModule("//test.com/test.js"))
-                         .Returns(new ExternalScriptModule("//test.com/test.js"));
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns<IEnumerable<Module>>(all => all);
+            bundleFactory.Setup(f => f.CreateExternalBundle("//test.com/test.js"))
+                         .Returns(new ExternalScriptBundle("//test.com/test.js"));
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(all => all);
 
             builder.Reference("//test.com/test.js", null);
 
-            var module = builder.GetModules(null).First();
-            module.ShouldBeType<ExternalScriptModule>();
+            var bundle = builder.GetBundles(null).First();
+            bundle.ShouldBeType<ExternalScriptBundle>();
         }
 
         [Fact]
-        public void WhenAddReferenceWithLocation_ThenGetModulesForThatLocationReturnsTheModule()
+        public void WhenAddReferenceWithLocation_ThenGetBundlesForThatLocationReturnsTheBundle()
         {
-            var module = new ScriptModule("~/test");
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
-                           .Returns(module);
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns(new[] { module });
+            var bundle = new ScriptBundle("~/test");
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+                           .Returns(bundle);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns(new[] { bundle });
             builder.Reference("test", "body");
 
-            builder.GetModules("body").SequenceEqual(new[] { module}).ShouldBeTrue();
+            builder.GetBundles("body").SequenceEqual(new[] { bundle}).ShouldBeTrue();
         }
 
         [Fact]
         public void GivenLocationAlreadyRendered_WhenAddReferenceToThatLocation_ThenExceptionThrown()
         {
-            var module = new ScriptModule("~/test");
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
-                           .Returns(module);
+            var bundle = new ScriptBundle("~/test");
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+                           .Returns(bundle);
 
             builder.Render("test");
 
@@ -200,18 +200,18 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenLocationAlreadyRenderedButHtmlRewrittingEnabled_WhenAddReferenceToThatLocation_ThenModuleStillAdded()
+        public void GivenLocationAlreadyRenderedButHtmlRewrittingEnabled_WhenAddReferenceToThatLocation_ThenBundleStillAdded()
         {
             application.SetupGet(a => a.HtmlRewritingEnabled)
                        .Returns(true);
-            var module = new ScriptModule("~/test");
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/test"))
-                           .Returns(module);
+            var bundle = new ScriptBundle("~/test");
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+                           .Returns(bundle);
             builder.Render("test");
 
             builder.Reference("~/test", "test");
 
-            builder.GetModules("test").First().ShouldBeSameAs(module);
+            builder.GetBundles("test").First().ShouldBeSameAs(bundle);
         }
     }
 
@@ -219,31 +219,31 @@ namespace Cassette.UI
     {
         public ReferenceBuilder_Render_Tests()
         {
-            moduleContainer = new Mock<IModuleContainer<Module>>();
-            moduleFactory = new Mock<IModuleFactory<Module>>();
+            bundleContainer = new Mock<IBundleContainer<Bundle>>();
+            bundleFactory = new Mock<IBundleFactory<Bundle>>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
             application = Mock.Of<ICassetteApplication>();
-            referenceBuilder = new ReferenceBuilder<Module>(moduleContainer.Object, moduleFactory.Object, placeholderTracker.Object, application);
+            referenceBuilder = new ReferenceBuilder<Bundle>(bundleContainer.Object, bundleFactory.Object, placeholderTracker.Object, application);
 
-            moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
-                           .Returns<IEnumerable<Module>>(ms => ms);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(ms => ms);
 
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
                               .Returns(new HtmlString("output"));
         }
 
-        readonly ReferenceBuilder<Module> referenceBuilder;
+        readonly ReferenceBuilder<Bundle> referenceBuilder;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
         readonly ICassetteApplication application;
-        readonly Mock<IModuleContainer<Module>> moduleContainer;
-        readonly Mock<IModuleFactory<Module>> moduleFactory;
+        readonly Mock<IBundleContainer<Bundle>> bundleContainer;
+        readonly Mock<IBundleFactory<Bundle>> bundleFactory;
 
         [Fact]
-        public void GivenAddReferenceToPath_WhenRender_ThenModuleRenderOutputReturned()
+        public void GivenAddReferenceToPath_WhenRender_ThenBundleRenderOutputReturned()
         {
-            var module = new Module("~/stub");
-            moduleContainer.Setup(c => c.FindModuleContainingPath(It.IsAny<string>()))
-                           .Returns(module);
+            var bundle = new Bundle("~/stub");
+            bundleContainer.Setup(c => c.FindBundleContainingPath(It.IsAny<string>()))
+                           .Returns(bundle);
 
             referenceBuilder.Reference("test");
 
@@ -253,13 +253,13 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenModuleRenderOutputReturned()
+        public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenBundleRenderOutputReturned()
         {
-            var module = new Mock<Module>("~/stub");
-            module.Setup(m => m.Render(application))
+            var bundle = new Mock<Bundle>("~/stub");
+            bundle.Setup(m => m.Render(application))
                   .Returns(new HtmlString("output"));
-            moduleContainer.Setup(c => c.FindModuleContainingPath(It.IsAny<string>()))
-                           .Returns(module.Object);
+            bundleContainer.Setup(c => c.FindBundleContainingPath(It.IsAny<string>()))
+                           .Returns(bundle.Object);
             referenceBuilder.Reference("test");
 
             var html = referenceBuilder.Render("body");
@@ -268,18 +268,18 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenAddReferenceToTwoPaths_WhenRender_ThenModuleRenderOutputsSeparatedByNewLinesReturned()
+        public void GivenAddReferenceToTwoPaths_WhenRender_ThenBundleRenderOutputsSeparatedByNewLinesReturned()
         {
-            var module1 = new Mock<Module>("~/stub1");
-            module1.Setup(m => m.Render(application).ToHtmlString())
+            var bundle1 = new Mock<Bundle>("~/stub1");
+            bundle1.Setup(m => m.Render(application).ToHtmlString())
                    .Returns("output1");
-            var module2 = new Mock<Module>("~/stub2");
-            module2.Setup(m => m.Render(application).ToHtmlString())
+            var bundle2 = new Mock<Bundle>("~/stub2");
+            bundle2.Setup(m => m.Render(application).ToHtmlString())
                    .Returns("output2");
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/stub1"))
-                           .Returns(module1.Object);
-            moduleContainer.Setup(c => c.FindModuleContainingPath("~/stub2"))
-                           .Returns(module2.Object);
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub1"))
+                           .Returns(bundle1.Object);
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub2"))
+                           .Returns(bundle2.Object);
 
             referenceBuilder.Reference("~/stub1");
             referenceBuilder.Reference("~/stub2");

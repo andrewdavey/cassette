@@ -47,10 +47,10 @@ namespace Cassette.IntegrationTests
         readonly IsolatedStorageFile storage;
         readonly RouteCollection routes;
 
-        CassetteApplication CreateApplication(Action<ModuleConfiguration, ICassetteApplication> configure)
+        CassetteApplication CreateApplication(Action<BundleConfiguration, ICassetteApplication> configure)
         {
             var config = new Mock<ICassetteConfiguration>();
-            config.Setup(c => c.Configure(It.IsAny<ModuleConfiguration>(), It.IsAny<ICassetteApplication>()))
+            config.Setup(c => c.Configure(It.IsAny<BundleConfiguration>(), It.IsAny<ICassetteApplication>()))
                   .Callback(configure);
 
             return new CassetteApplication(
@@ -66,10 +66,10 @@ namespace Cassette.IntegrationTests
         }
 
         [Fact]
-        public void CanGetScriptModuleA()
+        public void CanGetScriptBundleA()
         {
-            CreateApplication((modules, app) =>
-                modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
+            CreateApplication((bundles, app) =>
+                bundles.Add(new PerSubDirectorySource<ScriptBundle>("scripts")
                 {
                     Exclude = new Regex(@"\.vsdoc\.js$")
                 })
@@ -77,16 +77,16 @@ namespace Cassette.IntegrationTests
 
             using (var http = new HttpTestHarness(routes))
             {
-                http.Get("~/_assets/scripts/scripts/module-a");
+                http.Get("~/_assets/scripts/scripts/bundle-a");
                 http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset2(){}function asset1(){}");
             }
         }
 
         [Fact]
-        public void CanGetScriptModuleB()
+        public void CanGetScriptBundleB()
         {
-            CreateApplication((modules, app) =>
-                modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
+            CreateApplication((bundles, app) =>
+                bundles.Add(new PerSubDirectorySource<ScriptBundle>("scripts")
                 {
                     Exclude = new Regex(@"\.vsdoc\.js$")
                 })
@@ -94,7 +94,7 @@ namespace Cassette.IntegrationTests
 
             using (var http = new HttpTestHarness(routes))
             {
-                http.Get("~/_assets/scripts/scripts/module-b");
+                http.Get("~/_assets/scripts/scripts/bundle-b");
                 http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset3(){}");
             }
         }

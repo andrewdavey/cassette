@@ -27,34 +27,34 @@ using Cassette.Utilities;
 
 namespace Cassette.Web
 {
-    public class ModuleRequestHandler<T> : IHttpHandler
-        where T : Module
+    public class BundleRequestHandler<T> : IHttpHandler
+        where T : Bundle
     {
-        public ModuleRequestHandler(IModuleContainer<T> moduleContainer, RequestContext requestContext)
+        public BundleRequestHandler(IBundleContainer<T> bundleContainer, RequestContext requestContext)
         {
-            this.moduleContainer = moduleContainer;
+            this.bundleContainer = bundleContainer;
             
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
             request = requestContext.HttpContext.Request;
         }
 
-        readonly IModuleContainer<T> moduleContainer;
+        readonly IBundleContainer<T> bundleContainer;
         readonly RouteData routeData;
         readonly HttpResponseBase response;
         readonly HttpRequestBase request;
 
         public void ProcessRequest()
         {
-            var module = FindModule();
-            if (module == null)
+            var bundle = FindBundle();
+            if (bundle == null)
             {
-                Trace.Source.TraceInformation("Module not found \"{0}\".", Path.Combine("~", routeData.GetRequiredString("path")));
+                Trace.Source.TraceInformation("Bundle not found \"{0}\".", Path.Combine("~", routeData.GetRequiredString("path")));
                 response.StatusCode = 404;
             }
             else
             {
-                var actualETag = "\"" + module.Assets[0].Hash.ToHexString() + "\"";
+                var actualETag = "\"" + bundle.Assets[0].Hash.ToHexString() + "\"";
                 var givenETag = request.Headers["If-None-Match"];
                 if (givenETag == actualETag)
                 {
@@ -62,7 +62,7 @@ namespace Cassette.Web
                 }
                 else
                 {
-                    SendModule(module, actualETag);
+                    SendBundle(bundle, actualETag);
                 }
             }
         }
@@ -78,16 +78,16 @@ namespace Cassette.Web
             ProcessRequest();
         }
 
-        T FindModule()
+        T FindBundle()
         {
             var path = "~/" + routeData.GetRequiredString("path");
-            Trace.Source.TraceInformation("Handling module request for \"{0}\".", path);
+            Trace.Source.TraceInformation("Handling bundle request for \"{0}\".", path);
             path = RemoveTrailingHashFromPath(path);
-            return moduleContainer.FindModuleContainingPath(path);
+            return bundleContainer.FindBundleContainingPath(path);
         }
 
         /// <summary>
-        /// A Module URL has the hash appended after an underscore character. This method removes the underscore and hash from the path.
+        /// A Bundle URL has the hash appended after an underscore character. This method removes the underscore and hash from the path.
         /// </summary>
         string RemoveTrailingHashFromPath(string path)
         {
@@ -106,15 +106,15 @@ namespace Cassette.Web
             response.SuppressContent = true;
         }
 
-        void SendModule(T module, string actualETag)
+        void SendBundle(T bundle, string actualETag)
         {
-            response.ContentType = module.ContentType;
+            response.ContentType = bundle.ContentType;
             CacheLongTime(actualETag);
 
             var encoding = request.Headers["Accept-Encoding"];
             response.Filter = EncodeStreamAndAppendResponseHeaders(response.Filter, encoding);
             
-            using (var assetStream = module.Assets[0].OpenStream())
+            using (var assetStream = bundle.Assets[0].OpenStream())
             {
                 assetStream.CopyTo(response.OutputStream);
             }

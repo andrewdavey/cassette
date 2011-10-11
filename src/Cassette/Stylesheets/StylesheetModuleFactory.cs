@@ -20,21 +20,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetModuleFactory : IModuleFactory<StylesheetModule>
+    public class StylesheetBundleFactory : IBundleFactory<StylesheetBundle>
     {
-        public StylesheetModule CreateModule(string directoryPath)
+        public StylesheetBundle CreateBundle(string directoryPath)
         {
-            return new StylesheetModule(directoryPath);
+            return new StylesheetBundle(directoryPath);
         }
 
-        public StylesheetModule CreateExternalModule(string url)
+        public StylesheetBundle CreateExternalBundle(string url)
         {
-            return new ExternalStylesheetModule(url);
+            return new ExternalStylesheetBundle(url);
         }
 
-        public StylesheetModule CreateExternalModule(string name, ModuleDescriptor moduleDescriptor)
+        public StylesheetBundle CreateExternalBundle(string name, BundleDescriptor bundleDescriptor)
         {
-            return new ExternalStylesheetModule(name, moduleDescriptor.ExternalUrl);
+            return new ExternalStylesheetBundle(name, bundleDescriptor.ExternalUrl);
         }
     }
 }

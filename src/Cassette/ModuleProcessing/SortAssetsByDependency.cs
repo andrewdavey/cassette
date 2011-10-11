@@ -18,13 +18,13 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public class SortAssetsByDependency : IModuleProcessor<Module>
+    public class SortAssetsByDependency : IBundleProcessor<Bundle>
     {
-        public void Process(Module module, ICassetteApplication application)
+        public void Process(Bundle bundle, ICassetteApplication application)
         {
-            module.SortAssetsByDependency();
+            bundle.SortAssetsByDependency();
         }
     }
 }

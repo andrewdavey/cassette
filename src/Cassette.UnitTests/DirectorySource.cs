@@ -28,28 +28,28 @@ namespace Cassette
     // So please see the PerSubDirectorySource tests for more thorough testing of this
     // common code.
 
-    public class DirectorySource_Tests : ModuleSourceTestBase
+    public class DirectorySource_Tests : BundleSourceTestBase
     {
         [Fact]
-        public void GivenDirectoryWithFile_ThenGetModulesReturnsModuleWithAsset()
+        public void GivenDirectoryWithFile_ThenGetBundlesReturnsBundleWithAsset()
         {
-            GivenFiles("module-a/1.js");
+            GivenFiles("bundle-a/1.js");
 
-            var source = new DirectorySource<Module>("module-a");
+            var source = new DirectorySource<Bundle>("bundle-a");
 
-            var result = source.GetModules(moduleFactory, application);
+            var result = source.GetBundles(bundleFactory, application);
             result.Count().ShouldEqual(1);
             result.First().Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
-        public void GivenTwoDirectories_ThenGetModulesReturnsTwoModules()
+        public void GivenTwoDirectories_ThenGetBundlesReturnsTwoBundles()
         {
-            GivenFiles("module-a/1.js", "module-b/2.js");
+            GivenFiles("bundle-a/1.js", "bundle-b/2.js");
 
-            var source = new DirectorySource<Module>("module-a", "module-b");
+            var source = new DirectorySource<Bundle>("bundle-a", "bundle-b");
 
-            var result = source.GetModules(moduleFactory, application);
+            var result = source.GetBundles(bundleFactory, application);
             result.Count().ShouldEqual(2);
         }
     }

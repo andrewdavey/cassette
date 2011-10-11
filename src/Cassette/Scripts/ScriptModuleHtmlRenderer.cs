@@ -22,21 +22,21 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class ScriptModuleHtmlRenderer : IModuleHtmlRenderer<ScriptModule>
+    public class ScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
     {
-        public ScriptModuleHtmlRenderer(IUrlGenerator urlGenerator)
+        public ScriptBundleHtmlRenderer(IUrlGenerator urlGenerator)
         {
             this.urlGenerator = urlGenerator;
         }
 
         readonly IUrlGenerator urlGenerator;
 
-        public IHtmlString Render(ScriptModule module)
+        public IHtmlString Render(ScriptBundle bundle)
         {
             return new HtmlString(
                 string.Format(
                     HtmlConstants.ScriptHtml, 
-                    urlGenerator.CreateModuleUrl(module)
+                    urlGenerator.CreateBundleUrl(bundle)
                 )
             );
         }

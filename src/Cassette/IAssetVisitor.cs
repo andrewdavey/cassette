@@ -22,8 +22,7 @@ namespace Cassette
 {
     public interface IAssetVisitor
     {
-        void Visit(Module module);
+        void Visit(Bundle bundle);
         void Visit(IAsset asset);
     }
 }
-

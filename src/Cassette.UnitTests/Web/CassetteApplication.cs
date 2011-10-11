@@ -52,11 +52,11 @@ namespace Cassette.Web
 
         class StubConfig : ICassetteConfiguration
         {
-            public void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application)
+            public void Configure(BundleConfiguration bundleConfiguration, ICassetteApplication application)
             {
-                moduleConfiguration.Add(Mock.Of<IModuleSource<ScriptModule>>());
-                moduleConfiguration.Add(Mock.Of<IModuleSource<StylesheetModule>>());
-                moduleConfiguration.Add(Mock.Of<IModuleSource<HtmlTemplateModule>>());
+                bundleConfiguration.Add(Mock.Of<IBundleSource<ScriptBundle>>());
+                bundleConfiguration.Add(Mock.Of<IBundleSource<StylesheetBundle>>());
+                bundleConfiguration.Add(Mock.Of<IBundleSource<HtmlTemplateBundle>>());
             }
         }
     }

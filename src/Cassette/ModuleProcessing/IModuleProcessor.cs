@@ -18,12 +18,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public interface IModuleProcessor<in T>
-        where T : Module
+    public interface IBundleProcessor<in T>
+        where T : Bundle
     {
-        void Process(T module, ICassetteApplication application);
+        void Process(T bundle, ICassetteApplication application);
     }
 }
 

@@ -21,12 +21,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Linq;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public class Pipeline<T> : IModuleProcessor<T>
-        where T : Module
+    public class Pipeline<T> : IBundleProcessor<T>
+        where T : Bundle
     {
-        public Pipeline(params IModuleProcessor<T>[] steps)
+        public Pipeline(params IBundleProcessor<T>[] steps)
         {
             if (steps == null)
             {
@@ -40,13 +40,13 @@ namespace Cassette.ModuleProcessing
             this.steps = steps;
         }
 
-        readonly IModuleProcessor<T>[] steps;
+        readonly IBundleProcessor<T>[] steps;
 
-        public void Process(T module, ICassetteApplication application)
+        public void Process(T bundle, ICassetteApplication application)
         {
             foreach (var step in steps)
             {
-                step.Process(module, application);
+                step.Process(bundle, application);
             }
         }
     }

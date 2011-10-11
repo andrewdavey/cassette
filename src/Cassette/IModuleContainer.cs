@@ -23,11 +23,11 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public interface IModuleContainer<out T> : IDisposable
-        where T : Module
+    public interface IBundleContainer<out T> : IDisposable
+        where T : Bundle
     {
-        IEnumerable<T> Modules { get; }
-        T FindModuleContainingPath(string path);
-        IEnumerable<Module> IncludeReferencesAndSortModules(IEnumerable<Module> modules);
+        IEnumerable<T> Bundles { get; }
+        T FindBundleContainingPath(string path);
+        IEnumerable<Bundle> IncludeReferencesAndSortBundles(IEnumerable<Bundle> bundles);
     }
 }

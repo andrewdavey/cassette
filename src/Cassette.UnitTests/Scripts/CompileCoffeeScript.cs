@@ -18,7 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Moq;
 using Xunit;
 
@@ -35,14 +35,14 @@ namespace Cassette.Scripts
         readonly CompileCoffeeScript step;
 
         [Fact]
-        public void WhenProcessModuleContainingCoffeeScriptAsset_ThenCompileCoffeeScriptAssetTransformIsAddedToAsset()
+        public void WhenProcessBundleContainingCoffeeScriptAsset_ThenCompileCoffeeScriptAssetTransformIsAddedToAsset()
         {
-            var module = new Module("~");
+            var bundle = new Bundle("~");
             var coffeeScriptAsset = new Mock<IAsset>();
             coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.coffee");
-            module.Assets.Add(coffeeScriptAsset.Object);
+            bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(module, Mock.Of<ICassetteApplication>());
+            step.Process(bundle, Mock.Of<ICassetteApplication>());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(
@@ -54,14 +54,14 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void WhenProcessModuleContainingJavaScriptAsset_ThenNoTransformsAreAddedToAsset()
+        public void WhenProcessBundleContainingJavaScriptAsset_ThenNoTransformsAreAddedToAsset()
         {
-            var module = new Module("~");
+            var bundle = new Bundle("~");
             var coffeeScriptAsset = new Mock<IAsset>();
             coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.js");
-            module.Assets.Add(coffeeScriptAsset.Object);
+            bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(module, Mock.Of<ICassetteApplication>());
+            step.Process(bundle, Mock.Of<ICassetteApplication>());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(

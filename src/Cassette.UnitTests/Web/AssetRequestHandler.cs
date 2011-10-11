@@ -26,12 +26,12 @@ namespace Cassette.Web
 
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
 
-            handler = new AssetRequestHandler(requestContext.Object, _ => module);
+            handler = new AssetRequestHandler(requestContext.Object, _ => bundle);
         }
 
         readonly AssetRequestHandler handler;
         readonly Mock<HttpResponseBase> response;
-        Module module;
+        Bundle bundle;
         MemoryStream outputStream;
 
         [Fact]
@@ -41,24 +41,24 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void GivenModuleIsNull_WhenProcessRequest_ThenNotFoundResponse()
+        public void GivenBundleIsNull_WhenProcessRequest_ThenNotFoundResponse()
         {
             handler.ProcessRequest(null);
             response.VerifySet(r => r.StatusCode = 404);
         }
 
         [Fact]
-        public void GivenModuleFoundButAssetIsNull_WhenProcessRequest_ThenNotFoundResponse()
+        public void GivenBundleFoundButAssetIsNull_WhenProcessRequest_ThenNotFoundResponse()
         {
-            module = new Module("~/test");
+            bundle = new Bundle("~/test");
             handler.ProcessRequest(null);
             response.VerifySet(r => r.StatusCode = 404);
         }
 
         [Fact]
-        public void GivenAssetExists_WhenProcessRequest_ThenResponseContentTypeIsModuleContentType()
+        public void GivenAssetExists_WhenProcessRequest_ThenResponseContentTypeIsBundleContentType()
         {
-            module = new Module("~/test")
+            bundle = new Bundle("~/test")
             {
                 ContentType = "CONTENT/TYPE"
             };
@@ -67,7 +67,7 @@ namespace Cassette.Web
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(Stream.Null);
-            module.Assets.Add(asset.Object);
+            bundle.Assets.Add(asset.Object);
 
             using (outputStream = new MemoryStream())
             {
@@ -80,7 +80,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenAssetExists_WhenProcessRequest_ThenResponseOutputIsAssetContent()
         {
-            module = new Module("~/test")
+            bundle = new Bundle("~/test")
             {
                 ContentType = "CONTENT/TYPE"
             };
@@ -89,7 +89,7 @@ namespace Cassette.Web
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(() => "output".AsStream());
-            module.Assets.Add(asset.Object);
+            bundle.Assets.Add(asset.Object);
 
             using (outputStream = new MemoryStream())
             {

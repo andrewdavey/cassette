@@ -23,28 +23,28 @@ using Xunit;
 
 namespace Cassette.Scripts
 {
-    public class ScriptModuleFactory_Tests
+    public class ScriptBundleFactory_Tests
     {
         [Fact]
-        public void CreateModuleReturnsScriptModule()
+        public void CreateBundleReturnsScriptBundle()
         {
-            var factory = new ScriptModuleFactory();
-            var module = factory.CreateModule("~/test");
-            module.ShouldBeType<ScriptModule>();
+            var factory = new ScriptBundleFactory();
+            var bundle = factory.CreateBundle("~/test");
+            bundle.ShouldBeType<ScriptBundle>();
         }
 
         [Fact]
-        public void CreateModuleAssignsScriptModuleDirectory()
+        public void CreateBundleAssignsScriptBundleDirectory()
         {
-            var factory = new ScriptModuleFactory();
-            var module = factory.CreateModule("~/test");
-            module.Path.ShouldEqual("~/test");
+            var factory = new ScriptBundleFactory();
+            var bundle = factory.CreateBundle("~/test");
+            bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void CreateExternalModuleReturnsExternalScriptModule()
+        public void CreateExternalBundleReturnsExternalScriptBundle()
         {
-            new ScriptModuleFactory().CreateExternalModule("http://test.com/api.js").ShouldBeType<ExternalScriptModule>();
+            new ScriptBundleFactory().CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
         }
     }
 }

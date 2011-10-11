@@ -24,7 +24,7 @@ using Cassette.IO;
 
 namespace Cassette
 {
-    public class ModuleDescriptor
+    public class BundleDescriptor
     {
         readonly IFile sourceFile;
         readonly IEnumerable<string> assetFilenames;
@@ -33,13 +33,13 @@ namespace Cassette
         readonly string externalUrl;
         readonly string fallbackCondition;
 
-        public ModuleDescriptor(IEnumerable<string> assetFilenames)
+        public BundleDescriptor(IEnumerable<string> assetFilenames)
         {
             this.assetFilenames = assetFilenames;
             references = Enumerable.Empty<string>();
         }
 
-        public ModuleDescriptor(IFile sourceFile, IEnumerable<string> assetFilenames, bool assetsSorted, IEnumerable<string> references, string externalUrl, string fallbackCondition)
+        public BundleDescriptor(IFile sourceFile, IEnumerable<string> assetFilenames, bool assetsSorted, IEnumerable<string> references, string externalUrl, string fallbackCondition)
         {
             this.sourceFile = sourceFile;
             this.assetFilenames = assetFilenames;

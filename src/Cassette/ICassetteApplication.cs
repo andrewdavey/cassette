@@ -31,6 +31,6 @@ namespace Cassette
         IUrlGenerator UrlGenerator { get; set; }
         bool HtmlRewritingEnabled { get; set; }
 
-        IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Module;
+        IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle;
     }
 }

@@ -27,39 +27,39 @@ using Moq;
 
 namespace Cassette
 {
-    public class ModuleConfiguration_Tests
+    public class BundleConfiguration_Tests
     {
         [Fact]
-        public void GivenModuleHasUrlReference_ThenCreateModuleContainersGeneratesExternalModuleForTheUrl()
+        public void GivenBundleHasUrlReference_ThenCreateBundleContainersGeneratesExternalBundleForTheUrl()
         {
-            var module = new Module("~/test");
-            module.AddReferences(new[] { "http://test.com/api.js" });
+            var bundle = new Bundle("~/test");
+            bundle.AddReferences(new[] { "http://test.com/api.js" });
 
-            var externalModule = new Module("http://test.com/api.js");
-            var moduleFactory = new Mock<IModuleFactory<Module>>();
-            moduleFactory.Setup(f => f.CreateExternalModule("http://test.com/api.js"))
-                .Returns(externalModule);
-            var moduleFactories = new Dictionary<Type, object>
+            var externalBundle = new Bundle("http://test.com/api.js");
+            var bundleFactory = new Mock<IBundleFactory<Bundle>>();
+            bundleFactory.Setup(f => f.CreateExternalBundle("http://test.com/api.js"))
+                .Returns(externalBundle);
+            var bundleFactories = new Dictionary<Type, object>
             {
-                { typeof(Module), moduleFactory.Object }
+                { typeof(Bundle), bundleFactory.Object }
             };
-            var moduleSource = new Mock<IModuleSource<Module>>();
-            moduleSource
-                .Setup(s => s.GetModules(It.IsAny<IModuleFactory<Module>>(), It.IsAny<ICassetteApplication>()))
-                .Returns(new[] { module });
+            var bundleSource = new Mock<IBundleSource<Bundle>>();
+            bundleSource
+                .Setup(s => s.GetBundles(It.IsAny<IBundleFactory<Bundle>>(), It.IsAny<ICassetteApplication>()))
+                .Returns(new[] { bundle });
 
-            var config = new ModuleConfiguration(
+            var config = new BundleConfiguration(
                 Mock.Of<ICassetteApplication>(),
                 Mock.Of<IDirectory>(),
                 Mock.Of<IDirectory>(),
-                moduleFactories, 
+                bundleFactories, 
                 ""
             );
-            config.Add(moduleSource.Object);
+            config.Add(bundleSource.Object);
 
-            var containers = config.CreateModuleContainers(false, "");
-            var generatedModule = containers[typeof(Module)].FindModuleContainingPath("http://test.com/api.js");
-            generatedModule.ShouldBeSameAs(externalModule);
+            var containers = config.CreateBundleContainers(false, "");
+            var generatedBundle = containers[typeof(Bundle)].FindBundleContainingPath("http://test.com/api.js");
+            generatedBundle.ShouldBeSameAs(externalBundle);
         }
     }
 }

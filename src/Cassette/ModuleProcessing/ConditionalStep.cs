@@ -20,34 +20,34 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public class ConditionalStep<T> : IModuleProcessor<T>
-        where T : Module
+    public class ConditionalStep<T> : IBundleProcessor<T>
+        where T : Bundle
     {
         public ConditionalStep(
-            Func<Module, ICassetteApplication, bool> condition, 
-            params IModuleProcessor<T>[] children)
+            Func<Bundle, ICassetteApplication, bool> condition, 
+            params IBundleProcessor<T>[] children)
         {
             this.condition = condition;
             this.children = children;
         }
 
-        readonly Func<Module, ICassetteApplication, bool> condition;
-        readonly IModuleProcessor<T>[] children;
+        readonly Func<Bundle, ICassetteApplication, bool> condition;
+        readonly IBundleProcessor<T>[] children;
 
-        public void Process(T module, ICassetteApplication application)
+        public void Process(T bundle, ICassetteApplication application)
         {
-            if (condition(module, application) == false) return;
+            if (condition(bundle, application) == false) return;
 
-            ProcessEachChild(module, application);
+            ProcessEachChild(bundle, application);
         }
 
-        void ProcessEachChild(T module, ICassetteApplication application)
+        void ProcessEachChild(T bundle, ICassetteApplication application)
         {
             foreach (var child in children)
             {
-                child.Process(module, application);
+                child.Process(bundle, application);
             }
         }
     }

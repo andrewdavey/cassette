@@ -21,10 +21,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 namespace Cassette
 {
     /// <summary>
-    /// Configures a CassetteApplication by defining the asset modules.
+    /// Configures a CassetteApplication by defining the asset bundles.
     /// </summary>
     public interface ICassetteConfiguration
     {
-        void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application);
+        void Configure(BundleConfiguration bundleConfiguration, ICassetteApplication application);
     }
 }

@@ -25,14 +25,14 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptModule : ScriptModule, IModuleSource<ScriptModule>, IExternalModule
+    public class ExternalScriptBundle : ScriptBundle, IBundleSource<ScriptBundle>, IExternalBundle
     {
-        public ExternalScriptModule(string url)
+        public ExternalScriptBundle(string url)
             : this(url, url)
         {
         }
 
-        public ExternalScriptModule(string name, string url)
+        public ExternalScriptBundle(string name, string url)
             : base(PathUtilities.AppRelative(name))
         {
             if (url == null) throw new ArgumentNullException("url");
@@ -41,7 +41,7 @@ namespace Cassette.Scripts
             this.url = url;
         }
 
-        public ExternalScriptModule(string name, string url, string javaScriptFallbackCondition, string fallbackUrl)
+        public ExternalScriptBundle(string name, string url, string javaScriptFallbackCondition, string fallbackUrl)
             : base(PathUtilities.AppRelative(name))
         {
             if (url == null) throw new ArgumentNullException("url");
@@ -87,7 +87,7 @@ namespace Cassette.Scripts
 
         public override IHtmlString Render(ICassetteApplication application)
         {
-            var externalRenderer = new ExternalScriptModuleHtmlRenderer(Renderer, application);
+            var externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, application);
             return externalRenderer.Render(this);
         }
 
@@ -96,7 +96,7 @@ namespace Cassette.Scripts
             return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
 
-        IEnumerable<ScriptModule> IModuleSource<ScriptModule>.GetModules(IModuleFactory<ScriptModule> moduleFactory, ICassetteApplication application)
+        IEnumerable<ScriptBundle> IBundleSource<ScriptBundle>.GetBundles(IBundleFactory<ScriptBundle> bundleFactory, ICassetteApplication application)
         {
             yield return this;
         }

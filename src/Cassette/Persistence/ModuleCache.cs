@@ -29,10 +29,10 @@ using System.Web;
 
 namespace Cassette.Persistence
 {
-    public class ModuleCache<T> : IModuleCache<T>
-        where T : Module
+    public class BundleCache<T> : IBundleCache<T>
+        where T : Bundle
     {
-        public ModuleCache(string version, IDirectory cacheDirectory, IDirectory sourceDirectory)
+        public BundleCache(string version, IDirectory cacheDirectory, IDirectory sourceDirectory)
         {
             this.version = version;
             this.cacheDirectory = cacheDirectory;
@@ -47,26 +47,26 @@ namespace Cassette.Persistence
         readonly IDirectory sourceDirectory;
         readonly IFile containerFile;
 
-        public bool InitializeModulesFromCacheIfUpToDate(IEnumerable<T> unprocessedSourceModules)
+        public bool InitializeBundlesFromCacheIfUpToDate(IEnumerable<T> unprocessedSourceBundles)
         {
             if (!containerFile.Exists) return false;
 
-            var modules = unprocessedSourceModules.ToArray();
-            if (CacheFileIsOlderThanAnyAsset(modules)) return false;
+            var bundles = unprocessedSourceBundles.ToArray();
+            if (CacheFileIsOlderThanAnyAsset(bundles)) return false;
 
             var containerXml = LoadContainerElement();
             if (!IsSameVersion(containerXml)) return false;
-            if (!IsSameAssetCount(modules, containerXml)) return false;
+            if (!IsSameAssetCount(bundles, containerXml)) return false;
             if (!FilesAreUpToDate(containerXml)) return false;
 
-            var moduleInitializationActions = (
-                from module in modules
-                select CreateModuleInitializationAction(module, containerXml)
+            var bundleInitializationActions = (
+                from bundle in bundles
+                select CreateBundleInitializationAction(bundle, containerXml)
             ).ToArray();
 
-            if (moduleInitializationActions.Any(c => c == null)) return false;
+            if (bundleInitializationActions.Any(c => c == null)) return false;
 
-            foreach (var assignCachedAsset in moduleInitializationActions)
+            foreach (var assignCachedAsset in bundleInitializationActions)
             {
                 assignCachedAsset();
             }
@@ -96,10 +96,10 @@ namespace Cassette.Persistence
             return maxLastWriteTimeUtc <= containerFile.LastWriteTimeUtc;
         }
 
-        bool CacheFileIsOlderThanAnyAsset(IEnumerable<T> unprocessedSourceModules)
+        bool CacheFileIsOlderThanAnyAsset(IEnumerable<T> unprocessedSourceBundles)
         {
             var finder = new AssetLastWriteTimeFinder();
-            finder.Visit(unprocessedSourceModules);
+            finder.Visit(unprocessedSourceBundles);
             return containerFile.LastWriteTimeUtc < finder.MaxLastWriteTimeUtc;
         }
 
@@ -111,7 +111,7 @@ namespace Cassette.Persistence
             return versionAttribute.Value == version;
         }
 
-        bool IsSameAssetCount(IEnumerable<T> unprocessedSourceModules, XElement containerXml)
+        bool IsSameAssetCount(IEnumerable<T> unprocessedSourceBundles, XElement containerXml)
         {
             var assetCountAttribute = containerXml.Attribute("AssetCount");
             if (assetCountAttribute == null) return false;
@@ -120,70 +120,70 @@ namespace Cassette.Persistence
             if (int.TryParse(assetCountAttribute.Value, out assetCount) == false) return false;
             
             var assetCounter = new AssetCounter();
-            assetCounter.Visit(unprocessedSourceModules);
+            assetCounter.Visit(unprocessedSourceBundles);
 
             return assetCount == assetCounter.Count;
         }
 
-        Action CreateModuleInitializationAction(T module, XElement containerElement)
+        Action CreateBundleInitializationAction(T bundle, XElement containerElement)
         {
-            var moduleElement = GetModuleElement(module, containerElement);
-            if (moduleElement == null) return null;
+            var bundleElement = GetBundleElement(bundle, containerElement);
+            if (bundleElement == null) return null;
 
-            var hash = GetHash(moduleElement);
+            var hash = GetHash(bundleElement);
             if (hash == null) return null;
 
-            var filename = ModuleAssetCacheFilename(module);
+            var filename = BundleAssetCacheFilename(bundle);
             var file = cacheDirectory.GetFile(filename);
-            if (module.Assets.Count > 0 && !file.Exists) return null;
+            if (bundle.Assets.Count > 0 && !file.Exists) return null;
 
-            var references = GetModuleReferences(moduleElement).ToArray();
+            var references = GetBundleReferences(bundleElement).ToArray();
 
-            var childAssets = module.Assets.ToArray();
+            var childAssets = bundle.Assets.ToArray();
             return () =>
             {
-                if (module.Assets.Count > 0)
+                if (bundle.Assets.Count > 0)
                 {
-                    module.Assets.Clear();
-                    module.Assets.Add(new CachedAsset(file, hash, childAssets));
+                    bundle.Assets.Clear();
+                    bundle.Assets.Add(new CachedAsset(file, hash, childAssets));
                 }
-                module.AddReferences(references);
+                bundle.AddReferences(references);
             };
         }
 
-        IEnumerable<string> GetModuleReferences(XElement moduleElement)
+        IEnumerable<string> GetBundleReferences(XElement bundleElement)
         {
-            return from e in moduleElement.Elements("Reference")
+            return from e in bundleElement.Elements("Reference")
                    let pathAttribute = e.Attribute("Path")
                    where pathAttribute != null
                    select pathAttribute.Value;
         }
 
-        XElement GetModuleElement(T module, XElement containerElement)
+        XElement GetBundleElement(T bundle, XElement containerElement)
         {
             return (
-                from e in containerElement.Elements("Module")
+                from e in containerElement.Elements("Bundle")
                 let pathAttribute = e.Attribute("Path")
                 where pathAttribute != null
-                   && pathAttribute.Value == module.Path
+                   && pathAttribute.Value == bundle.Path
                 select e
             ).FirstOrDefault();
         }
 
-        byte[] GetHash(XElement moduleElement)
+        byte[] GetHash(XElement bundleElement)
         {
-            var attribute = moduleElement.Attribute("Hash");
+            var attribute = bundleElement.Attribute("Hash");
             if (attribute == null) return null;
             return ByteArrayExtensions.FromHexString(attribute.Value);
         }
 
-        public void SaveModuleContainer(IModuleContainer<T> moduleContainer)
+        public void SaveBundleContainer(IBundleContainer<T> bundleContainer)
         {
             cacheDirectory.DeleteContents();
-            SaveContainerXml(moduleContainer);
-            foreach (var module in moduleContainer.Modules)
+            SaveContainerXml(bundleContainer);
+            foreach (var bundle in bundleContainer.Bundles)
             {
-                SaveModule(module);
+                SaveBundle(bundle);
             }
         }
 
@@ -195,18 +195,18 @@ namespace Cassette.Persistence
             }
         }
 
-        void SaveContainerXml(IModuleContainer<T> moduleContainer)
+        void SaveContainerXml(IBundleContainer<T> bundleContainer)
         {
             var assetCounter = new AssetCounter();
-            assetCounter.Visit(moduleContainer.Modules);
+            assetCounter.Visit(bundleContainer.Bundles);
 
             var xml = new XDocument(
                 new XElement(
                     "Container",
                     new XAttribute("Version", version),
                     new XAttribute("AssetCount", assetCounter.Count),
-                    from module in moduleContainer.Modules
-                    select CreateModuleElement(module, moduleContainer)
+                    from bundle in bundleContainer.Bundles
+                    select CreateBundleElement(bundle, bundleContainer)
                 )
             );
             using (var fileStream = containerFile.Open(FileMode.Create, FileAccess.Write, FileShare.None))
@@ -215,22 +215,22 @@ namespace Cassette.Persistence
             }
         }
 
-        XElement CreateModuleElement(T module, IModuleContainer<T> moduleContainer)
+        XElement CreateBundleElement(T bundle, IBundleContainer<T> bundleContainer)
         {
-            var referenceElements = CreateReferenceElements(module, moduleContainer);
-            var fileElements = CreateFileElements(module);
+            var referenceElements = CreateReferenceElements(bundle, bundleContainer);
+            var fileElements = CreateFileElements(bundle);
             return new XElement(
-                "Module",
-                new XAttribute("Path", module.Path),
+                "Bundle",
+                new XAttribute("Path", bundle.Path),
                 referenceElements,
                 fileElements
             );
         }
 
-        IEnumerable<XElement> CreateFileElements(T module)
+        IEnumerable<XElement> CreateFileElements(T bundle)
         {
             var fileReferences = (
-                from asset in module.Assets
+                from asset in bundle.Assets
                 from r in asset.References
                 where r.Type == AssetReferenceType.RawFilename
                 select r.Path
@@ -240,33 +240,33 @@ namespace Cassette.Persistence
                    select new XElement("File", new XAttribute("Path", file));
         }
 
-        IEnumerable<XElement> CreateReferenceElements(T module, IModuleContainer<T> moduleContainer)
+        IEnumerable<XElement> CreateReferenceElements(T bundle, IBundleContainer<T> bundleContainer)
         {
             var references = (
-                from asset in module.Assets
+                from asset in bundle.Assets
                 from r in asset.References
-                where r.Type == AssetReferenceType.DifferentModule || r.Type == AssetReferenceType.Url
-                select moduleContainer.FindModuleContainingPath(r.Path).Path
-            ).Concat(module.References)
+                where r.Type == AssetReferenceType.DifferentBundle || r.Type == AssetReferenceType.Url
+                select bundleContainer.FindBundleContainingPath(r.Path).Path
+            ).Concat(bundle.References)
              .Distinct(StringComparer.OrdinalIgnoreCase);
 
             return from reference in references
                    select new XElement("Reference", new XAttribute("Path", reference));
         }
 
-        void SaveModule(T module)
+        void SaveBundle(T bundle)
         {
-            if (module.Assets.Count == 0) return;
+            if (bundle.Assets.Count == 0) return;
 
-            if (module.Assets.Count > 1)
+            if (bundle.Assets.Count > 1)
             {
-                throw new InvalidOperationException("Cannot cache a module when assets have not been concatenated into a single asset.");
+                throw new InvalidOperationException("Cannot cache a bundle when assets have not been concatenated into a single asset.");
             }
             
-            var file = cacheDirectory.GetFile(ModuleAssetCacheFilename(module));
+            var file = cacheDirectory.GetFile(BundleAssetCacheFilename(bundle));
             using (var fileStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                using (var dataStream = module.Assets[0].OpenStream())
+                using (var dataStream = bundle.Assets[0].OpenStream())
                 {
                     dataStream.CopyTo(fileStream);
                 }
@@ -274,18 +274,18 @@ namespace Cassette.Persistence
             }
         }
 
-        string ModuleAssetCacheFilename(Module module)
+        string BundleAssetCacheFilename(Bundle bundle)
         {
-            if (module.Path.IsUrl())
+            if (bundle.Path.IsUrl())
             {
-                return HttpUtility.UrlEncode(module.Path) + ".module";
+                return HttpUtility.UrlEncode(bundle.Path) + ".bundle";
             }
             else
             {
-                return module.Path.Substring(2) // Remove the "~/" prefix
+                return bundle.Path.Substring(2) // Remove the "~/" prefix
                              .Replace(Path.DirectorySeparatorChar, '`')
                              .Replace(Path.AltDirectorySeparatorChar, '`')
-                           + ".module";
+                           + ".bundle";
             }
         }
     }

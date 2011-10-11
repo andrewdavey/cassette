@@ -28,33 +28,33 @@ namespace Example
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(ModuleConfiguration modules, ICassetteApplication application)
+        public void Configure(BundleConfiguration modules, ICassetteApplication application)
         {
             modules.Add(
-                new PerSubDirectorySource<ScriptModule>("Scripts")
+                new PerSubDirectorySource<ScriptBundle>("Scripts")
                 {
                     FilePattern = "*.js",
                     Exclude = new Regex("-vsdoc\\.js$")
                 },
-                new ExternalScriptModule("twitter", "http://platform.twitter.com/widgets.js")
+                new ExternalScriptBundle("twitter", "http://platform.twitter.com/widgets.js")
                 {
                     Location = "body"
                 }
             );
 
-            modules.Add(new DirectorySource<StylesheetModule>("Styles")
+            modules.Add(new DirectorySource<StylesheetBundle>("Styles")
             {
                 FilePattern = "*.css;*.less",
-                CustomizeModule = module => module.Processor = new StylesheetPipeline
+                CustomizeBundle = module => module.Processor = new StylesheetPipeline
                 {
                     CompileLess = true,
                     ConvertImageUrlsToDataUris = true
                 }
             });
 
-            modules.Add(new PerSubDirectorySource<HtmlTemplateModule>("HtmlTemplates")
+            modules.Add(new PerSubDirectorySource<HtmlTemplateBundle>("HtmlTemplates")
             {
-                CustomizeModule = module => module.Processor = new KnockoutJQueryTmplPipeline()
+                CustomizeBundle = module => module.Processor = new KnockoutJQueryTmplPipeline()
             });
         }
     }

@@ -29,11 +29,11 @@ namespace Cassette.Stylesheets
     public class DebugStylesheetHtmlRenderer_Tests
     {
         [Fact]
-        public void GivenModuleWithAssets_WhenRender_ThenLinkForEachAssetIsReturned()
+        public void GivenBundleWithAssets_WhenRender_ThenLinkForEachAssetIsReturned()
         {
-            var module = new StylesheetModule("~/test");
-            module.Assets.Add(Mock.Of<IAsset>());
-            module.Assets.Add(Mock.Of<IAsset>());
+            var bundle = new StylesheetBundle("~/test");
+            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(Mock.Of<IAsset>());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
@@ -41,7 +41,7 @@ namespace Cassette.Stylesheets
                         .Returns(assetUrls.Dequeue);
 
             var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual(
                 "<link href=\"asset1\" type=\"text/css\" rel=\"stylesheet\"/>" + 
@@ -51,20 +51,20 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenModuleWithAssetsThatIsTransformed_WhenRender_ThenLinkHtmlHasTransformUrlReturned()
+        public void GivenBundleWithAssetsThatIsTransformed_WhenRender_ThenLinkHtmlHasTransformUrlReturned()
         {
-            var module = new StylesheetModule("~/test");
+            var bundle = new StylesheetBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.HasTransformers)
                  .Returns(true);
-            module.Assets.Add(asset.Object);
+            bundle.Assets.Add(asset.Object);
 
             var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateAssetCompileUrl(module, It.IsAny<IAsset>()))
+            urlGenerator.Setup(g => g.CreateAssetCompileUrl(bundle, It.IsAny<IAsset>()))
                         .Returns("URL");
 
             var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual(
                 "<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\"/>"
@@ -72,14 +72,14 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenModuleWithMediaAndAssets_WhenRender_ThenLinkForEachAssetIsReturned()
+        public void GivenBundleWithMediaAndAssets_WhenRender_ThenLinkForEachAssetIsReturned()
         {
-            var module = new StylesheetModule("~/test")
+            var bundle = new StylesheetBundle("~/test")
             {
                 Media = "MEDIA"
             };
-            module.Assets.Add(Mock.Of<IAsset>());
-            module.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(Mock.Of<IAsset>());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
@@ -87,7 +87,7 @@ namespace Cassette.Stylesheets
                         .Returns(assetUrls.Dequeue);
 
             var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(bundle).ToHtmlString();
 
             html.ShouldEqual(
                 "<link href=\"asset1\" type=\"text/css\" rel=\"stylesheet\" media=\"MEDIA\"/>" +

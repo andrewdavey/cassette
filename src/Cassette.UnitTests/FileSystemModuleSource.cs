@@ -30,9 +30,9 @@ using Xunit;
 
 namespace Cassette
 {
-    class FileSystemModuleSource_Tests : IDisposable
+    class FileSystemBundleSource_Tests : IDisposable
     {
-        public FileSystemModuleSource_Tests()
+        public FileSystemBundleSource_Tests()
         {
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
             root.CreateSubdirectory("test");
@@ -45,58 +45,58 @@ namespace Cassette
         DirectoryInfo root;
         Mock<ICassetteApplication> application;
 
-        class TestableFileSystemModuleSource : FileSystemModuleSource<Module>
+        class TestableFileSystemBundleSource : FileSystemBundleSource<Bundle>
         {
-            protected override IEnumerable<string> GetModuleDirectoryPaths(ICassetteApplication application)
+            protected override IEnumerable<string> GetBundleDirectoryPaths(ICassetteApplication application)
             {
                 yield return "~/test";
             }
         }
 
         [Fact]
-        public void GivenModuleDescriptorWithExternalUrl_WhenGetModules_ThenResultContainsExternalModule()
+        public void GivenBundleDescriptorWithExternalUrl_WhenGetBundles_ThenResultContainsExternalBundle()
         {
             File.WriteAllText(
-                Path.Combine(root.FullName, "test", "module.txt"),
+                Path.Combine(root.FullName, "test", "bundle.txt"),
                 "[external]\nurl = http://test.com"
             );
 
-            var factory = new Mock<IModuleFactory<Module>>();
+            var factory = new Mock<IBundleFactory<Bundle>>();
             factory
-                .Setup(f => f.CreateExternalModule("~/test", It.IsAny<ModuleDescriptor>()))
-                .Returns(new ExternalScriptModule("~/test", "http://test.com"));
+                .Setup(f => f.CreateExternalBundle("~/test", It.IsAny<BundleDescriptor>()))
+                .Returns(new ExternalScriptBundle("~/test", "http://test.com"));
 
-            var source = new TestableFileSystemModuleSource();
-            var modules = source.GetModules(factory.Object, application.Object).ToArray();
+            var source = new TestableFileSystemBundleSource();
+            var bundles = source.GetBundles(factory.Object, application.Object).ToArray();
 
-            modules[0].ShouldBeType<ExternalScriptModule>();
+            bundles[0].ShouldBeType<ExternalScriptBundle>();
         }
 
         [Fact]
         public void SearchOptionPropertyDefaultsToAllDirectories()
         {
-            var source = new TestableFileSystemModuleSource();
+            var source = new TestableFileSystemBundleSource();
             source.SearchOption.ShouldEqual(SearchOption.AllDirectories);
         }
 
         [Fact]
-        public void GivenSearchOptionIsTopDirectoryOnly_WhenGetModules_ThenFilesInSubDirectoriesAreIgnored()
+        public void GivenSearchOptionIsTopDirectoryOnly_WhenGetBundles_ThenFilesInSubDirectoriesAreIgnored()
         {
             root.CreateSubdirectory("test\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "test", "test1.txt"), "");
             File.WriteAllText(Path.Combine(root.FullName, "test", "sub", "test2.txt"), "");
             
-            var factory = new Mock<IModuleFactory<Module>>();
+            var factory = new Mock<IBundleFactory<Bundle>>();
             factory
-                .Setup(f => f.CreateModule("~/test"))
-                .Returns(new Module("~"));
+                .Setup(f => f.CreateBundle("~/test"))
+                .Returns(new Bundle("~"));
 
-            var source = new DirectorySource<Module>("~/test")
+            var source = new DirectorySource<Bundle>("~/test")
             {
                 SearchOption = SearchOption.TopDirectoryOnly
             };
-            var modules = source.GetModules(factory.Object, application.Object);
-            modules.First().Assets.Count.ShouldEqual(1);
+            var bundles = source.GetBundles(factory.Object, application.Object);
+            bundles.First().Assets.Count.ShouldEqual(1);
         }
 
         public void Dispose()

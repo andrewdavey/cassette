@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    interface IExternalModule
+    interface IExternalBundle
     {
         string Path { get; }
         IList<IAsset> Assets { get; }

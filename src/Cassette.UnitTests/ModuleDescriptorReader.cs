@@ -30,18 +30,18 @@ using Moq;
 
 namespace Cassette
 {
-    public class ModuleDescriptorReader_Tests
+    public class BundleDescriptorReader_Tests
     {
         readonly List<string> files = new List<string>();
         
-        ModuleDescriptorReader GetReader(string descriptor)
+        BundleDescriptorReader GetReader(string descriptor)
         {
             var source = new Mock<IFile>();
             source
                 .Setup(s => s.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => descriptor.AsStream());
 
-            return new ModuleDescriptorReader(source.Object, files);
+            return new BundleDescriptorReader(source.Object, files);
         }
 
         void FilesExist(params string[] result)

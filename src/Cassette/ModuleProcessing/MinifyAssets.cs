@@ -18,9 +18,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public class MinifyAssets : IModuleProcessor<Module>
+    public class MinifyAssets : IBundleProcessor<Bundle>
     {
         public MinifyAssets(IAssetTransformer minifier)
         {
@@ -29,9 +29,9 @@ namespace Cassette.ModuleProcessing
 
         readonly IAssetTransformer minifier;
 
-        public void Process(Module module, ICassetteApplication application)
+        public void Process(Bundle bundle, ICassetteApplication application)
         {
-            foreach (var asset in module.Assets)
+            foreach (var asset in bundle.Assets)
             {
                 asset.AddAssetTransformer(minifier);
             }

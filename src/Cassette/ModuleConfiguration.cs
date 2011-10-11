@@ -24,203 +24,203 @@ using System.Linq;
 using Cassette.IO;
 using Cassette.Persistence;
 using Cassette.Utilities;
-using CreateModuleContainer = System.Func<bool, Cassette.IModuleContainer<Cassette.Module>>;
-// CreateModuleContainer    = useCache => ModuleContainer<ModuleType>
+using CreateBundleContainer = System.Func<bool, Cassette.IBundleContainer<Cassette.Bundle>>;
+// CreateBundleContainer    = useCache => BundleContainer<BundleType>
 
 namespace Cassette
 {
-    public class ModuleConfiguration
+    public class BundleConfiguration
     {
-        public ModuleConfiguration(ICassetteApplication application, IDirectory cacheDirectory, IDirectory sourceDirectory, Dictionary<Type, object> moduleFactories, string version)
+        public BundleConfiguration(ICassetteApplication application, IDirectory cacheDirectory, IDirectory sourceDirectory, Dictionary<Type, object> bundleFactories, string version)
         {
             this.application = application;
             this.cacheDirectory = cacheDirectory;
             this.sourceDirectory = sourceDirectory;
-            this.moduleFactories = moduleFactories;
+            this.bundleFactories = bundleFactories;
             this.version = version;
         }
 
         readonly ICassetteApplication application;
-        readonly Dictionary<Type, Tuple<object, CreateModuleContainer>> moduleSourceResultsByType = new Dictionary<Type, Tuple<object, CreateModuleContainer>>();
+        readonly Dictionary<Type, Tuple<object, CreateBundleContainer>> bundleSourceResultsByType = new Dictionary<Type, Tuple<object, CreateBundleContainer>>();
         readonly IDirectory cacheDirectory;
         readonly IDirectory sourceDirectory;
-        readonly Dictionary<Type, object> moduleFactories;
+        readonly Dictionary<Type, object> bundleFactories;
         readonly string version;
         readonly Dictionary<Type, List<Action<object>>> customizations = new Dictionary<Type, List<Action<object>>>();
 
-        public void Add<T>(params IModuleSource<T>[] moduleSources)
-            where T : Module
+        public void Add<T>(params IBundleSource<T>[] bundleSources)
+            where T : Bundle
         {
-            foreach (var moduleSource in moduleSources)
+            foreach (var bundleSource in bundleSources)
             {
-                Add(moduleSource);
+                Add(bundleSource);
             }
         }
 
-        public bool ContainsModuleSources(Type moduleType)
+        public bool ContainsBundleSources(Type bundleType)
         {
-            return moduleSourceResultsByType.ContainsKey(moduleType);
+            return bundleSourceResultsByType.ContainsKey(bundleType);
         }
 
-        void Add<T>(IModuleSource<T> moduleSource)
-            where T : Module
+        void Add<T>(IBundleSource<T> bundleSource)
+            where T : Bundle
         {
-            var result = moduleSource.GetModules(GetModuleFactory<T>(), application);
+            var result = bundleSource.GetBundles(GetBundleFactory<T>(), application);
 
-            Tuple<object, CreateModuleContainer> existingTuple;
-            if (moduleSourceResultsByType.TryGetValue(typeof(T), out existingTuple))
+            Tuple<object, CreateBundleContainer> existingTuple;
+            if (bundleSourceResultsByType.TryGetValue(typeof(T), out existingTuple))
             {
                 var existingResult = (IEnumerable<T>)existingTuple.Item1;
                 var existingAction = existingTuple.Item2;
-                // Concat the two module collections.
+                // Concat the two bundle collections.
                 // Keep the existing initialization action.
-                moduleSourceResultsByType[typeof(T)] = Tuple.Create(
+                bundleSourceResultsByType[typeof(T)] = Tuple.Create(
                     (object)existingResult.Concat(result),
                     existingAction
                 );
             }
             else
             {
-                moduleSourceResultsByType[typeof(T)] = Tuple.Create<object, CreateModuleContainer>(
+                bundleSourceResultsByType[typeof(T)] = Tuple.Create<object, CreateBundleContainer>(
                     result,
-                    CreateModuleContainer<T>
+                    CreateBundleContainer<T>
                 );
             }
         }
 
-        public Dictionary<Type, IModuleContainer<Module>> CreateModuleContainers(bool useCache, string applicationVersion)
+        public Dictionary<Type, IBundleContainer<Bundle>> CreateBundleContainers(bool useCache, string applicationVersion)
         {
-            return moduleSourceResultsByType.ToDictionary(
+            return bundleSourceResultsByType.ToDictionary(
                 kvp => kvp.Key,
                 kvp => kvp.Value.Item2(useCache)
             );
         }
 
-        IModuleContainer<T> CreateModuleContainer<T>(bool useCache)
-            where T : Module
+        IBundleContainer<T> CreateBundleContainer<T>(bool useCache)
+            where T : Bundle
         {
-            var modules = ((IEnumerable<T>)moduleSourceResultsByType[typeof(T)].Item1).ToArray();
+            var bundles = ((IEnumerable<T>)bundleSourceResultsByType[typeof(T)].Item1).ToArray();
             if (useCache)
             {
-                return GetOrCreateCachedModuleContainer(modules);
+                return GetOrCreateCachedBundleContainer(bundles);
             }
             else
             {
-                return CreateModuleContainer(modules);
+                return CreateBundleContainer(bundles);
             }
         }
 
-        IModuleContainer<T> GetOrCreateCachedModuleContainer<T>(T[] modules) where T : Module
+        IBundleContainer<T> GetOrCreateCachedBundleContainer<T>(T[] bundles) where T : Bundle
         {
-            var cache = GetModuleCache<T>();
-            if (cache.InitializeModulesFromCacheIfUpToDate(modules))
+            var cache = GetBundleCache<T>();
+            if (cache.InitializeBundlesFromCacheIfUpToDate(bundles))
             {
-                return new ModuleContainer<T>(ConvertUrlReferencesToModules(modules));
+                return new BundleContainer<T>(ConvertUrlReferencesToBundles(bundles));
             }
             else
             {
-                var container = CreateModuleContainer(modules);
-                cache.SaveModuleContainer(container);
-                cache.InitializeModulesFromCacheIfUpToDate(modules);
+                var container = CreateBundleContainer(bundles);
+                cache.SaveBundleContainer(container);
+                cache.InitializeBundlesFromCacheIfUpToDate(bundles);
                 return container;
             }
         }
 
-        ModuleContainer<T> CreateModuleContainer<T>(IEnumerable<T> modules) where T : Module
+        BundleContainer<T> CreateBundleContainer<T>(IEnumerable<T> bundles) where T : Bundle
         {
-            var modulesArray = modules.ToArray();
+            var bundlesArray = bundles.ToArray();
             List<Action<object>> customizeActions;
             if (customizations.TryGetValue(typeof(T), out customizeActions))
             {
                 foreach (var customize in customizeActions)
                 {
-                    foreach (var module in modulesArray)
+                    foreach (var bundle in bundlesArray)
                     {
-                        customize(module);
+                        customize(bundle);
                     }
                 }
             }
-            ProcessAll(modulesArray);
-            return new ModuleContainer<T>(ConvertUrlReferencesToModules(modulesArray));
+            ProcessAll(bundlesArray);
+            return new BundleContainer<T>(ConvertUrlReferencesToBundles(bundlesArray));
         }
 
-        IEnumerable<T> ConvertUrlReferencesToModules<T>(T[] modules) where T : Module
+        IEnumerable<T> ConvertUrlReferencesToBundles<T>(T[] bundles) where T : Bundle
         {
-            var modulePaths = new HashSet<string>(modules.Select(m => m.Path), StringComparer.OrdinalIgnoreCase);
+            var bundlePaths = new HashSet<string>(bundles.Select(m => m.Path), StringComparer.OrdinalIgnoreCase);
 
-            foreach (var module in modules)
+            foreach (var bundle in bundles)
             {
-                yield return module;
+                yield return bundle;
 
-                foreach (var reference in module.References)
+                foreach (var reference in bundle.References)
                 {
                     if (reference.IsUrl() == false) continue;
-                    if (modulePaths.Contains(reference)) continue;
+                    if (bundlePaths.Contains(reference)) continue;
                     
-                    modulePaths.Add(reference);
-                    yield return GetModuleFactory<T>().CreateExternalModule(reference);
+                    bundlePaths.Add(reference);
+                    yield return GetBundleFactory<T>().CreateExternalBundle(reference);
                 }
 
-                var urlReferences = module.Assets
+                var urlReferences = bundle.Assets
                     .SelectMany(asset => asset.References)
                     .Where(r => r.Type == AssetReferenceType.Url);
 
                 foreach (var reference in urlReferences)
                 {
-                    if (modulePaths.Contains(reference.Path)) continue;
+                    if (bundlePaths.Contains(reference.Path)) continue;
 
-                    var urlModule = GetModuleFactory<T>().CreateExternalModule(reference.Path);
-                    modulePaths.Add(urlModule.Path);
-                    yield return urlModule;
+                    var urlBundle = GetBundleFactory<T>().CreateExternalBundle(reference.Path);
+                    bundlePaths.Add(urlBundle.Path);
+                    yield return urlBundle;
                 }
             }
         }
 
-        void ProcessAll<T>(IEnumerable<T> modules)
-            where T : Module
+        void ProcessAll<T>(IEnumerable<T> bundles)
+            where T : Bundle
         {
-            foreach (var module in modules)
+            foreach (var bundle in bundles)
             {
-                module.Process(application);
+                bundle.Process(application);
             }
         }
 
-        IModuleCache<T> GetModuleCache<T>()
-            where T : Module
+        IBundleCache<T> GetBundleCache<T>()
+            where T : Bundle
         {
-            return new ModuleCache<T>(
+            return new BundleCache<T>(
                 version,
                 cacheDirectory.GetDirectory(typeof(T).Name, true),
                 sourceDirectory
             );
         }
 
-        IModuleFactory<T> GetModuleFactory<T>()
-            where T : Module
+        IBundleFactory<T> GetBundleFactory<T>()
+            where T : Bundle
         {
-            return (IModuleFactory<T>)moduleFactories[typeof(T)];
+            return (IBundleFactory<T>)bundleFactories[typeof(T)];
         }
 
         public void Customize<T>(Action<T> action)
-            where T : Module
+            where T : Bundle
         {
             var list = GetOrCreateCustomizationList<T>();
-            list.Add(module => action((T)module));
+            list.Add(bundle => action((T)bundle));
         }
 
         public void Customize<T>(Func<T, bool> predicate, Action<T> action)
-            where T : Module
+            where T : Bundle
         {
             var list = GetOrCreateCustomizationList<T>();
-            list.Add(module =>
+            list.Add(bundle =>
             {
-                var typedModule = (T)module;
-                if (predicate(typedModule)) action(typedModule);
+                var typedBundle = (T)bundle;
+                if (predicate(typedBundle)) action(typedBundle);
             });
         }
 
         List<Action<object>> GetOrCreateCustomizationList<T>()
-            where T : Module
+            where T : Bundle
         {
             List<Action<object>> list;
             if (customizations.TryGetValue(typeof(T), out list) == false)

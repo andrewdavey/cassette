@@ -21,24 +21,24 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Linq;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
-    public abstract class ModuleProcessorOfAssetsMatchingFileExtension<T> : IModuleProcessor<T>
-        where T : Module
+    public abstract class BundleProcessorOfAssetsMatchingFileExtension<T> : IBundleProcessor<T>
+        where T : Bundle
     {
-        protected ModuleProcessorOfAssetsMatchingFileExtension(string fileExtension)
+        protected BundleProcessorOfAssetsMatchingFileExtension(string fileExtension)
         {
             filenameEndsWith = "." + fileExtension;
         }
 
         readonly string filenameEndsWith;
 
-        public void Process(T module, ICassetteApplication application)
+        public void Process(T bundle, ICassetteApplication application)
         {
-            var assets = module.Assets.Where(ShouldProcessAsset);
+            var assets = bundle.Assets.Where(ShouldProcessAsset);
             foreach (var asset in assets)
             {
-                Process(asset, module);
+                Process(asset, bundle);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Cassette.ModuleProcessing
             return asset.SourceFilename.EndsWith(filenameEndsWith, StringComparison.OrdinalIgnoreCase);
         }
 
-        protected abstract void Process(IAsset asset, Module module);
+        protected abstract void Process(IAsset asset, Bundle bundle);
     }
 }
 

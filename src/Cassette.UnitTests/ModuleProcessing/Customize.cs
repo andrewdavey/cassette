@@ -24,21 +24,21 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class Customize_Tests
     {
         [Fact]
-        public void ProcessRunsActionForModule()
+        public void ProcessRunsActionForBundle()
         {
-            var step = new Customize<StylesheetModule>(
+            var step = new Customize<StylesheetBundle>(
                 m => m.Media = "print"    
             );
-            var module = new StylesheetModule("~/test");
+            var bundle = new StylesheetBundle("~/test");
 
-            step.Process(module, Mock.Of<ICassetteApplication>());
+            step.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            module.Media.ShouldEqual("print");
+            bundle.Media.ShouldEqual("print");
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Cassette.ModuleProcessing
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new Customize<Module>(null);
+                new Customize<Bundle>(null);
             });
         }
     }

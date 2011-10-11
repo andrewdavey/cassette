@@ -23,22 +23,22 @@ using Xunit;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetModuleFactory_Tests
+    public class StylesheetBundleFactory_Tests
     {
         [Fact]
-        public void CreateModuleReturnsStylesheetModuleWithDirectorySet()
+        public void CreateBundleReturnsStylesheetBundleWithDirectorySet()
         {
-            var factory = new StylesheetModuleFactory();
-            var module = factory.CreateModule("~/test");
-            module.Path.ShouldEqual("~/test");
+            var factory = new StylesheetBundleFactory();
+            var bundle = factory.CreateBundle("~/test");
+            bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void CreateExternalModuleReturnsExternalsStylesheetModule()
+        public void CreateExternalBundleReturnsExternalsStylesheetBundle()
         {
-            var factory = new StylesheetModuleFactory();
-            var module = factory.CreateExternalModule("http://test.com/test.css");
-            module.ShouldBeType<ExternalStylesheetModule>();
+            var factory = new StylesheetBundleFactory();
+            var bundle = factory.CreateExternalBundle("http://test.com/test.css");
+            bundle.ShouldBeType<ExternalStylesheetBundle>();
         }
     }
 }

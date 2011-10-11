@@ -22,9 +22,9 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public interface IModuleSource<T>
-        where T : Module
+    public interface IBundleSource<T>
+        where T : Bundle
     {
-        IEnumerable<T> GetModules(IModuleFactory<T> moduleFactory, ICassetteApplication application);
+        IEnumerable<T> GetBundles(IBundleFactory<T> bundleFactory, ICassetteApplication application);
     }
 }

@@ -22,7 +22,7 @@ using System;
 using System.IO;
 using Cassette.Utilities;
 
-namespace Cassette.ModuleProcessing
+namespace Cassette.BundleProcessing
 {
     public class CompileAsset : IAssetTransformer
     {

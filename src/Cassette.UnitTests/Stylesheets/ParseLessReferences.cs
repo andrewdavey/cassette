@@ -27,7 +27,7 @@ namespace Cassette.Stylesheets
     public class ParseLessReferences_Tests
     {
         [Fact]
-        public void ProcessAddsReferencesToLessAssetInModule()
+        public void ProcessAddsReferencesToLessAssetInBundle()
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("asset.less");
@@ -39,11 +39,11 @@ namespace Cassette.Stylesheets
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(lessSource.AsStream());
-            var module = new Module("~");
-            module.Assets.Add(asset.Object);
+            var bundle = new Bundle("~");
+            bundle.Assets.Add(asset.Object);
 
             var processor = new ParseLessReferences();
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
             asset.Verify(a => a.AddReference("another1.less", 2));
             asset.Verify(a => a.AddReference("/another2.less", 3));

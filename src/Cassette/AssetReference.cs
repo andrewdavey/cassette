@@ -38,7 +38,7 @@ namespace Cassette
         }
 
         /// <summary>
-        /// Path to an asset or module.
+        /// Path to an asset or bundle.
         /// </summary>
         public string Path { get; private set; }
 

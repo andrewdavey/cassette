@@ -24,7 +24,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Cassette.IO;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Cassette.Persistence;
 
 namespace Cassette
