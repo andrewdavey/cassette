@@ -57,7 +57,7 @@ namespace Cassette
             );
             config.Add(bundleSource.Object);
 
-            var containers = config.CreateBundleContainers(false, "");
+            var containers = config.CreateBundleContainers(false);
             var generatedBundle = containers[typeof(Bundle)].FindBundleContainingPath("http://test.com/api.js");
             generatedBundle.ShouldBeSameAs(externalBundle);
         }

@@ -88,7 +88,7 @@ namespace Cassette
             }
         }
 
-        public Dictionary<Type, IBundleContainer<Bundle>> CreateBundleContainers(bool useCache, string applicationVersion)
+        public Dictionary<Type, IBundleContainer<Bundle>> CreateBundleContainers(bool useCache)
         {
             return bundleSourceResultsByType.ToDictionary(
                 kvp => kvp.Key,

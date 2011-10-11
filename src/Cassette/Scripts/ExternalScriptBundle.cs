@@ -25,7 +25,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptBundle : ScriptBundle, IBundleSource<ScriptBundle>, IExternalBundle
+    public class ExternalScriptBundle : ScriptBundle, IBundleSource<ScriptBundle>
     {
         public ExternalScriptBundle(string url)
             : this(url, url)

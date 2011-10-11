@@ -140,7 +140,7 @@ namespace Cassette
                 configuration.Configure(bundleConfiguration, this);
             }
             AddDefaultBundleSourcesIfEmpty(bundleConfiguration);
-            return bundleConfiguration.CreateBundleContainers(isOutputOptimized, version);
+            return bundleConfiguration.CreateBundleContainers(isOutputOptimized);
         }
 
         Dictionary<Type, object> CreateBundleFactories()

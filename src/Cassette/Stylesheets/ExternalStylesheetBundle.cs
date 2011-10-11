@@ -25,7 +25,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class ExternalStylesheetBundle : StylesheetBundle, IBundleSource<StylesheetBundle>, IExternalBundle
+    public class ExternalStylesheetBundle : StylesheetBundle, IBundleSource<StylesheetBundle>
     {
         public ExternalStylesheetBundle(string url)
             : base(url)
