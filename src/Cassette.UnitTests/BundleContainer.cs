@@ -41,7 +41,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new BundleContainer<Bundle>(new[] { bundle });
+                new BundleContainer(new[] { bundle });
             });
             exception.Message.ShouldEqual("Reference error in \"bundle-1\\a.js\". Cannot find \"~\\fail\\fail.js\".");
         }
@@ -58,7 +58,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new BundleContainer<Bundle>(new[] { bundle });
+                new BundleContainer(new[] { bundle });
             });
             exception.Message.ShouldEqual("Reference error in \"~/bundle-1/a.js\", line 42. Cannot find \"~\\fail\\fail.js\".");
         }
@@ -67,7 +67,7 @@ namespace Cassette
         public void FindBundleContainingPathOfBundleReturnsTheBundle()
         {
             var expectedBundle = new Bundle("~/test");
-            var container = new BundleContainer<Bundle>(new[] {
+            var container = new BundleContainer(new[] {
                 expectedBundle
             });
             var actualBundle = container.FindBundleContainingPath("~/test");
@@ -77,7 +77,7 @@ namespace Cassette
         [Fact]
         public void FindBundleContainingPathWithWrongPathReturnsNull()
         {
-            var container = new BundleContainer<Bundle>(new[] {
+            var container = new BundleContainer(new[] {
                 new Bundle("~/test")
             });
             var actualBundle = container.FindBundleContainingPath("~/WRONG");
@@ -93,7 +93,7 @@ namespace Cassette
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.SourceFilename).Returns("~/test/test.js");
             expectedBundle.Assets.Add(asset.Object);
-            var container = new BundleContainer<Bundle>(new[] {
+            var container = new BundleContainer(new[] {
                 expectedBundle
             });
             var actualBundle = container.FindBundleContainingPath("~/test/test.js");
@@ -108,7 +108,7 @@ namespace Cassette
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
-                new BundleContainer<Bundle>(new[] {bundle1});
+                new BundleContainer(new[] {bundle1});
             });
             exception.Message.ShouldEqual("Reference error in bundle descriptor for \"~/bundle1\". Cannot find \"~/bundle2\".");
         }
@@ -148,7 +148,7 @@ namespace Cassette
             SetupAsset("~/bundle-4/d.js", asset4);
             bundle4.Assets.Add(asset4.Object);
 
-            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2, bundle3, bundle4 });
+            var container = new BundleContainer(new[] { bundle1, bundle2, bundle3, bundle4 });
 
             container.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2, bundle3, bundle4 })
                 .SequenceEqual(new[] { bundle4, bundle2, bundle3, bundle1 }).ShouldBeTrue();
@@ -159,7 +159,7 @@ namespace Cassette
         {
             var externalBundle1 = new ExternalScriptBundle("http://test.com/test1.js");
             var externalBundle2 = new ExternalScriptBundle("http://test.com/test2.js");
-            var container = new BundleContainer<ScriptBundle>(Enumerable.Empty<ScriptBundle>());
+            var container = new BundleContainer(Enumerable.Empty<ScriptBundle>());
             var results = container.IncludeReferencesAndSortBundles(new[] { externalBundle1, externalBundle2 });
             results.SequenceEqual(new[] { externalBundle1, externalBundle2 }).ShouldBeTrue();
         }
@@ -171,7 +171,7 @@ namespace Cassette
             var bundle2 = new Bundle("~/bundle2");
             bundle1.AddReferences(new[] { "~/bundle2" });
 
-            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2 });
+            var container = new BundleContainer(new[] { bundle1, bundle2 });
             var sorted = container.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2 });
             sorted.SequenceEqual(new[] { bundle2, bundle1 }).ShouldBeTrue();
         }
@@ -181,7 +181,7 @@ namespace Cassette
         {
             var bundle1 = new Bundle("~/bundle1");
             var bundle2 = new Bundle("~/bundle2");
-            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2 });
+            var container = new BundleContainer(new[] { bundle1, bundle2 });
             
             var sorted = container.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
 
@@ -195,7 +195,7 @@ namespace Cassette
             var bundle2 = new Bundle("~/bundle2");
             bundle1.AddReferences(new[] { "~/bundle2" });
             bundle2.AddReferences(new[] { "~/bundle1" });
-            var container = new BundleContainer<Bundle>(new[] { bundle1, bundle2 });
+            var container = new BundleContainer(new[] { bundle1, bundle2 });
 
             Assert.Throws<InvalidOperationException>(delegate
             {
@@ -211,7 +211,7 @@ namespace Cassette
             ms[1].AddReferences(new[] { "~/4" });
             ms[4].AddReferences(new[] { "~/3" });
 
-            var container = new BundleContainer<Bundle>(ms);
+            var container = new BundleContainer(ms);
             var sorted = container.IncludeReferencesAndSortBundles(ms).ToArray();
 
             sorted[0].ShouldBeSameAs(ms[0]);

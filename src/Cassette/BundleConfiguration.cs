@@ -99,7 +99,7 @@ namespace Cassette
         IBundleContainer CreateBundleContainer<T>(bool useCache)
             where T : Bundle
         {
-            var bundles = ((IEnumerable<T>)bundleSourceResultsByType[typeof(T)].Item1).ToArray();
+            var bundles = ((IEnumerable<Bundle>)bundleSourceResultsByType[typeof(T)].Item1).ToArray();
             if (useCache)
             {
                 return GetOrCreateCachedBundleContainer(bundles);
@@ -110,12 +110,12 @@ namespace Cassette
             }
         }
 
-        IBundleContainer GetOrCreateCachedBundleContainer<T>(T[] bundles) where T : Bundle
+        IBundleContainer GetOrCreateCachedBundleContainer(Bundle[] bundles)
         {
-            var cache = GetBundleCache<T>();
+            var cache = GetBundleCache();
             if (cache.InitializeBundlesFromCacheIfUpToDate(bundles))
             {
-                return new BundleContainer<T>(ConvertUrlReferencesToBundles(bundles));
+                return new BundleContainer(ConvertUrlReferencesToBundles(bundles));
             }
             else
             {
@@ -126,11 +126,11 @@ namespace Cassette
             }
         }
 
-        BundleContainer<T> CreateBundleContainer<T>(IEnumerable<T> bundles) where T : Bundle
+        IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles)
         {
             var bundlesArray = bundles.ToArray();
             List<Action<object>> customizeActions;
-            if (customizations.TryGetValue(typeof(T), out customizeActions))
+            if (customizations.TryGetValue(typeof(Bundle), out customizeActions))
             {
                 foreach (var customize in customizeActions)
                 {
@@ -141,10 +141,10 @@ namespace Cassette
                 }
             }
             ProcessAll(bundlesArray);
-            return new BundleContainer<T>(ConvertUrlReferencesToBundles(bundlesArray));
+            return new BundleContainer(ConvertUrlReferencesToBundles(bundlesArray));
         }
 
-        IEnumerable<T> ConvertUrlReferencesToBundles<T>(T[] bundles) where T : Bundle
+        IEnumerable<Bundle> ConvertUrlReferencesToBundles<T>(T[] bundles) where T : Bundle
         {
             var bundlePaths = new HashSet<string>(bundles.Select(m => m.Path), StringComparer.OrdinalIgnoreCase);
 
@@ -176,8 +176,7 @@ namespace Cassette
             }
         }
 
-        void ProcessAll<T>(IEnumerable<T> bundles)
-            where T : Bundle
+        void ProcessAll(IEnumerable<Bundle> bundles)
         {
             foreach (var bundle in bundles)
             {
@@ -185,12 +184,11 @@ namespace Cassette
             }
         }
 
-        IBundleCache<T> GetBundleCache<T>()
-            where T : Bundle
+        IBundleCache GetBundleCache()
         {
-            return new BundleCache<T>(
+            return new BundleCache(
                 version,
-                cacheDirectory.GetDirectory(typeof(T).Name, true),
+                cacheDirectory,
                 sourceDirectory
             );
         }
@@ -200,35 +198,5 @@ namespace Cassette
         {
             return (IBundleFactory<T>)bundleFactories[typeof(T)];
         }
-
-        public void Customize<T>(Action<T> action)
-            where T : Bundle
-        {
-            var list = GetOrCreateCustomizationList<T>();
-            list.Add(bundle => action((T)bundle));
-        }
-
-        public void Customize<T>(Func<T, bool> predicate, Action<T> action)
-            where T : Bundle
-        {
-            var list = GetOrCreateCustomizationList<T>();
-            list.Add(bundle =>
-            {
-                var typedBundle = (T)bundle;
-                if (predicate(typedBundle)) action(typedBundle);
-            });
-        }
-
-        List<Action<object>> GetOrCreateCustomizationList<T>()
-            where T : Bundle
-        {
-            List<Action<object>> list;
-            if (customizations.TryGetValue(typeof(T), out list) == false)
-            {
-                customizations[typeof(T)] = list = new List<Action<object>>();
-            }
-            return list;
-        }
     }
 }
-

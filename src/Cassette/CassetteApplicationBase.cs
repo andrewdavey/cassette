@@ -121,7 +121,7 @@ namespace Cassette
             }
             else
             {
-                return new BundleContainer<T>(Enumerable.Empty<T>());
+                return new BundleContainer(Enumerable.Empty<Bundle>());
             }
         }
 

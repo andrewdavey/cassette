@@ -29,8 +29,7 @@ using System.Web;
 
 namespace Cassette.Persistence
 {
-    public class BundleCache<T> : IBundleCache<T>
-        where T : Bundle
+    public class BundleCache : IBundleCache
     {
         public BundleCache(string version, IDirectory cacheDirectory, IDirectory sourceDirectory)
         {
@@ -47,7 +46,7 @@ namespace Cassette.Persistence
         readonly IDirectory sourceDirectory;
         readonly IFile containerFile;
 
-        public bool InitializeBundlesFromCacheIfUpToDate(IEnumerable<T> unprocessedSourceBundles)
+        public bool InitializeBundlesFromCacheIfUpToDate(IEnumerable<Bundle> unprocessedSourceBundles)
         {
             if (!containerFile.Exists) return false;
 
@@ -96,7 +95,7 @@ namespace Cassette.Persistence
             return maxLastWriteTimeUtc <= containerFile.LastWriteTimeUtc;
         }
 
-        bool CacheFileIsOlderThanAnyAsset(IEnumerable<T> unprocessedSourceBundles)
+        bool CacheFileIsOlderThanAnyAsset(IEnumerable<Bundle> unprocessedSourceBundles)
         {
             var finder = new AssetLastWriteTimeFinder();
             finder.Visit(unprocessedSourceBundles);
@@ -111,7 +110,7 @@ namespace Cassette.Persistence
             return versionAttribute.Value == version;
         }
 
-        bool IsSameAssetCount(IEnumerable<T> unprocessedSourceBundles, XElement containerXml)
+        bool IsSameAssetCount(IEnumerable<Bundle> unprocessedSourceBundles, XElement containerXml)
         {
             var assetCountAttribute = containerXml.Attribute("AssetCount");
             if (assetCountAttribute == null) return false;
@@ -125,7 +124,7 @@ namespace Cassette.Persistence
             return assetCount == assetCounter.Count;
         }
 
-        Action CreateBundleInitializationAction(T bundle, XElement containerElement)
+        Action CreateBundleInitializationAction(Bundle bundle, XElement containerElement)
         {
             var bundleElement = GetBundleElement(bundle, containerElement);
             if (bundleElement == null) return null;
@@ -159,7 +158,7 @@ namespace Cassette.Persistence
                    select pathAttribute.Value;
         }
 
-        XElement GetBundleElement(T bundle, XElement containerElement)
+        XElement GetBundleElement(Bundle bundle, XElement containerElement)
         {
             return (
                 from e in containerElement.Elements("Bundle")

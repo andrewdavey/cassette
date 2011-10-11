@@ -25,10 +25,9 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class BundleContainer<T> : IBundleContainer
-        where T : Bundle
+    public class BundleContainer : IBundleContainer
     {
-        public BundleContainer(IEnumerable<T> bundles)
+        public BundleContainer(IEnumerable<Bundle> bundles)
         {
             this.bundles = bundles.ToArray(); // Force eval to prevent repeatedly generating new bundles.
 
@@ -37,7 +36,7 @@ namespace Cassette
             bundleImmediateReferences = BuildBundleImmediateReferenceDictionary();
         }
 
-        readonly T[] bundles;
+        readonly Bundle[] bundles;
         readonly Dictionary<Bundle, HashSet<Bundle>> bundleImmediateReferences;
 
         public IEnumerable<Bundle> Bundles
@@ -75,7 +74,7 @@ namespace Cassette
                 {
                     HashSet<Bundle> set;
                     if (references.TryGetValue(bundle, out set)) return set;
-                    return Enumerable.Empty<T>();
+                    return Enumerable.Empty<Bundle>();
                 }
             );
         }
