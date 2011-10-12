@@ -55,6 +55,9 @@
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
+    <Compile Include="Configuration\BundleContainerFactory.cs" />
+    <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
+    <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteApplication.cs" />
     <Compile Include="DirectorySource.cs" />
     <Compile Include="FileSystemBundleSource.cs" />

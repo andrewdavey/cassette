@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using Cassette.Persistence;
+using Moq;
+using Should;
+using Xunit;
+
+namespace Cassette.Configuration
+{
+    public class CachedBundleContainerFactory_Tests : BundleContainerFactoryTestSuite<CachedBundleContainerFactory>
+    {
+        readonly Mock<IBundleCache> cache = new Mock<IBundleCache>();
+        readonly ICassetteApplication application = Mock.Of<ICassetteApplication>();
+
+        [Fact]
+        public void GivenCacheIsUpToDate_WhenCreateWithBundle_ThenContainerCreatedWithTheGivenBundle()
+        {
+            var bundles = new[] { new Bundle("~/test") };
+            CacheIsUpToDate(bundles);
+
+            var factory = CreateFactory();
+            var container = factory.Create(bundles);
+
+            container.FindBundleContainingPath("~/test").ShouldBeSameAs(bundles[0]);
+        }
+
+        [Fact]
+        public void GivenCacheIsUpToDate_WhenCreateWithBundle_ThenBundleIsNotProcessed()
+        {
+            var bundle = new Mock<Bundle>("~/test");
+            var bundles = new[] { bundle.Object };
+            CacheIsUpToDate(bundles);
+
+            var factory = CreateFactory();
+            factory.Create(bundles);
+
+            bundle.Verify(b => b.Process(application), Times.Never());
+        }
+
+        [Fact]
+        public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenBundleIsProcessed()
+        {
+            var bundle = new Mock<Bundle>("~/test");
+            var bundles = new[] { bundle.Object };
+            CacheIsOutOfDate(bundles);
+
+            var factory = CreateFactory();
+            factory.Create(bundles);
+
+            bundle.Verify(b => b.Process(application));
+        }
+
+        [Fact]
+        public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenContainerSavedToCache()
+        {
+            var bundles = new Bundle[0];
+            CacheIsOutOfDate(bundles);
+
+            var factory = CreateFactory();
+            factory.Create(bundles);
+
+            cache.Verify(c => c.SaveBundleContainer(It.IsAny<IBundleContainer>()));
+        }
+
+        [Fact]
+        public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenBundlesInitializedFromNewCache()
+        {
+            var bundles = new Bundle[0];
+            CacheIsOutOfDate(bundles);
+            
+            var factory = CreateFactory();
+            factory.Create(bundles);
+
+            // InitializeBundlesFromCacheIfUpToDate should be called a second time.
+            // This is to make the bundles get their content from the cached, optimized, data.
+            // Otherwise the first time the app runs the bundles are running from their original sources.
+            cache.Verify(c => c.InitializeBundlesFromCacheIfUpToDate(bundles), Times.Exactly(2));
+        }
+
+        protected override CachedBundleContainerFactory CreateFactory(ICassetteApplication application, IDictionary<Type, IBundleFactory<Bundle>> factories)
+        {
+            return new CachedBundleContainerFactory(cache.Object, application, factories);
+        }
+
+        CachedBundleContainerFactory CreateFactory()
+        {
+            return CreateFactory(
+                application,
+                new Dictionary<Type, IBundleFactory<Bundle>>()
+            );
+        }
+
+        void CacheIsUpToDate(IEnumerable<Bundle> bundles)
+        {
+            cache.Setup(c => c.InitializeBundlesFromCacheIfUpToDate(bundles))
+                .Returns(true);
+        }
+
+        void CacheIsOutOfDate(IEnumerable<Bundle> bundles)
+        {
+            cache.Setup(c => c.InitializeBundlesFromCacheIfUpToDate(bundles))
+                 .Returns(false);
+        }
+    }
+}

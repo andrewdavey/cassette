@@ -1,12 +1,25 @@
 ﻿using System.Collections.Generic;
-using Cassette.IO;
+using System;
 
 namespace Cassette.Configuration
 {
+    // ICassetteApplication application
+    // application.Bundles...
+    // application.Services.Register<ICompiler>("CoffeeScript", () => new CoffeeScriptCompiler());
+    // application.Services.Register<IUrlGenerator>(() => new UrlGenerator());
+    // application.Settings.Optimized = true;
+    // application.Settings.RewriteHtml = true;
+
+    public class CassetteServiceRegistrar
+    {
+        public void Register<T>(Func<T> getInstance) { }
+        public void Register<T>(string name, Func<T> getInstance) { }
+    }
+
     public interface ICassetteApplicationC
     {
         IList<Bundle> Bundles { get; }
-        IUrlGenerator UrlGenerator { get; set; }
+        CassetteServiceRegistrar Services { get; }
         bool OptimizationEnabled { get; set; }
         bool HtmlRewritingEnabled { get; set; }
     }
