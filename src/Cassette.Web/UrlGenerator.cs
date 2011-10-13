@@ -50,7 +50,7 @@ namespace Cassette.Web
 
         public string GetRawFileRouteUrl()
         {
-            return assetUrlPrefix + "/file/{*path}";
+            return assetUrlPrefix + "/files/{*path}";
         }
 
         public string CreateModuleUrl(Module module)
@@ -89,7 +89,7 @@ namespace Cassette.Web
         {
             if (filename.StartsWith("~") == false)
             {
-                throw new ArgumentException("Image filename must be application relative (starting with '~').");
+                throw new ArgumentException("Filename must be application relative (starting with '~').");
             }
 
             filename = filename.Substring(2); // Remove the "~/"
@@ -97,7 +97,7 @@ namespace Cassette.Web
             var name = filename.Substring(0, dotIndex);
             var extension = filename.Substring(dotIndex + 1);
 
-            return string.Format("{0}/{1}/images/{2}_{3}_{4}",
+            return string.Format("{0}/{1}/files/{2}_{3}_{4}",
                 virtualDirectory,
                 assetUrlPrefix,
                 ConvertToForwardSlashes(name),

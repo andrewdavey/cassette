@@ -223,7 +223,7 @@ namespace Cassette.Web
         {
             var generator = new UrlGenerator("/");
             var url = generator.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldStartWith("/_assets/images/");
+            url.ShouldStartWith("/_assets/files/");
         }
 
         [Fact]
@@ -231,7 +231,7 @@ namespace Cassette.Web
         {
             var generator = new UrlGenerator("/");
             var url = generator.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldStartWith("/_assets/images/test_hash_png");
+            url.ShouldStartWith("/_assets/files/test_hash_png");
         }
 
         [Fact]
@@ -239,7 +239,7 @@ namespace Cassette.Web
         {
             var generator = new UrlGenerator("/");
             var url = generator.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("/_assets/images/test/foo_hash_png");
+            url.ShouldEqual("/_assets/files/test/foo_hash_png");
         }
 
         [Fact]
@@ -300,7 +300,7 @@ namespace Cassette.Web
         {
             var app = new UrlGenerator("/");
             var url = app.GetRawFileRouteUrl();
-            url.ShouldEqual("_assets/file/{*path}");
+            url.ShouldEqual("_assets/files/{*path}");
         }
     }
 }
