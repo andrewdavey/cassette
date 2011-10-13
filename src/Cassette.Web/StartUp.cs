@@ -89,13 +89,34 @@ namespace Cassette.Web
         static IEnumerable<ICassetteConfiguration> CreateConfigurationsByScanningAssembliesForType()
         {
             Trace.Source.TraceInformation("Creating CassetteConfigurations by scanning assemblies.");
-            // Scan all assemblies for implementation of the interface and create instance.
+            // Scan all assemblies for implementations of the interface and create instances.
             return from assembly in BuildManager.GetReferencedAssemblies().Cast<Assembly>()
-                   from type in assembly.GetExportedTypes()
-                   where type.IsClass
-                      && !type.IsAbstract
-                      && typeof(ICassetteConfiguration).IsAssignableFrom(type)
+                   from type in GetConfigurationTypes(assembly)
                    select CreateConfigurationInstance(type);
+        }
+
+        static IEnumerable<Type> GetConfigurationTypes(Assembly assembly)
+        {
+            IEnumerable<Type> types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException exception)
+            {
+                // Some types failed to load, often due to a referenced assembly being missing.
+                // This is not usually a problem, so just continue with whatever did load.
+                types = exception.Types.Where(type => type != null);
+            }
+            return types.Where(IsCassetteConfigurationType);
+        } 
+
+        static bool IsCassetteConfigurationType(Type type)
+        {
+            return type.IsPublic
+                   && type.IsClass
+                   && !type.IsAbstract
+                   && typeof(ICassetteConfiguration).IsAssignableFrom(type);
         }
 
         static ICassetteConfiguration CreateConfigurationInstance(Type type)
