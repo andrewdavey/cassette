@@ -31,14 +31,9 @@ namespace Cassette.Stylesheets
     {
         public ExpandCssUrlsAssetTransformer_Tests()
         {
-            application = new Mock<ICassetteApplication>();
             var directory = new Mock<IDirectory>();
             file = new Mock<IFile>();
             urlGenerator = new Mock<IUrlGenerator>();
-            application.SetupGet(a => a.RootDirectory)
-                       .Returns(directory.Object);
-            application.SetupGet(a => a.UrlGenerator)
-                       .Returns(urlGenerator.Object);
             urlGenerator.Setup(u => u.CreateRawFileUrl(It.IsAny<string>(), It.IsAny<string>()))
                         .Returns<string, string>((f, h) => "EXPANDED");
             directory.Setup(d => d.GetFile(It.IsAny<string>()))
@@ -47,13 +42,12 @@ namespace Cassette.Stylesheets
             file.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(Stream.Null);
 
-            transformer = new ExpandCssUrlsAssetTransformer(application.Object);
+            transformer = new ExpandCssUrlsAssetTransformer(directory.Object, urlGenerator.Object);
             asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("~/styles/asset.css");
         }
 
         readonly ExpandCssUrlsAssetTransformer transformer;
-        readonly Mock<ICassetteApplication> application;
         readonly Mock<IAsset> asset;
         readonly Mock<IUrlGenerator> urlGenerator;
         readonly Mock<IFile> file;

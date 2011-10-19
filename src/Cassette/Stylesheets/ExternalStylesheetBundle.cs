@@ -19,13 +19,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Web;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class ExternalStylesheetBundle : StylesheetBundle, IBundleSource<StylesheetBundle>
+    public class ExternalStylesheetBundle : StylesheetBundle
     {
         public ExternalStylesheetBundle(string url)
             : base(url)
@@ -37,6 +36,12 @@ namespace Cassette.Stylesheets
             : base(PathUtilities.AppRelative(name))
         {
             this.url = url;
+        }
+
+        internal ExternalStylesheetBundle(string path, BundleDescriptor bundleDescriptor)
+            : base(path, bundleDescriptor)
+        {
+            url = path.IsUrl() ? path : bundleDescriptor.ExternalUrl;
         }
 
         readonly string url;
@@ -62,11 +67,5 @@ namespace Cassette.Stylesheets
         {
             return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
-
-        IEnumerable<StylesheetBundle> IBundleSource<StylesheetBundle>.GetBundles(IBundleFactory<StylesheetBundle> bundleFactory, ICassetteApplication application)
-        {
-            yield return this;
-        }
     }
 }
-

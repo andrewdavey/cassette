@@ -29,7 +29,7 @@ namespace Cassette.Scripts
         public void CreateBundleReturnsScriptBundle()
         {
             var factory = new ScriptBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle("~/test", null);
             bundle.ShouldBeType<ScriptBundle>();
         }
 
@@ -37,14 +37,14 @@ namespace Cassette.Scripts
         public void CreateBundleAssignsScriptBundleDirectory()
         {
             var factory = new ScriptBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle("~/test", null);
             bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void CreateExternalBundleReturnsExternalScriptBundle()
+        public void CreateBundleWithUrlCreatesExternalScriptBundle()
         {
-            new ScriptBundleFactory().CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
+            new ScriptBundleFactory().CreateBundle("http://test.com/api.js", null).ShouldBeType<ExternalScriptBundle>();
         }
     }
 }

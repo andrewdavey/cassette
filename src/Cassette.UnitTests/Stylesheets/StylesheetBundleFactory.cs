@@ -29,15 +29,15 @@ namespace Cassette.Stylesheets
         public void CreateBundleReturnsStylesheetBundleWithDirectorySet()
         {
             var factory = new StylesheetBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle("~/test", null);
             bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
-        public void CreateExternalBundleReturnsExternalsStylesheetBundle()
+        public void CreateBundleWithUrlCreatesExternalBundle()
         {
             var factory = new StylesheetBundleFactory();
-            var bundle = factory.CreateExternalBundle("http://test.com/test.css");
+            var bundle = factory.CreateBundle("http://test.com/test.css", null);
             bundle.ShouldBeType<ExternalStylesheetBundle>();
         }
     }

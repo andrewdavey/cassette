@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Linq;
 using Cassette.BundleProcessing;
 using Moq;
 using Should;
@@ -75,15 +74,6 @@ namespace Cassette.Stylesheets
             bundle.Process(Mock.Of<ICassetteApplication>());
 
             processor.Verify(p => p.Process(It.IsAny<StylesheetBundle>(), It.IsAny<ICassetteApplication>()), Times.Never());
-        }
-
-        [Fact]
-        public void CanActAsABundleSourceOfItself()
-        {
-            var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
-            var result = (bundle as IBundleSource<StylesheetBundle>).GetBundles(Mock.Of<IBundleFactory<StylesheetBundle>>(), Mock.Of<ICassetteApplication>());
-            
-            result.SequenceEqual(new[] { bundle }).ShouldBeTrue();
         }
 
         [Fact]

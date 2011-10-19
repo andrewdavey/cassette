@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
@@ -30,10 +29,15 @@ using Moq;
 
 namespace Cassette
 {
-    public class BundleDescriptorReader_Tests
+    public class BundleDescriptorReader_Tests : IDisposable
     {
-        readonly List<string> files = new List<string>();
-        
+        readonly TempDirectory tempDirectory;
+
+        public BundleDescriptorReader_Tests()
+        {
+            tempDirectory = new TempDirectory();            
+        }
+
         BundleDescriptorReader GetReader(string descriptor)
         {
             var source = new Mock<IFile>();
@@ -41,12 +45,15 @@ namespace Cassette
                 .Setup(s => s.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => descriptor.AsStream());
 
-            return new BundleDescriptorReader(source.Object, files);
+            return new BundleDescriptorReader(source.Object);
         }
 
-        void FilesExist(params string[] result)
+        void FilesExist(params string[] filenames)
         {
-            files.AddRange(result);
+            foreach (var filename in filenames)
+            {
+                File.WriteAllText(Path.Combine(tempDirectory, filename), "");
+            }
         }
 
         [Fact]
@@ -78,8 +85,9 @@ namespace Cassette
         {
             FilesExist("test1.js", "test2.js");
             var reader = GetReader("test1.js\ntest2.js");
-            var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
+            var descriptor = reader.Read();
+            var files = descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories);
+            files.Select(f => f.FullPath).SequenceEqual(new[] { "~/test1.js", "~/test2.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -87,9 +95,10 @@ namespace Cassette
         {
             FilesExist("test1.js");
             var reader = GetReader("test1.js\ntest2.js");
+            var descriptor = reader.Read();
             Assert.Throws<FileNotFoundException>(delegate
             {
-                reader.Read();
+                descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories).ToArray();
             });
         }
 
@@ -107,8 +116,9 @@ namespace Cassette
         {
             FilesExist("test1.js", "test2.js");
             var reader = GetReader("*");
-            var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test1.js", "test2.js" }).ShouldBeTrue();
+            var descriptor = reader.Read();
+            var files = descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories);
+            files.Select(f => f.FullPath).SequenceEqual(new[] { "~/test1.js", "~/test2.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -116,8 +126,9 @@ namespace Cassette
         {
             FilesExist("test1.js", "test2.js", "test3.js");
             var reader = GetReader("test2.js\n*");
-            var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test2.js", "test1.js", "test3.js" }).ShouldBeTrue();
+            var descriptor = reader.Read();
+            var files = descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories);
+            files.Select(f => f.FullPath).SequenceEqual(new[] { "~/test2.js", "~/test1.js", "~/test3.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -210,6 +221,11 @@ namespace Cassette
             {
                 reader.Read();
             });
+        }
+
+        public void Dispose()
+        {
+            tempDirectory.Dispose();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Cassette.Scripts
                 yield return new CompileCoffeeScript(new CoffeeScriptCompiler());
             }
             yield return new SortAssetsByDependency();
-            if (application.IsOutputOptimized)
+            if (!application.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(Minifier);

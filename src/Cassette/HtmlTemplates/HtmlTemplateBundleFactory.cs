@@ -18,25 +18,13 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System;
-
 namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateBundleFactory : IBundleFactory<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundle CreateBundle(string directory)
+        public HtmlTemplateBundle CreateBundle(string directory, BundleDescriptor bundleDescriptor)
         {
-            return new HtmlTemplateBundle(directory);
-        }
-
-        public HtmlTemplateBundle CreateExternalBundle(string url)
-        {
-            throw new NotSupportedException("External HTML template bundles are not supported.");
-        }
-
-        public HtmlTemplateBundle CreateExternalBundle(string name, BundleDescriptor bundleDescriptor)
-        {
-            throw new NotSupportedException("External HTML template bundles are not supported.");
+            return new HtmlTemplateBundle(directory, bundleDescriptor);
         }
     }
 }

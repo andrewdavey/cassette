@@ -26,13 +26,13 @@ namespace Cassette.Scripts
     {
         public void Process(ScriptBundle bundle, ICassetteApplication application)
         {
-            if (application.IsOutputOptimized)
+            if (application.IsDebuggingEnabled)
             {
-                bundle.Renderer = new ScriptBundleHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new DebugScriptBundleHtmlRenderer(application.UrlGenerator);
             }
             else
             {
-                bundle.Renderer = new DebugScriptBundleHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new ScriptBundleHtmlRenderer(application.UrlGenerator);
             }
         }
     }

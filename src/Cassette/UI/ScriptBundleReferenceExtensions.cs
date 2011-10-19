@@ -23,7 +23,7 @@ using Cassette.Scripts;
 
 namespace Cassette.UI
 {
-    public static class ScriptBundleExtensions
+    public static class ScriptBundleReferenceExtensions
     {
         public static void AddInline(this IReferenceBuilder<ScriptBundle> referenceBuilder, string scriptContent, string location = null)
         {

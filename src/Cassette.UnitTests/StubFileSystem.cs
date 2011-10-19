@@ -52,9 +52,14 @@ namespace Cassette
                 );
         }
 
-        public IEnumerable<string> GetDirectoryPaths(string relativePath)
+        public IEnumerable<IDirectory> GetDirectories()
         {
             throw new NotImplementedException();
+        }
+
+        public string FullPath
+        {
+            get { return "~/"; }
         }
 
         public IFile GetFile(string filename)
@@ -62,16 +67,9 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
+        public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
-            if (searchPattern == "*")
-            {
-                return fileStreams.Keys;
-            }
-            else
-            {
-                return fileStreams.Keys.Where(key => key.EndsWith(searchPattern.Substring(1)));
-            }
+            throw new NotImplementedException();
         }
 
         public FileAttributes GetAttributes(string path)

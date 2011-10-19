@@ -82,9 +82,9 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenApplicationIsOutputOptimized_ThenCssUrlsAreExpanded()
+        public void GivenDebugMode_ThenCssUrlsAreExpanded()
         {
-            application.SetupGet(a => a.IsOutputOptimized).Returns(true);
+            application.SetupGet(a => a.IsDebuggingEnabled).Returns(false);
             new StylesheetPipeline().Process(bundle, application.Object);
             asset2.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(
                 transformer => transformer is ExpandCssUrlsAssetTransformer)
@@ -94,16 +94,17 @@ namespace Cassette.Stylesheets
         [Fact]
         public void AssetsAreSortedByDependency()
         {
+            application.SetupGet(a => a.IsDebuggingEnabled).Returns(true);
             new StylesheetPipeline().Process(bundle, application.Object);
             bundle.Assets.SequenceEqual(new[] { asset2.Object, asset1.Object }).ShouldBeTrue();
         }
     }
 
-    public class StylesheetPipelineWhereApplicationIsOutputOptimized : StylesheetPipeline_Process_TestBase
+    public class StylesheetPipelineInDebugMode : StylesheetPipeline_Process_TestBase
     {
-        public StylesheetPipelineWhereApplicationIsOutputOptimized()
+        public StylesheetPipelineInDebugMode()
         {
-            application.Setup(a => a.IsOutputOptimized).Returns(true);
+            application.Setup(a => a.IsDebuggingEnabled).Returns(false);
         }
 
         [Fact]

@@ -57,12 +57,19 @@ namespace Cassette
         }
 
         [Fact]
-        public void BundlePathMustBeApplicationRelative()
+        public void BundlePathIsConvertedToBeApplicationRelative()
         {
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new Bundle("fail");
-            });
+            var bundle = new Bundle("test");
+            bundle.Path.ShouldEqual("~/test");
+        }
+
+        [Fact]
+        public void CanCreateWithAssetSources()
+        {
+            var initializer = Mock.Of<IBundleInitializer>();
+            var bundle = new Bundle("~/test", new[] { initializer });
+
+            bundle.BundleInitializers.SequenceEqual(new[] { initializer }).ShouldBeTrue();
         }
 
         [Fact]
@@ -292,6 +299,29 @@ namespace Cassette
             var bundle = new Bundle("~/bundle");
             bundle.AddReferences(new[] { "http://test.com/" });
             bundle.References.Single().ShouldEqual("http://test.com/");
+        }
+    }
+
+    public class Bundle_AssetSources_Tests
+    {
+        [Fact]
+        public void AssetSourcesIsInitiallyEmpty()
+        {
+            var bundle = new Bundle("~");
+            bundle.BundleInitializers.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void GivenAssetSourceAdded_WhenAddAssetsFromSources_ThenInitializeBundleCalled()
+        {
+            var bundle = new Bundle("~");
+            var application = Mock.Of<ICassetteApplication>();
+            var initializer = new Mock<IBundleInitializer>();
+            bundle.BundleInitializers.Add(initializer.Object);
+            
+            bundle.Initialize(application);
+
+            initializer.Verify(s => s.InitializeBundle(bundle, application));
         }
     }
 }

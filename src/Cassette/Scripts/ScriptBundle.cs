@@ -18,6 +18,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Web;
 using Cassette.BundleProcessing;
 
@@ -25,11 +27,28 @@ namespace Cassette.Scripts
 {
     public class ScriptBundle : Bundle
     {
-        public ScriptBundle(string directory)
-            : base(directory)
+        public ScriptBundle(string path)
+            : this(path, null)
+        {
+        }
+
+        internal ScriptBundle(string path, BundleDescriptor bundleDescriptor)
+            : base(path)
         {
             ContentType = "text/javascript";
             Processor = new ScriptPipeline();
+            BundleInitializers.Add(CreateDefaultFileAssetSource(path, bundleDescriptor));
+        }
+
+        static BundleDirectoryInitializer CreateDefaultFileAssetSource(string path, BundleDescriptor bundleDescriptor)
+        {
+            return new BundleDirectoryInitializer(path)
+            {
+                FilePattern = "*.js;*.coffee",
+                ExcludeFilePath = new Regex("-vsdoc\\.js"),
+                SearchOption = SearchOption.AllDirectories,
+                BundleDescriptor = bundleDescriptor
+            };
         }
 
         public IBundleProcessor<ScriptBundle> Processor { get; set; }

@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.IO;
 using Cassette.BundleProcessing;
 using Moq;
 using Should;
@@ -25,6 +26,35 @@ using Xunit;
 
 namespace Cassette.Stylesheets
 {
+    public class StylesheetBundle_DefaultAssetSource_Tests
+    {
+        readonly BundleDirectoryInitializer initializer;
+
+        public StylesheetBundle_DefaultAssetSource_Tests()
+        {
+            var bundle = new StylesheetBundle("~/test");
+            initializer = bundle.BundleInitializers[0] as BundleDirectoryInitializer;
+        }
+
+        [Fact]
+        public void PathIsBundlePath()
+        {
+            initializer.Path.ShouldEqual("~/test");
+        }
+
+        [Fact]
+        public void FilePatternIsCssAndLess()
+        {
+            initializer.FilePattern.ShouldEqual("*.css;*.less");
+        }
+
+        [Fact]
+        public void SearchOptionIsAllDirectories()
+        {
+            initializer.SearchOption.ShouldEqual(SearchOption.AllDirectories);
+        }
+    }
+
     public class StylesheetBundle_Render_Tests
     {
         [Fact]

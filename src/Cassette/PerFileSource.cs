@@ -76,14 +76,15 @@ namespace Cassette
             IEnumerable<string> filenames;
             if (string.IsNullOrEmpty(FilePattern))
             {
-                filenames = directory.GetFilePaths("", SearchOption, "*");
+                filenames = null; // directory.GetFiles("*", SearchOption);
             }
             else
             {
                 var patterns = FilePattern.Split(';', ',');
-                filenames = patterns.SelectMany(
-                    pattern => directory.GetFilePaths("", SearchOption, pattern)
-                );
+                filenames = null;
+                //filenames = patterns.SelectMany(
+                //    pattern => directory.GetFiles(pattern, SearchOption)
+                //);
             }
 
             if (Exclude != null)

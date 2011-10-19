@@ -18,20 +18,16 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette;
+using Cassette.Configuration;
 using Cassette.Stylesheets;
 
 namespace Website
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(BundleConfiguration moduleConfiguration, ICassetteApplication application)
+        public void Configure(IConfigurableCassetteApplication application)
         {
-            moduleConfiguration.Add(new DirectorySource<StylesheetBundle>("assets/styles")
-            {
-                FilePattern = "*.css"
-            });
+            application.Bundles.Add(new StylesheetBundle("assets/styles"));
         }
     }
 }
-

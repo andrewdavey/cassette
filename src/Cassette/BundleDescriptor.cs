@@ -18,8 +18,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Cassette.IO;
 
 namespace Cassette
@@ -77,6 +80,46 @@ namespace Cassette
         public string FallbackCondition
         {
             get { return fallbackCondition; }
+        }
+
+        public IEnumerable<IFile> GetAssetFiles(IDirectory directory, IEnumerable<string> filePatterns, Regex excludeFilePath, SearchOption searchOption)
+        {
+            var filesAdded = new HashSet<string>();
+            var shouldIncludeFile = BuildShouldIncludeFile(filesAdded, excludeFilePath);
+            foreach (var assetFilename in assetFilenames)
+            {
+                if (assetFilename == "*")
+                {
+                    var allFiles = filePatterns.SelectMany(filePattern => directory.GetFiles(filePattern, searchOption).Where(shouldIncludeFile));
+                    foreach (var file in allFiles)
+                    {
+                        yield return file;
+                    }
+                }
+                else
+                {
+                    var file = directory.GetFile(assetFilename);
+                    if (!file.Exists)
+                    {
+                        throw new FileNotFoundException("Bundle asset not found \"{0}\".", file.FullPath);
+                    }
+                    filesAdded.Add(file.FullPath);
+                    yield return file;
+                }
+            }
+        }
+
+        static Func<IFile, bool> BuildShouldIncludeFile(ICollection<string> filesAdded, Regex excludeFilePath)
+        {
+            if (excludeFilePath == null)
+            {
+                return file => !filesAdded.Contains(file.FullPath);
+            }
+            else
+            {
+                return file => !filesAdded.Contains(file.FullPath) 
+                               && !excludeFilePath.IsMatch(file.FullPath);
+            }
         }
     }
 }

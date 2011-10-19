@@ -27,6 +27,7 @@ using System.Web;
 using System.Web.Compilation;
 using System.Web.Configuration;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.UI;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
@@ -52,7 +53,7 @@ namespace Cassette.Web
         static IsolatedStorageFile storage;
         static CassetteApplicationContainer<CassetteApplication> applicationContainer;
  
-        public static CassetteApplication CassetteApplication
+        internal static CassetteApplication CassetteApplication
         {
             get { return applicationContainer.Application; }
         }
@@ -70,7 +71,7 @@ namespace Cassette.Web
         // This runs *after* Global.asax Application_Start.
         public static void PostApplicationStart()
         {
-            storage = IsolatedStorageFile.GetMachineStoreForAssembly();
+            storage = IsolatedStorageFile.GetMachineStoreForAssembly(); // TODO: Check if this should be GetMachineStoreForApplication instead
             
             configurations = CreateConfigurations();
             applicationContainer = ShouldOptimizeOutput() ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication) 
@@ -118,16 +119,40 @@ namespace Cassette.Web
             var version = GetConfigurationVersion(HttpRuntime.AppDomainAppVirtualPath);
             Trace.Source.TraceInformation("Cache version: {0}", version);
 
+            var configurable = new ConfigurableCassetteApplication
+            {
+                Settings =
+                {
+                    IsDebuggingEnabled = isOutputOptmized == false,
+                    IsHtmlRewritingEnabled = true,
+                    SourceDirectory = new FileSystemDirectory(sourceDirectory),
+                    CacheDirectory = GetCacheDirectory()
+                }
+            };
+            foreach (var configuration in new[] { new InitialConfiguration(sourceDirectory, storage) }.Concat(configurations))
+            {
+                configuration.Configure(configurable);
+            }
+            
+            var urlModifier = configurable.Services.CreateUrlModifier();
+            var routing = new CassetteRouting(urlModifier);
+
             return new CassetteApplication(
-                configurations,
-                new FileSystemDirectory(sourceDirectory),
-                GetCacheDirectory(),
-                isOutputOptmized,
+                configurable,
                 version,
-                new UrlGenerator(HttpRuntime.AppDomainAppVirtualPath),
+                routing,
                 RouteTable.Routes,
                 GetCurrentHttpContext
             );
+        }
+
+        /// <remarks>
+        /// We need bundle container cache to depend on both the application version
+        /// and the Cassette version. So if either is upgraded, then the cache is discarded.
+        /// </remarks>
+        static string CombineVersionWithCassetteVersion(string version)
+        {
+            return version + "|" + typeof(ICassetteApplication).Assembly.GetName().Version;
         }
 
         static IDirectory GetCacheDirectory()

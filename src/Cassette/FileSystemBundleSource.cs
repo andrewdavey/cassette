@@ -144,16 +144,16 @@ namespace Cassette
 
         IEnumerable<string> GetAssetFilenamesByConfiguration(IDirectory directory)
         {
-            IEnumerable<string> filenames;
-            if (string.IsNullOrWhiteSpace(FilePattern))
-            {
-                filenames = directory.GetFilePaths("", SearchOption, "*");
-            }
-            else
-            {
-                var patterns = FilePattern.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                filenames = patterns.SelectMany(pattern => directory.GetFilePaths("", SearchOption, pattern)).Distinct();
-            }
+            IEnumerable<string> filenames = null;
+            //if (string.IsNullOrWhiteSpace(FilePattern))
+            //{
+            //    filenames = directory.GetFiles("*", SearchOption);
+            //}
+            //else
+            //{
+            //    var patterns = FilePattern.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            //    filenames = patterns.SelectMany(pattern => directory.GetFiles(pattern, SearchOption)).Distinct();
+            //}
             if (Exclude != null)
             {
                 filenames = filenames.Where(f => Exclude.IsMatch(f) == false);

@@ -49,12 +49,12 @@ namespace Cassette.Stylesheets
                 yield return new AddTransformerToAssets(new DataUriGenerator());
             }
             yield return new SortAssetsByDependency();
-            if (application.IsOutputOptimized)
+            if (!application.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);
             }
-            yield return new AssignRenderer();
+            yield return new AssignStylesheetRenderer();
         }
     }
 }

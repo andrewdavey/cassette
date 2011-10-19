@@ -27,9 +27,9 @@ namespace Cassette
     public interface ICassetteApplication : IDisposable
     {
         IDirectory RootDirectory { get; }
-        bool IsOutputOptimized { get; set; }
-        IUrlGenerator UrlGenerator { get; set; }
-        bool HtmlRewritingEnabled { get; set; }
+        bool IsDebuggingEnabled { get; }
+        IUrlGenerator UrlGenerator { get; }
+        bool HtmlRewritingEnabled { get; }
 
         IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle;
     }

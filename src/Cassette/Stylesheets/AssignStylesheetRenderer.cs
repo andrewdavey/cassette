@@ -26,13 +26,13 @@ namespace Cassette.Stylesheets
     {
         public void Process(StylesheetBundle bundle, ICassetteApplication application)
         {
-            if (application.IsOutputOptimized)
+            if (application.IsDebuggingEnabled)
             {
-                bundle.Renderer = new StylesheetHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new DebugStylesheetHtmlRenderer(application.UrlGenerator);
             }
             else
             {
-                bundle.Renderer = new DebugStylesheetHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new StylesheetHtmlRenderer(application.UrlGenerator);
             }
         }
     }

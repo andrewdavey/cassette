@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.IO;
 using Cassette.Utilities;
@@ -30,10 +29,9 @@ namespace Cassette
 {
     public class BundleDescriptorReader
     {
-        public BundleDescriptorReader(IFile sourceFile, IEnumerable<string> allAssetfilenames)
+        public BundleDescriptorReader(IFile sourceFile)
         {
             this.sourceFile = sourceFile;
-            this.allAssetfilenames = new HashSet<string>(allAssetfilenames, StringComparer.OrdinalIgnoreCase);
             sectionLineParsers = new Dictionary<string, Action<string>>
             {
                 { "assets", ParseAsset },
@@ -43,7 +41,6 @@ namespace Cassette
         }
             
         readonly IFile sourceFile;
-        readonly HashSet<string> allAssetfilenames;
         readonly List<string> assetFilenames = new List<string>();
         readonly HashSet<string> references = new HashSet<string>(); 
         readonly Dictionary<string, Action<string>> sectionLineParsers;
@@ -99,31 +96,7 @@ namespace Cassette
 
         void ParseAsset(string line)
         {
-            if (line == "*")
-            {
-                foreach (var filename in allAssetfilenames.Except(assetFilenames))
-                {
-                    assetFilenames.Add(filename);
-                }
-            }
-            else if (FileExists(line))
-            {
-                if (assetFilenames.Contains(line))
-                {
-                    throw new Exception(string.Format(
-                        "The file \"{0}\" cannot appear twice in bundle descriptor.",
-                        line
-                    ));
-                }
-                assetFilenames.Add(line);
-            }
-            else
-            {
-                throw new FileNotFoundException(string.Format(
-                    "Cannot find the file \"{0}\", referenced by bundle descriptor.",
-                    line
-                ));
-            }
+            assetFilenames.Add(line);
         }
 
         void ParseReference(string line)
@@ -174,11 +147,6 @@ namespace Cassette
                 line = line.Substring(0, commentStart).TrimEnd();
             }
             return line;
-        }
-
-        bool FileExists(string filename)
-        {
-            return allAssetfilenames.Contains(filename);
         }
     }
 }

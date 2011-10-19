@@ -1,3 +1,5 @@
+using System;
+
 namespace Cassette.Configuration
 {
     /// <summary>
@@ -5,9 +7,6 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteServices
     {
-        /// <summary>
-        /// Gets or sets the <see cref="IUrlGenerator"/> used by Cassette to create URLs.
-        /// </summary>
-        public IUrlGenerator UrlGenerator { get; set; }
+        public Func<IUrlModifier> CreateUrlModifier { get; set; }
     }
 }

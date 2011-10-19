@@ -42,3 +42,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("da355e7d-f445-4c8d-856c-c7b6ae19bb7d")]
 
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.IntegrationTests")]

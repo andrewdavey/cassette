@@ -61,7 +61,7 @@
     <Content Include="assets\scripts\bundle-a\asset-1.js" />
     <Content Include="assets\scripts\bundle-a\asset-2.js" />
     <Content Include="assets\scripts\bundle-b\asset-3.js" />
-    <Content Include="assets\scripts\bundle-b\asset-3.vsdoc.js" />
+    <Content Include="assets\scripts\bundle-b\asset-3-vsdoc.js" />
     <Content Include="assets\styles\asset-1.css" />
     <Content Include="assets\styles\asset-2.css" />
     <Content Include="assets\templates\asset-1.htm" />

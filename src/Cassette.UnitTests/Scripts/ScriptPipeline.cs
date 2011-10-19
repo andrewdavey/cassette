@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Linq;
 using Moq;
 using Should;
 using Xunit;
@@ -27,11 +28,19 @@ namespace Cassette.Scripts
     public class ScriptPipeline_Tests
     {
         [Fact]
-        public void GivenApplicationIsOptimized_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
+        public void HasDefaultAssetSource()
+        {
+            var script = new ScriptBundle("~");
+            var initializer = script.BundleInitializers.Single() as BundleDirectoryInitializer;
+            initializer.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void GivenProductionMode_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
         {
             var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsOutputOptimized)
-                       .Returns(true);
+            application.SetupGet(a => a.IsDebuggingEnabled)
+                       .Returns(false);
 
             var bundle = new ScriptBundle("~/test");
 
@@ -42,11 +51,11 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenApplicationIsNotOptimized_WhenProcessBundle_ThenRendererIsDebugScriptBundleHtmlRenderer()
+        public void GivenDebugMode_WhenProcessBundle_ThenRendererIsDebugScriptBundleHtmlRenderer()
         {
             var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsOutputOptimized)
-                       .Returns(false);
+            application.SetupGet(a => a.IsDebuggingEnabled)
+                       .Returns(true);
 
             var bundle = new ScriptBundle("~/test");
 

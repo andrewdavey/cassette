@@ -5,9 +5,9 @@ namespace Cassette.Configuration
 {
     public class BundleContainerFactory_Tests : BundleContainerFactoryTestSuite<BundleContainerFactory>
     {
-        protected override BundleContainerFactory CreateFactory(ICassetteApplication application, IDictionary<Type, IBundleFactory<Bundle>> factories)
+        protected override BundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
         {
-            return new BundleContainerFactory(application, factories);
+            return new BundleContainerFactory(factories);
         }
     }
 }

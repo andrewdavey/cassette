@@ -18,8 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Text.RegularExpressions;
-using Cassette;
+using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -28,34 +27,29 @@ namespace Example
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(BundleConfiguration modules, ICassetteApplication application)
+        public void Configure(IConfigurableCassetteApplication application)
         {
-            modules.Add(
-                new PerSubDirectorySource<ScriptBundle>("Scripts")
+            // TODO: Perhaps having BundleCollection as parameter would be neater than typing application.Bundles each time!
+            //       Then have the application.Settings as another parameter.
+
+            application.Bundles.AddForEachSubDirectory<ScriptBundle>("Scripts");
+            application.Bundles.Add(new ExternalScriptBundle("twitter", "http://platform.twitter.com/widgets.js")
+            {
+                Location = "body"
+            });
+
+            application.Bundles.Add(new StylesheetBundle("Styles")
+            {
+                Processor = new StylesheetPipeline // Replace the default processor with a customized pipeline.
                 {
-                    FilePattern = "*.js",
-                    Exclude = new Regex("-vsdoc\\.js$")
-                },
-                new ExternalScriptBundle("twitter", "http://platform.twitter.com/widgets.js")
-                {
-                    Location = "body"
+                    ConvertImageUrlsToDataUris = true // This property is false by default.
                 }
+            });
+
+            application.Bundles.AddForEachSubDirectory<HtmlTemplateBundle>(
+                "HtmlTemplates",
+                bundle => bundle.Processor = new KnockoutJQueryTmplPipeline()
             );
-
-            modules.Add(new DirectorySource<StylesheetBundle>("Styles")
-            {
-                FilePattern = "*.css;*.less",
-                CustomizeBundle = module => module.Processor = new StylesheetPipeline
-                {
-                    CompileLess = true,
-                    ConvertImageUrlsToDataUris = true
-                }
-            });
-
-            modules.Add(new PerSubDirectorySource<HtmlTemplateBundle>("HtmlTemplates")
-            {
-                CustomizeBundle = module => module.Processor = new KnockoutJQueryTmplPipeline()
-            });
         }
     }
 }

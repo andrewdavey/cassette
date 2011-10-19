@@ -20,60 +20,49 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Cassette.HtmlTemplates;
+using Cassette.Configuration;
 using Cassette.IO;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
 using Cassette.UI;
 
 namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(IEnumerable<ICassetteConfiguration> configurations, IDirectory rootDirectory, IDirectory cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
+        protected CassetteApplicationBase(ConfigurableCassetteApplication config, string cacheVersion, IUrlGenerator urlGenerator)
         {
-            this.rootDirectory = rootDirectory;
-            this.isOutputOptimized = isOutputOptimized;
+            bundleFactories = config.BundleFactories;
+            settings = config.Settings;
             this.urlGenerator = urlGenerator;
-            HtmlRewritingEnabled = true;
-            bundleFactories = CreateBundleFactories();
-            bundleContainers = CreateBundleContainers(
-                configurations,
-                cacheDirectory,
-                CombineVersionWithCassetteVersion(version)
-            );
+
+            // Bundle container must be created after the above fields are assigned.
+            // This application object may get used during bundle processing, so its properties must be ready to use.
+            bundleContainer = config.CreateBundleContainer(this, CombineVersionWithCassetteVersion(cacheVersion));
         }
 
-        bool isOutputOptimized;
-        readonly IDirectory rootDirectory;
-        IUrlGenerator urlGenerator;
-        readonly Dictionary<Type, IBundleContainer> bundleContainers;
-        readonly Dictionary<Type, object> bundleFactories;
+        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
+        readonly CassetteSettings settings;
+        readonly IUrlGenerator urlGenerator;
+        readonly IBundleContainer bundleContainer;
 
-        public bool IsOutputOptimized
+        public bool IsDebuggingEnabled
         {
-            get { return isOutputOptimized; }
-            set { isOutputOptimized = value; }
+            get { return settings.IsDebuggingEnabled; }
+        }
+
+        public bool HtmlRewritingEnabled
+        {
+            get { return settings.IsHtmlRewritingEnabled; }
         }
 
         public IDirectory RootDirectory
         {
-            get { return rootDirectory; }
+            get { return settings.SourceDirectory; }
         }
 
         public IUrlGenerator UrlGenerator
         {
             get { return urlGenerator; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException("value", "UrlGenerator cannot be null.");
-                urlGenerator = value;
-            }
         }
-
-        public bool HtmlRewritingEnabled { get; set; }
 
         public IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle
         {
@@ -90,11 +79,7 @@ namespace Cassette
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing) return;
-
-            foreach(var container in bundleContainers.Values)
-            {
-                container.Dispose();
-            }
+            bundleContainer.Dispose();
             GC.SuppressFinalize(this); 
         }
 
@@ -102,8 +87,8 @@ namespace Cassette
             where T : Bundle
         {
             return new ReferenceBuilder<T>(
-                GetBundleContainer<T>(),
-                (IBundleFactory<T>)bundleFactories[typeof(T)],
+                bundleContainer,
+                bundleFactories[typeof(T)],
                 GetPlaceholderTracker(),
                 this
             );
@@ -111,46 +96,9 @@ namespace Cassette
 
         protected abstract IPlaceholderTracker GetPlaceholderTracker();
 
-        protected IBundleContainer GetBundleContainer<T>()
-            where T : Bundle
+        protected IBundleContainer BundleContainer
         {
-            IBundleContainer container;
-            if (bundleContainers.TryGetValue(typeof(T), out container))
-            {
-                return container;
-            }
-            else
-            {
-                return new BundleContainer(Enumerable.Empty<Bundle>());
-            }
-        }
-
-        public Bundle FindBundleContainingPath(string path)
-        {
-            return bundleContainers.Values
-                .Select(container => container.FindBundleContainingPath(path))
-                .FirstOrDefault(bundle => bundle != null);
-        }
-
-        Dictionary<Type, IBundleContainer> CreateBundleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
-        {
-            var bundleConfiguration = new BundleConfiguration(this, cacheDirectory, rootDirectory, bundleFactories, version);
-            foreach (var configuration in configurations)
-            {
-                configuration.Configure(bundleConfiguration, this);
-            }
-            AddDefaultBundleSourcesIfEmpty(bundleConfiguration);
-            return bundleConfiguration.CreateBundleContainers(isOutputOptimized);
-        }
-
-        Dictionary<Type, object> CreateBundleFactories()
-        {
-            return new Dictionary<Type, object>
-            {
-                { typeof(ScriptBundle), new ScriptBundleFactory() },
-                { typeof(StylesheetBundle), new StylesheetBundleFactory() },
-                { typeof(HtmlTemplateBundle), new HtmlTemplateBundleFactory() }
-            };
+            get { return bundleContainer; }
         }
 
         /// <remarks>
@@ -160,47 +108,6 @@ namespace Cassette
         string CombineVersionWithCassetteVersion(string version)
         {
             return version + "|" + GetType().Assembly.GetName().Version;
-        }
-
-        void AddDefaultBundleSourcesIfEmpty(BundleConfiguration bundleConfiguration)
-        {
-            if (bundleConfiguration.ContainsBundleSources(typeof(ScriptBundle)) == false)
-            {
-                bundleConfiguration.Add(DefaultScriptBundleSource());
-            }
-            if (bundleConfiguration.ContainsBundleSources(typeof(StylesheetBundle)) == false)
-            {
-                bundleConfiguration.Add(DefaultStylesheetBundleSource());
-            }
-            if (bundleConfiguration.ContainsBundleSources(typeof(HtmlTemplateBundle)) == false)
-            {
-                bundleConfiguration.Add(DefaultHtmlTemplateBundleSource());
-            }
-        }
-
-        IBundleSource<ScriptBundle> DefaultScriptBundleSource()
-        {
-            return new PerFileSource<ScriptBundle>("")
-            {
-                FilePattern = "*.js;*.coffee",
-                Exclude = new Regex("-vsdoc\\.js$")
-            };
-        }
-
-        IBundleSource<StylesheetBundle> DefaultStylesheetBundleSource()
-        {
-            return new PerFileSource<StylesheetBundle>("")
-            {
-                FilePattern = "*.css;*.less"
-            };
-        }
-
-        IBundleSource<HtmlTemplateBundle> DefaultHtmlTemplateBundleSource()
-        {
-            return new PerFileSource<HtmlTemplateBundle>("")
-            {
-                FilePattern = "*.htm;*.html"
-            };
         }
     }
 }

@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Linq;
 using Cassette.BundleProcessing;
 using Moq;
 using Should;
@@ -43,15 +42,6 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void CanActAsABundleSourceOfItself()
-        {
-            var bundle = new ExternalScriptBundle("http://test.com/asset.js");
-            var result = (bundle as IBundleSource<ScriptBundle>).GetBundles(Mock.Of<IBundleFactory<ScriptBundle>>(), Mock.Of<ICassetteApplication>());
-
-            result.SequenceEqual(new[] { bundle }).ShouldBeTrue();
-        }
-
-        [Fact]
         public void GivenBundleHasName_ContainsPathOfThatNameReturnsTrue()
         {
             var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
@@ -70,6 +60,13 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
             bundle.ContainsPath("https://maps-api-ssl.google.com/maps/api/js?sensor=false").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void ExternalScriptBundleCreateWithPathAndUrlHasNoInitializers()
+        {
+            var bundle = new ExternalScriptBundle("test", "http://test.com/");
+            bundle.BundleInitializers.Count.ShouldEqual(0);
         }
     }
 

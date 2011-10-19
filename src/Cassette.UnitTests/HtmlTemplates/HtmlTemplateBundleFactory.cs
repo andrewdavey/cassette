@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System;
 using Should;
 using Xunit;
 
@@ -30,18 +29,8 @@ namespace Cassette.HtmlTemplates
         public void CreateBundle_ReturnsHtmlTemplateBundleWithPathSet()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle("~/test", null);
             bundle.Path.ShouldEqual("~/test");
-        }
-
-        [Fact]
-        public void CreateExternalBundleThrowsException()
-        {
-            Assert.Throws<NotSupportedException>(delegate
-            {
-                new HtmlTemplateBundleFactory().CreateExternalBundle("");
-            });
         }
     }
 }
-

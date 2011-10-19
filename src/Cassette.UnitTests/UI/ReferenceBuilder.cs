@@ -132,7 +132,7 @@ namespace Cassette.UI
         [Fact]
         public void WhenAddReferenceToUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
-            bundleFactory.Setup(f => f.CreateExternalBundle("http://test.com/test.js"))
+            bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("http://test.com/test.js"));
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(all => all);
@@ -146,7 +146,7 @@ namespace Cassette.UI
         [Fact]
         public void WhenAddReferenceToHttpsUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
-            bundleFactory.Setup(f => f.CreateExternalBundle("https://test.com/test.js"))
+            bundleFactory.Setup(f => f.CreateBundle("https://test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("https://test.com/test.js"));
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(all => all);
@@ -160,7 +160,7 @@ namespace Cassette.UI
         [Fact]
         public void WhenAddReferenceToProtocolRelativeUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
-            bundleFactory.Setup(f => f.CreateExternalBundle("//test.com/test.js"))
+            bundleFactory.Setup(f => f.CreateBundle("//test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("//test.com/test.js"));
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(all => all);

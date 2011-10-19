@@ -31,8 +31,8 @@ namespace Cassette.Scripts
         public ExternalScriptBundleHtmlRenderer_Tests()
         {
             application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsOutputOptimized)
-                       .Returns(true);
+            application.SetupGet(a => a.IsDebuggingEnabled)
+                       .Returns(false);
         }
 
         readonly Mock<ICassetteApplication> application;
@@ -91,9 +91,9 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenExternalScriptBundleWithFallbackAssetsAndApplicationNotOptimized_WhenRender_ThenOnlyOutputFallbackScripts()
+        public void GivenExternalScriptBundleWithFallbackAssetsAndDebugMode_WhenRender_ThenOnlyOutputFallbackScripts()
         {
-            application.SetupGet(a => a.IsOutputOptimized).Returns(false);
+            application.SetupGet(a => a.IsDebuggingEnabled).Returns(true);
 
             var bundle = new ExternalScriptBundle("http://test.com/");
             var asset = new Mock<IAsset>();

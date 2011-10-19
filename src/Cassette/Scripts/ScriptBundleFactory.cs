@@ -18,38 +18,22 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
     public class ScriptBundleFactory : IBundleFactory<ScriptBundle>
     {
-        public ScriptBundle CreateBundle(string directory)
+        public ScriptBundle CreateBundle(string path, BundleDescriptor descriptor)
         {
-            return new ScriptBundle(directory);
-        }
-
-        public ScriptBundle CreateExternalBundle(string url)
-        {
-            return new ExternalScriptBundle(url);
-        }
-
-        public ScriptBundle CreateExternalBundle(string name, BundleDescriptor bundleDescriptor)
-        {
-            var bundle = new ExternalScriptBundle(name, bundleDescriptor.ExternalUrl);
-            if (bundleDescriptor.FallbackCondition != null)
+            if (path.IsUrl())
             {
-                var assets = bundleDescriptor.AssetFilenames.Select(
-                    filename => new Asset(
-                        PathUtilities.CombineWithForwardSlashes(name, filename),
-                        bundle,
-                        bundleDescriptor.SourceFile.Directory.GetFile(filename)
-                    )
-                );
-                bundle.AddFallback(bundleDescriptor.FallbackCondition, assets);
+                return new ExternalScriptBundle(path, descriptor);
             }
-            return bundle;
+            else
+            {
+                return new ScriptBundle(path, descriptor);
+            }
         }
     }
 }

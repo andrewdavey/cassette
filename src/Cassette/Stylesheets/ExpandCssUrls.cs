@@ -28,7 +28,7 @@ namespace Cassette.Stylesheets
         {
             foreach (var asset in bundle.Assets)
             {
-                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(application));
+                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(application.RootDirectory, application.UrlGenerator));
             }
         }
     }

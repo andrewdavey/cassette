@@ -32,18 +32,13 @@ namespace Cassette
     {
         public Bundle(string applicationRelativePath)
         {
-            if (applicationRelativePath.IsUrl())
-            {
-                path = applicationRelativePath;
-            }
-            else
-            {
-                if (applicationRelativePath.StartsWith("~") == false)
-                {
-                    throw new ArgumentException("Bundle path must be application relative (starting with a '~').");
-                }
-                path = PathUtilities.NormalizePath(applicationRelativePath);
-            }
+            path = PathUtilities.AppRelative(applicationRelativePath);
+        }
+
+        internal Bundle(string applicationRelativePath, IEnumerable<IBundleInitializer> assetSources)
+            : this(applicationRelativePath)
+        {
+            this.bundleInitializers.AddRange(assetSources);
         }
 
         protected Bundle()
@@ -52,6 +47,7 @@ namespace Cassette
         }
 
         readonly string path;
+        readonly List<IBundleInitializer> bundleInitializers = new List<IBundleInitializer>();
         IList<IAsset> assets = new List<IAsset>();
         bool hasSortedAssets;
         readonly HashSet<string> references = new HashSet<string>();
@@ -59,6 +55,11 @@ namespace Cassette
         public string Path
         {
             get { return path; }
+        }
+
+        public IList<IBundleInitializer> BundleInitializers
+        {
+            get { return bundleInitializers; }
         }
 
         public IList<IAsset> Assets
@@ -208,6 +209,14 @@ namespace Cassette
             if (path.Length < Path.Length) return false;
             var prefix = path.Substring(0, Path.Length);
             return PathUtilities.PathsEqual(prefix, Path);
+        }
+
+        public void Initialize(ICassetteApplication application)
+        {
+            foreach (var assetSource in bundleInitializers)
+            {
+                assetSource.InitializeBundle(this, application);
+            }
         }
     }
 }

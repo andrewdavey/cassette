@@ -9,16 +9,18 @@ namespace Cassette.Configuration
     {
         readonly IBundleCache cache;
 
-        public CachedBundleContainerFactory(IBundleCache cache, ICassetteApplication application, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories)
-            : base(application, bundleFactories)
+        public CachedBundleContainerFactory(IBundleCache cache, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories)
+            : base(bundleFactories)
         {
             this.cache = cache;
         }
 
-        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles)
+        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, ICassetteApplication application)
         {
             // The bundles may get altered, so force the evaluation of the enumerator first.
             var bundlesArray = unprocessedBundles.ToArray();
+            InitializeAllBundles(bundlesArray, application);
+
             var externalBundles = CreateExternalBundlesFromReferences(bundlesArray);
 
             if (cache.InitializeBundlesFromCacheIfUpToDate(bundlesArray))
@@ -27,7 +29,7 @@ namespace Cassette.Configuration
             }
             else
             {
-                ProcessAllBundles(bundlesArray);
+                ProcessAllBundles(bundlesArray, application);
                 var container = new BundleContainer(bundlesArray.Concat(externalBundles));
                 cache.SaveBundleContainer(container);
                 cache.InitializeBundlesFromCacheIfUpToDate(bundlesArray);

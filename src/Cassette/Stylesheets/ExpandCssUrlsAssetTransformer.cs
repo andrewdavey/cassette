@@ -31,12 +31,14 @@ namespace Cassette.Stylesheets
 {
     public class ExpandCssUrlsAssetTransformer : IAssetTransformer
     {
-        public ExpandCssUrlsAssetTransformer(ICassetteApplication application)
-        {
-            this.application = application;
-        }
+        readonly IDirectory sourceDirectory;
+        readonly IUrlGenerator urlGenerator;
 
-        readonly ICassetteApplication application;
+        public ExpandCssUrlsAssetTransformer(IDirectory sourceDirectory, IUrlGenerator urlGenerator)
+        {
+            this.sourceDirectory = sourceDirectory;
+            this.urlGenerator = urlGenerator;
+        }
 
         static readonly Regex CssUrlRegex = new Regex(
             @"\b url \s* \( \s* (?<quote>['""]?) (?<url>.*?) \<quote> \s* \)", 
@@ -96,11 +98,11 @@ namespace Cassette.Stylesheets
         void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
         {
             relativeFilename = RemoveFragment(relativeFilename);
-            var file = application.RootDirectory.GetFile(relativeFilename.Substring(2));
+            var file = sourceDirectory.GetFile(relativeFilename.Substring(2));
             if (!file.Exists) return;
 
             var hash = HashFileContents(file);
-            var absoluteUrl = application.UrlGenerator.CreateRawFileUrl(relativeFilename, hash);
+            var absoluteUrl = urlGenerator.CreateRawFileUrl(relativeFilename, hash);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
         }

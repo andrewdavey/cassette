@@ -22,9 +22,9 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Web;
@@ -47,56 +47,50 @@ namespace Cassette.IntegrationTests
         readonly IsolatedStorageFile storage;
         readonly RouteCollection routes;
 
-        CassetteApplication CreateApplication(Action<BundleConfiguration, ICassetteApplication> configure)
-        {
-            var config = new Mock<ICassetteConfiguration>();
-            config.Setup(c => c.Configure(It.IsAny<BundleConfiguration>(), It.IsAny<ICassetteApplication>()))
-                  .Callback(configure);
-
-            return new CassetteApplication(
-                new[] { config.Object },
-                new FileSystemDirectory(Path.GetFullPath(@"..\..\assets")),
-                new IsolatedStorageDirectory(storage),
-                isOutputOptmized: true,
-                version: Guid.NewGuid().ToString(), // unique version
-                urlGenerator: new UrlGenerator("/"),
-                routes: routes,
-                getCurrentHttpContext: () => Mock.Of<HttpContextBase>()
-            );
-        }
-
         [Fact]
         public void CanGetScriptBundleA()
         {
-            CreateApplication((bundles, app) =>
-                bundles.Add(new PerSubDirectorySource<ScriptBundle>("scripts")
-                {
-                    Exclude = new Regex(@"\.vsdoc\.js$")
-                })
-            );
-
-            using (var http = new HttpTestHarness(routes))
+            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
             {
-                http.Get("~/_assets/scripts/scripts/bundle-a");
-                http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset2(){}function asset1(){}");
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/scriptbundle/scripts/bundle-a");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset2(){}function asset1(){}");
+                }
             }
         }
 
         [Fact]
         public void CanGetScriptBundleB()
         {
-            CreateApplication((bundles, app) =>
-                bundles.Add(new PerSubDirectorySource<ScriptBundle>("scripts")
-                {
-                    Exclude = new Regex(@"\.vsdoc\.js$")
-                })
-            );
-
-            using (var http = new HttpTestHarness(routes))
+            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
             {
-                http.Get("~/_assets/scripts/scripts/bundle-b");
-                http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset3(){}");
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/scriptbundle/scripts/bundle-b");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset3(){}");
+                }
             }
+        }
+
+        CassetteApplication CreateApplication(Action<BundleCollection> configure)
+        {
+            var config = new ConfigurableCassetteApplication
+            {
+                Settings =
+                {
+                    CacheDirectory = new IsolatedStorageDirectory(storage),
+                    SourceDirectory = new FileSystemDirectory(Path.GetFullPath("../../assets"))
+                }
+            };
+            configure(config.Bundles);
+            return new CassetteApplication(
+                config,
+                "",
+                new CassetteRouting(new VirtualDirectoryPrepender("/")),
+                routes,
+                Mock.Of<HttpContextBase>
+            );
         }
 
         void RemoveExistingCache()

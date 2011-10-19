@@ -10,8 +10,7 @@ namespace Cassette.Configuration
     public class CachedBundleContainerFactory_Tests : BundleContainerFactoryTestSuite<CachedBundleContainerFactory>
     {
         readonly Mock<IBundleCache> cache = new Mock<IBundleCache>();
-        readonly ICassetteApplication application = Mock.Of<ICassetteApplication>();
-
+        
         [Fact]
         public void GivenCacheIsUpToDate_WhenCreateWithBundle_ThenContainerCreatedWithTheGivenBundle()
         {
@@ -19,7 +18,7 @@ namespace Cassette.Configuration
             CacheIsUpToDate(bundles);
 
             var factory = CreateFactory();
-            var container = factory.Create(bundles);
+            var container = factory.Create(bundles, StubApplication());
 
             container.FindBundleContainingPath("~/test").ShouldBeSameAs(bundles[0]);
         }
@@ -29,10 +28,11 @@ namespace Cassette.Configuration
         {
             var bundle = new Mock<Bundle>("~/test");
             var bundles = new[] { bundle.Object };
+            var application = StubApplication();
             CacheIsUpToDate(bundles);
 
             var factory = CreateFactory();
-            factory.Create(bundles);
+            factory.Create(bundles, application);
 
             bundle.Verify(b => b.Process(application), Times.Never());
         }
@@ -42,10 +42,11 @@ namespace Cassette.Configuration
         {
             var bundle = new Mock<Bundle>("~/test");
             var bundles = new[] { bundle.Object };
+            var application = StubApplication();
             CacheIsOutOfDate(bundles);
 
             var factory = CreateFactory();
-            factory.Create(bundles);
+            factory.Create(bundles, application);
 
             bundle.Verify(b => b.Process(application));
         }
@@ -54,10 +55,11 @@ namespace Cassette.Configuration
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenContainerSavedToCache()
         {
             var bundles = new Bundle[0];
+            var application = StubApplication();
             CacheIsOutOfDate(bundles);
 
             var factory = CreateFactory();
-            factory.Create(bundles);
+            factory.Create(bundles, application);
 
             cache.Verify(c => c.SaveBundleContainer(It.IsAny<IBundleContainer>()));
         }
@@ -66,10 +68,11 @@ namespace Cassette.Configuration
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenBundlesInitializedFromNewCache()
         {
             var bundles = new Bundle[0];
+            var application = StubApplication();
             CacheIsOutOfDate(bundles);
             
             var factory = CreateFactory();
-            factory.Create(bundles);
+            factory.Create(bundles, application);
 
             // InitializeBundlesFromCacheIfUpToDate should be called a second time.
             // This is to make the bundles get their content from the cached, optimized, data.
@@ -77,17 +80,14 @@ namespace Cassette.Configuration
             cache.Verify(c => c.InitializeBundlesFromCacheIfUpToDate(bundles), Times.Exactly(2));
         }
 
-        protected override CachedBundleContainerFactory CreateFactory(ICassetteApplication application, IDictionary<Type, IBundleFactory<Bundle>> factories)
+        protected override CachedBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
         {
-            return new CachedBundleContainerFactory(cache.Object, application, factories);
+            return new CachedBundleContainerFactory(cache.Object, factories);
         }
 
         CachedBundleContainerFactory CreateFactory()
         {
-            return CreateFactory(
-                application,
-                new Dictionary<Type, IBundleFactory<Bundle>>()
-            );
+            return CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
         }
 
         void CacheIsUpToDate(IEnumerable<Bundle> bundles)

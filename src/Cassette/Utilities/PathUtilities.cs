@@ -79,10 +79,12 @@ namespace Cassette.Utilities
         public static string AppRelative(string path)
         {
             if (path.IsUrl()) return path;
-            if (path.StartsWith("~")) return path;
-            if (path.StartsWith("/")) return "~" + path;
-            return "~/" + path;
+
+            if (!path.StartsWith("~"))
+            {
+                path = (path.StartsWith("/") ? "~" : "~/") + path;
+            }
+            return NormalizePath(path);
         }
     }
 }
-

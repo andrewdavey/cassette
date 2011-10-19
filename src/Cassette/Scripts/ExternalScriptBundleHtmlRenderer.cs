@@ -45,7 +45,11 @@ namespace Cassette.Scripts
             }
             else
             {
-                if (application.IsOutputOptimized)
+                if (application.IsDebuggingEnabled)
+                {
+                    return fallbackScriptRenderer.Render(bundle);
+                }
+                else
                 {
                     return new HtmlString(
                         string.Format(
@@ -56,10 +60,6 @@ namespace Cassette.Scripts
                             CreateFallbackScripts(bundle)
                             )
                         );
-                }
-                else
-                {
-                    return fallbackScriptRenderer.Render(bundle);
                 }
             }
         }

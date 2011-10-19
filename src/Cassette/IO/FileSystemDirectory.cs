@@ -27,21 +27,42 @@ namespace Cassette.IO
 {
     public class FileSystemDirectory : IDirectory
     {
-        public FileSystemDirectory(string rootDirectory)
+        public FileSystemDirectory(string fullSystemPath)
         {
-            this.rootDirectory = rootDirectory.TrimEnd('\\', '/');
+            this.fullSystemPath = PathUtilities.NormalizePath(fullSystemPath);
         }
 
-        readonly string rootDirectory;
+        readonly string fullSystemPath;
+        FileSystemDirectory parent;
+
+        public string FullPath
+        {
+            get
+            {
+                if (parent == null)
+                {
+                    return "~/";
+                }
+                else
+                {
+                    return "~/" + fullSystemPath.Substring(GetRootDirectory().fullSystemPath.Length + 1);
+                }
+            }
+        }
 
         public IFile GetFile(string filename)
         {
             try
             {
+                if (filename.Replace('\\', '/').StartsWith(fullSystemPath))
+                {
+                    filename = filename.Substring(fullSystemPath.Length + 1);
+                }
+
                 var subDirectoryPath = Path.GetDirectoryName(filename);
                 var subDirectory = GetDirectory(subDirectoryPath, false);
                 var path = GetAbsolutePath(filename);
-                return new FileSystemFile(path, subDirectory);
+                return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
             }
             catch (DirectoryNotFoundException)
             {
@@ -49,13 +70,19 @@ namespace Cassette.IO
             }
         }
 
+        public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
+        {
+            return Directory.GetFiles(fullSystemPath, searchPattern, searchOption)
+                            .Select(GetFile);
+        }
+
         public void DeleteContents()
         {
-            foreach (var directory in Directory.GetDirectories(rootDirectory))
+            foreach (var directory in Directory.GetDirectories(fullSystemPath))
             {
                 Directory.Delete(directory, true);
             }
-            foreach (var filename in Directory.GetFiles(rootDirectory))
+            foreach (var filename in Directory.GetFiles(fullSystemPath))
             {
                 File.Delete(filename);
             }
@@ -63,16 +90,17 @@ namespace Cassette.IO
 
         string GetAbsolutePath(string filename)
         {
-            return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(rootDirectory, filename));
-        }
-
-        string ToRelativePath(string fullPath)
-        {
-            return fullPath.Substring(rootDirectory.Length + 1);
+            return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(fullSystemPath, filename));
         }
 
         public IDirectory GetDirectory(string path, bool createIfNotExists)
         {
+            if (path == "") return this;
+            if (path[0] == '~')
+            {
+                return GetRootDirectory().GetDirectory(path.Substring(2), createIfNotExists);
+            }
+
             var fullPath = GetAbsolutePath(path);
             if (Directory.Exists(fullPath) == false)
             {
@@ -85,22 +113,28 @@ namespace Cassette.IO
                     throw new DirectoryNotFoundException("Directory not found: " + fullPath);
                 }
             }
-            return new FileSystemDirectory(fullPath);
+            return new FileSystemDirectory(fullPath)
+            {
+                parent = this
+            };
         }
 
-        public IEnumerable<string> GetDirectoryPaths(string relativePath)
+        public IEnumerable<IDirectory> GetDirectories()
         {
-            return Directory.EnumerateDirectories(GetAbsolutePath(relativePath)).Select(ToRelativePath);
-        }
-
-        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
-        {
-            return Directory.GetFiles(GetAbsolutePath(directory), searchPattern, searchOption).Select(ToRelativePath);
+            return Directory.EnumerateDirectories(fullSystemPath)
+                            .Select(path => GetDirectory(path, false));
         }
 
         public FileAttributes GetAttributes(string path)
         {
             return File.GetAttributes(GetAbsolutePath(path));
+        }
+
+        FileSystemDirectory GetRootDirectory()
+        {
+            return (parent == null)
+                ? this 
+                : parent.GetRootDirectory();
         }
     }
 }

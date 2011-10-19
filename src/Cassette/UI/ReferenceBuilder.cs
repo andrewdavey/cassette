@@ -27,9 +27,9 @@ using Cassette.Utilities;
 namespace Cassette.UI
 {
     public class ReferenceBuilder<T> : IReferenceBuilder<T>
-        where T: Bundle
+        where T : Bundle
     {
-        public ReferenceBuilder(IBundleContainer bundleContainer, IBundleFactory<T> bundleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
+        public ReferenceBuilder(IBundleContainer bundleContainer, IBundleFactory<Bundle> bundleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
         {
             this.bundleContainer = bundleContainer;
             this.bundleFactory = bundleFactory;
@@ -38,7 +38,7 @@ namespace Cassette.UI
         }
 
         readonly IBundleContainer bundleContainer;
-        readonly IBundleFactory<T> bundleFactory;
+        readonly IBundleFactory<Bundle> bundleFactory;
         readonly IPlaceholderTracker placeholderTracker;
         readonly ICassetteApplication application;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
@@ -52,7 +52,7 @@ namespace Cassette.UI
             if (bundle == null && path.IsUrl())
             {
                 // Ad-hoc external bundle reference.
-                bundle = bundleFactory.CreateExternalBundle(path);
+                bundle = bundleFactory.CreateBundle(path, null);
             }
 
             if (bundle == null)

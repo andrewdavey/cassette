@@ -4,22 +4,28 @@ using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
-    public abstract class BundleContainerFactoryBase
+    public abstract class BundleContainerFactoryBase : IBundleContainerFactory
     {
-        protected BundleContainerFactoryBase(ICassetteApplication application, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories)
+        protected BundleContainerFactoryBase(IDictionary<Type, IBundleFactory<Bundle>> bundleFactories)
         {
-            this.application = application;
             this.bundleFactories = bundleFactories;
         }
 
-        readonly ICassetteApplication application;
         readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
 
-        public abstract IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles);
+        public abstract IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, ICassetteApplication application);
 
-        protected void ProcessAllBundles(IEnumerable<Bundle> bundlesArray)
+        protected void InitializeAllBundles(IEnumerable<Bundle> bundles, ICassetteApplication application)
         {
-            foreach (var bundle in bundlesArray)
+            foreach (var bundle in bundles)
+            {
+                bundle.Initialize(application);
+            }            
+        }
+
+        protected void ProcessAllBundles(IEnumerable<Bundle> bundles, ICassetteApplication application)
+        {
+            foreach (var bundle in bundles)
             {
                 bundle.Process(application);
             }
@@ -39,13 +45,25 @@ namespace Cassette.Configuration
                     referencesAlreadyCreated.Add(externalBundle.Path);
                     yield return externalBundle;
                 }
+                foreach (var asset in bundle.Assets)
+                {
+                    foreach (var assetReference in asset.References)
+                    {
+                        if (assetReference.Type != AssetReferenceType.Url ||
+                            referencesAlreadyCreated.Contains(assetReference.Path)) continue;
+
+                        var externalBundle = CreateExternalBundle(assetReference.Path, bundle);
+                        referencesAlreadyCreated.Add(externalBundle.Path);
+                        yield return externalBundle;
+                    }
+                }
             }
         }
 
         Bundle CreateExternalBundle(string reference, Bundle referencer)
         {
             var bundleFactory = GetBundleFactory(referencer.GetType());
-            return bundleFactory.CreateExternalBundle(reference);
+            return bundleFactory.CreateBundle(reference, null);
         }
 
         IBundleFactory<Bundle> GetBundleFactory(Type bundleType)

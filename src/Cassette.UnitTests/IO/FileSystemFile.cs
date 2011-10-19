@@ -30,14 +30,15 @@ namespace Cassette.IO
     public class FileSystemFile_Tests : IDisposable
     {
         readonly string filename;
-        readonly IDirectory directory;
+        readonly Mock<IDirectory> directory;
         readonly FileSystemFile file;
 
         public FileSystemFile_Tests()
         {
             filename = Path.GetTempFileName();
-            directory = Mock.Of<IDirectory>();
-            file = new FileSystemFile(filename, directory);
+            directory = new Mock<IDirectory>();
+            directory.SetupGet(d => d.FullPath).Returns("~/");
+            file = new FileSystemFile(Path.GetFileName(filename), directory.Object, filename);
 
             File.WriteAllText(filename, "test");
         }
@@ -45,13 +46,13 @@ namespace Cassette.IO
         [Fact]
         public void DirectoryReturnsDirectoryPassedToConstructor()
         {
-            file.Directory.ShouldBeSameAs(directory);
+            file.Directory.ShouldBeSameAs(directory.Object);
         }
 
         [Fact]
-        public void FullPathReturnsFilenamePassedToConstructor()
+        public void FullPathReturnsCombinesNameWithParentDirectoryPath()
         {
-            file.FullPath.ShouldEqual(filename);
+            file.FullPath.ShouldEqual("~/" + Path.GetFileName(filename));
         }
 
         [Fact]

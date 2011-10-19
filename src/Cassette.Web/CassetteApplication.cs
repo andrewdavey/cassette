@@ -19,29 +19,24 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Web;
 using System.Web.Handlers;
-using System.Web.Routing;
-using Cassette.HtmlTemplates;
-using Cassette.IO;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
+using Cassette.Configuration;
 using Cassette.UI;
+using System.Web.Routing;
 
 namespace Cassette.Web
 {
-    public class CassetteApplication : CassetteApplicationBase
+    class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(IEnumerable<ICassetteConfiguration> configurations, IDirectory sourceFileSystem, IDirectory cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
-            : base(configurations, sourceFileSystem, cacheFileSystem, urlGenerator, isOutputOptmized, version)
+        public CassetteApplication(ConfigurableCassetteApplication config, string version, CassetteRouting routing, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
+            : base(config, version, routing)
         {
-            this.urlGenerator = urlGenerator;
             this.getCurrentHttpContext = getCurrentHttpContext;
-            InstallRoutes(routes);
+
+            routing.InstallRoutes(routes, BundleContainer);
         }
 
-        readonly UrlGenerator urlGenerator;
         readonly Func<HttpContextBase> getCurrentHttpContext;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
 
@@ -117,56 +112,6 @@ namespace Cassette.Web
                 items[key] = builder;
                 return builder;
             }
-        }
-
-        void InstallRoutes(RouteCollection routes)
-        {
-            InstallBundleRoute<ScriptBundle>(routes);
-            InstallBundleRoute<StylesheetBundle>(routes);
-            InstallBundleRoute<HtmlTemplateBundle>(routes);
-
-            InstallRawFileRoute(routes);
-
-            InstallAssetRoute(routes);
-        }
-
-        void InstallBundleRoute<T>(RouteCollection routes)
-            where T : Bundle
-        {
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            var url = urlGenerator.GetBundleRouteUrl<T>();
-            var handler = new DelegateRouteHandler(
-                requestContext => new BundleRequestHandler<T>(GetBundleContainer<T>(), requestContext)
-            );
-            Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
-            routes.Insert(0, new CassetteRoute(url, handler));
-        }
-
-        void InstallRawFileRoute(RouteCollection routes)
-        {
-            var url = urlGenerator.GetRawFileRouteUrl();
-            var handler = new DelegateRouteHandler(
-                requestContext => new RawFileRequestHandler(requestContext)
-            );
-            Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
-            routes.Insert(0, new CassetteRoute(url, handler));
-        }
-
-        void InstallAssetRoute(RouteCollection routes)
-        {
-            // Used to return compiled coffeescript, less, etc.
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            var url = urlGenerator.GetAssetRouteUrl();
-            var handler = new DelegateRouteHandler(
-                requestContext => new AssetRequestHandler(
-                    requestContext,
-                    FindBundleContainingPath
-                )
-            );
-            Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);
-            routes.Insert(0, new CassetteRoute(url, handler));
         }
     }
 }

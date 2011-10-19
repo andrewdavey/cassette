@@ -23,8 +23,6 @@ namespace Cassette
     public interface IBundleFactory<out T>
         where T : Bundle
     {
-        T CreateBundle(string directory);
-        T CreateExternalBundle(string url);
-        T CreateExternalBundle(string name, BundleDescriptor bundleDescriptor);
+        T CreateBundle(string path, BundleDescriptor descriptor);
     }
 }

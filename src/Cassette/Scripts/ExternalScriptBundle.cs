@@ -25,11 +25,25 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptBundle : ScriptBundle, IBundleSource<ScriptBundle>
+    public class ExternalScriptBundle : ScriptBundle
     {
         public ExternalScriptBundle(string url)
             : this(url, url)
         {
+        }
+
+        public ExternalScriptBundle(string path, BundleDescriptor bundleDescriptor)
+            : base(path, bundleDescriptor)
+        {
+            if (bundleDescriptor == null)
+            {
+                url = path;
+            }
+            else
+            {
+                url = bundleDescriptor.ExternalUrl;
+                javaScriptFallbackCondition = bundleDescriptor.FallbackCondition;
+            }
         }
 
         public ExternalScriptBundle(string name, string url)
@@ -39,6 +53,8 @@ namespace Cassette.Scripts
             if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
 
             this.url = url;
+
+            BundleInitializers.Clear();
         }
 
         public ExternalScriptBundle(string name, string url, string javaScriptFallbackCondition, string fallbackUrl)
@@ -54,10 +70,13 @@ namespace Cassette.Scripts
             this.url = url;
             this.javaScriptFallbackCondition = javaScriptFallbackCondition;
             this.fallbackUrl = PathUtilities.AppRelative(fallbackUrl);
+
+            BundleInitializers.Clear();
         }
 
         readonly string url;
         string javaScriptFallbackCondition;
+        // TODO: remove this field?
         readonly string fallbackUrl;
 
         public string Url
@@ -94,11 +113,6 @@ namespace Cassette.Scripts
         public override bool ContainsPath(string path)
         {
             return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
-        }
-
-        IEnumerable<ScriptBundle> IBundleSource<ScriptBundle>.GetBundles(IBundleFactory<ScriptBundle> bundleFactory, ICassetteApplication application)
-        {
-            yield return this;
         }
     }
 }

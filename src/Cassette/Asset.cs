@@ -39,7 +39,7 @@ namespace Cassette
             }
             if (applicationRelativeFilename.StartsWith("~") == false)
             {
-                throw new ArgumentException("Asset filename in application relative form (starting with '~').");
+                throw new ArgumentException("Asset filename must be in application relative form (starting with '~').");
             }
 
             this.applicationRelativeFilename = PathUtilities.NormalizePath(applicationRelativeFilename);
