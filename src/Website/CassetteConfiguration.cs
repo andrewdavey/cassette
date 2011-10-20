@@ -25,9 +25,9 @@ namespace Website
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(IConfigurableCassetteApplication application)
+        public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            application.Bundles.Add(new StylesheetBundle("assets/styles"));
+            bundles.Add(new StylesheetBundle("assets/styles"));
         }
     }
 }

@@ -29,8 +29,8 @@ namespace Cassette.Web
 {
     class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(ConfigurableCassetteApplication config, string version, CassetteRouting routing, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
-            : base(config, version, routing)
+        public CassetteApplication(BundleCollection bundles, CassetteSettings settings, CassetteRouting routing, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
+            : base(bundles, settings, routing)
         {
             this.getCurrentHttpContext = getCurrentHttpContext;
 

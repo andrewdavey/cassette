@@ -8,17 +8,17 @@ namespace Cassette.Configuration
 {
     public class BundleCollection : IEnumerable<Bundle>
     {
-        readonly ConfigurableCassetteApplication application;
+        readonly CassetteSettings settings;
         readonly Dictionary<string, List<Bundle>> bundlesByPath = new Dictionary<string, List<Bundle>>();
 
-        public BundleCollection(ConfigurableCassetteApplication application)
+        public BundleCollection(CassetteSettings settings)
         {
-            this.application = application;
+            this.settings = settings;
         }
 
-        internal ConfigurableCassetteApplication Application
+        internal CassetteSettings Settings
         {
-            get { return application; }
+            get { return settings; }
         }
 
         public void Add(Bundle bundle)

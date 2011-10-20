@@ -18,21 +18,18 @@ namespace Cassette.Configuration
                 Directory.CreateDirectory(Path.Combine(tempDirectory, "test", "bundle-a"));
                 Directory.CreateDirectory(Path.Combine(tempDirectory, "test", "bundle-b"));
 
-                var application = new ConfigurableCassetteApplication
+                var settings = new CassetteSettings
                 {
-                    Settings =
-                    {
-                        SourceDirectory = new FileSystemDirectory(tempDirectory)
-                    }
+                    SourceDirectory = new FileSystemDirectory(tempDirectory)
                 };
-
+            
                 var factory = new Mock<IBundleFactory<Bundle>>();
                 var bundles = new Queue<Bundle>(new[] { new Bundle("~/test/bundle-a"), new Bundle("~/test/bundle-b") });
                 factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
                        .Returns(bundles.Dequeue);
-                application.BundleFactories[typeof(Bundle)] = factory.Object;
+                settings.BundleFactories[typeof(Bundle)] = factory.Object;
 
-                var collection = new BundleCollection(application);
+                var collection = new BundleCollection(settings);
                 collection.AddForEachSubDirectory<Bundle>("~/test");
 
                 var result = collection.ToArray();
@@ -48,19 +45,16 @@ namespace Cassette.Configuration
             {
                 Directory.CreateDirectory(Path.Combine(tempDirectory, "test", "bundle"));
                 File.WriteAllText(Path.Combine(tempDirectory, "test", "bundle", "bundle.txt"), "");
-                var application = new ConfigurableCassetteApplication
+                var settings = new CassetteSettings
                 {
-                    Settings =
-                    {
                         SourceDirectory = new FileSystemDirectory(tempDirectory)
-                    }
                 };
                 var factory = new Mock<IBundleFactory<Bundle>>();
                 factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
                        .Returns(new Bundle("~/test/bundle"));
-                application.BundleFactories[typeof(Bundle)] = factory.Object;
+                settings.BundleFactories[typeof(Bundle)] = factory.Object;
 
-                var collection = new BundleCollection(application);
+                var collection = new BundleCollection(settings);
                 collection.AddForEachSubDirectory<Bundle>("~/test");
                 
                 factory.Verify(f => f.CreateBundle("~/test/bundle", It.Is<BundleDescriptor>(b => b != null)));

@@ -22,21 +22,43 @@ using System;
 using System.Collections.Generic;
 using Cassette.Configuration;
 using Cassette.IO;
+using Cassette.Persistence;
 using Cassette.UI;
 
 namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(ConfigurableCassetteApplication config, string cacheVersion, IUrlGenerator urlGenerator)
+        protected CassetteApplicationBase(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator)
         {
-            bundleFactories = config.BundleFactories;
-            settings = config.Settings;
+            bundleFactories = settings.BundleFactories;
+            this.settings = settings;
             this.urlGenerator = urlGenerator;
 
             // Bundle container must be created after the above fields are assigned.
             // This application object may get used during bundle processing, so its properties must be ready to use.
-            bundleContainer = config.CreateBundleContainer(this, CombineVersionWithCassetteVersion(cacheVersion));
+            bundleContainer = CreateBundleContainer(bundles, settings);
+        }
+
+        IBundleContainer CreateBundleContainer(BundleCollection bundles, CassetteSettings settings)
+        {
+            IBundleContainerFactory containerFactory;
+            if (settings.IsDebuggingEnabled)
+            {
+                containerFactory = new BundleContainerFactory(bundleFactories);
+            }
+            else
+            {
+                containerFactory = new CachedBundleContainerFactory(
+                    new BundleCache(
+                        settings.CacheVersion,
+                        settings.CacheDirectory,
+                        settings.SourceDirectory
+                    ),
+                    bundleFactories
+                );
+            }
+            return containerFactory.Create(bundles, this);
         }
 
         readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
@@ -64,12 +86,19 @@ namespace Cassette
             get { return urlGenerator; }
         }
 
+        protected IBundleContainer BundleContainer
+        {
+            get { return bundleContainer; }
+        }
+
         public IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle
         {
             return GetOrCreateReferenceBuilder(CreateReferenceBuilder<T>);
         }
 
         protected abstract IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create) where T : Bundle;
+
+        protected abstract IPlaceholderTracker GetPlaceholderTracker();
 
         public void Dispose()
         {
@@ -88,26 +117,10 @@ namespace Cassette
         {
             return new ReferenceBuilder<T>(
                 bundleContainer,
-                bundleFactories[typeof(T)],
+                settings.BundleFactories[typeof(T)],
                 GetPlaceholderTracker(),
                 this
             );
-        }
-
-        protected abstract IPlaceholderTracker GetPlaceholderTracker();
-
-        protected IBundleContainer BundleContainer
-        {
-            get { return bundleContainer; }
-        }
-
-        /// <remarks>
-        /// We need bundle container cache to depend on both the application version
-        /// and the Cassette version. So if either is upgraded, then the cache is discarded.
-        /// </remarks>
-        string CombineVersionWithCassetteVersion(string version)
-        {
-            return version + "|" + GetType().Assembly.GetName().Version;
         }
     }
 }

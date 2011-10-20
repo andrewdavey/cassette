@@ -10,8 +10,8 @@ namespace Cassette.Configuration
         public static void AddForEachSubDirectory<T>(this BundleCollection bundleCollection, string path, Action<T> customizeBundle = null)
             where T : Bundle
         {
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Application.BundleFactories[typeof(T)];
-            var directory = bundleCollection.Application.Settings.SourceDirectory.GetDirectory(path, false);
+            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(path, false);
             var subDirectories = directory.GetDirectories();
             var bundles = CreateBundles(bundleFactory, subDirectories);
 

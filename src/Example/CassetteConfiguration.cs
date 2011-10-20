@@ -27,18 +27,15 @@ namespace Example
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(IConfigurableCassetteApplication application)
+        public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            // TODO: Perhaps having BundleCollection as parameter would be neater than typing application.Bundles each time!
-            //       Then have the application.Settings as another parameter.
-
-            application.Bundles.AddForEachSubDirectory<ScriptBundle>("Scripts");
-            application.Bundles.Add(new ExternalScriptBundle("twitter", "http://platform.twitter.com/widgets.js")
+            bundles.AddForEachSubDirectory<ScriptBundle>("Scripts");
+            bundles.Add(new ExternalScriptBundle("twitter", "http://platform.twitter.com/widgets.js")
             {
                 Location = "body"
             });
 
-            application.Bundles.Add(new StylesheetBundle("Styles")
+            bundles.Add(new StylesheetBundle("Styles")
             {
                 Processor = new StylesheetPipeline // Replace the default processor with a customized pipeline.
                 {
@@ -46,7 +43,7 @@ namespace Example
                 }
             });
 
-            application.Bundles.AddForEachSubDirectory<HtmlTemplateBundle>(
+            bundles.AddForEachSubDirectory<HtmlTemplateBundle>(
                 "HtmlTemplates",
                 bundle => bundle.Processor = new KnockoutJQueryTmplPipeline()
             );

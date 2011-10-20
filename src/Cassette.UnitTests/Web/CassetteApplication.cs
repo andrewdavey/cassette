@@ -46,18 +46,16 @@ namespace Cassette.Web
 
         internal CassetteApplication StubApplication(bool isHtmlRewritingEnabled = false)
         {
+            var settings = new CassetteSettings
+            {
+                IsHtmlRewritingEnabled = isHtmlRewritingEnabled,
+                CacheDirectory = new FileSystemDirectory(cacheDir),
+                SourceDirectory = new FileSystemDirectory(sourceDir)
+            };
             return new CassetteApplication(
-                new ConfigurableCassetteApplication
-                {
-                    Settings =
-                    {
-                        IsHtmlRewritingEnabled = isHtmlRewritingEnabled,
-                        CacheDirectory = new FileSystemDirectory(cacheDir),
-                        SourceDirectory = new FileSystemDirectory(sourceDir)
-                    }
-                },
-                "",
-                new CassetteRouting(Mock.Of<IUrlModifier>()),
+                new BundleCollection(settings), 
+                settings,
+                new CassetteRouting(new VirtualDirectoryPrepender("/")), 
                 new RouteCollection(), 
                 () => null
             );

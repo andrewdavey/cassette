@@ -60,12 +60,9 @@
     <Compile Include="Configuration\BundleContainerFactory.cs" />
     <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
-    <Compile Include="Configuration\CassetteServices.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
-    <Compile Include="Configuration\ConfigurableCassetteApplication.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
-    <Compile Include="Configuration\IConfigurableCassetteApplication.cs" />
     <Compile Include="BundleDirectoryInitializer.cs" />
     <Compile Include="HtmlTemplates\WrapJQueryTemplateInInitializer.cs" />
     <Compile Include="HtmlTemplates\AssignRenderer.cs" />

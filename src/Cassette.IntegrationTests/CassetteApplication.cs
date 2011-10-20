@@ -75,18 +75,16 @@ namespace Cassette.IntegrationTests
 
         CassetteApplication CreateApplication(Action<BundleCollection> configure)
         {
-            var config = new ConfigurableCassetteApplication
+            var settings = new CassetteSettings
             {
-                Settings =
-                {
-                    CacheDirectory = new IsolatedStorageDirectory(storage),
-                    SourceDirectory = new FileSystemDirectory(Path.GetFullPath("../../assets"))
-                }
+                CacheDirectory = new IsolatedStorageDirectory(storage),
+                SourceDirectory = new FileSystemDirectory(Path.GetFullPath("../../assets"))
             };
-            configure(config.Bundles);
+            var bundles = new BundleCollection(settings);
+            configure(bundles);
             return new CassetteApplication(
-                config,
-                "",
+                bundles,
+                settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")),
                 routes,
                 Mock.Of<HttpContextBase>
@@ -150,6 +148,7 @@ namespace Cassette.IntegrationTests
                    .Returns(url);
 
             var routeData = routes.GetRouteData(Context.Object);
+            if (routeData == null) return;
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(Context.Object, routeData));
             httpHandler.ProcessRequest(null);
             ResponseOutputStream.Position = 0;

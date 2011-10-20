@@ -1,7 +1,7 @@
-﻿using System.Web;
+﻿using System.IO.IsolatedStorage;
+using System.Web;
 using Cassette.Configuration;
 using Cassette.IO;
-using System.IO.IsolatedStorage;
 
 namespace Cassette.Web
 {
@@ -9,19 +9,22 @@ namespace Cassette.Web
     {
         readonly string sourceDirectory;
         readonly IsolatedStorageFile storage;
+        readonly bool isDebuggingEnabled;
 
-        public InitialConfiguration(string sourceDirectory, IsolatedStorageFile storage)
+        public InitialConfiguration(string sourceDirectory, IsolatedStorageFile storage, bool isDebuggingEnabled)
         {
             this.sourceDirectory = sourceDirectory;
             this.storage = storage;
+            this.isDebuggingEnabled = isDebuggingEnabled;
         }
 
-        public void Configure(IConfigurableCassetteApplication application)
+        public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            application.Settings.SourceDirectory = new FileSystemDirectory(sourceDirectory);
-            application.Settings.CacheDirectory = new IsolatedStorageDirectory(storage);
-
-            application.Services.CreateUrlModifier = () => new VirtualDirectoryPrepender(HttpRuntime.AppDomainAppVirtualPath);
+            settings.IsHtmlRewritingEnabled = true;
+            settings.IsDebuggingEnabled = isDebuggingEnabled;
+            settings.SourceDirectory = new FileSystemDirectory(sourceDirectory);
+            settings.CacheDirectory = new IsolatedStorageDirectory(storage);
+            settings.UrlModifier = new VirtualDirectoryPrepender(HttpRuntime.AppDomainAppVirtualPath);
         }
     }
 }
