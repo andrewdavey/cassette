@@ -55,6 +55,10 @@ function trim(s) {
     return s.replace(/^\s+/, '').replace(/\s+$/, '');
 }
 
+function unescape(args) {
+    return args ? args.replace(/\\'/g, "'").replace(/\\\\/g, "\\") : null;
+}
+
 function buildTmplFn(markup) {
     return "function(jQuery, $item) {" +
     // Use the variable __ to hold a string array while building the compiled template. (See https://github.com/jquery/jquery-tmpl/issues#issue/10).
