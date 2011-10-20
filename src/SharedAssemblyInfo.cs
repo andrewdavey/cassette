@@ -24,5 +24,5 @@ using System.Reflection;
 [assembly: AssemblyProduct("Cassette")]
 [assembly: AssemblyCopyright("Copyright © Andrew Davey 2011")]
 
-[assembly: AssemblyVersion("0.8.2")]
-[assembly: AssemblyFileVersion("0.8.2")]
+[assembly: AssemblyVersion("0.8.3")]
+[assembly: AssemblyFileVersion("0.8.3")]
