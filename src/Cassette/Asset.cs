@@ -46,14 +46,13 @@ namespace Cassette
             this.parentBundle = parentBundle;
             this.file = file;
 
-            // TODO: Compute hash lazily to avoid IO when actually loading cached asset instead.
-            hash = HashFileContents();
+            hash = new Lazy<byte[]>(HashFileContents); // Avoid file IO until the hash is actually needed.
         }
 
         readonly string applicationRelativeFilename;
         readonly Bundle parentBundle;
         readonly IFile file;
-        readonly byte[] hash;
+        readonly Lazy<byte[]> hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
         public override IFile SourceFile
@@ -139,7 +138,7 @@ namespace Cassette
 
         public override byte[] Hash
         {
-            get { return hash; }
+            get { return hash.Value; }
         }
 
         public override IEnumerable<AssetReference> References
