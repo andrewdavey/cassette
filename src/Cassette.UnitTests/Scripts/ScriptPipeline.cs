@@ -19,20 +19,22 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Linq;
+using Cassette.BundleProcessing;
+using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
+using System.IO;
 
 namespace Cassette.Scripts
 {
     public class ScriptPipeline_Tests
     {
         [Fact]
-        public void HasDefaultAssetSource()
+        public void CompileCoffeeScriptDefaultsToTrue()
         {
-            var script = new ScriptBundle("~");
-            var initializer = script.BundleInitializers.Single() as BundleDirectoryInitializer;
-            initializer.ShouldNotBeNull();
+            var pipeline = new ScriptPipeline();
+            pipeline.CompileCoffeeScript.ShouldBeTrue();
         }
 
         [Fact]
@@ -63,6 +65,45 @@ namespace Cassette.Scripts
             pipeline.Process(bundle, application.Object);
 
             bundle.Renderer.ShouldBeType<DebugScriptBundleHtmlRenderer>();
+        }
+
+        [Fact]
+        public void GivenCompileCoffeeScriptIsFalse_WhenProcessBundle_ThenCompileAssetTransformerNotAddedToAsset()
+        {
+            var pipeline = new ScriptPipeline { CompileCoffeeScript = false };
+            var bundle = new ScriptBundle("~");
+            var asset = StubCoffeeScriptAsset();
+            bundle.Assets.Add(asset.Object);
+            
+            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+
+            asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()), Times.Never());
+        }
+
+        [Fact]
+        public void GivenCompileCoffeeScriptIsTrue_WhenProcessBundle_ThenCompileAssetTransformerIsAddedToAsset()
+        {
+            var pipeline = new ScriptPipeline { CompileCoffeeScript = true };
+            var bundle = new ScriptBundle("~");
+            var asset = StubCoffeeScriptAsset();
+            bundle.Assets.Add(asset.Object);
+
+            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+
+            asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()));
+        }
+
+        static Mock<IAsset> StubCoffeeScriptAsset()
+        {
+            var asset = new Mock<IAsset>();
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath)
+                .Returns("~/test.coffee");
+            asset.Setup(f => f.OpenStream())
+                .Returns(Stream.Null);
+            asset.SetupGet(a => a.SourceFile)
+                .Returns(file.Object);
+            return asset;
         }
     }
 }
