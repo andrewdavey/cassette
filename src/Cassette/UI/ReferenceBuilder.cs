@@ -72,7 +72,7 @@ namespace Cassette.UI
 
         public void Reference(Bundle bundle, string location = null)
         {
-            if (!application.HtmlRewritingEnabled && HasRenderedLocation(location))
+            if (!application.IsHtmlRewritingEnabled && HasRenderedLocation(location))
             {
                 ThrowRewritingRequiredException(location);
             }
@@ -93,7 +93,7 @@ namespace Cassette.UI
             {
                 throw new InvalidOperationException(
                     string.Format(
-                        "Cannot add a {0} reference. The bundles have already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
+                        "Cannot add a {0} reference. The bundles have already been rendered. Either move the reference before the render call, or set ICassetteApplication.IsHtmlRewritingEnabled to true in your Cassette configuration.",
                         typeof(T).Name
                     )
                 );
@@ -102,7 +102,7 @@ namespace Cassette.UI
             {
                 throw new InvalidOperationException(
                     string.Format(
-                        "Cannot add a {1} reference, for location \"{0}\". This location has already been rendered. Either move the reference before the render call, or set ICassetteApplication.HtmlRewritingEnabled to true in your Cassette configuration.",
+                        "Cannot add a {1} reference, for location \"{0}\". This location has already been rendered. Either move the reference before the render call, or set ICassetteApplication.IsHtmlRewritingEnabled to true in your Cassette configuration.",
                         location,
                         typeof(T).Name
                     )

@@ -19,17 +19,18 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Handlers;
+using System.Web.Routing;
 using Cassette.Configuration;
 using Cassette.UI;
-using System.Web.Routing;
 
 namespace Cassette.Web
 {
     class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(BundleCollection bundles, CassetteSettings settings, CassetteRouting routing, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
+        public CassetteApplication(IEnumerable<Bundle> bundles, CassetteSettings settings, CassetteRouting routing, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
             : base(bundles, settings, routing)
         {
             this.getCurrentHttpContext = getCurrentHttpContext;
@@ -43,7 +44,7 @@ namespace Cassette.Web
         public void OnPostMapRequestHandler(HttpContextBase httpContext)
         {
             IPlaceholderTracker tracker;
-            if (HtmlRewritingEnabled)
+            if (IsHtmlRewritingEnabled)
             {
                 tracker = new PlaceholderTracker();
             }
@@ -56,7 +57,7 @@ namespace Cassette.Web
 
         public void OnPostRequestHandlerExecute(HttpContextBase httpContext)
         {
-            if (!HtmlRewritingEnabled) return;
+            if (!IsHtmlRewritingEnabled) return;
             
             if (httpContext.CurrentHandler is AssemblyResourceLoader)
             {

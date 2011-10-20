@@ -202,7 +202,7 @@ namespace Cassette.UI
         [Fact]
         public void GivenLocationAlreadyRenderedButHtmlRewrittingEnabled_WhenAddReferenceToThatLocation_ThenBundleStillAdded()
         {
-            application.SetupGet(a => a.HtmlRewritingEnabled)
+            application.SetupGet(a => a.IsHtmlRewritingEnabled)
                        .Returns(true);
             var bundle = new ScriptBundle("~/test");
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))

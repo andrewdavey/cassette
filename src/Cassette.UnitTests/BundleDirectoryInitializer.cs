@@ -16,7 +16,7 @@ namespace Cassette
             temp = new TempDirectory();
             directory = new FileSystemDirectory(temp);
             var applicationMock = new Mock<ICassetteApplication>();
-            applicationMock.SetupGet(a => a.RootDirectory).Returns(directory);
+            applicationMock.SetupGet(a => a.SourceDirectory).Returns(directory);
             application = applicationMock.Object;
         }
 

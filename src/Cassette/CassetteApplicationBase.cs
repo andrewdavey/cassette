@@ -29,39 +29,16 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator)
+        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, IUrlGenerator urlGenerator)
         {
-            bundleFactories = settings.BundleFactories;
             this.settings = settings;
             this.urlGenerator = urlGenerator;
 
             // Bundle container must be created after the above fields are assigned.
             // This application object may get used during bundle processing, so its properties must be ready to use.
-            bundleContainer = CreateBundleContainer(bundles, settings);
+            bundleContainer = CreateBundleContainer(bundles, settings, this);
         }
 
-        IBundleContainer CreateBundleContainer(BundleCollection bundles, CassetteSettings settings)
-        {
-            IBundleContainerFactory containerFactory;
-            if (settings.IsDebuggingEnabled)
-            {
-                containerFactory = new BundleContainerFactory(bundleFactories);
-            }
-            else
-            {
-                containerFactory = new CachedBundleContainerFactory(
-                    new BundleCache(
-                        settings.CacheVersion,
-                        settings.CacheDirectory,
-                        settings.SourceDirectory
-                    ),
-                    bundleFactories
-                );
-            }
-            return containerFactory.Create(bundles, this);
-        }
-
-        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
         readonly CassetteSettings settings;
         readonly IUrlGenerator urlGenerator;
         readonly IBundleContainer bundleContainer;
@@ -71,12 +48,12 @@ namespace Cassette
             get { return settings.IsDebuggingEnabled; }
         }
 
-        public bool HtmlRewritingEnabled
+        public bool IsHtmlRewritingEnabled
         {
             get { return settings.IsHtmlRewritingEnabled; }
         }
 
-        public IDirectory RootDirectory
+        public IDirectory SourceDirectory
         {
             get { return settings.SourceDirectory; }
         }
@@ -102,14 +79,7 @@ namespace Cassette
 
         public void Dispose()
         {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing) return;
             bundleContainer.Dispose();
-            GC.SuppressFinalize(this); 
         }
 
         IReferenceBuilder<T> CreateReferenceBuilder<T>()
@@ -121,6 +91,27 @@ namespace Cassette
                 GetPlaceholderTracker(),
                 this
             );
+        }
+
+        static IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles, CassetteSettings settings, ICassetteApplication application)
+        {
+            IBundleContainerFactory containerFactory;
+            if (settings.IsDebuggingEnabled)
+            {
+                containerFactory = new BundleContainerFactory(settings.BundleFactories);
+            }
+            else
+            {
+                containerFactory = new CachedBundleContainerFactory(
+                    new BundleCache(
+                        settings.CacheVersion,
+                        settings.CacheDirectory,
+                        settings.SourceDirectory
+                    ),
+                    settings.BundleFactories
+                );
+            }
+            return containerFactory.Create(bundles, application);
         }
     }
 }

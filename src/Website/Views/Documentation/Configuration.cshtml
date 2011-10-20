@@ -25,12 +25,12 @@ Your web application can contain a public class that implements <code>Cassette.I
     <dd>Defaults to <code>true</code> when <code>debug="false"</code> in Web.config, otherwise is false.</dd>
     <dd>You might force this to be true, even when debugging, so you can debug the production-mode output.</dd>
 
-    <dt><code>HtmlRewritingEnabled</code></dt>
+    <dt><code>IsHtmlRewritingEnabled</code></dt>
     <dd>Defaults to <code>true</code>.</dd>
     <dd>When <code>true</code> Cassette will buffer and rewrite page HTML output. This means that if a partial view references a stylesheet after <code>&lt;head&gt;</code>
     has been rendered, the required <code>&lt;link&gt;</code> can still be inserted.</dd>
     <dd>Please note, this does not work in IIS when <code>&lt;urlCompression dynamicCompressionBeforeCache="true"/&gt;</code>.
-    You will need to disable <code>HtmlRewritingEnabled</code> if you use that feature of IIS.</dd>
+    You will need to disable <code>IsHtmlRewritingEnabled</code> if you use that feature of IIS.</dd>
 
     <dt><code>UrlGenerator</code></dt>
     <dd>If you need to change how Cassette generates URLs for assets and modules, this is the place to provide your own

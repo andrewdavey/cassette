@@ -38,22 +38,70 @@ namespace Cassette.Web
         readonly TempDirectory cacheDir;
         readonly TempDirectory sourceDir;
 
-        protected CassetteApplication_Tests()
+        public CassetteApplication_Tests()
         {
             sourceDir = new TempDirectory();
             cacheDir = new TempDirectory();
         }
 
-        internal CassetteApplication StubApplication(bool isHtmlRewritingEnabled = false)
+        [Fact]
+        public void IsDebuggingEnabledPropertyIsAssignedFromSettings()
+        {
+            var application = StubApplication(settings => settings.IsDebuggingEnabled = true);
+            application.IsDebuggingEnabled.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void SourceDirectoryPropertyIsAssignedFromSettings()
+        {
+            var directory = Mock.Of<IDirectory>();
+            var application = StubApplication(settings => settings.SourceDirectory = directory);
+            application.SourceDirectory.ShouldBeSameAs(directory);
+        }
+
+        [Fact]
+        public void IsHtmlRewritingEnabledPropertyIsAssignedFromSettings()
+        {
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
+            application.IsHtmlRewritingEnabled.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void UrlGeneratorIsAssigned()
+        {
+            var application = StubApplication();
+            application.UrlGenerator.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void WhenDispose_ThenBundleIsDisposed()
+        {
+            var bundle = new Mock<Bundle>("~");
+            var disposable = bundle.As<IDisposable>();
+
+            var application = StubApplication(createBundles: settings => new BundleCollection(settings) { bundle.Object });
+            
+            application.Dispose();
+
+            disposable.Verify(d => d.Dispose());
+        }
+
+        internal CassetteApplication StubApplication(Action<CassetteSettings> alterSettings = null, Func<CassetteSettings, BundleCollection> createBundles = null)
         {
             var settings = new CassetteSettings
             {
-                IsHtmlRewritingEnabled = isHtmlRewritingEnabled,
                 CacheDirectory = new FileSystemDirectory(cacheDir),
                 SourceDirectory = new FileSystemDirectory(sourceDir)
             };
+            if (alterSettings != null) alterSettings(settings);
+
+            BundleCollection bundles;
+            bundles = createBundles == null 
+                ? new BundleCollection(settings) 
+                : createBundles(settings);
+
             return new CassetteApplication(
-                new BundleCollection(settings), 
+                bundles, 
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")), 
                 new RouteCollection(), 
@@ -73,7 +121,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenHtmlRewritingEnabled_WhenOnPostMapRequestHandler_ThenPlaceholderTrackerAddedToContextItems()
         {
-            var application = StubApplication(isHtmlRewritingEnabled: true);
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
 
             var context = new Mock<HttpContextBase>();
             var items = new Dictionary<string, object>();
@@ -87,7 +135,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenHtmlRewritingDisabled_WhenOnPostMapRequestHandler_ThenNullPlaceholderTrackerAddedToContextItems()
         {
-            var application = StubApplication(isHtmlRewritingEnabled: false);
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = false);
 
             var context = new Mock<HttpContextBase>();
             var items = new Dictionary<string, object>();
@@ -104,7 +152,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenHtmlRewritingDisabled_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
-            var application = StubApplication(isHtmlRewritingEnabled: false);
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = false);
 
             var context = new Mock<HttpContextBase>();
             var response = new Mock<HttpResponseBase>();
@@ -119,7 +167,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenCurrentHandlerIsAssemblyResourceLoader_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
-            var application = StubApplication(isHtmlRewritingEnabled: true);
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
 
             var context = new Mock<HttpContextBase>();
             context.SetupGet(c => c.CurrentHandler)
@@ -135,4 +183,3 @@ namespace Cassette.Web
         }
     }
 }
-

@@ -99,7 +99,7 @@ namespace Cassette.Scripts
         {
             if (string.IsNullOrEmpty(fallbackUrl) == false)
             {
-                Assets.Add(new Asset(fallbackUrl, this, application.RootDirectory.GetFile(fallbackUrl.Substring(2))));
+                Assets.Add(new Asset(fallbackUrl, this, application.SourceDirectory.GetFile(fallbackUrl.Substring(2))));
             }
             base.Process(application);
         }

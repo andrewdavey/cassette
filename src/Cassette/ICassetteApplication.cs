@@ -26,10 +26,10 @@ namespace Cassette
 {
     public interface ICassetteApplication : IDisposable
     {
-        IDirectory RootDirectory { get; }
+        IDirectory SourceDirectory { get; }
         bool IsDebuggingEnabled { get; }
         IUrlGenerator UrlGenerator { get; }
-        bool HtmlRewritingEnabled { get; }
+        bool IsHtmlRewritingEnabled { get; }
 
         IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle;
     }

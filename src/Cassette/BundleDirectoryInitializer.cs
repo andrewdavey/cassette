@@ -22,7 +22,7 @@ namespace Cassette
 
         public void InitializeBundle(Bundle bundle, ICassetteApplication application)
         {
-            var directory = application.RootDirectory.GetDirectory(Path, false);
+            var directory = application.SourceDirectory.GetDirectory(Path, false);
             var descriptor = GetOrLoadBundleDescriptor(directory);
             IEnumerable<IAsset> assets;
             if (descriptor == null)

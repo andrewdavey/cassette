@@ -147,7 +147,7 @@ namespace Cassette.Configuration
         protected ICassetteApplication StubApplication()
         {
             var appMock = new Mock<ICassetteApplication>();
-            appMock.SetupGet(a => a.RootDirectory).Returns(Mock.Of<IDirectory>());
+            appMock.SetupGet(a => a.SourceDirectory).Returns(Mock.Of<IDirectory>());
             return appMock.Object;
         }
     }
