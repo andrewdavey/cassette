@@ -65,7 +65,7 @@ function buildTmplFn(markup) {
 
     // Convert the template into pure JavaScript
 			trim(markup)
-				//.replace(/([\\'])/g, "\\$1")
+				.replace(/([\\'])/g, "\\$1")
 				.replace(/[\r\t\n]/g, " ")
 				.replace(/\$\{([^\}]*)\}/g, "{{= $1}}")
 				.replace(/\{\{(\/?)(\w+|.)(?:\(((?:[^\}]|\}(?!\}))*?)?\))?(?:\s+(.*?)?)?(\(((?:[^\}]|\}(?!\}))*?)\))?\s*\}\}/g,
