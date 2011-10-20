@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Xml.Linq;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -27,14 +28,33 @@ namespace Cassette
     {
         public AssetReference(string path, IAsset sourceAsset, int sourceLineNumber, AssetReferenceType type)
         {
-            if (type != AssetReferenceType.Url && path.StartsWith("~") == false)
-            {
-                throw new ArgumentException("Referenced path must be application relative and start with a \"~\".");
-            }
+            ValidatePath(path, type);
+
             Path = path;
             SourceAsset = sourceAsset;
             SourceLineNumber = sourceLineNumber;
             Type = type;
+        }
+
+        static void ValidatePath(string path, AssetReferenceType type)
+        {
+            if (type == AssetReferenceType.Url)
+            {
+                if (!path.IsUrl())
+                {
+                    throw new ArgumentException("Referenced path must be a URL.", "path");
+                }
+            }
+            else
+            {
+                if (!path.StartsWith("~"))
+                {
+                    throw new ArgumentException(
+                        "Referenced path must be application relative and start with a \"~\".",
+                        "path"
+                    );
+                }
+            }
         }
 
         /// <summary>
