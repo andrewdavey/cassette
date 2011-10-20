@@ -32,7 +32,7 @@ namespace Cassette.HtmlTemplates
         {
             var bundle = new HtmlTemplateBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFilename).Returns("~/test/sub/asset.htm");
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/sub/asset.htm");
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
 

@@ -33,7 +33,7 @@ namespace Cassette.BundleProcessing
         public void TransformCallsLessCompiler()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("test.less");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.less");
 
             var sourceInput = "source-input";
             var compilerOutput = "compiler-output";

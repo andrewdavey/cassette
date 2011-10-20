@@ -78,7 +78,7 @@ namespace Cassette.Stylesheets
 
         string GetCurrentDirectory(IAsset asset)
         {
-            return Path.GetDirectoryName(asset.SourceFilename);
+            return asset.SourceFile.Directory.FullPath;
         }
 
         /// <remarks>

@@ -42,7 +42,7 @@ namespace Cassette.Web
         {
             return urlModifier.Modify(string.Format(
                 "{0}?{1}",
-                asset.SourceFilename.Substring(2),
+                asset.SourceFile.FullPath.Substring(2),
                 asset.Hash.ToHexString()
             ));
         }
@@ -52,7 +52,7 @@ namespace Cassette.Web
             return urlModifier.Modify(string.Format(
                 "{0}/compile/{1}?{2}",
                 RoutePrefix,
-                asset.SourceFilename.Substring(2),
+                asset.SourceFile.FullPath.Substring(2),
                 asset.Hash.ToHexString()
             ));
         }

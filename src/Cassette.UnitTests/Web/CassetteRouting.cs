@@ -93,7 +93,7 @@ namespace Cassette.Web
         public UrlGenerator_CreateAssetUrl_Tests()
         {
             asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("~/test/asset.js");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
         }
 
@@ -119,7 +119,7 @@ namespace Cassette.Web
         {
             var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("~/test/asset.coffee");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
             
             var url = routing.CreateAssetCompileUrl(bundle, asset.Object);

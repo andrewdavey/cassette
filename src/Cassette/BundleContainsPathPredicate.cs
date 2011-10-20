@@ -45,7 +45,7 @@ namespace Cassette
 
         void IAssetVisitor.Visit(IAsset asset)
         {
-            if (IsMatch(asset.SourceFilename))
+            if (IsMatch(asset.SourceFile.FullPath))
             {
                 isFound = true;
             }

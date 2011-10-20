@@ -40,9 +40,9 @@ namespace Cassette
             var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
-            var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
-            assets[0].SourceFilename.ShouldEqual("~/test/asset1.js");
-            assets[1].SourceFilename.ShouldEqual("~/test/asset2.js");
+            var assets = bundle.Assets.OrderBy(a => a.SourceFile.FullPath).ToArray();
+            assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset1.js");
+            assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset2.js");
             assets.Length.ShouldEqual(2);
         }
 
@@ -61,9 +61,9 @@ namespace Cassette
             var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
-            var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
-            assets[0].SourceFilename.ShouldEqual("~/test/asset1.js");
-            assets[1].SourceFilename.ShouldEqual("~/test/asset2.coffee");
+            var assets = bundle.Assets.OrderBy(a => a.SourceFile.FullPath).ToArray();
+            assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset1.js");
+            assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset2.coffee");
         }
 
         [Fact]
@@ -81,9 +81,9 @@ namespace Cassette
             var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
-            var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
-            assets[0].SourceFilename.ShouldEqual("~/test/asset1.js");
-            assets[1].SourceFilename.ShouldEqual("~/test/asset2.coffee");
+            var assets = bundle.Assets.OrderBy(a => a.SourceFile.FullPath).ToArray();
+            assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset1.js");
+            assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset2.coffee");
         }
 
         [Fact]
@@ -98,9 +98,9 @@ namespace Cassette
             var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
-            var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
-            assets[0].SourceFilename.ShouldEqual("~/test/asset1.js");
-            assets[1].SourceFilename.ShouldEqual("~/test/asset2.txt");
+            var assets = bundle.Assets.OrderBy(a => a.SourceFile.FullPath).ToArray();
+            assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset1.js");
+            assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset2.txt");
         }
 
         [Fact]
@@ -148,8 +148,8 @@ namespace Cassette
             var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
-            bundle.Assets[0].SourceFilename.ShouldEqual("~/test/asset-Z.js");
-            bundle.Assets[1].SourceFilename.ShouldEqual("~/test/asset-A.js");
+            bundle.Assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset-Z.js");
+            bundle.Assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset-A.js");
         }
 
         [Fact]
@@ -164,8 +164,8 @@ namespace Cassette
             var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
-            bundle.Assets[0].SourceFilename.ShouldEqual("~/test/asset-Z.js");
-            bundle.Assets[1].SourceFilename.ShouldEqual("~/test/asset-A.js");
+            bundle.Assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset-Z.js");
+            bundle.Assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset-A.js");
         }
 
         public void Dispose()

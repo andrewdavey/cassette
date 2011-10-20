@@ -79,7 +79,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~\\test\\asset.js").ShouldBeTrue();
@@ -92,7 +92,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~/test/asset.js").ShouldBeTrue();
@@ -105,7 +105,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~\\TEST\\ASSET.js").ShouldBeTrue();
@@ -156,7 +156,7 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.FindAssetByPath("~/test/asset.js").ShouldBeSameAs(asset.Object);
@@ -175,7 +175,7 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFilename).Returns("~/test/sub/asset.js");
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/sub/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.FindAssetByPath("~\\test\\sub\\asset.js").ShouldBeSameAs(asset.Object);
@@ -186,7 +186,7 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFilename).Returns("~/test/sub/asset.js");
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/sub/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.FindAssetByPath("~/test/sub/asset.js").ShouldBeSameAs(asset.Object);

@@ -34,7 +34,7 @@ namespace Cassette
                 bundle.AddReferences(descriptor.References);
 
                 var files = descriptor.GetAssetFiles(directory, GetFilePatterns(), ExcludeFilePath, SearchOption);
-                assets = files.Select(file => new Asset(file.FullPath, bundle, file));
+                assets = files.Select(file => new Asset(bundle, file));
             }
             AddAssetsToBundle(bundle, assets);
         }
@@ -63,7 +63,7 @@ namespace Cassette
                    from file in directory.GetFiles(pattern, SearchOption)
                    where !IsDescriptorFilename(file)
                          && (ExcludeFilePath == null || !ExcludeFilePath.IsMatch(file.FullPath))
-                   select new Asset(file.FullPath, bundle, file);
+                   select new Asset(bundle, file);
         }
 
         void AddAssetsToBundle(Bundle bundle, IEnumerable<IAsset> assets)

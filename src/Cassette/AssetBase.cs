@@ -64,8 +64,6 @@ namespace Cassette
 
         public abstract IFile SourceFile { get; }
 
-        public abstract string SourceFilename { get; }
-
         public abstract byte[] Hash { get; }
 
         public abstract IEnumerable<AssetReference> References { get; }

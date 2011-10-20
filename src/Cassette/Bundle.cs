@@ -130,7 +130,7 @@ namespace Cassette
         public IAsset FindAssetByPath(string path)
         {
             return Assets.FirstOrDefault(
-                a => PathUtilities.PathsEqual(a.SourceFilename, path)
+                a => PathUtilities.PathsEqual(a.SourceFile.FullPath, path)
             );
         }
 
@@ -148,7 +148,7 @@ namespace Cassette
             if (hasSortedAssets) return;
             // Graph topological sort, based on references between assets.
             var assetsByFilename = Assets.ToDictionary(
-                a => a.SourceFilename,
+                a => a.SourceFile.FullPath,
                 StringComparer.OrdinalIgnoreCase
             );
             var graph = new Graph<IAsset>(
@@ -163,7 +163,7 @@ namespace Cassette
                 var details = string.Join(
                     Environment.NewLine,
                     cycles.Select(
-                        cycle => "[" + string.Join(", ", cycle.Select(a => a.SourceFilename)) + "]"
+                        cycle => "[" + string.Join(", ", cycle.Select(a => a.SourceFile.FullPath)) + "]"
                     )
                 );
                 throw new InvalidOperationException("Cycles detected in asset references:" + Environment.NewLine + details);

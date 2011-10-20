@@ -31,25 +31,14 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(string applicationRelativeFilename, Bundle parentBundle, IFile file)
+        public Asset(Bundle parentBundle, IFile file)
         {
-            if (applicationRelativeFilename == null)
-            {
-                throw new ArgumentNullException("applicationRelativeFilename");
-            }
-            if (applicationRelativeFilename.StartsWith("~") == false)
-            {
-                throw new ArgumentException("Asset filename must be in application relative form (starting with '~').");
-            }
-
-            this.applicationRelativeFilename = PathUtilities.NormalizePath(applicationRelativeFilename);
             this.parentBundle = parentBundle;
             this.file = file;
 
             hash = new Lazy<byte[]>(HashFileContents); // Avoid file IO until the hash is actually needed.
         }
 
-        readonly string applicationRelativeFilename;
         readonly Bundle parentBundle;
         readonly IFile file;
         readonly Lazy<byte[]> hash;
@@ -58,6 +47,16 @@ namespace Cassette
         public override IFile SourceFile
         {
             get { return file; }
+        }
+
+        public override byte[] Hash
+        {
+            get { return hash.Value; }
+        }
+
+        public override IEnumerable<AssetReference> References
+        {
+            get { return references; }
         }
 
         public override void AddReference(string assetRelativeFilename, int lineNumber)
@@ -79,7 +78,7 @@ namespace Cassette
                 }
                 else
                 {
-                    var subDirectory = Path.GetDirectoryName(applicationRelativeFilename);
+                    var subDirectory = SourceFile.Directory.FullPath;
                     appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
                         subDirectory,
                         assetRelativeFilename
@@ -113,7 +112,7 @@ namespace Cassette
         public override void AddRawFileReference(string relativeFilename)
         {
             var appRelativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
-                Path.GetDirectoryName(applicationRelativeFilename),
+                SourceFile.Directory.FullPath,
                 relativeFilename
             ));
             
@@ -126,24 +125,9 @@ namespace Cassette
         public override IEnumerable<XElement> CreateCacheManifest()
         {
             yield return new XElement("Asset",
-                new XAttribute("Path", SourceFilename),
+                new XAttribute("Path", SourceFile.FullPath),
                 references.Select(reference => reference.CreateCacheManifest())
             );
-        }
-
-        public override string SourceFilename
-        {
-            get { return applicationRelativeFilename; }
-        }
-
-        public override byte[] Hash
-        {
-            get { return hash.Value; }
-        }
-
-        public override IEnumerable<AssetReference> References
-        {
-            get { return references; }
         }
 
         byte[] HashFileContents()
@@ -169,7 +153,7 @@ namespace Cassette
             throw new AssetReferenceException(
                 string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    applicationRelativeFilename, lineNumber, path
+                    SourceFile.FullPath, lineNumber, path
                 )
             );
         }

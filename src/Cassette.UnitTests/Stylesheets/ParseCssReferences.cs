@@ -98,7 +98,7 @@ namespace Cassette.Stylesheets
             var asset = new Mock<IAsset>();
             bundle.Assets.Add(asset.Object);
 
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.css");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("asset.css");
             asset.Setup(a => a.OpenStream()).Returns(() => css.AsStream());
             return asset;
         }

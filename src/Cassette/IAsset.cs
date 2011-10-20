@@ -27,11 +27,6 @@ namespace Cassette
     public interface IAsset
     {
         /// <summary>
-        /// The application relative path of the asset.
-        /// </summary>
-        string SourceFilename { get; }
-
-        /// <summary>
         /// The hash of the original asset contents, before any transformations are applied.
         /// </summary>
         byte[] Hash { get; }

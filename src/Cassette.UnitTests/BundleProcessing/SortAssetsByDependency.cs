@@ -32,11 +32,11 @@ namespace Cassette.BundleProcessing
         {
             var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
+            assetA.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
+            assetB.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/b.js");
             bundle.Assets.Add(assetA.Object);
             bundle.Assets.Add(assetB.Object);
 
@@ -52,11 +52,11 @@ namespace Cassette.BundleProcessing
         {
             var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
+            assetA.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
+            assetB.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/b.js");
             bundle.Assets.Add(assetA.Object);
             bundle.Assets.Add(assetB.Object);
 
@@ -72,11 +72,11 @@ namespace Cassette.BundleProcessing
         {
             var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
+            assetA.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
+            assetB.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/b.js");
             bundle.AddAssets(new[] {assetA.Object, assetB.Object}, preSorted: true);
             
             var sorter = new SortAssetsByDependency();
@@ -91,11 +91,11 @@ namespace Cassette.BundleProcessing
         {
             var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
-            assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
+            assetA.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/test/b.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
-            assetB.SetupGet(a => a.SourceFilename).Returns("~/test/b.js");
+            assetB.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/b.js");
             assetB.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/test/a.js", assetB.Object, 1, AssetReferenceType.SameBundle) });
 

@@ -184,14 +184,14 @@ namespace Cassette
             {
                 return string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    reference.SourceAsset.SourceFilename, reference.SourceLineNumber, reference.Path
+                    reference.SourceAsset.SourceFile.FullPath, reference.SourceLineNumber, reference.Path
                 );
             }
             else
             {
                 return string.Format(
                     "Reference error in \"{0}\". Cannot find \"{1}\".",
-                    reference.SourceAsset.SourceFilename, reference.Path
+                    reference.SourceAsset.SourceFile.FullPath, reference.Path
                 );
             }
         }

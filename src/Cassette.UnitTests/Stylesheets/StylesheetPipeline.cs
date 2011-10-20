@@ -54,11 +54,11 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset1.Object);
             bundle.Assets.Add(asset2.Object);
 
-            asset1.SetupGet(a => a.SourceFilename)
+            asset1.SetupGet(a => a.SourceFile.FullPath)
                   .Returns("~/asset1.css");
             asset1.Setup(a => a.OpenStream())
                   .Returns(() => "/* @reference \"asset2.css\"; */".AsStream());
-            asset2.SetupGet(a => a.SourceFilename)
+            asset2.SetupGet(a => a.SourceFile.FullPath)
                   .Returns("~/asset2.css");
             asset2.Setup(a => a.OpenStream())
                   .Returns(() => "p { color: White; }".AsStream());
@@ -133,7 +133,7 @@ namespace Cassette.Stylesheets
         public StylesheetPipelineWhereLessCompilerTrue()
         {
             asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.less");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("asset.less");
             asset.Setup(a => a.OpenStream()).Returns(() => "// @reference 'other.less';".AsStream());
             bundle.Assets.Add(asset.Object);
             pipeline = new StylesheetPipeline();

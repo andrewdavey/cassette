@@ -66,7 +66,7 @@ namespace Cassette.Web
                 ContentType = "CONTENT/TYPE"
             };
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename)
+            asset.SetupGet(a => a.SourceFile.FullPath)
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(Stream.Null);
@@ -88,7 +88,7 @@ namespace Cassette.Web
                 ContentType = "CONTENT/TYPE"
             };
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename)
+            asset.SetupGet(a => a.SourceFile.FullPath)
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(() => "output".AsStream());

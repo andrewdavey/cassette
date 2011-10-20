@@ -30,7 +30,7 @@ namespace Cassette.Stylesheets
         public void ProcessAddsReferencesToLessAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.less");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.less");
 
             var lessSource = @"
 // @reference ""another1.less"";

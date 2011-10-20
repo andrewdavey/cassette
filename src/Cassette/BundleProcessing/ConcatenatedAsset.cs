@@ -59,11 +59,6 @@ namespace Cassette.BundleProcessing
             get { return hash; }
         }
 
-        public override string SourceFilename
-        {
-            get { return string.Join(";", children.Select(c => c.SourceFilename)); }
-        }
-
         public override IEnumerable<AssetReference> References
         {
             get { return children.SelectMany(c => c.References); }

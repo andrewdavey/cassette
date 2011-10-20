@@ -305,7 +305,7 @@ namespace Cassette.Persistence
         Mock<IAsset> StubAsset(string path = null)
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns(path);
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns(path);
             asset.SetupGet(a => a.Hash).Returns(new byte[0]);
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))

@@ -39,10 +39,10 @@ namespace Cassette
             
             bundle = new TestableBundle("~/bundle");
             sourceFile = StubFile("asset content");
-            asset = new Asset("~/bundle/test.js", bundle, sourceFile);
+            asset = new Asset(bundle, sourceFile);
             bundle.Assets.Add(asset);
 
-            var another = new Asset("~/bundle/another.js", bundle, StubFile());
+            var another = new Asset(bundle, StubFile(fullPath: "~/bundle/another.js"));
             bundle.Assets.Add(another);
         }
 
@@ -51,21 +51,16 @@ namespace Cassette
         readonly Bundle bundle;
         readonly IFile sourceFile;
 
-        IFile StubFile(string content = "")
+        IFile StubFile(string content = "", string fullPath = null)
         {
             var file = new Mock<IFile>();
+            var directory = new Mock<IDirectory>();
+            directory.SetupGet(d => d.FullPath).Returns("~/bundle");
+            file.SetupGet(f => f.Directory).Returns(directory.Object);
+            file.SetupGet(f => f.FullPath).Returns(fullPath ?? "~/bundle/asset.js");
             file.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), FileShare.ReadWrite))
                 .Returns(() => content.AsStream());
             return file.Object;
-        }
-
-        [Fact]
-        public void ConstructorNormalizesPath()
-        {
-            root.CreateSubdirectory("bundle\\test");
-            File.WriteAllText(Path.Combine(root.FullName, "bundle", "test", "bar.js"), "");
-            var asset = new Asset("~\\bundle\\test\\bar.js", bundle, StubFile());
-            asset.SourceFilename.ShouldEqual("~/bundle/test/bar.js");
         }
 
         [Fact]
@@ -158,7 +153,7 @@ namespace Cassette
         {
             root.CreateSubdirectory("bundle\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "bundle", "sub", "another.js"), "");
-            var another = new Asset("~/bundle/sub/another.js", bundle, StubFile());
+            var another = new Asset(bundle, StubFile(fullPath: "~/bundle/sub/another.js"));
             bundle.Assets.Add(another);
 
             asset.AddReference("sub\\another.js", 1);
@@ -306,11 +301,11 @@ namespace Cassette
             var fileSystem = new FileSystemDirectory(root.FullName);
 
             var bundle = new TestableBundle("~/bundle");
-            asset = new Asset("~/bundle/test.js", bundle, fileSystem.GetFile("bundle\\test.js"));
+            asset = new Asset(bundle, fileSystem.GetFile("bundle\\test.js"));
             bundle.Assets.Add(asset);
 
             File.WriteAllText(Path.Combine(root.FullName, "bundle", "another.js"), "");
-            var another = new Asset("~/bundle/another.js", bundle, fileSystem.GetFile("bundle\\another.js"));
+            var another = new Asset(bundle, fileSystem.GetFile("bundle\\another.js"));
             bundle.Assets.Add(another);
         }
 
@@ -336,25 +331,6 @@ namespace Cassette
         public void Dispose()
         {
             root.Delete(true);
-        }
-    }
-
-    public class Asset_ConstructorConstraints
-    {
-        [Fact]
-        public void PathCannotBeNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new Asset(null, new TestableBundle("~"), Mock.Of<IFile>())
-            );
-        }
-
-        [Fact]
-        public void PathMustStartWithTilde()
-        {
-            Assert.Throws<ArgumentException>(
-                () => new Asset("fail", new TestableBundle("~"), Mock.Of<IFile>())
-            );
         }
     }
 }

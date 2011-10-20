@@ -34,7 +34,7 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/bundle-1");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("bundle-1\\a.js");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("bundle-1\\a.js");
             asset.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentBundle) });
             bundle.Assets.Add(asset.Object);
@@ -51,7 +51,7 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/bundle-1");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("~/bundle-1/a.js");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/bundle-1/a.js");
             asset.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentBundle) });
             bundle.Assets.Add(asset.Object);
@@ -91,7 +91,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.SetupGet(a => a.SourceFilename).Returns("~/test/test.js");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/test.js");
             expectedBundle.Assets.Add(asset.Object);
             var container = new BundleContainer(new[] {
                 expectedBundle
@@ -223,7 +223,7 @@ namespace Cassette
 
         void SetupAsset(string filename, Mock<IAsset> asset)
         {
-            asset.Setup(a => a.SourceFilename).Returns(filename);
+            asset.Setup(a => a.SourceFile.FullPath).Returns(filename);
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
         }

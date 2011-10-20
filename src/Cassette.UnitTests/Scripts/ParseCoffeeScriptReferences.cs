@@ -30,7 +30,7 @@ namespace Cassette.Scripts
         public void ProcessAddsReferencesToCoffeeScriptAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.coffee");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.coffee");
 
             var coffeeScriptSource = @"
 # reference ""another1.js""

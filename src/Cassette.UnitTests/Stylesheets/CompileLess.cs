@@ -32,7 +32,7 @@ namespace Cassette.Stylesheets
             var processor = new CompileLess(Mock.Of<ICompiler>());
             var bundle = new StylesheetBundle("~");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("test.less");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.less");
             bundle.Assets.Add(asset.Object);
 
             processor.Process(bundle, Mock.Of<ICassetteApplication>());
@@ -46,7 +46,7 @@ namespace Cassette.Stylesheets
             var processor = new CompileLess(Mock.Of<ICompiler>());
             var bundle = new StylesheetBundle("~");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("test.css");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.css");
             bundle.Assets.Add(asset.Object);
 
             processor.Process(bundle, Mock.Of<ICassetteApplication>());

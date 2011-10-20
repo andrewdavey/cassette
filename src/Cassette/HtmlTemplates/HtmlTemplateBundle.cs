@@ -59,7 +59,7 @@ namespace Cassette.HtmlTemplates
 
         public string GetTemplateId(IAsset asset)
         {
-            var path = asset.SourceFilename
+            var path = asset.SourceFile.FullPath
                 .Substring(Path.Length + 1)
                 .Replace(System.IO.Path.DirectorySeparatorChar, '-')
                 .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');

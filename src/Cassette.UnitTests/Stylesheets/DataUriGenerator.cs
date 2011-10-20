@@ -37,7 +37,7 @@ namespace Cassette.Stylesheets
             directory = new Mock<IDirectory>();
             asset = new Mock<IAsset>();
             var file = new Mock<IFile>();
-            asset.SetupGet(a => a.SourceFilename)
+            asset.SetupGet(a => a.SourceFile.FullPath)
                  .Returns("asset.css");
             asset.SetupGet(a => a.SourceFile)
                  .Returns(file.Object);
@@ -66,7 +66,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void ImageUrlCanHaveSubDirectory()
         {
-            asset.SetupGet(a => a.SourceFilename).Returns("~/styles/jquery-ui/jquery-ui.css");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/styles/jquery-ui/jquery-ui.css");
+            asset.SetupGet(a => a.SourceFile.Directory).Returns(directory.Object);
             StubFile("images/test.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(images/test.png); }";
@@ -122,6 +123,8 @@ namespace Cassette.Stylesheets
             var file = new Mock<IFile>();
             directory.Setup(d => d.GetFile(filename))
                 .Returns(file.Object);
+            file.SetupGet(f => f.Directory)
+                .Returns(directory.Object);
             file.SetupGet(f => f.Exists)
                 .Returns(true);
             file.Setup(d => d.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
