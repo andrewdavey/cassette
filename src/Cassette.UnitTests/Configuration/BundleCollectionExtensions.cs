@@ -24,7 +24,7 @@ namespace Cassette.Configuration
                 };
             
                 var factory = new Mock<IBundleFactory<Bundle>>();
-                var bundles = new Queue<Bundle>(new[] { new Bundle("~/test/bundle-a"), new Bundle("~/test/bundle-b") });
+                var bundles = new Queue<Bundle>(new[] { new TestableBundle("~/test/bundle-a"), new TestableBundle("~/test/bundle-b") });
                 factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
                        .Returns(bundles.Dequeue);
                 settings.BundleFactories[typeof(Bundle)] = factory.Object;
@@ -51,7 +51,7 @@ namespace Cassette.Configuration
                 };
                 var factory = new Mock<IBundleFactory<Bundle>>();
                 factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
-                       .Returns(new Bundle("~/test/bundle"));
+                       .Returns(new TestableBundle("~/test/bundle"));
                 settings.BundleFactories[typeof(Bundle)] = factory.Object;
 
                 var collection = new BundleCollection(settings);

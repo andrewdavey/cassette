@@ -53,7 +53,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenBundleFoundButAssetIsNull_WhenProcessRequest_ThenNotFoundResponse()
         {
-            bundle = new Bundle("~/test");
+            bundle = new TestableBundle("~/test");
             handler.ProcessRequest(null);
             response.VerifySet(r => r.StatusCode = 404);
         }
@@ -61,7 +61,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenAssetExists_WhenProcessRequest_ThenResponseContentTypeIsBundleContentType()
         {
-            bundle = new Bundle("~/test")
+            bundle = new TestableBundle("~/test")
             {
                 ContentType = "CONTENT/TYPE"
             };
@@ -83,7 +83,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenAssetExists_WhenProcessRequest_ThenResponseOutputIsAssetContent()
         {
-            bundle = new Bundle("~/test")
+            bundle = new TestableBundle("~/test")
             {
                 ContentType = "CONTENT/TYPE"
             };

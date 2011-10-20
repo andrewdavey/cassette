@@ -31,35 +31,35 @@ namespace Cassette
         [Fact]
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingBackSlash()
         {
-            var bundle = new Bundle("~\\test\\");
+            var bundle = new TestableBundle("~\\test\\");
             bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
         public void ConstructorNormalizesDirectoryPathByRemovingTrailingForwardSlash()
         {
-            var bundle = new Bundle("~/test/");
+            var bundle = new TestableBundle("~/test/");
             bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
         public void ConstructorNormalizesToForwardSlashes()
         {
-            var bundle = new Bundle("~/test/foo\\bar");
+            var bundle = new TestableBundle("~/test/foo\\bar");
             bundle.Path.ShouldEqual("~/test/foo/bar");
         }
 
         [Fact]
         public void ConstructorDoesNotNormalizeUrls()
         {
-            var bundle = new Bundle("http://test.com/api.js");
+            var bundle = new TestableBundle("http://test.com/api.js");
             bundle.Path.ShouldEqual("http://test.com/api.js");
         }
 
         [Fact]
         public void BundlePathIsConvertedToBeApplicationRelative()
         {
-            var bundle = new Bundle("test");
+            var bundle = new TestableBundle("test");
             bundle.Path.ShouldEqual("~/test");
         }
 
@@ -67,7 +67,7 @@ namespace Cassette
         public void CanCreateWithAssetSources()
         {
             var initializer = Mock.Of<IBundleInitializer>();
-            var bundle = new Bundle("~/test", new[] { initializer });
+            var bundle = new TestableBundle("~/test", new[] { initializer });
 
             bundle.BundleInitializers.SequenceEqual(new[] { initializer }).ShouldBeTrue();
         }
@@ -75,7 +75,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetInBundle_ReturnsTrue()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
@@ -88,7 +88,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetInBundleWithForwardSlash_ReturnsTrue()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
@@ -101,7 +101,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetInBundleWithDifferentCasing_ReturnsTrue()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
@@ -114,7 +114,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfAssetNotInBundle_ReturnsFalse()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
 
             bundle.ContainsPath("~\\test\\not-in-bundle.js").ShouldBeFalse();
         }
@@ -122,7 +122,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheBundleItself_ReturnsTrue()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
 
             bundle.ContainsPath("~/test").ShouldBeTrue();
         }
@@ -130,7 +130,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheBundleItselfWithBackSlashes_ReturnsTrue()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
 
             bundle.ContainsPath("~\\test").ShouldBeTrue();
         }
@@ -138,7 +138,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheBundleItselfWithDifferentCasing_ReturnsTrue()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
 
             bundle.ContainsPath("~\\TEST").ShouldBeTrue();
         }
@@ -146,7 +146,7 @@ namespace Cassette
         [Fact]
         public void ContainsPathOfJustTheBundleItselfWithTrailingSlash_ReturnsTrue()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
 
             bundle.ContainsPath("~\\test\\").ShouldBeTrue();
         }
@@ -154,7 +154,7 @@ namespace Cassette
         [Fact]
         public void FindAssetByPathReturnsAssetWithMatchingFilename()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
@@ -165,7 +165,7 @@ namespace Cassette
         [Fact]
         public void WhenFindAssetByPathNotFound_ThenNullReturned()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
 
             bundle.FindAssetByPath("~/test/notfound.js").ShouldBeNull();
         }
@@ -173,7 +173,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetInSubDirectory_WhenFindAssetByPathWithBackSlashes_ThenAssetWithMatchingFilenameIsReturned()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("~/test/sub/asset.js");
             bundle.Assets.Add(asset.Object);
@@ -184,7 +184,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetInSubDirectory_WhenFindAssetByPath_ThenAssetWithMatchingFilenameIsReturned()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.SourceFilename).Returns("~/test/sub/asset.js");
             bundle.Assets.Add(asset.Object);
@@ -196,7 +196,7 @@ namespace Cassette
         public void AcceptCallsVisitOnVistor()
         {
             var visitor = new Mock<IAssetVisitor>();
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
 
             bundle.Accept(visitor.Object);
 
@@ -207,7 +207,7 @@ namespace Cassette
         public void AcceptCallsAcceptForEachAsset()
         {
             var visitor = new Mock<IAssetVisitor>();
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             bundle.Assets.Add(asset1.Object);
@@ -222,7 +222,7 @@ namespace Cassette
         [Fact]
         public void HashIsHashOfFirstAsset()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] {1, 2, 3});
             bundle.Assets.Add(asset.Object);
@@ -232,7 +232,7 @@ namespace Cassette
         [Fact]
         public void HashThrowsInvalidOperationExceptionWhenMoreThanOneAsset()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(Mock.Of<IAsset>());
             bundle.Assets.Add(Mock.Of<IAsset>());
             Assert.Throws<InvalidOperationException>(delegate
@@ -244,7 +244,7 @@ namespace Cassette
         [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             var asset1 = new Mock<IDisposable>();
             var asset2 = new Mock<IDisposable>();
             var asset3 = new Mock<IAsset>(); // Not disposable; Tests for incorrect casting to IDisposable.
@@ -252,7 +252,7 @@ namespace Cassette
             bundle.Assets.Add(asset2.As<IAsset>().Object);
             bundle.Assets.Add(asset3.Object);
 
-            bundle.Dispose();
+            ((IDisposable)bundle).Dispose();
 
             asset1.Verify(a => a.Dispose());
             asset2.Verify(a => a.Dispose());
@@ -264,7 +264,7 @@ namespace Cassette
         [Fact]
         public void StoresReferences()
         {
-            var bundle = new Bundle("~/bundle");
+            var bundle = new TestableBundle("~/bundle");
             bundle.AddReferences(new[] { "~\\test", "~\\other" });
             bundle.References.SequenceEqual(new[] { "~/test", "~/other" }).ShouldBeTrue();
         }
@@ -272,7 +272,7 @@ namespace Cassette
         [Fact]
         public void ReferenceStartingWithSlashIsConvertedToAppRelative()
         {
-            var bundle = new Bundle("~/bundle");
+            var bundle = new TestableBundle("~/bundle");
             bundle.AddReferences(new[] { "/test" });
             bundle.References.Single().ShouldEqual("~/test");
         }
@@ -280,7 +280,7 @@ namespace Cassette
         [Fact]
         public void BundleRelativePathIsConvertedToAppRelative()
         {
-            var bundle = new Bundle("~/bundle");
+            var bundle = new TestableBundle("~/bundle");
             bundle.AddReferences(new[] { "../lib" });
             bundle.References.Single().ShouldEqual("~/lib");
         }
@@ -288,7 +288,7 @@ namespace Cassette
         [Fact]
         public void TrailingSlashIsRemoved()
         {
-            var bundle = new Bundle("~/bundle");
+            var bundle = new TestableBundle("~/bundle");
             bundle.AddReferences(new[] { "../lib/" });
             bundle.References.Single().ShouldEqual("~/lib");
         }
@@ -296,7 +296,7 @@ namespace Cassette
         [Fact]
         public void UrlIsNotConverted()
         {
-            var bundle = new Bundle("~/bundle");
+            var bundle = new TestableBundle("~/bundle");
             bundle.AddReferences(new[] { "http://test.com/" });
             bundle.References.Single().ShouldEqual("http://test.com/");
         }
@@ -307,14 +307,14 @@ namespace Cassette
         [Fact]
         public void AssetSourcesIsInitiallyEmpty()
         {
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             bundle.BundleInitializers.ShouldBeEmpty();
         }
 
         [Fact]
         public void GivenAssetSourceAdded_WhenAddAssetsFromSources_ThenInitializeBundleCalled()
         {
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             var application = Mock.Of<ICassetteApplication>();
             var initializer = new Mock<IBundleInitializer>();
             bundle.BundleInitializers.Add(initializer.Object);

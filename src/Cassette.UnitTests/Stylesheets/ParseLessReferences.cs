@@ -39,7 +39,7 @@ namespace Cassette.Stylesheets
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(lessSource.AsStream());
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseLessReferences();

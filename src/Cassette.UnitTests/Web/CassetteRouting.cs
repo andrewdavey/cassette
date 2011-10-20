@@ -117,7 +117,7 @@ namespace Cassette.Web
         [Fact]
         public void CreateAssetCompileUrlReturnsCompileUrl()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("~/test/asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });

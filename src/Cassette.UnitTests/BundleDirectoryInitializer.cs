@@ -37,7 +37,7 @@ namespace Cassette
             CreateFile("test", "asset2.js");
             CreateFile("test", "other.txt"); // this file should be ignored
 
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
             var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
@@ -58,7 +58,7 @@ namespace Cassette
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.coffee");
 
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
             var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
@@ -78,7 +78,7 @@ namespace Cassette
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.coffee");
 
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
             var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
@@ -95,7 +95,7 @@ namespace Cassette
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.txt");
 
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
             var assets = bundle.Assets.OrderBy(a => a.SourceFilename).ToArray();
@@ -115,7 +115,7 @@ namespace Cassette
             CreateFile("test", "asset.js");
             CreateFile("test", "asset-vsdoc.js");
 
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
             bundle.Assets.Count.ShouldEqual(1);
         }
@@ -128,7 +128,7 @@ namespace Cassette
             CreateFile("test", "bundle.txt");
             CreateFile("test", "module.txt"); // Legacy support - module.txt synonymous to bundle.txt
 
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
             bundle.Assets.ShouldBeEmpty();
         }
@@ -145,7 +145,7 @@ namespace Cassette
                 BundleDescriptor = descriptor
             };
 
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
             bundle.Assets[0].SourceFilename.ShouldEqual("~/test/asset-Z.js");
@@ -161,7 +161,7 @@ namespace Cassette
             CreateFile("test", "bundle.txt")("asset-Z.js\nasset-A.js");
 
             var initializer = new BundleDirectoryInitializer("~/test");
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 
             bundle.Assets[0].SourceFilename.ShouldEqual("~/test/asset-Z.js");

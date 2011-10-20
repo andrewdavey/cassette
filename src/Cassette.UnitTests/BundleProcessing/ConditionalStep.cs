@@ -29,7 +29,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void WhenPredicateReturnsTrue_ThenChildrenAreProcessed()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var app = Mock.Of<ICassetteApplication>();
             var child1 = new Mock<IBundleProcessor<Bundle>>();
             var child2 = new Mock<IBundleProcessor<Bundle>>();
@@ -44,7 +44,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void WhenPredicateReturnsFalse_ThenChildrenAreNotProcessed()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var app = Mock.Of<ICassetteApplication>();
             var child1 = new Mock<IBundleProcessor<Bundle>>();
             var child2 = new Mock<IBundleProcessor<Bundle>>();
@@ -59,7 +59,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void BundleBeingProcessedIsPassedToThePredicate()
         {
-            var expected = new Bundle("~/test");
+            var expected = new TestableBundle("~/test");
             Bundle actual = null;
             var conditionalStep = new ConditionalStep<Bundle>(
                 (m, a) => { actual = m; return false; }
@@ -74,7 +74,7 @@ namespace Cassette.BundleProcessing
         public void ApplicationBeingProcessedIsPassedToThePredicate()
         {
             var application = Mock.Of<ICassetteApplication>();
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             ICassetteApplication actual = null;
             var conditionalStep = new ConditionalStep<Bundle>(
                 (m, a) => { actual = a; return false; }

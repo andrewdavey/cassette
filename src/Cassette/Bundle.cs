@@ -28,17 +28,17 @@ using Cassette.Utilities;
 namespace Cassette
 {
     [System.Diagnostics.DebuggerDisplay("{Path}")]
-    public class Bundle : IDisposable
+    public abstract class Bundle : IDisposable
     {
-        public Bundle(string applicationRelativePath)
+        protected Bundle(string applicationRelativePath)
         {
             path = PathUtilities.AppRelative(applicationRelativePath);
         }
 
-        internal Bundle(string applicationRelativePath, IEnumerable<IBundleInitializer> assetSources)
+        protected Bundle(string applicationRelativePath, IEnumerable<IBundleInitializer> assetSources)
             : this(applicationRelativePath)
         {
-            this.bundleInitializers.AddRange(assetSources);
+            bundleInitializers.AddRange(assetSources);
         }
 
         protected Bundle()
@@ -48,9 +48,9 @@ namespace Cassette
 
         readonly string path;
         readonly List<IBundleInitializer> bundleInitializers = new List<IBundleInitializer>();
-        IList<IAsset> assets = new List<IAsset>();
-        bool hasSortedAssets;
+        readonly List<IAsset> assets = new List<IAsset>();
         readonly HashSet<string> references = new HashSet<string>();
+        bool hasSortedAssets;
 
         public string Path
         {
@@ -91,9 +91,19 @@ namespace Cassette
             get { return references; }
         }
 
+        public void Initialize(ICassetteApplication application)
+        {
+            foreach (var assetSource in bundleInitializers)
+            {
+                assetSource.InitializeBundle(this, application);
+            }
+        }
+
         public virtual void Process(ICassetteApplication application)
         {
         }
+
+        public abstract IHtmlString Render(ICassetteApplication application);
 
         public void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
         {
@@ -112,27 +122,6 @@ namespace Cassette
             }
         }
 
-        string ConvertReferenceToAppRelative(string reference)
-        {
-            if (reference.IsUrl()) return reference;
-
-            if (reference.StartsWith("~"))
-            {
-                return PathUtilities.NormalizePath(reference);
-            }
-            else if (reference.StartsWith("/"))
-            {
-                return PathUtilities.NormalizePath("~" + reference);
-            }
-            else
-            {
-                return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
-                    Path,
-                    reference
-                ));
-            }
-        }
-
         public virtual bool ContainsPath(string path)
         {
             return new BundleContainsPathPredicate().BundleContainsPath(path, this);
@@ -145,7 +134,7 @@ namespace Cassette
             );
         }
 
-        public void Accept(IAssetVisitor visitor)
+        internal void Accept(IAssetVisitor visitor)
         {
             visitor.Visit(this);
             foreach (var asset in assets)
@@ -154,12 +143,7 @@ namespace Cassette
             }
         }
 
-        public virtual IHtmlString Render(ICassetteApplication application)
-        {
-            return new HtmlString("");
-        }
-
-        public void SortAssetsByDependency()
+        internal void SortAssetsByDependency()
         {
             if (hasSortedAssets) return;
             // Graph topological sort, based on references between assets.
@@ -184,38 +168,44 @@ namespace Cassette
                 );
                 throw new InvalidOperationException("Cycles detected in asset references:" + Environment.NewLine + details);
             }
-            assets = graph.TopologicalSort().ToList();
+            assets.Clear();
+            assets.AddRange(graph.TopologicalSort());
             hasSortedAssets = true;
         }
 
-        public void ConcatenateAssets()
+        internal void ConcatenateAssets()
         {
-            assets = new List<IAsset>(new[]
-            { 
-                new ConcatenatedAsset(assets)
-            });
+            var concatenated = new ConcatenatedAsset(assets);
+            assets.Clear();
+            assets.Add(concatenated);
         }
 
-        public void Dispose()
+        string ConvertReferenceToAppRelative(string reference)
+        {
+            if (reference.IsUrl()) return reference;
+
+            if (reference.StartsWith("~"))
+            {
+                return PathUtilities.NormalizePath(reference);
+            }
+            else if (reference.StartsWith("/"))
+            {
+                return PathUtilities.NormalizePath("~" + reference);
+            }
+            else
+            {
+                return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
+                    Path,
+                    reference
+                ));
+            }
+        }
+
+        void IDisposable.Dispose()
         {
             foreach (var asset in assets.OfType<IDisposable>())
             {
                 asset.Dispose();
-            }
-        }
-
-        internal bool PathIsPrefixOf(string path)
-        {
-            if (path.Length < Path.Length) return false;
-            var prefix = path.Substring(0, Path.Length);
-            return PathUtilities.PathsEqual(prefix, Path);
-        }
-
-        public void Initialize(ICassetteApplication application)
-        {
-            foreach (var assetSource in bundleInitializers)
-            {
-                assetSource.InitializeBundle(this, application);
             }
         }
     }

@@ -158,7 +158,9 @@ namespace Cassette
 
         bool ParentBundleCouldContain(string path)
         {
-            return parentBundle.PathIsPrefixOf(path);
+            if (path.Length < parentBundle.Path.Length) return false;
+            var prefix = path.Substring(0, parentBundle.Path.Length);
+            return PathUtilities.PathsEqual(prefix, parentBundle.Path);
         }
 
         void RequireBundleContainsReference(int lineNumber, string path)

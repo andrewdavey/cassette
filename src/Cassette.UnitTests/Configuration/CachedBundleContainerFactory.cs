@@ -14,7 +14,7 @@ namespace Cassette.Configuration
         [Fact]
         public void GivenCacheIsUpToDate_WhenCreateWithBundle_ThenContainerCreatedWithTheGivenBundle()
         {
-            var bundles = new[] { new Bundle("~/test") };
+            var bundles = new[] { new TestableBundle("~/test") };
             CacheIsUpToDate(bundles);
 
             var factory = CreateFactory();
@@ -54,7 +54,7 @@ namespace Cassette.Configuration
         [Fact]
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenContainerSavedToCache()
         {
-            var bundles = new Bundle[0];
+            var bundles = new TestableBundle[0];
             var application = StubApplication();
             CacheIsOutOfDate(bundles);
 
@@ -67,7 +67,7 @@ namespace Cassette.Configuration
         [Fact]
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenBundlesInitializedFromNewCache()
         {
-            var bundles = new Bundle[0];
+            var bundles = new TestableBundle[0];
             var application = StubApplication();
             CacheIsOutOfDate(bundles);
             

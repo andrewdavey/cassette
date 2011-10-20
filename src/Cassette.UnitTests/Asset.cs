@@ -37,7 +37,7 @@ namespace Cassette
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
             root.CreateSubdirectory("bundle");
             
-            bundle = new Bundle("~/bundle");
+            bundle = new TestableBundle("~/bundle");
             sourceFile = StubFile("asset content");
             asset = new Asset("~/bundle/test.js", bundle, sourceFile);
             bundle.Assets.Add(asset);
@@ -305,7 +305,7 @@ namespace Cassette
             File.WriteAllText(filename, "asset content");
             var fileSystem = new FileSystemDirectory(root.FullName);
 
-            var bundle = new Bundle("~/bundle");
+            var bundle = new TestableBundle("~/bundle");
             asset = new Asset("~/bundle/test.js", bundle, fileSystem.GetFile("bundle\\test.js"));
             bundle.Assets.Add(asset);
 
@@ -345,7 +345,7 @@ namespace Cassette
         public void PathCannotBeNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new Asset(null, new Bundle("~"), Mock.Of<IFile>())
+                () => new Asset(null, new TestableBundle("~"), Mock.Of<IFile>())
             );
         }
 
@@ -353,7 +353,7 @@ namespace Cassette
         public void PathMustStartWithTilde()
         {
             Assert.Throws<ArgumentException>(
-                () => new Asset("fail", new Bundle("~"), Mock.Of<IFile>())
+                () => new Asset("fail", new TestableBundle("~"), Mock.Of<IFile>())
             );
         }
     }

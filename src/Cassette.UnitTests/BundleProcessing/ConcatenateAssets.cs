@@ -33,7 +33,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void GivenBundleWithTwoAssets_WhenConcatenateAssetsProcessesBundle_ThenASingleAssetReplacesTheTwoOriginalAssets()
         {
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             asset1.Setup(a => a.OpenStream()).Returns(() => ("asset1" + Environment.NewLine + "content").AsStream());
@@ -55,7 +55,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void ConcatenateAssetsMergesAssetReferences()
         {
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
             asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());

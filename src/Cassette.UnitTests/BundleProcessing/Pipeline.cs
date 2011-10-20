@@ -47,7 +47,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void WhenProcess_ThenEachStepIsCalled()
         {
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             var app = Mock.Of<ICassetteApplication>();
             pipeline.Process(bundle, app);
 

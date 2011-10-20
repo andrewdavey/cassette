@@ -41,7 +41,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                cache.SaveBundleContainer(new BundleContainer(new Bundle[0]));
+                cache.SaveBundleContainer(new BundleContainer(new TestableBundle[0]));
 
                 var xml = File.ReadAllText(Path.Combine(cacheDir, "container.xml"));
                 xml.ShouldContain("Version=\"VERSION\"");
@@ -54,7 +54,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 var asset1 = StubAsset();
                 var asset2 = StubAsset();
                 bundle.Assets.Add(new ConcatenatedAsset(new[] { asset1.Object, asset2.Object }));
@@ -72,7 +72,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 var asset1 = StubAsset();
                 bundle.Assets.Add(asset1.Object);
 
@@ -89,10 +89,10 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 bundle.AddReferences(new[] { "~/other" });
                 
-                cache.SaveBundleContainer(new BundleContainer(new[] { bundle, new Bundle("~/other")  }));
+                cache.SaveBundleContainer(new BundleContainer(new[] { bundle, new TestableBundle("~/other")  }));
 
                 var xml = File.ReadAllText(Path.Combine(cacheDir, "container.xml"));
                 xml.ShouldContain("<Reference Path=\"~/other\"");
@@ -105,8 +105,8 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle1 = new Bundle("~/bundle-1");
-                var bundle2 = new Bundle("~/bundle-2");
+                var bundle1 = new TestableBundle("~/bundle-1");
+                var bundle2 = new TestableBundle("~/bundle-2");
                 var asset1 = StubAsset();
                 var reference = new AssetReference("~/bundle-2", asset1.Object, -1, AssetReferenceType.DifferentBundle);
                 asset1.SetupGet(a => a.References)
@@ -126,8 +126,8 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle1 = new Bundle("~/bundle-1");
-                var bundle2 = new Bundle("~/bundle-2");
+                var bundle1 = new TestableBundle("~/bundle-1");
+                var bundle2 = new TestableBundle("~/bundle-2");
                 var asset1 = StubAsset();
                 var reference = new AssetReference("~/bundle-2/asset2.js", asset1.Object, -1, AssetReferenceType.DifferentBundle);
                 asset1.SetupGet(a => a.References)
@@ -149,8 +149,8 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle1 = new Bundle("~/bundle-1");
-                var bundle2 = new Bundle("~/bundle-2");
+                var bundle1 = new TestableBundle("~/bundle-1");
+                var bundle2 = new TestableBundle("~/bundle-2");
                 var asset1 = StubAsset();
                 var reference1 = new AssetReference("~/bundle-2/asset2.js", asset1.Object, -1, AssetReferenceType.DifferentBundle);
                 var reference2 = new AssetReference("~/bundle-2/asset3.js", asset1.Object, -1, AssetReferenceType.DifferentBundle);
@@ -179,7 +179,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/bundle-1");
+                var bundle = new TestableBundle("~/bundle-1");
                 var asset1 = StubAsset("~/bundle-1/asset1.js");
                 var asset2 = StubAsset("~/bundle-1/asset2.js");
                 var reference = new AssetReference("~/bundle-1/asset2.js", asset1.Object, -1, AssetReferenceType.SameBundle);
@@ -204,14 +204,14 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/bundle-1");
+                var bundle = new TestableBundle("~/bundle-1");
                 var asset = StubAsset();
                 var reference = new AssetReference("http://test.com", asset.Object, -1, AssetReferenceType.Url);
                 asset.SetupGet(a => a.References)
                      .Returns(new[] { reference });
                 bundle.Assets.Add(asset.Object);
 
-                cache.SaveBundleContainer(new BundleContainer(new[] { bundle, new ExternalScriptBundle("http://test.com"),  }));
+                cache.SaveBundleContainer(new BundleContainer(new Bundle[] { bundle, new ExternalScriptBundle("http://test.com"),  }));
 
                 var xml = File.ReadAllText(Path.Combine(cacheDir, "container.xml"));
                 xml.ShouldContain("<Reference Path=\"http://test.com\" />");
@@ -224,7 +224,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/bundle-1");
+                var bundle = new TestableBundle("~/bundle-1");
                 var asset = StubAsset();
                 var reference = new AssetReference("~/images/test.png", asset.Object, -1, AssetReferenceType.RawFilename);
                 asset.SetupGet(a => a.References)
@@ -244,7 +244,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 var asset = StubAsset();
                 asset.Setup(a => a.OpenStream())
                      .Returns(() => "ASSET-DATA".AsStream());
@@ -263,7 +263,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
 
                 cache.SaveBundleContainer(new BundleContainer(new[] { bundle }));
 
@@ -277,7 +277,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 bundle.Assets.Add(StubAsset().Object);
                 bundle.Assets.Add(StubAsset().Object);
 
@@ -293,7 +293,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var bundle = new Bundle("http://test.com/api.js");
+                var bundle = new TestableBundle("http://test.com/api.js");
                 bundle.Assets.Add(StubAsset().Object);
 
                 cache.SaveBundleContainer(new BundleContainer(new[] { bundle }));
@@ -322,7 +322,7 @@ namespace Cassette.Persistence
             using (var cacheDir = new TempDirectory())
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var sourceBundles = new Bundle[0];
+                var sourceBundles = new TestableBundle[0];
 
                 var result = cache.InitializeBundlesFromCacheIfUpToDate(sourceBundles);
 
@@ -341,7 +341,7 @@ namespace Cassette.Persistence
                     );
 
                 var cache = new BundleCache("VERSION-2", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
-                var sourceBundles = new Bundle[0];
+                var sourceBundles = new TestableBundle[0];
 
                 var result = cache.InitializeBundlesFromCacheIfUpToDate(sourceBundles);
 
@@ -359,7 +359,7 @@ namespace Cassette.Persistence
                     "<?xml version=\"1.0\"?><Container Version=\"VERSION\" AssetCount=\"0\"></Container>"
                     );
 
-                var bundleWithAsset = new Bundle("~/test");
+                var bundleWithAsset = new TestableBundle("~/test");
                 var asset = StubAsset();
                 bundleWithAsset.Assets.Add(asset.Object);
                 var sourceBundles = new[] { bundleWithAsset };
@@ -381,7 +381,7 @@ namespace Cassette.Persistence
                     "<?xml version=\"1.0\"?><Container Version=\"VERSION\" AssetCount=\"0\"></Container>"
                     );
 
-                var bundleWithAsset = new Bundle("~/test");
+                var bundleWithAsset = new TestableBundle("~/test");
                 var asset = StubAsset();
                 asset.Setup(a => a.SourceFile.LastWriteTimeUtc).Returns(DateTime.UtcNow);
                 bundleWithAsset.Assets.Add(asset.Object);
@@ -408,7 +408,7 @@ namespace Cassette.Persistence
                     "asset"
                     );
 
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 var sourceBundles = new[] { bundle };
 
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
@@ -431,7 +431,7 @@ namespace Cassette.Persistence
                     Path.Combine(cacheDir, "test.bundle"),
                     "asset"
                     );
-                var bundleWithAsset = new Bundle("~/test");
+                var bundleWithAsset = new TestableBundle("~/test");
                 var asset = StubAsset();
                 bundleWithAsset.Assets.Add(asset.Object);
                 var sourceBundles = new[] { bundleWithAsset };
@@ -453,7 +453,7 @@ namespace Cassette.Persistence
                     Path.Combine(cacheDir, "container.xml"),
                     "<?xml version=\"1.0\"?><Container Version=\"VERSION\" AssetCount=\"0\"><Bundle Path=\"~/test\" Hash=\"\"/></Container>"
                     );
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 var sourceBundles = new[] { bundle };
 
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
@@ -476,8 +476,8 @@ namespace Cassette.Persistence
                     Path.Combine(cacheDir, "test1.bundle"),
                     "asset"
                     );
-                var bundle1 = new Bundle("~/test1");
-                var bundle2 = new Bundle("~/test2");
+                var bundle1 = new TestableBundle("~/test1");
+                var bundle2 = new TestableBundle("~/test2");
                 var asset1 = StubAsset();
                 bundle1.Assets.Add(asset1.Object);
                 var asset2 = StubAsset();
@@ -506,8 +506,8 @@ namespace Cassette.Persistence
                     "<Bundle Path=\"~/test2\" Hash=\"01\"/>" +
                     "</Container>"
                     );
-                var bundle1 = new Bundle("~/test1");
-                var bundle2 = new Bundle("~/test2");
+                var bundle1 = new TestableBundle("~/test1");
+                var bundle2 = new TestableBundle("~/test2");
                 var sourceBundles = new[] { bundle1, bundle2 };
 
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
@@ -533,7 +533,7 @@ namespace Cassette.Persistence
                 );
                 Thread.Sleep(10); // Brief pause, otherwise the file write times are the same.
                 File.WriteAllText(Path.Combine(sourceDir, "file.png"), "");
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 var sourceBundles = new[] { bundle };
 
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), new FileSystemDirectory(sourceDir));
@@ -557,7 +557,7 @@ namespace Cassette.Persistence
                     "</Bundle>" +
                     "</Container>"
                 );
-                var bundle = new Bundle("~/test");
+                var bundle = new TestableBundle("~/test");
                 var sourceBundles = new[] { bundle };
 
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), new FileSystemDirectory(sourceDir));

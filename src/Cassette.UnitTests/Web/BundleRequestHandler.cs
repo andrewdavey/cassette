@@ -76,7 +76,7 @@ namespace Cassette.Web
 
         protected void SetupTestBundle()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.OpenStream())
                     .Returns(() => "asset-content".AsStream());
@@ -96,7 +96,7 @@ namespace Cassette.Web
     {
         public GivenBundleExists_WhenProcessRequest()
         {
-            var bundle = new Bundle("~/test") { ContentType = "expected-content-type" };
+            var bundle = new TestableBundle("~/test") { ContentType = "expected-content-type" };
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.OpenStream())
                     .Returns(() => "asset-content".AsStream());

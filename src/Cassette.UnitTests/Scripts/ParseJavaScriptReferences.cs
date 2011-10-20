@@ -39,7 +39,7 @@ namespace Cassette.Scripts
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(javaScriptSource.AsStream());
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseJavaScriptReferences();

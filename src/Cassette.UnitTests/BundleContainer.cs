@@ -32,7 +32,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetWithUnknownDifferentBundleReference_ThenConstructorThrowsAssetReferenceException()
         {
-            var bundle = new Bundle("~/bundle-1");
+            var bundle = new TestableBundle("~/bundle-1");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("bundle-1\\a.js");
             asset.SetupGet(a => a.References)
@@ -49,7 +49,7 @@ namespace Cassette
         [Fact]
         public void GivenAssetWithUnknownDifferentBundleReferenceHavingLineNumber_ThenConstructorThrowsAssetReferenceException()
         {
-            var bundle = new Bundle("~/bundle-1");
+            var bundle = new TestableBundle("~/bundle-1");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFilename).Returns("~/bundle-1/a.js");
             asset.SetupGet(a => a.References)
@@ -66,7 +66,7 @@ namespace Cassette
         [Fact]
         public void FindBundleContainingPathOfBundleReturnsTheBundle()
         {
-            var expectedBundle = new Bundle("~/test");
+            var expectedBundle = new TestableBundle("~/test");
             var container = new BundleContainer(new[] {
                 expectedBundle
             });
@@ -78,7 +78,7 @@ namespace Cassette
         public void FindBundleContainingPathWithWrongPathReturnsNull()
         {
             var container = new BundleContainer(new[] {
-                new Bundle("~/test")
+                new TestableBundle("~/test")
             });
             var actualBundle = container.FindBundleContainingPath("~/WRONG");
             actualBundle.ShouldBeNull();
@@ -87,7 +87,7 @@ namespace Cassette
         [Fact]
         public void FindBundleContainingPathOfAssetReturnsTheBundle()
         {
-            var expectedBundle = new Bundle("~/test");
+            var expectedBundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
                  .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
@@ -103,7 +103,7 @@ namespace Cassette
         [Fact]
         public void GivenBundleWithInvalid_ConstructorThrowsException()
         {
-            var bundle1 = new Bundle("~/bundle1");
+            var bundle1 = new TestableBundle("~/bundle1");
             bundle1.AddReferences(new[] { "~\\bundle2" });
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
@@ -119,7 +119,7 @@ namespace Cassette
         [Fact]
         public void GivenDiamondReferencing_ThenConcatDependenciesReturnsEachReferencedBundleOnlyOnceInDependencyOrder()
         {
-            var bundle1 = new Bundle("~/bundle-1");
+            var bundle1 = new TestableBundle("~/bundle-1");
             var asset1 = new Mock<IAsset>();
             SetupAsset("~/bundle-1/a.js", asset1);
             asset1.SetupGet(a => a.References)
@@ -129,21 +129,21 @@ namespace Cassette
                   });
             bundle1.Assets.Add(asset1.Object);
 
-            var bundle2 = new Bundle("~/bundle-2");
+            var bundle2 = new TestableBundle("~/bundle-2");
             var asset2 = new Mock<IAsset>();
             SetupAsset("~/bundle-2/b.js", asset2);
             asset2.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/bundle-4/d.js", asset2.Object, 1, AssetReferenceType.DifferentBundle) });
             bundle2.Assets.Add(asset2.Object);
 
-            var bundle3 = new Bundle("~/bundle-3");
+            var bundle3 = new TestableBundle("~/bundle-3");
             var asset3 = new Mock<IAsset>();
             SetupAsset("~/bundle-3/c.js", asset3);
             asset3.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/bundle-4/d.js", asset3.Object, 1, AssetReferenceType.DifferentBundle) });
             bundle3.Assets.Add(asset3.Object);
 
-            var bundle4 = new Bundle("~/bundle-4");
+            var bundle4 = new TestableBundle("~/bundle-4");
             var asset4 = new Mock<IAsset>();
             SetupAsset("~/bundle-4/d.js", asset4);
             bundle4.Assets.Add(asset4.Object);
@@ -167,8 +167,8 @@ namespace Cassette
         [Fact]
         public void GivenBundleWithReferenceToAnotherBundle_BundlesAreSortedInDependencyOrder()
         {
-            var bundle1 = new Bundle("~/bundle1");
-            var bundle2 = new Bundle("~/bundle2");
+            var bundle1 = new TestableBundle("~/bundle1");
+            var bundle2 = new TestableBundle("~/bundle2");
             bundle1.AddReferences(new[] { "~/bundle2" });
 
             var container = new BundleContainer(new[] { bundle1, bundle2 });
@@ -179,8 +179,8 @@ namespace Cassette
         [Fact]
         public void GivenBundlesWithNoDependenciesAreReferencedInNonAlphaOrder_WhenIncludeReferencesAndSortBundles_ThenReferenceOrderIsMaintained()
         {
-            var bundle1 = new Bundle("~/bundle1");
-            var bundle2 = new Bundle("~/bundle2");
+            var bundle1 = new TestableBundle("~/bundle1");
+            var bundle2 = new TestableBundle("~/bundle2");
             var container = new BundleContainer(new[] { bundle1, bundle2 });
             
             var sorted = container.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
@@ -191,8 +191,8 @@ namespace Cassette
         [Fact]
         public void GivenBundlesWithCyclicReferences_WhenIncludeReferencesAndSortBundles_ThenExceptionThrown()
         {
-            var bundle1 = new Bundle("~/bundle1");
-            var bundle2 = new Bundle("~/bundle2");
+            var bundle1 = new TestableBundle("~/bundle1");
+            var bundle2 = new TestableBundle("~/bundle2");
             bundle1.AddReferences(new[] { "~/bundle2" });
             bundle2.AddReferences(new[] { "~/bundle1" });
             var container = new BundleContainer(new[] { bundle1, bundle2 });
@@ -206,7 +206,7 @@ namespace Cassette
         [Fact]
         public void ImplicitReferenceOrderingMustNotIntroduceCycles()
         {
-            var ms = Enumerable.Range(0, 5).Select(i => new Bundle("~/" + i)).ToArray();
+            var ms = Enumerable.Range(0, 5).Select(i => new TestableBundle("~/" + i)).ToArray();
 
             ms[1].AddReferences(new[] { "~/4" });
             ms[4].AddReferences(new[] { "~/3" });

@@ -43,7 +43,7 @@ class Foo
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(coffeeScriptSource.AsStream());
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseCoffeeScriptReferences();

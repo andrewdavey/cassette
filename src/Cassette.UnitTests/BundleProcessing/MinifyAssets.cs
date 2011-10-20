@@ -37,7 +37,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void ProcessAddsAssetMinifierToAssetInBundle()
         {
-            var bundle = new Bundle("~");
+            var bundle = new TestableBundle("~");
             var asset = new Mock<IAsset>();
             bundle.Assets.Add(asset.Object);
 

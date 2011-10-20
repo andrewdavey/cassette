@@ -241,7 +241,7 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToPath_WhenRender_ThenBundleRenderOutputReturned()
         {
-            var bundle = new Bundle("~/stub");
+            var bundle = new TestableBundle("~/stub");
             bundleContainer.Setup(c => c.FindBundleContainingPath(It.IsAny<string>()))
                            .Returns(bundle);
 
@@ -270,10 +270,10 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToTwoPaths_WhenRender_ThenBundleRenderOutputsSeparatedByNewLinesReturned()
         {
-            var bundle1 = new Mock<Bundle>("~/stub1");
+            var bundle1 = new Mock<TestableBundle>("~/stub1");
             bundle1.Setup(m => m.Render(application).ToHtmlString())
                    .Returns("output1");
-            var bundle2 = new Mock<Bundle>("~/stub2");
+            var bundle2 = new Mock<TestableBundle>("~/stub2");
             bundle2.Setup(m => m.Render(application).ToHtmlString())
                    .Returns("output2");
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub1"))

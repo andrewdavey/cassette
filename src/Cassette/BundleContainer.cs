@@ -198,11 +198,10 @@ namespace Cassette
 
         public void Dispose()
         {
-            foreach (var bundle in bundles)
+            foreach (IDisposable bundle in bundles)
             {
                 bundle.Dispose();
             }
         }
     }
 }
-

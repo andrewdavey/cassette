@@ -30,7 +30,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void GivenTwoAssetsWhereADependsOnB_WhenSorted_ThenBIsBeforeAInBundle()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
@@ -50,7 +50,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void GivenTwoAssetsWhereADependsOnBByDifferentlyCasedFilename_WhenSorted_ThenBIsBeforeAInBundle()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
@@ -70,7 +70,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void WhenBundleHasSortedAssets_ThenProcessDoesNotReorderAssets()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
@@ -89,7 +89,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void GivenAssetWithCircularReferences_WhenProcess_ThenExceptionThrown()
         {
-            var bundle = new Bundle("~/test");
+            var bundle = new TestableBundle("~/test");
             var assetA = new Mock<IAsset>();
             assetA.SetupGet(a => a.SourceFilename).Returns("~/test/a.js");
             assetA.SetupGet(a => a.References)
