@@ -38,7 +38,8 @@ namespace Cassette
             root.CreateSubdirectory("bundle");
             
             bundle = new Bundle("~/bundle");
-            asset = new Asset("~/bundle/test.js", bundle, StubFile("asset content"));
+            sourceFile = StubFile("asset content");
+            asset = new Asset("~/bundle/test.js", bundle, sourceFile);
             bundle.Assets.Add(asset);
 
             var another = new Asset("~/bundle/another.js", bundle, StubFile());
@@ -48,6 +49,7 @@ namespace Cassette
         readonly Asset asset;
         readonly DirectoryInfo root;
         readonly Bundle bundle;
+        readonly IFile sourceFile;
 
         IFile StubFile(string content = "")
         {
@@ -64,6 +66,12 @@ namespace Cassette
             File.WriteAllText(Path.Combine(root.FullName, "bundle", "test", "bar.js"), "");
             var asset = new Asset("~\\bundle\\test\\bar.js", bundle, StubFile());
             asset.SourceFilename.ShouldEqual("~/bundle/test/bar.js");
+        }
+
+        [Fact]
+        public void SourceFileIsPassedViaConstructor()
+        {
+            asset.SourceFile.ShouldBeSameAs(sourceFile);
         }
 
         [Fact]
@@ -330,5 +338,23 @@ namespace Cassette
             root.Delete(true);
         }
     }
-}
 
+    public class Asset_ConstructorConstraints
+    {
+        [Fact]
+        public void PathCannotBeNull()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => new Asset(null, new Bundle("~"), Mock.Of<IFile>())
+            );
+        }
+
+        [Fact]
+        public void PathMustStartWithTilde()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new Asset("fail", new Bundle("~"), Mock.Of<IFile>())
+            );
+        }
+    }
+}
