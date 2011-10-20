@@ -39,7 +39,8 @@ namespace Cassette.Stylesheets
             BundleInitializers.Add(new BundleDirectoryInitializer(path)
             {
                 FilePattern = "*.css;*.less",
-                SearchOption = SearchOption.AllDirectories
+                SearchOption = SearchOption.AllDirectories,
+                BundleDescriptor = bundleDescriptor
             });
         }
 

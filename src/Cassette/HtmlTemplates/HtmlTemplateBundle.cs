@@ -39,7 +39,8 @@ namespace Cassette.HtmlTemplates
             BundleInitializers.Add(new BundleDirectoryInitializer(path)
             {
                 FilePattern = "*.htm;*.html",
-                SearchOption = SearchOption.AllDirectories
+                SearchOption = SearchOption.AllDirectories,
+                BundleDescriptor = bundleDescriptor
             });
         }
 

@@ -122,7 +122,7 @@ namespace Cassette.Web
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
             
-            var url = routing.CreateAssetCompileUrl(bundle, asset.Object);
+            var url = routing.CreateAssetCompileUrl(asset.Object);
 
             url.ShouldEqual("_cassette/compile/test/asset.coffee?01020f10");
         }

@@ -60,7 +60,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateAssetCompileUrl(bundle, It.IsAny<IAsset>()))
+            urlGenerator.Setup(g => g.CreateAssetCompileUrl(It.IsAny<IAsset>()))
                         .Returns("URL");
 
             var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);

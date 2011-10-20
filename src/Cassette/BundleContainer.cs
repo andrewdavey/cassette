@@ -175,7 +175,7 @@ namespace Cassette
                         .Select(FindBundleContainingPath)
                     ) 
                 }
-            ).ToDictionary(x => (Bundle)x.bundle, x => x.references);
+            ).ToDictionary(x => x.bundle, x => x.references);
         }
 
         string CreateAssetReferenceNotFoundMessage(AssetReference reference)

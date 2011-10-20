@@ -35,7 +35,7 @@ namespace Cassette.UI
             referenceBuilder.Reference(new PageDataScriptBundle(globalVariable, data), location);
         }
 
-        public static void AddPageData(this IReferenceBuilder<ScriptBundle> referenceBuilder, string globalVariable, IDictionary<string, object> data, string location = null)
+        public static void AddPageData(this IReferenceBuilder<ScriptBundle> referenceBuilder, string globalVariable, IEnumerable<KeyValuePair<string, object>> data, string location = null)
         {
             referenceBuilder.Reference(new PageDataScriptBundle(globalVariable, data), location);
         }

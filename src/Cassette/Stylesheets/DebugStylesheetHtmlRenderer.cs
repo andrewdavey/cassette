@@ -51,7 +51,7 @@ namespace Cassette.Stylesheets
         {
             return bundle.Assets.Select(
                 asset => asset.HasTransformers 
-                    ? urlGenerator.CreateAssetCompileUrl(bundle, asset)
+                    ? urlGenerator.CreateAssetCompileUrl(asset)
                     : urlGenerator.CreateAssetUrl(asset)
             );
         }

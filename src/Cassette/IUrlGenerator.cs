@@ -24,7 +24,7 @@ namespace Cassette
     {
         string CreateBundleUrl(Bundle bundle);
         string CreateAssetUrl(IAsset asset);
-        string CreateAssetCompileUrl(Bundle bundle, IAsset asset);
+        string CreateAssetCompileUrl(IAsset asset);
         string CreateRawFileUrl(string filename, string hash);
     }
 }

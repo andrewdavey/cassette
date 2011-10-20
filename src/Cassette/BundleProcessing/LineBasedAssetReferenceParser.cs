@@ -26,7 +26,7 @@ namespace Cassette.BundleProcessing
     public class LineBasedAssetReferenceParser<T> : BundleProcessorOfAssetsMatchingFileExtension<T>
         where T : Bundle
     {
-        public LineBasedAssetReferenceParser(string fileExtension, Regex referenceRegex)
+        protected LineBasedAssetReferenceParser(string fileExtension, Regex referenceRegex)
             : base(fileExtension)
         {
             this.referenceRegex = referenceRegex;

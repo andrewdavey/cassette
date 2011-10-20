@@ -60,7 +60,7 @@ namespace Cassette.Scripts
                  .Returns(true);
 
             var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateAssetCompileUrl(bundle, asset.Object))
+            urlGenerator.Setup(g => g.CreateAssetCompileUrl(asset.Object))
                         .Returns("COMPILED-URL");
 
             var renderer = new DebugScriptBundleHtmlRenderer(urlGenerator.Object);

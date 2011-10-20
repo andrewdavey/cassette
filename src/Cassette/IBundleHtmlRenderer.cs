@@ -22,7 +22,7 @@ using System.Web;
 
 namespace Cassette
 {
-    public interface IBundleHtmlRenderer<T>
+    public interface IBundleHtmlRenderer<in T>
         where T : Bundle
     {
         IHtmlString Render(T bundle);

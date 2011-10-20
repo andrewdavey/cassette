@@ -47,7 +47,7 @@ namespace Cassette.Web
             ));
         }
 
-        public string CreateAssetCompileUrl(Bundle bundle, IAsset asset)
+        public string CreateAssetCompileUrl(IAsset asset)
         {
             return urlModifier.Modify(string.Format(
                 "{0}/compile/{1}?{2}",

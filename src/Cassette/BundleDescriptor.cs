@@ -29,9 +29,7 @@ namespace Cassette
 {
     public class BundleDescriptor
     {
-        readonly IFile sourceFile;
         readonly IEnumerable<string> assetFilenames;
-        readonly bool assetsSorted;
         readonly IEnumerable<string> references;
         readonly string externalUrl;
         readonly string fallbackCondition;
@@ -42,29 +40,17 @@ namespace Cassette
             references = Enumerable.Empty<string>();
         }
 
-        public BundleDescriptor(IFile sourceFile, IEnumerable<string> assetFilenames, bool assetsSorted, IEnumerable<string> references, string externalUrl, string fallbackCondition)
+        public BundleDescriptor(IEnumerable<string> assetFilenames, IEnumerable<string> references, string externalUrl, string fallbackCondition)
         {
-            this.sourceFile = sourceFile;
             this.assetFilenames = assetFilenames;
-            this.assetsSorted = assetsSorted;
             this.references = references;
             this.externalUrl = externalUrl;
             this.fallbackCondition = fallbackCondition;
         }
 
-        public IFile SourceFile
-        {
-            get { return sourceFile; }
-        }
-
         public IEnumerable<string> AssetFilenames
         {
             get { return assetFilenames; }
-        }
-
-        public bool AssetsSorted
-        {
-            get { return assetsSorted; }
         }
 
         public IEnumerable<string> References

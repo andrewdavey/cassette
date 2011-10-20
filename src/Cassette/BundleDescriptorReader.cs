@@ -59,7 +59,7 @@ namespace Cassette
                     ProcessLine(line);
                 }
             }
-            return new BundleDescriptor(sourceFile, assetFilenames, true, references, externalUrl, fallbackCondition);
+            return new BundleDescriptor(assetFilenames, references, externalUrl, fallbackCondition);
         }
 
         void ProcessLine(string line)
