@@ -27,7 +27,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class BundleDescriptorReader
+    class BundleDescriptorReader
     {
         public BundleDescriptorReader(IFile sourceFile)
         {

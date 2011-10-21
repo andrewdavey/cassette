@@ -223,6 +223,38 @@ namespace Cassette
             });
         }
 
+        [Fact]
+        public void GivenExternalSectionContainsNonKeyValuePair_WhenRead_ThenThrowException()
+        {
+            var reader = GetReader("[external]\nfail");
+            Assert.Throws<Exception>(delegate
+            {
+                reader.Read();
+            });
+        }
+
+        [Fact]
+        public void GivenUnexpectedPropertyInExternalSection_WhenRead_ThenExceptionThrown()
+        {
+            var reader = GetReader("[external]\nunknown=fail");
+            var exception = Assert.Throws<Exception>(delegate
+            {
+                reader.Read();
+            });
+            exception.Message.ShouldContain("unknown=fail");
+        }
+
+        [Fact]
+        public void GivenUnexpectedSection_WhenRead_ThenExceptionThrown()
+        {
+            var reader = GetReader("[fail]");
+            var exception = Assert.Throws<Exception>(delegate
+            {
+                reader.Read();
+            });
+            exception.Message.ShouldContain("fail");
+        }
+
         public void Dispose()
         {
             tempDirectory.Dispose();
