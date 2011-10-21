@@ -33,19 +33,19 @@ namespace Cassette.UI
     {
         public ReferenceBuilder_Reference_Tests()
         {
-            bundleContainer = new Mock<IBundleContainer>();
-            bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             application = new Mock<ICassetteApplication>();
-            builder = new ReferenceBuilder<ScriptBundle>(bundleContainer.Object, bundleFactory.Object, Mock.Of<IPlaceholderTracker>(), application.Object);
-
+            bundleFactories = new Dictionary<Type, IBundleFactory<Bundle>>();
+            bundleContainer = new Mock<IBundleContainer>();
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(ms => ms);
+
+            builder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, Mock.Of<IPlaceholderTracker>(), application.Object);
         }
 
-        readonly ReferenceBuilder<ScriptBundle> builder;
+        readonly ReferenceBuilder builder;
         readonly Mock<IBundleContainer> bundleContainer;
-        readonly Mock<IBundleFactory<ScriptBundle>> bundleFactory;
         readonly Mock<ICassetteApplication> application;
+        readonly Dictionary<Type, IBundleFactory<Bundle>> bundleFactories;
 
         [Fact]
         public void WhenAddReferenceToBundleDirectory_ThenGetBundlesReturnTheBundle()
@@ -132,8 +132,11 @@ namespace Cassette.UI
         [Fact]
         public void WhenAddReferenceToUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>(); 
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("http://test.com/test.js"));
+            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(all => all);
 
@@ -146,8 +149,11 @@ namespace Cassette.UI
         [Fact]
         public void WhenAddReferenceToHttpsUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("https://test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("https://test.com/test.js"));
+            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(all => all);
 
@@ -160,8 +166,11 @@ namespace Cassette.UI
         [Fact]
         public void WhenAddReferenceToProtocolRelativeUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("//test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("//test.com/test.js"));
+            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(all => all);
 
@@ -191,7 +200,7 @@ namespace Cassette.UI
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
                            .Returns(bundle);
 
-            builder.Render("test");
+            builder.Render<ScriptBundle>("test");
 
             Assert.Throws<InvalidOperationException>(delegate
             {
@@ -207,7 +216,7 @@ namespace Cassette.UI
             var bundle = new ScriptBundle("~/test");
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
                            .Returns(bundle);
-            builder.Render("test");
+            builder.Render<ScriptBundle>("test");
 
             builder.Reference("~/test", "test");
 
@@ -220,23 +229,24 @@ namespace Cassette.UI
         public ReferenceBuilder_Render_Tests()
         {
             bundleContainer = new Mock<IBundleContainer>();
-            bundleFactory = new Mock<IBundleFactory<Bundle>>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
             application = Mock.Of<ICassetteApplication>();
-            referenceBuilder = new ReferenceBuilder<Bundle>(bundleContainer.Object, bundleFactory.Object, placeholderTracker.Object, application);
+            bundleFactories = new Dictionary<Type, IBundleFactory<Bundle>>();
 
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(ms => ms);
 
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
                               .Returns(new HtmlString("output"));
+
+            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, application);
         }
 
-        readonly ReferenceBuilder<Bundle> referenceBuilder;
+        readonly ReferenceBuilder referenceBuilder;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
         readonly ICassetteApplication application;
         readonly Mock<IBundleContainer> bundleContainer;
-        readonly Mock<IBundleFactory<Bundle>> bundleFactory;
+        readonly Dictionary<Type, IBundleFactory<Bundle>> bundleFactories;
 
         [Fact]
         public void GivenAddReferenceToPath_WhenRender_ThenBundleRenderOutputReturned()
@@ -247,7 +257,7 @@ namespace Cassette.UI
 
             referenceBuilder.Reference("test");
 
-            var html = referenceBuilder.Render();
+            var html = referenceBuilder.Render<TestableBundle>();
 
             html.ToHtmlString().ShouldEqual("output");
         }
@@ -262,7 +272,7 @@ namespace Cassette.UI
                            .Returns(bundle.Object);
             referenceBuilder.Reference("test");
 
-            var html = referenceBuilder.Render("body");
+            var html = referenceBuilder.Render<Bundle>("body");
 
             html.ToHtmlString().ShouldEqual("output");
         }
@@ -289,7 +299,7 @@ namespace Cassette.UI
                 .Returns(new HtmlString("output"))
                 .Callback<Func<IHtmlString>>(f => createHtml = f);
 
-            referenceBuilder.Render();
+            referenceBuilder.Render<TestableBundle>();
 
             createHtml().ToHtmlString().ShouldEqual("output1" + Environment.NewLine + "output2");
         }

@@ -19,6 +19,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Web;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -30,71 +32,146 @@ namespace Cassette.UI
 {
     public class Assets_Test
     {
-        [Fact]
-        public void ScriptsReturnsPageAssetManager()
+        readonly Mock<IReferenceBuilder> referenceBuilder;
+
+        public Assets_Test()
         {
             var application = new Mock<ICassetteApplication>();
+            referenceBuilder = new Mock<IReferenceBuilder>();
+            application.Setup(a => a.GetReferenceBuilder())
+                       .Returns(referenceBuilder.Object);
             Assets.GetApplication = () => application.Object;
-            var manager = new Mock<IReferenceBuilder<ScriptBundle>>();
-            application.Setup(a => a.GetReferenceBuilder<ScriptBundle>())
-                       .Returns(manager.Object);
-
-            Assets.Scripts.ShouldEqual(manager.Object);
         }
 
         [Fact]
-        public void StylesheetsReturnsPageAssetManager()
+        public void WhenReference_ThenReferenceBuilderReferenceIsCalled()
         {
-            var application = new Mock<ICassetteApplication>();
-            Assets.GetApplication = () => application.Object;
-            var manager = new Mock<IReferenceBuilder<StylesheetBundle>>();
-            application.Setup(a => a.GetReferenceBuilder<StylesheetBundle>())
-                       .Returns(manager.Object);
-
-            Assets.Stylesheets.ShouldEqual(manager.Object);
+            Assets.Reference("~/test");
+            referenceBuilder.Verify(b => b.Reference("~/test", null));
         }
 
         [Fact]
-        public void HtmlTemplatesReturnsPageAssetManager()
+        public void WhenReferenceWithLocation_ThenReferenceBuilderReferenceIsCalledWithLocation()
         {
-            var application = new Mock<ICassetteApplication>();
-            Assets.GetApplication = () => application.Object;
-            var manager = new Mock<IReferenceBuilder<HtmlTemplateBundle>>();
-            application.Setup(a => a.GetReferenceBuilder<HtmlTemplateBundle>())
-                       .Returns(manager.Object);
-
-            Assets.HtmlTemplates.ShouldEqual(manager.Object);
+            Assets.Reference("~/test", "body");
+            referenceBuilder.Verify(b => b.Reference("~/test", "body"));
         }
 
         [Fact]
-        public void GivenGetApplicationIsNull_WhenGetScripts_ThenThrowInvalidOperationException()
+        public void AddInlineScriptAddsReferenceToInlineScriptBundle()
+        {
+            Assets.AddInlineScript("content", "location");
+            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is InlineScriptBundle), "location"));
+        }
+
+        [Fact]
+        public void AddPageDataWithDataObjectAddsReferenceToPageDataScriptBundle()
+        {
+            Assets.AddPageData("content", new { data = 1 }, "location");
+            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is PageDataScriptBundle), "location"));
+        }
+
+        [Fact]
+        public void AddPageDataWithDataDictionaryAddsReferenceToPageDataScriptBundle()
+        {
+            Assets.AddPageData("content", new Dictionary<string, object>(), "location");
+            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is PageDataScriptBundle), "location"));
+        }
+
+        [Fact]
+        public void RenderScriptsCallsReferenceBuilderRenderWithScriptBundleType()
+        {
+            var expectedHtml = new HtmlString("html");
+            referenceBuilder.Setup(b => b.Render<ScriptBundle>(null)).Returns(expectedHtml);
+
+            var html = Assets.RenderScripts();
+
+            html.ShouldBeSameAs(expectedHtml);
+        }
+
+        [Fact]
+        public void RenderScriptsWithLocationCallsReferenceBuilderRenderWithScriptBundleTypeAndLocation()
+        {
+            var expectedHtml = new HtmlString("html");
+            referenceBuilder.Setup(b => b.Render<ScriptBundle>("body")).Returns(expectedHtml);
+
+            var html = Assets.RenderScripts("body");
+
+            html.ShouldBeSameAs(expectedHtml);
+        }
+
+        [Fact]
+        public void RenderStylesheetsCallsReferenceBuilderRenderWithStylesheetBundleType()
+        {
+            var expectedHtml = new HtmlString("html");
+            referenceBuilder.Setup(b => b.Render<StylesheetBundle>(null)).Returns(expectedHtml);
+
+            var html = Assets.RenderStylesheets();
+
+            html.ShouldBeSameAs(expectedHtml);
+        }
+
+        [Fact]
+        public void RenderStylesheetsWithLocationCallsReferenceBuilderRenderWithStylesheetBundleTypeAndLocation()
+        {
+            var expectedHtml = new HtmlString("html");
+            referenceBuilder.Setup(b => b.Render<StylesheetBundle>("head")).Returns(expectedHtml);
+
+            var html = Assets.RenderStylesheets("head");
+
+            html.ShouldBeSameAs(expectedHtml);
+        }
+
+        [Fact]
+        public void RenderHtmlTemplatesCallsReferenceBuilderRenderWithHtmlTemplateBundleType()
+        {
+            var expectedHtml = new HtmlString("html");
+            referenceBuilder.Setup(b => b.Render<HtmlTemplateBundle>(null)).Returns(expectedHtml);
+
+            var html = Assets.RenderHtmlTemplates();
+
+            html.ShouldBeSameAs(expectedHtml);
+        }
+
+        [Fact]
+        public void RenderHtmlTemplatesWithLocationCallsReferenceBuilderRenderWithHtmlTemplateBundleTypeAndLocation()
+        {
+            var expectedHtml = new HtmlString("html");
+            referenceBuilder.Setup(b => b.Render<HtmlTemplateBundle>("body")).Returns(expectedHtml);
+
+            var html = Assets.RenderHtmlTemplates("body");
+
+            html.ShouldBeSameAs(expectedHtml);
+        }
+
+        [Fact]
+        public void GivenGetApplicationIsNull_WhenRenderScripts_ThenThrowInvalidOperationException()
         {
             Assets.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
-                var _ = Assets.Scripts;
+                Assets.RenderScripts();
             });
         }
 
         [Fact]
-        public void GivenGetApplicationIsNull_WhenGetStylesheets_ThenThrowInvalidOperationException()
+        public void GivenGetApplicationIsNull_WhenRenderStylesheets_ThenThrowInvalidOperationException()
         {
             Assets.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
-                var _ = Assets.Stylesheets;
+                Assets.RenderStylesheets();
             });
         }
 
         [Fact]
-        public void GivenGetApplicationIsNull_WhenGetHtmlTemplates_ThenThrowInvalidOperationException()
+        public void GivenGetApplicationIsNull_WhenRenderHtmlTemplates_ThenThrowInvalidOperationException()
         {
             Assets.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
-                var _ = Assets.HtmlTemplates;
+                Assets.RenderHtmlTemplates();
             });
         }
     }
 }
-

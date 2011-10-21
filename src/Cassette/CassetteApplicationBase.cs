@@ -68,12 +68,12 @@ namespace Cassette
             get { return bundleContainer; }
         }
 
-        public IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle
+        public IReferenceBuilder GetReferenceBuilder()
         {
-            return GetOrCreateReferenceBuilder(CreateReferenceBuilder<T>);
+            return GetOrCreateReferenceBuilder(CreateReferenceBuilder);
         }
 
-        protected abstract IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create) where T : Bundle;
+        protected abstract IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create);
 
         protected abstract IPlaceholderTracker GetPlaceholderTracker();
 
@@ -82,12 +82,11 @@ namespace Cassette
             bundleContainer.Dispose();
         }
 
-        IReferenceBuilder<T> CreateReferenceBuilder<T>()
-            where T : Bundle
+        IReferenceBuilder CreateReferenceBuilder()
         {
-            return new ReferenceBuilder<T>(
+            return new ReferenceBuilder(
                 bundleContainer,
-                settings.BundleFactories[typeof(T)],
+                settings.BundleFactories,
                 GetPlaceholderTracker(),
                 this
             );

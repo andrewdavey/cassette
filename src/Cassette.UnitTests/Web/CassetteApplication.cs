@@ -37,11 +37,13 @@ namespace Cassette.Web
     {
         readonly TempDirectory cacheDir;
         readonly TempDirectory sourceDir;
+        readonly Mock<HttpContextBase> httpContext;
 
         public CassetteApplication_Tests()
         {
             sourceDir = new TempDirectory();
             cacheDir = new TempDirectory();
+            httpContext = new Mock<HttpContextBase>();
         }
 
         [Fact]
@@ -71,6 +73,32 @@ namespace Cassette.Web
         {
             var application = StubApplication();
             application.UrlGenerator.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void WhenGetReferenceBuilder_ThenReferenceBuilderObjectIsStoredInHttpContextItems()
+        {
+            var items = new Dictionary<string, object>();
+            httpContext.SetupGet(c => c.Items).Returns(items);
+
+            var application = StubApplication();
+            var builder = application.GetReferenceBuilder();
+            
+            builder.ShouldNotBeNull();
+            var storedBuilder = items["Cassette.ReferenceBuilder"];
+            storedBuilder.ShouldBeSameAs(builder);
+        }
+
+        [Fact]
+        public void GivenReferenceBuilderCreatedOnce_WhenGetReferenceBuilderAgain_ThenTheSameObjectIsReturned()
+        {
+            var items = new Dictionary<string, object>();
+            httpContext.SetupGet(c => c.Items).Returns(items);
+            var application = StubApplication();
+            var builder = application.GetReferenceBuilder();
+
+            var builder2 = application.GetReferenceBuilder();
+            builder2.ShouldBeSameAs(builder);
         }
 
         [Fact]
@@ -105,7 +133,7 @@ namespace Cassette.Web
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")), 
                 new RouteCollection(), 
-                () => null
+                () => httpContext.Object
             );
         }
 

@@ -22,8 +22,7 @@ using System.Web;
 
 namespace Cassette.UI
 {
-    public interface IReferenceBuilder<T>
-        where T : Bundle
+    public interface IReferenceBuilder
     {
         /// <summary>
         /// Adds a reference to the asset bundle with the given path.
@@ -44,7 +43,7 @@ namespace Cassette.UI
         /// </summary>
         /// <param name="location">Optional. The page location that is being rendered.</param>
         /// <returns>The HTML elements that include into the page all the referenced bundles and their dependencies</returns>
-        IHtmlString Render(string location = null);
+        IHtmlString Render<T>(string location) where T : Bundle;
 
         /// <summary>
         /// Returns the URL for the asset bundle with the given path.

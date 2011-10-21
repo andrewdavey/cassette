@@ -124,7 +124,6 @@
     <Compile Include="StubFileSystem.cs" />
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
-    <Compile Include="UI\ScriptBundleReferenceExtensions.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />

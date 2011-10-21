@@ -99,13 +99,13 @@ namespace Cassette.Web
             return (IPlaceholderTracker)items[PlaceholderTrackerKey];
         }
 
-        protected override IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create)
+        protected override IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create)
         {
             var items = getCurrentHttpContext().Items;
-            var key = "ReferenceBuilder:" + typeof(T).FullName;
+            const string key = "Cassette.ReferenceBuilder";
             if (items.Contains(key))
             {
-                return (IReferenceBuilder<T>)items[key];
+                return (IReferenceBuilder)items[key];
             }
             else
             {

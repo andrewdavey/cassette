@@ -26,24 +26,25 @@ using Cassette.Utilities;
 
 namespace Cassette.UI
 {
-    public class ReferenceBuilder<T> : IReferenceBuilder<T>
-        where T : Bundle
+    public class ReferenceBuilder : IReferenceBuilder
     {
-        public ReferenceBuilder(IBundleContainer bundleContainer, IBundleFactory<Bundle> bundleFactory, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
+        public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
         {
             this.bundleContainer = bundleContainer;
-            this.bundleFactory = bundleFactory;
+            this.bundleFactories = bundleFactories;
             this.placeholderTracker = placeholderTracker;
             this.application = application;
         }
 
         readonly IBundleContainer bundleContainer;
-        readonly IBundleFactory<Bundle> bundleFactory;
+        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
         readonly IPlaceholderTracker placeholderTracker;
         readonly ICassetteApplication application;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
         readonly HashSet<string> renderedLocations = new HashSet<string>();
  
+        // TODO: Add typed Reference<TBundle> method
+
         public void Reference(string path, string location = null)
         {
             path = PathUtilities.AppRelative(path);
@@ -52,7 +53,8 @@ namespace Cassette.UI
             if (bundle == null && path.IsUrl())
             {
                 // Ad-hoc external bundle reference.
-                bundle = bundleFactory.CreateBundle(path, null);
+                // TODO: Attempt to determine bundle type from URL.
+                bundle = bundleFactories[typeof(Scripts.ScriptBundle)].CreateBundle(path, null);
             }
 
             if (bundle == null)
@@ -92,19 +94,15 @@ namespace Cassette.UI
             if (string.IsNullOrEmpty(location))
             {
                 throw new InvalidOperationException(
-                    string.Format(
-                        "Cannot add a {0} reference. The bundles have already been rendered. Either move the reference before the render call, or set ICassetteApplication.IsHtmlRewritingEnabled to true in your Cassette configuration.",
-                        typeof(T).Name
-                    )
+                    "Cannot add a bundle reference. The bundles have already been rendered. Either move the reference before the render call, or set ICassetteApplication.IsHtmlRewritingEnabled to true in your Cassette configuration."
                 );
             }
             else
             {
                 throw new InvalidOperationException(
                     string.Format(
-                        "Cannot add a {1} reference, for location \"{0}\". This location has already been rendered. Either move the reference before the render call, or set ICassetteApplication.IsHtmlRewritingEnabled to true in your Cassette configuration.",
-                        location,
-                        typeof(T).Name
+                        "Cannot add a bundle reference, for location \"{0}\". This location has already been rendered. Either move the reference before the render call, or set ICassetteApplication.IsHtmlRewritingEnabled to true in your Cassette configuration.",
+                        location
                     )
                 );
             }
@@ -116,11 +114,12 @@ namespace Cassette.UI
             return bundleContainer.IncludeReferencesAndSortBundles(bundles);
         }
 
-        public IHtmlString Render(string location = null)
+        public IHtmlString Render<T>(string location = null)
+            where T : Bundle
         {
             renderedLocations.Add(location ?? "");
             return placeholderTracker.InsertPlaceholder(
-                () => CreateHtml(location)
+                () => CreateHtml<T>(location)
             );
         }
 
@@ -134,10 +133,11 @@ namespace Cassette.UI
             return application.UrlGenerator.CreateBundleUrl(bundle);
         }
 
-        HtmlString CreateHtml(string location)
+        HtmlString CreateHtml<T>(string location)
+            where T : Bundle
         {
             return new HtmlString(string.Join(Environment.NewLine,
-                GetBundles(location).Select(
+                GetBundles(location).OfType<T>().Select(
                     bundle => bundle.Render(application).ToHtmlString()
                 )
             ));

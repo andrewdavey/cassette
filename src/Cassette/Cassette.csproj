@@ -161,7 +161,6 @@
     <Compile Include="UI\NullPlaceholderTracker.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />
     <Compile Include="UI\ReferenceBuilder.cs" />
-    <Compile Include="UI\ScriptBundleReferenceExtensions.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Scripts\CoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\CoffeeScriptCompileException.cs" />

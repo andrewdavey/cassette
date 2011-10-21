@@ -30,7 +30,6 @@ namespace Cassette
         bool IsDebuggingEnabled { get; }
         IUrlGenerator UrlGenerator { get; }
         bool IsHtmlRewritingEnabled { get; }
-
-        IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Bundle;
+        IReferenceBuilder GetReferenceBuilder();
     }
 }
