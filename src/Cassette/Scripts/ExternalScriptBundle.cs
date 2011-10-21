@@ -78,6 +78,7 @@ namespace Cassette.Scripts
         string javaScriptFallbackCondition;
         // TODO: remove this field?
         readonly string fallbackUrl;
+        ExternalScriptBundleHtmlRenderer externalRenderer;
 
         public string Url
         {
@@ -102,11 +103,11 @@ namespace Cassette.Scripts
                 Assets.Add(new Asset(this, application.SourceDirectory.GetFile(fallbackUrl.Substring(2))));
             }
             base.Process(application);
+            externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, application);
         }
 
-        public override IHtmlString Render(ICassetteApplication application)
+        public override IHtmlString Render()
         {
-            var externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, application);
             return externalRenderer.Render(this);
         }
 

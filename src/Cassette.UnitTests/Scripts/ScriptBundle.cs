@@ -1,9 +1,25 @@
-﻿using Should;
+﻿using System.IO;
+using Moq;
+using Should;
 using Xunit;
-using System.IO;
 
 namespace Cassette.Scripts
 {
+    public class ScriptBundle_Tests
+    {
+        [Fact]
+        public void RenderCallsRenderer()
+        {
+            var bundle = new ScriptBundle("~");
+            var renderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>(); 
+            bundle.Renderer = renderer.Object;
+
+            bundle.Render();
+
+            renderer.Verify(r => r.Render(bundle));
+        }
+    }
+
     public class ScriptBundle_DefaultAssetSource_Tests
     {
         readonly BundleDirectoryInitializer initializer;

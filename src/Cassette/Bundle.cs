@@ -103,7 +103,7 @@ namespace Cassette
         {
         }
 
-        public abstract IHtmlString Render(ICassetteApplication application);
+        public abstract IHtmlString Render();
 
         public void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
         {

@@ -52,7 +52,7 @@ namespace Cassette.Stylesheets
         public void RenderReturnsHtmlLinkElementWithUrlAsHref()
         {
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
-            var html = bundle.Render(Mock.Of<ICassetteApplication>());
+            var html = bundle.Render();
             html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.css\" type=\"text/css\" rel=\"stylesheet\"/>");
         }
 
@@ -61,7 +61,7 @@ namespace Cassette.Stylesheets
         {
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
             bundle.Media = "print";
-            var html = bundle.Render(Mock.Of<ICassetteApplication>());
+            var html = bundle.Render();
             html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.css\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>");
         }
 

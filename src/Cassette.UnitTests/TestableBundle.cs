@@ -15,7 +15,7 @@ namespace Cassette
         {
         }
 
-        public override IHtmlString Render(ICassetteApplication application)
+        public override IHtmlString Render()
         {
             throw new System.NotImplementedException();
         }

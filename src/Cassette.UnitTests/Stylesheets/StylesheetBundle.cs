@@ -66,7 +66,7 @@ namespace Cassette.Stylesheets
                 Renderer = renderer.Object
             };
 
-            bundle.Render(Mock.Of<ICassetteApplication>());
+            bundle.Render();
             
             renderer.Verify(r => r.Render(bundle));
         }

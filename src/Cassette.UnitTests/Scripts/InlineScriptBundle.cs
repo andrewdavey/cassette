@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using Moq;
 using Should;
 using Xunit;
 
@@ -31,7 +30,7 @@ namespace Cassette.Scripts
         public void GivenInlineScriptBundleWithContent_WhenRender_ThenScriptElementCreatedWithContent()
         {
             var bundle = new InlineScriptBundle("var x = 1;");
-            var html = bundle.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
+            var html = bundle.Render().ToHtmlString();
             html.ShouldEqual(
                 "<script type=\"text/javascript\">" + Environment.NewLine + 
                 "var x = 1;" + Environment.NewLine + 

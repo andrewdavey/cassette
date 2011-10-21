@@ -157,7 +157,7 @@ namespace Cassette.UI
         {
             return new HtmlString(string.Join(Environment.NewLine,
                 GetBundles(location).OfType<T>().Select(
-                    bundle => bundle.Render(application).ToHtmlString()
+                    bundle => bundle.Render().ToHtmlString()
                 )
             ));
         }

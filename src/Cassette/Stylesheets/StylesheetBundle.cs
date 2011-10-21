@@ -55,7 +55,7 @@ namespace Cassette.Stylesheets
             Processor.Process(this, application);
         }
 
-        public override IHtmlString Render(ICassetteApplication application)
+        public override IHtmlString Render()
         {
             return Renderer.Render(this);
         }
