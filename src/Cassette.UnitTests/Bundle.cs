@@ -152,6 +152,19 @@ namespace Cassette
         }
 
         [Fact]
+        public void ContainsRelativePathToAsset_ReturnsTrue()
+        {
+            var bundle = new TestableBundle("~/test");
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
+                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            bundle.Assets.Add(asset.Object);
+
+            bundle.ContainsPath("asset.js").ShouldBeTrue();
+        }
+
+        [Fact]
         public void FindAssetByPathReturnsAssetWithMatchingFilename()
         {
             var bundle = new TestableBundle("~/test");
