@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Cassette.Configuration
 {
-    public class BundleContainerFactory_Tests : BundleContainerFactoryTestSuite<BundleContainerFactory>
+    public class BundleContainerFactory_Tests : BundleContainerFactoryTestSuite
     {
-        protected override BundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
+        internal override IBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
         {
             return new BundleContainerFactory(factories);
         }

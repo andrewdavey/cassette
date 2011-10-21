@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Cassette.Configuration
 {
-    public class BundleContainerFactory : BundleContainerFactoryBase
+    class BundleContainerFactory : BundleContainerFactoryBase
     {
         public BundleContainerFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
             : base(factories)

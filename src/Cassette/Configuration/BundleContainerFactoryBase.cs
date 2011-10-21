@@ -4,7 +4,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
-    public abstract class BundleContainerFactoryBase : IBundleContainerFactory
+    abstract class BundleContainerFactoryBase : IBundleContainerFactory
     {
         protected BundleContainerFactoryBase(IDictionary<Type, IBundleFactory<Bundle>> bundleFactories)
         {

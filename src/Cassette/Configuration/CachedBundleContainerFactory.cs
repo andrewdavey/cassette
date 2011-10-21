@@ -5,7 +5,7 @@ using Cassette.Persistence;
 
 namespace Cassette.Configuration
 {
-    public class CachedBundleContainerFactory : BundleContainerFactoryBase
+    class CachedBundleContainerFactory : BundleContainerFactoryBase
     {
         readonly IBundleCache cache;
 

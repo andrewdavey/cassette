@@ -8,10 +8,9 @@ using Xunit;
 
 namespace Cassette.Configuration
 {
-    public abstract class BundleContainerFactoryTestSuite<T>
-        where T : BundleContainerFactoryBase
+    public abstract class BundleContainerFactoryTestSuite
     {
-        protected abstract T CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories);
+        internal abstract IBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories);
 
         [Fact]
         public void WhenCreateWithBundles_ThenItReturnsContainerWithBundles()

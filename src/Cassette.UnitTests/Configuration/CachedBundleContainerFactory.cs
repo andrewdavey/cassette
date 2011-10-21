@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Cassette.Configuration
 {
-    public class CachedBundleContainerFactory_Tests : BundleContainerFactoryTestSuite<CachedBundleContainerFactory>
+    public class CachedBundleContainerFactory_Tests : BundleContainerFactoryTestSuite
     {
         readonly Mock<IBundleCache> cache = new Mock<IBundleCache>();
         
@@ -80,12 +80,12 @@ namespace Cassette.Configuration
             cache.Verify(c => c.InitializeBundlesFromCacheIfUpToDate(bundles), Times.Exactly(2));
         }
 
-        protected override CachedBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
+        internal override IBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
         {
             return new CachedBundleContainerFactory(cache.Object, factories);
         }
 
-        CachedBundleContainerFactory CreateFactory()
+        IBundleContainerFactory CreateFactory()
         {
             return CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
         }
