@@ -26,6 +26,7 @@ using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Stylesheets;
 
 namespace Cassette.UI
 {
@@ -56,12 +57,29 @@ namespace Cassette.UI
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns(new[] { bundle })
                            .Verifiable();
+
             builder.Reference("test", null);
 
             var bundles = builder.GetBundles(null).ToArray();
-
             bundles[0].ShouldBeSameAs(bundle);
             bundleContainer.Verify();
+        }
+
+        [Fact]
+        public void WhenAddReferenceToSameBundleTwice_ThenGetBundlesReturnsOnlyOneBundle()
+        {
+            var bundle = new ScriptBundle("~/test");
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+                           .Returns(bundle);
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns(new[] { bundle })
+                           .Verifiable();
+
+            builder.Reference("test");
+            builder.Reference("test");
+
+            var bundles = builder.GetBundles(null).ToArray();
+            bundles.Length.ShouldEqual(1);
         }
 
         [Fact]
@@ -174,12 +192,50 @@ namespace Cassette.UI
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(all => all);
 
-            builder.Reference("//test.com/test.js", null);
+            builder.Reference("//test.com/test.js");
 
             var bundle = builder.GetBundles(null).First();
             bundle.ShouldBeType<ExternalScriptBundle>();
         }
 
+        [Fact]
+        public void WhenAddReferenceToCssUrl_ThenExternalStylesheetBundleIsCreated()
+        {
+            var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
+            bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.css", null))
+                         .Returns(new ExternalStylesheetBundle("http://test.com/test.css"));
+            bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
+
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(all => all);
+
+            builder.Reference("http://test.com/test.css");
+
+            var bundle = builder.GetBundles(null).First();
+            bundle.ShouldBeType<ExternalStylesheetBundle>();
+        }
+
+        [Fact]
+        public void WhenAddReferenceToUrlWithUnexpectedExtension_ThenArgumentExceptionThrown()
+        {
+            Assert.Throws<ArgumentException>(
+                () => builder.Reference("http://test.com/test")
+            );
+        }
+
+        [Fact]
+        public void WhenAddReferenceToUrlWithBundleTypeAndUnexpectedExtension_ThenBundleCreatedInFactory()
+        {
+            var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
+            bundleFactory.Setup(f => f.CreateBundle("http://test.com/test", null))
+                         .Returns(new ExternalStylesheetBundle("http://test.com/test"));
+            bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
+
+            builder.Reference<StylesheetBundle>("http://test.com/test");
+
+            builder.GetBundles(null).First().ShouldBeType<ExternalStylesheetBundle>();
+        }
+        
         [Fact]
         public void WhenAddReferenceWithLocation_ThenGetBundlesForThatLocationReturnsTheBundle()
         {
@@ -194,18 +250,31 @@ namespace Cassette.UI
         }
 
         [Fact]
+        public void GivenNullLocationAlreadyRendered_WhenAddReferenceToNullLocation_ThenExceptionThrown()
+        {
+            var bundle = new ScriptBundle("~/test");
+            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+                           .Returns(bundle);
+
+            builder.Render<ScriptBundle>();
+
+            Assert.Throws<InvalidOperationException>(
+                () => builder.Reference("~/test")
+            );
+        }
+
+        [Fact]
         public void GivenLocationAlreadyRendered_WhenAddReferenceToThatLocation_ThenExceptionThrown()
         {
             var bundle = new ScriptBundle("~/test");
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
                            .Returns(bundle);
 
-            builder.Render<ScriptBundle>("test");
+            builder.Render<ScriptBundle>("location");
 
-            Assert.Throws<InvalidOperationException>(delegate
-            {
-                builder.Reference("~/test", "test");
-            });
+            Assert.Throws<InvalidOperationException>(
+                () => builder.Reference("~/test", "location")
+            );
         }
 
         [Fact]

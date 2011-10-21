@@ -44,12 +44,5 @@ namespace Cassette.UI
         /// <param name="location">Optional. The page location that is being rendered.</param>
         /// <returns>The HTML elements that include into the page all the referenced bundles and their dependencies</returns>
         IHtmlString Render<T>(string location) where T : Bundle;
-
-        /// <summary>
-        /// Returns the URL for the asset bundle with the given path.
-        /// </summary>
-        /// <param name="path">The application relative path to the asset bundle.</param>
-        /// <returns>The URL for the asset bundle.</returns>
-        string BundleUrl(string path);
     }
 }

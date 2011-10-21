@@ -26,7 +26,7 @@ using Cassette.Utilities;
 
 namespace Cassette.UI
 {
-    public class ReferenceBuilder : IReferenceBuilder
+    class ReferenceBuilder : IReferenceBuilder
     {
         public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
         {
@@ -43,33 +43,55 @@ namespace Cassette.UI
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
         readonly HashSet<string> renderedLocations = new HashSet<string>();
  
-        // TODO: Add typed Reference<TBundle> method
+        public void Reference<T>(string path, string location = null)
+            where T : Bundle
+        {
+            var bundle = GetBundle(path, () => bundleFactories[typeof(T)].CreateBundle(path, null));
+            Reference(bundle, location);
+        }
 
         public void Reference(string path, string location = null)
+        {
+            var bundle = GetBundle(path, () =>
+            {
+                if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+                {
+                    return bundleFactories[typeof(Scripts.ScriptBundle)].CreateBundle(path, null);
+                }
+                else if (path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+                {
+                    return bundleFactories[typeof(Stylesheets.StylesheetBundle)].CreateBundle(path, null);
+                }
+                else
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            "Cannot determine the type of bundle for the URL \"{0}\". Specify the type using the generic type parameter.",
+                            path
+                        )
+                    );
+                }
+            });
+
+            Reference(bundle, location);
+        }
+
+        Bundle GetBundle(string path, Func<Bundle> createExternalBundle)
         {
             path = PathUtilities.AppRelative(path);
 
             var bundle = bundleContainer.FindBundleContainingPath(path);
             if (bundle == null && path.IsUrl())
             {
-                // Ad-hoc external bundle reference.
-                // TODO: Attempt to determine bundle type from URL.
-                bundle = bundleFactories[typeof(Scripts.ScriptBundle)].CreateBundle(path, null);
+                bundle = createExternalBundle();
             }
 
             if (bundle == null)
             {
-                throw new ArgumentException("Cannot find an asset bundle containing the path \"" + path + "\".");                
+                throw new ArgumentException("Cannot find an asset bundle containing the path \"" + path + "\".");
             }
 
-            // Bundle can define it's own prefered location. Use this when we aren't given
-            // an explicit location argument i.e. null.
-            if (location == null)
-            {
-                location = bundle.Location;
-            }
-
-            Reference(bundle, location);
+            return bundle;
         }
 
         public void Reference(Bundle bundle, string location = null)
@@ -77,6 +99,13 @@ namespace Cassette.UI
             if (!application.IsHtmlRewritingEnabled && HasRenderedLocation(location))
             {
                 ThrowRewritingRequiredException(location);
+            }
+
+            // Bundle can define it's own prefered location. Use this when we aren't given
+            // an explicit location argument i.e. null.
+            if (location == null)
+            {
+                location = bundle.Location;
             }
 
             var bundles = GetOrCreateBundleSet(location);
@@ -121,16 +150,6 @@ namespace Cassette.UI
             return placeholderTracker.InsertPlaceholder(
                 () => CreateHtml<T>(location)
             );
-        }
-
-        public string BundleUrl(string path)
-        {
-            var bundle = bundleContainer.FindBundleContainingPath(path);
-            if (bundle == null)
-            {
-                throw new ArgumentException("Cannot find bundle contain path \"" + path + "\".");
-            }
-            return application.UrlGenerator.CreateBundleUrl(bundle);
         }
 
         HtmlString CreateHtml<T>(string location)
