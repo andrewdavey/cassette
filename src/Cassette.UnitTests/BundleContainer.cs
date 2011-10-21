@@ -114,7 +114,7 @@ namespace Cassette
         }
     }
 
-    public class BundleContainer_SortBundles_Tests
+    public class BundleContainer_IncludeReferencesAndSortBundles_Tests
     {
         [Fact]
         public void GivenDiamondReferencing_ThenConcatDependenciesReturnsEachReferencedBundleOnlyOnceInDependencyOrder()
@@ -219,6 +219,22 @@ namespace Cassette
             sorted[2].ShouldBeSameAs(ms[3]);
             sorted[3].ShouldBeSameAs(ms[4]);
             sorted[4].ShouldBeSameAs(ms[1]);
+        }
+
+        [Fact]
+        public void WhenSortBundlesWithCycle_ThenExceptionThrownHasMessageWithCycleBundlePaths()
+        {
+            var bundleA = new TestableBundle("~/a");
+            var bundleB = new TestableBundle("~/b");
+            bundleA.AddReferences(new[] { "~/b" });
+            bundleB.AddReferences(new[] { "~/a" });
+
+            var container = new BundleContainer(new[] { bundleA, bundleB });
+            var exception = Assert.Throws<InvalidOperationException>(
+                () => container.IncludeReferencesAndSortBundles(new[] { bundleA, bundleB })
+            );
+            exception.Message.ShouldContain("~/a");
+            exception.Message.ShouldContain("~/b");
         }
 
         void SetupAsset(string filename, Mock<IAsset> asset)

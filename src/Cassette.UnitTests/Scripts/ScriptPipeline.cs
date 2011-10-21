@@ -18,13 +18,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Linq;
+using System.IO;
 using Cassette.BundleProcessing;
 using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
-using System.IO;
 
 namespace Cassette.Scripts
 {
@@ -107,4 +106,3 @@ namespace Cassette.Scripts
         }
     }
 }
-

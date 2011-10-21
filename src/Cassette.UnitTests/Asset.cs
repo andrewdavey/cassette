@@ -194,6 +194,14 @@ namespace Cassette
         }
 
         [Fact]
+        public void AddReferenceToAssetInAnotherBundleWithShorterPath_CreatesDifferentBundleReference()
+        {
+            asset.AddReference("~/a.js", 1);
+
+            asset.References.First().Type.ShouldEqual(AssetReferenceType.DifferentBundle);
+        }
+
+        [Fact]
         public void AddReferenceToAssetWithPathAbsoluteToWebApplication()
         {
             asset.AddReference("/another/test.js", 1);
