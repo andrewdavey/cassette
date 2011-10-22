@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.IO;
 using System.Web;
 using Cassette.BundleProcessing;
 
@@ -36,12 +35,6 @@ namespace Cassette.Stylesheets
         {
             ContentType = "text/css";
             Processor = new StylesheetPipeline();
-            BundleInitializers.Add(new BundleDirectoryInitializer(path)
-            {
-                FilePattern = "*.css;*.less",
-                SearchOption = SearchOption.AllDirectories,
-                BundleDescriptor = bundleDescriptor
-            });
         }
 
         public string Media { get; set; }

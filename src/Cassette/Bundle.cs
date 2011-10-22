@@ -30,27 +30,28 @@ namespace Cassette
     [System.Diagnostics.DebuggerDisplay("{Path}")]
     public abstract class Bundle : IDisposable
     {
+        readonly bool useDefaultBundleInitializer;
+        readonly string path;
+        readonly List<IBundleInitializer> bundleInitializers = new List<IBundleInitializer>();
+        readonly List<IAsset> assets = new List<IAsset>();
+        readonly HashSet<string> references = new HashSet<string>();
+        bool hasSortedAssets;
+
         protected Bundle(string applicationRelativePath)
         {
             path = PathUtilities.AppRelative(applicationRelativePath);
         }
 
-        protected Bundle(string applicationRelativePath, IEnumerable<IBundleInitializer> assetSources)
+        protected Bundle(string applicationRelativePath, bool useDefaultBundleInitializer)
             : this(applicationRelativePath)
         {
-            bundleInitializers.AddRange(assetSources);
+            this.useDefaultBundleInitializer = useDefaultBundleInitializer;
         }
 
         protected Bundle()
         {
             // Protected constructor to allow InlineScriptBundle to be created without a path.
         }
-
-        readonly string path;
-        readonly List<IBundleInitializer> bundleInitializers = new List<IBundleInitializer>();
-        readonly List<IAsset> assets = new List<IAsset>();
-        readonly HashSet<string> references = new HashSet<string>();
-        bool hasSortedAssets;
 
         public string Path
         {
@@ -93,9 +94,17 @@ namespace Cassette
 
         public void Initialize(ICassetteApplication application)
         {
-            foreach (var assetSource in bundleInitializers)
+            if (useDefaultBundleInitializer)
             {
-                assetSource.InitializeBundle(this, application);
+                application.GetDefaultBundleInitializer(GetType())
+                           .InitializeBundle(this, application);
+            }
+            else
+            {
+                foreach (var assetSource in bundleInitializers)
+                {
+                    assetSource.InitializeBundle(this, application);
+                }
             }
         }
 

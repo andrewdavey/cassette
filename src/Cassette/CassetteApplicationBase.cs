@@ -68,6 +68,11 @@ namespace Cassette
             get { return bundleContainer; }
         }
 
+        public IBundleInitializer GetDefaultBundleInitializer(Type bundleType)
+        {
+            return settings.DefaultBundleInitializers[bundleType];
+        }
+
         public IReferenceBuilder GetReferenceBuilder()
         {
             return GetOrCreateReferenceBuilder(CreateReferenceBuilder);

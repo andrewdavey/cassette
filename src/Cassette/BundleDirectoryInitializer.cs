@@ -9,21 +9,15 @@ namespace Cassette
 {
     class BundleDirectoryInitializer : IBundleInitializer
     {
-        public BundleDirectoryInitializer(string path)
-        {
-            Path = path;
-        }
-
         public string Path { get; set; }
         public string FilePattern { get; set; }
         public Regex ExcludeFilePath { get; set; }
         public SearchOption SearchOption { get; set; }
-        public BundleDescriptor BundleDescriptor { get; set; }
 
         public void InitializeBundle(Bundle bundle, ICassetteApplication application)
         {
-            var directory = application.SourceDirectory.GetDirectory(Path, false);
-            var descriptor = GetOrLoadBundleDescriptor(directory);
+            var directory = application.SourceDirectory.GetDirectory(Path ?? bundle.Path, false);
+            var descriptor = LoadBundleDescriptor(directory);
             IEnumerable<IAsset> assets;
             if (descriptor == null)
             {
@@ -39,10 +33,8 @@ namespace Cassette
             AddAssetsToBundle(bundle, assets);
         }
 
-        BundleDescriptor GetOrLoadBundleDescriptor(IDirectory directory)
+        BundleDescriptor LoadBundleDescriptor(IDirectory directory)
         {
-            if (BundleDescriptor != null) return BundleDescriptor;
-
             var file = directory.GetFile("bundle.txt");
             // TODO: Remove legacy support for module.txt
             if (!file.Exists) file = directory.GetFile("module.txt");

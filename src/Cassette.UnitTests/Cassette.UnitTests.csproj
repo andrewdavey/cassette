@@ -64,9 +64,9 @@
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactoryTestSuite.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
+    <Compile Include="Configuration\BundleInitializerConfiguration.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="BundleDirectoryInitializer.cs" />
-    <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />

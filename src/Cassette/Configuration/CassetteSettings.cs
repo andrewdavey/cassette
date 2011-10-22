@@ -11,10 +11,12 @@ namespace Cassette.Configuration
     {
         public CassetteSettings()
         {
+            DefaultBundleInitializers = new Dictionary<Type, IBundleInitializer>();
             BundleFactories = CreateBundleFactories();
             CacheVersion = "";
         }
 
+        public IDictionary<Type, IBundleInitializer> DefaultBundleInitializers { get; private set; } 
         public bool IsDebuggingEnabled { get; set; }
         public bool IsHtmlRewritingEnabled { get; set; }
         public IDirectory SourceDirectory { get; set; }

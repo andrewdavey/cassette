@@ -27,7 +27,7 @@ namespace Cassette
         [Fact]
         public void GivenSimpleFilePatternAndSomeFiles_WhenInitializeBundle_ThenAssetCreatedForEachMatchingFile()
         {
-            var initializer = new BundleDirectoryInitializer("~/test")
+            var initializer = new BundleDirectoryInitializer()
             {
                 FilePattern = "*.js"
             };
@@ -49,7 +49,7 @@ namespace Cassette
         [Fact]
         public void GivenFilePatternForJSandCoffeeScript_WhenInitializeBundle_ThenBothTypesOfAssetAreCreated()
         {
-            var initializer = new BundleDirectoryInitializer("~/test")
+            var initializer = new BundleDirectoryInitializer()
             {
                 FilePattern = "*.js;*.coffee"
             };
@@ -69,7 +69,7 @@ namespace Cassette
         [Fact]
         public void GivenFilePatternForJSandCoffeeScriptUsingCommaSeparator_WhenInitializeBundle_ThenBothTypesOfAssetAreCreated()
         {
-            var initializer = new BundleDirectoryInitializer("~/test")
+            var initializer = new BundleDirectoryInitializer()
             {
                 FilePattern = "*.js,*.coffee"
             };
@@ -89,7 +89,7 @@ namespace Cassette
         [Fact]
         public void GivenFilePatternIsNotSet_WhenInitializeBundle_ThenMatchAllFiles()
         {
-            var initializer = new BundleDirectoryInitializer("~/test");
+            var initializer = new BundleDirectoryInitializer();
 
             CreateDirectory("test");
             CreateFile("test", "asset1.js");
@@ -104,9 +104,25 @@ namespace Cassette
         }
 
         [Fact]
+        public void GivenPathSet_WhenInitializeBundle_ThenPathIsusedInsteadOfBundlePath()
+        {
+            var initializer = new BundleDirectoryInitializer
+            {
+                Path = "~/other"
+            };
+            CreateDirectory("other");
+            CreateFile("other", "asset1.js");
+            var bundle = new TestableBundle("~/test");
+
+            initializer.InitializeBundle(bundle, application);
+
+            bundle.Assets[0].SourceFile.FullPath.ShouldEqual("~/other/asset1.js");
+        }
+
+        [Fact]
         public void GivenExclude_WhenInitializeBundle_ThenAssetsNotCreatedForFilesMatchingExclude()
         {
-            var initializer = new BundleDirectoryInitializer("~/test")
+            var initializer = new BundleDirectoryInitializer()
             {
                 ExcludeFilePath = new Regex("-vsdoc\\.js$"),
             };
@@ -123,7 +139,7 @@ namespace Cassette
         [Fact]
         public void GivenBundleDescriptorFile_WhenInitializeBundle_ThenAssetIsNotCreatedForTheDescriptorFile()
         {
-            var initializer = new BundleDirectoryInitializer("~/test");
+            var initializer = new BundleDirectoryInitializer();
             CreateDirectory("test");
             CreateFile("test", "bundle.txt");
             CreateFile("test", "module.txt"); // Legacy support - module.txt synonymous to bundle.txt
@@ -134,33 +150,14 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenBundleDescriptorWithExplicitAssets_WhenInitializeBundle_ThenAssetsAreInDescriptorOrder()
-        {
-            CreateDirectory("test");
-            CreateFile("test", "asset-A.js");
-            CreateFile("test", "asset-Z.js");
-            var descriptor = new BundleDescriptor(new[] { "asset-Z.js", "asset-A.js" });
-            var initializer = new BundleDirectoryInitializer("~/test")
-            {
-                BundleDescriptor = descriptor
-            };
-
-            var bundle = new TestableBundle("~/test");
-            initializer.InitializeBundle(bundle, application);
-
-            bundle.Assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset-Z.js");
-            bundle.Assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset-A.js");
-        }
-
-        [Fact]
-        public void GivenBundleDescriptorIsNullButDescriptorFileExists_WhenInitializeBundle_WhenDescriptorFilesIsUsed()
+        public void GivenDescriptorFileExists_WhenInitializeBundle_WhenDescriptorFilesIsUsed()
         {
             CreateDirectory("test");
             CreateFile("test", "asset-A.js");
             CreateFile("test", "asset-Z.js");
             CreateFile("test", "bundle.txt")("asset-Z.js\nasset-A.js");
 
-            var initializer = new BundleDirectoryInitializer("~/test");
+            var initializer = new BundleDirectoryInitializer();
             var bundle = new TestableBundle("~/test");
             initializer.InitializeBundle(bundle, application);
 

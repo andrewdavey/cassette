@@ -64,12 +64,37 @@ namespace Cassette
         }
 
         [Fact]
-        public void CanCreateWithAssetSources()
+        public void GivenBundleCreateWithUseDefaultInitializerTrue_WhenInitialize_ThenInitializerRegisteredWithApplicationIsUsed()
         {
-            var initializer = Mock.Of<IBundleInitializer>();
-            var bundle = new TestableBundle("~/test", new[] { initializer });
+            var bundle = new TestableBundle("~/test", true);
+            var defaultInitializer = new Mock<IBundleInitializer>();
+            var application = new Mock<ICassetteApplication>();
+            application.Setup(a => a.GetDefaultBundleInitializer(typeof(TestableBundle)))
+                       .Returns(defaultInitializer.Object);
 
-            bundle.BundleInitializers.SequenceEqual(new[] { initializer }).ShouldBeTrue();
+            bundle.Initialize(application.Object);
+
+            defaultInitializer.Verify(i => i.InitializeBundle(bundle, application.Object));
+        }
+
+        [Fact]
+        public void GivenBundleCreateWithUseDefaultInitializerTrue_WhenInitialize_ThenBundleInitializersAreNotUsed()
+        {
+            var bundle = new TestableBundle("~/test", true);
+            var initializerToIgnore = new Mock<IBundleInitializer>();
+            bundle.BundleInitializers.Add(initializerToIgnore.Object);
+
+            var defaultInitializer = new Mock<IBundleInitializer>();
+            var application = new Mock<ICassetteApplication>();
+            application.Setup(a => a.GetDefaultBundleInitializer(typeof(TestableBundle)))
+                       .Returns(defaultInitializer.Object);
+
+            bundle.Initialize(application.Object);
+
+            initializerToIgnore.Verify(
+                i => i.InitializeBundle(It.IsAny<Bundle>(), It.IsAny<ICassetteApplication>()),
+                Times.Never()
+            );
         }
 
         [Fact]

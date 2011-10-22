@@ -159,9 +159,13 @@ namespace Cassette.Web
 
         static List<ICassetteConfiguration> GetAllConfigurations()
         {
-            var sourceDirectory = HttpRuntime.AppDomainAppPath;
             var isDebuggingEnabled = GetSystemWebCompilationDebug();
-            var initialConfiguration = new InitialConfiguration(sourceDirectory, storage, isDebuggingEnabled);
+            var initialConfiguration = new InitialConfiguration(
+                HttpRuntime.AppDomainAppPath,
+                HttpRuntime.AppDomainAppVirtualPath,
+                storage,
+                isDebuggingEnabled
+            );
 
             var allConfigurations = new List<ICassetteConfiguration> { initialConfiguration };
             allConfigurations.AddRange(configurations);

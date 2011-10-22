@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Web;
 
 namespace Cassette
@@ -10,8 +9,8 @@ namespace Cassette
         {
         }
 
-        public TestableBundle(string path, IEnumerable<IBundleInitializer> bundleInitializers)
-            : base(path, bundleInitializers)
+        public TestableBundle(string path, bool useDefaultBundleInitializer)
+            : base(path, useDefaultBundleInitializer)
         {
         }
 

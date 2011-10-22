@@ -59,6 +59,7 @@
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
     <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
+    <Compile Include="Configuration\BundleInitializerConfiguration.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />

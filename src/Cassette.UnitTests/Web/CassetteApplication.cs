@@ -102,6 +102,18 @@ namespace Cassette.Web
         }
 
         [Fact]
+        public void GivenSettingsHasDefaultInitializerForBundleType_WhenGetDefaultBundleInitializer_ThenInitializerReturnedForBundleType()
+        {
+            var initializer = Mock.Of<IBundleInitializer>();
+            var application = StubApplication(
+                settings => settings.DefaultBundleInitializers[typeof(TestableBundle)] = initializer
+            );
+
+            var actualInitializer = application.GetDefaultBundleInitializer(typeof(TestableBundle));
+
+            actualInitializer.ShouldBeSameAs(initializer);
+        }
+        [Fact]
         public void WhenDispose_ThenBundleIsDisposed()
         {
             var bundle = new Mock<Bundle>("~");

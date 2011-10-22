@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Web;
 using Cassette.BundleProcessing;
-using System.IO;
 
 namespace Cassette.HtmlTemplates
 {
@@ -36,12 +35,6 @@ namespace Cassette.HtmlTemplates
         {
             ContentType = "text/html";
             Processor = new HtmlTemplatePipeline();
-            BundleInitializers.Add(new BundleDirectoryInitializer(path)
-            {
-                FilePattern = "*.htm;*.html",
-                SearchOption = SearchOption.AllDirectories,
-                BundleDescriptor = bundleDescriptor
-            });
         }
 
         public IBundleProcessor<HtmlTemplateBundle> Processor { get; set; }
