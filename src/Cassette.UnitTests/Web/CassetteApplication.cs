@@ -113,6 +113,43 @@ namespace Cassette.Web
 
             actualInitializer.ShouldBeSameAs(initializer);
         }
+
+        [Fact]
+        public void GivenSettingsHasDefaultInitializerForScriptBundleType_WhenGetDefaultBundleInitializerForExternalScriptBundleType_ThenInitializerReturned()
+        {
+            var initializer = Mock.Of<IBundleInitializer>();
+            var application = StubApplication(
+                settings => settings.DefaultBundleInitializers[typeof(Scripts.ScriptBundle)] = initializer
+            );
+
+            var actualInitializer = application.GetDefaultBundleInitializer(typeof(Scripts.ExternalScriptBundle));
+
+            actualInitializer.ShouldBeSameAs(initializer);
+        }
+
+        [Fact]
+        public void GivenSettingsHasDefaultInitializerForStylesheetBundleType_WhenGetDefaultBundleInitializerForExternalStylesheetBundleType_ThenInitializerReturned()
+        {
+            var initializer = Mock.Of<IBundleInitializer>();
+            var application = StubApplication(
+                settings => settings.DefaultBundleInitializers[typeof(Stylesheets.StylesheetBundle)] = initializer
+            );
+
+            var actualInitializer = application.GetDefaultBundleInitializer(typeof(Stylesheets.ExternalStylesheetBundle));
+
+            actualInitializer.ShouldBeSameAs(initializer);
+        }
+
+        [Fact]
+        public void GivenNoBundleInitializerRegistered_WhenGetDefaultBundleInitializer_ThenArgumentExceptionIsThrown()
+        {
+            var application = StubApplication();
+
+            Assert.Throws<ArgumentException>(
+                () => application.GetDefaultBundleInitializer(typeof(Bundle))
+            );
+        }
+
         [Fact]
         public void WhenDispose_ThenBundleIsDisposed()
         {

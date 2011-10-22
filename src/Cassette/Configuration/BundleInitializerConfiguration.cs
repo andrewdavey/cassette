@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Cassette.Configuration
 {
-    class BundleInitializerConfiguration : ICassetteConfiguration
+    public class BundleInitializerConfiguration : ICassetteConfiguration
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {

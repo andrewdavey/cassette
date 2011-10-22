@@ -70,7 +70,18 @@ namespace Cassette
 
         public IBundleInitializer GetDefaultBundleInitializer(Type bundleType)
         {
-            return settings.DefaultBundleInitializers[bundleType];
+            var originalBundleType = bundleType;
+            do
+            {
+                IBundleInitializer initializer;
+                if (settings.DefaultBundleInitializers.TryGetValue(bundleType, out initializer))
+                {
+                    return initializer;
+                }
+                bundleType = bundleType.BaseType;
+            } while (bundleType != null);
+
+            throw new ArgumentException(string.Format("Default bundle initializer not registered for bundle type {0}.", originalBundleType.FullName));
         }
 
         public IReferenceBuilder GetReferenceBuilder()
