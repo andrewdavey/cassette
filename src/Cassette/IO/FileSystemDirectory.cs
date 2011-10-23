@@ -132,9 +132,9 @@ namespace Cassette.IO
                             .Select(GetDirectory);
         }
 
-        public FileAttributes GetAttributes(string path)
+        public FileAttributes Attributes
         {
-            return File.GetAttributes(GetAbsolutePath(path));
+            get { return File.GetAttributes(fullSystemPath); }
         }
 
         FileSystemDirectory GetRootDirectory()

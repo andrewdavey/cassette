@@ -26,29 +26,29 @@ namespace Cassette.Configuration
         [Fact]
         public void GivenCacheIsUpToDate_WhenCreateWithBundle_ThenBundleIsNotProcessed()
         {
-            var bundle = new Mock<Bundle>("~/test");
-            var bundles = new[] { bundle.Object };
+            var bundle = new TestableBundle("~/test", false);
+            var bundles = new[] { bundle };
             var application = StubApplication();
             CacheIsUpToDate(bundles);
 
             var factory = CreateFactory();
             factory.Create(bundles, application);
 
-            bundle.Verify(b => b.Process(application), Times.Never());
+            bundle.WasProcessed.ShouldBeFalse();
         }
 
         [Fact]
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenBundleIsProcessed()
         {
-            var bundle = new Mock<Bundle>("~/test");
-            var bundles = new[] { bundle.Object };
+            var bundle = new TestableBundle("~/test", false);
+            var bundles = new[] { bundle };
             var application = StubApplication();
             CacheIsOutOfDate(bundles);
 
             var factory = CreateFactory();
             factory.Create(bundles, application);
 
-            bundle.Verify(b => b.Process(application));
+            bundle.WasProcessed.ShouldBeTrue();
         }
 
         [Fact]

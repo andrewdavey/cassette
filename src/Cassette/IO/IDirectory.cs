@@ -25,6 +25,7 @@ namespace Cassette.IO
 {
     public interface IDirectory
     {
+        FileAttributes Attributes { get; }
         string FullPath { get; }
         IFile GetFile(string filename);
         IDirectory GetDirectory(string path);
@@ -32,7 +33,6 @@ namespace Cassette.IO
 
         IEnumerable<IDirectory> GetDirectories();
         IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption);
-        FileAttributes GetAttributes(string path);
 
         void DeleteContents();
     }

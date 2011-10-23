@@ -164,15 +164,15 @@ namespace Cassette.UI
         [Fact]
         public void WhenAddReferenceToUnknownUrl_ThenCreatedBundleIsProcessed()
         {
-            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
-            var bundle = new Mock<ScriptBundle>("~");
+            var bundleFactory = new Mock<IBundleFactory<TestableBundle>>();
+            var bundle = new TestableBundle("~", false);
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", null))
-                         .Returns(bundle.Object);
+                         .Returns(bundle);
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
 
             builder.Reference("http://test.com/test.js", null);
 
-            bundle.Verify(b => b.Process(application.Object));
+            bundle.WasProcessed.ShouldBeTrue();
         }
 
         [Fact]
@@ -335,14 +335,12 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenBundleRenderOutputReturned()
         {
-            var bundle = new Mock<Bundle>("~/stub");
-            bundle.Setup(m => m.Render())
-                  .Returns(new HtmlString("output"));
+            var bundle = new TestableBundle("~/stub") { RenderResult = "output" };
             bundleContainer.Setup(c => c.FindBundleContainingPath(It.IsAny<string>()))
-                           .Returns(bundle.Object);
+                           .Returns(bundle);
             referenceBuilder.Reference("test");
 
-            var html = referenceBuilder.Render<Bundle>("body");
+            var html = referenceBuilder.Render<TestableBundle>("body");
 
             html.ToHtmlString().ShouldEqual("output");
         }
@@ -350,16 +348,12 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToTwoPaths_WhenRender_ThenBundleRenderOutputsSeparatedByNewLinesReturned()
         {
-            var bundle1 = new Mock<TestableBundle>("~/stub1");
-            bundle1.Setup(m => m.Render().ToHtmlString())
-                   .Returns("output1");
-            var bundle2 = new Mock<TestableBundle>("~/stub2");
-            bundle2.Setup(m => m.Render().ToHtmlString())
-                   .Returns("output2");
+            var bundle1 = new TestableBundle("~/stub1", false) { RenderResult = "output1" };
+            var bundle2 = new TestableBundle("~/stub2", false) { RenderResult = "output2" };
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub1"))
-                           .Returns(bundle1.Object);
+                           .Returns(bundle1);
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub2"))
-                           .Returns(bundle2.Object);
+                           .Returns(bundle2);
 
             referenceBuilder.Reference("~/stub1");
             referenceBuilder.Reference("~/stub2");

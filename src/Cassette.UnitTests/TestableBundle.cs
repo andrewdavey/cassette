@@ -14,9 +14,26 @@ namespace Cassette
         {
         }
 
+        public bool WasProcessed { get; set; }
+
+        public bool WasDisposed { get; set; }
+
+        public string RenderResult { get; set; }
+
         internal override IHtmlString Render()
         {
-            throw new System.NotImplementedException();
+            return new HtmlString(RenderResult);
+        }
+
+        internal override void Process(ICassetteApplication application)
+        {
+            WasProcessed = true;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            WasDisposed = true;
         }
     }
 }

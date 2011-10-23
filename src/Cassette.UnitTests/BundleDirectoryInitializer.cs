@@ -150,7 +150,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenDescriptorFileExists_WhenInitializeBundle_WhenDescriptorFilesIsUsed()
+        public void GivenDescriptorFileExists_WhenInitializeBundle_ThenDescriptorFilesIsUsed()
         {
             CreateDirectory("test");
             CreateFile("test", "asset-A.js");

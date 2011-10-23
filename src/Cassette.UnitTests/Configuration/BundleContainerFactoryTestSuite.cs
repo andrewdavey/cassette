@@ -29,13 +29,13 @@ namespace Cassette.Configuration
         [Fact]
         public void WhenCreateWithBundle_ThenBundleIsProcessed()
         {
-            var bundle = new Mock<TestableBundle>("~/test");
+            var bundle = new TestableBundle("~/test", false);
             var application = StubApplication();
 
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
-            builder.Create(new[] { bundle.Object }, application);
+            builder.Create(new[] { bundle }, application);
 
-            bundle.Verify(b => b.Process(application));
+            bundle.WasProcessed.ShouldBeTrue();
         }
 
         [Fact]

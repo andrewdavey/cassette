@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.IO;
+using System.IO;
 
 namespace Cassette.Configuration
 {
@@ -12,7 +13,7 @@ namespace Cassette.Configuration
         {
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(path);
-            var subDirectories = directory.GetDirectories();
+            var subDirectories = directory.GetDirectories().Where(IsNotHidden);
             var bundles = CreateBundles(bundleFactory, subDirectories);
 
             foreach (var bundle in bundles)
@@ -20,6 +21,11 @@ namespace Cassette.Configuration
                 if (customizeBundle != null) customizeBundle(bundle);
                 bundleCollection.Add(bundle);
             }
+        }
+
+        static bool IsNotHidden(IDirectory directory)
+        {
+            return !directory.Attributes.HasFlag(FileAttributes.Hidden);
         }
 
         static IEnumerable<T> CreateBundles<T>(IBundleFactory<T> bundleFactory, IEnumerable<IDirectory> subDirectories)

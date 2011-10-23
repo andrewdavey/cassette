@@ -206,12 +206,17 @@ namespace Cassette
             }
         }
 
-        void IDisposable.Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             foreach (var asset in assets.OfType<IDisposable>())
             {
                 asset.Dispose();
             }
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Cassette.Configuration
                 File.WriteAllText(Path.Combine(tempDirectory, "test", "bundle", "bundle.txt"), "");
                 var settings = new CassetteSettings
                 {
-                        SourceDirectory = new FileSystemDirectory(tempDirectory)
+                    SourceDirectory = new FileSystemDirectory(tempDirectory)
                 };
                 var factory = new Mock<IBundleFactory<Bundle>>();
                 factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
@@ -58,6 +58,28 @@ namespace Cassette.Configuration
                 collection.AddForEachSubDirectory<Bundle>("~/test");
                 
                 factory.Verify(f => f.CreateBundle("~/test/bundle", It.Is<BundleDescriptor>(b => b != null)));
+            }
+        }
+
+        [Fact]
+        public void GivenHiddenDirectory_WhenInitializeBundle_ThenDirectoryIsIgnored()
+        {
+            using (var tempDirectory = new TempDirectory())
+            {
+                Directory.CreateDirectory(Path.Combine(tempDirectory, "test", "bundle"));
+                var attributes = File.GetAttributes(Path.Combine(tempDirectory, "test", "bundle"));
+                File.SetAttributes(Path.Combine(tempDirectory, "test", "bundle"), attributes | FileAttributes.Hidden);
+                
+                var settings = new CassetteSettings
+                {
+                    SourceDirectory = new FileSystemDirectory(tempDirectory)
+                };
+                settings.BundleFactories[typeof(Bundle)] = Mock.Of<IBundleFactory<Bundle>>();
+
+                var collection = new BundleCollection(settings);
+                collection.AddForEachSubDirectory<Bundle>("~/test");
+
+                collection.ShouldBeEmpty();
             }
         }
     }

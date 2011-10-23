@@ -152,14 +152,12 @@ namespace Cassette.Web
         [Fact]
         public void WhenDispose_ThenBundleIsDisposed()
         {
-            var bundle = new Mock<Bundle>("~");
-            var disposable = bundle.As<IDisposable>();
-
-            var application = StubApplication(createBundles: settings => new BundleCollection(settings) { bundle.Object });
+            var bundle = new TestableBundle("~", false);
+            var application = StubApplication(createBundles: settings => new BundleCollection(settings) { bundle });
             
             application.Dispose();
 
-            disposable.Verify(d => d.Dispose());
+            bundle.WasDisposed.ShouldBeTrue();
         }
 
         internal CassetteApplication StubApplication(Action<CassetteSettings> alterSettings = null, Func<CassetteSettings, BundleCollection> createBundles = null)
@@ -171,8 +169,7 @@ namespace Cassette.Web
             };
             if (alterSettings != null) alterSettings(settings);
 
-            BundleCollection bundles;
-            bundles = createBundles == null 
+            var bundles = createBundles == null 
                 ? new BundleCollection(settings) 
                 : createBundles(settings);
 

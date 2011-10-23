@@ -16,7 +16,6 @@ namespace Cassette.Configuration
             CacheVersion = "";
         }
 
-        public IDictionary<Type, IBundleInitializer> DefaultBundleInitializers { get; private set; } 
         public bool IsDebuggingEnabled { get; set; }
         public bool IsHtmlRewritingEnabled { get; set; }
         public IDirectory SourceDirectory { get; set; }
@@ -25,6 +24,7 @@ namespace Cassette.Configuration
         public string CacheVersion { get; set; }
 
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
+        internal IDictionary<Type, IBundleInitializer> DefaultBundleInitializers { get; private set; }
 
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {

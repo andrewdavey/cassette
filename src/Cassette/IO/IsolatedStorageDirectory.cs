@@ -84,9 +84,9 @@ namespace Cassette.IO
             throw new NotImplementedException();
         }
 
-        public FileAttributes GetAttributes(string path)
+        public FileAttributes Attributes
         {
-            throw new NotImplementedException();
+            get { return FileAttributes.Directory; }
         }
 
         public IFile GetFile(string filename)
