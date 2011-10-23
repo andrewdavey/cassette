@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using Cassette.IO;
-using Cassette.UI;
 
 namespace Cassette
 {

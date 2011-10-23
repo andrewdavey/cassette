@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 /*
 Copyright 2011 Andrew Davey
 
@@ -23,9 +23,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace Cassette.UI
+namespace Cassette
 {
-    public class PlaceholderTracker : IPlaceholderTracker
+    class PlaceholderTracker : IPlaceholderTracker
     {
         readonly Dictionary<Guid, Func<IHtmlString>> creationFunctions = new Dictionary<Guid, Func<IHtmlString>>();
 
@@ -47,4 +47,3 @@ namespace Cassette.UI
         }
     }
 }
-

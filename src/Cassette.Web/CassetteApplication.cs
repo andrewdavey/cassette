@@ -24,7 +24,6 @@ using System.Web;
 using System.Web.Handlers;
 using System.Web.Routing;
 using Cassette.Configuration;
-using Cassette.UI;
 
 namespace Cassette.Web
 {
@@ -43,16 +42,7 @@ namespace Cassette.Web
 
         public void OnPostMapRequestHandler(HttpContextBase httpContext)
         {
-            IPlaceholderTracker tracker;
-            if (IsHtmlRewritingEnabled)
-            {
-                tracker = new PlaceholderTracker();
-            }
-            else
-            {
-                tracker = new NullPlaceholderTracker();
-            }
-            httpContext.Items[PlaceholderTrackerKey] = tracker;
+            httpContext.Items[PlaceholderTrackerKey] = CreatePlaceholderTracker();
         }
 
         public void OnPostRequestHandlerExecute(HttpContextBase httpContext)

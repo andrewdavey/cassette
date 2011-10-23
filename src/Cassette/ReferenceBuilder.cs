@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 /*
 Copyright 2011 Andrew Davey
 
@@ -24,7 +24,7 @@ using System.Linq;
 using System.Web;
 using Cassette.Utilities;
 
-namespace Cassette.UI
+namespace Cassette
 {
     class ReferenceBuilder : IReferenceBuilder
     {

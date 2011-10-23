@@ -1,9 +1,9 @@
 using System;
 using System.Web;
 
-namespace Cassette.UI
+namespace Cassette
 {
-    public class NullPlaceholderTracker : IPlaceholderTracker
+    class NullPlaceholderTracker : IPlaceholderTracker
     {
         public IHtmlString InsertPlaceholder(Func<IHtmlString> futureHtml)
         {

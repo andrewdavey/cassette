@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Persistence;
-using Cassette.UI;
 
 namespace Cassette
 {
@@ -127,6 +126,18 @@ namespace Cassette
                 );
             }
             return containerFactory.Create(bundles, application);
+        }
+
+        protected IPlaceholderTracker CreatePlaceholderTracker()
+        {
+            if (IsHtmlRewritingEnabled)
+            {
+                return new PlaceholderTracker();
+            }
+            else
+            {
+                return new NullPlaceholderTracker();
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 /*
 Copyright 2011 Andrew Davey
 
@@ -20,7 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Web;
 
-namespace Cassette.UI
+namespace Cassette
 {
     public interface IReferenceBuilder
     {

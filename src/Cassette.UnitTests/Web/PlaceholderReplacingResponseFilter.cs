@@ -23,7 +23,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-using Cassette.UI;
 using Moq;
 using Should;
 using Xunit;

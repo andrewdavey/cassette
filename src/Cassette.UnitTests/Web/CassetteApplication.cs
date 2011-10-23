@@ -26,7 +26,6 @@ using System.Web.Handlers;
 using System.Web.Routing;
 using Cassette.Configuration;
 using Cassette.IO;
-using Cassette.UI;
 using Moq;
 using Should;
 using Xunit;

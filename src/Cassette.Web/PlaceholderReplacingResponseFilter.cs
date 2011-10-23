@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.IO;
 using System.Web;
-using Cassette.UI;
 
 namespace Cassette.Web
 {
