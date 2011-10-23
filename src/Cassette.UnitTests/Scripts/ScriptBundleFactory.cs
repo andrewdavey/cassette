@@ -46,6 +46,20 @@ namespace Cassette.Scripts
         {
             new ScriptBundleFactory().CreateBundle("http://test.com/api.js", null).ShouldBeType<ExternalScriptBundle>();
         }
+
+        [Fact]
+        public void GivenBundleDescriptorWithExternalUrl_WhenCreateWithApplicationRelativePath_ThenExternalScriptBundleIsReturned()
+        {
+            var descriptor = new BundleDescriptor(
+                new[] { "*" },
+                new string[0],
+                "http://test.com/api.js",
+                null
+            );
+            var bundle = new ScriptBundleFactory().CreateBundle("~/path", descriptor);
+
+            bundle.ShouldBeType<ExternalScriptBundle>();
+        }
     }
 }
 

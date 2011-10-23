@@ -38,12 +38,6 @@ namespace Cassette.Stylesheets
             this.url = url;
         }
 
-        internal ExternalStylesheetBundle(string path, BundleDescriptor bundleDescriptor)
-            : base(path, bundleDescriptor)
-        {
-            url = path.IsUrl() ? path : bundleDescriptor.ExternalUrl;
-        }
-
         readonly string url;
 
         public override void Process(ICassetteApplication application)

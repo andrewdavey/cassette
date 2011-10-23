@@ -28,11 +28,11 @@ namespace Cassette.Stylesheets
         {
             if (path.IsUrl() || (bundleDescriptor != null && bundleDescriptor.ExternalUrl != null))
             {
-                return new ExternalStylesheetBundle(path, bundleDescriptor);
+                return new ExternalStylesheetBundle(path);
             }
             else
             {
-                return new StylesheetBundle(path, bundleDescriptor);
+                return new StylesheetBundle(path);
             }
         }
     }
