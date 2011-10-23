@@ -23,10 +23,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Cassette.Scripts;
+using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Stylesheets;
 
 namespace Cassette.UI
 {
@@ -148,15 +148,12 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void WhenAddReferenceToUrl_ThenGetBundlesReturnsAnExternalBundle()
+        public void WhenAddReferenceToUnknownUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>(); 
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("http://test.com/test.js"));
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
-
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(all => all);
 
             builder.Reference("http://test.com/test.js", null);
 
@@ -165,16 +162,26 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void WhenAddReferenceToHttpsUrl_ThenGetBundlesReturnsAnExternalBundle()
+        public void WhenAddReferenceToUnknownUrl_ThenCreatedBundleIsProcessed()
+        {
+            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
+            var bundle = new Mock<ScriptBundle>("~");
+            bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", null))
+                         .Returns(bundle.Object);
+            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+
+            builder.Reference("http://test.com/test.js", null);
+
+            bundle.Verify(b => b.Process(application.Object));
+        }
+
+        [Fact]
+        public void WhenAddReferenceToUnknownHttpsUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("https://test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("https://test.com/test.js"));
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
-
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(all => all);
-
             builder.Reference("https://test.com/test.js", null);
 
             var bundle = builder.GetBundles(null).First();
@@ -182,15 +189,12 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void WhenAddReferenceToProtocolRelativeUrl_ThenGetBundlesReturnsAnExternalBundle()
+        public void WhenAddReferenceToUnknownProtocolRelativeUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("//test.com/test.js", null))
                          .Returns(new ExternalScriptBundle("//test.com/test.js"));
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
-
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(all => all);
 
             builder.Reference("//test.com/test.js");
 
@@ -199,15 +203,12 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void WhenAddReferenceToCssUrl_ThenExternalStylesheetBundleIsCreated()
+        public void WhenAddReferenceToUnknownCssUrl_ThenExternalStylesheetBundleIsCreated()
         {
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.css", null))
                          .Returns(new ExternalStylesheetBundle("http://test.com/test.css"));
             bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
-
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(all => all);
 
             builder.Reference("http://test.com/test.css");
 
@@ -224,7 +225,7 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void WhenAddReferenceToUrlWithBundleTypeAndUnexpectedExtension_ThenBundleCreatedInFactory()
+        public void WhenAddReferenceToUnknownUrlWithBundleTypeAndUnexpectedExtension_ThenBundleCreatedInFactory()
         {
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test", null))

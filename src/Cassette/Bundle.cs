@@ -39,7 +39,9 @@ namespace Cassette
 
         protected Bundle(string applicationRelativePath)
         {
+            if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
             path = PathUtilities.AppRelative(applicationRelativePath);
+            useDefaultBundleInitializer = true;
         }
 
         protected Bundle(string applicationRelativePath, bool useDefaultBundleInitializer)
@@ -92,7 +94,7 @@ namespace Cassette
             get { return references; }
         }
 
-        public void Initialize(ICassetteApplication application)
+        public virtual void Initialize(ICassetteApplication application)
         {
             if (useDefaultBundleInitializer)
             {

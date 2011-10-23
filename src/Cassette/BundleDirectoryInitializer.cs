@@ -9,14 +9,14 @@ namespace Cassette
 {
     class BundleDirectoryInitializer : IBundleInitializer
     {
-        public string Path { get; set; }
+        public string Path { get; set; } // TODO: keep this or not?
         public string FilePattern { get; set; }
         public Regex ExcludeFilePath { get; set; }
         public SearchOption SearchOption { get; set; }
 
         public void InitializeBundle(Bundle bundle, ICassetteApplication application)
         {
-            var directory = application.SourceDirectory.GetDirectory(Path ?? bundle.Path, false);
+            var directory = application.SourceDirectory.GetDirectory(Path ?? bundle.Path);
             var descriptor = LoadBundleDescriptor(directory);
             IEnumerable<IAsset> assets;
             if (descriptor == null)

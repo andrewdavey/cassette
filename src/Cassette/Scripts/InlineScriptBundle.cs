@@ -23,13 +23,21 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class InlineScriptBundle : Bundle
+    public class InlineScriptBundle : ScriptBundle
     {
         readonly string scriptContent;
 
         public InlineScriptBundle(string scriptContent)
         {
             this.scriptContent = scriptContent;
+        }
+
+        public override void Initialize(ICassetteApplication application)
+        {
+        }
+
+        public override void Process(ICassetteApplication application)
+        {
         }
 
         public override IHtmlString Render()

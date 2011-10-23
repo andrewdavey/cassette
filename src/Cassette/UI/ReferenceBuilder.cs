@@ -84,6 +84,7 @@ namespace Cassette.UI
             if (bundle == null && path.IsUrl())
             {
                 bundle = createExternalBundle();
+                bundle.Process(application);
             }
 
             if (bundle == null)

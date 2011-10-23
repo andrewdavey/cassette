@@ -26,15 +26,14 @@ namespace Cassette.Scripts
     public class ScriptBundle : Bundle
     {
         public ScriptBundle(string path)
-            : this(path, null)
-        {
-        }
-
-        internal ScriptBundle(string path, BundleDescriptor bundleDescriptor)
-            : base(path, true)
+            : base(path)
         {
             ContentType = "text/javascript";
             Processor = new ScriptPipeline();
+        }
+
+        protected ScriptBundle()
+        {
         }
 
         public IBundleProcessor<ScriptBundle> Processor { get; set; }

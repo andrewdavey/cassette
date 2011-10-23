@@ -28,10 +28,104 @@ namespace Cassette.Scripts
 {
     public class ExternalScriptBundle_Tests
     {
+        const string Url = "http://test.com/asset.js";
+
+        [Fact]
+        public void WhenCreateWithUrl_ThenUrlPropertyIsAssigned()
+        {
+            var bundle = new ExternalScriptBundle(Url);
+            bundle.Url.ShouldEqual(Url);
+        }
+
+        [Fact]
+        public void WhenCreateWithUrl_ThenPathEqualsUrl()
+        {
+            var bundle = new ExternalScriptBundle(Url);
+            bundle.Path.ShouldEqual(Url);
+        }
+
+        [Fact]
+        public void WhenCreateWithUrl_ThenBundleInitializersIsEmpty()
+        {
+            var bundle = new ExternalScriptBundle(Url);
+            bundle.BundleInitializers.ShouldBeEmpty();            
+        }
+
+        [Fact]
+        public void WhenCreateWithUrlAndPath_ThenUrlIsAssigned()
+        {
+            var bundle = new ExternalScriptBundle(Url, "~/test");
+            bundle.Url.ShouldEqual(Url);
+        }
+
+        [Fact]
+        public void WhenCreateWithUrlAndPath_ThenPathIsAssigned()
+        {
+            var bundle = new ExternalScriptBundle(Url, "~/test");
+            bundle.Path.ShouldEqual("~/test");
+        }
+
+        [Fact]
+        public void WhenCreateWithUrlAndPath_ThenPathConvertedToApplicationAbsoluteFormat()
+        {
+            var bundle = new ExternalScriptBundle(Url, "test");
+            bundle.Path.ShouldEqual("~/test");
+        }
+
+        [Fact]
+        public void WhenCreateWithUrlAndPathAndFallbackCondition_ThenFallbackConditionAssigned()
+        {
+            var bundle = new ExternalScriptBundle(Url, "test", "!window.test");
+            bundle.FallbackCondition.ShouldEqual("!window.test");
+        }
+
+        [Fact]
+        public void GivenCreatedWithUrlAndPathAndFallbackCondition_WhenInitialize_ThenDefaultInitializerIsUsed()
+        {
+            var application = new Mock<ICassetteApplication>();
+            var initializer = new Mock<IBundleInitializer>();
+            application.Setup(a => a.GetDefaultBundleInitializer(typeof(ExternalScriptBundle)))
+                       .Returns(initializer.Object);
+            application.Setup(a => a.SourceDirectory.DirectoryExists(It.IsAny<string>()))
+                       .Returns(true);
+
+            var bundle = new ExternalScriptBundle(Url, "~/test", "!window.test");
+            bundle.Initialize(application.Object);
+
+            initializer.Verify(i => i.InitializeBundle(bundle, application.Object));
+        }
+
+        [Fact]
+        public void GivenCreatedWithNoFallbackCondition_WhenInitialize_ThenDoNothing()
+        {
+            var application = new Mock<ICassetteApplication>();
+            var bundle = new ExternalScriptBundle(Url, "~/test");
+            
+            bundle.Initialize(application.Object);
+            
+            application.Verify(
+                a => a.GetDefaultBundleInitializer(typeof(ExternalScriptBundle)),
+                Times.Never()
+            );
+        }
+
+        [Fact]
+        public void GivenCreatedWithPathThatDoesNotMapToRealDirectoryAndFallbackConditionAndNoInitializers_WhenInitialize_ThenThrowException()
+        {
+            var application = new Mock<ICassetteApplication>();
+            application.Setup(a => a.SourceDirectory.DirectoryExists(It.IsAny<string>()))
+                       .Returns(false);
+            var bundle = new ExternalScriptBundle(Url, "~/test", "!window.test");
+            
+            Assert.Throws<InvalidOperationException>(
+                () => bundle.Initialize(application.Object)
+            );
+        }
+
         [Fact]
         public void ProcessCallsProcessor()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/asset.js");
+            var bundle = new ExternalScriptBundle(Url);
             var processor = new Mock<IBundleProcessor<ScriptBundle>>();
             var application = Mock.Of<ICassetteApplication>();
 
@@ -44,97 +138,32 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenBundleHasName_ContainsPathOfThatNameReturnsTrue()
         {
-            var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
-            bundle.ContainsPath("~/GoogleMapsApi").ShouldBeTrue();
+            var bundle = new ExternalScriptBundle(Url, "~/path");
+            bundle.ContainsPath("~/path").ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenBundleHasName_PathIsApplicationRelativeFormOfTheName()
+        public void GivenBundleHasPathAndUrl_WhenContainsPathUrl_ThenReturnTrue()
         {
-            var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
-            bundle.Path.ShouldEqual("~/GoogleMapsApi");
+            var bundle = new ExternalScriptBundle(Url, "path");
+            bundle.ContainsPath(Url).ShouldBeTrue();
         }
 
-        [Fact]
-        public void GivenBundleHasName_WhenContainsPathUrl_ThenReturnTrue()
-        {
-            var bundle = new ExternalScriptBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
-            bundle.ContainsPath("https://maps-api-ssl.google.com/maps/api/js?sensor=false").ShouldBeTrue();
-        }
-
-        [Fact]
-        public void ExternalScriptBundleCreateWithPathAndUrlHasNoInitializers()
-        {
-            var bundle = new ExternalScriptBundle("test", "http://test.com/");
-            bundle.BundleInitializers.Count.ShouldEqual(0);
-        }
-    }
-
-    public class ExternalScriptBundle_ConstructorConstraints
-    {
         [Fact]
         public void UrlRequired()
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ExternalScriptBundle("api", null, "!window.api", "/api.js");
+                new ExternalScriptBundle(null);
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptBundle("api", "", "!window.api", "/api.js");
+                new ExternalScriptBundle("");
             });
             Assert.Throws<ArgumentException>(delegate
             {
-                new ExternalScriptBundle("api", " ", "!window.api", "/api.js");
+                new ExternalScriptBundle(" ");
             });
-        }
-
-        [Fact]
-        public void JavaScriptConditionRequired()
-        {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ExternalScriptBundle("api", "http://test.com/api.js", null, "/api.js");
-            });
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new ExternalScriptBundle("api", "http://test.com/api.js", "", "/api.js");
-            });
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new ExternalScriptBundle("api", "http://test.com/api.js", " ", "/api.js");
-            });
-        }
-
-        [Fact]
-        public void FallbackUrlRequired()
-        {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ExternalScriptBundle("api", "http://test.com/api.js", "!window.api", null);
-            });
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new ExternalScriptBundle("api", "http://test.com/api.js", "!window.api", "");
-            });
-            Assert.Throws<ArgumentException>(delegate
-            {
-                new ExternalScriptBundle("api", "http://test.com/api.js", "!window.api", " ");
-            });
-        }
-
-        [Fact]
-        public void CanCreateAdHocExternalScriptBundleWithOnlyAUrl()
-        {
-            var bundle = new ExternalScriptBundle("http://test.com/api.js");
-            bundle.Path.ShouldEqual("http://test.com/api.js");
-        }
-
-        [Fact]
-        public void CanCreateNamedExternalScriptBundle()
-        {
-            var bundle = new ExternalScriptBundle("api", "http://test.com/api.js");
-            bundle.Path.ShouldEqual("~/api");
         }
     }
 }

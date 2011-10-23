@@ -11,7 +11,7 @@ namespace Cassette.Configuration
             where T : Bundle
         {
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
-            var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(path, false);
+            var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(path);
             var subDirectories = directory.GetDirectories();
             var bundles = CreateBundles(bundleFactory, subDirectories);
 

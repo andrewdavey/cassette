@@ -104,14 +104,12 @@ namespace Cassette.IO
     public class FileSystemDirectory_GetDirectory_Tests
     {
         [Fact]
-        public void GivenSubDirectoryDoesNotExist_WhenGetDirectoryWithCreateTrue_ThenDirectoryIsCreated()
+        public void GivenSubDirectoryDoesNotExist_WhenDirectoryExists_ThenReturnFalse()
         {
             using (var path = new TempDirectory())
             {
                 var dir = new FileSystemDirectory(path);
-                dir.GetDirectory("sub", true);
-
-                Directory.Exists(Path.Combine(path, "sub")).ShouldBeTrue();
+                dir.DirectoryExists("sub").ShouldBeFalse();
             }
         }
 
@@ -123,9 +121,9 @@ namespace Cassette.IO
                 Directory.CreateDirectory(Path.Combine(path, "sub1"));
                 Directory.CreateDirectory(Path.Combine(path, "sub2"));
                 var top = new FileSystemDirectory(path);
-                var sub1 = top.GetDirectory("sub1", false);
+                var sub1 = top.GetDirectory("sub1");
 
-                var sub2 = sub1.GetDirectory("~/sub2", false);
+                var sub2 = sub1.GetDirectory("~/sub2");
 
                 sub2.FullPath.ShouldEqual("~/sub2");
             }
@@ -156,7 +154,7 @@ namespace Cassette.IO
                 Directory.CreateDirectory(Path.Combine(path, "test"));
                 File.WriteAllText(Path.Combine(path, "test", "asset.js"), "");
 
-                var testDir = new FileSystemDirectory(path).GetDirectory("test", false);
+                var testDir = new FileSystemDirectory(path).GetDirectory("test");
                 var filePaths = testDir.GetFiles("*.js", SearchOption.AllDirectories).ToArray();
                 filePaths[0].FullPath.ShouldEqual("~/test/asset.js");
             }

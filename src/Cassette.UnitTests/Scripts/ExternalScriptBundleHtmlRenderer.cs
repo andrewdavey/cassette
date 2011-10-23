@@ -52,9 +52,9 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlContainsFallbackScript()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/");
+            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
             var asset = new Mock<IAsset>();
-            bundle.AddFallback("CONDITION", new[] { asset.Object });
+            bundle.Assets.Add(asset.Object);
 
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
             fallbackRenderer.Setup(r => r.Render(bundle))
@@ -78,9 +78,9 @@ namespace Cassette.Scripts
         {
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
             var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var bundle = new ExternalScriptBundle("http://test.com/");
+            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
             var asset = new Mock<IAsset>();
-            bundle.AddFallback("CONDITION", new[] { asset.Object });
+            bundle.Assets.Add(asset.Object);
 
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns(new HtmlString("<script></script>"));
@@ -95,9 +95,9 @@ namespace Cassette.Scripts
         {
             application.SetupGet(a => a.IsDebuggingEnabled).Returns(true);
 
-            var bundle = new ExternalScriptBundle("http://test.com/");
+            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
             var asset = new Mock<IAsset>();
-            bundle.AddFallback("CONDITION", new[] { asset.Object });
+            bundle.Assets.Add(asset.Object);
 
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
             fallbackRenderer.Setup(r => r.Render(bundle))

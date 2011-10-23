@@ -45,10 +45,10 @@ namespace Cassette.Scripts
         static string BuildScript(string globalVariable, JavaScriptObject dictionary)
         {
             var builder = new StringBuilder();
-            builder.AppendLine("(function(){");
-            builder.AppendFormat("var {0}=window.{0}||(window.{0}={{}});", globalVariable).AppendLine();
+            builder.AppendLine("(function(w){");
+            builder.AppendFormat("var d=w['{0}']||(w['{0}']={{}});", globalVariable).AppendLine();
             BuildAssignments(globalVariable, dictionary, builder);
-            builder.Append("}());");
+            builder.Append("}(window));");
             return builder.ToString();
         }
 
@@ -57,7 +57,7 @@ namespace Cassette.Scripts
             var serializer = new JavaScriptSerializer();
             foreach (var pair in dictionary)
             {
-                builder.AppendFormat("{0}.{1}={2};", globalVariable, pair.Key, serializer.Serialize(pair.Value)).AppendLine();
+                builder.AppendFormat("d.{1}={2};", globalVariable, pair.Key, serializer.Serialize(pair.Value)).AppendLine();
             }
         }
     }

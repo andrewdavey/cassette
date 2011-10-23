@@ -40,7 +40,7 @@ namespace Cassette
             fileStreams.Clear();
         }
 
-        public IDirectory GetDirectory(string path, bool createIfNotExists)
+        public IDirectory GetDirectory(string path)
         {
             return new StubFileSystem(
                 fileStreams
@@ -50,6 +50,11 @@ namespace Cassette
                         kvp => kvp.Value
                     )
                 );
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<IDirectory> GetDirectories()

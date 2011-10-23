@@ -280,6 +280,20 @@ namespace Cassette
         }
 
         [Fact]
+        public void GivenBundleCreatedWithOnlyAPath_WhenInitialize_ThenApplicationGetDefaultBundleInitializerIsUsed()
+        {
+            var bundle = new TestableBundle("~");
+            var application = new Mock<ICassetteApplication>();
+            var initializer = new Mock<IBundleInitializer>();
+            application.Setup(a => a.GetDefaultBundleInitializer(typeof(TestableBundle)))
+                       .Returns(initializer.Object);
+
+            bundle.Initialize(application.Object);
+
+            initializer.Verify(i=>i.InitializeBundle(bundle, application.Object));
+        }
+
+        [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
             var bundle = new TestableBundle("~");

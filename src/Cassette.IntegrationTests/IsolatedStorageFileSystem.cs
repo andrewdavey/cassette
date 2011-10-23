@@ -65,7 +65,7 @@ namespace Cassette.IntegrationTests
                 }
 
                 var directory = new IsolatedStorageDirectory(store);
-                var subDirectory = directory.GetDirectory("sub", false);
+                var subDirectory = directory.GetDirectory("sub");
 
                 var file = subDirectory.GetFile("test.txt");
                 file.Exists.ShouldBeTrue();

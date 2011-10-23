@@ -30,7 +30,7 @@ namespace Example
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
             bundles.AddForEachSubDirectory<ScriptBundle>("Scripts");
-            bundles.Add(new ExternalScriptBundle("twitter", "http://platform.twitter.com/widgets.js")
+            bundles.Add(new ExternalScriptBundle("http://platform.twitter.com/widgets.js", "twitter")
             {
                 Location = "body"
             });

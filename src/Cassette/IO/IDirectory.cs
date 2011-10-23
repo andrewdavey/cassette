@@ -27,7 +27,8 @@ namespace Cassette.IO
     {
         string FullPath { get; }
         IFile GetFile(string filename);
-        IDirectory GetDirectory(string path, bool createIfNotExists);
+        IDirectory GetDirectory(string path);
+        bool DirectoryExists(string path);
 
         IEnumerable<IDirectory> GetDirectories();
         IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption);

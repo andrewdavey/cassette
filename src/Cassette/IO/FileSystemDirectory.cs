@@ -60,7 +60,7 @@ namespace Cassette.IO
                 }
 
                 var subDirectoryPath = Path.GetDirectoryName(filename);
-                var subDirectory = GetDirectory(subDirectoryPath, false);
+                var subDirectory = GetDirectory(subDirectoryPath);
                 var path = GetAbsolutePath(filename);
                 return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
             }
@@ -74,6 +74,11 @@ namespace Cassette.IO
         {
             return Directory.GetFiles(fullSystemPath, searchPattern, searchOption)
                             .Select(GetFile);
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(GetAbsolutePath(path));
         }
 
         public void DeleteContents()
@@ -93,25 +98,18 @@ namespace Cassette.IO
             return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(fullSystemPath, filename));
         }
 
-        public IDirectory GetDirectory(string path, bool createIfNotExists)
+        public IDirectory GetDirectory(string path)
         {
             if (path == "") return this;
             if (path[0] == '~')
             {
-                return GetRootDirectory().GetDirectory(path.Substring(2), createIfNotExists);
+                return GetRootDirectory().GetDirectory(path.Substring(2));
             }
 
             var fullPath = GetAbsolutePath(path);
             if (Directory.Exists(fullPath) == false)
             {
-                if (createIfNotExists)
-                {
-                    Directory.CreateDirectory(fullPath);
-                }
-                else
-                {
-                    throw new DirectoryNotFoundException("Directory not found: " + fullPath);
-                }
+                throw new DirectoryNotFoundException("Directory not found: " + fullPath);
             }
             return new FileSystemDirectory(fullPath)
             {
@@ -122,7 +120,7 @@ namespace Cassette.IO
         public IEnumerable<IDirectory> GetDirectories()
         {
             return Directory.EnumerateDirectories(fullSystemPath)
-                            .Select(path => GetDirectory(path, false));
+                            .Select(path => GetDirectory(path));
         }
 
         public FileAttributes GetAttributes(string path)

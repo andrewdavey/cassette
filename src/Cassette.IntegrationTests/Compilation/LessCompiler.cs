@@ -39,7 +39,7 @@ namespace Cassette
                 .Returns("test.less");
             file.SetupGet(f => f.Directory)
                 .Returns(directory.Object);
-            directory.Setup(d => d.GetDirectory(It.IsAny<string>(), false))
+            directory.Setup(d => d.GetDirectory(It.IsAny<string>()))
                      .Returns(directory.Object);
         }
 

@@ -64,19 +64,12 @@ namespace Cassette.IO
             return Path.Combine(basePath, path);
         }
 
-        public IDirectory GetDirectory(string path, bool createIfNotExists)
+        public IDirectory GetDirectory(string path)
         {
             var fullPath = GetAbsolutePath(path);
             if (storage.DirectoryExists(fullPath) == false)
             {
-                if (createIfNotExists)
-                {
-                    storage.CreateDirectory(fullPath);
-                }
-                else
-                {
-                    throw new DirectoryNotFoundException("Directory not found: " + fullPath);
-                }
+                throw new DirectoryNotFoundException("Directory not found: " + fullPath);
             }
             return new IsolatedStorageDirectory(storage, fullPath);
         }
@@ -99,6 +92,12 @@ namespace Cassette.IO
         public IFile GetFile(string filename)
         {
             return new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this);
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            var fullPath = GetAbsolutePath(path);
+            return storage.DirectoryExists(fullPath);
         }
     }
 }

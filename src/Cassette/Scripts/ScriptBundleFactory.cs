@@ -28,11 +28,18 @@ namespace Cassette.Scripts
         {
             if (path.IsUrl())
             {
-                return new ExternalScriptBundle(path, descriptor);
+                if (descriptor == null)
+                {
+                    return new ExternalScriptBundle(path);
+                }
+                else
+                {
+                    return new ExternalScriptBundle(descriptor.ExternalUrl, path, descriptor.FallbackCondition);
+                }
             }
             else
             {
-                return new ScriptBundle(path, descriptor);
+                return new ScriptBundle(path);
             }
         }
     }

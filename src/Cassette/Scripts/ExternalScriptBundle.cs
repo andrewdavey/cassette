@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Web;
 using Cassette.Utilities;
 
@@ -27,82 +26,70 @@ namespace Cassette.Scripts
 {
     public class ExternalScriptBundle : ScriptBundle
     {
-        public ExternalScriptBundle(string url)
-            : this(url, url)
-        {
-        }
-
-        public ExternalScriptBundle(string path, BundleDescriptor bundleDescriptor)
-            : base(path, bundleDescriptor)
-        {
-            if (bundleDescriptor == null)
-            {
-                url = path;
-            }
-            else
-            {
-                url = bundleDescriptor.ExternalUrl;
-                javaScriptFallbackCondition = bundleDescriptor.FallbackCondition;
-            }
-        }
-
-        public ExternalScriptBundle(string name, string url)
-            : base(PathUtilities.AppRelative(name))
-        {
-            if (url == null) throw new ArgumentNullException("url");
-            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
-
-            this.url = url;
-
-            BundleInitializers.Clear();
-        }
-
-        public ExternalScriptBundle(string name, string url, string javaScriptFallbackCondition, string fallbackUrl)
-            : base(PathUtilities.AppRelative(name))
-        {
-            if (url == null) throw new ArgumentNullException("url");
-            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
-            if (javaScriptFallbackCondition == null) throw new ArgumentNullException("javaScriptFallbackCondition");
-            if (string.IsNullOrWhiteSpace(javaScriptFallbackCondition)) throw new ArgumentException("JavaScript condition is required.", "javaScriptFallbackCondition");
-            if (fallbackUrl == null) throw new ArgumentNullException("fallbackUrl");
-            if (string.IsNullOrWhiteSpace(fallbackUrl)) throw new ArgumentException("Fallback URL is required.", "fallbackUrl");
-            
-            this.url = url;
-            this.javaScriptFallbackCondition = javaScriptFallbackCondition;
-            this.fallbackUrl = PathUtilities.AppRelative(fallbackUrl);
-
-            BundleInitializers.Clear();
-        }
-
         readonly string url;
-        string javaScriptFallbackCondition;
-        // TODO: remove this field?
-        readonly string fallbackUrl;
+        readonly string fallbackCondition;
         ExternalScriptBundleHtmlRenderer externalRenderer;
 
-        public string Url
+        public ExternalScriptBundle(string url)
+            : base(url)
+        {
+            ValidateUrl(url);
+            this.url = url;
+        }
+
+        public ExternalScriptBundle(string url, string bundlePath)
+            : base(bundlePath)
+        {
+            ValidateUrl(url);
+            this.url = url;
+        }
+
+        public ExternalScriptBundle(string url, string bundlePath, string fallbackCondition)
+            : base(bundlePath)
+        {
+            ValidateUrl(url);
+            this.url = url;
+            this.fallbackCondition = fallbackCondition;
+        }
+
+        static void ValidateUrl(string url)
+        {
+            if (url == null) throw new ArgumentNullException("url");
+            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
+            if (!url.IsUrl()) throw new ArgumentException(string.Format("Invalid URL: {0}", url), "url");
+        }
+
+        internal string Url
         {
             get { return url; }
         }
 
-        public string FallbackCondition
+        internal string FallbackCondition
         {
-            get { return javaScriptFallbackCondition; }
+            get { return fallbackCondition; }
         }
 
-        public void AddFallback(string javaScriptFallbackCondition, IEnumerable<IAsset> fallbackAssets)
+        public override void Initialize(ICassetteApplication application)
         {
-            this.javaScriptFallbackCondition = javaScriptFallbackCondition;
-            AddAssets(fallbackAssets, true);
+            if (!string.IsNullOrEmpty(fallbackCondition))
+            {
+                if (application.SourceDirectory.DirectoryExists(Path))
+                {
+                    application.GetDefaultBundleInitializer(GetType())
+                               .InitializeBundle(this, application);
+                }
+                else
+                {
+                    throw new InvalidOperationException(string.Format("Cannot initialize external bundle's fallback assets. The bundle directory \"{0}\" does not exist and no other assets have been added.", Path));
+                }
+            }
         }
 
         public override void Process(ICassetteApplication application)
         {
-            if (string.IsNullOrEmpty(fallbackUrl) == false)
-            {
-                Assets.Add(new Asset(this, application.SourceDirectory.GetFile(fallbackUrl.Substring(2))));
-            }
+            // Any fallback assets are processed like a regular ScriptBundle.
             base.Process(application);
+            // We just need a special renderer instead.
             externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, application);
         }
 
