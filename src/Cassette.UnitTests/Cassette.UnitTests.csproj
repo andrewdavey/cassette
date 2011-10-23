@@ -77,6 +77,7 @@
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\RemoteHtmlTemplateBundleRenderer.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
     <Compile Include="IO\NonExistentFile.cs" />

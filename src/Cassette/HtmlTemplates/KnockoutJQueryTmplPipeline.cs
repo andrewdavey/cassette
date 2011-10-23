@@ -35,7 +35,7 @@ namespace Cassette.HtmlTemplates
                 m => m.ContentType = "text/javascript"
             );
             yield return new AddTransformerToAssets(
-                new WrapJQueryTemplateInInitializer(bundle)
+                new RegisterTemplateWithJQueryTmpl(bundle)
             );
             // Join all the JavaScript together
             yield return new ConcatenateAssets();

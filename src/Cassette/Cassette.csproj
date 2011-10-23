@@ -66,7 +66,7 @@
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
     <Compile Include="BundleDirectoryInitializer.cs" />
-    <Compile Include="HtmlTemplates\WrapJQueryTemplateInInitializer.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\AssignRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplCompiler.cs" />

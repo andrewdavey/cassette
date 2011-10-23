@@ -23,7 +23,7 @@ using System.IO;
 
 namespace Cassette.Utilities
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         public static Stream AsStream(this string s)
         {
@@ -43,4 +43,3 @@ namespace Cassette.Utilities
         }
     }
 }
-

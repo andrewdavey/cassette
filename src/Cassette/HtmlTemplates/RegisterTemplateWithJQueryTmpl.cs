@@ -24,11 +24,11 @@ using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
-    public class WrapJQueryTemplateInInitializer : IAssetTransformer
+    public class RegisterTemplateWithJQueryTmpl : IAssetTransformer
     {
         readonly HtmlTemplateBundle bundle;
 
-        public WrapJQueryTemplateInInitializer(HtmlTemplateBundle bundle)
+        public RegisterTemplateWithJQueryTmpl(HtmlTemplateBundle bundle)
         {
             this.bundle = bundle;
         }
