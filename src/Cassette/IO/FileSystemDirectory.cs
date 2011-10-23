@@ -95,6 +95,15 @@ namespace Cassette.IO
 
         string GetAbsolutePath(string filename)
         {
+            if (filename == "~")
+            {
+                return fullSystemPath;
+            }
+            if (filename.StartsWith("~/"))
+            {
+                return GetRootDirectory().GetAbsolutePath(filename.Substring(2));
+            }
+
             return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(fullSystemPath, filename));
         }
 

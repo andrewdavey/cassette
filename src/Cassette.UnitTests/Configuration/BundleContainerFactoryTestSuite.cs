@@ -18,7 +18,6 @@ namespace Cassette.Configuration
             var bundle1 = new TestableBundle("~/test1");
             var bundle2 = new TestableBundle("~/test2");
             var bundles = new[] { bundle1, bundle2 };
-            var application = Mock.Of<ICassetteApplication>();
 
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
             var container = builder.Create(bundles, StubApplication());
@@ -146,7 +145,10 @@ namespace Cassette.Configuration
         protected ICassetteApplication StubApplication()
         {
             var appMock = new Mock<ICassetteApplication>();
-            appMock.SetupGet(a => a.SourceDirectory).Returns(Mock.Of<IDirectory>());
+            appMock.SetupGet(a => a.SourceDirectory)
+                   .Returns(Mock.Of<IDirectory>());
+            appMock.Setup(a => a.GetDefaultBundleInitializer(It.IsAny<Type>()))
+                   .Returns(Mock.Of<IBundleInitializer>());
             return appMock.Object;
         }
     }

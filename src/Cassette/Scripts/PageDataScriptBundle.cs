@@ -24,7 +24,7 @@ using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collectio
 
 namespace Cassette.Scripts
 {
-    public class PageDataScriptBundle : InlineScriptBundle
+    class PageDataScriptBundle : InlineScriptBundle
     {
         public PageDataScriptBundle(string globalVariable, object data)
             : this(globalVariable, CreateDictionaryOfProperties(data))

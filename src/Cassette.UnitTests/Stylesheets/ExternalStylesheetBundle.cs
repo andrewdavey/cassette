@@ -30,14 +30,14 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CanCreateNamedBundle()
         {
-            var bundle = new ExternalStylesheetBundle("~/name", "http://url.com/");
+            var bundle = new ExternalStylesheetBundle("http://url.com/", "~/name");
             bundle.Path.ShouldEqual("~/name");
         }
 
         [Fact]
         public void CreateNamedBundle_ThenPathIsAppRelative()
         {
-            var bundle = new ExternalStylesheetBundle("name", "http://url.com/");
+            var bundle = new ExternalStylesheetBundle("http://url.com/", "name");
             bundle.Path.ShouldEqual("~/name");
         }
 
@@ -79,9 +79,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenBundleHasName_WhenContainsPathUrl_ThenReturnTrue()
         {
-            var bundle = new ExternalStylesheetBundle("GoogleMapsApi", "https://maps-api-ssl.google.com/maps/api/js?sensor=false");
-            bundle.ContainsPath("https://maps-api-ssl.google.com/maps/api/js?sensor=false").ShouldBeTrue();
+            var bundle = new ExternalStylesheetBundle("http://test.com/asset.css", "test");
+            bundle.ContainsPath("http://test.com/asset.css").ShouldBeTrue();
         }
     }
 }
-

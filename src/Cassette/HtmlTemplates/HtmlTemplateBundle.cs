@@ -25,13 +25,15 @@ namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateBundle : Bundle
     {
-        public HtmlTemplateBundle(string path)
-            : this(path, null)
+        public HtmlTemplateBundle(string applicationRelativePath)
+            : base(applicationRelativePath, true)
         {
+            ContentType = "text/html";
+            Processor = new HtmlTemplatePipeline();
         }
 
-        internal HtmlTemplateBundle(string path, BundleDescriptor bundleDescriptor)
-            : base(path)
+        public HtmlTemplateBundle(string applicationRelativePath, bool useDefaultBundleInitializer)
+            : base(applicationRelativePath, useDefaultBundleInitializer)
         {
             ContentType = "text/html";
             Processor = new HtmlTemplatePipeline();

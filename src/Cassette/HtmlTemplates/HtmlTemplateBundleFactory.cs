@@ -24,7 +24,7 @@ namespace Cassette.HtmlTemplates
     {
         public HtmlTemplateBundle CreateBundle(string directory, BundleDescriptor bundleDescriptor)
         {
-            return new HtmlTemplateBundle(directory, bundleDescriptor);
+            return new HtmlTemplateBundle(directory);
         }
     }
 }

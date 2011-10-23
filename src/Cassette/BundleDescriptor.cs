@@ -87,7 +87,7 @@ namespace Cassette
                     var file = directory.GetFile(assetFilename);
                     if (!file.Exists)
                     {
-                        throw new FileNotFoundException("Bundle asset not found \"{0}\".", file.FullPath);
+                        throw new FileNotFoundException(string.Format("Bundle asset not found \"{0}\".", file.FullPath));
                     }
                     filesAdded.Add(file.FullPath);
                     yield return file;

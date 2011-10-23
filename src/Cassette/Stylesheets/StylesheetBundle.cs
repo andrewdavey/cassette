@@ -25,13 +25,21 @@ namespace Cassette.Stylesheets
 {
     public class StylesheetBundle : Bundle
     {
-        public StylesheetBundle(string applicationRelativePath)
-            : base(applicationRelativePath)
+        public StylesheetBundle(string applicationRelativePath, bool useDefaultBundleInitializer)
+            : base(applicationRelativePath, useDefaultBundleInitializer)
         {
             ContentType = "text/css";
             Processor = new StylesheetPipeline();
         }
 
+        public StylesheetBundle(string applicationRelativePath)
+            : this(applicationRelativePath, true)
+        {
+        }
+
+        /// <summary>
+        /// The value of the media attribute for this stylesheet's link element. For example, <example>print</example>.
+        /// </summary>
         public string Media { get; set; }
         
         public IBundleProcessor<StylesheetBundle> Processor { get; set; }

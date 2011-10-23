@@ -78,6 +78,7 @@
     <Content Include="Scripts\color-picker\page.js" />
     <Content Include="Scripts\color-picker\ColorViewModel.js" />
     <Content Include="Scripts\color-picker\slider.js" />
+    <Content Include="Scripts\jquery\bundle.txt" />
     <Content Include="Scripts\lib\Class.js" />
     <Content Include="Scripts\lib\jquery.tmpl.js" />
     <Content Include="Scripts\lib\knockout.js" />
@@ -114,7 +115,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Scripts\lib\jquery.js" />
+    <Content Include="Scripts\jquery\jquery.js" />
     <Content Include="Scripts\lib\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\lib\jquery.validate.js" />
     <Content Include="Scripts\lib\jquery.validate.unobtrusive.js" />

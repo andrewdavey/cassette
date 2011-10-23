@@ -78,11 +78,11 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenBundleCreateWithUseDefaultInitializerTrue_WhenInitialize_ThenBundleInitializersAreNotUsed()
+        public void GivenBundleWithUseDefaultInitializerTrue_WhenInitialize_ThenDefaultBundleInitializerIsNotUsed()
         {
             var bundle = new TestableBundle("~/test", true);
-            var initializerToIgnore = new Mock<IBundleInitializer>();
-            bundle.BundleInitializers.Add(initializerToIgnore.Object);
+            var initializer = new Mock<IBundleInitializer>();
+            bundle.BundleInitializers.Add(initializer.Object);
 
             var defaultInitializer = new Mock<IBundleInitializer>();
             var application = new Mock<ICassetteApplication>();
@@ -91,7 +91,7 @@ namespace Cassette
 
             bundle.Initialize(application.Object);
 
-            initializerToIgnore.Verify(
+            defaultInitializer.Verify(
                 i => i.InitializeBundle(It.IsAny<Bundle>(), It.IsAny<ICassetteApplication>()),
                 Times.Never()
             );

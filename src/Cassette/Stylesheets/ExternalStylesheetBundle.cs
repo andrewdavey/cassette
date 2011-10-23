@@ -20,25 +20,29 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Web;
-using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
     public class ExternalStylesheetBundle : StylesheetBundle
     {
         public ExternalStylesheetBundle(string url)
-            : base(url)
+            : base(url, false)
         {
             this.url = url;
         }
 
-        public ExternalStylesheetBundle(string name, string url) 
-            : base(PathUtilities.AppRelative(name))
+        public ExternalStylesheetBundle(string url, string applicationRelativePath) 
+            : base(applicationRelativePath, false)
         {
             this.url = url;
         }
 
         readonly string url;
+
+        public override void Initialize(ICassetteApplication application)
+        {
+            // No initialization required.
+        }
 
         public override void Process(ICassetteApplication application)
         {

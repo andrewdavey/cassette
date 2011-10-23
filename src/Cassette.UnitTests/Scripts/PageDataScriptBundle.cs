@@ -35,10 +35,10 @@ namespace Cassette.Scripts
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
                 "<script type=\"text/javascript\">",
-                "(function(){",
-                "var app=window.app||(window.app={});",
-                "app.data=\"test\";",
-                "}());",
+                "(function(w){",
+                "var d=w['app']||(w['app']={});",
+                "d.data=\"test\";",
+                "}(window));",
                 "</script>"
             }));
         }
@@ -51,10 +51,10 @@ namespace Cassette.Scripts
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
                 "<script type=\"text/javascript\">",
-                "(function(){",
-                "var app=window.app||(window.app={});",
-                "app.data=\"test\";",
-                "}());",
+                "(function(w){",
+                "var d=w['app']||(w['app']={});",
+                "d.data=\"test\";",
+                "}(window));",
                 "</script>"
             }));
         }
@@ -71,11 +71,11 @@ namespace Cassette.Scripts
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
                 "<script type=\"text/javascript\">",
-                "(function(){",
-                "var app=window.app||(window.app={});",
-                "app.data1={\"sub\":\"\\\"quoted\\\"\",\"list\":[1,2,3]};",
-                "app.data2=true;",
-                "}());",
+                "(function(w){",
+                "var d=w['app']||(w['app']={});",
+                "d.data1={\"sub\":\"\\\"quoted\\\"\",\"list\":[1,2,3]};",
+                "d.data2=true;",
+                "}(window));",
                 "</script>"
             }));
         }

@@ -1,7 +1,7 @@
 ﻿/// <reference path="../app/namespace.js" />
 /// <reference path="../app/Event.js" />
 /// <reference path="../lib/Class.js" />
-/// <reference path="../lib/jquery.js" />
+/// <reference path="../jquery/jquery.js" />
 /// <reference path="helpers.js" />
 // A script can also reference stylesheets and HTML templates!
 /// <reference path="~/HtmlTemplates/color-picker"/>

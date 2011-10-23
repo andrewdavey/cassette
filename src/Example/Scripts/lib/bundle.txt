@@ -1,9 +1,11 @@
 ﻿# Specify the order of files in this module.
 
-jquery.js
 jquery.tmpl.js
 jquery.validate.js
 
 # All the other files can be in any order, so we can just use a * to include them.
 
 *
+
+[references]
+~/scripts/jquery

@@ -37,16 +37,10 @@ namespace Cassette
         readonly HashSet<string> references = new HashSet<string>();
         bool hasSortedAssets;
 
-        protected Bundle(string applicationRelativePath)
+        protected Bundle(string applicationRelativePath, bool useDefaultBundleInitializer)
         {
             if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
             path = PathUtilities.AppRelative(applicationRelativePath);
-            useDefaultBundleInitializer = true;
-        }
-
-        protected Bundle(string applicationRelativePath, bool useDefaultBundleInitializer)
-            : this(applicationRelativePath)
-        {
             this.useDefaultBundleInitializer = useDefaultBundleInitializer;
         }
 

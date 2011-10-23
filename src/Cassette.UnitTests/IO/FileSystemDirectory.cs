@@ -104,16 +104,6 @@ namespace Cassette.IO
     public class FileSystemDirectory_GetDirectory_Tests
     {
         [Fact]
-        public void GivenSubDirectoryDoesNotExist_WhenDirectoryExists_ThenReturnFalse()
-        {
-            using (var path = new TempDirectory())
-            {
-                var dir = new FileSystemDirectory(path);
-                dir.DirectoryExists("sub").ShouldBeFalse();
-            }
-        }
-
-        [Fact]
         public void GivenPathStartsWithTilde_WhenGetDirectoryFromSubDirectory_ThenPathIsFromRoot()
         {
             using (var path = new TempDirectory())
@@ -127,6 +117,41 @@ namespace Cassette.IO
 
                 sub2.FullPath.ShouldEqual("~/sub2");
             }
+        }
+    }
+
+    public class FileSystemDirectory_DirectoryExists_Tests
+    {
+        [Fact]
+        public void GivenSubDirectoryDoesNotExist_WhenDirectoryExists_ThenReturnFalse()
+        {
+            using (var path = new TempDirectory())
+            {
+                var dir = new FileSystemDirectory(path);
+                dir.DirectoryExists("sub").ShouldBeFalse();
+            }
+        }
+        
+        [Fact]
+        public void GivenSubDirectoryExists_WhenCallDirectoryExistsWithApplicationAbsolutePath_ThenReturnTrue()
+        {
+            using (var path = new TempDirectory())
+            {
+                Directory.CreateDirectory(Path.Combine(path, "sub"));
+
+                var dir = new FileSystemDirectory(path);
+                dir.DirectoryExists("~/sub").ShouldBeTrue();
+            }            
+        }
+
+        [Fact]
+        public void WhenCallDirectoryExistsWithJustTilder_ThenReturnTrue()
+        {
+            using (var path = new TempDirectory())
+            {
+                var dir = new FileSystemDirectory(path);
+                dir.DirectoryExists("~").ShouldBeTrue();
+            }            
         }
     }
 
