@@ -68,12 +68,15 @@
     <Compile Include="Configuration\BundleInitializerConfiguration.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="BundleDirectoryInitializer.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
+    <Compile Include="HtmlTemplates\RemoteHtmlTemplateBundleRenderer.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
     <Compile Include="IO\NonExistentFile.cs" />
