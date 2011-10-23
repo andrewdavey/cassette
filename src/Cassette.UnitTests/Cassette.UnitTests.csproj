@@ -80,6 +80,8 @@
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
+    <Compile Include="IO\IsolatedStorageDirectory.cs" />
+    <Compile Include="IO\IsolatedStorageFileWrapper.cs" />
     <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="BundleDescriptorReader.cs" />
     <Compile Include="BundleProcessing\MutablePipeline.cs" />

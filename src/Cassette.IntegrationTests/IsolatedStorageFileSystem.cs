@@ -51,33 +51,5 @@ namespace Cassette.IntegrationTests
                 store.FileExists("test.txt").ShouldBeFalse();
             }
         }
-
-        [Fact]
-        public void IsolatedStorageFileSystemAtSubDirectory_AccessesIsolatedStorageSubDirectory()
-        {
-            using (var store = IsolatedStorageFile.GetMachineStoreForAssembly())
-            {
-                store.CreateDirectory("sub");
-                using (var writer = new StreamWriter(store.OpenFile("sub\\test.txt", FileMode.Create, FileAccess.Write)))
-                {
-                    writer.Write("test");
-                    writer.Flush();
-                }
-
-                var directory = new IsolatedStorageDirectory(store);
-                var subDirectory = directory.GetDirectory("sub");
-
-                var file = subDirectory.GetFile("test.txt");
-                file.Exists.ShouldBeTrue();
-                using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                {
-                    reader.ReadToEnd().ShouldEqual("test");
-                }
-
-                subDirectory.DeleteContents();
-                store.FileExists("sub\\test.txt").ShouldBeFalse();
-            }
-        }
     }
 }
-

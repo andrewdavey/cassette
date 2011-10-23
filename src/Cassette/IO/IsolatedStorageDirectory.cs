@@ -26,6 +26,10 @@ using System.Diagnostics;
 
 namespace Cassette.IO
 {
+    /// <remarks>
+    /// This class only implements enough of IDirectory to support BundleCache.
+    /// Other methods simply throw NotSupportException for now.
+    /// </remarks>
     public class IsolatedStorageDirectory : IDirectory
     {
         public IsolatedStorageDirectory(IsolatedStorageFile storage, string basePath = "/")
@@ -59,45 +63,39 @@ namespace Cassette.IO
             }
         }
 
-        string GetAbsolutePath(string path)
-        {
-            return Path.Combine(basePath, path);
-        }
-
-        public IDirectory GetDirectory(string path)
-        {
-            var fullPath = GetAbsolutePath(path);
-            if (storage.DirectoryExists(fullPath) == false)
-            {
-                throw new DirectoryNotFoundException("Directory not found: " + fullPath);
-            }
-            return new IsolatedStorageDirectory(storage, fullPath);
-        }
-
-        public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IDirectory> GetDirectories()
-        {
-            throw new NotImplementedException();
-        }
-
-        public FileAttributes Attributes
-        {
-            get { return FileAttributes.Directory; }
-        }
-
         public IFile GetFile(string filename)
         {
             return new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this);
         }
 
+        string GetAbsolutePath(string path)
+        {
+            return Path.Combine(basePath, path);
+        }
+
         public bool DirectoryExists(string path)
         {
-            var fullPath = GetAbsolutePath(path);
-            return storage.DirectoryExists(fullPath);
+            throw new NotSupportedException();
+        }
+
+        public FileAttributes Attributes
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        public IDirectory GetDirectory(string path)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IEnumerable<IDirectory> GetDirectories()
+        {
+            throw new NotSupportedException();
         }
     }
 }
