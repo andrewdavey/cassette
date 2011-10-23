@@ -81,6 +81,7 @@ namespace Cassette.IntegrationTests
                 SourceDirectory = new FileSystemDirectory(Path.GetFullPath("../../assets"))
             };
             var bundles = new BundleCollection(settings);
+            new BundleInitializerConfiguration().Configure(bundles, settings);
             configure(bundles);
             return new CassetteApplication(
                 bundles,
