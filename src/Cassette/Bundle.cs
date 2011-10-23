@@ -104,9 +104,7 @@ namespace Cassette
             }
         }
 
-        internal virtual void Process(ICassetteApplication application)
-        {
-        }
+        internal abstract void Process(ICassetteApplication application);
 
         internal abstract IHtmlString Render();
 
