@@ -46,7 +46,7 @@ namespace Cassette.HtmlTemplates
             return Renderer.Render(this);
         }
 
-        public string GetTemplateId(IAsset asset)
+        internal string GetTemplateId(IAsset asset)
         {
             var path = asset.SourceFile.FullPath
                 .Substring(Path.Length + 1)
