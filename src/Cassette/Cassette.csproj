@@ -113,7 +113,7 @@
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="Trace.cs" />
-    <Compile Include="UI\Assets.cs" />
+    <Compile Include="UI\Bundles.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
     <Compile Include="BundleProcessing\ConditionalStep.cs" />

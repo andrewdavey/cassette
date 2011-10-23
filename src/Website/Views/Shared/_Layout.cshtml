@@ -1,14 +1,14 @@
 ﻿@{
-    Assets.Reference("assets/styles");
-    Assets.Reference("http://platform.twitter.com/widgets.js", "body");
-    Assets.Reference("https://apis.google.com/js/plusone.js", "body");
+    Bundles.Reference("assets/styles");
+    Bundles.Reference("http://platform.twitter.com/widgets.js", "body");
+    Bundles.Reference("https://apis.google.com/js/plusone.js", "body");
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
-    @Assets.RenderStylesheets()
+    @Bundles.RenderStylesheets()
 </head>
 <body>
     <div class="top">
@@ -40,7 +40,7 @@
         </div>
     </div>
     @RenderBody()
-    @Assets.RenderScripts("body")
+    @Bundles.RenderScripts("body")
 
     <script type="text/javascript">
         var _gaq = _gaq || [];

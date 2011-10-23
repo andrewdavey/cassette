@@ -77,7 +77,7 @@ namespace Cassette.Web
                 ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
                 : new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);
             
-            Assets.GetApplication = () => CassetteApplication;
+            Bundles.GetApplication = () => CassetteApplication;
         }
 
         public static void ApplicationShutdown()

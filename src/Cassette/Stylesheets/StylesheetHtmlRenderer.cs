@@ -56,4 +56,3 @@ namespace Cassette.Stylesheets
         }
     }
 }
-

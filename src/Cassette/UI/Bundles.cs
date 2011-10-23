@@ -27,11 +27,10 @@ using Cassette.Stylesheets;
 
 namespace Cassette.UI
 {
-    // TODO: Replace with Bundles static class?
     /// <summary>
     /// Cassette API facade used by views to reference bundles and render the required HTML elements.
     /// </summary>
-    public static class Assets
+    public static class Bundles
     {
         public static Func<ICassetteApplication> GetApplication;
 

@@ -1,12 +1,12 @@
 ﻿@{
-    Assets.Reference("Styles");
+    Bundles.Reference("Styles");
 }
 <!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
-    @Assets.RenderStylesheets()
-    @Assets.RenderScripts()
+    @Bundles.RenderStylesheets()
+    @Bundles.RenderScripts()
 </head>
 <body>
 
@@ -28,7 +28,7 @@
 
     @* Some scripts progressively enhance the page and are non-essential, 
        so we can delay loading them until the end of the page. *@
-    @Assets.RenderScripts("body")
-    @Assets.RenderHtmlTemplates()
+    @Bundles.RenderScripts("body")
+    @Bundles.RenderHtmlTemplates()
 </body>
 </html>

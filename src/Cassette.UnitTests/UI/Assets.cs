@@ -40,41 +40,41 @@ namespace Cassette.UI
             referenceBuilder = new Mock<IReferenceBuilder>();
             application.Setup(a => a.GetReferenceBuilder())
                        .Returns(referenceBuilder.Object);
-            Assets.GetApplication = () => application.Object;
+            Bundles.GetApplication = () => application.Object;
         }
 
         [Fact]
         public void WhenReference_ThenReferenceBuilderReferenceIsCalled()
         {
-            Assets.Reference("~/test");
+            Bundles.Reference("~/test");
             referenceBuilder.Verify(b => b.Reference("~/test", null));
         }
 
         [Fact]
         public void WhenReferenceWithLocation_ThenReferenceBuilderReferenceIsCalledWithLocation()
         {
-            Assets.Reference("~/test", "body");
+            Bundles.Reference("~/test", "body");
             referenceBuilder.Verify(b => b.Reference("~/test", "body"));
         }
 
         [Fact]
         public void AddInlineScriptAddsReferenceToInlineScriptBundle()
         {
-            Assets.AddInlineScript("content", "location");
+            Bundles.AddInlineScript("content", "location");
             referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is InlineScriptBundle), "location"));
         }
 
         [Fact]
         public void AddPageDataWithDataObjectAddsReferenceToPageDataScriptBundle()
         {
-            Assets.AddPageData("content", new { data = 1 }, "location");
+            Bundles.AddPageData("content", new { data = 1 }, "location");
             referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is PageDataScriptBundle), "location"));
         }
 
         [Fact]
         public void AddPageDataWithDataDictionaryAddsReferenceToPageDataScriptBundle()
         {
-            Assets.AddPageData("content", new Dictionary<string, object>(), "location");
+            Bundles.AddPageData("content", new Dictionary<string, object>(), "location");
             referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is PageDataScriptBundle), "location"));
         }
 
@@ -84,7 +84,7 @@ namespace Cassette.UI
             var expectedHtml = new HtmlString("html");
             referenceBuilder.Setup(b => b.Render<ScriptBundle>(null)).Returns(expectedHtml);
 
-            var html = Assets.RenderScripts();
+            var html = Bundles.RenderScripts();
 
             html.ShouldBeSameAs(expectedHtml);
         }
@@ -95,7 +95,7 @@ namespace Cassette.UI
             var expectedHtml = new HtmlString("html");
             referenceBuilder.Setup(b => b.Render<ScriptBundle>("body")).Returns(expectedHtml);
 
-            var html = Assets.RenderScripts("body");
+            var html = Bundles.RenderScripts("body");
 
             html.ShouldBeSameAs(expectedHtml);
         }
@@ -106,7 +106,7 @@ namespace Cassette.UI
             var expectedHtml = new HtmlString("html");
             referenceBuilder.Setup(b => b.Render<StylesheetBundle>(null)).Returns(expectedHtml);
 
-            var html = Assets.RenderStylesheets();
+            var html = Bundles.RenderStylesheets();
 
             html.ShouldBeSameAs(expectedHtml);
         }
@@ -117,7 +117,7 @@ namespace Cassette.UI
             var expectedHtml = new HtmlString("html");
             referenceBuilder.Setup(b => b.Render<StylesheetBundle>("head")).Returns(expectedHtml);
 
-            var html = Assets.RenderStylesheets("head");
+            var html = Bundles.RenderStylesheets("head");
 
             html.ShouldBeSameAs(expectedHtml);
         }
@@ -128,7 +128,7 @@ namespace Cassette.UI
             var expectedHtml = new HtmlString("html");
             referenceBuilder.Setup(b => b.Render<HtmlTemplateBundle>(null)).Returns(expectedHtml);
 
-            var html = Assets.RenderHtmlTemplates();
+            var html = Bundles.RenderHtmlTemplates();
 
             html.ShouldBeSameAs(expectedHtml);
         }
@@ -139,7 +139,7 @@ namespace Cassette.UI
             var expectedHtml = new HtmlString("html");
             referenceBuilder.Setup(b => b.Render<HtmlTemplateBundle>("body")).Returns(expectedHtml);
 
-            var html = Assets.RenderHtmlTemplates("body");
+            var html = Bundles.RenderHtmlTemplates("body");
 
             html.ShouldBeSameAs(expectedHtml);
         }
@@ -147,30 +147,30 @@ namespace Cassette.UI
         [Fact]
         public void GivenGetApplicationIsNull_WhenRenderScripts_ThenThrowInvalidOperationException()
         {
-            Assets.GetApplication = null;
+            Bundles.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
-                Assets.RenderScripts();
+                Bundles.RenderScripts();
             });
         }
 
         [Fact]
         public void GivenGetApplicationIsNull_WhenRenderStylesheets_ThenThrowInvalidOperationException()
         {
-            Assets.GetApplication = null;
+            Bundles.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
-                Assets.RenderStylesheets();
+                Bundles.RenderStylesheets();
             });
         }
 
         [Fact]
         public void GivenGetApplicationIsNull_WhenRenderHtmlTemplates_ThenThrowInvalidOperationException()
         {
-            Assets.GetApplication = null;
+            Bundles.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
-                Assets.RenderHtmlTemplates();
+                Bundles.RenderHtmlTemplates();
             });
         }
     }
