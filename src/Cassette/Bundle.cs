@@ -96,7 +96,7 @@ namespace Cassette
 
         public virtual void Initialize(ICassetteApplication application)
         {
-            if (useDefaultBundleInitializer)
+            if (useDefaultBundleInitializer && bundleInitializers.Count == 0)
             {
                 application.GetDefaultBundleInitializer(GetType())
                            .InitializeBundle(this, application);
