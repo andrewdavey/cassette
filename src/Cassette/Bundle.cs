@@ -127,15 +127,15 @@ namespace Cassette
             }
         }
 
-        internal virtual bool ContainsPath(string path)
+        internal virtual bool ContainsPath(string pathToFind)
         {
-            return new BundleContainsPathPredicate().BundleContainsPath(path, this);
+            return new BundleContainsPathPredicate().BundleContainsPath(pathToFind, this);
         }
 
-        internal IAsset FindAssetByPath(string path)
+        internal IAsset FindAssetByPath(string pathToFind)
         {
             return Assets.FirstOrDefault(
-                a => PathUtilities.PathsEqual(a.SourceFile.FullPath, path)
+                a => PathUtilities.PathsEqual(a.SourceFile.FullPath, pathToFind)
             );
         }
 

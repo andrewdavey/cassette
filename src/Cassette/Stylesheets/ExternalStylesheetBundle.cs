@@ -61,9 +61,9 @@ namespace Cassette.Stylesheets
             }
         }
 
-        internal override bool ContainsPath(string path)
+        internal override bool ContainsPath(string pathToFind)
         {
-            return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
+            return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

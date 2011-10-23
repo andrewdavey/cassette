@@ -25,16 +25,11 @@ namespace Cassette.Scripts
 {
     public class ScriptBundle : Bundle
     {
-        public ScriptBundle(string applicationRelativePath, bool useDefaultBundleInitializer)
+        public ScriptBundle(string applicationRelativePath, bool useDefaultBundleInitializer = true)
             : base(applicationRelativePath, useDefaultBundleInitializer)
         {
             ContentType = "text/javascript";
             Processor = new ScriptPipeline();
-        }
-
-        public ScriptBundle(string applicationRelativePath)
-            : this(applicationRelativePath, true)
-        {
         }
 
         protected ScriptBundle()

@@ -76,7 +76,9 @@ namespace Cassette
             {
                 if (assetFilename == "*")
                 {
+// ReSharper disable PossibleMultipleEnumeration
                     var allFiles = filePatterns.SelectMany(filePattern => directory.GetFiles(filePattern, searchOption).Where(shouldIncludeFile));
+// ReSharper restore PossibleMultipleEnumeration
                     foreach (var file in allFiles)
                     {
                         yield return file;

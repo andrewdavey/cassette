@@ -25,16 +25,11 @@ namespace Cassette.Stylesheets
 {
     public class StylesheetBundle : Bundle
     {
-        public StylesheetBundle(string applicationRelativePath, bool useDefaultBundleInitializer)
+        public StylesheetBundle(string applicationRelativePath, bool useDefaultBundleInitializer = true)
             : base(applicationRelativePath, useDefaultBundleInitializer)
         {
             ContentType = "text/css";
             Processor = new StylesheetPipeline();
-        }
-
-        public StylesheetBundle(string applicationRelativePath)
-            : this(applicationRelativePath, true)
-        {
         }
 
         /// <summary>

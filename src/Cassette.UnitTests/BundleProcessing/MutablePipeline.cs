@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using Should;
 using Xunit;
@@ -205,6 +206,68 @@ namespace Cassette.BundleProcessing
             public bool Updated;
 
             public static int count;
+        }
+    }
+
+    public class MutablePipeline_ChainingApi_Tests
+    {
+        IBundleProcessor<Bundle> step = Mock.Of<IBundleProcessor<Bundle>>();
+        
+        [Fact]
+        public void AppendReturnsPipeline()
+        {
+            var pipeline = new TestablePipeline();
+            pipeline.Append(step).ShouldBeSameAs(pipeline);
+        }
+
+        [Fact]
+        public void PrependReturnsPipeline()
+        {
+            var pipeline = new TestablePipeline();
+            pipeline.Prepend(step).ShouldBeSameAs(pipeline);
+        }
+
+        [Fact]
+        public void RemoveReturnsPipeline()
+        {
+            var pipeline = new TestablePipeline();
+            pipeline.Remove<IBundleProcessor<Bundle>>().ShouldBeSameAs(pipeline);
+        }
+
+        [Fact]
+        public void ReplaceReturnsPipeline()
+        {
+            var pipeline = new TestablePipeline();
+            pipeline.Replace<IBundleProcessor<Bundle>>(step).ShouldBeSameAs(pipeline);
+        }
+
+        [Fact]
+        public void InsertAfterReturnsPipeline()
+        {
+            var pipeline = new TestablePipeline();
+            pipeline.InsertAfter<IBundleProcessor<Bundle>>(step).ShouldBeSameAs(pipeline);
+        }
+
+        [Fact]
+        public void InsertBeforeReturnsPipeline()
+        {
+            var pipeline = new TestablePipeline();
+            pipeline.InsertBefore<IBundleProcessor<Bundle>>(step).ShouldBeSameAs(pipeline);
+        }
+
+        [Fact]
+        public void UpdateReturnsPipeline()
+        {
+            var pipeline = new TestablePipeline();
+            pipeline.Update<IBundleProcessor<Bundle>>(_ => { }).ShouldBeSameAs(pipeline);
+        }
+
+        class TestablePipeline : MutablePipeline<Bundle>
+        {
+            protected override IEnumerable<IBundleProcessor<Bundle>> CreatePipeline(Bundle bundle, ICassetteApplication application)
+            {
+                return Enumerable.Empty<IBundleProcessor<Bundle>>();
+            }
         }
     }
 }

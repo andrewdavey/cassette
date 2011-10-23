@@ -42,12 +42,11 @@ namespace Cassette.BundleProcessing
             }
         }
 
-        protected virtual bool ShouldProcessAsset(IAsset asset)
+        protected abstract void Process(IAsset asset, Bundle bundle);
+
+        bool ShouldProcessAsset(IAsset asset)
         {
             return asset.SourceFile.FullPath.EndsWith(filenameEndsWith, StringComparison.OrdinalIgnoreCase);
         }
-
-        protected abstract void Process(IAsset asset, Bundle bundle);
     }
 }
-

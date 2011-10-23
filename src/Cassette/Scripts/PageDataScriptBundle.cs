@@ -47,17 +47,17 @@ namespace Cassette.Scripts
             var builder = new StringBuilder();
             builder.AppendLine("(function(w){");
             builder.AppendFormat("var d=w['{0}']||(w['{0}']={{}});", globalVariable).AppendLine();
-            BuildAssignments(globalVariable, dictionary, builder);
+            BuildAssignments(dictionary, builder);
             builder.Append("}(window));");
             return builder.ToString();
         }
 
-        static void BuildAssignments(string globalVariable, JavaScriptObject dictionary, StringBuilder builder)
+        static void BuildAssignments(JavaScriptObject dictionary, StringBuilder builder)
         {
             var serializer = new JavaScriptSerializer();
             foreach (var pair in dictionary)
             {
-                builder.AppendFormat("d.{1}={2};", globalVariable, pair.Key, serializer.Serialize(pair.Value)).AppendLine();
+                builder.AppendFormat("d.{0}={1};", pair.Key, serializer.Serialize(pair.Value)).AppendLine();
             }
         }
     }

@@ -45,6 +45,11 @@ namespace Cassette.Configuration
             return Get(path, bundles => bundles[0]);
         }
 
+        public Bundle this[string path]
+        {
+            get { return Get(path); }
+        }
+
         public IEnumerator<Bundle> GetEnumerator()
         {
             return bundlesByPath.SelectMany(kvp => kvp.Value).GetEnumerator();

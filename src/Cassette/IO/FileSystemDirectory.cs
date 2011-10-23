@@ -129,7 +129,7 @@ namespace Cassette.IO
         public IEnumerable<IDirectory> GetDirectories()
         {
             return Directory.EnumerateDirectories(fullSystemPath)
-                            .Select(path => GetDirectory(path));
+                            .Select(GetDirectory);
         }
 
         public FileAttributes GetAttributes(string path)
