@@ -165,5 +165,20 @@ namespace Cassette.Scripts
                 new ExternalScriptBundle(" ");
             });
         }
+
+        [Fact]
+        public void GivenBundleIsProcessed_WhenRender_ThenExternalRendererUsed()
+        {
+            var bundle = new ExternalScriptBundle(Url, "~/test", "condition");
+            var application = new Mock<ICassetteApplication>();
+            var urlGenerator = new Mock<IUrlGenerator>();
+            application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
+            bundle.Process(application.Object);
+            
+            var html = bundle.Render();
+
+            html.ToHtmlString().ShouldContain("condition");
+        }
     }
 }
