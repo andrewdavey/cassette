@@ -45,12 +45,12 @@ namespace Cassette.Scripts
 
         public IBundleHtmlRenderer<ScriptBundle> Renderer { get; set; }
 
-        public override void Process(ICassetteApplication application)
+        internal override void Process(ICassetteApplication application)
         {
             Processor.Process(this, application);
         }
 
-        public override IHtmlString Render()
+        internal override IHtmlString Render()
         {
             return Renderer.Render(this);
         }

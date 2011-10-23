@@ -68,7 +68,7 @@ namespace Cassette
 
         public string Location { get; set; }
 
-        public byte[] Hash
+        internal byte[] Hash
         {
             get
             {
@@ -83,12 +83,12 @@ namespace Cassette
             }
         }
 
-        public IEnumerable<string> References
+        internal IEnumerable<string> References
         {
             get { return references; }
         }
 
-        public virtual void Initialize(ICassetteApplication application)
+        internal virtual void Initialize(ICassetteApplication application)
         {
             if (useDefaultBundleInitializer && bundleInitializers.Count == 0)
             {
@@ -104,11 +104,11 @@ namespace Cassette
             }
         }
 
-        public virtual void Process(ICassetteApplication application)
+        internal virtual void Process(ICassetteApplication application)
         {
         }
 
-        public abstract IHtmlString Render();
+        internal abstract IHtmlString Render();
 
         public void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
         {
@@ -119,20 +119,20 @@ namespace Cassette
             hasSortedAssets = preSorted;
         }
 
-        public void AddReferences(IEnumerable<string> references)
+        internal void AddReferences(IEnumerable<string> referencePathsOrUrls)
         {
-            foreach (var reference in references)
+            foreach (var reference in referencePathsOrUrls)
             {
-                this.references.Add(ConvertReferenceToAppRelative(reference));
+                references.Add(ConvertReferenceToAppRelative(reference));
             }
         }
 
-        public virtual bool ContainsPath(string path)
+        internal virtual bool ContainsPath(string path)
         {
             return new BundleContainsPathPredicate().BundleContainsPath(path, this);
         }
 
-        public IAsset FindAssetByPath(string path)
+        internal IAsset FindAssetByPath(string path)
         {
             return Assets.FirstOrDefault(
                 a => PathUtilities.PathsEqual(a.SourceFile.FullPath, path)

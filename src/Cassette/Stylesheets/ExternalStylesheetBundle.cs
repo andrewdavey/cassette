@@ -39,17 +39,17 @@ namespace Cassette.Stylesheets
 
         readonly string url;
 
-        public override void Initialize(ICassetteApplication application)
+        internal override void Initialize(ICassetteApplication application)
         {
             // No initialization required.
         }
 
-        public override void Process(ICassetteApplication application)
+        internal override void Process(ICassetteApplication application)
         {
             // No processing required.
         }
 
-        public override IHtmlString Render()
+        internal override IHtmlString Render()
         {
             if (string.IsNullOrEmpty(Media))
             {
@@ -61,7 +61,7 @@ namespace Cassette.Stylesheets
             }
         }
 
-        public override bool ContainsPath(string path)
+        internal override bool ContainsPath(string path)
         {
             return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
         }

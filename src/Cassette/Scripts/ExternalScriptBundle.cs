@@ -69,7 +69,7 @@ namespace Cassette.Scripts
             get { return fallbackCondition; }
         }
 
-        public override void Initialize(ICassetteApplication application)
+        internal override void Initialize(ICassetteApplication application)
         {
             if (!string.IsNullOrEmpty(fallbackCondition))
             {
@@ -85,7 +85,7 @@ namespace Cassette.Scripts
             }
         }
 
-        public override void Process(ICassetteApplication application)
+        internal override void Process(ICassetteApplication application)
         {
             // Any fallback assets are processed like a regular ScriptBundle.
             base.Process(application);
@@ -93,12 +93,12 @@ namespace Cassette.Scripts
             externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, application);
         }
 
-        public override IHtmlString Render()
+        internal override IHtmlString Render()
         {
             return externalRenderer.Render(this);
         }
 
-        public override bool ContainsPath(string path)
+        internal override bool ContainsPath(string path)
         {
             return base.ContainsPath(path) || url.Equals(path, StringComparison.OrdinalIgnoreCase);
         }

@@ -44,18 +44,11 @@ namespace Cassette.Web
             var path = "~/" + requestContext.RouteData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             var response = requestContext.HttpContext.Response;
-            var bundle = bundleContainer.FindBundleContainingPath(path);
-            if (bundle == null)
+            IAsset asset;
+            Bundle bundle;
+            if (!bundleContainer.TryGetAssetByPath(path, out asset, out bundle))
             {
-                Trace.Source.TraceInformation("Bundle not found for asset path \"{0}\".", path);
-                NotFound(response);
-                return;
-            }
-            
-            var asset = bundle.FindAssetByPath(path);
-            if (asset == null)
-            {
-                Trace.Source.TraceInformation("Asset not found \"{0}\".", path);
+                Trace.Source.TraceInformation("Bundle asset not found with path \"{0}\".", path);
                 NotFound(response);
                 return;
             }

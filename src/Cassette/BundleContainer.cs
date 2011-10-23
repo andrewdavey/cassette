@@ -79,9 +79,9 @@ namespace Cassette
             );
         }
 
-        Dictionary<Bundle, HashSet<Bundle>> GetBundleReferencesWithImplicitOrderingIncluded(IEnumerable<Bundle> bundles)
+        Dictionary<Bundle, HashSet<Bundle>> GetBundleReferencesWithImplicitOrderingIncluded(IEnumerable<Bundle> initialBundles)
         {
-            var roots = bundles.Where(m =>
+            var roots = initialBundles.Where(m =>
             {
                 HashSet<Bundle> set;
                 if (bundleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
@@ -109,7 +109,7 @@ namespace Cassette
             return references;
         }
 
-        void AddBundlesReferencedBy(Bundle bundle, HashSet<Bundle> all)
+        void AddBundlesReferencedBy(Bundle bundle, ISet<Bundle> all)
         {
             if (all.Contains(bundle)) return;
             all.Add(bundle);

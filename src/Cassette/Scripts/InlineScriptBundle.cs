@@ -32,15 +32,15 @@ namespace Cassette.Scripts
             this.scriptContent = scriptContent;
         }
 
-        public override void Initialize(ICassetteApplication application)
+        internal override void Initialize(ICassetteApplication application)
         {
         }
 
-        public override void Process(ICassetteApplication application)
+        internal override void Process(ICassetteApplication application)
         {
         }
 
-        public override IHtmlString Render()
+        internal override IHtmlString Render()
         {
             return new HtmlString(
                 "<script type=\"text/javascript\">" + Environment.NewLine + 
