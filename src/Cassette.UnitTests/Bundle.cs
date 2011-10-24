@@ -280,6 +280,26 @@ namespace Cassette
         }
 
         [Fact]
+        public void BundleInitializersIsInitiallyEmpty()
+        {
+            var bundle = new TestableBundle("~");
+            bundle.BundleInitializers.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void GivenBundleInitializersAdded_WhenInitialize_ThenInitializeBundleCalled()
+        {
+            var bundle = new TestableBundle("~");
+            var application = Mock.Of<ICassetteApplication>();
+            var initializer = new Mock<IBundleInitializer>();
+            bundle.BundleInitializers.Add(initializer.Object);
+
+            bundle.Initialize(application);
+
+            initializer.Verify(s => s.InitializeBundle(bundle, application));
+        }
+
+        [Fact]
         public void GivenBundleCreatedWithOnlyAPath_WhenInitialize_ThenApplicationGetDefaultBundleInitializerIsUsed()
         {
             var bundle = new TestableBundle("~");
@@ -364,29 +384,6 @@ namespace Cassette
             var bundle = new TestableBundle("~/bundle");
             bundle.AddReferences(new[] { "http://test.com/" });
             bundle.References.Single().ShouldEqual("http://test.com/");
-        }
-    }
-
-    public class Bundle_AssetSources_Tests
-    {
-        [Fact]
-        public void AssetSourcesIsInitiallyEmpty()
-        {
-            var bundle = new TestableBundle("~");
-            bundle.BundleInitializers.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public void GivenAssetSourceAdded_WhenAddAssetsFromSources_ThenInitializeBundleCalled()
-        {
-            var bundle = new TestableBundle("~");
-            var application = Mock.Of<ICassetteApplication>();
-            var initializer = new Mock<IBundleInitializer>();
-            bundle.BundleInitializers.Add(initializer.Object);
-            
-            bundle.Initialize(application);
-
-            initializer.Verify(s => s.InitializeBundle(bundle, application));
         }
     }
 }

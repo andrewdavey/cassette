@@ -52,6 +52,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AddFileBundleInitializer.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="BundleContainerExtensions.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
     <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
+    <Compile Include="Configuration\BundleExtensions.cs" />
     <Compile Include="Configuration\BundleInitializerConfiguration.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />

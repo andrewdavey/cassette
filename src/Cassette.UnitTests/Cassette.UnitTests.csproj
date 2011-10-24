@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddFileBundleInitializer.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="BundleDescriptor.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactoryTestSuite.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
+    <Compile Include="Configuration\BundleExtensions.cs" />
     <Compile Include="Configuration\BundleInitializerConfiguration.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="BundleDirectoryInitializer.cs" />
