@@ -112,7 +112,8 @@ namespace Cassette.IO
             if (path == "") return this;
             if (path[0] == '~')
             {
-                return GetRootDirectory().GetDirectory(path.Substring(2));
+                path = path.Length == 1 ? "" : path.Substring(2);
+                return GetRootDirectory().GetDirectory(path);
             }
 
             var fullPath = GetAbsolutePath(path);

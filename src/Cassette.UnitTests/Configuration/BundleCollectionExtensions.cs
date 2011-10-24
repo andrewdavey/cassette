@@ -62,7 +62,82 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void GivenHiddenDirectory_WhenInitializeBundle_ThenDirectoryIsIgnored()
+        public void WhenAddForEachSubDirectoryWithInitializer_ThenBundleInitializerIsAssignedForCreatedBundle()
+        {
+            using (var tempDirectory = new TempDirectory())
+            {
+                Directory.CreateDirectory(Path.Combine(tempDirectory, "test"));
+
+                var factory = new Mock<IBundleFactory<Bundle>>();
+                factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
+                       .Returns(new TestableBundle("~/test"));
+                
+                var settings = new CassetteSettings
+                {
+                    SourceDirectory = new FileSystemDirectory(tempDirectory),
+                    BundleFactories = {{typeof(Bundle), factory.Object}}
+                };
+                var bundles = new BundleCollection(settings);
+                var initializer = Mock.Of<IBundleInitializer>();
+
+                bundles.AddForEachSubDirectory<Bundle>("~/", initializer);
+
+                bundles["~/test"].BundleInitializers.ShouldContain(initializer);
+            }
+        }
+
+        [Fact]
+        public void WhenAddForeachSubDirectoryWithBundleCustomization_ThenBundleIsCustomized()
+        {
+            using (var tempDirectory = new TempDirectory())
+            {
+                Directory.CreateDirectory(Path.Combine(tempDirectory, "test"));
+
+                var factory = new Mock<IBundleFactory<Bundle>>();
+                factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
+                       .Returns(new TestableBundle("~/test"));
+
+                var settings = new CassetteSettings
+                {
+                    SourceDirectory = new FileSystemDirectory(tempDirectory),
+                    BundleFactories = { { typeof(Bundle), factory.Object } }
+                };
+                var bundles = new BundleCollection(settings);
+                
+                bundles.AddForEachSubDirectory<Bundle>("~/", bundle => bundle.ContentType = "TEST");
+
+                bundles["~/test"].ContentType.ShouldEqual("TEST");
+            }
+        }
+
+        [Fact]
+        public void WhenAddForeachSubDirectoryWithBundleInitializerAndCustomization_ThenBundleHasInitializerAndIsCustomized()
+        {
+            using (var tempDirectory = new TempDirectory())
+            {
+                Directory.CreateDirectory(Path.Combine(tempDirectory, "test"));
+
+                var factory = new Mock<IBundleFactory<Bundle>>();
+                factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
+                       .Returns(new TestableBundle("~/test"));
+
+                var settings = new CassetteSettings
+                {
+                    SourceDirectory = new FileSystemDirectory(tempDirectory),
+                    BundleFactories = { { typeof(Bundle), factory.Object } }
+                };
+                var bundles = new BundleCollection(settings);
+                var initializer = Mock.Of<IBundleInitializer>();
+
+                bundles.AddForEachSubDirectory<Bundle>("~/", initializer, bundle => bundle.ContentType = "TEST");
+
+                bundles["~/test"].BundleInitializers.ShouldContain(initializer);
+                bundles["~/test"].ContentType.ShouldEqual("TEST");
+            }
+        }
+
+        [Fact]
+        public void GivenHiddenDirectory_WhenAddForEachSubDirectory_ThenDirectoryIsIgnored()
         {
             using (var tempDirectory = new TempDirectory())
             {
