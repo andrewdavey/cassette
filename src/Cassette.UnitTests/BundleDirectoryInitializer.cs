@@ -106,10 +106,7 @@ namespace Cassette
         [Fact]
         public void GivenPathSet_WhenInitializeBundle_ThenPathIsusedInsteadOfBundlePath()
         {
-            var initializer = new BundleDirectoryInitializer
-            {
-                Path = "~/other"
-            };
+            var initializer = new BundleDirectoryInitializer("~/other");
             CreateDirectory("other");
             CreateFile("other", "asset1.js");
             var bundle = new TestableBundle("~/test");

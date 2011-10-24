@@ -9,14 +9,31 @@ namespace Cassette
 {
     public class BundleDirectoryInitializer : IBundleInitializer
     {
-        public string Path { get; set; } // TODO: keep this or not?
+        /// <summary>
+        /// Creates a bundle directory initializer for the given directory path.
+        /// </summary>
+        /// <param name="directoryPath">The directory containing the assets.</param>
+        public BundleDirectoryInitializer(string directoryPath)
+        {
+            this.directoryPath = directoryPath;
+        }
+
+        /// <summary>
+        /// Creates a bundle directory initializer that uses the bundle Path.
+        /// </summary>
+        public BundleDirectoryInitializer()
+        {
+        }
+
+        readonly string directoryPath;
+
         public string FilePattern { get; set; }
         public Regex ExcludeFilePath { get; set; }
         public SearchOption SearchOption { get; set; }
 
         public void InitializeBundle(Bundle bundle, ICassetteApplication application)
         {
-            var directory = application.SourceDirectory.GetDirectory(Path ?? bundle.Path);
+            var directory = application.SourceDirectory.GetDirectory(directoryPath ?? bundle.Path);
             var descriptor = LoadBundleDescriptor(directory);
             IEnumerable<IAsset> assets;
             if (descriptor == null)
