@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
@@ -45,6 +46,7 @@ namespace Example
 
             bundles.AddForEachSubDirectory<HtmlTemplateBundle>(
                 "HtmlTemplates",
+                new BundleDirectoryInitializer { FilePattern = "*.htm" },
                 bundle => bundle.Processor = new KnockoutJQueryTmplPipeline()
             );
         }

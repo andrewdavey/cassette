@@ -7,7 +7,7 @@ using Cassette.IO;
 
 namespace Cassette
 {
-    class BundleDirectoryInitializer : IBundleInitializer
+    public class BundleDirectoryInitializer : IBundleInitializer
     {
         public string Path { get; set; } // TODO: keep this or not?
         public string FilePattern { get; set; }
