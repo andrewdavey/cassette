@@ -62,6 +62,7 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="BundleDescriptor.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
+    <Compile Include="Configuration\BundleCollection.cs" />
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactoryTestSuite.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
