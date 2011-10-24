@@ -85,11 +85,11 @@ namespace Cassette
                     );
                 }
                 appRelativeFilename = PathUtilities.NormalizePath(appRelativeFilename);
-                AddBundleReference(lineNumber, appRelativeFilename);
+                AddBundleReference(appRelativeFilename, lineNumber);
             }
         }
 
-        void AddBundleReference(int lineNumber, string appRelativeFilename)
+        void AddBundleReference(string appRelativeFilename, int lineNumber)
         {
             AssetReferenceType type;
             if (ParentBundleCouldContain(appRelativeFilename))

@@ -175,19 +175,37 @@ namespace Cassette.Web
         [Fact]
         public void ScriptBundleUrlMappedToScriptBundleHandler()
         {
-            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/scriptbundle/test_ABC_script");
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/scriptbundle/test_ABC");
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));
             httpHandler.ShouldBeType<BundleRequestHandler<ScriptBundle>>();
+        }
 
-            // TODO: check "path" route value
+        [Fact]
+        public void ScriptBundleUrlAssignsPathRouteDataValue()
+        {
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/scriptbundle/test_ABC");
+
+            var routeData = routes.GetRouteData(httpContext.Object);
+
+            routeData.Values["path"].ShouldEqual("test_ABC");
+        }
+
+        [Fact]
+        public void ScriptBundleUrlWithDirectoryAssignsPathRouteDataValue()
+        {
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/scriptbundle/scripts/test_ABC");
+
+            var routeData = routes.GetRouteData(httpContext.Object);
+
+            routeData.Values["path"].ShouldEqual("scripts/test_ABC");
         }
 
         [Fact]
         public void StylesheetBundleUrlMappedToStylesheetBundleHandler()
         {
-            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/stylesheetbundle/test_ABC_stylesheet");
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/stylesheetbundle/test_ABC");
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));
