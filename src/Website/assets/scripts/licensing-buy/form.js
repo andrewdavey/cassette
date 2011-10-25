@@ -5,7 +5,7 @@ $(function () {
     // Dynamically update the total price when the number of servers is changed.
     var form = $("#buy-form"),
         serverNumber = form.find("#servernumber"),
-        totalCost = form.find("#totalcost"),
+        totalCost = form.find(".totalcost"),
         licenseHolder = $("#licenseholder");
 
     serverNumber.change(function () {
