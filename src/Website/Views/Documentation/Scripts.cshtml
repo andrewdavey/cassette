@@ -1,4 +1,4 @@
-﻿<h1>Scripts</h1>
+﻿<h2>Scripts</h2>
 <p>
 To correctly sort your script files, Cassette looks for XML-style reference comments.
 (These are what Visual Studio uses to give you intellisense.) The idea is that if File-B references File-A
@@ -29,7 +29,7 @@ You can reference an entire module, rather than a specific file from it. Just se
 </p>
 <pre><code><span class="comment">/// &lt;reference path="~/scripts/lib"/&gt;</span></code></pre>
 
-<h2>Using scripts in-page</h2>
+<h3>Using scripts in-page</h3>
 <p>
 Use the <code>Assets.Scripts</code> helper in your view pages to reference. Paths are always relative to the application root directory.
 </p>
@@ -55,7 +55,7 @@ Use the <code>Assets.Scripts</code> helper in your view pages to reference. Path
 <p class="minor">The <code>Assets</code> class is defined in the <code>Cassette.UI</code> namespace. So make sure you've referenced this in <code>~\Views\Web.config</code>. The Cassette.Web nuget package does this for you.</p>
 <p>The call to <code>Assets.Scripts.Render()</code> generates <code>&lt;script&gt;</code> tags to include the referenced scripts.</p>
 
-<h2>Module render locations</h2>
+<h3>Module render locations</h3>
 <p>
 Not all HTML <code>&lt;script&gt;</code> tags have to be generated in the same place. For example, some scripts only progressively
 enhance the page and can be left until the very end to be included. Others may need to be in the <code>&lt;head&gt;</code>.

@@ -5,43 +5,21 @@
     width: 100%;
     padding: 0;
     background-color: #fafafa;
-    margin-top: 2em;
-}
-
-.main .documentation h1 {
-    color: #323231;
-    text-shadow: none;
-    margin: 0 0 .2em 0;
-    font-size: 2em;
-}
-
-.documentation h2 {
-    margin: 0 0 .5em 0;
-}
-
-.main pre + h2 {
-    margin-top: 1.5em;
 }
 
 .documentation .tree {
     display: table-cell;
-    padding: 0 1.5em;
+    padding: 1.7em 1.6em;
     width: 220px;
-    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     vertical-align: top;
     background-color: #f0f0f0;
-    border-radius: 0 10px 10px 0;
+    border-radius: 10px 0 0 10px;
     font-size: 11pt;
 }
 
-.tree h2 {
-    margin-top: 1.8em;
-}
-
-.documentation .item {
-    display: table-cell;
-    padding: 2em;
-    vertical-align: top;
+.tree h3 {
+    font-size: 1.3em;
 }
 
 .tree ul {
@@ -64,11 +42,26 @@
     margin-top: 10px;
 }
 
+.documentation .item {
+    display: table-cell;
+    padding: 1.7em 2.3em;
+    vertical-align: top;
+}
+
+.main pre + h3 {
+    margin-top: 1.8em;
+}
+
+.main pre + p {
+    margin-top: 1.4em;
+}
+
 .documentation pre {
     border: 1px solid #ccc;
     margin-bottom: .5em;
+    padding: 15px 20px;
 }
 
 #disqus_thread {
-    margin-top: 2em;
+    margin-top: 1.8em;
 }

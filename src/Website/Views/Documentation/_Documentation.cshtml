@@ -4,14 +4,11 @@
     Assets.Scripts.Reference("assets/scripts/disqus.js", "body");
 }
 <div class="main">
+    <h1>DOCUMENTATION</h1>
     <div class="content documentation">
-        <div class="item">
-            @RenderBody()
-
-            <div id="disqus_thread"></div>
-        </div>
+       
         <div class="tree">
-            <h2>Documentation</h2>
+            <h3>Documentation</h3>
             <ul>
                 <li>
                     <a href="@Url.DocumentationUrl("")">Index</a>
@@ -56,6 +53,11 @@
                     </ul>
                 </li>
             </ul>
+        </div>
+        <div class="item">
+            @RenderBody()
+
+            <div id="disqus_thread"></div>
         </div>
     </div>
 </div>

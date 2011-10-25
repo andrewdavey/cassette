@@ -19,6 +19,11 @@ namespace Website.Controllers
             return View();
         }
 
+        public ActionResult Buy()
+        {
+            return View();
+        }
+
         public ActionResult EpicDiscount()
         {
             ViewBag.Discount = true;
