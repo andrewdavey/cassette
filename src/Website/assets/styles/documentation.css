@@ -1,5 +1,28 @@
 ﻿/* @reference "page.css"; */
 
+#documentationheader {
+    color: #fff;
+    font-size: 2.1em;
+    text-shadow: 0 1px 0 #323231;
+    margin: .75em 0;
+    font-weight: bold;   
+}
+
+.documentation h1 {
+    font-family: "Droid Sans" , sans-serif;
+    color: #03517e;
+    font-size: 1.3em;
+    margin: 0px 0px .75em 0px;
+    text-shadow: none;
+}
+
+.documentation h2 {
+    font-family: "Droid Sans" , sans-serif;
+    font-size: 1em;
+    margin: 0px 0px .75em 0px;
+    color: #171717;
+}
+
 .activedoc {
     font-weight: bold;    
 }
@@ -52,12 +75,17 @@
     vertical-align: top;
 }
 
-.main pre + h3 {
+.main pre + h2 {
     margin-top: 1.8em;
 }
 
 .main pre + p {
     margin-top: 1.4em;
+}
+
+.documentation .minor {
+    margin-top: 0px;
+    font-style: italic;
 }
 
 .documentation pre {

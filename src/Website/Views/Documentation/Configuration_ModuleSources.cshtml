@@ -1,4 +1,4 @@
-﻿<h2>Module sources</h2>
+﻿<h1>Module sources</h1>
 <p>Tell Cassette what asset modules your application has by adding "module sources"
 to the <code>ModuleConfiguration</code> object passed to your <code>Configure</code> method.</p>
 <pre><code><span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
@@ -8,7 +8,7 @@ to the <code>ModuleConfiguration</code> object passed to your <code>Configure</c
     );
 }</code></pre>
 
-<h3>File system module sources</h3>
+<h2>File system module sources</h2>
 <p>A file system module source creates modules from directories. They say which assets to include using file extension matching.</p>
 <p>There are three file system module source types:</p>
 <ul>
@@ -30,7 +30,7 @@ to the <code>ModuleConfiguration</code> object passed to your <code>Configure</c
 This treats each asset file as a seperate module. This is not ideal for production, so it's recommended you
 spend some time grouping assets into modules.</p>
 
-<h3>External modules</h3>
+<h2>External modules</h2>
 <p>An external URL, such as a file hosted on a <abbr title="Content Delivery Network">CDN</abbr>, can be treated as a module.
 Cassette can then manage references to the module and generate the HTML to include it in a page.</p>
 <p>External script and stylesheet modules can be added to the configuration. Here's an example that adds an external

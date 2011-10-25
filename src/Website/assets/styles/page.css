@@ -13,14 +13,10 @@ body {
 
 .content {
     background-color: #fff;
-    padding: 2em;
+    padding: 2.5em;
     border-radius: 10px;
     min-height: 300px;
     box-shadow: #aaa 0 0 3px;
-}
-
-h1, h2, h3 {
-    font-family: "Droid Sans" , sans-serif;
 }
 
 h1 {
@@ -31,12 +27,14 @@ h1 {
 }
 
 h2 {
+    font-family: "Droid Sans" , sans-serif;
     color: #03517e;
-    font-size: 1.3em;
+    font-size: 1.2em;
     margin: 0px 0px .75em 0px;
 }
 
 h3 {
+    font-family: "Droid Sans" , sans-serif;
     font-size: 1em;
     margin: 0px 0px .75em 0px;
 }
