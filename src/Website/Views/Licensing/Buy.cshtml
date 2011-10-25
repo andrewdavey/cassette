@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Buy";
+    ViewBag.Title = "Buy a proprietary software license";
     ViewBag.Section = "licensing";
     Assets.Scripts.Reference("~/assets/scripts/licensing-buy", "body");
 }
@@ -7,18 +7,19 @@
     <h1>LICENSING</h1>
     
     <div class="content buypage">
-        <h2>Choose Your License</h2>
+        <h2>Buy a proprietary software license</h2>
         
         <div class="buyinghelp">
             <h3>Need help?</h3>
+            <p>Please email <a href="mailto:sales@equin.co.uk">sales@equin.co.uk</a> with any questions about licensing.</p>
             <dl>
                 <dt><a href="#" class="helpquestion">Money-back Guarantee</a></dt>
                 <dd class="helpanswer"><p>We offer a 30-day money-back guarantee. So if, for any reason, you change your mind about Cassette, 
                 just <a href="@Url.RouteUrl("contact")">get in touch</a> and we'll be happy to arrange a full refund for you.</p></dd>
 
                 <dt><a href="#" class="helpquestion">Payment Options</a></dt>
-                <dd class="helpanswer"><p>We're currently taking payment through PayPal checkout. A PayPal account isn't required - 
-                you can also check out as a PayPal guest using a debit or credit card.</p>
+                <dd class="helpanswer"><p>We're currently taking payment through PayPal. However, a PayPal account isn't required. 
+                You can also check out as a PayPal guest using a debit or credit card.</p>
                 <p></p></dd>
 
                 <dt><a href="#" class="helpquestion">License Delivery Information</a></dt>
@@ -29,9 +30,9 @@
                 </dd>
 
                 <dt><a href="#" class="helpquestion">Equin Ltd</a></dt>
-                <dd class="helpanswer"><p>Andrew Davey owns the copyright of Cassette. He has exclusively granted Equin Limited the 
-                right to sell commercial licenses and provide related technical support services.</p>
-                <p>UK company number: 6347232</p>
+                <dd class="helpanswer"><p>Andrew Davey owns the copyright of Cassette. He has exclusively granted Equin Ltd the 
+                right to sell proprietary licenses and provide related technical support services.</p>
+                <p>Equin Ltd, UK company number: 6347232</p>
                 <p>Registered office address:<br />
                 'Tregea'<br />
                 Botallack<br />
@@ -57,9 +58,12 @@
                 <option value="600.00">Unlimited + priority live support</option> 
             </select>
 
-            <button type="submit" class="call-to-action">Check Out &#187;</button>
-            <p>Your total: <span id="totalcost">$40</span></p>
-            <p id="buttonsupport">Check out via PayPal<br />(PayPal account not required)</p>
+            <p class="total">Your total: <span class="totalcost">$40</span></p>
+
+            <div class="checkout-action">
+                <button type="submit" class="call-to-action">Check Out &#187;</button>
+                <p id="buttonsupport">Check out via PayPal<br />(PayPal account not required)</p>
+            </div>
 
             <input type="hidden" name="cmd" value="_xclick"/>
             <input type="hidden" name="business" value="paypal@equin.co.uk"/>

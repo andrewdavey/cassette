@@ -14,34 +14,41 @@
 
 .buypage input {
     width: 370px;
+    display: block;
 }
 
 .buypage select {
     margin-bottom: 2em;
+    display: block;
 }
 
-.buypage form button {
-    float: right;
-    margin: 3.1em .7em .5em 0;
-}
-
-.buypage form p {
+.buypage form .total {
     color: #787878;
     font-size: 1.5em;
     font-weight: bold;
-    margin-bottom: 0;
+    float: left;
+    width: 50%;
 }
 
-#totalcost {
+.buypage .checkout-action {
+    float: left;
+    width: 50%;
+    text-align: center;
+}
+
+.buypage form .totalcost {
     margin-left: .3em;
     font-size: 1.2em;
     color: #171717;
 }
 
+.buypage form button {
+    margin-bottom: .5em;
+}
+
 #buttonsupport {
     font-size: .8em;
     text-align: center;
-    padding-left: 17em;
     font-weight: normal;
 }
 
