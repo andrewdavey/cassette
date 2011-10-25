@@ -23,7 +23,7 @@ using System.IO;
 
 namespace Cassette.IO
 {
-    public class NonExistentFile : IFile
+    class NonExistentFile : IFile
     {
         readonly string filename;
 

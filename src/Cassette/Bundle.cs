@@ -68,21 +68,6 @@ namespace Cassette
 
         public string Location { get; set; }
 
-        internal byte[] Hash
-        {
-            get
-            {
-                if (Assets.Count == 1)
-                {
-                    return Assets[0].Hash;
-                }
-                else
-                {
-                    throw new InvalidOperationException("Bundle Hash is only available when the bundle contains a single asset.");
-                }
-            }
-        }
-
         internal IEnumerable<string> References
         {
             get { return references; }

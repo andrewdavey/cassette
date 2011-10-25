@@ -24,7 +24,7 @@ using System.Web;
 
 namespace Cassette.Web
 {
-    public class PlaceholderReplacingResponseFilter : MemoryStream
+    class PlaceholderReplacingResponseFilter : MemoryStream
     {
         public PlaceholderReplacingResponseFilter(HttpResponseBase response, IPlaceholderTracker placeholderTracker)
         {

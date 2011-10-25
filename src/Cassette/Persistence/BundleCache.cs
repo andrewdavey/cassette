@@ -22,14 +22,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Xml.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
-using System.Web;
 
 namespace Cassette.Persistence
 {
-    public class BundleCache : IBundleCache
+    class BundleCache : IBundleCache
     {
         public BundleCache(string version, IDirectory cacheDirectory, IDirectory sourceDirectory)
         {

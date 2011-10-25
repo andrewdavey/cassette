@@ -22,7 +22,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class ScriptBundleFactory : IBundleFactory<ScriptBundle>
+    class ScriptBundleFactory : IBundleFactory<ScriptBundle>
     {
         public ScriptBundle CreateBundle(string path, BundleDescriptor descriptor)
         {

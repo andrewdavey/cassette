@@ -23,7 +23,7 @@ using System.Web.Routing;
 
 namespace Cassette.Web
 {
-    public class AssetRequestHandler : IHttpHandler
+    class AssetRequestHandler : IHttpHandler
     {
         public AssetRequestHandler(RequestContext requestContext, IBundleContainer bundleContainer)
         {

@@ -28,4 +28,3 @@ namespace Cassette.Persistence
         IEnumerable<XElement> CreateCacheManifest();
     }
 }
-

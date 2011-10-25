@@ -4,7 +4,7 @@ using System.Web.Routing;
 
 namespace Cassette.Web
 {
-    public class DelegateRouteHandler : IRouteHandler
+    class DelegateRouteHandler : IRouteHandler
     {
         readonly Func<RequestContext, IHttpHandler> createHandler;
 

@@ -20,7 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateBundleFactory : IBundleFactory<HtmlTemplateBundle>
+    class HtmlTemplateBundleFactory : IBundleFactory<HtmlTemplateBundle>
     {
         public HtmlTemplateBundle CreateBundle(string directory, BundleDescriptor bundleDescriptor)
         {

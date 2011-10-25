@@ -65,7 +65,7 @@ namespace Cassette.Web
             container = new Mock<IBundleContainer>();
         }
 
-        protected BundleRequestHandler<Bundle> CreateRequestHandler(string bundlePath)
+        internal BundleRequestHandler<Bundle> CreateRequestHandler(string bundlePath)
         {
             routeData.Values.Add("path", bundlePath);
             return new BundleRequestHandler<Bundle>(

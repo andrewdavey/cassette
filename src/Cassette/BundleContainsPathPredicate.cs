@@ -23,7 +23,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class BundleContainsPathPredicate : IAssetVisitor
+    class BundleContainsPathPredicate : IAssetVisitor
     {
         public bool BundleContainsPath(string path, Bundle bundle)
         {

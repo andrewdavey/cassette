@@ -23,7 +23,7 @@ using System.IO;
 
 namespace Cassette.Utilities
 {
-    internal static class StringExtensions
+    static class StringExtensions
     {
         public static Stream AsStream(this string s)
         {

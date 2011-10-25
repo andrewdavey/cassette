@@ -26,7 +26,7 @@ using Cassette.IO;
 
 namespace Cassette.Persistence
 {
-    public class CachedAsset : IAsset
+    class CachedAsset : IAsset
     {
         public CachedAsset(IFile file, byte[] hash, IEnumerable<IAsset> children)
         {

@@ -2,7 +2,7 @@
 
 namespace Cassette.IO
 {
-    public static class FileExtensions
+    static class FileExtensions
     {
         public static Stream OpenRead(this IFile file)
         {

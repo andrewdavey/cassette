@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace Cassette.Utilities
 {
-    public static class PathUtilities
+    static class PathUtilities
     {
         public static string CombineWithForwardSlashes(params string[] paths)
         {

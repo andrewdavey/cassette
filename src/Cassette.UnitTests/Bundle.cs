@@ -258,28 +258,6 @@ namespace Cassette
         }
 
         [Fact]
-        public void HashIsHashOfFirstAsset()
-        {
-            var bundle = new TestableBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[] {1, 2, 3});
-            bundle.Assets.Add(asset.Object);
-            bundle.Hash.SequenceEqual(new byte[] {1, 2, 3}).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void HashThrowsInvalidOperationExceptionWhenMoreThanOneAsset()
-        {
-            var bundle = new TestableBundle("~/test");
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            Assert.Throws<InvalidOperationException>(delegate
-            {
-                var temp = bundle.Hash;
-            });
-        }
-
-        [Fact]
         public void BundleInitializersIsInitiallyEmpty()
         {
             var bundle = new TestableBundle("~");

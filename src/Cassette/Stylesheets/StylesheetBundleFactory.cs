@@ -22,7 +22,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetBundleFactory : IBundleFactory<StylesheetBundle>
+    class StylesheetBundleFactory : IBundleFactory<StylesheetBundle>
     {
         public StylesheetBundle CreateBundle(string path, BundleDescriptor bundleDescriptor)
         {
