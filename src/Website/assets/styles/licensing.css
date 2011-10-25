@@ -5,6 +5,7 @@
     background-repeat: no-repeat;
     background-position: 7em;
     font-size: 1.1em;
+    clear: left;
 }
 
 .tip a {
