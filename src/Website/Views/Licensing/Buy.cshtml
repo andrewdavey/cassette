@@ -42,35 +42,39 @@
             </dl>
         </div>
         
-        <form>
-            <label for="licenseholder">Name of person or company to be license-holder:</label>
-            <input id="licenseholder" type="text" />
-            <label for="buyername">Your name (if different):</label>
-            <input id="buyername" type="text" />
-            <label for="servernumber">Number of servers:</label>
-            <select id="servernumber">
-                <option value="1">1</option> 
-                <option value="2">2</option> 
-                <option value="3">3</option> 
-                <option value="4">4</option> 
-                <option value="5">5</option> 
-                <option value="6">6</option> 
-                <option value="7">7</option> 
-                <option value="8">8</option> 
-                <option value="9">9</option> 
-                <option value="10">10</option> 
-                <option value="11">11</option> 
-                <option value="12">12</option> 
-                <option value="13">13</option> 
-                <option value="14">14</option> 
-                <option value="Unlimited">Unlimited&nbsp;</option> 
+        <noscript><p><strong>Please enable JavaScript to check out.</strong></p></noscript>
+
+        <form id="buy-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" style="display: none">
+            <label for="licenseholder">Name of company or person to be license-holder:</label>
+            <input id="licenseholder" type="text" name="os0" maxlength="200"/>
+            
+            <label for="servernumber">Number of production web servers:</label>
+            <select id="servernumber" name="amount">
+                @foreach (var plan in Enumerable.Range(1, 14).Select(i => new { ServerCount = i, Price = (i * 40).ToString("N2") }))
+                {
+                    <option value="@plan.Price">@plan.ServerCount</option>
+                }
+                <option value="600.00">Unlimited + priority live support</option> 
             </select>
-            <a href="@Url.Action("buy")" class="call-to-action">Check Out &#187;</a>
+
+            <button type="submit" class="call-to-action">Check Out &#187;</button>
             <p>Your total: <span id="totalcost">$40</span></p>
             <p id="buttonsupport">Check out via PayPal<br />(PayPal account not required)</p>
+
+            <input type="hidden" name="cmd" value="_xclick"/>
+            <input type="hidden" name="business" value="paypal@equin.co.uk"/>
+            <input type="hidden" name="lc" value="GB"/>
+            <input type="hidden" name="item_name" value="Cassette Proprietary License"/>
+            <input type="hidden" name="currency_code" value="USD"/>
+            <input type="hidden" name="button_subtype" value="services"/>
+            <input type="hidden" name="no_note" value="0"/>
+            <input type="hidden" name="cn" value="Add special instructions to the seller"/>
+            <input type="hidden" name="no_shipping" value="2"/>
+            <input type="hidden" name="rm" value="1"/>
+            <input type="hidden" name="return" value="@Url.Action("Purchased", "Licensing", null, "http")"/>
+            <input type="hidden" name="cancel_return" value="@Url.Action("Index", "Licensing", null, "http")"/>
+            <input type="hidden" name="on0" value="Company Name"/>
         </form>
         
-        
-
     </div>
 </div>

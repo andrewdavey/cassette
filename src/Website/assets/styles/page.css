@@ -116,7 +116,7 @@ select {
 
 /* Call to Action Buttons */
 
-a.call-to-action {
+a.call-to-action, button.call-to-action {
     -moz-box-shadow: inset 0px 1px 0px 0px #d44c4c;
     -webkit-box-shadow: inset 0px 1px 0px 0px #d44c4c;
     box-shadow: inset 0px 1px 0px 0px #d44c4c;
