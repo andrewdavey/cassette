@@ -55,7 +55,7 @@ namespace Cassette.IntegrationTests
 
             return new CassetteApplication(
                 new[] { config.Object },
-                new FileSystemDirectory(Path.GetFullPath(@"..\..\assets")),
+                new FileSystemDirectory(Path.GetFullPath(@"assets")),
                 new IsolatedStorageDirectory(storage),
                 isOutputOptmized: true,
                 version: Guid.NewGuid().ToString(), // unique version
