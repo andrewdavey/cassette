@@ -1,0 +1,65 @@
+﻿.buypage {
+    position: relative;
+}
+
+/* Choose Your License Form */
+
+.buypage form {
+    position: absolute;    
+    top: 4.5em;
+    left: 2.1em;
+    border: 1px solid #cacaca;
+    margin: 3px 35px 30px 0;    
+}
+
+.buypage input {
+    width: 370px;
+}
+
+.buypage select {
+    margin-bottom: 2em;
+}
+
+.buypage form a {
+    float: right;
+    margin: 3.1em .7em .5em 0;
+}
+
+.buypage form p {
+    color: #787878;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#totalcost {
+    margin-left: .3em;
+    font-size: 1.2em;
+    color: #171717;
+}
+
+#buttonsupport {
+    font-size: .8em;
+    text-align: center;
+    padding-left: 17em;
+    font-weight: normal;
+}
+
+/* Help Section */
+
+.buyinghelp {
+    padding-left: 30em;
+    min-height: 440px;
+}
+
+.helpquestion {
+    padding-left: 20px;
+    font-weight: bold;
+    background-image: url(images/bullet_toggle_plus.png);
+    background-repeat: no-repeat;
+    background-position: left 6px;
+}
+
+.buyinghelp dd {
+    padding-left: 5px;
+}

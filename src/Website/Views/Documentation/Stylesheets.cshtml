@@ -1,11 +1,11 @@
-﻿<h1>Stylesheets</h1>
+﻿<h2>Stylesheets</h2>
 <p>
 Cassette encourages you to break up monolithic stylesheets into a collection of manageable files.
 This makes them easier to maintain.
 </p>
 <p>The order of these files still matters. There are two ways to tell Cassette about the dependencies. 
 It will then sort them correctly for you.</p>
-<h2>Reference Comments</h2>
+<h3>Reference Comments</h3>
 <p>Use comments at the top of a CSS file to reference other CSS files. For example:</p>
 <pre><code><span class="comment">/*
 @@reference "reset.css";
@@ -16,7 +16,7 @@ It will then sort them correctly for you.</p>
 }</code></pre>
 <p class="minor">Note that @@import was not chosen because that is designed for browser-side evaluation.</p>
 
-<h2>Module Descriptor File</h2>
+<h3>Module Descriptor File</h3>
 <p>If you'd rather not use reference comments, then this is the alternative.</p>
 <p>Create a file called <code>module.txt</code> in the same directory as your stylesheets.</p>
 <p>List each CSS file name, relative to the directory. For example:</p>
@@ -25,13 +25,13 @@ fonts.css
 main.css
 footer.css</code></pre>
 
-<h2>Production Mode</h2>
+<h3>Production Mode</h3>
 <p>
 When your application is in production mode, the assets of each stylesheet module
 are concatenated and minified. By default, Cassette uses the Microsoft Ajax CSS Minifier.
 </p>
 
-<h2>Image URLs</h2>
+<h3>Image URLs</h3>
 <p>Image URLs in the CSS are rewritten. For example, a file <code>~/styles/main.css</code>, with the content:</p>
 <pre><code>body { background-image: url(img/bg.jpg); }</code></pre>
 <p>is transformed into:</p>

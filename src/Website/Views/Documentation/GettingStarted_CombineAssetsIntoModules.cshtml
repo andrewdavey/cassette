@@ -1,10 +1,10 @@
-﻿<h1>Combine assets into modules</h1>
+﻿<h2>Combine assets into modules</h2>
 <p>Out of the box, Cassette runs in a very simple mode where each asset is treated separately.
 However, referencing many separate assets in production is bad for performance.
 So let's configure Cassette to combine assets into modules.
 </p>
 
-<h2>Wait a sec... Assets and modules?</h2>
+<h3>Wait a sec... Assets and modules?</h3>
 <p>An asset is any static file that ends up being used in the web browser, such JavaScript, CSS, CoffeeScript, LESS, HTML templates, etc.</p>
 <p>A module is a collection of assets that form a single resource, when deployed in production.</p>
 <p>For example, a collection of jQuery plugins can be combined into a single script. Cassette lets you keep
@@ -19,7 +19,7 @@ together.</p>
 <p>Each module is processed using a sequence of steps that transform the assets. For example, CoffeeScript assets are compiled into JavaScript.</p>
 <p>We need to tell Cassette how to build these modules.</p>
 
-<h2>Configuration</h2>
+<h3>Configuration</h3>
 <p>The <code>Cassette.Web</code> nuget package adds a file to your project called <code>CassetteConfiguration.cs</code>. 
 The class in that file is used to configure Cassette.</p>
 <pre><code><span class="keyword">public class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
@@ -34,7 +34,7 @@ The class in that file is used to configure Cassette.</p>
 
 <p class="minor">When the configuration is empty, Cassette will default to treating each asset as a separate module.</p>
 
-<h2>Group assets into directories</h2>
+<h3>Group assets into directories</h3>
 <p>It's time to organise that untidy scripts directory! Each application is different, but essentially you need to
 divide the scripts into directories. Here's an example directory listing:</p>
 <pre><code>scripts/
@@ -63,7 +63,7 @@ If any asset in a module changes, then the entire module has to be downloaded ag
 So perhaps group shared code into a module and put page scripts into their own modules.
 </p>
 
-<h2>Configure module sources</h2>
+<h3>Configure module sources</h3>
 <p>On application start up, Cassette will build the modules. A "module source" says where to look for assets and how to group them into modules.</p>
 <p>So far we've relied on the default <code>PerFileSource</code>. Let's change this to use directories instead.</p>
 <pre><code><span class="keyword">public class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
@@ -99,7 +99,7 @@ We've also set the <code>FilePattern</code> property so it only looks for JavaSc
 }</code></pre>
 <p>Cassette will now create a module for each sub-directory of the scripts directory.</p>
 
-<h2>Referencing modules</h2>
+<h3>Referencing modules</h3>
 <p>When each asset was treated separately our view pages had to reference each file. For example:</p>
 <pre><code><span class="code-tag">@@{</span>
     <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"scripts/dashboard/index.js"</span>);

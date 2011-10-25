@@ -1,4 +1,4 @@
-﻿<h1>Using Cassette in MVC</h1>
+﻿<h2>Using Cassette in MVC</h2>
 <p>
 The Cassette <code>Assets</code> helper class is in the <code>Cassette.UI</code> namespace.
 The nuget package updates the <code>~\Views\Web.config</code> to make this namespace available in view pages.
@@ -18,7 +18,7 @@ The nuget package updates the <code>~\Views\Web.config</code> to make this names
 <span class="open-tag">&lt;/</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
 </code></pre>
 
-<h2>Cassette in Razor views</h2>
+<h3>Cassette in Razor views</h3>
 <p>Use code blocks to define references. Use inline expressions for the render calls.</p>
 <pre><code><span class="code-tag">@@{</span>
     <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"scripts/lib/jquery.js"</span>);
@@ -36,7 +36,7 @@ The nuget package updates the <code>~\Views\Web.config</code> to make this names
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 
-<h2>Cassette in ASPX views</h2>
+<h3>Cassette in ASPX views</h3>
 <p>Use aspx code blocks to defined references. Use aspx expressions for the render calls.</p>
 <pre><code><span class="code-tag">&lt;%@@</span> <span class="tag">Page</span> <span class="attribute">Language</span><span class="attribute-value">="C#"</span> <span class="code-tag">%&gt;</span>
 <span class="code-tag">&lt;%</span>

@@ -3,6 +3,7 @@
     max-width: 960px;
     margin: 0 auto;
 }
+
 .logo {
     display: block;
     height: 77px;
@@ -19,22 +20,30 @@
     line-height: 77px;
     text-decoration: none;
 }
+
+.logo:hover {
+    text-decoration: none;
+}
+
 .logo:visited {
     color: #EFEFEF;    
 }
+
 .top .wrap {
     position: relative;
 }
+
 .top .links {
     position: absolute;
     right: 0;
-    top: 30px;
+    top: 0px;
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
     font-size: 12px;
     padding: 0;
     margin: 0;
     display: table;
 }
+
 .top .links li {
     list-style-type: none;
     padding: 0;
@@ -42,12 +51,23 @@
     vertical-align: middle;
     padding-left: 30px;
 }
+
 .top .links a {
+    display: block;
+    height: 47px;
+    padding-top: 32px; 
     color: #B4B4B4;
     text-decoration: none;
     text-transform: uppercase;
     font-weight: bold;
 }
+
+.active {
+    background-image: url(images/activemarker.png);
+    background-repeat: no-repeat;
+    background-position: center bottom;
+}
+
 .top .links a:hover {
     color: #fff;
 }

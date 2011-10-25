@@ -1,4 +1,89 @@
-﻿.prices {
+﻿.tip {
+    text-align: center;
+    padding-left: 20px;
+    background-image: url(images/tick.png);
+    background-repeat: no-repeat;
+    background-position: 7em;
+    font-size: 1.1em;
+}
+
+.tip a {
+    font-weight: bold;
+}
+
+.licensetype {
+    width: 406px;
+    border: 1px solid #cacaca;
+    float: left;
+    margin-bottom: 30px;
+    min-height: 420px;
+}
+
+.licensename {
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #cacaca;
+}
+
+.licensename h2 {
+    text-align: center;
+    margin: 0;
+    padding: 17px 0px;
+}
+
+.licensedetails {
+    padding: 20px 30px 0px 30px;
+}
+
+.opensource {
+    margin: 0 38px 0 17px;
+}
+
+.content .opensource p {
+    line-height: 1.5em;
+}
+
+.content .proprietary p {
+    margin: 0 0 .9em 0;
+}
+
+.content p.cost {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.1em;
+    margin: 0 0 .8em 0;
+}
+
+.benefit {
+    font-size: .9em;
+}
+
+.costdetail {
+    color: #5d5d5d;
+    font-size: .8em;
+}
+
+.content p.note {
+    font-size: 0.8em;
+    margin-bottom: 1.5em;
+}
+
+.actionbutton {
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+/*
+
+
+.prices {
     margin: 2em auto 2em;
     display: block;
 }
@@ -52,3 +137,5 @@ address {
     font-style: normal;
     margin-bottom: 1em;
 }
+
+*/
