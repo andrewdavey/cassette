@@ -75,8 +75,8 @@
             <input type="hidden" name="cn" value="Add special instructions to the seller"/>
             <input type="hidden" name="no_shipping" value="2"/>
             <input type="hidden" name="rm" value="1"/>
-            <input type="hidden" name="return" value="@Url.Action("Purchased", "Licensing", null, "http")"/>
-            <input type="hidden" name="cancel_return" value="@Url.Action("Index", "Licensing", null, "http")"/>
+            <input type="hidden" name="return" value="@Url.ToPublicUrl(Url.Action("purchased"))"/>
+            <input type="hidden" name="cancel_return" value="@Url.ToPublicUrl(Url.Action("index"))"/>
             <input type="hidden" name="on0" value="Company Name"/>
         </form>
         
