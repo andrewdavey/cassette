@@ -60,6 +60,10 @@
     background-position: left 6px;
 }
 
+.helpquestion.open {
+    background-image: url(images/bullet_toggle_minus.png);    
+}
+
 .buyinghelp dd {
     padding-left: 5px;
 }

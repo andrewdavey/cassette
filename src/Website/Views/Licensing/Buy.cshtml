@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Buy";
-    ViewBag.Section = "licensing";    
+    ViewBag.Section = "licensing";
+    Assets.Scripts.Reference("~/assets/scripts/licensing-buy", "body");
 }
 <div class="main">
     <h1>LICENSING</h1>
@@ -11,23 +12,23 @@
         <div class="buyinghelp">
             <h3>Need help?</h3>
             <dl>
-                <dt><a href="" class="helpquestion">Money-back Guarantee</a></dt>
+                <dt><a href="#" class="helpquestion">Money-back Guarantee</a></dt>
                 <dd class="helpanswer"><p>We offer a 30-day money-back guarantee. So if, for any reason, you change your mind about Cassette, 
                 just <a href="@Url.RouteUrl("contact")">get in touch</a> and we'll be happy to arrange a full refund for you.</p></dd>
 
-                <dt><a href="" class="helpquestion">Payment Options</a></dt>
+                <dt><a href="#" class="helpquestion">Payment Options</a></dt>
                 <dd class="helpanswer"><p>We're currently taking payment through PayPal checkout. A PayPal account isn't required - 
                 you can also check out as a PayPal guest using a debit or credit card.</p>
                 <p></p></dd>
 
-                <dt><a href="" class="helpquestion">License Delivery Information</a></dt>
+                <dt><a href="#" class="helpquestion">License Delivery Information</a></dt>
                 <dd class="helpanswer"><p>Your formal license will arrive by email within 2 business days of your purchase.</p>
                 <p>As soon as you've made your payment, you can start using Cassette in your proprietary software - 
                 head over to the <a href="@Url.RouteUrl("download")">Download Page</a> to add Cassette to your ASP.NET web applications using the 
                 nuget package manager, or fork the source code directory from <a href="https://github.com/andrewdavey/cassette" target="_blank">GitHub</a>.</p>
                 </dd>
 
-                <dt><a href="" class="helpquestion">Equin Ltd</a></dt>
+                <dt><a href="#" class="helpquestion">Equin Ltd</a></dt>
                 <dd class="helpanswer"><p>Andrew Davey owns the copyright of Cassette. He has exclusively granted Equin Limited the 
                 right to sell commercial licenses and provide related technical support services.</p>
                 <p>UK company number: 6347232</p>

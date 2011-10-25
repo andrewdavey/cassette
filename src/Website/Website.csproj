@@ -70,7 +70,8 @@
     <Compile Include="Views\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\scripts\disqus.js" />
+    <Content Include="assets\scripts\disqus\disqus.js" />
+    <Content Include="assets\scripts\licensing-buy\questions.js" />
     <Content Include="assets\styles\buy.css" />
     <Content Include="assets\styles\code.css" />
     <Content Include="assets\styles\documentation.css" />

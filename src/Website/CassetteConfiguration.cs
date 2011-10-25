@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using Cassette;
 using Cassette.Stylesheets;
+using Cassette.Scripts;
 
 namespace Website
 {
@@ -27,6 +28,8 @@ namespace Website
     {
         public void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application)
         {
+            moduleConfiguration.Add(new ExternalScriptModule("jquery", "//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"));
+            moduleConfiguration.Add(new PerSubDirectorySource<ScriptModule>("assets/scripts"));
             moduleConfiguration.Add(new DirectorySource<StylesheetModule>("assets/styles")
             {
                 FilePattern = "*.css"
@@ -34,4 +37,3 @@ namespace Website
         }
     }
 }
-

@@ -2,7 +2,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Cassette Documentation";
     ViewBag.Section = "documentation";    
-    Assets.Scripts.Reference("assets/scripts/disqus.js", "body");
+    Assets.Scripts.Reference("assets/scripts/disqus", "body");
 }
 <div class="main">
     <h1>DOCUMENTATION</h1>
@@ -12,45 +12,45 @@
             <h3>Documentation</h3>
             <ul>
                 <li>
-                    <a href="@Url.DocumentationUrl("")">Index</a>
+                    @DocLink("", "Index")
                 </li>
                 <li>
-                    <a href="@Url.DocumentationUrl("getting-started")">Getting Started</a>
+                    @DocLink("getting-started", "Getting Started")
                     <ul>
-                        <li><a href="@Url.DocumentationUrl("getting-started/combine-assets-into-modules")">Combine assets into modules</a></li>
-                        <li><a href="@Url.DocumentationUrl("getting-started/mvc")">Using Cassette in MVC</a></li>
-                        <li><a href="@Url.DocumentationUrl("getting-started/webforms")">Using Cassette in WebForms</a></li>
+                        <li>@DocLink("getting-started/combine-assets-into-modules", "Combine assets into modules")</li>
+                        <li>@DocLink("getting-started/mvc", "Using Cassette in MVC")</li>
+                        <li>@DocLink("getting-started/webforms", "Using Cassette in WebForms")</li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Url.DocumentationUrl("configuration")">Configuration</a>
+                    @DocLink("configuration", "Configuration")
                     <ul>
-                        <li><a href="@Url.DocumentationUrl("configuration/module-sources")">Module Sources</a></li>
-                        <li><a href="@Url.DocumentationUrl("configuration/directorysource")">DirectorySource</a></li>
-                        <li><a href="@Url.DocumentationUrl("configuration/persubdirectorysource")">PerSubDirectorySource</a></li>
-                        <li><a href="@Url.DocumentationUrl("configuration/perfilesource")">PerFileSource</a></li>
-                        <li><a href="@Url.DocumentationUrl("configuration/module-descriptor-file")">Module descriptor file</a></li>
+                        <li>@DocLink("configuration/module-sources", "Module Sources")</li>
+                        <li>@DocLink("configuration/directorysource", "DirectorySource")</li>
+                        <li>@DocLink("configuration/persubdirectorysource", "PerSubDirectorySource")</li>
+                        <li>@DocLink("configuration/perfilesource", "PerFileSource")</li>
+                        <li>@DocLink("configuration/module-descriptor-file", "Module descriptor file")</li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Url.DocumentationUrl("scripts")">Scripts</a>
+                    @DocLink("scripts", "Scripts")
                     <ul>
-                        <li><a href="@Url.DocumentationUrl("scripts/external-modules")">External Modules</a></li>
-                        <li><a href="@Url.DocumentationUrl("scripts/coffeescript")">CoffeeScript</a></li>
+                        <li>@DocLink("scripts/external-modules", "External Modules")</li>
+                        <li>@DocLink("scripts/coffeescript", "CoffeeScript")</li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a>
+                    @DocLink("stylesheets", "Stylesheets")
                     <ul>
-                        <li><a href="@Url.DocumentationUrl("stylesheets/less")">LESS</a></li>
-                        <li><a href="@Url.DocumentationUrl("stylesheets/data-uris")">Data-URIs</a></li>
+                        <li>@DocLink("stylesheets/less", "LESS")</li>
+                        <li>@DocLink("stylesheets/data-uris", "Data-URIs")</li>
                     </ul>
                 </li>
                 <li>
-                    <a href="@Url.DocumentationUrl("html-templates")">HTML Templates</a>
+                    @DocLink("html-templates", "HTML Templates")
                     <ul>
-                        <li><a href="@Url.DocumentationUrl("html-templates/jquery-tmpl")">jQuery-tmpl Compilation</a></li>
-                        <li><a href="@Url.DocumentationUrl("html-templates/knockoutjs-jquery-tmpl")">KnockoutJS</a></li>
+                        <li>@DocLink("html-templates/jquery-tmpl", "jQuery-tmpl Compilation")</li>
+                        <li>@DocLink("html-templates/knockoutjs-jquery-tmpl", "KnockoutJS")</li>
                     </ul>
                 </li>
             </ul>
@@ -62,3 +62,13 @@
         </div>
     </div>
 </div>
+@helper DocLink(string path, string text) {
+    if (Request.Url.AbsolutePath.EndsWith("documentation/" + path))
+    {
+    <a class="activedoc" href=@Url.DocumentationUrl(path)>@text</a>
+    }
+    else
+    {
+    <a href=@Url.DocumentationUrl(path)>@text</a>
+    }
+}
