@@ -54,7 +54,7 @@ namespace Cassette.Web
             }
             else
             {
-                var actualETag = "\"" + bundle.Assets[0].Hash.ToHexString() + "\"";
+                var actualETag = "\"" + bundle.Hash.ToHexString() + "\"";
                 var givenETag = request.Headers["If-None-Match"];
                 if (givenETag == actualETag)
                 {
@@ -114,7 +114,7 @@ namespace Cassette.Web
             var encoding = request.Headers["Accept-Encoding"];
             response.Filter = EncodeStreamAndAppendResponseHeaders(response.Filter, encoding);
             
-            using (var assetStream = bundle.Assets[0].OpenStream())
+            using (var assetStream = bundle.OpenStream())
             {
                 assetStream.CopyTo(response.OutputStream);
             }

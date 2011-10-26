@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using Cassette.BundleProcessing;
@@ -59,18 +60,49 @@ namespace Cassette
             get { return bundleInitializers; }
         }
 
-        public IList<IAsset> Assets
-        {
-            get { return assets; }
-        }
-
         public string ContentType { get; set; }
 
         public string Location { get; set; }
 
+        internal IList<IAsset> Assets
+        {
+            get { return assets; }
+        }
+
         internal IEnumerable<string> References
         {
             get { return references; }
+        }
+
+        public byte[] Hash
+        {
+            get
+            {
+                RequireSingleAsset();
+                return assets[0].Hash;
+            }
+        }
+
+        public Stream OpenStream()
+        {
+            RequireSingleAsset();
+            return Assets[0].OpenStream();
+        }
+
+        void RequireSingleAsset()
+        {
+            if (assets.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    "Invalid operation when bundle has no assets."
+                );
+            }
+            if (assets.Count > 1)
+            {
+                throw new InvalidOperationException(
+                    "Invalid operation when bundle assets are not concatenated into a single asset."
+                );
+            }
         }
 
         internal virtual void Initialize(ICassetteApplication application)
@@ -93,7 +125,7 @@ namespace Cassette
 
         internal abstract IHtmlString Render();
 
-        public void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
+        internal void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
         {
             foreach (var asset in newAssets)
             {

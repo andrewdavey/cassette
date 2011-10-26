@@ -34,7 +34,7 @@ namespace Cassette.Web
                 RoutePrefix,
                 ConventionalBundlePathName(bundle.GetType()),
                 bundle.Path.Substring(2),
-                bundle.Assets[0].Hash.ToHexString()
+                bundle.Hash.ToHexString()
             ));
         }
 

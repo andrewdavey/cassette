@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.IO;
 using System.Linq;
 using Moq;
 using Should;
@@ -302,6 +303,56 @@ namespace Cassette
             bundle.Initialize(application.Object);
 
             initializer.Verify(i => i.InitializeBundle(bundle, application.Object), Times.Never());
+        }
+
+        [Fact]
+        public void HashIsHashOfSingleAsset()
+        {
+            var bundle = new TestableBundle("~");
+            var asset = new Mock<IAsset>();
+            var hash = new byte[] { 1, 2, 3 };
+            asset.SetupGet(a => a.Hash).Returns(hash);
+            bundle.Assets.Add(asset.Object);
+
+            bundle.Hash.ShouldEqual(hash);
+        }
+
+        [Fact]
+        public void HashThrowsExceptionIfMoreThanOneAsset()
+        {
+            var bundle = new TestableBundle("~");
+            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(Mock.Of<IAsset>());
+
+            Assert.Throws<InvalidOperationException>(
+                () => bundle.Hash            
+            );
+        }
+
+        [Fact]
+        public void HashThrowsExceptionIfNoAssets()
+        {
+            var bundle = new TestableBundle("~");
+
+            Assert.Throws<InvalidOperationException>(
+                () => bundle.Hash
+            );
+        }
+
+        [Fact]
+        public void OpenStreamReturnsSingleAssetOpenStreamResult()
+        {
+            var bundle = new TestableBundle("~");
+            var asset = new Mock<IAsset>();
+            using (var stream = new MemoryStream())
+            {
+                asset.Setup(a => a.OpenStream()).Returns(stream);
+                bundle.Assets.Add(asset.Object);
+
+                var actualStream = bundle.OpenStream();
+
+                actualStream.ShouldBeSameAs(stream);
+            }
         }
 
         [Fact]
