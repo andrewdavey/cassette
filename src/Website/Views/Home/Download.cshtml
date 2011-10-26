@@ -1,10 +1,10 @@
 ﻿@{
     ViewBag.Title = "Download Cassette";
-    Bundles.Reference("http://gitforked.com/api/1.1/button.js", "body");
-}
+    ViewBag.Section = "download";    
+    Bundles.Reference("http://gitforked.com/api/1.1/button.js", "body");}
 
 <div class="main">
-    <h1>Download Cassette</h1>
+    <h1>Download</h1>
     <div class="content">
         <p>Cassette is distributed under the GPL. <strong>Please read the <a href="/licensing">licensing information</a> before using Cassette.</strong></p>
 
@@ -19,6 +19,6 @@
 
         <h2>Getting Started</h2>
         <p>Cassette should work out of the box, without much configuration. The documentation has a handy getting started guide.</p>
-        <p><a class="call-to-action" href="@Url.DocumentationUrl("getting-started")">Read 'Getting Started'</a></p>
+        <p><a class="action" href="@Url.DocumentationUrl("getting-started")">Read 'Getting Started' &#187;</a></p>
     </div>
 </div>

@@ -13,35 +13,41 @@
 <body>
     <div class="top">
         <div class="wrap">
-            <a class="logo" href="@Url.RouteUrl("Home")">Cassette</a>
+            <a class="logo" href="@Url.RouteUrl("Home")"></a>
             <ul class="links">
+                <!--
                 <li>
                     <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset management for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
                 </li>
                 <li>
                     <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
                 </li>
+                -->
                 <li>
-                    <a href="@Url.RouteUrl("Home")">Home</a>
+                    <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
                 </li>
                 <li>
-                    <a href="@Url.RouteUrl("Download")">Download</a>
+                    <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
                 </li>
                 <li>
-                    <a href="@Url.RouteUrl("Documentation")">Documentation</a>
+                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation")">Documentation</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("index", "licensing")">Licensing</a>
+                    <a @ActiveClassIf("licensing") href="@Url.Action("index", "licensing")">Licensing</a>
                 </li>
                 <li>
-                    <a href="@Url.RouteUrl("Contact")">Contact</a>
+                    <a @ActiveClassIf("faqs") href="@Url.RouteUrl("FAQs")">FAQs</a>
+                </li>
+                <li>
+                    <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
                 </li>
             </ul>
         </div>
     </div>
     @RenderBody()
-    @Bundles.RenderScripts("body")
 
+    <div class="footer"></div>
+    @Bundles.RenderScripts("body")
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-25354265-1']);
@@ -54,3 +60,9 @@
     </script>
 </body>
 </html>
+@helper ActiveClassIf(string section) {
+    if (ViewBag.Section == section)
+    {
+        @:class="active"
+    }
+}

@@ -70,18 +70,24 @@
     <Compile Include="Views\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\scripts\disqus.js" />
+    <Content Include="assets\scripts\disqus\disqus.js" />
+    <Content Include="assets\scripts\licensing-buy\form.js" />
+    <Content Include="assets\scripts\licensing-buy\questions.js" />
+    <Content Include="assets\styles\buy.css" />
     <Content Include="assets\styles\code.css" />
     <Content Include="assets\styles\documentation.css" />
     <Content Include="assets\styles\download.css" />
     <Content Include="assets\styles\home.css" />
+    <Content Include="assets\styles\images\activemarker.png" />
     <Content Include="assets\styles\images\background.gif" />
     <Content Include="assets\styles\images\bullet_toggle_minus.png" />
     <Content Include="assets\styles\images\bullet_toggle_plus.png" />
+    <Content Include="assets\styles\images\cassette-logo.png" />
     <Content Include="assets\styles\images\folder.png" />
     <Content Include="assets\styles\images\logo.png" />
     <Content Include="assets\styles\images\page.png" />
     <Content Include="assets\styles\images\screencast.jpg" />
+    <Content Include="assets\styles\images\tick.png" />
     <Content Include="assets\styles\licensing.css" />
     <Content Include="assets\styles\module.txt" />
     <Content Include="assets\styles\normalize.css" />
@@ -191,6 +197,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Licensing\Purchased.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\FAQs.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Licensing\Buy.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Licensing\ExpiredDiscount.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

@@ -1,110 +1,110 @@
 ﻿/* @reference "http://fonts.googleapis.com/css?family=Droid+Sans:700|Inconsolata"; */
 
+/* Banner */
+
 .banner {
     max-width: 960px;
     margin: 0 auto;
     min-height: 390px;
 }
+
 .banner h1 {
-    font-family: "Droid Sans", sans-serif;
-    color: #fff;
-    font-size: 3.4em;
-    text-shadow: 0 1px 0 #323231;
+    font-size: 2.4em;
     letter-spacing: -1px;
-    margin: .75em 0;
+    margin: .9em 0 .75em 0;
+    padding-top: 10px;
 }
+
 .banner .about {
     display: table;
 }
+
 .banner .intro, .banner .screencast {
     display: table-cell;
     vertical-align: top;
 }
+
 .banner .intro {
     padding-right: 1em;
 }
+
+.intro a {
+    font-size: 1em;
+}
+
 .banner .screencast {
-    width: 272px;
-    background-color: #fff;
-    background-color: rgba(255, 255, 255, 0.3); 
+    width: 172px;
+    background-color: #7ab0d5;
+    padding: 30px;
+    border: solid 1px #0a517d;
 }
-.banner .screencast p {
-    font-size: 10pt;
-    margin: 10px;
-    color: #000;
-    text-shadow: none;
-}
-.banner .screencast a {
-    display: block;
-    width: 272px;
-    height: 204px;
-    border-radius: 3px;
-    background-image: url(images/screencast.jpg);
-    text-align: center;
-    font-weight: bold;
-    color: #000;
-    line-height: 100px;
-    text-decoration: none;
-    font-size: 1.5em;
-    text-shadow: #777 0 0 3px;
-}
+
 .banner p {
     color: #fff;
+    margin: 0 0 1em 0;
     font-size: 1.3em;
     text-shadow: 0 1px 0 #01456D;
-    margin: 0 0 1em 0;
 }
+
+.screencast p {
+    color: Black;
+    font-size: 1em;
+    text-shadow: none;
+}
+
+/* Secondary Content */
 
 .home-main {
     max-width: 960px;
     margin: 0 auto;
 }
-.home-main h2 {
-    font-family: "Droid Sans" , sans-serif;
-    font-size: 1.3em;
-    color: #323231;
-    margin: 0 0 .5em 0;
-}
+
 .section {
     clear: left;
-    margin-bottom: 1em;
+    margin-bottom: 1.8em;
     display: table;
     border: 1px solid #ccc;
     border-radius: 3px;
     width: 100%;
     background-color: #fafafa;
 }
+
 .file-details {
     width: 300px;
-    padding: 10px;
+    padding: 20px 25px 10px 25px;
     display: table-cell;
     vertical-align: top;
-    border-radius: 3px 0 0 3px;
 }
+
 .file {
     background-color: #fff;
     border-left: 1px solid #ccc;
     display: table-cell;
     vertical-align: top;
-    border-radius: 0 3px 3px 0;
-    padding: 5px;
+    padding: 20px 25px;
 }
+
 .section ul {
     padding-left: 1.5em;
 }
+
 .section li {
     margin-bottom: .3em;
 }
+
 p.minor {
     font-size: .8em;
     color: #888;
 }
+
 p.minor a {
     color: #839FC5;
 }
+
 p.minor a:hover {
     color: #00e;
 }
+
 .more {
-    padding: 10px;
+    padding: 20px 25px;
 }
