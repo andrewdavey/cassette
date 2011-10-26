@@ -2,6 +2,7 @@
     width: 406px;
     border: 1px solid #cacaca;
     float: left;
+    margin-top: 5px;
     margin-bottom: 30px;
     min-height: 420px;
 }
@@ -22,11 +23,15 @@
 }
 
 .opensource {
-    margin: 0 43px 0 12px;
+    margin-right: 43px;
 }
 
 .content .opensource p {
-    line-height: 1.5em;
+    line-height: 1.7em;
+}
+
+.content .opensource .actionbutton {
+    line-height: 1.4em;
 }
 
 .content .proprietary p {

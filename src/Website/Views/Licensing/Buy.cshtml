@@ -2,6 +2,7 @@
     ViewBag.Title = "Buy a proprietary software license";
     ViewBag.Section = "licensing";
     Assets.Scripts.Reference("~/assets/scripts/licensing-buy", "body");
+    Assets.Scripts.Reference("~/assets/scripts/questions", "body");
 }
 <div class="main">
     <h1>LICENSING</h1>
@@ -19,8 +20,7 @@
 
                 <dt><a href="#" class="helpquestion">Payment Options</a></dt>
                 <dd class="helpanswer"><p>We're currently taking payment through PayPal. However, a PayPal account isn't required. 
-                You can also check out as a PayPal guest using a debit or credit card.</p>
-                <p></p></dd>
+                You can also check out as a PayPal guest using a debit or credit card.</p></dd>
 
                 <dt><a href="#" class="helpquestion">License Delivery Information</a></dt>
                 <dd class="helpanswer"><p>Your formal license will arrive by email within 2 business days of your purchase.</p>
@@ -62,7 +62,7 @@
 
             <div class="checkout-action">
                 <button type="submit" class="call-to-action">Check Out &#187;</button>
-                <p id="buttonsupport" class="last">Check out via PayPal<br />(PayPal account not required)</p>
+                <p class="buttonsupport">Check out via PayPal<br />(PayPal account not required)</p>
             </div>
 
             <input type="hidden" name="cmd" value="_xclick"/>

@@ -1,0 +1,26 @@
+﻿.contactpage {
+    position: relative;
+}
+
+/* Enquiry Form */
+
+#enquiryform button {
+    clear: left;
+}
+
+#enquiryform button {
+    float: left;
+}
+
+#enquiryform .buttonsupport {
+    float: left;
+    margin-top: 6px;
+    text-align: left;
+}
+
+/* Contact Details */
+
+#contactdetails {
+    padding: 5px 0 0 30em;
+    min-height: 480px;
+}

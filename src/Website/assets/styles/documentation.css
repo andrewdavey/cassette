@@ -69,6 +69,10 @@
     margin-top: 10px;
 }
 
+.tree a {
+    color: #171717;
+}
+
 .documentation .item {
     display: table-cell;
     padding: 1.7em 2.3em;

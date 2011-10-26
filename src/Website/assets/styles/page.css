@@ -13,7 +13,7 @@ body {
 
 .content {
     background-color: #fff;
-    padding: 2.5em;
+    padding: 2em 2.5em;
     border-radius: 10px;
     min-height: 300px;
     box-shadow: #aaa 0 0 3px;
@@ -29,7 +29,7 @@ h1 {
 h2 {
     font-family: "Droid Sans" , sans-serif;
     color: #03517e;
-    font-size: 1.2em;
+    font-size: 1.3em;
     margin: 0px 0px .75em 0px;
 }
 
@@ -41,7 +41,7 @@ h3 {
 
 p {
     color: #171717;
-    margin: 0 0 1.4em 0;
+    margin: 0 0 1em 0;
     line-height: 1.4em;
 }
 
@@ -70,6 +70,27 @@ a:visited {
     color: #377302;
 }
 
+.helpquestion {
+    color: #171717;
+    padding-left: 20px;
+    font-weight: bold;
+    background-image: url(images/bullet_toggle_plus.png);
+    background-repeat: no-repeat;
+    background-position: left 6px;
+}
+
+.helpquestion.open {
+    background-image: url(images/bullet_toggle_minus.png);    
+}
+
+a.helpquestion:visited {
+    color: #171717;
+}
+
+dl {
+    margin-bottom: 2em;
+}
+
 dt, dd {
     line-height: 1.4em;
     margin-bottom: .75em;
@@ -88,19 +109,25 @@ dd + dt {
 form {
     padding: 30px 35px;
     background-color: #f2f2f2;
+    position: absolute;    
+    top: 4.7em;
+    left: 2.5em;
+    border: 1px solid #cacaca;
+    margin: 3px 35px 30px 0;    
 }
 
-input, label {
+input, label, textarea {
     display: block;
 }
 
-input {
+input, textarea {
     margin-bottom: 20px;
     border: inset 1px #D2D2D2;
     padding: 6px 4px 6px 7px;
     font-size: 1em;
     color: Black;
     font-family: Calibri, Sans-Serif;
+    width: 370px;
 }
 
 label {
@@ -108,13 +135,26 @@ label {
 }
 
 select {
-    margin-bottom: 20px;
+    margin-bottom: 2em;
+    display: block;
     padding: 3px;
+}
+
+button {
+    margin-bottom: .5em;
+}
+
+.buttonsupport {
+    font-size: .8em;
+    margin-bottom: 0;
+    text-align: center;
+    font-weight: normal;
+    color: #5B5B5B;
 }
 
 /* Call to Action Buttons */
 
-a.call-to-action, button.call-to-action {
+.call-to-action {
     -moz-box-shadow: inset 0px 1px 0px 0px #d44c4c;
     -webkit-box-shadow: inset 0px 1px 0px 0px #d44c4c;
     box-shadow: inset 0px 1px 0px 0px #d44c4c;

@@ -41,7 +41,16 @@
     padding: 0;
     display: table-cell;
     vertical-align: middle;
-    padding-left: 30px;
+    padding-left: 25px;
+}
+
+#tweet, #g1 {
+    padding-top: 5px;
+}
+
+#g1 {
+    padding-left: 6px;
+    padding-right: 35px;
 }
 
 .top .links a {
