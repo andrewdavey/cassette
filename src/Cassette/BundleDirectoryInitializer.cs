@@ -36,9 +36,11 @@ namespace Cassette
             var directory = application.SourceDirectory.GetDirectory(directoryPath ?? bundle.Path);
             var descriptor = LoadBundleDescriptor(directory);
             IEnumerable<IAsset> assets;
+            bool skipSorting;
             if (descriptor == null)
             {
                 assets = GetAllAssets(bundle, directory);
+                skipSorting = false;
             }
             else
             {
@@ -46,8 +48,9 @@ namespace Cassette
 
                 var files = descriptor.GetAssetFiles(directory, GetFilePatterns(), ExcludeFilePath, SearchOption);
                 assets = files.Select(file => new Asset(bundle, file));
+                skipSorting = true;
             }
-            AddAssetsToBundle(bundle, assets);
+            AddAssetsToBundle(bundle, assets, skipSorting);
         }
 
         BundleDescriptor LoadBundleDescriptor(IDirectory directory)
@@ -75,19 +78,16 @@ namespace Cassette
                    select new Asset(bundle, file);
         }
 
-        void AddAssetsToBundle(Bundle bundle, IEnumerable<IAsset> assets)
+        void AddAssetsToBundle(Bundle bundle, IEnumerable<IAsset> assets, bool skipSorting)
         {
-            foreach (var asset in assets)
-            {
-                bundle.Assets.Add(asset);
-            }
+            bundle.AddAssets(assets, skipSorting);
         }
 
         static bool IsDescriptorFilename(IFile file)
         {
             // TODO: Remove legacy support for module.txt
-            return file.FullPath.EndsWith("bundle.txt", StringComparison.OrdinalIgnoreCase)
-                   || file.FullPath.EndsWith("module.txt", StringComparison.OrdinalIgnoreCase);
+            return file.FullPath.EndsWith("/bundle.txt", StringComparison.OrdinalIgnoreCase)
+                   || file.FullPath.EndsWith("/module.txt", StringComparison.OrdinalIgnoreCase);
         }
 
         IEnumerable<string> GetFilePatterns()

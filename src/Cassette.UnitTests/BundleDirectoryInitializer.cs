@@ -162,6 +162,28 @@ namespace Cassette
             bundle.Assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset-A.js");
         }
 
+        [Fact]
+        public void GivenDescriptorUsedToCreateBundle_WhenSorted_BundleAssetOrderIsUnchanged()
+        {
+            CreateDirectory("test");
+            CreateFile("test", "asset-A.js");
+            CreateFile("test", "asset-B.js");
+            CreateFile("test", "asset-C.js");
+            CreateFile("test", "bundle.txt")("asset-C.js\nasset-A.js\nasset-B.js");
+
+            var initializer = new BundleDirectoryInitializer();
+            var bundle = new TestableBundle("~/test");
+            initializer.InitializeBundle(bundle, application);
+            // The following reference should be ignored, because we're building from a descriptor.
+            bundle.Assets[0].AddReference("~/test/asset-B.js", -1);
+
+            bundle.SortAssetsByDependency();
+
+            bundle.Assets[0].SourceFile.FullPath.ShouldEqual("~/test/asset-C.js");
+            bundle.Assets[1].SourceFile.FullPath.ShouldEqual("~/test/asset-A.js");
+            bundle.Assets[2].SourceFile.FullPath.ShouldEqual("~/test/asset-B.js");
+        }
+
         public void Dispose()
         {
             temp.Dispose();
