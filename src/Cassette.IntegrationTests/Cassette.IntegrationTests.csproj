@@ -58,18 +58,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\scripts\module-a\asset-1.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\scripts\module-a\asset-2.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\scripts\module-b\asset-3.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\scripts\module-b\asset-3.vsdoc.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="assets\scripts\bundle-a\asset-1.js" />
+    <Content Include="assets\scripts\bundle-a\asset-2.js" />
+    <Content Include="assets\scripts\bundle-b\asset-3-vsdoc.js" />
+    <Content Include="assets\scripts\bundle-b\asset-3.js" />
     <Content Include="assets\styles\asset-1.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

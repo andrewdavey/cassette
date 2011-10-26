@@ -34,7 +34,7 @@ namespace Website.Controllers
             return View();
         }
 
-        public ActionResult FAQs ()
+        public ActionResult Faqs()
         {
             return View();
         }
