@@ -49,11 +49,7 @@ namespace Cassette.Stylesheets
 
         IEnumerable<string> GetAssetUrls(StylesheetBundle bundle)
         {
-            return bundle.Assets.Select(
-                asset => asset.HasTransformers 
-                    ? urlGenerator.CreateAssetCompileUrl(asset)
-                    : urlGenerator.CreateAssetUrl(asset)
-            );
+            return bundle.Assets.Select(urlGenerator.CreateAssetUrl);
         }
 
         Func<string, string> GetCreateLinkFunc(StylesheetBundle bundle)

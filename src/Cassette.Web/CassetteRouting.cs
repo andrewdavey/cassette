@@ -41,16 +41,7 @@ namespace Cassette.Web
         public string CreateAssetUrl(IAsset asset)
         {
             return urlModifier.Modify(string.Format(
-                "{0}?{1}",
-                asset.SourceFile.FullPath.Substring(2),
-                asset.Hash.ToHexString()
-            ));
-        }
-
-        public string CreateAssetCompileUrl(IAsset asset)
-        {
-            return urlModifier.Modify(string.Format(
-                "{0}/compile/{1}?{2}",
+                "{0}/asset/{1}?{2}",
                 RoutePrefix,
                 asset.SourceFile.FullPath.Substring(2),
                 asset.Hash.ToHexString()
@@ -114,7 +105,7 @@ namespace Cassette.Web
         void InstallAssetCompileRoute(RouteCollection routes, IBundleContainer bundleContainer)
         {
             // Used to return compiled coffeescript, less, etc.
-            const string url = RoutePrefix + "/compile/{*path}";
+            const string url = RoutePrefix + "/asset/{*path}";
             var handler = new DelegateRouteHandler(
                 requestContext => new AssetRequestHandler(
                     requestContext,

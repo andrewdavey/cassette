@@ -149,9 +149,9 @@ namespace Cassette
 
         internal IAsset FindAssetByPath(string pathToFind)
         {
-            return Assets.FirstOrDefault(
-                a => PathUtilities.PathsEqual(a.SourceFile.FullPath, pathToFind)
-            );
+            var assetFinder = new AssetFinder(pathToFind);
+            Accept(assetFinder);
+            return assetFinder.FoundAsset;
         }
 
         internal void Accept(IAssetVisitor visitor)

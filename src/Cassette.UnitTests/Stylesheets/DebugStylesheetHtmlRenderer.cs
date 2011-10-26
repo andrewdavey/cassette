@@ -51,27 +51,6 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenBundleWithAssetsThatIsTransformed_WhenRender_ThenLinkHtmlHasTransformUrlReturned()
-        {
-            var bundle = new StylesheetBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.HasTransformers)
-                 .Returns(true);
-            bundle.Assets.Add(asset.Object);
-
-            var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateAssetCompileUrl(It.IsAny<IAsset>()))
-                        .Returns("URL");
-
-            var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
-
-            html.ShouldEqual(
-                "<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\"/>"
-            );
-        }
-
-        [Fact]
         public void GivenBundleWithMediaAndAssets_WhenRender_ThenLinkForEachAssetIsReturned()
         {
             var bundle = new StylesheetBundle("~/test")
@@ -97,4 +76,3 @@ namespace Cassette.Stylesheets
         }
     }
 }
-

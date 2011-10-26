@@ -88,43 +88,28 @@ namespace Cassette.Web
 
     public class UrlGenerator_CreateAssetUrl_Tests : CassetteRouting_Tests
     {
-        readonly Mock<IAsset> asset;
-
-        public UrlGenerator_CreateAssetUrl_Tests()
-        {
-            asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-        }
-
         [Fact]
         public void UrlModifierModifyIsCalled()
         {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
+            asset.SetupGet(a => a.Hash).Returns(new byte[0]);
+
             routing.CreateAssetUrl(asset.Object);
+
             urlModifier.Verify(m => m.Modify(It.IsAny<string>()));
         }
 
         [Fact]
-        public void CreateAssetUrlReturnAssetPathWithoutTildePrefixAndWithHashQueryString()
+        public void CreateAssetUrlReturnsCompileUrl()
         {
-            var url = routing.CreateAssetUrl(asset.Object);
-            url.ShouldEqual("test/asset.js?010203");
-        }
-    }
-
-    public class UrlGenerator_CreateAssetCompileUrl_Tests : CassetteRouting_Tests
-    {
-        [Fact]
-        public void CreateAssetCompileUrlReturnsCompileUrl()
-        {
-            var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
             
-            var url = routing.CreateAssetCompileUrl(asset.Object);
+            var url = routing.CreateAssetUrl(asset.Object);
 
-            url.ShouldEqual("_cassette/compile/test/asset.coffee?01020f10");
+            url.ShouldEqual("_cassette/asset/test/asset.coffee?01020f10");
         }
     }
 

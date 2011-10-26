@@ -30,6 +30,7 @@ namespace Website
         {
             bundles.Add(new StylesheetBundle("assets/styles"));
             bundles.Add(new ExternalScriptBundle("//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js", "jquery"));
-            bundles.AddForEachSubDirectory<ScriptBundle>("assets/scripts");        }
+            bundles.AddForEachSubDirectory<ScriptBundle>("assets/scripts");
+        }
     }
 }

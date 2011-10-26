@@ -181,11 +181,8 @@ namespace Cassette
         public void ContainsRelativePathToAsset_ReturnsTrue()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
-            bundle.Assets.Add(asset.Object);
+            var asset = StubAsset("~/test/asset.js");
+            bundle.Assets.Add(asset);
 
             bundle.ContainsPath("asset.js").ShouldBeTrue();
         }
@@ -194,11 +191,10 @@ namespace Cassette
         public void FindAssetByPathReturnsAssetWithMatchingFilename()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
-            bundle.Assets.Add(asset.Object);
+            var asset = StubAsset("~/test/asset.js");
+            bundle.Assets.Add(asset);
 
-            bundle.FindAssetByPath("~/test/asset.js").ShouldBeSameAs(asset.Object);
+            bundle.FindAssetByPath("~/test/asset.js").ShouldBeSameAs(asset);
         }
 
         [Fact]
@@ -213,22 +209,40 @@ namespace Cassette
         public void GivenAssetInSubDirectory_WhenFindAssetByPathWithBackSlashes_ThenAssetWithMatchingFilenameIsReturned()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/sub/asset.js");
-            bundle.Assets.Add(asset.Object);
+            var asset = StubAsset("~/test/sub/asset.js");
+            bundle.Assets.Add(asset);
 
-            bundle.FindAssetByPath("~\\test\\sub\\asset.js").ShouldBeSameAs(asset.Object);
+            bundle.FindAssetByPath("~\\test\\sub\\asset.js").ShouldBeSameAs(asset);
         }
 
         [Fact]
         public void GivenAssetInSubDirectory_WhenFindAssetByPath_ThenAssetWithMatchingFilenameIsReturned()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/sub/asset.js");
-            bundle.Assets.Add(asset.Object);
+            var asset = StubAsset("~/test/sub/asset.js");
+            bundle.Assets.Add(asset);
 
-            bundle.FindAssetByPath("~/test/sub/asset.js").ShouldBeSameAs(asset.Object);
+            bundle.FindAssetByPath("~/test/sub/asset.js").ShouldBeSameAs(asset);
+        }
+
+        [Fact]
+        public void GivenConcatenatedAsset_WhenFindAssetByPath_ThenSourceAssetsAreSearched()
+        {
+            var bundle = new TestableBundle("~/test");
+            var asset1 = StubAsset("~/test/asset1.js");
+            var asset2 = StubAsset("~/test/asset2.js");
+
+            // Simulate concatenated asset. We only need the Accept method to visit each child.
+            var concatenatedAsset = new Mock<IAsset>();
+            concatenatedAsset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
+                .Callback<IAssetVisitor>(v =>
+                {
+                    v.Visit(asset1);
+                    v.Visit(asset2);
+                });
+            bundle.Assets.Add(concatenatedAsset.Object);
+
+            bundle.FindAssetByPath("~/test/asset2.js").ShouldBeSameAs(asset2);
         }
 
         [Fact]
@@ -370,6 +384,15 @@ namespace Cassette
 
             asset1.Verify(a => a.Dispose());
             asset2.Verify(a => a.Dispose());
+        }
+
+        IAsset StubAsset(string filename)
+        {
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
+                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.SourceFile.FullPath).Returns(filename);
+            return asset.Object;
         }
     }
 

@@ -73,12 +73,46 @@ namespace Cassette.IntegrationTests
             }
         }
 
+        [Fact]
+        public void CanGetAsset()
+        {
+            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/asset/scripts/bundle-a/asset-1.js?123");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual(@"/// <reference path=""asset-2.js""/>
+
+function asset1() {
+}");
+                }
+            }
+        }
+
+        [Fact]
+        public void GetCoffeeScriptAssetReturnsItCompiledInToJavaScript()
+        {
+            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/asset/scripts/bundle-c/asset.coffee?123");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual(@"(function() {
+  var x;
+  x = 1;
+}).call(this);
+".Replace("\r\n", "\n"));
+                }
+            }
+            
+        }
+
         CassetteApplication CreateApplication(Action<BundleCollection> configure)
         {
             var settings = new CassetteSettings
             {
                 CacheDirectory = new IsolatedStorageDirectory(storage),
-                SourceDirectory = new FileSystemDirectory(Path.GetFullPath("../../assets"))
+                SourceDirectory = new FileSystemDirectory(Path.GetFullPath("assets"))
             };
             var bundles = new BundleCollection(settings);
             new BundleInitializerConfiguration().Configure(bundles, settings);
@@ -143,6 +177,9 @@ namespace Cassette.IntegrationTests
 
         public void Get(string url)
         {
+            var queryStringStart = url.IndexOf('?');
+            if (queryStringStart >= 0) url = url.Substring(0, queryStringStart);
+
             Request.SetupGet(r => r.RequestType).Returns("GET");
             Request.SetupGet(r => r.HttpMethod).Returns("GET");
             Request.SetupGet(r => r.AppRelativeCurrentExecutionFilePath)

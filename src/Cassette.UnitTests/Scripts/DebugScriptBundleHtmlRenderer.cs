@@ -49,25 +49,6 @@ namespace Cassette.Scripts
                 "<script src=\"asset2\" type=\"text/javascript\"></script>"
             );
         }
-
-        [Fact]
-        public void GivenBundleWithTransformedAsset_WhenRenderBundle_ThenScriptElementHasCompiledUrl()
-        {
-            var bundle = new ScriptBundle("~/test");
-            var asset = new Mock<IAsset>();
-            bundle.Assets.Add(asset.Object);
-            asset.SetupGet(a => a.HasTransformers)
-                 .Returns(true);
-
-            var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateAssetCompileUrl(asset.Object))
-                        .Returns("COMPILED-URL");
-
-            var renderer = new DebugScriptBundleHtmlRenderer(urlGenerator.Object);
-
-            var html = renderer.Render(bundle).ToHtmlString();
-            html.ShouldEqual("<script src=\"COMPILED-URL\" type=\"text/javascript\"></script>");
-        }
     }
 }
 

@@ -37,9 +37,7 @@ namespace Cassette.Scripts
         {
             var assetScripts = 
                 from asset in bundle.Assets
-                let url = asset.HasTransformers
-                    ? urlGenerator.CreateAssetCompileUrl(asset)
-                    : urlGenerator.CreateAssetUrl(asset)
+                let url = urlGenerator.CreateAssetUrl(asset)
                 select string.Format(HtmlConstants.ScriptHtml, url);
 
             return new HtmlString(

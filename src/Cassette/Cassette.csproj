@@ -55,6 +55,7 @@
     <Compile Include="AddFileBundleInitializer.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
+    <Compile Include="AssetFinder.cs" />
     <Compile Include="BundleContainerExtensions.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
