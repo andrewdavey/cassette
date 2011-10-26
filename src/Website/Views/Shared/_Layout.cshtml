@@ -13,14 +13,16 @@
 <body>
     <div class="top">
         <div class="wrap">
-            <a class="logo" href="@Url.RouteUrl("Home")">Cassette</a>
+            <a class="logo" href="@Url.RouteUrl("Home")"></a>
             <ul class="links">
+                <!--
                 <li>
                     <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset management for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
                 </li>
                 <li>
                     <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
                 </li>
+                -->
                 <li>
                     <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
                 </li>
@@ -43,6 +45,9 @@
         </div>
     </div>
     @RenderBody()
+
+    <div class="footer"></div>
+
     @Assets.Scripts.Render("body")
 
     <script type="text/javascript">

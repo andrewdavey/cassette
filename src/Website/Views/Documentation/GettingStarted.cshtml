@@ -1,4 +1,4 @@
-﻿<h2>Getting Started</h2>
+﻿<h1>Getting Started</h1>
 <pre><code>PM&gt; Install-Package Cassette.Web</code></pre>
 <p>
 Add the <code>Cassette.Web</code> nuget package to your ASP.NET 4.0 application.
@@ -40,7 +40,7 @@ Use the <code>Render</code> methods to insert the HTML into the page.
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 
-<h3>Debug vs Production mode</h3>
+<h2>Debug vs Production mode</h2>
 <p>Run your application and try toggling <code>debug</code> mode in <code>Web.config</code>.</p>
 <pre><code><span class="open-tag">&lt;</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
     ...
@@ -55,7 +55,7 @@ Use the <code>Render</code> methods to insert the HTML into the page.
 <p>When debug is true, Cassette will use debug-friendly assets.</p>
 <p>When debug is false, Cassette will use minified, compressed, cached, versioned assets.</p>
 
-<h3>Master/layout Pages</h3>
+<h2>Master/layout Pages</h2>
 <p>
 If you are using master/layout pages then references can be in the content page and render calls in the master/layout.
 You can even reference assets from a partial view and they will be rendered in the layout.
@@ -97,7 +97,7 @@ You can even reference assets from a partial view and they will be rendered in t
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 
-<h3>Referencing between files</h3>
+<h2>Referencing between files</h2>
 <p>We've referenced both jquery.js and page.js. The order matters because page.js depends on jquery.js.
 So let's make this explicit. In page.js, we can add a reference comment:</p>
 <pre><code><span class="comment">/// &lt;reference path="jquery.js"/&gt;</span>
@@ -119,7 +119,7 @@ Therefore we can delete the explicit jQuery reference from the page.
 <p>An added benefit of using reference comments is that Visual Studio will provide
 IntelliSense for the functions and objects exposed by the referenced files.</p>
 
-<h3>Enough with the basics!</h3>
+<h2>Enough with the basics!</h2>
 <p>
 This introduction has only scratched the surface of what Cassette can do. Including each script
 individually into a page is bad for production performance. Let's learn how to configure Cassette
@@ -127,5 +127,5 @@ to concatenate related scripts...
 </p>
 <p><a class="action" href="@Url.DocumentationUrl("getting-started/combine-assets-into-modules")">Read about combining assets &#187;</a></p>
 
-<h3>Questions?</h3>
+<h2>Questions?</h2>
 <p>Please visit the <a href="http://groups.google.com/group/cassette">Cassette Google Group</a> to ask for help.</p>

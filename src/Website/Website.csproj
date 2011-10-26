@@ -82,6 +82,7 @@
     <Content Include="assets\styles\images\background.gif" />
     <Content Include="assets\styles\images\bullet_toggle_minus.png" />
     <Content Include="assets\styles\images\bullet_toggle_plus.png" />
+    <Content Include="assets\styles\images\cassette-logo.png" />
     <Content Include="assets\styles\images\folder.png" />
     <Content Include="assets\styles\images\logo.png" />
     <Content Include="assets\styles\images\page.png" />

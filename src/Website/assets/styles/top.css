@@ -7,18 +7,10 @@
 .logo {
     display: block;
     height: 77px;
-    background-image: url(images/logo.png);
+    width: 218px;
+    background-image: url(images/cassette-logo.png);
     background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 80px;
-    font-family: "Droid Sans", sans-serif;
-    font-weight: 700;
-    font-size: 2em;
-    color: #EFEFEF;
-    text-shadow: white 0 0 1px;
-    letter-spacing: -1px;
-    line-height: 77px;
-    text-decoration: none;
+    background-position: left 16px;
 }
 
 .logo:hover {

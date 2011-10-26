@@ -1,4 +1,4 @@
-﻿<h2>Configuration</h2>
+﻿<h1>Configuration</h1>
 <p>Cassette uses code-based configuration to define asset modules and what processing to apply to them.
 Your web application can contain a public class that implements <code>Cassette.ICassetteConfiguration</code>.</p>
 <p>During application start-up, Cassette will create your configuration class and call the <code>Configure</code> method.</p>
@@ -14,10 +14,10 @@ Your web application can contain a public class that implements <code>Cassette.I
 }</code></pre>
 <p class="minor">The <code>Cassette.Web</code> nuget package adds the <code>CassetteConfiguration.cs</code> file to your project.</p>
 
-<h3>Next...</h3>
+<h2>Next...</h2>
 <p>Add some <a href="@Url.DocumentationUrl("configuration/module-sources")">module sources</a> to the configuration.</p>
 
-<h3>Advanced ICassetteApplication Properties</h3>
+<h2>Advanced ICassetteApplication Properties</h2>
 <p>The <code>ICassetteApplication</code> object passed to the <code>Configure</code> methods has some properties you can set.</p>
 <dl>
     <dt><code>IsOutputOptimized</code></dt>
