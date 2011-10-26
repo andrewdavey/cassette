@@ -90,7 +90,7 @@ namespace Cassette.Persistence
             {
                 var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
                 var bundle = new TestableBundle("~/test");
-                bundle.AddReferences(new[] { "~/other" });
+                bundle.AddReference("~/other");
                 
                 cache.SaveBundleContainer(new BundleContainer(new[] { bundle, new TestableBundle("~/other")  }));
 

@@ -146,7 +146,10 @@ namespace Cassette.Persistence
                     bundle.Assets.Clear();
                     bundle.Assets.Add(new CachedAsset(file, hash, childAssets));
                 }
-                bundle.AddReferences(references);
+                foreach (var reference in references)
+                {
+                    bundle.AddReference(reference);                    
+                }
             };
         }
 

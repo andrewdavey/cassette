@@ -104,7 +104,7 @@ namespace Cassette
         public void GivenBundleWithInvalid_ConstructorThrowsException()
         {
             var bundle1 = new TestableBundle("~/bundle1");
-            bundle1.AddReferences(new[] { "~\\bundle2" });
+            bundle1.AddReference("~\\bundle2");
 
             var exception = Assert.Throws<AssetReferenceException>(delegate
             {
@@ -169,7 +169,7 @@ namespace Cassette
         {
             var bundle1 = new TestableBundle("~/bundle1");
             var bundle2 = new TestableBundle("~/bundle2");
-            bundle1.AddReferences(new[] { "~/bundle2" });
+            bundle1.AddReference("~/bundle2");
 
             var container = new BundleContainer(new[] { bundle1, bundle2 });
             var sorted = container.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2 });
@@ -193,8 +193,8 @@ namespace Cassette
         {
             var bundle1 = new TestableBundle("~/bundle1");
             var bundle2 = new TestableBundle("~/bundle2");
-            bundle1.AddReferences(new[] { "~/bundle2" });
-            bundle2.AddReferences(new[] { "~/bundle1" });
+            bundle1.AddReference("~/bundle2");
+            bundle2.AddReference("~/bundle1");
             var container = new BundleContainer(new[] { bundle1, bundle2 });
 
             Assert.Throws<InvalidOperationException>(delegate
@@ -208,8 +208,8 @@ namespace Cassette
         {
             var ms = Enumerable.Range(0, 5).Select(i => new TestableBundle("~/" + i)).ToArray();
 
-            ms[1].AddReferences(new[] { "~/4" });
-            ms[4].AddReferences(new[] { "~/3" });
+            ms[1].AddReference("~/4");
+            ms[4].AddReference("~/3");
 
             var container = new BundleContainer(ms);
             var sorted = container.IncludeReferencesAndSortBundles(ms).ToArray();
@@ -226,8 +226,8 @@ namespace Cassette
         {
             var bundleA = new TestableBundle("~/a");
             var bundleB = new TestableBundle("~/b");
-            bundleA.AddReferences(new[] { "~/b" });
-            bundleB.AddReferences(new[] { "~/a" });
+            bundleA.AddReference("~/b");
+            bundleB.AddReference("~/a");
 
             var container = new BundleContainer(new[] { bundleA, bundleB });
             var exception = Assert.Throws<InvalidOperationException>(

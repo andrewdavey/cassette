@@ -50,30 +50,43 @@ namespace Cassette
             // Protected constructor to allow InlineScriptBundle to be created without a path.
         }
 
+        /// <summary>
+        /// The application relative path of the bundle.
+        /// </summary>
         public string Path
         {
             get { return path; }
         }
 
+        /// <summary>
+        /// The list of initializers used to initialize this bundle e.g. setting up the assets.
+        /// </summary>
         public IList<IBundleInitializer> BundleInitializers
         {
             get { return bundleInitializers; }
         }
 
+        /// <summary>
+        /// The value sent in the HTTP Content-Type header.
+        /// </summary>
         public string ContentType { get; set; }
 
+        /// <summary>
+        /// Defines where to render this bundle in an HTML page.
+        /// </summary>
         public string Location { get; set; }
 
-        internal IList<IAsset> Assets
+        /// <summary>
+        /// The assets contained in the bundle.
+        /// </summary>
+        public IList<IAsset> Assets
         {
             get { return assets; }
         }
 
-        internal IEnumerable<string> References
-        {
-            get { return references; }
-        }
-
+        /// <summary>
+        /// Gets the hash of the assets.
+        /// </summary>
         public byte[] Hash
         {
             get
@@ -83,10 +96,28 @@ namespace Cassette
             }
         }
 
+        internal IEnumerable<string> References
+        {
+            get { return references; }
+        }
+
+        /// <summary>
+        /// Opens a readable stream of the contained assets content.
+        /// </summary>
+        /// <returns>A readable stream.</returns>
         public Stream OpenStream()
         {
             RequireSingleAsset();
             return Assets[0].OpenStream();
+        }
+
+        /// <summary>
+        /// Adds a reference to another bundle.
+        /// </summary>
+        /// <param name="bundlePathOrUrl">The application relative path of the bundle, or a external URL.</param>
+        public void AddReference(string bundlePathOrUrl)
+        {
+            references.Add(ConvertReferenceToAppRelative(bundlePathOrUrl));
         }
 
         void RequireSingleAsset()
@@ -132,14 +163,6 @@ namespace Cassette
                 assets.Add(asset);
             }
             hasSortedAssets = preSorted;
-        }
-
-        internal void AddReferences(IEnumerable<string> referencePathsOrUrls)
-        {
-            foreach (var reference in referencePathsOrUrls)
-            {
-                references.Add(ConvertReferenceToAppRelative(reference));
-            }
         }
 
         internal virtual bool ContainsPath(string pathToFind)

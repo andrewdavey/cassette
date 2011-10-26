@@ -44,7 +44,10 @@ namespace Cassette
             }
             else
             {
-                bundle.AddReferences(descriptor.References);
+                foreach (var reference in descriptor.References)
+                {
+                    bundle.AddReference(reference);
+                }
 
                 var files = descriptor.GetAssetFiles(directory, GetFilePatterns(), ExcludeFilePath, SearchOption);
                 assets = files.Select(file => new Asset(bundle, file));

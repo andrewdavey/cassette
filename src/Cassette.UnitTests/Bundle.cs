@@ -396,13 +396,14 @@ namespace Cassette
         }
     }
 
-    public class Bundle_AddReferences_Tests
+    public class Bundle_AddReference_Tests
     {
         [Fact]
         public void StoresReferences()
         {
             var bundle = new TestableBundle("~/bundle");
-            bundle.AddReferences(new[] { "~\\test", "~\\other" });
+            bundle.AddReference("~\\test");
+            bundle.AddReference("~\\other");
             bundle.References.SequenceEqual(new[] { "~/test", "~/other" }).ShouldBeTrue();
         }
 
@@ -410,7 +411,7 @@ namespace Cassette
         public void ReferenceStartingWithSlashIsConvertedToAppRelative()
         {
             var bundle = new TestableBundle("~/bundle");
-            bundle.AddReferences(new[] { "/test" });
+            bundle.AddReference("/test");
             bundle.References.Single().ShouldEqual("~/test");
         }
 
@@ -418,7 +419,7 @@ namespace Cassette
         public void BundleRelativePathIsConvertedToAppRelative()
         {
             var bundle = new TestableBundle("~/bundle");
-            bundle.AddReferences(new[] { "../lib" });
+            bundle.AddReference("../lib");
             bundle.References.Single().ShouldEqual("~/lib");
         }
 
@@ -426,7 +427,7 @@ namespace Cassette
         public void TrailingSlashIsRemoved()
         {
             var bundle = new TestableBundle("~/bundle");
-            bundle.AddReferences(new[] { "../lib/" });
+            bundle.AddReference("../lib/");
             bundle.References.Single().ShouldEqual("~/lib");
         }
 
@@ -434,7 +435,7 @@ namespace Cassette
         public void UrlIsNotConverted()
         {
             var bundle = new TestableBundle("~/bundle");
-            bundle.AddReferences(new[] { "http://test.com/" });
+            bundle.AddReference("http://test.com/");
             bundle.References.Single().ShouldEqual("http://test.com/");
         }
     }

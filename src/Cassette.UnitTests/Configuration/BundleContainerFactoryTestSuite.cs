@@ -43,7 +43,7 @@ namespace Cassette.Configuration
         {
             var externalBundle = new TestableBundle("http://external.com/api.js");
             var bundle = new TestableBundle("~/test");
-            bundle.AddReferences(new[] { "http://external.com/api.js" });
+            bundle.AddReference("http://external.com/api.js");
 
             var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
             var factory = new Mock<IBundleFactory<Bundle>>();
@@ -62,9 +62,9 @@ namespace Cassette.Configuration
         {
             var externalBundle = new TestableBundle("http://external.com/api.js");
             var bundle1 = new TestableBundle("~/test1");
-            bundle1.AddReferences(new[] { "http://external.com/api.js" });
+            bundle1.AddReference("http://external.com/api.js");
             var bundle2 = new TestableBundle("~/test2");
-            bundle2.AddReferences(new[] { "http://external.com/api.js" });
+            bundle2.AddReference("http://external.com/api.js");
             var bundles = new[] { bundle1, bundle2 };
 
             var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
@@ -134,7 +134,7 @@ namespace Cassette.Configuration
             var containerFactory = CreateFactory(factories);
 
             var bundle = new TestableBundle("~/test");
-            bundle.AddReferences(new[] { "http://test.com/" });
+            bundle.AddReference("http://test.com/");
             bundle.Assets.Add(asset.Object);
             var application = StubApplication();
             var container = containerFactory.Create(new[] { bundle }, application);
