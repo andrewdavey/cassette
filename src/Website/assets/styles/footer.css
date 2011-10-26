@@ -1,10 +1,25 @@
 ﻿.footer {
     width: 960px;
-    margin: 2em auto;
+    margin: 1.8em auto;
 }
 
 .footer p {
     text-align: center;
     font-size: .8em;
     color: #919191;
+}
+
+/* Twitter Icon in Footer */
+
+#twittericon {
+    display: block;
+    margin: 0 auto;
+    height: 16px;
+    width: 30px;
+    background-image: url(images/twittericon.png);
+    background-position: 0 0;
+}
+
+a#twittericon:hover {
+    background-position: 0 -16px;
 }
