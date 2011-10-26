@@ -191,6 +191,7 @@ namespace Cassette
 
         protected virtual void Dispose(bool disposing)
         {
+            if (!disposing) return;
             foreach (var asset in assets.OfType<IDisposable>())
             {
                 asset.Dispose();
