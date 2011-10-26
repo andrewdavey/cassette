@@ -1,3 +1,10 @@
 ﻿.footer {
-    height: 250px;   
+    width: 960px;
+    margin: 2em auto;
+}
+
+.footer p {
+    text-align: center;
+    font-size: .8em;
+    color: #919191;
 }
