@@ -1,9 +1,13 @@
 ﻿html {
-    background: #f0f0f0 url(images/background.gif) repeat-x top center;
+    background: #f0f0f0 url(images/contentnoise.png) repeat top center;
 }
 
 body {
     font-family: Calibri, sans-serif;
+    background: url(images/background.gif) repeat-x top center;
+}
+
+.mainwrap {
 }
 
 .main {
@@ -173,7 +177,7 @@ button {
     text-decoration: none;
     text-shadow: 1px 1px 0px #af1818;
     color: White;
-    font-size: 1.2em;
+    font-size: 1.1em;
 }
 
 a.call-to-action:hover {
@@ -219,7 +223,7 @@ a.call-to-action:hover {
     text-decoration: none;
     text-shadow: 1px 1px 0px #69952b;
     margin-right: 1em;
-    font-size: 1.2em;
+    font-size: 1.1em;
 }
 
 a.action {

@@ -11,7 +11,8 @@
     @Assets.Stylesheets.Render()
 </head>
 <body>
-    <div class="top">
+    <div class="topwrap">
+        <div class="top">
         <div class="wrap">
             <a class="logo" href="@Url.RouteUrl("Home")"></a>
             <ul class="links">
@@ -44,12 +45,14 @@
             </ul>
         </div>
     </div>
+    </div>
+
     @RenderBody()
 
     <div class="footer"></div>
 
     @Assets.Scripts.Render("body")
-
+    
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-25354265-1']);
