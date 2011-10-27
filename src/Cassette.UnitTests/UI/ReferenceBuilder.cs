@@ -165,7 +165,7 @@ namespace Cassette.UI
         public void WhenAddReferenceToUnknownUrl_ThenCreatedBundleIsProcessed()
         {
             var bundleFactory = new Mock<IBundleFactory<TestableBundle>>();
-            var bundle = new TestableBundle("~", false);
+            var bundle = new TestableBundle("~");
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", null))
                          .Returns(bundle);
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
@@ -348,8 +348,8 @@ namespace Cassette.UI
         [Fact]
         public void GivenAddReferenceToTwoPaths_WhenRender_ThenBundleRenderOutputsSeparatedByNewLinesReturned()
         {
-            var bundle1 = new TestableBundle("~/stub1", false) { RenderResult = "output1" };
-            var bundle2 = new TestableBundle("~/stub2", false) { RenderResult = "output2" };
+            var bundle1 = new TestableBundle("~/stub1") { RenderResult = "output1" };
+            var bundle2 = new TestableBundle("~/stub2") { RenderResult = "output2" };
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub1"))
                            .Returns(bundle1);
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub2"))

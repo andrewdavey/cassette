@@ -25,8 +25,8 @@ namespace Cassette.Stylesheets
 {
     public class StylesheetBundle : Bundle
     {
-        public StylesheetBundle(string applicationRelativePath, bool useDefaultBundleInitializer = true)
-            : base(applicationRelativePath, useDefaultBundleInitializer)
+        public StylesheetBundle(string applicationRelativePath)
+            : base(applicationRelativePath)
         {
             ContentType = "text/css";
             Processor = new StylesheetPipeline();

@@ -46,7 +46,7 @@ namespace Example
 
             bundles.AddForEachSubDirectory<HtmlTemplateBundle>(
                 "HtmlTemplates",
-                new BundleDirectoryInitializer { FilePattern = "*.htm" },
+                new AssetSource { FilePattern = "*.htm" },
                 bundle => bundle.Processor = new KnockoutJQueryTmplPipeline()
             );
         }

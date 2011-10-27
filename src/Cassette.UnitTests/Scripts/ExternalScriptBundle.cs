@@ -45,13 +45,6 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void WhenCreateWithUrl_ThenBundleInitializersIsEmpty()
-        {
-            var bundle = new ExternalScriptBundle(Url);
-            bundle.BundleInitializers.ShouldBeEmpty();            
-        }
-
-        [Fact]
         public void WhenCreateWithUrlAndPath_ThenUrlIsAssigned()
         {
             var bundle = new ExternalScriptBundle(Url, "~/test");
@@ -77,49 +70,6 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle(Url, "test", "!window.test");
             bundle.FallbackCondition.ShouldEqual("!window.test");
-        }
-
-        [Fact]
-        public void GivenCreatedWithUrlAndPathAndFallbackCondition_WhenInitialize_ThenDefaultInitializerIsUsed()
-        {
-            var application = new Mock<ICassetteApplication>();
-            var initializer = new Mock<IBundleInitializer>();
-            application.Setup(a => a.GetDefaultBundleInitializer(typeof(ExternalScriptBundle)))
-                       .Returns(initializer.Object);
-            application.Setup(a => a.SourceDirectory.DirectoryExists(It.IsAny<string>()))
-                       .Returns(true);
-
-            var bundle = new ExternalScriptBundle(Url, "~/test", "!window.test");
-            bundle.Initialize(application.Object);
-
-            initializer.Verify(i => i.InitializeBundle(bundle, application.Object));
-        }
-
-        [Fact]
-        public void GivenCreatedWithNoFallbackCondition_WhenInitialize_ThenDoNothing()
-        {
-            var application = new Mock<ICassetteApplication>();
-            var bundle = new ExternalScriptBundle(Url, "~/test");
-            
-            bundle.Initialize(application.Object);
-            
-            application.Verify(
-                a => a.GetDefaultBundleInitializer(typeof(ExternalScriptBundle)),
-                Times.Never()
-            );
-        }
-
-        [Fact]
-        public void GivenCreatedWithPathThatDoesNotMapToRealDirectoryAndFallbackConditionAndNoInitializers_WhenInitialize_ThenThrowException()
-        {
-            var application = new Mock<ICassetteApplication>();
-            application.Setup(a => a.SourceDirectory.DirectoryExists(It.IsAny<string>()))
-                       .Returns(false);
-            var bundle = new ExternalScriptBundle(Url, "~/test", "!window.test");
-            
-            Assert.Throws<InvalidOperationException>(
-                () => bundle.Initialize(application.Object)
-            );
         }
 
         [Fact]

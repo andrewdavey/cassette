@@ -7,20 +7,20 @@ namespace Cassette.Configuration
     public abstract class BundleInitializerConfiguration_Tests<T>
         where T : Bundle
     {
-        internal readonly BundleDirectoryInitializer Initializer;
+        internal readonly AssetSource Initializer;
 
         protected BundleInitializerConfiguration_Tests()
         {
             Initializer = GetDefaultInitializer();
         }
 
-        static BundleDirectoryInitializer GetDefaultInitializer()
+        static AssetSource GetDefaultInitializer()
         {
             var configuration = new BundleInitializerConfiguration();
             var settings = new CassetteSettings();
             configuration.Configure(new BundleCollection(settings), settings);
 
-            return settings.DefaultBundleInitializers[typeof(T)] as BundleDirectoryInitializer;
+            return settings.DefaultAssetSources[typeof(T)] as AssetSource;
         }
     }
 

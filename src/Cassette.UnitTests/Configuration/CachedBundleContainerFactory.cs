@@ -26,7 +26,7 @@ namespace Cassette.Configuration
         [Fact]
         public void GivenCacheIsUpToDate_WhenCreateWithBundle_ThenBundleIsNotProcessed()
         {
-            var bundle = new TestableBundle("~/test", false);
+            var bundle = new TestableBundle("~/test");
             var bundles = new[] { bundle };
             var application = StubApplication();
             CacheIsUpToDate(bundles);
@@ -40,7 +40,7 @@ namespace Cassette.Configuration
         [Fact]
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenBundleIsProcessed()
         {
-            var bundle = new TestableBundle("~/test", false);
+            var bundle = new TestableBundle("~/test");
             var bundles = new[] { bundle };
             var application = StubApplication();
             CacheIsOutOfDate(bundles);

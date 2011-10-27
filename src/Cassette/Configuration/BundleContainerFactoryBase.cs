@@ -15,14 +15,6 @@ namespace Cassette.Configuration
 
         public abstract IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, ICassetteApplication application);
 
-        protected void InitializeAllBundles(IEnumerable<Bundle> bundles, ICassetteApplication application)
-        {
-            foreach (var bundle in bundles)
-            {
-                bundle.Initialize(application);
-            }            
-        }
-
         protected void ProcessAllBundles(IEnumerable<Bundle> bundles, ICassetteApplication application)
         {
             foreach (var bundle in bundles)

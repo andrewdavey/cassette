@@ -69,22 +69,6 @@ namespace Cassette.Scripts
             get { return fallbackCondition; }
         }
 
-        internal override void Initialize(ICassetteApplication application)
-        {
-            if (!string.IsNullOrEmpty(fallbackCondition))
-            {
-                if (application.SourceDirectory.DirectoryExists(Path))
-                {
-                    application.GetDefaultBundleInitializer(GetType())
-                               .InitializeBundle(this, application);
-                }
-                else
-                {
-                    throw new InvalidOperationException(string.Format("Cannot initialize external bundle's fallback assets. The bundle directory \"{0}\" does not exist and no other assets have been added.", Path));
-                }
-            }
-        }
-
         internal override void Process(ICassetteApplication application)
         {
             // Any fallback assets are processed like a regular ScriptBundle.

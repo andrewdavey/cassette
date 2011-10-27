@@ -9,7 +9,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void RenderReturnsScriptElementWithUrlGeneratedForBundle()
         {
-            var bundle = new HtmlTemplateBundle("~", false);
+            var bundle = new HtmlTemplateBundle("~");
             var urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
 

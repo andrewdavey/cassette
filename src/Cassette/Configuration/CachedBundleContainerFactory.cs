@@ -19,7 +19,6 @@ namespace Cassette.Configuration
         {
             // The bundles may get altered, so force the evaluation of the enumerator first.
             var bundlesArray = unprocessedBundles.ToArray();
-            InitializeAllBundles(bundlesArray, application);
 
             var externalBundles = CreateExternalBundlesFromReferences(bundlesArray);
 

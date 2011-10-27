@@ -25,7 +25,7 @@ namespace Cassette
 {
     public interface ICassetteApplication : IDisposable
     {
-        IBundleInitializer GetDefaultBundleInitializer(Type bundleType);
+        IAssetSource GetDefaultBundleInitializer(Type bundleType);
         IDirectory SourceDirectory { get; }
         bool IsDebuggingEnabled { get; }
         IUrlGenerator UrlGenerator { get; }

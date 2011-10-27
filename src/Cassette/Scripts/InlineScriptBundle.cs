@@ -32,10 +32,6 @@ namespace Cassette.Scripts
             this.scriptContent = scriptContent;
         }
 
-        internal override void Initialize(ICassetteApplication application)
-        {
-        }
-
         internal override void Process(ICassetteApplication application)
         {
         }

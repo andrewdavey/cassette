@@ -103,9 +103,9 @@ namespace Cassette.Web
         [Fact]
         public void GivenSettingsHasDefaultInitializerForBundleType_WhenGetDefaultBundleInitializer_ThenInitializerReturnedForBundleType()
         {
-            var initializer = Mock.Of<IBundleInitializer>();
+            var initializer = Mock.Of<IAssetSource>();
             var application = StubApplication(
-                settings => settings.DefaultBundleInitializers[typeof(TestableBundle)] = initializer
+                settings => settings.DefaultAssetSources[typeof(TestableBundle)] = initializer
             );
 
             var actualInitializer = application.GetDefaultBundleInitializer(typeof(TestableBundle));
@@ -116,9 +116,9 @@ namespace Cassette.Web
         [Fact]
         public void GivenSettingsHasDefaultInitializerForScriptBundleType_WhenGetDefaultBundleInitializerForExternalScriptBundleType_ThenInitializerReturned()
         {
-            var initializer = Mock.Of<IBundleInitializer>();
+            var initializer = Mock.Of<IAssetSource>();
             var application = StubApplication(
-                settings => settings.DefaultBundleInitializers[typeof(Scripts.ScriptBundle)] = initializer
+                settings => settings.DefaultAssetSources[typeof(Scripts.ScriptBundle)] = initializer
             );
 
             var actualInitializer = application.GetDefaultBundleInitializer(typeof(Scripts.ExternalScriptBundle));
@@ -129,9 +129,9 @@ namespace Cassette.Web
         [Fact]
         public void GivenSettingsHasDefaultInitializerForStylesheetBundleType_WhenGetDefaultBundleInitializerForExternalStylesheetBundleType_ThenInitializerReturned()
         {
-            var initializer = Mock.Of<IBundleInitializer>();
+            var initializer = Mock.Of<IAssetSource>();
             var application = StubApplication(
-                settings => settings.DefaultBundleInitializers[typeof(Stylesheets.StylesheetBundle)] = initializer
+                settings => settings.DefaultAssetSources[typeof(Stylesheets.StylesheetBundle)] = initializer
             );
 
             var actualInitializer = application.GetDefaultBundleInitializer(typeof(Stylesheets.ExternalStylesheetBundle));
@@ -152,7 +152,7 @@ namespace Cassette.Web
         [Fact]
         public void WhenDispose_ThenBundleIsDisposed()
         {
-            var bundle = new TestableBundle("~", false);
+            var bundle = new TestableBundle("~");
             var application = StubApplication(createBundles: settings => new BundleCollection(settings) { bundle });
             
             application.Dispose();

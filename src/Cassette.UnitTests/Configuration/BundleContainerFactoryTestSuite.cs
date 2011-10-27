@@ -29,7 +29,7 @@ namespace Cassette.Configuration
         [Fact]
         public void WhenCreateWithBundle_ThenBundleIsProcessed()
         {
-            var bundle = new TestableBundle("~/test", false);
+            var bundle = new TestableBundle("~/test");
             var application = StubApplication();
 
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
@@ -77,22 +77,6 @@ namespace Cassette.Configuration
             var container = builder.Create(bundles, StubApplication());
 
             container.Bundles.Count().ShouldEqual(3);
-        }
-
-        [Fact]
-        public void WhenCreate_ThenBundleAssetSourcesAreUsedToInitializeBundle()
-        {
-            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
-            var containerFactory = CreateFactory(factories);
-            var initializer = new Mock<IBundleInitializer>();
-
-            var bundle = new TestableBundle("~/test");
-            bundle.BundleInitializers.Add(initializer.Object);
-
-            var application = StubApplication();
-            containerFactory.Create(new[] { bundle }, application);
-
-            initializer.Verify(s => s.InitializeBundle(bundle, application));
         }
 
         [Fact]
@@ -148,7 +132,7 @@ namespace Cassette.Configuration
             appMock.SetupGet(a => a.SourceDirectory)
                    .Returns(Mock.Of<IDirectory>());
             appMock.Setup(a => a.GetDefaultBundleInitializer(It.IsAny<Type>()))
-                   .Returns(Mock.Of<IBundleInitializer>());
+                   .Returns(Mock.Of<IAssetSource>());
             return appMock.Object;
         }
     }

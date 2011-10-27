@@ -52,7 +52,6 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AddFileBundleInitializer.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="AssetFinder.cs" />
@@ -62,13 +61,12 @@
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
     <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
-    <Compile Include="Configuration\BundleExtensions.cs" />
     <Compile Include="Configuration\BundleInitializerConfiguration.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
-    <Compile Include="BundleDirectoryInitializer.cs" />
+    <Compile Include="AssetSource.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\AssignRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
@@ -78,7 +76,7 @@
     <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
-    <Compile Include="IBundleInitializer.cs" />
+    <Compile Include="IAssetSource.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
     <Compile Include="IO\FileExtensions.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />

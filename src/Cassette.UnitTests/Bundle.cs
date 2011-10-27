@@ -65,40 +65,6 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenBundleCreateWithUseDefaultInitializerTrue_WhenInitialize_ThenInitializerRegisteredWithApplicationIsUsed()
-        {
-            var bundle = new TestableBundle("~/test", true);
-            var defaultInitializer = new Mock<IBundleInitializer>();
-            var application = new Mock<ICassetteApplication>();
-            application.Setup(a => a.GetDefaultBundleInitializer(typeof(TestableBundle)))
-                       .Returns(defaultInitializer.Object);
-
-            bundle.Initialize(application.Object);
-
-            defaultInitializer.Verify(i => i.InitializeBundle(bundle, application.Object));
-        }
-
-        [Fact]
-        public void GivenBundleWithUseDefaultInitializerTrue_WhenInitialize_ThenDefaultBundleInitializerIsNotUsed()
-        {
-            var bundle = new TestableBundle("~/test", true);
-            var initializer = new Mock<IBundleInitializer>();
-            bundle.BundleInitializers.Add(initializer.Object);
-
-            var defaultInitializer = new Mock<IBundleInitializer>();
-            var application = new Mock<ICassetteApplication>();
-            application.Setup(a => a.GetDefaultBundleInitializer(typeof(TestableBundle)))
-                       .Returns(defaultInitializer.Object);
-
-            bundle.Initialize(application.Object);
-
-            defaultInitializer.Verify(
-                i => i.InitializeBundle(It.IsAny<Bundle>(), It.IsAny<ICassetteApplication>()),
-                Times.Never()
-            );
-        }
-
-        [Fact]
         public void ContainsPathOfAssetInBundle_ReturnsTrue()
         {
             var bundle = new TestableBundle("~/test");
@@ -270,53 +236,6 @@ namespace Cassette
 
             asset1.Verify(a => a.Accept(visitor.Object));
             asset2.Verify(a => a.Accept(visitor.Object));
-        }
-
-        [Fact]
-        public void BundleInitializersIsInitiallyEmpty()
-        {
-            var bundle = new TestableBundle("~");
-            bundle.BundleInitializers.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public void GivenBundleInitializersAdded_WhenInitialize_ThenInitializeBundleCalled()
-        {
-            var bundle = new TestableBundle("~");
-            var application = Mock.Of<ICassetteApplication>();
-            var initializer = new Mock<IBundleInitializer>();
-            bundle.BundleInitializers.Add(initializer.Object);
-
-            bundle.Initialize(application);
-
-            initializer.Verify(s => s.InitializeBundle(bundle, application));
-        }
-
-        [Fact]
-        public void GivenBundleCreatedWithOnlyAPath_WhenInitialize_ThenApplicationGetDefaultBundleInitializerIsUsed()
-        {
-            var bundle = new TestableBundle("~");
-            var application = new Mock<ICassetteApplication>();
-            var initializer = new Mock<IBundleInitializer>();
-            application.Setup(a => a.GetDefaultBundleInitializer(typeof(TestableBundle)))
-                       .Returns(initializer.Object);
-
-            bundle.Initialize(application.Object);
-
-            initializer.Verify(i => i.InitializeBundle(bundle, application.Object));
-        }
-
-        [Fact]
-        public void GivenBundleCreatedWithOnlyAPathAndInitializersAdded_WhenInitialize_ThenApplicationGetDefaultBundleInitializerIsNotUsed()
-        {
-            var bundle = new TestableBundle("~");
-            var application = new Mock<ICassetteApplication>();
-            var initializer = new Mock<IBundleInitializer>();
-
-            bundle.BundleInitializers.Add(Mock.Of<IBundleInitializer>());
-            bundle.Initialize(application.Object);
-
-            initializer.Verify(i => i.InitializeBundle(bundle, application.Object), Times.Never());
         }
 
         [Fact]

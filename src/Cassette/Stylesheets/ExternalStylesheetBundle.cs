@@ -26,23 +26,18 @@ namespace Cassette.Stylesheets
     public class ExternalStylesheetBundle : StylesheetBundle
     {
         public ExternalStylesheetBundle(string url)
-            : base(url, false)
+            : base(url)
         {
             this.url = url;
         }
 
         public ExternalStylesheetBundle(string url, string applicationRelativePath) 
-            : base(applicationRelativePath, false)
+            : base(applicationRelativePath)
         {
             this.url = url;
         }
 
         readonly string url;
-
-        internal override void Initialize(ICassetteApplication application)
-        {
-            // No initialization required.
-        }
 
         internal override void Process(ICassetteApplication application)
         {

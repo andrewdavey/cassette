@@ -8,6 +8,86 @@ namespace Cassette.Configuration
 {
     public static class BundleCollectionExtensions
     {
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath)
+            where T : Bundle
+        {
+            Add<T>(bundleCollection, applicationRelativePath, null, null);
+        }
+
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IAssetSource assetSource)
+            where T : Bundle
+        {
+            Add<T>(bundleCollection, applicationRelativePath, assetSource, null);
+        }
+
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, Action<T> customizeBundle)
+            where T : Bundle
+        {
+            Add(bundleCollection, applicationRelativePath, null, customizeBundle);
+        }
+
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IAssetSource assetSource, Action<T> customizeBundle)
+            where T : Bundle
+        {
+            Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
+            var bundle = CreateBundle<T>(bundleCollection, applicationRelativePath);
+
+            var source = bundleCollection.Settings.SourceDirectory;
+            if (source.DirectoryExists(applicationRelativePath))
+            {
+                assetSource = assetSource ?? bundleCollection.Settings.DefaultAssetSources[typeof(T)];
+                InitializeDirectoryBundle(bundle, source.GetDirectory(applicationRelativePath), assetSource);
+            }
+            else
+            {
+                InitializeSingleFileBundle(bundle, source.GetFile(applicationRelativePath));
+            }
+
+            if (customizeBundle != null)
+            {
+                customizeBundle(bundle);
+            }
+
+            TraceAssetFilePaths(bundle);
+
+            bundleCollection.Add(bundle);
+        }
+
+        static T CreateBundle<T>(BundleCollection bundleCollection, string applicationRelativePath) where T : Bundle
+        {
+            var bundleFactory = bundleCollection.Settings.BundleFactories[typeof(T)];
+            return (T)bundleFactory.CreateBundle(applicationRelativePath, null);
+        }
+
+        static void InitializeDirectoryBundle<T>(T bundle, IDirectory directory, IAssetSource assetSource) where T : Bundle
+        {
+            var assets = assetSource.GetAssets(directory, bundle);
+            foreach (var asset in assets)
+            {
+                bundle.Assets.Add(asset);
+            }
+        }
+
+        static void InitializeSingleFileBundle<T>(T bundle, IFile file) where T : Bundle
+        {
+            if (file.Exists)
+            {
+                bundle.Assets.Add(new Asset(bundle, file));
+            }
+            else
+            {
+                throw new DirectoryNotFoundException(string.Format("Bundle path not found: {0}", file.FullPath));
+            }
+        }
+
+        static void TraceAssetFilePaths<T>(T bundle) where T : Bundle
+        {
+            foreach (var asset in bundle.Assets)
+            {
+                Trace.Source.TraceInformation(string.Format("Added asset {0}", asset.SourceFile.FullPath));
+            }
+        }
+
         public static void AddForEachSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath)
             where T : Bundle
         {
@@ -20,26 +100,16 @@ namespace Cassette.Configuration
             AddForEachSubDirectory<T>(bundleCollection, applicationRelativePath, null, customizeBundle);
         }
 
-        public static void AddForEachSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IBundleInitializer initializer)
+        public static void AddForEachSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IAssetSource initializer)
             where T : Bundle
         {
             AddForEachSubDirectory<T>(bundleCollection, applicationRelativePath, initializer, null);            
         }
 
-        public static void AddForEachSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IBundleInitializer initializer, Action<T> customizeBundle)
+        public static void AddForEachSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IAssetSource initializer, Action<T> customizeBundle)
             where T : Bundle
         {
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
-            var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath);
-            var subDirectories = directory.GetDirectories().Where(IsNotHidden);
-            var bundles = CreateBundles(bundleFactory, subDirectories);
-
-            foreach (var bundle in bundles)
-            {
-                if (initializer != null) bundle.BundleInitializers.Add(initializer);
-                if (customizeBundle != null) customizeBundle(bundle);
-                bundleCollection.Add(bundle);
-            }
+            
         }
 
         static bool IsNotHidden(IDirectory directory)

@@ -210,7 +210,7 @@ namespace Cassette.Web
         [Fact]
         public void AssetUrlIsMappedToAssetHandler()
         {
-            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/compile/test_coffee");
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/asset/test_coffee");
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));

@@ -9,7 +9,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void ProcessCallsProcessor()
         {
-            var bundle = new HtmlTemplateBundle("~", false);
+            var bundle = new HtmlTemplateBundle("~");
             var processor = new Mock<IBundleProcessor<HtmlTemplateBundle>>();
             var application = Mock.Of<ICassetteApplication>();
             bundle.Processor = processor.Object;
@@ -22,7 +22,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void RenderCallsRenderer()
         {
-            var bundle = new HtmlTemplateBundle("~", false);
+            var bundle = new HtmlTemplateBundle("~");
             var renderer = new Mock<IBundleHtmlRenderer<HtmlTemplateBundle>>();
             bundle.Renderer = renderer.Object;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
@@ -8,8 +9,115 @@ using Xunit;
 
 namespace Cassette.Configuration
 {
+    public class BundleCollection_Add_Tests : IDisposable
+    {
+        TestableBundle createdBundle;
+        readonly BundleCollection bundles;
+        readonly TempDirectory tempDirectory;
+        readonly Mock<IBundleFactory<TestableBundle>> factory;
+        readonly Mock<IAssetSource> defaultAssetSource;
+        readonly CassetteSettings settings;
+
+        public BundleCollection_Add_Tests()
+        {
+            tempDirectory = new TempDirectory();
+            CreateDirectory("test");
+            factory = new Mock<IBundleFactory<TestableBundle>>();
+            factory.Setup(f => f.CreateBundle(It.IsAny<string>(), null))
+                   .Returns<string, BundleDescriptor>((path, d) => (createdBundle = new TestableBundle(path)));
+            defaultAssetSource = new Mock<IAssetSource>();
+            settings = new CassetteSettings
+            {
+                SourceDirectory = new FileSystemDirectory(tempDirectory),
+                BundleFactories = { { typeof(TestableBundle), factory.Object } },
+                DefaultAssetSources = { { typeof(TestableBundle), defaultAssetSource.Object } }
+            };
+            bundles = new BundleCollection(settings);
+        }
+
+        [Fact]
+        public void GivenDefaultAssetSourceReturnsAnAsset_WhenAddDirectoryPath_ThenBundleAddedWithTheAsset()
+        {
+            var asset = StubAsset();
+            defaultAssetSource
+                .Setup(s => s.GetAssets(It.IsAny<IDirectory>(), It.IsAny<Bundle>()))
+                .Returns(new[] { asset });
+
+            bundles.Add<TestableBundle>("~/test");
+
+            bundles["~/test"].ShouldBeSameAs(createdBundle);
+            bundles["~/test"].Assets[0].ShouldBeSameAs(asset);
+        }
+
+        [Fact]
+        public void WhenAddWithDirectoryPathAndAssetSource_ThenSourceIsUsedToGetAssets()
+        {
+            var assetSource = new Mock<IAssetSource>();
+            assetSource.Setup(s => s.GetAssets(It.IsAny<IDirectory>(), It.IsAny<Bundle>()))
+                       .Returns(new[] { StubAsset() })
+                       .Verifiable();
+
+            bundles.Add<TestableBundle>("~/test", assetSource.Object);
+
+            assetSource.Verify();
+        }
+
+        [Fact]
+        public void WhenAddWithCustomizeAction_ThenCustomizeActionCalledAfterTheAssetsHaveBeenAdded()
+        {
+            var asset = StubAsset();
+            defaultAssetSource.Setup(s => s.GetAssets(It.IsAny<IDirectory>(), It.IsAny<Bundle>()))
+                       .Returns(new[] { asset })
+                       .Verifiable();
+
+            int assetCount = 0;
+            Action<TestableBundle> action = b => assetCount = b.Assets.Count;
+
+            bundles.Add("~/test", action);
+
+            assetCount.ShouldEqual(1);
+        }
+
+        [Fact]
+        public void GivenFilePath_WhenAdd_ThenBundleAddedWithSingleAsset()
+        {
+            File.WriteAllText(Path.Combine(tempDirectory, "file.js"), "");
+            bundles.Add<TestableBundle>("~/file.js");
+
+            bundles["~/file.js"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file.js");
+        }
+
+        [Fact]
+        public void GivenPathThatDoesNotExist_WhenAddWith_ThenThrowException()
+        {
+            Assert.Throws<DirectoryNotFoundException>(
+                () => bundles.Add<TestableBundle>("~/does-not-exist")
+            );
+        }
+
+        void CreateDirectory(string path)
+        {
+            Directory.CreateDirectory(Path.Combine(tempDirectory, path));
+        }
+
+        IAsset StubAsset()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("");
+            return asset.Object;
+        }
+
+        public void Dispose()
+        {
+            tempDirectory.Dispose();
+        }
+    }
+
+    // TODO: Rewrite these tests
     public class BundleCollectionExtensions_Tests
     {
+        
+
         [Fact]
         public void GivenTwoBundleDirectories_WhenAddForEachSubDirectory_ThenTwoBundlesAreAddedToTheCollection()
         {
@@ -62,31 +170,6 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void WhenAddForEachSubDirectoryWithInitializer_ThenBundleInitializerIsAssignedForCreatedBundle()
-        {
-            using (var tempDirectory = new TempDirectory())
-            {
-                Directory.CreateDirectory(Path.Combine(tempDirectory, "test"));
-
-                var factory = new Mock<IBundleFactory<Bundle>>();
-                factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
-                       .Returns(new TestableBundle("~/test"));
-                
-                var settings = new CassetteSettings
-                {
-                    SourceDirectory = new FileSystemDirectory(tempDirectory),
-                    BundleFactories = {{typeof(Bundle), factory.Object}}
-                };
-                var bundles = new BundleCollection(settings);
-                var initializer = Mock.Of<IBundleInitializer>();
-
-                bundles.AddForEachSubDirectory<Bundle>("~/", initializer);
-
-                bundles["~/test"].BundleInitializers.ShouldContain(initializer);
-            }
-        }
-
-        [Fact]
         public void WhenAddForeachSubDirectoryWithBundleCustomization_ThenBundleIsCustomized()
         {
             using (var tempDirectory = new TempDirectory())
@@ -106,32 +189,6 @@ namespace Cassette.Configuration
                 
                 bundles.AddForEachSubDirectory<Bundle>("~/", bundle => bundle.ContentType = "TEST");
 
-                bundles["~/test"].ContentType.ShouldEqual("TEST");
-            }
-        }
-
-        [Fact]
-        public void WhenAddForeachSubDirectoryWithBundleInitializerAndCustomization_ThenBundleHasInitializerAndIsCustomized()
-        {
-            using (var tempDirectory = new TempDirectory())
-            {
-                Directory.CreateDirectory(Path.Combine(tempDirectory, "test"));
-
-                var factory = new Mock<IBundleFactory<Bundle>>();
-                factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<BundleDescriptor>()))
-                       .Returns(new TestableBundle("~/test"));
-
-                var settings = new CassetteSettings
-                {
-                    SourceDirectory = new FileSystemDirectory(tempDirectory),
-                    BundleFactories = { { typeof(Bundle), factory.Object } }
-                };
-                var bundles = new BundleCollection(settings);
-                var initializer = Mock.Of<IBundleInitializer>();
-
-                bundles.AddForEachSubDirectory<Bundle>("~/", initializer, bundle => bundle.ContentType = "TEST");
-
-                bundles["~/test"].BundleInitializers.ShouldContain(initializer);
                 bundles["~/test"].ContentType.ShouldEqual("TEST");
             }
         }
