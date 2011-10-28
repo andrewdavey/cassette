@@ -43,3 +43,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
+
+// To allow mocking of internal types, using Moq, the following is required.
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

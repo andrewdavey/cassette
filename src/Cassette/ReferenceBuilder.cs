@@ -46,7 +46,7 @@ namespace Cassette
         public void Reference<T>(string path, string location = null)
             where T : Bundle
         {
-            var bundle = GetBundle(path, () => bundleFactories[typeof(T)].CreateBundle(path, null));
+            var bundle = GetBundle(path, () => bundleFactories[typeof(T)].CreateExternalBundle(path));
             Reference(bundle, location);
         }
 
@@ -56,11 +56,11 @@ namespace Cassette
             {
                 if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
                 {
-                    return bundleFactories[typeof(Scripts.ScriptBundle)].CreateBundle(path, null);
+                    return bundleFactories[typeof(Scripts.ScriptBundle)].CreateExternalBundle(path);
                 }
                 else if (path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
                 {
-                    return bundleFactories[typeof(Stylesheets.StylesheetBundle)].CreateBundle(path, null);
+                    return bundleFactories[typeof(Stylesheets.StylesheetBundle)].CreateExternalBundle(path);
                 }
                 else
                 {

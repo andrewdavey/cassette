@@ -28,9 +28,9 @@ namespace Website
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            bundles.Add(new StylesheetBundle("assets/styles"));
+            bundles.Add<StylesheetBundle>("assets/styles");
             bundles.Add(new ExternalScriptBundle("//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js", "jquery"));
-            bundles.AddForEachSubDirectory<ScriptBundle>("assets/scripts");
+            bundles.AddPerSubDirectory<ScriptBundle>("assets/scripts");
         }
     }
 }

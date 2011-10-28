@@ -34,7 +34,6 @@ namespace Cassette
         readonly string path;
         readonly List<IAsset> assets = new List<IAsset>();
         readonly HashSet<string> references = new HashSet<string>();
-        bool hasSortedAssets;
 
         protected Bundle(string applicationRelativePath)
         {
@@ -90,6 +89,8 @@ namespace Cassette
             get { return references; }
         }
 
+        internal bool IsSorted { get; set; }
+
         /// <summary>
         /// Opens a readable stream of the contained assets content.
         /// </summary>
@@ -129,15 +130,6 @@ namespace Cassette
 
         internal abstract IHtmlString Render();
 
-        internal void AddAssets(IEnumerable<IAsset> newAssets, bool preSorted)
-        {
-            foreach (var asset in newAssets)
-            {
-                assets.Add(asset);
-            }
-            hasSortedAssets = preSorted;
-        }
-
         internal virtual bool ContainsPath(string pathToFind)
         {
             return new BundleContainsPathPredicate().BundleContainsPath(pathToFind, this);
@@ -161,7 +153,7 @@ namespace Cassette
 
         internal void SortAssetsByDependency()
         {
-            if (hasSortedAssets) return;
+            if (IsSorted) return;
             // Graph topological sort, based on references between assets.
             var assetsByFilename = Assets.ToDictionary(
                 a => a.SourceFile.FullPath,
@@ -186,7 +178,7 @@ namespace Cassette
             }
             assets.Clear();
             assets.AddRange(graph.TopologicalSort());
-            hasSortedAssets = true;
+            IsSorted = true;
         }
 
         internal void ConcatenateAssets()

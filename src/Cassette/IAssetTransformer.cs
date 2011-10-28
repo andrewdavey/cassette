@@ -28,4 +28,3 @@ namespace Cassette
         Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset);
     }
 }
-

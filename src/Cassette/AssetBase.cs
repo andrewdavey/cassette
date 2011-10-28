@@ -38,11 +38,6 @@ namespace Cassette
 
         public abstract void Accept(IAssetVisitor visitor);
 
-        public bool HasTransformers
-        {
-            get { return transformers.Any(); }
-        }
-
         public void AddAssetTransformer(IAssetTransformer transformer)
         {
             transformers.Add(transformer);

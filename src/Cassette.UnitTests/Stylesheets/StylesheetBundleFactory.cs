@@ -29,7 +29,7 @@ namespace Cassette.Stylesheets
         public void CreateBundleReturnsStylesheetBundleWithDirectorySet()
         {
             var factory = new StylesheetBundleFactory();
-            var bundle = factory.CreateBundle("~/test", null);
+            var bundle = factory.CreateBundle("~/test");
             bundle.Path.ShouldEqual("~/test");
         }
 
@@ -37,7 +37,7 @@ namespace Cassette.Stylesheets
         public void CreateBundleWithUrlCreatesExternalBundle()
         {
             var factory = new StylesheetBundleFactory();
-            var bundle = factory.CreateBundle("http://test.com/test.css", null);
+            var bundle = factory.CreateBundle("http://test.com/test.css");
             bundle.ShouldBeType<ExternalStylesheetBundle>();
         }
     }

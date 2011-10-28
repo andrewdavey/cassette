@@ -7,18 +7,20 @@ using Cassette.IO;
 
 namespace Cassette
 {
-    public class AssetSource : IAssetSource
+    // TODO: Move this class into Cassette.Configuration?
+
+    public class FileSource : IFileSource
     {
         public string FilePattern { get; set; }
         public Regex ExcludeFilePath { get; set; }
         public SearchOption SearchOption { get; set; }
 
-        public IEnumerable<IAsset> GetAssets(IDirectory directory, Bundle bundle)
+        public IEnumerable<IFile> GetFiles(IDirectory directory)
         {
             return from pattern in GetFilePatterns()
                    from file in directory.GetFiles(pattern, SearchOption)
                    where IsAssetFile(file)
-                   select new Asset(bundle, file);
+                   select file;
         }
 
         IEnumerable<string> GetFilePatterns()

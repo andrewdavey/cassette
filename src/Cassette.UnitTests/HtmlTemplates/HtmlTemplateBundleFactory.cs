@@ -18,8 +18,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
+using Moq;
 using Should;
 using Xunit;
+using Cassette.IO;
 
 namespace Cassette.HtmlTemplates
 {
@@ -29,8 +33,116 @@ namespace Cassette.HtmlTemplates
         public void CreateBundle_ReturnsHtmlTemplateBundleWithPathSet()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var bundle = factory.CreateBundle("~/test", null);
+            var bundle = factory.CreateBundle("~/test");
             bundle.Path.ShouldEqual("~/test");
+        }
+
+        [Fact]
+        public void GivenBundleDescriptorWithOnlyWildcardFilename_WhenCreateBundle_ThenReturnBundleWithAllAssets()
+        {
+            var factory = new HtmlTemplateBundleFactory();
+            var file = StubFile("~/test/file.js");
+            var files = new[] { file };
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "*" }
+            };
+
+            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(file);
+        }
+
+        [Fact]
+        public void GivenBundleDescriptorWithOnlyExplicitFilename_WhenCreateBundle_ThenReturnBundleWithOnlySpecifiedAssets()
+        {
+            var factory = new HtmlTemplateBundleFactory();
+            var file0 = StubFile("~/test/yes.js");
+            var file1 = StubFile("~/test/no.js");
+            var files = new[] { file0, file1 };
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "~/test/yes.js" }
+            };
+
+            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(file0);
+            bundle.Assets.Count.ShouldEqual(1);
+        }
+
+        [Fact]
+        public void GivenBundleDescriptorWithExplicitFilenamesThenWildcard_WhenCreateBundle_ThenReturnBundleWithSpecifiedAssetsThenAllTheRemainingAssets()
+        {
+            var factory = new HtmlTemplateBundleFactory();
+            var file0 = StubFile("~/test/0.js");
+            var file1 = StubFile("~/test/1.js");
+            var file2 = StubFile("~/test/2.js");
+            var file3 = StubFile("~/test/3.js");
+            var files = new[] { file0, file1, file2, file3 };
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "~/test/3.js", "~/test/1.js", "*" }
+            };
+
+            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+
+            bundle.Assets.Count.ShouldEqual(4);
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(file3);
+            bundle.Assets[1].SourceFile.ShouldBeSameAs(file1);
+            new HashSet<IFile>(bundle.Assets.Skip(2).Select(a => a.SourceFile))
+                .SetEquals(new[] { file0, file2 })
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenBundleDescriptorWithExplicitFilename_WhenCreateBundle_ThenBundleIsSorted()
+        {
+            var factory = new HtmlTemplateBundleFactory();
+            var file = StubFile("~/test/file.js");
+            var files = new[] { file };
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "~/test/file.js" }
+            };
+
+            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+
+            bundle.IsSorted.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenBundleDescriptorWithOnlyWildcard_WhenCreateBundle_ThenBundleIsSortedIsFalse()
+        {
+            var factory = new HtmlTemplateBundleFactory();
+            var file = StubFile("~/test/file.js");
+            var files = new[] { file };
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "*" }
+            };
+
+            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+
+            bundle.IsSorted.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void GivenBundleDescriptorWithNoFilenames_WhenCreateBundle_ThenBundleIsSorted()
+        {
+            var factory = new HtmlTemplateBundleFactory();
+            var bundleDescriptor = new BundleDescriptor();
+
+            var bundle = factory.CreateBundle("~/test", new IFile[0], bundleDescriptor);
+
+            bundle.IsSorted.ShouldBeTrue();
+        }
+
+        IFile StubFile(string path)
+        {
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath).Returns(path);
+            return file.Object;
         }
     }
 }

@@ -7,14 +7,14 @@ namespace Cassette.Configuration
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            settings.DefaultAssetSources[typeof(Scripts.ScriptBundle)] = CreateScriptBundleInitializer();
-            settings.DefaultAssetSources[typeof(Stylesheets.StylesheetBundle)] = CreateStylesheetBundleInitializer();
-            settings.DefaultAssetSources[typeof(HtmlTemplates.HtmlTemplateBundle)] = CreateHtmlTemplateBundleInitializer();
+            settings.DefaultFileSources[typeof(Scripts.ScriptBundle)] = CreateScriptBundleInitializer();
+            settings.DefaultFileSources[typeof(Stylesheets.StylesheetBundle)] = CreateStylesheetBundleInitializer();
+            settings.DefaultFileSources[typeof(HtmlTemplates.HtmlTemplateBundle)] = CreateHtmlTemplateBundleInitializer();
         }
 
-        AssetSource CreateScriptBundleInitializer()
+        FileSource CreateScriptBundleInitializer()
         {
-            return new AssetSource
+            return new FileSource
             {
                 FilePattern = "*.js;*.coffee",
                 ExcludeFilePath = new Regex("-vsdoc\\.js"),
@@ -22,18 +22,18 @@ namespace Cassette.Configuration
             };
         }
 
-        AssetSource CreateStylesheetBundleInitializer()
+        FileSource CreateStylesheetBundleInitializer()
         {
-            return new AssetSource
+            return new FileSource
             {
                 FilePattern = "*.css;*.less",
                 SearchOption = SearchOption.AllDirectories
             };
         }
 
-        AssetSource CreateHtmlTemplateBundleInitializer()
+        FileSource CreateHtmlTemplateBundleInitializer()
         {
-            return new AssetSource
+            return new FileSource
             {
                 FilePattern = "*.htm;*.html",
                 SearchOption = SearchOption.AllDirectories

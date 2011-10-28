@@ -55,7 +55,7 @@ namespace Cassette.Configuration
         Bundle CreateExternalBundle(string reference, Bundle referencer)
         {
             var bundleFactory = GetBundleFactory(referencer.GetType());
-            return bundleFactory.CreateBundle(reference, null);
+            return bundleFactory.CreateExternalBundle(reference);
         }
 
         IBundleFactory<Bundle> GetBundleFactory(Type bundleType)

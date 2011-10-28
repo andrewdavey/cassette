@@ -50,7 +50,7 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetScriptBundleA()
         {
-            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -63,7 +63,7 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetScriptBundleB()
         {
-            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -76,7 +76,7 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetAsset()
         {
-            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -92,7 +92,7 @@ function asset1() {
         [Fact]
         public void GetCoffeeScriptAssetReturnsItCompiledInToJavaScript()
         {
-            using (CreateApplication(bundles => bundles.AddForEachSubDirectory<ScriptBundle>("Scripts")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
             {
                 using (var http = new HttpTestHarness(routes))
                 {

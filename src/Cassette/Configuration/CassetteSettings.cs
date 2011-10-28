@@ -11,7 +11,7 @@ namespace Cassette.Configuration
     {
         public CassetteSettings()
         {
-            DefaultAssetSources = new Dictionary<Type, IAssetSource>();
+            DefaultFileSources = new Dictionary<Type, IFileSource>();
             BundleFactories = CreateBundleFactories();
             CacheVersion = "";
         }
@@ -24,7 +24,7 @@ namespace Cassette.Configuration
         public string CacheVersion { get; set; }
 
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
-        internal IDictionary<Type, IAssetSource> DefaultAssetSources { get; private set; }
+        internal IDictionary<Type, IFileSource> DefaultFileSources { get; private set; }
 
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {

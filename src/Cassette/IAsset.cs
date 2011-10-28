@@ -27,15 +27,23 @@ namespace Cassette
     public interface IAsset
     {
         /// <summary>
-        /// The hash of the original asset contents, before any transformations are applied.
+        /// Gets the hash of the original asset contents, before any transformations are applied.
         /// </summary>
         byte[] Hash { get; }
 
+        /// <summary>
+        /// Gets the file containing the source of this asset.
+        /// </summary>
         IFile SourceFile { get; }
-        IEnumerable<AssetReference> References { get; }
-        bool HasTransformers { get; }
 
+        /// <summary>
+        /// Gets the references made by this asset.
+        /// </summary>
+        IEnumerable<AssetReference> References { get; }
+        
+        // TODO: Move Accept into a separate, internal, interface?
         void Accept(IAssetVisitor visitor);
+
         void AddAssetTransformer(IAssetTransformer transformer);
         void AddReference(string path, int lineNumber);
         void AddRawFileReference(string relativeFilename);

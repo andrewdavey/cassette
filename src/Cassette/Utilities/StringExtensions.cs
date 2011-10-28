@@ -23,7 +23,7 @@ using System.IO;
 
 namespace Cassette.Utilities
 {
-    static class StringExtensions
+    public static class StringExtensions
     {
         public static Stream AsStream(this string s)
         {
@@ -35,7 +35,7 @@ namespace Cassette.Utilities
             return source;
         }
 
-        public static bool IsUrl(this string s)
+        internal static bool IsUrl(this string s)
         {
             return s.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
                 || s.StartsWith("https:", StringComparison.OrdinalIgnoreCase)

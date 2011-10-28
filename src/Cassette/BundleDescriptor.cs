@@ -18,97 +18,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Cassette.IO;
 
 namespace Cassette
 {
-    public class BundleDescriptor
+    class BundleDescriptor
     {
-        readonly IEnumerable<string> assetFilenames;
-        readonly IEnumerable<string> references;
-        readonly string externalUrl;
-        readonly string fallbackCondition;
-
-        public BundleDescriptor(IEnumerable<string> assetFilenames)
+        public BundleDescriptor()
         {
-            this.assetFilenames = assetFilenames;
-            references = Enumerable.Empty<string>();
+            AssetFilenames = new List<string>();
+            References = new List<string>();
         }
 
-        public BundleDescriptor(IEnumerable<string> assetFilenames, IEnumerable<string> references, string externalUrl, string fallbackCondition)
-        {
-            this.assetFilenames = assetFilenames;
-            this.references = references;
-            this.externalUrl = externalUrl;
-            this.fallbackCondition = fallbackCondition;
-        }
-
-        public IEnumerable<string> AssetFilenames
-        {
-            get { return assetFilenames; }
-        }
-
-        public IEnumerable<string> References
-        {
-            get { return references; }
-        }
-
-        public string ExternalUrl
-        {
-            get { return externalUrl; }
-        }
-
-        public string FallbackCondition
-        {
-            get { return fallbackCondition; }
-        }
-
-        public IEnumerable<IFile> GetAssetFiles(IDirectory directory, IEnumerable<string> filePatterns, Regex excludeFilePath, SearchOption searchOption)
-        {
-            var filesAdded = new HashSet<string>();
-            var shouldIncludeFile = BuildShouldIncludeFile(filesAdded, excludeFilePath);
-            foreach (var assetFilename in assetFilenames)
-            {
-                if (assetFilename == "*")
-                {
-// ReSharper disable PossibleMultipleEnumeration
-                    var allFiles = filePatterns.SelectMany(filePattern => directory.GetFiles(filePattern, searchOption).Where(shouldIncludeFile));
-// ReSharper restore PossibleMultipleEnumeration
-                    foreach (var file in allFiles)
-                    {
-                        yield return file;
-                    }
-                }
-                else
-                {
-                    var file = directory.GetFile(assetFilename);
-                    if (!file.Exists)
-                    {
-                        throw new FileNotFoundException(string.Format("Bundle asset not found \"{0}\".", file.FullPath));
-                    }
-                    filesAdded.Add(file.FullPath);
-                    yield return file;
-                }
-            }
-        }
-
-        static Func<IFile, bool> BuildShouldIncludeFile(ICollection<string> filesAdded, Regex excludeFilePath)
-        {
-            if (excludeFilePath == null)
-            {
-                return file => !filesAdded.Contains(file.FullPath);
-            }
-            else
-            {
-                return file => !filesAdded.Contains(file.FullPath) 
-                               && !excludeFilePath.IsMatch(file.FullPath);
-            }
-        }
+        public List<string> AssetFilenames { get; private set; }
+        public List<string> References { get; private set; }
+        public string ExternalUrl { get; set; }
+        public string FallbackCondition { get; set; }
     }
 }
-

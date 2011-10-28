@@ -32,7 +32,8 @@ namespace Cassette.Scripts
         public void GivenBundleWithTwoAssets_WhenRenderBundle_ThenScriptsElementReturnedForEachAsset()
         {
             var bundle = new ScriptBundle("~/test");
-            bundle.AddAssets(new[] { Mock.Of<IAsset>(), Mock.Of<IAsset>() }, true);
+            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(Mock.Of<IAsset>());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
@@ -51,4 +52,3 @@ namespace Cassette.Scripts
         }
     }
 }
-

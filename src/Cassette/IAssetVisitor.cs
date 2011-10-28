@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette
 {
+    // TODO: Rename this to IBundleVisitor?
     public interface IAssetVisitor
     {
         void Visit(Bundle bundle);

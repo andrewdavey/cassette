@@ -22,17 +22,29 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    class ScriptBundleFactory : IBundleFactory<ScriptBundle>
+    class ScriptBundleFactory : BundleFactoryBase<ScriptBundle>
     {
-        public ScriptBundle CreateBundle(string path, BundleDescriptor descriptor)
+        public override ScriptBundle CreateBundle(string pathOrUrl)
         {
-            if (path.IsUrl())
+            if (pathOrUrl.IsUrl())
             {
-                return new ExternalScriptBundle(path);
+                return new ExternalScriptBundle(pathOrUrl);
             }
-            else if (descriptor != null && descriptor.ExternalUrl != null)
+            else
             {
-                return new ExternalScriptBundle(descriptor.ExternalUrl, path, descriptor.FallbackCondition);                
+                return new ScriptBundle(pathOrUrl);
+            }
+        }
+
+        protected override ScriptBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
+        {
+            if (bundleDescriptor.ExternalUrl != null)
+            {
+                return new ExternalScriptBundle(
+                    bundleDescriptor.ExternalUrl,
+                    path,
+                    bundleDescriptor.FallbackCondition
+                );
             }
             else
             {

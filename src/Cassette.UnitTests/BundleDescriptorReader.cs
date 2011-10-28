@@ -41,9 +41,16 @@ namespace Cassette
         BundleDescriptorReader GetReader(string descriptor)
         {
             var source = new Mock<IFile>();
+            var directory = new Mock<IDirectory>();
             source
                 .Setup(s => s.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => descriptor.AsStream());
+            source
+                .SetupGet(s => s.Directory)
+                .Returns(directory.Object);
+            directory
+                .SetupGet(d => d.FullPath)
+                .Returns("~/bundle");
 
             return new BundleDescriptorReader(source.Object);
         }
@@ -86,20 +93,7 @@ namespace Cassette
             FilesExist("test1.js", "test2.js");
             var reader = GetReader("test1.js\ntest2.js");
             var descriptor = reader.Read();
-            var files = descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories);
-            files.Select(f => f.FullPath).SequenceEqual(new[] { "~/test1.js", "~/test2.js" }).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void ThrowsExceptionWhenFileNotFound()
-        {
-            FilesExist("test1.js");
-            var reader = GetReader("test1.js\ntest2.js");
-            var descriptor = reader.Read();
-            Assert.Throws<FileNotFoundException>(delegate
-            {
-                descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories).ToArray();
-            });
+            descriptor.AssetFilenames.SequenceEqual(new[] { "~/bundle/test1.js", "~/bundle/test2.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -108,27 +102,7 @@ namespace Cassette
             FilesExist("test.js");
             var reader = GetReader("test.js # comment");
             var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void AsteriskIncludesAllFiles()
-        {
-            FilesExist("test1.js", "test2.js");
-            var reader = GetReader("*");
-            var descriptor = reader.Read();
-            var files = descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories);
-            files.Select(f => f.FullPath).SequenceEqual(new[] { "~/test1.js", "~/test2.js" }).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void AsteriskIncludesAllFilesNotAlreadyadded()
-        {
-            FilesExist("test1.js", "test2.js", "test3.js");
-            var reader = GetReader("test2.js\n*");
-            var descriptor = reader.Read();
-            var files = descriptor.GetAssetFiles(new FileSystemDirectory(tempDirectory), new[] { "*.js" }, null, SearchOption.AllDirectories);
-            files.Select(f => f.FullPath).SequenceEqual(new[] { "~/test2.js", "~/test1.js", "~/test3.js" }).ShouldBeTrue();
+            result.AssetFilenames.SequenceEqual(new[] { "~/bundle/test.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -137,7 +111,7 @@ namespace Cassette
             FilesExist("test.js");
             var reader = GetReader("[assets]\ntest.js");
             var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
+            result.AssetFilenames.SequenceEqual(new[] { "~/bundle/test.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -146,7 +120,7 @@ namespace Cassette
             FilesExist("test.js");
             var reader = GetReader("[assets]#comment\ntest.js");
             var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
+            result.AssetFilenames.SequenceEqual(new[] { "~/bundle/test.js" }).ShouldBeTrue();
         }
 
         [Fact]
@@ -154,7 +128,7 @@ namespace Cassette
         {
             var reader = GetReader("[references]\n../lib/other.js");
             var result = reader.Read();
-            result.References.SequenceEqual(new[]{"../lib/other.js"}).ShouldBeTrue();
+            result.References.SequenceEqual(new[]{"~/lib/other.js"}).ShouldBeTrue();
         }
 
         [Fact]
@@ -163,8 +137,8 @@ namespace Cassette
             FilesExist("test.js");
             var reader = GetReader("[assets]\ntest.js\n[references]\n../lib/other.js");
             var result = reader.Read();
-            result.AssetFilenames.SequenceEqual(new[] { "test.js" }).ShouldBeTrue();
-            result.References.SequenceEqual(new[] { "../lib/other.js" }).ShouldBeTrue();
+            result.AssetFilenames.SequenceEqual(new[] { "~/bundle/test.js" }).ShouldBeTrue();
+            result.References.SequenceEqual(new[] { "~/lib/other.js" }).ShouldBeTrue();
         }
 
         [Fact]

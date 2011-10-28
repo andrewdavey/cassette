@@ -47,7 +47,7 @@ namespace Cassette.Configuration
 
             var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
             var factory = new Mock<IBundleFactory<Bundle>>();
-            factory.Setup(f => f.CreateBundle("http://external.com/api.js", null))
+            factory.Setup(f => f.CreateBundle("http://external.com/api.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
             factories[typeof(TestableBundle)] = factory.Object;
 
@@ -69,7 +69,7 @@ namespace Cassette.Configuration
 
             var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
             var factory = new Mock<IBundleFactory<Bundle>>();
-            factory.Setup(f => f.CreateBundle("http://external.com/api.js", null))
+            factory.Setup(f => f.CreateBundle("http://external.com/api.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
             factories[typeof(TestableBundle)] = factory.Object;
 
@@ -88,7 +88,7 @@ namespace Cassette.Configuration
 
             var externalBundle = new TestableBundle("http://test.com/");
             var factory = new Mock<IBundleFactory<Bundle>>();
-            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<BundleDescriptor>()))
+            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
             var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
             factories[typeof(TestableBundle)] = factory.Object;
@@ -111,7 +111,7 @@ namespace Cassette.Configuration
 
             var externalBundle = new TestableBundle("http://test.com/");
             var factory = new Mock<IBundleFactory<Bundle>>();
-            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<BundleDescriptor>()))
+            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
             var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
             factories[typeof(TestableBundle)] = factory.Object;
@@ -132,7 +132,7 @@ namespace Cassette.Configuration
             appMock.SetupGet(a => a.SourceDirectory)
                    .Returns(Mock.Of<IDirectory>());
             appMock.Setup(a => a.GetDefaultBundleInitializer(It.IsAny<Type>()))
-                   .Returns(Mock.Of<IAssetSource>());
+                   .Returns(Mock.Of<IFileSource>());
             return appMock.Object;
         }
     }

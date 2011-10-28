@@ -77,8 +77,10 @@ namespace Cassette.BundleProcessing
                   .Returns(new[] { new AssetReference("~/TEST/B.js", assetA.Object, 1, AssetReferenceType.SameBundle) });
             var assetB = new Mock<IAsset>();
             assetB.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/b.js");
-            bundle.AddAssets(new[] {assetA.Object, assetB.Object}, preSorted: true);
-            
+            bundle.Assets.Add(assetA.Object);
+            bundle.Assets.Add(assetB.Object);
+            bundle.IsSorted = true;
+
             var sorter = new SortAssetsByDependency();
             sorter.Process(bundle, Mock.Of<ICassetteApplication>());
 
@@ -98,8 +100,9 @@ namespace Cassette.BundleProcessing
             assetB.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/b.js");
             assetB.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/test/a.js", assetB.Object, 1, AssetReferenceType.SameBundle) });
-
-            bundle.AddAssets(new[] { assetA.Object, assetB.Object }, preSorted: false);
+            
+            bundle.Assets.Add(assetA.Object);
+            bundle.Assets.Add(assetB.Object);
 
             var sorter = new SortAssetsByDependency();
             Assert.Throws<InvalidOperationException>(

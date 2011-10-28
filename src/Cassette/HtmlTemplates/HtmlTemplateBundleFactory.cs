@@ -18,13 +18,19 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+
 namespace Cassette.HtmlTemplates
 {
-    class HtmlTemplateBundleFactory : IBundleFactory<HtmlTemplateBundle>
+    class HtmlTemplateBundleFactory : BundleFactoryBase<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundle CreateBundle(string directory, BundleDescriptor bundleDescriptor)
+        public override HtmlTemplateBundle CreateBundle(string path)
         {
-            return new HtmlTemplateBundle(directory);
+            return new HtmlTemplateBundle(path);
+        }
+
+        protected override HtmlTemplateBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
+        {
+            return new HtmlTemplateBundle(path);
         }
     }
 }

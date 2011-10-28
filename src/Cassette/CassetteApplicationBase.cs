@@ -67,13 +67,13 @@ namespace Cassette
             get { return bundleContainer; }
         }
 
-        public IAssetSource GetDefaultBundleInitializer(Type bundleType)
+        public IFileSource GetDefaultBundleInitializer(Type bundleType)
         {
             var originalBundleType = bundleType;
             do
             {
-                IAssetSource initializer;
-                if (settings.DefaultAssetSources.TryGetValue(bundleType, out initializer))
+                IFileSource initializer;
+                if (settings.DefaultFileSources.TryGetValue(bundleType, out initializer))
                 {
                     return initializer;
                 }

@@ -59,7 +59,12 @@ namespace Cassette
                     ProcessLine(line);
                 }
             }
-            return new BundleDescriptor(assetFilenames, references, externalUrl, fallbackCondition);
+            var descriptor = new BundleDescriptor();
+            descriptor.AssetFilenames.AddRange(assetFilenames);
+            descriptor.References.AddRange(references);
+            descriptor.ExternalUrl = externalUrl;
+            descriptor.FallbackCondition = fallbackCondition;
+            return descriptor;
         }
 
         void ProcessLine(string line)
@@ -96,11 +101,19 @@ namespace Cassette
 
         void ParseAsset(string line)
         {
+            if (line != "*" && !line.StartsWith("~"))
+            {
+                line = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(sourceFile.Directory.FullPath, line));
+            }
             assetFilenames.Add(line);
         }
 
         void ParseReference(string line)
         {
+            if (!line.StartsWith("~"))
+            {
+                line = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(sourceFile.Directory.FullPath, line));
+            }
             references.Add(line);
         }
 
