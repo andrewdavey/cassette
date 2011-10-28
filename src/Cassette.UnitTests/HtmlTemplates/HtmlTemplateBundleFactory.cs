@@ -33,7 +33,11 @@ namespace Cassette.HtmlTemplates
         public void CreateBundle_ReturnsHtmlTemplateBundleWithPathSet()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle(
+                "~/test",
+                Enumerable.Empty<IFile>(),
+                new BundleDescriptor { AssetFilenames = { "*" } }
+            );
             bundle.Path.ShouldEqual("~/test");
         }
 

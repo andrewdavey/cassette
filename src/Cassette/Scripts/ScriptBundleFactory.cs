@@ -18,24 +18,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.Utilities;
-
 namespace Cassette.Scripts
 {
     class ScriptBundleFactory : BundleFactoryBase<ScriptBundle>
     {
-        public override ScriptBundle CreateBundle(string pathOrUrl)
-        {
-            if (pathOrUrl.IsUrl())
-            {
-                return new ExternalScriptBundle(pathOrUrl);
-            }
-            else
-            {
-                return new ScriptBundle(pathOrUrl);
-            }
-        }
-
         protected override ScriptBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
             if (bundleDescriptor.ExternalUrl != null)

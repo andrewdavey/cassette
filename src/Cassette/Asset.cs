@@ -31,22 +31,22 @@ namespace Cassette
 {
     public class Asset : AssetBase
     {
-        public Asset(Bundle parentBundle, IFile file)
+        public Asset(IFile sourceFile, Bundle parentBundle)
         {
             this.parentBundle = parentBundle;
-            this.file = file;
+            this.sourceFile = sourceFile;
 
             hash = new Lazy<byte[]>(HashFileContents); // Avoid file IO until the hash is actually needed.
         }
 
         readonly Bundle parentBundle;
-        readonly IFile file;
+        readonly IFile sourceFile;
         readonly Lazy<byte[]> hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
         public override IFile SourceFile
         {
-            get { return file; }
+            get { return sourceFile; }
         }
 
         public override byte[] Hash
@@ -133,7 +133,7 @@ namespace Cassette
         byte[] HashFileContents()
         {
             using (var sha1 = SHA1.Create())
-            using (var fileStream = file.OpenRead())
+            using (var fileStream = sourceFile.OpenRead())
             {
                 return sha1.ComputeHash(fileStream);
             }
@@ -160,7 +160,7 @@ namespace Cassette
 
         protected override Stream OpenStreamCore()
         {
-            return file.OpenRead();
+            return sourceFile.OpenRead();
         }
 
         public override void Accept(IBundleVisitor visitor)

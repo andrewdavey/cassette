@@ -39,10 +39,10 @@ namespace Cassette
             
             bundle = new TestableBundle("~/bundle");
             sourceFile = StubFile("asset content");
-            asset = new Asset(bundle, sourceFile);
+            asset = new Asset(sourceFile, bundle);
             bundle.Assets.Add(asset);
 
-            var another = new Asset(bundle, StubFile(fullPath: "~/bundle/another.js"));
+            var another = new Asset(StubFile(fullPath: "~/bundle/another.js"), bundle);
             bundle.Assets.Add(another);
         }
 
@@ -145,7 +145,7 @@ namespace Cassette
         {
             root.CreateSubdirectory("bundle\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "bundle", "sub", "another.js"), "");
-            var another = new Asset(bundle, StubFile(fullPath: "~/bundle/sub/another.js"));
+            var another = new Asset(StubFile(fullPath: "~/bundle/sub/another.js"), bundle);
             bundle.Assets.Add(another);
 
             asset.AddReference("sub\\another.js", 1);
@@ -301,11 +301,11 @@ namespace Cassette
             var fileSystem = new FileSystemDirectory(root.FullName);
 
             var bundle = new TestableBundle("~/bundle");
-            asset = new Asset(bundle, fileSystem.GetFile("bundle\\test.js"));
+            asset = new Asset(fileSystem.GetFile("bundle\\test.js"), bundle);
             bundle.Assets.Add(asset);
 
             File.WriteAllText(Path.Combine(root.FullName, "bundle", "another.js"), "");
-            var another = new Asset(bundle, fileSystem.GetFile("bundle\\another.js"));
+            var another = new Asset(fileSystem.GetFile("bundle\\another.js"), bundle);
             bundle.Assets.Add(another);
         }
 

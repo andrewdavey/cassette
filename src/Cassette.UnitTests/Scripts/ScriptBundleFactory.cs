@@ -18,6 +18,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Linq;
+using Cassette.IO;
 using Should;
 using Xunit;
 
@@ -29,7 +31,11 @@ namespace Cassette.Scripts
         public void CreateBundleReturnsScriptBundle()
         {
             var factory = new ScriptBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle(
+                "~/test",
+                Enumerable.Empty<IFile>(),
+                new BundleDescriptor { AssetFilenames = { "*" } }
+            );
             bundle.ShouldBeType<ScriptBundle>();
         }
 
@@ -37,14 +43,18 @@ namespace Cassette.Scripts
         public void CreateBundleAssignsScriptBundleDirectory()
         {
             var factory = new ScriptBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle(
+                "~/test",
+                Enumerable.Empty<IFile>(),
+                new BundleDescriptor { AssetFilenames = { "*" } }
+            );
             bundle.Path.ShouldEqual("~/test");
         }
 
         [Fact]
         public void CreateBundleWithUrlCreatesExternalScriptBundle()
         {
-            new ScriptBundleFactory().CreateBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
+            new ScriptBundleFactory().CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
         }
     }
 }

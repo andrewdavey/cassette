@@ -23,11 +23,6 @@ namespace Cassette.HtmlTemplates
 {
     class HtmlTemplateBundleFactory : BundleFactoryBase<HtmlTemplateBundle>
     {
-        public override HtmlTemplateBundle CreateBundle(string path)
-        {
-            return new HtmlTemplateBundle(path);
-        }
-
         protected override HtmlTemplateBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
             return new HtmlTemplateBundle(path);

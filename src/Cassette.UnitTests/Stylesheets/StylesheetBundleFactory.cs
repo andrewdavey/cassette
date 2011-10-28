@@ -18,6 +18,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Linq;
+using Cassette.IO;
 using Should;
 using Xunit;
 
@@ -29,7 +31,11 @@ namespace Cassette.Stylesheets
         public void CreateBundleReturnsStylesheetBundleWithDirectorySet()
         {
             var factory = new StylesheetBundleFactory();
-            var bundle = factory.CreateBundle("~/test");
+            var bundle = factory.CreateBundle(
+                "~/test",
+                Enumerable.Empty<IFile>(),
+                new BundleDescriptor { AssetFilenames = { "*" } }
+            );
             bundle.Path.ShouldEqual("~/test");
         }
 
@@ -37,7 +43,7 @@ namespace Cassette.Stylesheets
         public void CreateBundleWithUrlCreatesExternalBundle()
         {
             var factory = new StylesheetBundleFactory();
-            var bundle = factory.CreateBundle("http://test.com/test.css");
+            var bundle = factory.CreateExternalBundle("http://test.com/test.css");
             bundle.ShouldBeType<ExternalStylesheetBundle>();
         }
     }

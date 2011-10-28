@@ -18,24 +18,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.Utilities;
-
 namespace Cassette.Stylesheets
 {
     class StylesheetBundleFactory : BundleFactoryBase<StylesheetBundle>
     {
-        public override StylesheetBundle CreateBundle(string path)
-        {
-            if (path.IsUrl())
-            {
-                return new ExternalStylesheetBundle(path);
-            }
-            else
-            {
-                return new StylesheetBundle(path);
-            }
-        }
-
         protected override StylesheetBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
             if (bundleDescriptor.ExternalUrl != null)
