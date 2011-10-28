@@ -89,8 +89,8 @@ namespace Cassette
         {
             var expectedBundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/test.js");
             expectedBundle.Assets.Add(asset.Object);
             var container = new BundleContainer(new[] {
@@ -240,8 +240,8 @@ namespace Cassette
         void SetupAsset(string filename, Mock<IAsset> asset)
         {
             asset.Setup(a => a.SourceFile.FullPath).Returns(filename);
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
         }
     }
 }

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace Cassette.Persistence
 {
-    class AssetLastWriteTimeFinder : IAssetVisitor
+    class AssetLastWriteTimeFinder : IBundleVisitor
     {
         DateTime max;
 

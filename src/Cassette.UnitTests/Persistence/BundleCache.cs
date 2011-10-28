@@ -308,8 +308,8 @@ namespace Cassette.Persistence
             asset.SetupGet(a => a.SourceFile.FullPath).Returns(path);
             asset.SetupGet(a => a.Hash).Returns(new byte[0]);
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             return asset;
         }
     }
@@ -574,8 +574,8 @@ namespace Cassette.Persistence
             asset.Setup(a => a.SourceFile.LastWriteTimeUtc)
                  .Returns(new DateTime(2000,1,1));
 
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
 
             return asset;
         }

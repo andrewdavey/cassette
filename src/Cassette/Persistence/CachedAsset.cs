@@ -59,7 +59,7 @@ namespace Cassette.Persistence
             return file.OpenRead();
         }
 
-        public void Accept(IAssetVisitor visitor)
+        public void Accept(IBundleVisitor visitor)
         {
             foreach (var child in children)
             {

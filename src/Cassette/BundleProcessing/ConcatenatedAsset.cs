@@ -41,7 +41,7 @@ namespace Cassette.BundleProcessing
             hash = stream.ComputeSHA1Hash();
         }
 
-        public override void Accept(IAssetVisitor visitor)
+        public override void Accept(IBundleVisitor visitor)
         {
             foreach (var child in children)
             {

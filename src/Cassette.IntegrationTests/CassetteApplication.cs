@@ -115,7 +115,6 @@ function asset1() {
                 SourceDirectory = new FileSystemDirectory(Path.GetFullPath("assets"))
             };
             var bundles = new BundleCollection(settings);
-            new BundleInitializerConfiguration().Configure(bundles, settings);
             configure(bundles);
             return new CassetteApplication(
                 bundles,

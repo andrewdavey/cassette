@@ -23,7 +23,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    class BundleContainsPathPredicate : IAssetVisitor
+    class BundleContainsPathPredicate : IBundleVisitor
     {
         public bool BundleContainsPath(string path, Bundle bundle)
         {
@@ -35,7 +35,7 @@ namespace Cassette
         string pathToFind;
         bool isFound;
 
-        void IAssetVisitor.Visit(Bundle bundle)
+        void IBundleVisitor.Visit(Bundle bundle)
         {
             if (IsMatch(bundle.Path))
             {
@@ -43,7 +43,7 @@ namespace Cassette
             }
         }
 
-        void IAssetVisitor.Visit(IAsset asset)
+        void IBundleVisitor.Visit(IAsset asset)
         {
             if (IsMatch(asset.SourceFile.FullPath))
             {

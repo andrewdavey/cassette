@@ -69,8 +69,8 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
@@ -82,8 +82,8 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
@@ -95,8 +95,8 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
@@ -200,8 +200,8 @@ namespace Cassette
 
             // Simulate concatenated asset. We only need the Accept method to visit each child.
             var concatenatedAsset = new Mock<IAsset>();
-            concatenatedAsset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                .Callback<IAssetVisitor>(v =>
+            concatenatedAsset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                .Callback<IBundleVisitor>(v =>
                 {
                     v.Visit(asset1);
                     v.Visit(asset2);
@@ -214,7 +214,7 @@ namespace Cassette
         [Fact]
         public void AcceptCallsVisitOnVistor()
         {
-            var visitor = new Mock<IAssetVisitor>();
+            var visitor = new Mock<IBundleVisitor>();
             var bundle = new TestableBundle("~/test");
 
             bundle.Accept(visitor.Object);
@@ -225,7 +225,7 @@ namespace Cassette
         [Fact]
         public void AcceptCallsAcceptForEachAsset()
         {
-            var visitor = new Mock<IAssetVisitor>();
+            var visitor = new Mock<IBundleVisitor>();
             var bundle = new TestableBundle("~/test");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
@@ -308,8 +308,8 @@ namespace Cassette
         IAsset StubAsset(string filename)
         {
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.Setup(a => a.SourceFile.FullPath).Returns(filename);
             return asset.Object;
         }

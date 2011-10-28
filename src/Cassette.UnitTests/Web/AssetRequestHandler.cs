@@ -66,8 +66,8 @@ namespace Cassette.Web
                 ContentType = "CONTENT/TYPE"
             };
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.SourceFile.FullPath)
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
@@ -90,8 +90,8 @@ namespace Cassette.Web
                 ContentType = "CONTENT/TYPE"
             };
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IAssetVisitor>()))
-                 .Callback<IAssetVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.SourceFile.FullPath)
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())

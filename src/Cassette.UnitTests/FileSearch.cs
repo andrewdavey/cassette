@@ -2,34 +2,30 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.Configuration;
 using Cassette.IO;
-using Moq;
 using Should;
 using Xunit;
 
 namespace Cassette
 {
-    public class AssetSource_Tests : IDisposable
+    public class FileSearch_Tests : IDisposable
     {
-        public AssetSource_Tests()
+        public FileSearch_Tests()
         {
             temp = new TempDirectory();
             directory = new FileSystemDirectory(temp);
-            var applicationMock = new Mock<ICassetteApplication>();
-            applicationMock.SetupGet(a => a.SourceDirectory).Returns(directory);
-            application = applicationMock.Object;
         }
 
         readonly TempDirectory temp;
         readonly FileSystemDirectory directory;
-        readonly ICassetteApplication application;
 
         [Fact]
         public void GivenSimpleFilePatternAndSomeFiles_WhenGetFiles_ThenAssetCreatedForEachMatchingFile()
         {
-            var source = new FileSource
+            var search = new FileSearch
             {
-                FilePattern = "*.js"
+                Pattern = "*.js"
             };
 
             CreateDirectory("test");
@@ -37,7 +33,7 @@ namespace Cassette
             CreateFile("test", "asset2.js");
             CreateFile("test", "other.txt"); // this file should be ignored
 
-            var files = source.GetFiles(directory.GetDirectory("test"))
+            var files = search.GetFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
             
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -48,16 +44,16 @@ namespace Cassette
         [Fact]
         public void GivenFilePatternForJSandCoffeeScript_WhenGetFiles_ThenBothTypesOfAssetAreCreated()
         {
-            var source = new FileSource
+            var search = new FileSearch
             {
-                FilePattern = "*.js;*.coffee"
+                Pattern = "*.js;*.coffee"
             };
 
             CreateDirectory("test");
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.coffee");
 
-            var files = source.GetFiles(directory.GetDirectory("test"))
+            var files = search.GetFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
 
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -67,16 +63,16 @@ namespace Cassette
         [Fact]
         public void GivenFilePatternForJSandCoffeeScriptUsingCommaSeparator_WhenGetFiles_ThenBothTypesOfAssetAreCreated()
         {
-            var source = new FileSource()
+            var search = new FileSearch()
             {
-                FilePattern = "*.js,*.coffee"
+                Pattern = "*.js,*.coffee"
             };
 
             CreateDirectory("test");
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.coffee");
 
-            var files = source.GetFiles(directory.GetDirectory("test"))
+            var files = search.GetFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
 
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -86,13 +82,13 @@ namespace Cassette
         [Fact]
         public void GivenFilePatternIsNotSet_WhenGetFiles_ThenMatchAllFiles()
         {
-            var source = new FileSource();
+            var search = new FileSearch();
 
             CreateDirectory("test");
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.txt");
 
-            var files = source.GetFiles(directory.GetDirectory("test"))
+            var files = search.GetFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
 
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -102,16 +98,16 @@ namespace Cassette
         [Fact]
         public void GivenExclude_WhenGetFiles_ThenAssetsNotCreatedForFilesMatchingExclude()
         {
-            var source = new FileSource()
+            var search = new FileSearch()
             {
-                ExcludeFilePath = new Regex("-vsdoc\\.js$"),
+                Exclude = new Regex("-vsdoc\\.js$"),
             };
 
             CreateDirectory("test");
             CreateFile("test", "asset.js");
             CreateFile("test", "asset-vsdoc.js");
 
-            var files = source.GetFiles(directory.GetDirectory("test"));
+            var files = search.GetFiles(directory.GetDirectory("test"));
 
             files.Count().ShouldEqual(1);
         }
@@ -119,12 +115,12 @@ namespace Cassette
         [Fact]
         public void GivenBundleDescriptorFile_WhenGetFiles_ThenAssetIsNotCreatedForTheDescriptorFile()
         {
-            var source = new FileSource();
+            var search = new FileSearch();
             CreateDirectory("test");
             CreateFile("test", "bundle.txt");
             CreateFile("test", "module.txt"); // Legacy support - module.txt synonymous to bundle.txt
 
-            var files = source.GetFiles(directory.GetDirectory("test"));
+            var files = search.GetFiles(directory.GetDirectory("test"));
             
             files.ShouldBeEmpty();
         }

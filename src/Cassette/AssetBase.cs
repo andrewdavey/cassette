@@ -36,7 +36,7 @@ namespace Cassette
     {
         readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
 
-        public abstract void Accept(IAssetVisitor visitor);
+        public abstract void Accept(IBundleVisitor visitor);
 
         public void AddAssetTransformer(IAssetTransformer transformer)
         {

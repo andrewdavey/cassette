@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;
@@ -11,7 +13,7 @@ namespace Cassette.Configuration
     {
         public CassetteSettings()
         {
-            DefaultFileSources = new Dictionary<Type, IFileSource>();
+            DefaultFileSources = CreateDefaultFileSources();
             BundleFactories = CreateBundleFactories();
             CacheVersion = "";
         }
@@ -33,6 +35,44 @@ namespace Cassette.Configuration
                 { typeof(ScriptBundle), new ScriptBundleFactory() },
                 { typeof(StylesheetBundle), new StylesheetBundleFactory() },
                 { typeof(HtmlTemplateBundle), new HtmlTemplateBundleFactory() }
+            };
+        }
+
+        IDictionary<Type, IFileSource> CreateDefaultFileSources()
+        {
+            return new Dictionary<Type, IFileSource>
+            {
+                { typeof(ScriptBundle), CreateScriptFileSource() },
+                { typeof(StylesheetBundle), CreateStylesheetFileSource() },
+                { typeof(HtmlTemplateBundle), CreateHtmlTemplateFileSource() }
+            };
+        }
+
+        FileSearch CreateScriptFileSource()
+        {
+            return new FileSearch
+            {
+                Pattern = "*.js;*.coffee",
+                Exclude = new Regex("-vsdoc\\.js"),
+                SearchOption = SearchOption.AllDirectories
+            };
+        }
+
+        FileSearch CreateStylesheetFileSource()
+        {
+            return new FileSearch
+            {
+                Pattern = "*.css;*.less",
+                SearchOption = SearchOption.AllDirectories
+            };
+        }
+
+        FileSearch CreateHtmlTemplateFileSource()
+        {
+            return new FileSearch
+            {
+                Pattern = "*.htm;*.html",
+                SearchOption = SearchOption.AllDirectories
             };
         }
     }

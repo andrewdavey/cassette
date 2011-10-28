@@ -163,7 +163,7 @@ namespace Cassette
             return file.OpenRead();
         }
 
-        public override void Accept(IAssetVisitor visitor)
+        public override void Accept(IBundleVisitor visitor)
         {
             visitor.Visit(this);
         }

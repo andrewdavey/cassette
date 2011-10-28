@@ -278,7 +278,7 @@ namespace Cassette
         [Fact]
         public void AcceptCallsVisitOnVisitor()
         {
-            var visitor = new Mock<IAssetVisitor>();
+            var visitor = new Mock<IBundleVisitor>();
             asset.Accept(visitor.Object);
             visitor.Verify(v => v.Visit(asset));
         }

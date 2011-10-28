@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace Cassette.Persistence
 {
-    class AssetCounter : IAssetVisitor
+    class AssetCounter : IBundleVisitor
     {
         int count;
 

@@ -167,7 +167,7 @@ namespace Cassette.Web
                 isDebuggingEnabled
             );
 
-            var allConfigurations = new List<ICassetteConfiguration> { new BundleInitializerConfiguration(), initialConfiguration };
+            var allConfigurations = new List<ICassetteConfiguration> { initialConfiguration };
             allConfigurations.AddRange(configurations);
             return allConfigurations;
         }

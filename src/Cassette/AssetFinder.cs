@@ -2,7 +2,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    class AssetFinder : IAssetVisitor
+    class AssetFinder : IBundleVisitor
     {
         readonly string pathToFind;
 

@@ -58,16 +58,15 @@
     <Compile Include="BundleContainerExtensions.cs" />
     <Compile Include="BundleFactoryBase.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
+    <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
     <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
-    <Compile Include="Configuration\BundleInitializerConfiguration.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
-    <Compile Include="AssetSource.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\AssignRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
@@ -143,7 +142,7 @@
     <Compile Include="IO\FileSystemFile.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="IAssetTransformer.cs" />
-    <Compile Include="IAssetVisitor.cs" />
+    <Compile Include="IBundleVisitor.cs" />
     <Compile Include="IO\IDirectory.cs" />
     <Compile Include="IBundleContainer.cs" />
     <Compile Include="IBundleFactory.cs" />
