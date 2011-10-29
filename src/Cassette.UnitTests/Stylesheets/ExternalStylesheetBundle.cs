@@ -49,31 +49,49 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void RenderReturnsHtmlLinkElementWithUrlAsHref()
+        public void RenderUsesRenderer()
         {
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
+            var application = new Mock<ICassetteApplication>();
+            var urlGenerator = new Mock<IUrlGenerator>();
+            application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
+            bundle.Process(application.Object);
+
             var html = bundle.Render();
-            html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.css\" type=\"text/css\" rel=\"stylesheet\"/>");
+
+            html.ToHtmlString().ShouldContain(bundle.Url);
         }
 
         [Fact]
         public void GivenMediaNotEmpty_RenderReturnsHtmlLinkElementWithMediaAttribute()
         {
-            var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
-            bundle.Media = "print";
+            var bundle = new ExternalStylesheetBundle("http://test.com/asset.css")
+            {
+                Media = "print"
+            };
+            var application = new Mock<ICassetteApplication>();
+            var urlGenerator = new Mock<IUrlGenerator>();
+            application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
+            bundle.Process(application.Object);
+
             var html = bundle.Render();
-            html.ToHtmlString().ShouldEqual("<link href=\"http://test.com/asset.css\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>");
+
+            html.ToHtmlString().ShouldContain(bundle.Url);
+            html.ToHtmlString().ShouldContain("media=\"print\"");
         }
 
         [Fact]
-        public void ProcessDoesNothing()
+        public void ProcessCallsProcessor()
         {
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
             var processor = new Mock<IBundleProcessor<StylesheetBundle>>();
             bundle.Processor = processor.Object;
+
             bundle.Process(Mock.Of<ICassetteApplication>());
 
-            processor.Verify(p => p.Process(It.IsAny<StylesheetBundle>(), It.IsAny<ICassetteApplication>()), Times.Never());
+            processor.Verify(p => p.Process(bundle, It.IsAny<ICassetteApplication>()));
         }
 
         [Fact]

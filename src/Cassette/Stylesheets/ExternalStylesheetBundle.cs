@@ -38,22 +38,22 @@ namespace Cassette.Stylesheets
         }
 
         readonly string url;
+        ExternalStylesheetHtmlRenderer externalHtmlRender;
+
+        internal string Url
+        {
+            get { return url; }
+        }
 
         internal override void Process(ICassetteApplication application)
         {
-            // No processing required.
+            base.Process(application);
+            externalHtmlRender = new ExternalStylesheetHtmlRenderer(Renderer, application);
         }
 
         internal override IHtmlString Render()
         {
-            if (string.IsNullOrEmpty(Media))
-            {
-                return new HtmlString(String.Format(HtmlConstants.LinkHtml, url));
-            }
-            else
-            {
-                return new HtmlString(String.Format(HtmlConstants.LinkWithMediaHtml, url, Media));
-            }
+            return externalHtmlRender.Render(this);
         }
 
         internal override bool ContainsPath(string pathToFind)

@@ -88,6 +88,7 @@
     <Compile Include="Persistence\BundleCache.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />

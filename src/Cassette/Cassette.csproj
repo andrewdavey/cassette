@@ -107,6 +107,7 @@
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\DataUriGenerator.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\HtmlConstants.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
