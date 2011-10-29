@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
+using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
@@ -276,6 +277,149 @@ namespace Cassette.Configuration
         public void Dispose()
         {
             tempDirectory.Dispose();
+        }
+    }
+
+    public class BundleCollection_AddUrl_Tests
+    {
+        readonly BundleCollection bundles;
+        readonly CassetteSettings settings;
+
+        public BundleCollection_AddUrl_Tests()
+        {
+            settings = new CassetteSettings();
+            bundles = new BundleCollection(settings);
+        }
+
+        [Fact]
+        public void WhenAddUrlOfScriptBundle_ThenExternalScriptBundleAdded()
+        {
+            var url = "http://cdn.com/jquery.js";
+            var factory = new Mock<IBundleFactory<ScriptBundle>>(); 
+            settings.BundleFactories[typeof(ScriptBundle)] = factory.Object;
+            factory.Setup(f => f.CreateBundle(
+                url,
+                It.IsAny<IEnumerable<IFile>>(),
+                It.IsAny<BundleDescriptor>()
+            )).Returns(new ExternalScriptBundle(url));
+
+            bundles.AddUrl<ScriptBundle>(url);
+
+            bundles[url].ShouldBeType<ExternalScriptBundle>();
+        }
+
+        [Fact]
+        public void WhenAddUrlOfScriptBundleWithCustomizeDelegate_ThenCustomizeDelegateCalled()
+        {
+            var url = "http://cdn.com/jquery.js";
+            var factory = new Mock<IBundleFactory<ScriptBundle>>();
+            settings.BundleFactories[typeof(ScriptBundle)] = factory.Object;
+            factory.Setup(f => f.CreateBundle(
+                url,
+                It.IsAny<IEnumerable<IFile>>(),
+                It.IsAny<BundleDescriptor>()
+            )).Returns(new ExternalScriptBundle(url));
+
+            bool called = false;
+            Action<ScriptBundle> customizeBundle = b => called = true;
+
+            bundles.AddUrl(url, customizeBundle);
+
+            called.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void WhenAddUrlWithAlias_ThenPathIsAlias()
+        {
+            bundles.AddUrl("http://cdn.com/jquery.js").WithAlias("jquery");
+
+            bundles.Get<ExternalScriptBundle>("jquery").Url.ShouldEqual("http://cdn.com/jquery.js");
+        }
+
+        [Fact]
+        public void WhenAddUrlWithCustomizeDelegateAndWithAlias_ThenCustomizeAppliedToBundle()
+        {
+            bundles.AddUrl("http://cdn.com/jquery.js", b => b.PageLocation = "test").WithAlias("jquery");
+
+            bundles["jquery"].PageLocation.ShouldEqual("test");
+        }
+
+        [Fact]
+        public void WhenAddUrlWithDebug_ThenBundleHasAsset()
+        {
+            var fileSource = new Mock<IFileSource>();
+            var sourceDirectory = new Mock<IDirectory>();
+            var directory = new Mock<IDirectory>();
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
+            settings.SourceDirectory = sourceDirectory.Object;
+            settings.DefaultFileSources[typeof(ScriptBundle)] = fileSource.Object;
+            fileSource.Setup(s => s.GetFiles(directory.Object)).Returns(new[] { file.Object });
+            directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+
+            bundles.AddUrl("http://cdn.com/jquery.js").WithDebug("path");
+
+            bundles["path"].Assets[0].SourceFile.ShouldBeSameAs(file.Object);
+        }
+
+        [Fact]
+        public void WhenAddUrlWithDebugWithFileSource_ThenFileSourceUsed()
+        {
+            var fileSource = new Mock<IFileSource>();
+            var sourceDirectory = new Mock<IDirectory>();
+            var directory = new Mock<IDirectory>();
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
+            settings.SourceDirectory = sourceDirectory.Object;
+            fileSource.Setup(s => s.GetFiles(directory.Object)).Returns(new[] { file.Object });
+            directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+
+            bundles.AddUrl("http://cdn.com/jquery.js").WithDebug("path", fileSource.Object);
+
+            bundles["path"].Assets[0].SourceFile.ShouldBeSameAs(file.Object);
+        }
+
+        [Fact]
+        public void WhenAddUrlWithFallback_ThenExternalBundleCreatedWithFallbackCondition()
+        {
+            var fileSource = new Mock<IFileSource>();
+            var sourceDirectory = new Mock<IDirectory>();
+            var directory = new Mock<IDirectory>();
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
+            settings.SourceDirectory = sourceDirectory.Object;
+            settings.DefaultFileSources[typeof(ScriptBundle)] = fileSource.Object;
+            fileSource.Setup(s => s.GetFiles(directory.Object)).Returns(new[] { file.Object });
+            directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+
+            bundles.AddUrl("http://cdn.com/jquery.js").WithFallback("condition", "path");
+
+            bundles.Get<ExternalScriptBundle>("path").FallbackCondition.ShouldEqual("condition");
+        }
+
+        [Fact]
+        public void WhenAddUrlWithFallbackWithFileSource_ThenFileSourceIsUsed()
+        {
+            var fileSource = new Mock<IFileSource>();
+            var sourceDirectory = new Mock<IDirectory>();
+            var directory = new Mock<IDirectory>();
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
+            settings.SourceDirectory = sourceDirectory.Object;
+            fileSource.Setup(s => s.GetFiles(directory.Object)).Returns(new[] { file.Object });
+            directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+
+            bundles.AddUrl("http://cdn.com/jquery.js").WithFallback("condition", "path", fileSource.Object);
+
+            bundles["path"].Assets[0].SourceFile.ShouldBeSameAs(file.Object);
         }
     }
 }

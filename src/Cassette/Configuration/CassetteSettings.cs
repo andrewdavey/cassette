@@ -24,9 +24,9 @@ namespace Cassette.Configuration
         public IDirectory CacheDirectory { get; set; }
         public IUrlModifier UrlModifier { get; set; }
         public string CacheVersion { get; set; }
+        public IDictionary<Type, IFileSource> DefaultFileSources { get; private set; }
 
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
-        internal IDictionary<Type, IFileSource> DefaultFileSources { get; private set; }
 
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {

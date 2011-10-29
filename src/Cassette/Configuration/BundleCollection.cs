@@ -55,6 +55,12 @@ namespace Cassette.Configuration
             return bundlesByPath.SelectMany(kvp => kvp.Value).GetEnumerator();
         }
 
+        internal void Remove(Bundle bundle)
+        {
+            var bundles = GetOrCreateBundleList(bundle.Path);
+            bundles.Remove(bundle);
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
