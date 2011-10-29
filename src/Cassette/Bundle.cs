@@ -73,7 +73,7 @@ namespace Cassette
         }
 
         /// <summary>
-        /// Gets the hash of the assets.
+        /// Gets the hash of the combined assets.
         /// </summary>
         public byte[] Hash
         {
