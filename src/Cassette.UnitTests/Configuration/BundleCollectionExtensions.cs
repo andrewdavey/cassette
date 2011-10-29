@@ -217,15 +217,59 @@ namespace Cassette.Configuration
             bundles.ShouldBeEmpty();
         }
 
+        [Fact]
+        public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectory_ThenBundleAlsoCreatedForTopLevel()
+        {
+            File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
+            CreateDirectory("test");
+            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            defaultAssetSource
+                .SetupSequence(s => s.GetFiles(It.IsAny<IDirectory>()))
+                .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
+                .Returns(new[] { StubFile() });
+
+            bundles.AddPerSubDirectory<TestableBundle>("~");
+
+            bundles.Count().ShouldEqual(2);
+
+            factory.Verify(f => f.CreateBundle(
+                "~",
+                It.Is<IEnumerable<IFile>>(files => files.Count() == 1),
+                It.IsAny<BundleDescriptor>())
+            );
+            factory.Verify(f => f.CreateBundle(
+                "~/test",
+                It.Is<IEnumerable<IFile>>(files => files.Count() == 1),
+                It.IsAny<BundleDescriptor>())
+            );
+        }
+
+        [Fact]
+        public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectoryWithExcludeTopLevelTrue_ThenBundleNotCreatedForTopLevel()
+        {
+            File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
+            CreateDirectory("test");
+            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            defaultAssetSource
+                .Setup(s => s.GetFiles(It.IsAny<IDirectory>()))
+                .Returns(new[] { StubFile() });
+
+            bundles.AddPerSubDirectory<TestableBundle>("~", excludeTopLevel: true);
+
+            bundles.Count().ShouldEqual(1);
+            bundles["~/test"].ShouldBeType<TestableBundle>();
+        }
+
         void CreateDirectory(string path)
         {
             Directory.CreateDirectory(Path.Combine(tempDirectory, path));
         }
 
-        IFile StubFile()
+        IFile StubFile(Action<Mock<IFile>> customizeMock = null)
         {
             var file = new Mock<IFile>();
             file.SetupGet(a => a.FullPath).Returns("");
+            if (customizeMock != null) customizeMock(file);
             return file.Object;
         }
 

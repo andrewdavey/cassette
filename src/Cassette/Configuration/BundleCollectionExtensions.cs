@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
@@ -38,12 +39,8 @@ namespace Cassette.Configuration
             {
                 fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSources[typeof(T)];
                 var directory = source.GetDirectory(applicationRelativePath);
-                var descriptorFile = TryGetDescriptorFile(directory);
-                var descriptor = descriptorFile.Exists 
-                    ? new BundleDescriptorReader(descriptorFile).Read() 
-                    : new BundleDescriptor { AssetFilenames = { "*" } };
                 var allFiles = fileSource.GetFiles(directory);
-                bundle = bundleFactory.CreateBundle(applicationRelativePath, allFiles, descriptor);
+                bundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, allFiles, directory);
             }
             else
             {
@@ -72,6 +69,16 @@ namespace Cassette.Configuration
             bundleCollection.Add(bundle);
         }
 
+        static T CreateDirectoryBundle<T>(string applicationRelativePath, IBundleFactory<T> bundleFactory, IEnumerable<IFile> allFiles,
+                                          IDirectory directory) where T : Bundle
+        {
+            var descriptorFile = TryGetDescriptorFile(directory);
+            var descriptor = descriptorFile.Exists
+                                 ? new BundleDescriptorReader(descriptorFile).Read()
+                                 : new BundleDescriptor { AssetFilenames = { "*" } };
+            return bundleFactory.CreateBundle(applicationRelativePath, allFiles, descriptor);
+        }
+
         static IFile TryGetDescriptorFile(IDirectory directory)
         {
             var descriptorFile = directory.GetFile("bundle.txt");
@@ -82,33 +89,79 @@ namespace Cassette.Configuration
             return descriptorFile;
         }
 
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath)
+        /// <summary>
+        /// Adds a bundle for each sub-directory of the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundles to create.</typeparam>
+        /// <param name="bundleCollection">The collection to add to.</param>
+        /// <param name="applicationRelativePath">The path to the directory containing sub-directories.</param>
+        /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the path, if any.</param>
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, bool excludeTopLevel = false)
             where T : Bundle
         {
-            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, null, null);
+            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, null, null, excludeTopLevel);
         }
 
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource assetSource)
+        /// <summary>
+        /// Adds a bundle for each sub-directory of the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundles to create.</typeparam>
+        /// <param name="bundleCollection">The collection to add to.</param>
+        /// <param name="applicationRelativePath">The path to the directory containing sub-directories.</param>
+        /// <param name="fileSource">A file source that gets the files to include from a directory.</param>
+        /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the directory, if any.</param>
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource fileSource, bool excludeTopLevel = false)
             where T : Bundle
         {
-            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, assetSource, null);            
+            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, fileSource, null, excludeTopLevel);            
         }
 
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, Action<T> customizeBundle)
+        /// <summary>
+        /// Adds a bundle for each sub-directory of the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundles to create.</typeparam>
+        /// <param name="bundleCollection">The collection to add to.</param>
+        /// <param name="applicationRelativePath">The path to the directory containing sub-directories.</param>
+        /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
+        /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the path, if any.</param>
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, Action<T> customizeBundle, bool excludeTopLevel = false)
             where T : Bundle
         {
-            AddPerSubDirectory(bundleCollection, applicationRelativePath, null, customizeBundle);
+            AddPerSubDirectory(bundleCollection, applicationRelativePath, null, customizeBundle, excludeTopLevel);
         }
 
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource fileSource, Action<T> customizeBundle)
+        /// <summary>
+        /// Adds a bundle for each sub-directory of the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundles to create.</typeparam>
+        /// <param name="bundleCollection">The collection to add to.</param>
+        /// <param name="applicationRelativePath">The path to the directory containing sub-directories.</param>
+        /// <param name="fileSource">A file source that gets the files to include from a directory.</param>
+        /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
+        /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the path, if any.</param>
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource fileSource, Action<T> customizeBundle, bool excludeTopLevel = false)
             where T : Bundle
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for each subdirectory of {1}", typeof(T).Name, applicationRelativePath));
 
+            fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSources[typeof(T)];
+
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var parentDirectory = bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath);
+
+            if (!excludeTopLevel)
+            {
+                var topLevelFiles = fileSource.GetFiles(parentDirectory)
+                                              .Where(f => f.Directory == parentDirectory)
+                                              .ToArray();
+                if (topLevelFiles.Any())
+                {
+                    var directoryBundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, topLevelFiles, parentDirectory);
+                    bundleCollection.Add(directoryBundle);
+                }
+            }
+
             var directories = parentDirectory.GetDirectories().Where(IsNotHidden);
-            fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSources[typeof(T)];
             foreach (var directory in directories)
             {
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
