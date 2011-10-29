@@ -121,6 +121,24 @@ namespace Cassette
         }
 
         [Fact]
+        public void DirectoryWithAsteriskIncludesAllFilesFromSubdirectory()
+        {
+            FilesExist("shared\\shared-test1.js", "shared\\shared-test2.js", "app\\app-test1.js", "app\\app-test2.js");
+            var reader = GetReader("shared\\*\napp\\*");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "shared\\shared-test1.js", "shared\\shared-test2.js", "app\\app-test1.js", "app\\app-test2.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void DirectoryWithAsteriskIncludesAllFilesFromSubdirectoryNotAlreadyAdded()
+        {
+            FilesExist("shared\\shared-test1.js", "shared\\shared-test2.js", "app\\app-test1.js", "app\\app-test2.js");
+            var reader = GetReader("shared\\shared-test2.js\nshared\\*\napp\\*");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "shared\\shared-test2.js", "shared\\shared-test1.js", "app\\app-test1.js", "app\\app-test2.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
         public void GivenAssetsSectionReadReturnsAssetFilenames()
         {
             FilesExist("test.js");

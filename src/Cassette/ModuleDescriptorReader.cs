@@ -106,6 +106,17 @@ namespace Cassette
                     assetFilenames.Add(filename);
                 }
             }
+            else if (line.EndsWith("\\*"))
+            {
+                foreach (var filename in allAssetfilenames.Except(assetFilenames))
+                {
+                    string directory = line.Substring(0, line.Length - 1);
+                    if (filename.StartsWith(directory))
+                    {
+                        assetFilenames.Add(filename);
+                    }
+                }
+            }
             else if (FileExists(line))
             {
                 if (assetFilenames.Contains(line))
