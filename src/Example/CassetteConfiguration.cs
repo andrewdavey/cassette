@@ -33,7 +33,7 @@ namespace Example
             
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             bundles.AddUrl("http://platform.twitter.com/widgets.js", b => b.PageLocation = "body").WithAlias("twitter");
-
+            
             bundles.AddPerSubDirectory<HtmlTemplateBundle>(
                 "HtmlTemplates",
                 bundle => bundle.Processor = new KnockoutJQueryTmplPipeline()
