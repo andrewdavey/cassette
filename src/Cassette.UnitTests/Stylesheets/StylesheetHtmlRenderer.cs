@@ -32,8 +32,8 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~/tests");
             var urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
-                        .Returns("URL")
-                        .Verifiable();
+                .Returns("URL")
+                .Verifiable();
 
             var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
             var html = renderer.Render(bundle).ToHtmlString();
@@ -52,7 +52,7 @@ namespace Cassette.Stylesheets
             };
             var urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
-                        .Returns("URL");
+                .Returns("URL");
 
             var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
             var html = renderer.Render(bundle).ToHtmlString();
@@ -61,4 +61,3 @@ namespace Cassette.Stylesheets
         }
     }
 }
-

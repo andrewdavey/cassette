@@ -39,17 +39,20 @@ namespace Cassette.Scripts
         {
             var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml, bundle.Url);
 
-            if (string.IsNullOrEmpty(bundle.FallbackCondition))
+            if (application.IsDebuggingEnabled)
             {
-                return new HtmlString(externalScriptHtml);
+                if (bundle.Assets.Any())
+                {
+                    return fallbackScriptRenderer.Render(bundle);                    
+                }
+                else
+                {
+                    return new HtmlString(externalScriptHtml);
+                }
             }
             else
             {
-                if (application.IsDebuggingEnabled)
-                {
-                    return fallbackScriptRenderer.Render(bundle);
-                }
-                else
+                if (bundle.Assets.Any())
                 {
                     return new HtmlString(
                         string.Format(
@@ -58,8 +61,12 @@ namespace Cassette.Scripts
                             externalScriptHtml,
                             bundle.FallbackCondition,
                             CreateFallbackScripts(bundle)
-                            )
-                        );
+                        )
+                    );
+                }
+                else
+                {
+                    return new HtmlString(externalScriptHtml);                    
                 }
             }
         }

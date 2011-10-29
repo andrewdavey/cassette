@@ -50,6 +50,23 @@ namespace Cassette.Scripts
         }
 
         [Fact]
+        public void WhenRenderExternalScriptBundleWithLocalAssetsAndIsDebugMode_ThenFallbackRendererUsed()
+        {
+            var bundle = new ExternalScriptBundle("http://test.com/", "test");
+            bundle.Assets.Add(Mock.Of<IAsset>());
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
+            fallbackRenderer.Setup(r => r.Render(bundle))
+                            .Returns(new HtmlString("FALLBACK"));
+            application.SetupGet(a => a.IsDebuggingEnabled)
+                       .Returns(true);
+
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var html = renderer.Render(bundle).ToHtmlString();
+
+            html.ShouldEqual("FALLBACK");
+        }
+
+        [Fact]
         public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlContainsFallbackScript()
         {
             var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
