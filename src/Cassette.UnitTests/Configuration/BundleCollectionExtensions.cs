@@ -428,7 +428,6 @@ namespace Cassette.Configuration
         public void WhenAddUrlWithFallbackWithFileSource_ThenFileSourceIsUsed()
         {
             var fileSource = new Mock<IFileSource>();
-            var sourceDirectory = new Mock<IDirectory>();
             var directory = new Mock<IDirectory>();
             var file = new Mock<IFile>();
 
@@ -442,6 +441,22 @@ namespace Cassette.Configuration
             bundles.AddUrl("http://cdn.com/jquery.js").WithFallback("condition", "path", fileSource.Object);
 
             bundles["path"].Assets[0].SourceFile.ShouldBeSameAs(file.Object);
+        }
+
+        [Fact]
+        public void WhenAddWithFallbackSingleFile_ThenBundleHasSingleAsset()
+        {
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.Exists).Returns(true);
+            file.SetupGet(f => f.FullPath).Returns("~/jquery.js");
+            sourceDirectory.Setup(d => d.GetFile("~/jquery.js"))
+                           .Returns(file.Object);
+
+            bundles.AddUrl("http://cdn.com/jquery.js").WithFallback("condition", "~/jquery.js");
+
+            var bundle = bundles["jquery.js"].ShouldBeType<ExternalScriptBundle>();
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(file.Object);
         }
     }
 }
