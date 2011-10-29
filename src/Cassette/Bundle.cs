@@ -62,7 +62,7 @@ namespace Cassette
         /// <summary>
         /// Defines where to render this bundle in an HTML page.
         /// </summary>
-        public string Location { get; set; }
+        public string PageLocation { get; set; }
 
         /// <summary>
         /// The assets contained in the bundle.

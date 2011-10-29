@@ -87,7 +87,7 @@ namespace Cassette.UI
         public void WhenAddReferenceToBundleDirectoryWithLocation_ThenGetBundlesThatLocationReturnTheBundle()
         {
             var bundle = new ScriptBundle("~/test");
-            bundle.Location = "body";
+            bundle.PageLocation = "body";
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
                            .Returns(bundle);
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
@@ -106,7 +106,7 @@ namespace Cassette.UI
         {
             var bundle1 = new ScriptBundle("~/test1");
             var bundle2 = new ScriptBundle("~/test2");
-            bundle1.Location = "body";
+            bundle1.PageLocation = "body";
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test1"))
                            .Returns(bundle1);
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test2"))

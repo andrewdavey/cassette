@@ -106,7 +106,7 @@ namespace Cassette
             // an explicit location argument i.e. null.
             if (location == null)
             {
-                location = bundle.Location;
+                location = bundle.PageLocation;
             }
 
             var bundles = GetOrCreateBundleSet(location);
