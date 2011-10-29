@@ -83,6 +83,41 @@ namespace Cassette
         }
 
         [Fact]
+        public void HandlesSlashesAsDirectorySeparators()
+        {
+            char systemPathSeparator = Path.DirectorySeparatorChar;
+            string[] givenFiles = new[]
+            {
+                "folder" + systemPathSeparator + "test1.js"
+                , "folder" + systemPathSeparator + "test2.js"
+            };
+
+            Console.WriteLine(givenFiles[0]);
+            Console.WriteLine(givenFiles[1]);
+
+            FilesExist(givenFiles);
+            var reader = GetReader("folder/test1.js\nfolder/test2.js");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(givenFiles).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void HandlesBackslashesAsDirectorySeparators()
+        {
+            char systemPathSeparator = Path.DirectorySeparatorChar;
+            string[] givenFiles = new[]
+            {
+                "folder" + systemPathSeparator + "test1.js"
+                , "folder" + systemPathSeparator + "test2.js"
+            };
+
+            FilesExist(givenFiles);
+            var reader = GetReader("folder\\test1.js\nfolder\\test2.js");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(givenFiles).ShouldBeTrue();
+        }
+
+        [Fact]
         public void ThrowsExceptionWhenFileNotFound()
         {
             FilesExist("test1.js");
