@@ -83,6 +83,41 @@ namespace Cassette
         }
 
         [Fact]
+        public void HandlesSlashesAsDirectorySeparators()
+        {
+            char systemPathSeparator = Path.DirectorySeparatorChar;
+            string[] givenFiles = new[]
+            {
+                "folder" + systemPathSeparator + "test1.js"
+                , "folder" + systemPathSeparator + "test2.js"
+            };
+
+            Console.WriteLine(givenFiles[0]);
+            Console.WriteLine(givenFiles[1]);
+
+            FilesExist(givenFiles);
+            var reader = GetReader("folder/test1.js\nfolder/test2.js");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(givenFiles).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void HandlesBackslashesAsDirectorySeparators()
+        {
+            char systemPathSeparator = Path.DirectorySeparatorChar;
+            string[] givenFiles = new[]
+            {
+                "folder" + systemPathSeparator + "test1.js"
+                , "folder" + systemPathSeparator + "test2.js"
+            };
+
+            FilesExist(givenFiles);
+            var reader = GetReader("folder\\test1.js\nfolder\\test2.js");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(givenFiles).ShouldBeTrue();
+        }
+
+        [Fact]
         public void ThrowsExceptionWhenFileNotFound()
         {
             FilesExist("test1.js");
@@ -118,6 +153,24 @@ namespace Cassette
             var reader = GetReader("test2.js\n*");
             var result = reader.Read();
             result.AssetFilenames.SequenceEqual(new[] { "test2.js", "test1.js", "test3.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void DirectoryWithAsteriskIncludesAllFilesFromSubdirectory()
+        {
+            FilesExist("shared\\shared-test1.js", "shared\\shared-test2.js", "app\\app-test1.js", "app\\app-test2.js");
+            var reader = GetReader("shared\\*\napp\\*");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "shared\\shared-test1.js", "shared\\shared-test2.js", "app\\app-test1.js", "app\\app-test2.js" }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void DirectoryWithAsteriskIncludesAllFilesFromSubdirectoryNotAlreadyAdded()
+        {
+            FilesExist("shared\\shared-test1.js", "shared\\shared-test2.js", "app\\app-test1.js", "app\\app-test2.js");
+            var reader = GetReader("shared\\shared-test2.js\nshared\\*\napp\\*");
+            var result = reader.Read();
+            result.AssetFilenames.SequenceEqual(new[] { "shared\\shared-test2.js", "shared\\shared-test1.js", "app\\app-test1.js", "app\\app-test2.js" }).ShouldBeTrue();
         }
 
         [Fact]

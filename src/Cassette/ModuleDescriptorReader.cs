@@ -99,11 +99,28 @@ namespace Cassette
 
         void ParseAsset(string line)
         {
+            char directorySeparator = Path.DirectorySeparatorChar;
+
+            line = line
+                .Replace('/', directorySeparator)
+                .Replace('\\', directorySeparator);
+
             if (line == "*")
             {
                 foreach (var filename in allAssetfilenames.Except(assetFilenames))
                 {
                     assetFilenames.Add(filename);
+                }
+            }
+            else if (line.EndsWith(directorySeparator + "*"))
+            {
+                foreach (var filename in allAssetfilenames.Except(assetFilenames))
+                {
+                    string directory = line.Substring(0, line.Length - 1);
+                    if (filename.StartsWith(directory))
+                    {
+                        assetFilenames.Add(filename);
+                    }
                 }
             }
             else if (FileExists(line))
