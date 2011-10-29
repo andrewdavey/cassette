@@ -29,22 +29,10 @@ namespace Example
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
+            bundles.Add<StylesheetBundle>("Styles");
             
-            // TODO: Consider adding an AddExternal<T> method?
-
-            bundles.Add(new ExternalScriptBundle("http://platform.twitter.com/widgets.js", "twitter")
-            {
-                Location = "body"
-            });
-
-            bundles.Add<StylesheetBundle>(
-                "Styles",
-                bundle => bundle.Processor = new StylesheetPipeline // Replace the default processor with a customized pipeline.
-                {
-                    ConvertImageUrlsToDataUris = true // This property is false by default.
-                }
-            );
+            bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
+            bundles.AddUrl("http://platform.twitter.com/widgets.js", b => b.PageLocation = "body").WithAlias("twitter");
 
             bundles.AddPerSubDirectory<HtmlTemplateBundle>(
                 "HtmlTemplates",
