@@ -284,10 +284,15 @@ namespace Cassette.Configuration
     {
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
+        Mock<IDirectory> sourceDirectory;
 
         public BundleCollection_AddUrl_Tests()
         {
-            settings = new CassetteSettings();
+            sourceDirectory = new Mock<IDirectory>();
+            settings = new CassetteSettings
+            {
+                SourceDirectory = sourceDirectory.Object
+            };
             bundles = new BundleCollection(settings);
         }
 
@@ -348,11 +353,11 @@ namespace Cassette.Configuration
         public void WhenAddUrlWithDebug_ThenBundleHasAsset()
         {
             var fileSource = new Mock<IFileSource>();
-            var sourceDirectory = new Mock<IDirectory>();
             var directory = new Mock<IDirectory>();
             var file = new Mock<IFile>();
 
             file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
             settings.DefaultFileSources[typeof(ScriptBundle)] = fileSource.Object;
@@ -368,11 +373,11 @@ namespace Cassette.Configuration
         public void WhenAddUrlWithDebugWithFileSource_ThenFileSourceUsed()
         {
             var fileSource = new Mock<IFileSource>();
-            var sourceDirectory = new Mock<IDirectory>();
             var directory = new Mock<IDirectory>();
             var file = new Mock<IFile>();
 
             file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
             fileSource.Setup(s => s.GetFiles(directory.Object)).Returns(new[] { file.Object });
@@ -384,14 +389,30 @@ namespace Cassette.Configuration
         }
 
         [Fact]
+        public void WhenAddWithDebugSingleFile_ThenBundleHasSingleAsset()
+        {
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.Exists).Returns(true);
+            file.SetupGet(f => f.FullPath).Returns("~/jquery.js");
+            sourceDirectory.Setup(d => d.GetFile("~/jquery.js"))
+                           .Returns(file.Object);
+
+            bundles.AddUrl("http://cdn.com/jquery.js").WithDebug("~/jquery.js");
+
+            var bundle = bundles["jquery.js"].ShouldBeType<ExternalScriptBundle>();
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(file.Object);
+        }
+
+        [Fact]
         public void WhenAddUrlWithFallback_ThenExternalBundleCreatedWithFallbackCondition()
         {
             var fileSource = new Mock<IFileSource>();
-            var sourceDirectory = new Mock<IDirectory>();
             var directory = new Mock<IDirectory>();
             var file = new Mock<IFile>();
 
             file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
             settings.DefaultFileSources[typeof(ScriptBundle)] = fileSource.Object;
@@ -412,6 +433,7 @@ namespace Cassette.Configuration
             var file = new Mock<IFile>();
 
             file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
             fileSource.Setup(s => s.GetFiles(directory.Object)).Returns(new[] { file.Object });

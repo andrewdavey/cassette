@@ -58,7 +58,7 @@
     <Compile Include="BundleContainerExtensions.cs" />
     <Compile Include="BundleFactoryBase.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
-    <Compile Include="Configuration\ExternalBundleConfiguration.cs" />
+    <Compile Include="Configuration\AddUrlConfiguration.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />

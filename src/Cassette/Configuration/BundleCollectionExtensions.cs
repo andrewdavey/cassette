@@ -47,11 +47,7 @@ namespace Cassette.Configuration
                 var file = source.GetFile(applicationRelativePath);
                 if (file.Exists)
                 {
-                    var descriptor = new BundleDescriptor
-                    {
-                        AssetFilenames = { applicationRelativePath }
-                    };
-                    bundle = bundleFactory.CreateBundle(applicationRelativePath, new[] { file }, descriptor);
+                    bundle = CreateSingleFileBundle(applicationRelativePath, file, bundleFactory);
                 }
                 else
                 {
@@ -69,8 +65,22 @@ namespace Cassette.Configuration
             bundleCollection.Add(bundle);
         }
 
-        internal static T CreateDirectoryBundle<T>(string applicationRelativePath, IBundleFactory<T> bundleFactory, IEnumerable<IFile> allFiles,
-                                          IDirectory directory, BundleDescriptor descriptor = null) where T : Bundle
+        internal static T CreateSingleFileBundle<T>(string applicationRelativePath, IFile file, IBundleFactory<T> bundleFactory, BundleDescriptor descriptor = null)
+            where T : Bundle
+        {
+            descriptor = descriptor ?? new BundleDescriptor
+            {
+                AssetFilenames = { applicationRelativePath }
+            };
+            return bundleFactory.CreateBundle(applicationRelativePath, new[] { file }, descriptor);
+        }
+
+        internal static T CreateDirectoryBundle<T>(
+            string applicationRelativePath,
+            IBundleFactory<T> bundleFactory,
+            IEnumerable<IFile> allFiles,
+            IDirectory directory,
+            BundleDescriptor descriptor = null) where T : Bundle
         {
             var descriptorFile = TryGetDescriptorFile(directory);
             if (descriptor == null)
@@ -187,7 +197,7 @@ namespace Cassette.Configuration
             var bundle = bundleFactory.CreateExternalBundle(url);
             if (customizeBundle != null) customizeBundle(bundle);
             bundleCollection.Add(bundle);
-            return new ExternalBundleConfiguration<T>(bundleCollection, bundle, url, customizeBundle);
+            return new AddUrlConfiguration<T>(bundleCollection, bundle, url, customizeBundle);
         }
 
         public static IAddUrlConfiguration AddUrl(this BundleCollection bundleCollection, string url, Action<Bundle> customizeBundle = null)

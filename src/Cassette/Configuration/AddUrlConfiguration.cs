@@ -1,9 +1,10 @@
 using System;
+using System.IO;
 using Cassette.IO;
 
 namespace Cassette.Configuration
 {
-    class ExternalBundleConfiguration<T> : IAddUrlConfiguration
+    class AddUrlConfiguration<T> : IAddUrlConfiguration
         where T : Bundle
     {
         readonly BundleCollection bundleCollection;
@@ -11,7 +12,7 @@ namespace Cassette.Configuration
         readonly string url;
         readonly Action<T> customizeBundle;
 
-        public ExternalBundleConfiguration(BundleCollection bundleCollection, T bundle, string url, Action<T> customizeBundle)
+        public AddUrlConfiguration(BundleCollection bundleCollection, T bundle, string url, Action<T> customizeBundle)
         {
             this.bundleCollection = bundleCollection;
             this.bundle = bundle;
@@ -69,19 +70,42 @@ namespace Cassette.Configuration
 
         void ReplaceBundleUsingFileSource(BundleDescriptor descriptor, string applicationRelativePath, IFileSource fileSource)
         {
-            bundleCollection.Remove(bundle);
             var factory = GetBundleFactory();
+            var sourceDirectory = bundleCollection.Settings.SourceDirectory;
 
-            var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath);
-            fileSource = fileSource ?? GetDefaultFileSource();
-            var files = fileSource.GetFiles(directory);
-            var newBundle = BundleCollectionExtensions.CreateDirectoryBundle(
-                applicationRelativePath,
-                factory,
-                files,
-                directory,
-                descriptor
+            T newBundle;
+            if (sourceDirectory.DirectoryExists(applicationRelativePath))
+            {
+                var directory = sourceDirectory.GetDirectory(applicationRelativePath);
+                fileSource = fileSource ?? GetDefaultFileSource();
+                var files = fileSource.GetFiles(directory);
+                newBundle = BundleCollectionExtensions.CreateDirectoryBundle(
+                    applicationRelativePath,
+                    factory,
+                    files,
+                    directory,
+                    descriptor
                 );
+            }
+            else
+            {
+                var singleFile = sourceDirectory.GetFile(applicationRelativePath);
+                if (singleFile.Exists)
+                {
+                    newBundle = BundleCollectionExtensions.CreateSingleFileBundle(
+                        applicationRelativePath,
+                        singleFile,
+                        factory,
+                        descriptor
+                    );
+                }
+                else
+                {
+                    throw new DirectoryNotFoundException(string.Format("File or directory not found: \"{0}\"", applicationRelativePath));
+                }
+            }
+
+            bundleCollection.Remove(bundle);
             if (customizeBundle != null) customizeBundle(newBundle);
             bundleCollection.Add(newBundle);
         }
