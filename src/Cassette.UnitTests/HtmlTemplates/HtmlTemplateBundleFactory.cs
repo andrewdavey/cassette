@@ -45,7 +45,7 @@ namespace Cassette.HtmlTemplates
         public void GivenBundleDescriptorWithOnlyWildcardFilename_WhenCreateBundle_ThenReturnBundleWithAllAssets()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var file = StubFile("~/test/file.js");
+            var file = StubFile("~/test/file.htm");
             var files = new[] { file };
             var bundleDescriptor = new BundleDescriptor
             {
@@ -61,12 +61,12 @@ namespace Cassette.HtmlTemplates
         public void GivenBundleDescriptorWithOnlyExplicitFilename_WhenCreateBundle_ThenReturnBundleWithOnlySpecifiedAssets()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var file0 = StubFile("~/test/yes.js");
-            var file1 = StubFile("~/test/no.js");
+            var file0 = StubFile("~/test/yes.htm");
+            var file1 = StubFile("~/test/no.htm");
             var files = new[] { file0, file1 };
             var bundleDescriptor = new BundleDescriptor
             {
-                AssetFilenames = { "~/test/yes.js" }
+                AssetFilenames = { "~/test/yes.htm" }
             };
 
             var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
@@ -79,14 +79,14 @@ namespace Cassette.HtmlTemplates
         public void GivenBundleDescriptorWithExplicitFilenamesThenWildcard_WhenCreateBundle_ThenReturnBundleWithSpecifiedAssetsThenAllTheRemainingAssets()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var file0 = StubFile("~/test/0.js");
-            var file1 = StubFile("~/test/1.js");
-            var file2 = StubFile("~/test/2.js");
-            var file3 = StubFile("~/test/3.js");
+            var file0 = StubFile("~/test/0.htm");
+            var file1 = StubFile("~/test/1.htm");
+            var file2 = StubFile("~/test/2.htm");
+            var file3 = StubFile("~/test/3.htm");
             var files = new[] { file0, file1, file2, file3 };
             var bundleDescriptor = new BundleDescriptor
             {
-                AssetFilenames = { "~/test/3.js", "~/test/1.js", "*" }
+                AssetFilenames = { "~/test/3.htm", "~/test/1.htm", "*" }
             };
 
             var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
@@ -103,11 +103,11 @@ namespace Cassette.HtmlTemplates
         public void GivenBundleDescriptorWithExplicitFilename_WhenCreateBundle_ThenBundleIsSorted()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var file = StubFile("~/test/file.js");
+            var file = StubFile("~/test/file.htm");
             var files = new[] { file };
             var bundleDescriptor = new BundleDescriptor
             {
-                AssetFilenames = { "~/test/file.js" }
+                AssetFilenames = { "~/test/file.htm" }
             };
 
             var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
@@ -119,7 +119,7 @@ namespace Cassette.HtmlTemplates
         public void GivenBundleDescriptorWithOnlyWildcard_WhenCreateBundle_ThenBundleIsSortedIsFalse()
         {
             var factory = new HtmlTemplateBundleFactory();
-            var file = StubFile("~/test/file.js");
+            var file = StubFile("~/test/file.htm");
             var files = new[] { file };
             var bundleDescriptor = new BundleDescriptor
             {
