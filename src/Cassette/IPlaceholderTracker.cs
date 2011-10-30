@@ -23,7 +23,7 @@ using System.Web;
 
 namespace Cassette
 {
-    public interface IPlaceholderTracker
+    interface IPlaceholderTracker
     {
         IHtmlString InsertPlaceholder(Func<IHtmlString> futureHtml);
         string ReplacePlaceholders(string html);

@@ -22,7 +22,7 @@ using System.Web;
 
 namespace Cassette
 {
-    public interface IReferenceBuilder
+    interface IReferenceBuilder
     {
         /// <summary>
         /// Adds a reference to the asset bundle with the given path.
