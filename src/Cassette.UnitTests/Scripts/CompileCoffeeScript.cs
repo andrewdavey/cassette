@@ -29,10 +29,10 @@ namespace Cassette.Scripts
         public CompileCoffeeScript_Tests()
         {
             var compiler = new Mock<ICompiler>();
-            step = new CompileCoffeeScript(compiler.Object);
+            step = new CompileCoffeeScriptAssets(compiler.Object);
         }
 
-        readonly CompileCoffeeScript step;
+        readonly CompileCoffeeScriptAssets step;
 
         [Fact]
         public void WhenProcessBundleContainingCoffeeScriptAsset_ThenCompileCoffeeScriptAssetTransformIsAddedToAsset()

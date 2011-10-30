@@ -119,7 +119,7 @@
     <Compile Include="BundleDescriptorReader.cs" />
     <Compile Include="Scripts\ExternalScriptBundle.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundle.cs" />
-    <Compile Include="Stylesheets\CompileLess.cs" />
+    <Compile Include="Stylesheets\CompileLessAssets.cs" />
     <Compile Include="BundleProcessing\CompileAsset.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="AssetReferenceException.cs" />
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="Persistence\CachedAsset.cs" />
-    <Compile Include="Scripts\CompileCoffeeScript.cs" />
+    <Compile Include="Scripts\CompileCoffeeScriptAssets.cs" />
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
     <Compile Include="IAsset.cs" />

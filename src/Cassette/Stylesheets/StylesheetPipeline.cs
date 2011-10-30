@@ -41,7 +41,7 @@ namespace Cassette.Stylesheets
             if (CompileLess)
             {
                 yield return new ParseLessReferences();
-                yield return new CompileLess(new LessCompiler());
+                yield return new CompileLessAssets(new LessCompiler());
             }
             if (ConvertImageUrlsToDataUris)
             {

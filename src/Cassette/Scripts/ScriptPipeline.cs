@@ -40,7 +40,7 @@ namespace Cassette.Scripts
             if (CompileCoffeeScript)
             {
                 yield return new ParseCoffeeScriptReferences();
-                yield return new CompileCoffeeScript(new CoffeeScriptCompiler());
+                yield return new CompileCoffeeScriptAssets(new CoffeeScriptCompiler());
             }
             yield return new SortAssetsByDependency();
             if (!application.IsDebuggingEnabled)

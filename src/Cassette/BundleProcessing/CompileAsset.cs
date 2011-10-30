@@ -24,7 +24,7 @@ using Cassette.Utilities;
 
 namespace Cassette.BundleProcessing
 {
-    public class CompileAsset : IAssetTransformer
+    class CompileAsset : IAssetTransformer
     {
         public CompileAsset(ICompiler compiler)
         {

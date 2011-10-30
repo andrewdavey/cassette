@@ -20,21 +20,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using Cassette.BundleProcessing;
 
-namespace Cassette.Scripts
+namespace Cassette.Stylesheets
 {
-    public class CompileCoffeeScript : ProcessAssetsThatMatchFileExtension<Bundle>
+    public class CompileLessAssets : ProcessAssetsThatMatchFileExtension<StylesheetBundle>
     {
-        public CompileCoffeeScript(ICompiler coffeeScriptCompiler)
-            : base("coffee")
+        public CompileLessAssets(ICompiler compiler)
+            : base("less")
         {
-            this.coffeeScriptCompiler = coffeeScriptCompiler;
+            this.compiler = compiler;
         }
 
-        readonly ICompiler coffeeScriptCompiler;
+        readonly ICompiler compiler;
 
         protected override void Process(IAsset asset, Bundle bundle)
         {
-            asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler));
+            asset.AddAssetTransformer(new CompileAsset(compiler));
         }
     }
 }
