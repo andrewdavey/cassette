@@ -29,13 +29,25 @@ namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateBundleFactory_Tests
     {
+        readonly HtmlTemplateBundleFactory factory = new HtmlTemplateBundleFactory();
+        readonly List<IFile> allFiles = new List<IFile>();
+
+        void FilesExist(params string[] paths)
+        {
+            foreach (var path in paths)
+            {
+                var file = new Mock<IFile>();
+                file.SetupGet(f => f.FullPath).Returns(path);
+                allFiles.Add(file.Object);
+            }
+        }
+
         [Fact]
         public void CreateBundle_ReturnsHtmlTemplateBundleWithPathSet()
         {
-            var factory = new HtmlTemplateBundleFactory();
             var bundle = factory.CreateBundle(
                 "~/test",
-                Enumerable.Empty<IFile>(),
+                allFiles,
                 new BundleDescriptor { AssetFilenames = { "*" } }
             );
             bundle.Path.ShouldEqual("~/test");
@@ -44,73 +56,62 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void GivenBundleDescriptorWithOnlyWildcardFilename_WhenCreateBundle_ThenReturnBundleWithAllAssets()
         {
-            var factory = new HtmlTemplateBundleFactory();
-            var file = StubFile("~/test/file.htm");
-            var files = new[] { file };
+            FilesExist("~/test/file.htm");
             var bundleDescriptor = new BundleDescriptor
             {
                 AssetFilenames = { "*" }
             };
 
-            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+            var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
-            bundle.Assets[0].SourceFile.ShouldBeSameAs(file);
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(allFiles[0]);
         }
 
         [Fact]
         public void GivenBundleDescriptorWithOnlyExplicitFilename_WhenCreateBundle_ThenReturnBundleWithOnlySpecifiedAssets()
         {
-            var factory = new HtmlTemplateBundleFactory();
-            var file0 = StubFile("~/test/yes.htm");
-            var file1 = StubFile("~/test/no.htm");
-            var files = new[] { file0, file1 };
+            FilesExist("~/test/yes.htm", "~/test/no.htm");
             var bundleDescriptor = new BundleDescriptor
             {
                 AssetFilenames = { "~/test/yes.htm" }
             };
 
-            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+            var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
-            bundle.Assets[0].SourceFile.ShouldBeSameAs(file0);
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(allFiles[0]);
             bundle.Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
         public void GivenBundleDescriptorWithExplicitFilenamesThenWildcard_WhenCreateBundle_ThenReturnBundleWithSpecifiedAssetsThenAllTheRemainingAssets()
         {
-            var factory = new HtmlTemplateBundleFactory();
-            var file0 = StubFile("~/test/0.htm");
-            var file1 = StubFile("~/test/1.htm");
-            var file2 = StubFile("~/test/2.htm");
-            var file3 = StubFile("~/test/3.htm");
-            var files = new[] { file0, file1, file2, file3 };
+            FilesExist(Enumerable.Range(0, 4).Select(i => "~/test/" + i + ".htm").ToArray());
+
             var bundleDescriptor = new BundleDescriptor
             {
                 AssetFilenames = { "~/test/3.htm", "~/test/1.htm", "*" }
             };
 
-            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+            var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
             bundle.Assets.Count.ShouldEqual(4);
-            bundle.Assets[0].SourceFile.ShouldBeSameAs(file3);
-            bundle.Assets[1].SourceFile.ShouldBeSameAs(file1);
+            bundle.Assets[0].SourceFile.ShouldBeSameAs(allFiles[3]);
+            bundle.Assets[1].SourceFile.ShouldBeSameAs(allFiles[1]);
             new HashSet<IFile>(bundle.Assets.Skip(2).Select(a => a.SourceFile))
-                .SetEquals(new[] { file0, file2 })
+                .SetEquals(new[] { allFiles[0], allFiles[2] })
                 .ShouldBeTrue();
         }
 
         [Fact]
         public void GivenBundleDescriptorWithExplicitFilename_WhenCreateBundle_ThenBundleIsSorted()
         {
-            var factory = new HtmlTemplateBundleFactory();
-            var file = StubFile("~/test/file.htm");
-            var files = new[] { file };
+            FilesExist("~/test/file.htm");
             var bundleDescriptor = new BundleDescriptor
             {
                 AssetFilenames = { "~/test/file.htm" }
             };
 
-            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+            var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
             bundle.IsSorted.ShouldBeTrue();
         }
@@ -118,15 +119,13 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void GivenBundleDescriptorWithOnlyWildcard_WhenCreateBundle_ThenBundleIsSortedIsFalse()
         {
-            var factory = new HtmlTemplateBundleFactory();
-            var file = StubFile("~/test/file.htm");
-            var files = new[] { file };
+            FilesExist("~/test/file.htm");
             var bundleDescriptor = new BundleDescriptor
             {
                 AssetFilenames = { "*" }
             };
 
-            var bundle = factory.CreateBundle("~/test", files, bundleDescriptor);
+            var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
             bundle.IsSorted.ShouldBeFalse();
         }
@@ -134,7 +133,6 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void GivenBundleDescriptorWithNoFilenames_WhenCreateBundle_ThenBundleIsSorted()
         {
-            var factory = new HtmlTemplateBundleFactory();
             var bundleDescriptor = new BundleDescriptor();
 
             var bundle = factory.CreateBundle("~/test", new IFile[0], bundleDescriptor);
@@ -142,11 +140,56 @@ namespace Cassette.HtmlTemplates
             bundle.IsSorted.ShouldBeTrue();
         }
 
-        IFile StubFile(string path)
+        [Fact]
+        public void GivenSubDirectoryAsterisks_WhenCreateBundle_ThenFilesFromSubDirectoriesAreIncluded()
         {
-            var file = new Mock<IFile>();
-            file.SetupGet(f => f.FullPath).Returns(path);
-            return file.Object;
+            // Thanks to maniserowicz for this idea
+
+            FilesExist("~/shared/shared-test1.htm", "~/shared/shared-test2.htm", "~/app/app-test1.htm", "~/app/app-test2.htm");
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "~/shared/*", "~/app/*" }
+            };
+
+            var bundle = factory.CreateBundle("~", allFiles, bundleDescriptor);
+            
+            bundle.Assets.Select(a => a.SourceFile.FullPath)
+                .SequenceEqual(new[] { "~/shared/shared-test1.htm", "~/shared/shared-test2.htm", "~/app/app-test1.htm", "~/app/app-test2.htm" })
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenExplicitSubDirFileAndThenSubDirAsterisk_WhenCreateBundle_ThenExplicitFileNotAddedTwice()
+        {
+            // Thanks to maniserowicz for this idea
+
+            FilesExist("~/shared/shared-test1.htm", "~/shared/shared-test2.htm", "~/app/app-test1.htm", "~/app/app-test2.htm");
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "~/shared/shared-test2.htm", "~/shared/*", "~/app/*" }
+            };
+
+            var bundle = factory.CreateBundle("~", allFiles, bundleDescriptor);
+
+            bundle.Assets.Select(a => a.SourceFile.FullPath)
+                .SequenceEqual(new[] { "~/shared/shared-test2.htm", "~/shared/shared-test1.htm", "~/app/app-test1.htm", "~/app/app-test2.htm" })
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenSubDirAsteriskAndTopLevelAsterisk_WhenCreateBundle_ThenSubDirFilesNotAddedTwice()
+        {
+            FilesExist("~/shared/a.htm", "~/shared/b.htm", "~/c.htm");
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "~/shared/*", "*" }
+            };
+
+            var bundle = factory.CreateBundle("~", allFiles, bundleDescriptor);
+
+            bundle.Assets.Select(a => a.SourceFile.FullPath)
+                .SequenceEqual(new[] { "~/shared/a.htm", "~/shared/b.htm", "~/c.htm" })
+                .ShouldBeTrue();
         }
     }
 }

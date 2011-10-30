@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
+using System;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -20,17 +22,21 @@ namespace Cassette
 
         protected abstract T CreateBundleCore(string path, BundleDescriptor bundleDescriptor);
 
-        void AddAssets(Bundle bundle, IFile[] allFiles, IEnumerable<string> filenames)
+        void AddAssets(Bundle bundle, IFile[] allFiles, IEnumerable<string> descriptorFilenames)
         {
             var remainingFiles = new HashSet<IFile>(allFiles);
             var filesByPath = allFiles.ToDictionary(f => f.FullPath);
 
-            foreach (var filename in filenames)
+            foreach (var filename in descriptorFilenames)
             {
                 if (filename == "*")
                 {
                     AddAllAssetsToBundle(bundle, remainingFiles);
                     break;
+                }
+                else if (filename.EndsWith("/*")) // Thanks to maniserowicz for this idea
+                {
+                    AddAllSubDirectoryAssetsToBundle(bundle, filename.TrimEnd('*'), remainingFiles);
                 }
                 else
                 {
@@ -63,6 +69,20 @@ namespace Cassette
         {
             foreach (var file in remainingFiles)
             {
+                bundle.Assets.Add(new Asset(file, bundle));
+            }
+        }
+
+        void AddAllSubDirectoryAssetsToBundle(Bundle bundle, string path, HashSet<IFile> remainingFiles)
+        {
+            path = PathUtilities.AppRelative(PathUtilities.NormalizePath(path));
+            var filesInSubDirectory = remainingFiles
+                .Where(file => file.FullPath.StartsWith(path, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            foreach (var file in filesInSubDirectory)
+            {
+                remainingFiles.Remove(file);
                 bundle.Assets.Add(new Asset(file, bundle));
             }
         }
