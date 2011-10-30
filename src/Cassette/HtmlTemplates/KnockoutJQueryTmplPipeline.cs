@@ -31,9 +31,7 @@ namespace Cassette.HtmlTemplates
             yield return new AddTransformerToAssets(
                 new CompileAsset(new KnockoutJQueryTmplCompiler())
             );
-            yield return new Customize<HtmlTemplateBundle>(
-                m => m.ContentType = "text/javascript"
-            );
+            yield return new AssignContentType("text/javascript");
             yield return new AddTransformerToAssets(
                 new RegisterTemplateWithJQueryTmpl(bundle)
             );

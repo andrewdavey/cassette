@@ -45,7 +45,7 @@ namespace Cassette.Stylesheets
             }
             if (ConvertImageUrlsToDataUris)
             {
-                yield return new AddTransformerToAssets(new DataUriGenerator());
+                yield return new ConvertImageUrlsToDataUris();
             }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();

@@ -68,7 +68,9 @@ namespace Cassette.UI
             Bundles.AddPageData(globalVariable, data, pageLocation);
         }
 
+// ReSharper disable ParameterTypeCanBeEnumerable.Global
         public void AddPageData(string globalVariable, IDictionary<string, object> data, string pageLocation = null)
+// ReSharper restore ParameterTypeCanBeEnumerable.Global
         {
             Bundles.AddPageData(globalVariable, data, pageLocation);
         }

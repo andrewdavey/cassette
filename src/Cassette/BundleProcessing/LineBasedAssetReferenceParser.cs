@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace Cassette.BundleProcessing
 {
-    public class LineBasedAssetReferenceParser<T> : BundleProcessorOfAssetsMatchingFileExtension<T>
+    public class LineBasedAssetReferenceParser<T> : ProcessAssetsThatMatchFileExtension<T>
         where T : Bundle
     {
         protected LineBasedAssetReferenceParser(string fileExtension, Regex referenceRegex)

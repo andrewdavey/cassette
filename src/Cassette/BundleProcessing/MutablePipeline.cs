@@ -122,4 +122,3 @@ namespace Cassette.BundleProcessing
         protected abstract IEnumerable<IBundleProcessor<T>> CreatePipeline(T bundle, ICassetteApplication application);
     }
 }
-

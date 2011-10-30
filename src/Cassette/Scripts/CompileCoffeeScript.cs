@@ -22,7 +22,7 @@ using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class CompileCoffeeScript : BundleProcessorOfAssetsMatchingFileExtension<Bundle>
+    public class CompileCoffeeScript : ProcessAssetsThatMatchFileExtension<Bundle>
     {
         public CompileCoffeeScript(ICompiler coffeeScriptCompiler)
             : base("coffee")

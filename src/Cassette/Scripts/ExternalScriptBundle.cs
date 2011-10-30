@@ -37,14 +37,7 @@ namespace Cassette.Scripts
             this.url = url;
         }
 
-        public ExternalScriptBundle(string url, string bundlePath)
-            : base(bundlePath)
-        {
-            ValidateUrl(url);
-            this.url = url;
-        }
-
-        public ExternalScriptBundle(string url, string bundlePath, string fallbackCondition)
+        public ExternalScriptBundle(string url, string bundlePath, string fallbackCondition = null)
             : base(bundlePath)
         {
             ValidateUrl(url);

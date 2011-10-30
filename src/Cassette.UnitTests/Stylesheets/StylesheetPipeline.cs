@@ -41,6 +41,66 @@ namespace Cassette.Stylesheets
         {
             new StylesheetPipeline().StylesheetMinifier.ShouldBeType<MicrosoftStyleSheetMinifier>();
         }
+
+        [Fact]
+        public void GivenCompileLessIsTrue_WhenProcessBundle_ThenLessAssetHasCompileAssetTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { CompileLess = true };
+            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
+        }
+
+        [Fact]
+        public void GivenCompileLessIsFalse_WhenProcessBundle_ThenLessAssetHasNoCompileAssetTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { CompileLess = false };
+            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
+        }
+
+        [Fact]
+        public void GivenConvertImageUrlsToDataUrisIsTrue_WhenProcessBundle_ThenLessAssetHasDataUriTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { ConvertImageUrlsToDataUris = true };
+            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)));
+        }
+
+        [Fact]
+        public void GivenConvertImageUrlsToDataUrisIsFalse_WhenProcessBundle_ThenLessAssetHasNoDataUriTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { ConvertImageUrlsToDataUris = false };
+            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)), Times.Never());
+        }
     }
 
     public class StylesheetPipeline_Process_TestBase

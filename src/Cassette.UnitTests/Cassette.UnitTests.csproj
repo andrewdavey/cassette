@@ -94,8 +94,6 @@
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="BundleProcessing\CompileAsset.cs" />
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
-    <Compile Include="BundleProcessing\ConditionalStep.cs" />
-    <Compile Include="BundleProcessing\Customize.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundle.cs" />
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
@@ -105,7 +103,7 @@
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ScriptPipeline.cs" />
     <Compile Include="Stylesheets\CompileLess.cs" />
-    <Compile Include="Stylesheets\DataUriGenerator.cs" />
+    <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
@@ -123,7 +121,6 @@
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
-    <Compile Include="BundleProcessing\Pipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\NullPlaceholderTracker.cs" />
     <Compile Include="UI\ReferenceBuilder.cs" />

@@ -26,7 +26,7 @@ using Cassette.Utilities;
 
 namespace Cassette.BundleProcessing
 {
-    public class ConcatenatedAsset : AssetBase, IDisposable
+    class ConcatenatedAsset : AssetBase, IDisposable
     {
         readonly byte[] hash;
         readonly IEnumerable<IAsset> children;

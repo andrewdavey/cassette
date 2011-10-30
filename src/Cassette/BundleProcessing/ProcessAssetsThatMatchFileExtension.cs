@@ -19,36 +19,34 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using Cassette.Stylesheets;
-using Moq;
-using Should;
-using Xunit;
+using System.Linq;
 
 namespace Cassette.BundleProcessing
 {
-    public class Customize_Tests
+    public abstract class ProcessAssetsThatMatchFileExtension<T> : IBundleProcessor<T>
+        where T : Bundle
     {
-        [Fact]
-        public void ProcessRunsActionForBundle()
+        protected ProcessAssetsThatMatchFileExtension(string fileExtension)
         {
-            var step = new Customize<StylesheetBundle>(
-                m => m.Media = "print"    
-            );
-            var bundle = new StylesheetBundle("~/test");
-
-            step.Process(bundle, Mock.Of<ICassetteApplication>());
-
-            bundle.Media.ShouldEqual("print");
+            filenameEndsWith = "." + fileExtension;
         }
 
-        [Fact]
-        public void ActionCannotBeNull()
+        readonly string filenameEndsWith;
+
+        public void Process(T bundle, ICassetteApplication application)
         {
-            Assert.Throws<ArgumentNullException>(delegate
+            var assets = bundle.Assets.Where(ShouldProcessAsset);
+            foreach (var asset in assets)
             {
-                new Customize<Bundle>(null);
-            });
+                Process(asset, bundle);
+            }
+        }
+
+        protected abstract void Process(IAsset asset, Bundle bundle);
+
+        bool ShouldProcessAsset(IAsset asset)
+        {
+            return asset.SourceFile.FullPath.EndsWith(filenameEndsWith, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
-

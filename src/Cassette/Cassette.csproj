@@ -53,6 +53,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BundleFactoryExtensions.cs" />
+    <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="FileAsset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="AssetFinder.cs" />
@@ -106,7 +107,8 @@
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
-    <Compile Include="Stylesheets\DataUriGenerator.cs" />
+    <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
+    <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\HtmlConstants.cs" />
@@ -119,7 +121,6 @@
     <Compile Include="Stylesheets\ExternalStylesheetBundle.cs" />
     <Compile Include="Stylesheets\CompileLess.cs" />
     <Compile Include="BundleProcessing\CompileAsset.cs" />
-    <Compile Include="BundleProcessing\Customize.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
@@ -128,7 +129,6 @@
     <Compile Include="UI\Bundles.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
-    <Compile Include="BundleProcessing\ConditionalStep.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
     <Compile Include="ICassetteApplication.cs" />
@@ -160,10 +160,9 @@
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="BundleContainer.cs" />
-    <Compile Include="BundleProcessing\BundleProcessorOfAssetsMatchingFileExtension.cs" />
+    <Compile Include="BundleProcessing\ProcessAssetsThatMatchFileExtension.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
-    <Compile Include="BundleProcessing\Pipeline.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleFactory.cs" />
     <Compile Include="BundleProcessing\SortAssetsByDependency.cs" />

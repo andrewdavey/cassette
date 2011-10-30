@@ -22,7 +22,7 @@ using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class CompileLess : BundleProcessorOfAssetsMatchingFileExtension<StylesheetBundle>
+    public class CompileLess : ProcessAssetsThatMatchFileExtension<StylesheetBundle>
     {
         public CompileLess(ICompiler compiler)
             : base("less")

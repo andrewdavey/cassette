@@ -26,7 +26,7 @@ using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class ParseCssReferences : BundleProcessorOfAssetsMatchingFileExtension<StylesheetBundle>
+    public class ParseCssReferences : ProcessAssetsThatMatchFileExtension<StylesheetBundle>
     {
         public ParseCssReferences()
             : base("css")

@@ -28,11 +28,11 @@ using Xunit;
 
 namespace Cassette.Stylesheets
 {
-    public class DataUriGenerator_Tests
+    public class CssImageToDataUriTransformer_Tests
     {
-        public DataUriGenerator_Tests()
+        public CssImageToDataUriTransformer_Tests()
         {
-            transformer = new DataUriGenerator();
+            transformer = new CssImageToDataUriTransformer();
 
             directory = new Mock<IDirectory>();
             asset = new Mock<IAsset>();
@@ -47,7 +47,7 @@ namespace Cassette.Stylesheets
 
         readonly Mock<IAsset> asset;
         readonly Mock<IDirectory> directory;
-        readonly DataUriGenerator transformer;
+        readonly CssImageToDataUriTransformer transformer;
 
         [Fact]
         public void TransformReplacesImageUrlWithDataUri()
