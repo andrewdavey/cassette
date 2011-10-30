@@ -28,14 +28,14 @@ namespace Cassette
 {
     public abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, IUrlGenerator urlGenerator)
+        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, IUrlGenerator urlGenerator, string cacheVersion)
         {
             this.settings = settings;
             this.urlGenerator = urlGenerator;
 
             // Bundle container must be created after the above fields are assigned.
             // This application object may get used during bundle processing, so its properties must be ready to use.
-            bundleContainer = CreateBundleContainer(bundles, settings, this);
+            bundleContainer = CreateBundleContainer(bundles, settings, this, cacheVersion);
         }
 
         readonly CassetteSettings settings;
@@ -67,13 +67,13 @@ namespace Cassette
             get { return bundleContainer; }
         }
 
-        public IFileSource GetDefaultBundleInitializer(Type bundleType)
+        public IFileSearch GetDefaultBundleInitializer(Type bundleType)
         {
             var originalBundleType = bundleType;
             do
             {
-                IFileSource initializer;
-                if (settings.DefaultFileSources.TryGetValue(bundleType, out initializer))
+                IFileSearch initializer;
+                if (settings.DefaultFileSearches.TryGetValue(bundleType, out initializer))
                 {
                     return initializer;
                 }
@@ -107,7 +107,7 @@ namespace Cassette
             );
         }
 
-        static IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles, CassetteSettings settings, ICassetteApplication application)
+        static IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles, CassetteSettings settings, ICassetteApplication application, string cacheVersion)
         {
             IBundleContainerFactory containerFactory;
             if (settings.IsDebuggingEnabled)
@@ -118,7 +118,7 @@ namespace Cassette
             {
                 containerFactory = new CachedBundleContainerFactory(
                     new BundleCache(
-                        settings.CacheVersion,
+                        cacheVersion,
                         settings.CacheDirectory,
                         settings.SourceDirectory
                     ),

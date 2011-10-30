@@ -130,10 +130,8 @@ namespace Cassette.Web
         static CassetteApplication CreateCassetteApplication()
         {
             var allConfigurations = GetAllConfigurations();
-            var settings = new CassetteSettings
-            {
-                CacheVersion = GetConfigurationVersion(allConfigurations, HttpRuntime.AppDomainAppVirtualPath)
-            };
+            var cacheVersion = GetConfigurationVersion(allConfigurations, HttpRuntime.AppDomainAppVirtualPath);
+            var settings = new CassetteSettings();
             var bundles = new BundleCollection(settings);
 
             foreach (var configuration in allConfigurations)
@@ -146,14 +144,15 @@ namespace Cassette.Web
 
             Trace.Source.TraceInformation("Creating Cassette application object");
             Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", settings.IsDebuggingEnabled);
-            Trace.Source.TraceInformation("Cache version: {0}", settings.CacheVersion);
+            Trace.Source.TraceInformation("Cache version: {0}", cacheVersion);
 
             return new CassetteApplication(
                 bundles,
                 settings,
                 routing,
                 RouteTable.Routes,
-                GetCurrentHttpContext
+                GetCurrentHttpContext,
+                cacheVersion
             );
         }
 

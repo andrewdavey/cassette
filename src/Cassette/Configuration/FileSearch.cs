@@ -7,7 +7,7 @@ using Cassette.IO;
 
 namespace Cassette.Configuration
 {
-    public class FileSearch : IFileSource
+    public class FileSearch : IFileSearch
     {
         /// <summary>
         /// The file search pattern. For example, "*.js;*.coffee".
@@ -27,7 +27,7 @@ namespace Cassette.Configuration
         /// </summary>
         /// <param name="directory">The directory to search.</param>
         /// <returns>A collection of files.</returns>
-        public IEnumerable<IFile> GetFiles(IDirectory directory)
+        public IEnumerable<IFile> FindFiles(IDirectory directory)
         {
             return from pattern in GetFilePatterns()
                    from file in directory.GetFiles(pattern, SearchOption)

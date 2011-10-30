@@ -21,7 +21,7 @@ namespace Cassette
         readonly FileSystemDirectory directory;
 
         [Fact]
-        public void GivenSimpleFilePatternAndSomeFiles_WhenGetFiles_ThenAssetCreatedForEachMatchingFile()
+        public void GivenSimpleFilePatternAndSomeFiles_WhenFindFiles_ThenAssetCreatedForEachMatchingFile()
         {
             var search = new FileSearch
             {
@@ -33,7 +33,7 @@ namespace Cassette
             CreateFile("test", "asset2.js");
             CreateFile("test", "other.txt"); // this file should be ignored
 
-            var files = search.GetFiles(directory.GetDirectory("test"))
+            var files = search.FindFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
             
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -42,7 +42,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenFilePatternForJSandCoffeeScript_WhenGetFiles_ThenBothTypesOfAssetAreCreated()
+        public void GivenFilePatternForJSandCoffeeScript_WhenFindFiles_ThenBothTypesOfAssetAreCreated()
         {
             var search = new FileSearch
             {
@@ -53,7 +53,7 @@ namespace Cassette
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.coffee");
 
-            var files = search.GetFiles(directory.GetDirectory("test"))
+            var files = search.FindFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
 
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -61,7 +61,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenFilePatternForJSandCoffeeScriptUsingCommaSeparator_WhenGetFiles_ThenBothTypesOfAssetAreCreated()
+        public void GivenFilePatternForJSandCoffeeScriptUsingCommaSeparator_WhenFindFiles_ThenBothTypesOfAssetAreCreated()
         {
             var search = new FileSearch()
             {
@@ -72,7 +72,7 @@ namespace Cassette
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.coffee");
 
-            var files = search.GetFiles(directory.GetDirectory("test"))
+            var files = search.FindFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
 
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -80,7 +80,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenFilePatternIsNotSet_WhenGetFiles_ThenMatchAllFiles()
+        public void GivenFilePatternIsNotSet_WhenFindFiles_ThenMatchAllFiles()
         {
             var search = new FileSearch();
 
@@ -88,7 +88,7 @@ namespace Cassette
             CreateFile("test", "asset1.js");
             CreateFile("test", "asset2.txt");
 
-            var files = search.GetFiles(directory.GetDirectory("test"))
+            var files = search.FindFiles(directory.GetDirectory("test"))
                                .OrderBy(f => f.FullPath).ToArray();
 
             files[0].FullPath.ShouldEqual("~/test/asset1.js");
@@ -96,7 +96,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenExclude_WhenGetFiles_ThenAssetsNotCreatedForFilesMatchingExclude()
+        public void GivenExclude_WhenFindFiles_ThenAssetsNotCreatedForFilesMatchingExclude()
         {
             var search = new FileSearch()
             {
@@ -107,20 +107,20 @@ namespace Cassette
             CreateFile("test", "asset.js");
             CreateFile("test", "asset-vsdoc.js");
 
-            var files = search.GetFiles(directory.GetDirectory("test"));
+            var files = search.FindFiles(directory.GetDirectory("test"));
 
             files.Count().ShouldEqual(1);
         }
 
         [Fact]
-        public void GivenBundleDescriptorFile_WhenGetFiles_ThenAssetIsNotCreatedForTheDescriptorFile()
+        public void GivenBundleDescriptorFile_WhenFindFiles_ThenAssetIsNotCreatedForTheDescriptorFile()
         {
             var search = new FileSearch();
             CreateDirectory("test");
             CreateFile("test", "bundle.txt");
             CreateFile("test", "module.txt"); // Legacy support - module.txt synonymous to bundle.txt
 
-            var files = search.GetFiles(directory.GetDirectory("test"));
+            var files = search.FindFiles(directory.GetDirectory("test"));
             
             files.ShouldBeEmpty();
         }

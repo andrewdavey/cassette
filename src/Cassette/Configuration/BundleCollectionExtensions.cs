@@ -14,7 +14,7 @@ namespace Cassette.Configuration
             Add<T>(bundleCollection, applicationRelativePath, null, null);
         }
 
-        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource fileSource)
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource)
             where T : Bundle
         {
             Add<T>(bundleCollection, applicationRelativePath, fileSource, null);
@@ -26,7 +26,7 @@ namespace Cassette.Configuration
             Add(bundleCollection, applicationRelativePath, null, customizeBundle);
         }
 
-        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource fileSource, Action<T> customizeBundle)
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource, Action<T> customizeBundle)
             where T : Bundle
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
@@ -37,9 +37,9 @@ namespace Cassette.Configuration
             var source = bundleCollection.Settings.SourceDirectory;
             if (source.DirectoryExists(applicationRelativePath))
             {
-                fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSources[typeof(T)];
+                fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
                 var directory = source.GetDirectory(applicationRelativePath);
-                var allFiles = fileSource.GetFiles(directory);
+                var allFiles = fileSource.FindFiles(directory);
                 bundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, allFiles, directory);
             }
             else
@@ -123,7 +123,7 @@ namespace Cassette.Configuration
         /// <param name="applicationRelativePath">The path to the directory containing sub-directories.</param>
         /// <param name="fileSource">A file source that gets the files to include from a directory.</param>
         /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the directory, if any.</param>
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource fileSource, bool excludeTopLevel = false)
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource, bool excludeTopLevel = false)
             where T : Bundle
         {
             AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, fileSource, null, excludeTopLevel);            
@@ -152,19 +152,19 @@ namespace Cassette.Configuration
         /// <param name="fileSource">A file source that gets the files to include from a directory.</param>
         /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
         /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the path, if any.</param>
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSource fileSource, Action<T> customizeBundle, bool excludeTopLevel = false)
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource, Action<T> customizeBundle, bool excludeTopLevel = false)
             where T : Bundle
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for each subdirectory of {1}", typeof(T).Name, applicationRelativePath));
 
-            fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSources[typeof(T)];
+            fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
 
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var parentDirectory = bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath);
 
             if (!excludeTopLevel)
             {
-                var topLevelFiles = fileSource.GetFiles(parentDirectory)
+                var topLevelFiles = fileSource.FindFiles(parentDirectory)
                                               .Where(f => f.Directory == parentDirectory)
                                               .ToArray();
                 if (topLevelFiles.Any())
@@ -182,7 +182,7 @@ namespace Cassette.Configuration
                 var descriptor = descriptorFile.Exists
                     ? new BundleDescriptorReader(descriptorFile).Read()
                     : new BundleDescriptor { AssetFilenames = { "*" } };
-                var allFiles = fileSource.GetFiles(directory);
+                var allFiles = fileSource.FindFiles(directory);
                 var bundle = bundleFactory.CreateBundle(directory.FullPath, allFiles, descriptor);
                 if (customizeBundle != null) customizeBundle(bundle);
                 TraceAssetFilePaths(bundle);

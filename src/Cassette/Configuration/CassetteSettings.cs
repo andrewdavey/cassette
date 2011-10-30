@@ -9,22 +9,48 @@ using Cassette.Stylesheets;
 
 namespace Cassette.Configuration
 {
+    /// <summary>
+    /// Settings that control Cassette's behavior.
+    /// </summary>
     public class CassetteSettings
     {
         public CassetteSettings()
         {
-            DefaultFileSources = CreateDefaultFileSources();
+            DefaultFileSearches = CreateDefaultFileSearches();
             BundleFactories = CreateBundleFactories();
-            CacheVersion = "";
         }
 
+        /// <summary>
+        /// When this property is true, Cassette will output debug-friendly assets. When false, combined, minified bundles are used instead.
+        /// </summary>
         public bool IsDebuggingEnabled { get; set; }
+
+        /// <summary>
+        /// When true (the default), Cassette will buffer page output and rewrite to allow bundle references to be inserted into &lt;head&gt;
+        /// after it has already been rendered. Disable this when &lt;system.webServer&gt;/&lt;urlCompression dynamicCompressionBeforeCache="true"&gt;
+        /// is in Web.config.
+        /// </summary>
         public bool IsHtmlRewritingEnabled { get; set; }
+
+        /// <summary>
+        /// The directory containing the original bundle asset files.
+        /// </summary>
         public IDirectory SourceDirectory { get; set; }
+
+        /// <summary>
+        /// The directory used to cache combined, minified bundles.
+        /// </summary>
         public IDirectory CacheDirectory { get; set; }
+
+        /// <summary>
+        /// The <see cref="IUrlModifier"/> used to convert application relative URLs into absolute URLs.
+        /// </summary>
         public IUrlModifier UrlModifier { get; set; }
-        public string CacheVersion { get; set; }
-        public IDictionary<Type, IFileSource> DefaultFileSources { get; private set; }
+
+        /// <summary>
+        /// The default <see cref="IFileSearch"/> object for each type of <see cref="Bundle"/>, used to find asset files to include.
+        /// </summary>
+        public IDictionary<Type, IFileSearch> DefaultFileSearches { get; private set; }
 
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
 
@@ -38,17 +64,17 @@ namespace Cassette.Configuration
             };
         }
 
-        IDictionary<Type, IFileSource> CreateDefaultFileSources()
+        IDictionary<Type, IFileSearch> CreateDefaultFileSearches()
         {
-            return new Dictionary<Type, IFileSource>
+            return new Dictionary<Type, IFileSearch>
             {
-                { typeof(ScriptBundle), CreateScriptFileSource() },
-                { typeof(StylesheetBundle), CreateStylesheetFileSource() },
-                { typeof(HtmlTemplateBundle), CreateHtmlTemplateFileSource() }
+                { typeof(ScriptBundle), CreateScriptFileSearch() },
+                { typeof(StylesheetBundle), CreateStylesheetFileSearch() },
+                { typeof(HtmlTemplateBundle), CreateHtmlTemplateFileSearch() }
             };
         }
 
-        FileSearch CreateScriptFileSource()
+        FileSearch CreateScriptFileSearch()
         {
             return new FileSearch
             {
@@ -58,7 +84,7 @@ namespace Cassette.Configuration
             };
         }
 
-        FileSearch CreateStylesheetFileSource()
+        FileSearch CreateStylesheetFileSearch()
         {
             return new FileSearch
             {
@@ -67,7 +93,7 @@ namespace Cassette.Configuration
             };
         }
 
-        FileSearch CreateHtmlTemplateFileSource()
+        FileSearch CreateHtmlTemplateFileSearch()
         {
             return new FileSearch
             {

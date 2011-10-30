@@ -3,8 +3,8 @@ using Cassette.IO;
 
 namespace Cassette
 {
-    public interface IFileSource
+    public interface IFileSearch
     {
-        IEnumerable<IFile> GetFiles(IDirectory directory);
+        IEnumerable<IFile> FindFiles(IDirectory directory);
     }
 }

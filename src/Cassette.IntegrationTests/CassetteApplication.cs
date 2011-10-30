@@ -121,7 +121,8 @@ function asset1() {
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")),
                 routes,
-                Mock.Of<HttpContextBase>
+                Mock.Of<HttpContextBase>,
+                ""
             );
         }
 

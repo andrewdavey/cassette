@@ -103,9 +103,9 @@ namespace Cassette.Web
         [Fact]
         public void GivenSettingsHasDefaultInitializerForBundleType_WhenGetDefaultBundleInitializer_ThenInitializerReturnedForBundleType()
         {
-            var initializer = Mock.Of<IFileSource>();
+            var initializer = Mock.Of<IFileSearch>();
             var application = StubApplication(
-                settings => settings.DefaultFileSources[typeof(TestableBundle)] = initializer
+                settings => settings.DefaultFileSearches[typeof(TestableBundle)] = initializer
             );
 
             var actualInitializer = application.GetDefaultBundleInitializer(typeof(TestableBundle));
@@ -116,9 +116,9 @@ namespace Cassette.Web
         [Fact]
         public void GivenSettingsHasDefaultInitializerForScriptBundleType_WhenGetDefaultBundleInitializerForExternalScriptBundleType_ThenInitializerReturned()
         {
-            var initializer = Mock.Of<IFileSource>();
+            var initializer = Mock.Of<IFileSearch>();
             var application = StubApplication(
-                settings => settings.DefaultFileSources[typeof(Scripts.ScriptBundle)] = initializer
+                settings => settings.DefaultFileSearches[typeof(Scripts.ScriptBundle)] = initializer
             );
 
             var actualInitializer = application.GetDefaultBundleInitializer(typeof(Scripts.ExternalScriptBundle));
@@ -129,9 +129,9 @@ namespace Cassette.Web
         [Fact]
         public void GivenSettingsHasDefaultInitializerForStylesheetBundleType_WhenGetDefaultBundleInitializerForExternalStylesheetBundleType_ThenInitializerReturned()
         {
-            var initializer = Mock.Of<IFileSource>();
+            var initializer = Mock.Of<IFileSearch>();
             var application = StubApplication(
-                settings => settings.DefaultFileSources[typeof(Stylesheets.StylesheetBundle)] = initializer
+                settings => settings.DefaultFileSearches[typeof(Stylesheets.StylesheetBundle)] = initializer
             );
 
             var actualInitializer = application.GetDefaultBundleInitializer(typeof(Stylesheets.ExternalStylesheetBundle));
@@ -178,7 +178,8 @@ namespace Cassette.Web
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")), 
                 new RouteCollection(), 
-                () => httpContext.Object
+                () => httpContext.Object,
+                ""
             );
         }
 

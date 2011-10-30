@@ -40,7 +40,7 @@ namespace Cassette.Configuration
             WithDebug(applicationRelativePath, null);
         }
 
-        public void WithDebug(string applicationRelativePath, IFileSource fileSource)
+        public void WithDebug(string applicationRelativePath, IFileSearch fileSource)
         {
             if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
 
@@ -56,7 +56,7 @@ namespace Cassette.Configuration
             WithFallback(fallbackCondition, applicationRelativePath, null);
         }
 
-        public void WithFallback(string fallbackCondition, string applicationRelativePath, IFileSource fileSource)
+        public void WithFallback(string fallbackCondition, string applicationRelativePath, IFileSearch fileSource)
         {
             if (string.IsNullOrWhiteSpace(fallbackCondition)) throw new ArgumentException("Fallback condition is required.");
             if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
@@ -68,7 +68,7 @@ namespace Cassette.Configuration
                 );
         }
 
-        void ReplaceBundleUsingFileSource(BundleDescriptor descriptor, string applicationRelativePath, IFileSource fileSource)
+        void ReplaceBundleUsingFileSource(BundleDescriptor descriptor, string applicationRelativePath, IFileSearch fileSource)
         {
             var factory = GetBundleFactory();
             var sourceDirectory = bundleCollection.Settings.SourceDirectory;
@@ -78,7 +78,7 @@ namespace Cassette.Configuration
             {
                 var directory = sourceDirectory.GetDirectory(applicationRelativePath);
                 fileSource = fileSource ?? GetDefaultFileSource();
-                var files = fileSource.GetFiles(directory);
+                var files = fileSource.FindFiles(directory);
                 newBundle = BundleCollectionExtensions.CreateDirectoryBundle(
                     applicationRelativePath,
                     factory,
@@ -110,9 +110,9 @@ namespace Cassette.Configuration
             bundleCollection.Add(newBundle);
         }
 
-        IFileSource GetDefaultFileSource()
+        IFileSearch GetDefaultFileSource()
         {
-            return bundleCollection.Settings.DefaultFileSources[typeof(T)];
+            return bundleCollection.Settings.DefaultFileSearches[typeof(T)];
         }
 
         IBundleFactory<T> GetBundleFactory()
