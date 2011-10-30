@@ -23,11 +23,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
-using Cassette.Persistence;
 
 namespace Cassette
 {
-    public abstract class AssetBase : IAsset, ICacheableAsset
+    public abstract class AssetBase : IAsset
     {
         readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
 

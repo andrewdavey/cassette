@@ -97,7 +97,6 @@
     <Compile Include="NullPlaceholderTracker.cs" />
     <Compile Include="Persistence\AssetCounter.cs" />
     <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />
-    <Compile Include="Persistence\ICacheableAsset.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\AssignRenderer.cs" />
