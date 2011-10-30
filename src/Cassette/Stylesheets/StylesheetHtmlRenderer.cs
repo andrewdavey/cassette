@@ -22,7 +22,7 @@ using System.Web;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
+    class StylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
         public StylesheetHtmlRenderer(IUrlGenerator urlGenerator)
         {

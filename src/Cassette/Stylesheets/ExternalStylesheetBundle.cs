@@ -23,7 +23,7 @@ using System.Web;
 
 namespace Cassette.Stylesheets
 {
-    public class ExternalStylesheetBundle : StylesheetBundle
+    class ExternalStylesheetBundle : StylesheetBundle
     {
         public ExternalStylesheetBundle(string url)
             : base(url)

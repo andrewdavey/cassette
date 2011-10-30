@@ -28,7 +28,7 @@ using System.Diagnostics;
 
 namespace Cassette.Web
 {
-    public class RawFileRequestHandler : IHttpHandler
+    class RawFileRequestHandler : IHttpHandler
     {
         public RawFileRequestHandler(RequestContext requestContext)
         {

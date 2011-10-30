@@ -24,7 +24,7 @@ using Cassette.Utilities;
 
 namespace Cassette.IO
 {
-    public class FileSystemFile : IFile
+    class FileSystemFile : IFile
     {
         readonly string name;
         readonly string systemAbsoluteFilename;

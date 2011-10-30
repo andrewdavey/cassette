@@ -24,7 +24,7 @@ using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
-    public class RegisterTemplateWithJQueryTmpl : IAssetTransformer
+    class RegisterTemplateWithJQueryTmpl : IAssetTransformer
     {
         readonly HtmlTemplateBundle bundle;
 

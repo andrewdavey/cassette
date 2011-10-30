@@ -32,7 +32,12 @@ namespace Cassette.IO
     /// </remarks>
     public class IsolatedStorageDirectory : IDirectory
     {
-        public IsolatedStorageDirectory(IsolatedStorageFile storage, string basePath = "/")
+        public IsolatedStorageDirectory(IsolatedStorageFile storage)
+            : this(storage, "/")
+        {
+        }
+
+        IsolatedStorageDirectory(IsolatedStorageFile storage, string basePath)
         {
             this.storage = storage;
             this.basePath = basePath;
@@ -48,7 +53,7 @@ namespace Cassette.IO
 
         public void DeleteContents()
         {
-            foreach (var filename in storage.GetFileNames(basePath + "/*"))
+            foreach (var filename in storage.GetFileNames(basePath.TrimEnd('/') + "/*"))
             {
                 try
                 {

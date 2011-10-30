@@ -29,7 +29,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class CssImageToDataUriTransformer : IAssetTransformer
+    class CssImageToDataUriTransformer : IAssetTransformer
     {
         static readonly Regex UrlRegex = new Regex(
             @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",

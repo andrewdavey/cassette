@@ -100,13 +100,13 @@
     <Compile Include="Persistence\ICacheableAsset.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="Scripts\AssignScriptBundleRenderer.cs" />
+    <Compile Include="Scripts\AssignRenderer.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
-    <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
+    <Compile Include="Stylesheets\AssignRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
@@ -133,7 +133,7 @@
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
     <Compile Include="ICassetteApplication.cs" />
     <Compile Include="Persistence\IBundleCache.cs" />
-    <Compile Include="IO\IsolatedStorageFileSystem.cs" />
+    <Compile Include="IO\IsolatedStorageFileWrapper.cs" />
     <Compile Include="Persistence\BundleCache.cs" />
     <Compile Include="BundleContainsPathPredicate.cs" />
     <Compile Include="Stylesheets\MicrosoftStyleSheetMinifier.cs" />

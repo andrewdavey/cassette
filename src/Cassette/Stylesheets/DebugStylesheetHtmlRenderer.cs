@@ -25,7 +25,7 @@ using System.Web;
 
 namespace Cassette.Stylesheets
 {
-    public class DebugStylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
+    class DebugStylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
         public DebugStylesheetHtmlRenderer(IUrlGenerator urlGenerator)
         {

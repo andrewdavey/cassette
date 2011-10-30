@@ -43,7 +43,7 @@ namespace Cassette.Web
             StartUp.CassetteApplication.OnPostRequestHandlerExecute(context);
         }
 
-        public void Dispose()
+        void IHttpModule.Dispose()
         {
         }
     }

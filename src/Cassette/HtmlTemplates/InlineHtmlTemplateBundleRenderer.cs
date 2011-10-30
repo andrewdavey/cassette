@@ -25,7 +25,7 @@ using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
-    public class InlineHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
+    class InlineHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
     {
         public IHtmlString Render(HtmlTemplateBundle bundle)
         {

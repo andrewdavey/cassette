@@ -29,7 +29,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class ExpandCssUrlsAssetTransformer : IAssetTransformer
+    class ExpandCssUrlsAssetTransformer : IAssetTransformer
     {
         readonly IDirectory sourceDirectory;
         readonly IUrlGenerator urlGenerator;

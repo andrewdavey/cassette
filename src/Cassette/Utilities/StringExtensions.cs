@@ -26,7 +26,7 @@ namespace Cassette.Utilities
     /// <summary>
     /// Utility methods for strings.
     /// </summary>
-    public static class StringExtensions
+    static class StringExtensions
     {
         /// <summary>
         /// Returns a new stream containing the contents of the string, using UTF-8 encoding.
@@ -44,7 +44,7 @@ namespace Cassette.Utilities
             return source;
         }
 
-        internal static bool IsUrl(this string s)
+        public static bool IsUrl(this string s)
         {
             return s.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
                 || s.StartsWith("https:", StringComparison.OrdinalIgnoreCase)

@@ -22,7 +22,7 @@ using System.Web;
 
 namespace Cassette.HtmlTemplates
 {
-    public class RemoteHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
+    class RemoteHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
     {
         readonly IUrlGenerator urlGenerator;
 

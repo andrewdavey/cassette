@@ -24,7 +24,7 @@ using System.IO.IsolatedStorage;
 
 namespace Cassette.IO
 {
-    public class IsolatedStorageFileWrapper : IFile
+    class IsolatedStorageFileWrapper : IFile
     {
         readonly string filename;
         readonly IsolatedStorageFile storage;
