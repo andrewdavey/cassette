@@ -23,7 +23,7 @@ namespace Cassette.Configuration
             }
         }
 
-        protected IEnumerable<Bundle> CreateExternalBundlesFromReferences(IEnumerable<Bundle> bundlesArray)
+        protected IEnumerable<Bundle> CreateExternalBundlesFromReferences(IEnumerable<Bundle> bundlesArray, ICassetteApplication application)
         {
             var referencesAlreadyCreated = new HashSet<string>();
             foreach (var bundle in bundlesArray)
@@ -33,7 +33,7 @@ namespace Cassette.Configuration
                     if (reference.IsUrl() == false) continue;
                     if (referencesAlreadyCreated.Contains(reference)) continue;
 
-                    var externalBundle = CreateExternalBundle(reference, bundle);
+                    var externalBundle = CreateExternalBundle(reference, bundle, application);
                     referencesAlreadyCreated.Add(externalBundle.Path);
                     yield return externalBundle;
                 }
@@ -44,7 +44,7 @@ namespace Cassette.Configuration
                         if (assetReference.Type != AssetReferenceType.Url ||
                             referencesAlreadyCreated.Contains(assetReference.Path)) continue;
 
-                        var externalBundle = CreateExternalBundle(assetReference.Path, bundle);
+                        var externalBundle = CreateExternalBundle(assetReference.Path, bundle, application);
                         referencesAlreadyCreated.Add(externalBundle.Path);
                         yield return externalBundle;
                     }
@@ -52,10 +52,12 @@ namespace Cassette.Configuration
             }
         }
 
-        Bundle CreateExternalBundle(string reference, Bundle referencer)
+        Bundle CreateExternalBundle(string reference, Bundle referencer, ICassetteApplication application)
         {
             var bundleFactory = GetBundleFactory(referencer.GetType());
-            return bundleFactory.CreateExternalBundle(reference);
+            var externalBundle = bundleFactory.CreateExternalBundle(reference);
+            externalBundle.Process(application);
+            return externalBundle;
         }
 
         IBundleFactory<Bundle> GetBundleFactory(Type bundleType)

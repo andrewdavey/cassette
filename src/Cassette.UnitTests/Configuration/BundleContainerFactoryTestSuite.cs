@@ -126,6 +126,51 @@ namespace Cassette.Configuration
             container.FindBundleContainingPath("http://test.com/").ShouldBeSameAs(externalBundle);
         }
 
+        [Fact]
+        public void GivenAssetWithAdHocUrlReference_WhenCreate_ThenExternalBundleIsCreatedAndProcessed()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.References)
+                 .Returns(new[] { new AssetReference("http://test.com/", asset.Object, -1, AssetReferenceType.Url) });
+
+            var externalBundle = new TestableBundle("http://test.com/");
+            var factory = new Mock<IBundleFactory<Bundle>>();
+            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+                   .Returns(externalBundle);
+            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
+            factories[typeof(TestableBundle)] = factory.Object;
+            var containerFactory = CreateFactory(factories);
+
+            var bundle = new TestableBundle("~/test");
+            bundle.Assets.Add(asset.Object);
+            var application = StubApplication();
+            
+            containerFactory.Create(new[] { bundle }, application);
+
+            externalBundle.WasProcessed.ShouldBeTrue();
+        }
+
+
+        [Fact]
+        public void GivenBundleWithAdHocUrlReference_WhenCreate_ThenExternalBundleIsCreatedAndProcessed()
+        {
+            var externalBundle = new TestableBundle("http://test.com/");
+            var factory = new Mock<IBundleFactory<Bundle>>();
+            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+                   .Returns(externalBundle);
+            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
+            factories[typeof(TestableBundle)] = factory.Object;
+            var containerFactory = CreateFactory(factories);
+
+            var bundle = new TestableBundle("~/test");
+            bundle.AddReference("http://test.com/");
+            var application = StubApplication();
+
+            containerFactory.Create(new[] { bundle }, application);
+
+            externalBundle.WasProcessed.ShouldBeTrue();
+        }
+
         protected ICassetteApplication StubApplication()
         {
             var appMock = new Mock<ICassetteApplication>();

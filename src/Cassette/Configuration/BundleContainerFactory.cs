@@ -18,7 +18,7 @@ namespace Cassette.Configuration
 
             ProcessAllBundles(bundlesArray, application);
 
-            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray);
+            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, application);
 
             return new BundleContainer(bundlesArray.Concat(externalBundles));
         }
