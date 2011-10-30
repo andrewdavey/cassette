@@ -48,7 +48,7 @@ namespace Cassette.Scripts
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(Minifier);
             }
-            yield return new AssignScriptBundleRenderer();
+            yield return new AssignRenderer();
         }
     }
 }

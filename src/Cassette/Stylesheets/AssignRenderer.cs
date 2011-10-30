@@ -20,19 +20,19 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using Cassette.BundleProcessing;
 
-namespace Cassette.Scripts
+namespace Cassette.Stylesheets
 {
-    public class AssignScriptBundleRenderer : IBundleProcessor<ScriptBundle>
+    public class AssignRenderer : IBundleProcessor<StylesheetBundle>
     {
-        public void Process(ScriptBundle bundle, ICassetteApplication application)
+        public void Process(StylesheetBundle bundle, ICassetteApplication application)
         {
             if (application.IsDebuggingEnabled)
             {
-                bundle.Renderer = new DebugScriptBundleHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new DebugStylesheetHtmlRenderer(application.UrlGenerator);
             }
             else
             {
-                bundle.Renderer = new ScriptBundleHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new StylesheetHtmlRenderer(application.UrlGenerator);
             }
         }
     }
