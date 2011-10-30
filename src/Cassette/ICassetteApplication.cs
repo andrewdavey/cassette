@@ -39,11 +39,5 @@ namespace Cassette
         /// Gets the <see cref="IUrlGenerator"/> used to generate the URLs of bundle and assets.
         /// </summary>
         IUrlGenerator UrlGenerator { get; }
-
-        /// <summary>
-        /// When true (the default), Cassette buffers page output and rewrites to allow bundle references to be inserted into &lt;head&gt;
-        /// after it has already been rendered.
-        /// </summary>
-        bool IsHtmlRewritingEnabled { get; }
     }
 }

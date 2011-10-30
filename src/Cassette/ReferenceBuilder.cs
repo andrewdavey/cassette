@@ -28,18 +28,20 @@ namespace Cassette
 {
     class ReferenceBuilder : IReferenceBuilder
     {
-        public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, ICassetteApplication application)
+        public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, ICassetteApplication application, bool isHtmlRewritingEnabled)
         {
             this.bundleContainer = bundleContainer;
             this.bundleFactories = bundleFactories;
             this.placeholderTracker = placeholderTracker;
             this.application = application;
+            this.isHtmlRewritingEnabled = isHtmlRewritingEnabled;
         }
 
         readonly IBundleContainer bundleContainer;
         readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
         readonly IPlaceholderTracker placeholderTracker;
         readonly ICassetteApplication application;
+        readonly bool isHtmlRewritingEnabled;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
         readonly HashSet<string> renderedLocations = new HashSet<string>();
  
@@ -97,7 +99,7 @@ namespace Cassette
 
         public void Reference(Bundle bundle, string location = null)
         {
-            if (!application.IsHtmlRewritingEnabled && HasRenderedLocation(location))
+            if (!isHtmlRewritingEnabled && HasRenderedLocation(location))
             {
                 ThrowRewritingRequiredException(location);
             }

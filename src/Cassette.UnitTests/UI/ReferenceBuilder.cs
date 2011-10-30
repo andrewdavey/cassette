@@ -41,10 +41,10 @@ namespace Cassette.UI
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(ms => ms);
 
-            builder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, Mock.Of<IPlaceholderTracker>(), application.Object);
+            builder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, Mock.Of<IPlaceholderTracker>(), application.Object, false);
         }
 
-        readonly ReferenceBuilder builder;
+        ReferenceBuilder builder;
         readonly Mock<IBundleContainer> bundleContainer;
         readonly Mock<ICassetteApplication> application;
         readonly Dictionary<Type, IBundleFactory<Bundle>> bundleFactories;
@@ -282,8 +282,12 @@ namespace Cassette.UI
         [Fact]
         public void GivenLocationAlreadyRenderedButHtmlRewrittingEnabled_WhenAddReferenceToThatLocation_ThenBundleStillAdded()
         {
-            application.SetupGet(a => a.IsHtmlRewritingEnabled)
-                       .Returns(true);
+            builder = new ReferenceBuilder(
+                bundleContainer.Object,
+                bundleFactories, Mock.Of<IPlaceholderTracker>(),
+                application.Object, 
+                true
+            );
             var bundle = new ScriptBundle("~/test");
             bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
                            .Returns(bundle);
@@ -310,7 +314,7 @@ namespace Cassette.UI
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
                               .Returns(new HtmlString("output"));
 
-            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, application);
+            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, application, false);
         }
 
         readonly ReferenceBuilder referenceBuilder;

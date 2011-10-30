@@ -87,7 +87,8 @@ namespace Cassette
                 bundleContainer,
                 settings.BundleFactories,
                 GetPlaceholderTracker(),
-                this
+                this,
+                IsHtmlRewritingEnabled
             );
         }
 
