@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Cassette.IO;
 
-namespace Cassette
+namespace Cassette.Configuration
 {
     public interface IFileSearch
     {

@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using Cassette.Configuration;
 using Cassette.IO;
 
 namespace Cassette
