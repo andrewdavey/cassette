@@ -18,13 +18,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Collections.Generic;
-using System.Xml.Linq;
-
 namespace Cassette.Persistence
 {
     interface ICacheableAsset
     {
-        IEnumerable<XElement> CreateCacheManifest();
     }
 }

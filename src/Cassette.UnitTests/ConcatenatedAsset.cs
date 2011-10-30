@@ -98,15 +98,6 @@ namespace Cassette
             visitor.Verify(v => v.Visit(child2.Object));
         }
 
-        [Fact]
-        public void CreateCacheManifestCreatesElementForEachAsset()
-        {
-            cacheableChild1.Setup(c => c.CreateCacheManifest()).Returns(new[] { new XElement("Asset") });
-            cacheableChild2.Setup(c => c.CreateCacheManifest()).Returns(new[] { new XElement("Asset") });
-            var assetElements = asset.CreateCacheManifest().ToArray();
-            assetElements.Length.ShouldEqual(2);
-        }
-
         public void Dispose()
         {
             asset.Dispose();

@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using Cassette.IO;
 using Cassette.BundleProcessing;
 using Cassette.Persistence;
@@ -30,7 +29,7 @@ using Cassette.Persistence;
 namespace Cassette
 {
     /// <summary>
-    /// Base class for <see cref="Asset"/> and <see cref="ConcatenatedAsset"/>.
+    /// Base class for <see cref="FileAsset"/> and <see cref="ConcatenatedAsset"/>.
     /// </summary>
     public abstract class AssetBase : IAsset, ICacheableAsset
     {
@@ -66,8 +65,6 @@ namespace Cassette
         public abstract void AddReference(string path, int lineNumber);
 
         public abstract void AddRawFileReference(string relativeFilename);
-
-        public abstract IEnumerable<XElement> CreateCacheManifest();
     }
 }
 

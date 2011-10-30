@@ -52,7 +52,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Asset.cs" />
+    <Compile Include="FileAsset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="AssetFinder.cs" />
     <Compile Include="BundleContainerExtensions.cs" />

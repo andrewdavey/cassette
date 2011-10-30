@@ -42,7 +42,7 @@ namespace Cassette
                 {
                     var file = FindFileOrThrow(bundle, filename, filesByPath);
 
-                    bundle.Assets.Add(new Asset(file, bundle));
+                    bundle.Assets.Add(new FileAsset(file, bundle));
                     remainingFiles.Remove(file);
                 }
             }
@@ -69,7 +69,7 @@ namespace Cassette
         {
             foreach (var file in remainingFiles)
             {
-                bundle.Assets.Add(new Asset(file, bundle));
+                bundle.Assets.Add(new FileAsset(file, bundle));
             }
         }
 
@@ -83,7 +83,7 @@ namespace Cassette
             foreach (var file in filesInSubDirectory)
             {
                 remainingFiles.Remove(file);
-                bundle.Assets.Add(new Asset(file, bundle));
+                bundle.Assets.Add(new FileAsset(file, bundle));
             }
         }
 

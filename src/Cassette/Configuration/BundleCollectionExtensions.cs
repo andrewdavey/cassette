@@ -8,25 +8,53 @@ namespace Cassette.Configuration
 {
     public static class BundleCollectionExtensions
     {
+        /// <summary>
+        /// Adds a bundle of type <typeparamref name="T"/> using asset files found in the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to create.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path to the bundle's asset files.</param>
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath)
             where T : Bundle
         {
             Add<T>(bundleCollection, applicationRelativePath, null, null);
         }
 
-        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource)
+        /// <summary>
+        /// Adds a bundle of type <typeparamref name="T"/> using asset files found in the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to create.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path to the bundle's asset files.</param>
+        /// <param name="fileSearch">The file search used to find asset files to include in the bundle.</param>
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSearch)
             where T : Bundle
         {
-            Add<T>(bundleCollection, applicationRelativePath, fileSource, null);
+            Add<T>(bundleCollection, applicationRelativePath, fileSearch, null);
         }
 
+        /// <summary>
+        /// Adds a bundle of type <typeparamref name="T"/> using asset files found in the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to create.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path to the bundle's asset files.</param>
+        /// <param name="customizeBundle">The delegate used to customize the created bundle before adding it to the collection.</param>
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, Action<T> customizeBundle)
             where T : Bundle
         {
             Add(bundleCollection, applicationRelativePath, null, customizeBundle);
         }
 
-        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource, Action<T> customizeBundle)
+        /// <summary>
+        /// Adds a bundle of type <typeparamref name="T"/> using asset files found in the given path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to create.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path to the bundle's asset files.</param>
+        /// <param name="fileSearch">The file search used to find asset files to include in the bundle.</param>
+        /// <param name="customizeBundle">The delegate used to customize the created bundle before adding it to the collection.</param>
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSearch, Action<T> customizeBundle)
             where T : Bundle
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
@@ -37,9 +65,9 @@ namespace Cassette.Configuration
             var source = bundleCollection.Settings.SourceDirectory;
             if (source.DirectoryExists(applicationRelativePath))
             {
-                fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+                fileSearch = fileSearch ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
                 var directory = source.GetDirectory(applicationRelativePath);
-                var allFiles = fileSource.FindFiles(directory);
+                var allFiles = fileSearch.FindFiles(directory);
                 bundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, allFiles, directory);
             }
             else
@@ -65,8 +93,11 @@ namespace Cassette.Configuration
             bundleCollection.Add(bundle);
         }
 
-        internal static T CreateSingleFileBundle<T>(string applicationRelativePath, IFile file, IBundleFactory<T> bundleFactory, BundleDescriptor descriptor = null)
-            where T : Bundle
+        internal static T CreateSingleFileBundle<T>(
+            string applicationRelativePath,
+            IFile file,
+            IBundleFactory<T> bundleFactory,
+            BundleDescriptor descriptor = null) where T : Bundle
         {
             descriptor = descriptor ?? new BundleDescriptor
             {
@@ -121,12 +152,12 @@ namespace Cassette.Configuration
         /// <typeparam name="T">The type of bundles to create.</typeparam>
         /// <param name="bundleCollection">The collection to add to.</param>
         /// <param name="applicationRelativePath">The path to the directory containing sub-directories.</param>
-        /// <param name="fileSource">A file source that gets the files to include from a directory.</param>
+        /// <param name="fileSearch">A file source that gets the files to include from a directory.</param>
         /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the directory, if any.</param>
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource, bool excludeTopLevel = false)
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSearch, bool excludeTopLevel = false)
             where T : Bundle
         {
-            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, fileSource, null, excludeTopLevel);            
+            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, fileSearch, null, excludeTopLevel);            
         }
 
         /// <summary>
@@ -149,22 +180,22 @@ namespace Cassette.Configuration
         /// <typeparam name="T">The type of bundles to create.</typeparam>
         /// <param name="bundleCollection">The collection to add to.</param>
         /// <param name="applicationRelativePath">The path to the directory containing sub-directories.</param>
-        /// <param name="fileSource">A file source that gets the files to include from a directory.</param>
+        /// <param name="fileSearch">A file source that gets the files to include from a directory.</param>
         /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
         /// <param name="excludeTopLevel">Prevents the creation of an extra bundle from the top-level files of the path, if any.</param>
-        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSource, Action<T> customizeBundle, bool excludeTopLevel = false)
+        public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSearch, Action<T> customizeBundle, bool excludeTopLevel = false)
             where T : Bundle
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for each subdirectory of {1}", typeof(T).Name, applicationRelativePath));
 
-            fileSource = fileSource ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+            fileSearch = fileSearch ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
 
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var parentDirectory = bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath);
 
             if (!excludeTopLevel)
             {
-                var topLevelFiles = fileSource.FindFiles(parentDirectory)
+                var topLevelFiles = fileSearch.FindFiles(parentDirectory)
                                               .Where(f => f.Directory == parentDirectory)
                                               .ToArray();
                 if (topLevelFiles.Any())
@@ -182,7 +213,7 @@ namespace Cassette.Configuration
                 var descriptor = descriptorFile.Exists
                     ? new BundleDescriptorReader(descriptorFile).Read()
                     : new BundleDescriptor { AssetFilenames = { "*" } };
-                var allFiles = fileSource.FindFiles(directory);
+                var allFiles = fileSearch.FindFiles(directory);
                 var bundle = bundleFactory.CreateBundle(directory.FullPath, allFiles, descriptor);
                 if (customizeBundle != null) customizeBundle(bundle);
                 TraceAssetFilePaths(bundle);
@@ -190,6 +221,14 @@ namespace Cassette.Configuration
             }
         }
 
+        /// <summary>
+        /// Adds a bundle that references a URL instead of local asset files.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to create.</typeparam>
+        /// <param name="bundleCollection">The collection to add to.</param>
+        /// <param name="url">The URL to reference.</param>
+        /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
+        /// <returns>A object used to further configure the bundle.</returns>
         public static IAddUrlConfiguration AddUrl<T>(this BundleCollection bundleCollection, string url, Action<T> customizeBundle = null)
             where T : Bundle
         {
@@ -200,6 +239,13 @@ namespace Cassette.Configuration
             return new AddUrlConfiguration<T>(bundleCollection, bundle, url, customizeBundle);
         }
 
+        /// <summary>
+        /// Adds a bundle that references a URL instead of local asset files. The type of bundle created is determined by the URL's file extension.
+        /// </summary>
+        /// <param name="bundleCollection">The collection to add to.</param>
+        /// <param name="url">The URL to reference.</param>
+        /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
+        /// <returns>A object used to further configure the bundle.</returns>
         public static IAddUrlConfiguration AddUrl(this BundleCollection bundleCollection, string url, Action<Bundle> customizeBundle = null)
         {
             if (url.EndsWith(".js"))

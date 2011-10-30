@@ -32,4 +32,3 @@ namespace Cassette.Scripts
         public string SourcePath { get; private set; }
     }
 }
-

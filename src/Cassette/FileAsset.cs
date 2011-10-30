@@ -23,15 +23,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Xml.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class Asset : AssetBase
+    public class FileAsset : AssetBase
     {
-        public Asset(IFile sourceFile, Bundle parentBundle)
+        public FileAsset(IFile sourceFile, Bundle parentBundle)
         {
             this.parentBundle = parentBundle;
             this.sourceFile = sourceFile;
@@ -59,29 +58,29 @@ namespace Cassette
             get { return references; }
         }
 
-        public override void AddReference(string assetRelativeFilename, int lineNumber)
+        public override void AddReference(string assetRelativePath, int lineNumber)
         {
-            if (assetRelativeFilename.IsUrl())
+            if (assetRelativePath.IsUrl())
             {
-                AddUrlReference(assetRelativeFilename, lineNumber);
+                AddUrlReference(assetRelativePath, lineNumber);
             }
             else
             {
                 string appRelativeFilename;
-                if (assetRelativeFilename.StartsWith("~"))
+                if (assetRelativePath.StartsWith("~"))
                 {
-                    appRelativeFilename = assetRelativeFilename;
+                    appRelativeFilename = assetRelativePath;
                 }
-                else if (assetRelativeFilename.StartsWith("/"))
+                else if (assetRelativePath.StartsWith("/"))
                 {
-                    appRelativeFilename = "~" + assetRelativeFilename;
+                    appRelativeFilename = "~" + assetRelativePath;
                 }
                 else
                 {
                     var subDirectory = SourceFile.Directory.FullPath;
                     appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
                         subDirectory,
-                        assetRelativeFilename
+                        assetRelativePath
                     );
                 }
                 appRelativeFilename = PathUtilities.NormalizePath(appRelativeFilename);
@@ -120,14 +119,6 @@ namespace Cassette
             if (alreadyExists) return;
 
             references.Add(new AssetReference(appRelativeFilename, this, -1, AssetReferenceType.RawFilename));
-        }
-
-        public override IEnumerable<XElement> CreateCacheManifest()
-        {
-            yield return new XElement("Asset",
-                new XAttribute("Path", SourceFile.FullPath),
-                references.Select(reference => reference.CreateCacheManifest())
-            );
         }
 
         byte[] HashFileContents()

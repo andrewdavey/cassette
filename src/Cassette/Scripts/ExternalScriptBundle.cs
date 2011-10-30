@@ -24,7 +24,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptBundle : ScriptBundle
+    class ExternalScriptBundle : ScriptBundle
     {
         readonly string url;
         readonly string fallbackCondition;

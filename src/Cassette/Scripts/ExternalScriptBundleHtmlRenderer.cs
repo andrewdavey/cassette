@@ -24,7 +24,7 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ExternalScriptBundle>
+    class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ExternalScriptBundle>
     {
         readonly IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer;
         readonly ICassetteApplication application;

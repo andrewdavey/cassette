@@ -22,7 +22,7 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class ScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
+    class ScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
     {
         public ScriptBundleHtmlRenderer(IUrlGenerator urlGenerator)
         {

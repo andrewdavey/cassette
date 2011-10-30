@@ -24,7 +24,7 @@ using System.Web;
 
 namespace Cassette.Scripts
 {
-    public class DebugScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
+    class DebugScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
     {
         public DebugScriptBundleHtmlRenderer(IUrlGenerator urlGenerator)
         {

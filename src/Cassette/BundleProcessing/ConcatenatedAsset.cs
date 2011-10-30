@@ -22,9 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using Cassette.Utilities;
-using Cassette.Persistence;
 
 namespace Cassette.BundleProcessing
 {
@@ -72,11 +70,6 @@ namespace Cassette.BundleProcessing
         public override void AddRawFileReference(string relativeFilename)
         {
             throw new NotSupportedException();
-        }
-
-        public override IEnumerable<XElement> CreateCacheManifest()
-        {
-            return children.OfType<ICacheableAsset>().SelectMany(asset => asset.CreateCacheManifest());
         }
 
         protected override Stream OpenStreamCore()

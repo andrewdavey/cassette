@@ -40,14 +40,14 @@ namespace Cassette.Configuration
             WithDebug(applicationRelativePath, null);
         }
 
-        public void WithDebug(string applicationRelativePath, IFileSearch fileSource)
+        public void WithDebug(string applicationRelativePath, IFileSearch fileSearch)
         {
             if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
 
             ReplaceBundleUsingFileSource(
                 new BundleDescriptor { ExternalUrl = url, AssetFilenames = { "*" } },
                 applicationRelativePath,
-                fileSource
+                fileSearch
                 );
         }
 
@@ -56,7 +56,7 @@ namespace Cassette.Configuration
             WithFallback(fallbackCondition, applicationRelativePath, null);
         }
 
-        public void WithFallback(string fallbackCondition, string applicationRelativePath, IFileSearch fileSource)
+        public void WithFallback(string fallbackCondition, string applicationRelativePath, IFileSearch fileSearch)
         {
             if (string.IsNullOrWhiteSpace(fallbackCondition)) throw new ArgumentException("Fallback condition is required.");
             if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
@@ -64,11 +64,11 @@ namespace Cassette.Configuration
             ReplaceBundleUsingFileSource(
                 new BundleDescriptor { ExternalUrl = url, FallbackCondition = fallbackCondition, AssetFilenames = { "*" } },
                 applicationRelativePath,
-                fileSource
+                fileSearch
                 );
         }
 
-        void ReplaceBundleUsingFileSource(BundleDescriptor descriptor, string applicationRelativePath, IFileSearch fileSource)
+        void ReplaceBundleUsingFileSource(BundleDescriptor descriptor, string applicationRelativePath, IFileSearch fileSearch)
         {
             var factory = GetBundleFactory();
             var sourceDirectory = bundleCollection.Settings.SourceDirectory;
@@ -77,8 +77,8 @@ namespace Cassette.Configuration
             if (sourceDirectory.DirectoryExists(applicationRelativePath))
             {
                 var directory = sourceDirectory.GetDirectory(applicationRelativePath);
-                fileSource = fileSource ?? GetDefaultFileSource();
-                var files = fileSource.FindFiles(directory);
+                fileSearch = fileSearch ?? GetDefaultFileSource();
+                var files = fileSearch.FindFiles(directory);
                 newBundle = BundleCollectionExtensions.CreateDirectoryBundle(
                     applicationRelativePath,
                     factory,

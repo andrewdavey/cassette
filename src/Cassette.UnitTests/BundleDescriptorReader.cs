@@ -40,19 +40,19 @@ namespace Cassette
 
         BundleDescriptorReader GetReader(string descriptor)
         {
-            var source = new Mock<IFile>();
+            var file = new Mock<IFile>();
             var directory = new Mock<IDirectory>();
-            source
+            file
                 .Setup(s => s.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => descriptor.AsStream());
-            source
+            file
                 .SetupGet(s => s.Directory)
                 .Returns(directory.Object);
             directory
                 .SetupGet(d => d.FullPath)
                 .Returns("~/bundle");
 
-            return new BundleDescriptorReader(source.Object);
+            return new BundleDescriptorReader(file.Object);
         }
 
         void FilesExist(params string[] filenames)

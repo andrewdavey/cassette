@@ -39,14 +39,14 @@ namespace Cassette
             
             bundle = new TestableBundle("~/bundle");
             sourceFile = StubFile("asset content");
-            asset = new Asset(sourceFile, bundle);
+            asset = new FileAsset(sourceFile, bundle);
             bundle.Assets.Add(asset);
 
-            var another = new Asset(StubFile(fullPath: "~/bundle/another.js"), bundle);
+            var another = new FileAsset(StubFile(fullPath: "~/bundle/another.js"), bundle);
             bundle.Assets.Add(another);
         }
 
-        readonly Asset asset;
+        readonly FileAsset asset;
         readonly DirectoryInfo root;
         readonly Bundle bundle;
         readonly IFile sourceFile;
@@ -145,7 +145,7 @@ namespace Cassette
         {
             root.CreateSubdirectory("bundle\\sub");
             File.WriteAllText(Path.Combine(root.FullName, "bundle", "sub", "another.js"), "");
-            var another = new Asset(StubFile(fullPath: "~/bundle/sub/another.js"), bundle);
+            var another = new FileAsset(StubFile(fullPath: "~/bundle/sub/another.js"), bundle);
             bundle.Assets.Add(another);
 
             asset.AddReference("sub\\another.js", 1);
@@ -284,51 +284,6 @@ namespace Cassette
         }
 
         void IDisposable.Dispose()
-        {
-            root.Delete(true);
-        }
-    }
-
-    public class Asset_CreateCacheManifest_Tests : IDisposable
-    {
-        public Asset_CreateCacheManifest_Tests()
-        {
-            root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            root.CreateSubdirectory("bundle");
-            filename = Path.Combine(root.FullName, "bundle", "test.js");
-            // Write some testable content to the file.
-            File.WriteAllText(filename, "asset content");
-            var fileSystem = new FileSystemDirectory(root.FullName);
-
-            var bundle = new TestableBundle("~/bundle");
-            asset = new Asset(fileSystem.GetFile("bundle\\test.js"), bundle);
-            bundle.Assets.Add(asset);
-
-            File.WriteAllText(Path.Combine(root.FullName, "bundle", "another.js"), "");
-            var another = new Asset(fileSystem.GetFile("bundle\\another.js"), bundle);
-            bundle.Assets.Add(another);
-        }
-
-        readonly string filename;
-        readonly Asset asset;
-        readonly DirectoryInfo root;
-
-        [Fact]
-        public void CreateCacheManifestReturnsSingleXElement()
-        {
-            var element = asset.CreateCacheManifest().Single();
-            element.Name.LocalName.ShouldEqual("Asset");
-        }
-
-        [Fact]
-        public void GivenAssetHasReference_ThenXElementHasReferenceChildElement()
-        {
-            asset.AddReference("another.js", 1);
-            var element = asset.CreateCacheManifest().Single();
-            element.Element("Reference").ShouldNotBeNull();
-        }
-
-        public void Dispose()
         {
             root.Delete(true);
         }

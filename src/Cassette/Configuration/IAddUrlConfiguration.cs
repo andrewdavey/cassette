@@ -1,5 +1,8 @@
 namespace Cassette.Configuration
 {
+    /// <summary>
+    /// Configures a bundle that is referencing a URL.
+    /// </summary>
     public interface IAddUrlConfiguration
     {
         /// <summary>
@@ -18,8 +21,8 @@ namespace Cassette.Configuration
         /// Configures the bundle to use local assets when in debug mode.
         /// </summary>
         /// <param name="applicationRelativePath">The application relative path to the assets.</param>
-        /// <param name="fileSource">The file source used to get files.</param>
-        void WithDebug(string applicationRelativePath, IFileSearch fileSource);
+        /// <param name="fileSearch">The file source used to get files.</param>
+        void WithDebug(string applicationRelativePath, IFileSearch fileSearch);
 
         /// <summary>
         /// Configures the bundle to use local assets when the URL fails to load.
@@ -33,7 +36,7 @@ namespace Cassette.Configuration
         /// </summary>
         /// <param name="fallbackCondition">The JavaScript fallback condition. When true the fallback assets are used.</param>
         /// <param name="applicationRelativePath">The application relative path to the assets.</param>
-        /// <param name="fileSource">The file source used to get files.</param>
-        void WithFallback(string fallbackCondition, string applicationRelativePath, IFileSearch fileSource);
+        /// <param name="fileSearch">The file source used to get files.</param>
+        void WithFallback(string fallbackCondition, string applicationRelativePath, IFileSearch fileSearch);
     }
 }

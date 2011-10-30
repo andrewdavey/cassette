@@ -45,7 +45,7 @@ namespace Cassette
 
         void AddAssetTransformer(IAssetTransformer transformer);
 
-        void AddReference(string path, int lineNumber);
+        void AddReference(string assetRelativePath, int lineNumber);
 
         void AddRawFileReference(string relativeFilename);
 
