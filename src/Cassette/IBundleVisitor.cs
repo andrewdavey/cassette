@@ -20,6 +20,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette
 {
+    /// <summary>
+    /// A visitor that traverses a bundle and its assets.
+    /// </summary>
     public interface IBundleVisitor
     {
         void Visit(Bundle bundle);

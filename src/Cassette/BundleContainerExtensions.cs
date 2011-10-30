@@ -1,6 +1,6 @@
 namespace Cassette
 {
-    public static class BundleContainerExtensions
+    static class BundleContainerExtensions
     {
         public static bool TryGetAssetByPath(this IBundleContainer bundleContainer, string path, out IAsset asset, out Bundle bundle)
         {

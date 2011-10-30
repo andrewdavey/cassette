@@ -25,7 +25,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class BundleContainer : IBundleContainer
+    class BundleContainer : IBundleContainer
     {
         public BundleContainer(IEnumerable<Bundle> bundles)
         {

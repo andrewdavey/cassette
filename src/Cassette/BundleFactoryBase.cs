@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
-using System;
 using Cassette.Utilities;
 
 namespace Cassette

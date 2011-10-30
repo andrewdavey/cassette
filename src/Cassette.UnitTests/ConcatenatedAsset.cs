@@ -22,7 +22,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Xml.Linq;
 using Cassette.BundleProcessing;
 using Moq;
 using Should;

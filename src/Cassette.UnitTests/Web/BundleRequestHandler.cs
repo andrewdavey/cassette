@@ -41,7 +41,7 @@ namespace Cassette.Web
         protected RouteData routeData;
         protected RequestContext requestContext;
         protected Stream outputStream;
-        protected Mock<IBundleContainer> container;
+        internal Mock<IBundleContainer> container;
 
         public BundleRequestHandler_Tests()
         {

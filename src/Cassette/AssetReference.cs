@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -65,7 +64,7 @@ namespace Cassette
         /// <summary>
         /// The type of reference.
         /// </summary>
-        public AssetReferenceType Type { get; set; }
+        public AssetReferenceType Type { get; private set; }
 
         /// <summary>
         /// The asset that made this reference.
@@ -76,14 +75,5 @@ namespace Cassette
         /// The line number in the asset file that made this reference.
         /// </summary>
         public int SourceLineNumber { get; private set; }
-
-        public XElement CreateCacheManifest()
-        {
-            return new XElement("Reference",
-                new XAttribute("Type", Enum.GetName(typeof(AssetReferenceType), Type)),
-                new XAttribute("Path", Path),
-                new XAttribute("SourceLineNumber", SourceLineNumber)
-            );
-        }
     }
 }

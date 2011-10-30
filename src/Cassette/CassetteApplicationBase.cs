@@ -26,7 +26,7 @@ using Cassette.Persistence;
 
 namespace Cassette
 {
-    public abstract class CassetteApplicationBase : ICassetteApplication
+    abstract class CassetteApplicationBase : ICassetteApplication
     {
         protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, IUrlGenerator urlGenerator, string cacheVersion)
         {
@@ -62,25 +62,9 @@ namespace Cassette
             get { return urlGenerator; }
         }
 
-        protected IBundleContainer BundleContainer
+        internal IBundleContainer BundleContainer
         {
             get { return bundleContainer; }
-        }
-
-        public IFileSearch GetDefaultBundleInitializer(Type bundleType)
-        {
-            var originalBundleType = bundleType;
-            do
-            {
-                IFileSearch initializer;
-                if (settings.DefaultFileSearches.TryGetValue(bundleType, out initializer))
-                {
-                    return initializer;
-                }
-                bundleType = bundleType.BaseType;
-            } while (bundleType != null);
-
-            throw new ArgumentException(string.Format("Default bundle initializer not registered for bundle type {0}.", originalBundleType.FullName));
         }
 
         public IReferenceBuilder GetReferenceBuilder()

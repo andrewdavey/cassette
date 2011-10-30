@@ -36,11 +36,8 @@ namespace Cassette.UI
 
         public Assets_Test()
         {
-            var application = new Mock<ICassetteApplication>();
             referenceBuilder = new Mock<IReferenceBuilder>();
-            application.Setup(a => a.GetReferenceBuilder())
-                       .Returns(referenceBuilder.Object);
-            Bundles.GetApplication = () => application.Object;
+            Bundles.GetReferenceBuilder = () => referenceBuilder.Object;
         }
 
         [Fact]
@@ -145,9 +142,9 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenGetApplicationIsNull_WhenRenderScripts_ThenThrowInvalidOperationException()
+        public void GivenGetReferenceBuilderIsNull_WhenRenderScripts_ThenThrowInvalidOperationException()
         {
-            Bundles.GetApplication = null;
+            Bundles.GetReferenceBuilder = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
                 Bundles.RenderScripts();
@@ -155,9 +152,9 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenGetApplicationIsNull_WhenRenderStylesheets_ThenThrowInvalidOperationException()
+        public void GivenGetReferenceBuilderIsNull_WhenRenderStylesheets_ThenThrowInvalidOperationException()
         {
-            Bundles.GetApplication = null;
+            Bundles.GetReferenceBuilder = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
                 Bundles.RenderStylesheets();
@@ -165,9 +162,9 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenGetApplicationIsNull_WhenRenderHtmlTemplates_ThenThrowInvalidOperationException()
+        public void GivenGetReferenceBuilderIsNull_WhenRenderHtmlTemplates_ThenThrowInvalidOperationException()
         {
-            Bundles.GetApplication = null;
+            Bundles.GetReferenceBuilder = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
                 Bundles.RenderHtmlTemplates();

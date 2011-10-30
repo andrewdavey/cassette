@@ -19,18 +19,31 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using Cassette.Configuration;
 using Cassette.IO;
 
 namespace Cassette
 {
     public interface ICassetteApplication : IDisposable
     {
-        IFileSearch GetDefaultBundleInitializer(Type bundleType);
+        /// <summary>
+        /// The directory containing the original bundle asset files.
+        /// </summary>
         IDirectory SourceDirectory { get; }
+
+        /// <summary>
+        /// When this property is true, Cassette will output debug-friendly assets. When false, combined, minified bundles are used instead.
+        /// </summary>
         bool IsDebuggingEnabled { get; }
+
+        /// <summary>
+        /// Gets the <see cref="IUrlGenerator"/> used to generate the URLs of bundle and assets.
+        /// </summary>
         IUrlGenerator UrlGenerator { get; }
+
+        /// <summary>
+        /// When true (the default), Cassette buffers page output and rewrites to allow bundle references to be inserted into &lt;head&gt;
+        /// after it has already been rendered.
+        /// </summary>
         bool IsHtmlRewritingEnabled { get; }
-        IReferenceBuilder GetReferenceBuilder();
     }
 }

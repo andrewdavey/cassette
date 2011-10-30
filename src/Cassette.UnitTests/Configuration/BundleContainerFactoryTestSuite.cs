@@ -131,8 +131,6 @@ namespace Cassette.Configuration
             var appMock = new Mock<ICassetteApplication>();
             appMock.SetupGet(a => a.SourceDirectory)
                    .Returns(Mock.Of<IDirectory>());
-            appMock.Setup(a => a.GetDefaultBundleInitializer(It.IsAny<Type>()))
-                   .Returns(Mock.Of<IFileSearch>());
             return appMock.Object;
         }
     }

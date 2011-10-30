@@ -48,43 +48,53 @@ namespace Cassette.Web
 {
     public static class StartUp
     {
-        static IEnumerable<ICassetteConfiguration> configurations;
-        static IsolatedStorageFile storage;
-        static CassetteApplicationContainer<CassetteApplication> applicationContainer;
+        static IEnumerable<ICassetteConfiguration> _configurations;
+        static IsolatedStorageFile _storage;
+        static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
  
         internal static CassetteApplication CassetteApplication
         {
-            get { return applicationContainer.Application; }
+            get { return _applicationContainer.Application; }
         }
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
         // If using an IoC container, this delegate can be replaced (in Application_Start) to
         // provide an alternative way to create the configuration object.
         public static Func<IEnumerable<ICassetteConfiguration>> CreateConfigurations = CreateConfigurationsByScanningAssembliesForType;
+// ReSharper restore MemberCanBePrivate.Global
+// ReSharper restore FieldCanBeMadeReadOnly.Global
 
+// ReSharper disable UnusedMember.Global
         public static void PreApplicationStart()
+// ReSharper restore UnusedMember.Global
         {
             Trace.Source.TraceInformation("Registering CassetteHttpModule.");
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
 
         // This runs *after* Global.asax Application_Start.
+// ReSharper disable UnusedMember.Global
         public static void PostApplicationStart()
+// ReSharper restore UnusedMember.Global
         {
-            storage = IsolatedStorageFile.GetMachineStoreForAssembly(); // TODO: Check if this should be GetMachineStoreForApplication instead
+            _storage = IsolatedStorageFile.GetMachineStoreForAssembly(); // TODO: Check if this should be GetMachineStoreForApplication instead
             
-            configurations = CreateConfigurations();
-            applicationContainer = GetSystemWebCompilationDebug() 
+            _configurations = CreateConfigurations();
+            _applicationContainer = GetSystemWebCompilationDebug() 
                 ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
                 : new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);
-            
-            Bundles.GetApplication = () => CassetteApplication;
+
+            Bundles.GetReferenceBuilder = () => CassetteApplication.GetReferenceBuilder();
         }
 
+// ReSharper disable UnusedMember.Global
         public static void ApplicationShutdown()
+// ReSharper restore UnusedMember.Global
         {
             Trace.Source.TraceInformation("Application shutdown - disposing resources.");
-            storage.Dispose();
-            applicationContainer.Dispose();
+            _storage.Dispose();
+            _applicationContainer.Dispose();
         }
 
         static IEnumerable<ICassetteConfiguration> CreateConfigurationsByScanningAssembliesForType()
@@ -162,12 +172,12 @@ namespace Cassette.Web
             var initialConfiguration = new InitialConfiguration(
                 HttpRuntime.AppDomainAppPath,
                 HttpRuntime.AppDomainAppVirtualPath,
-                storage,
+                _storage,
                 isDebuggingEnabled
             );
 
             var allConfigurations = new List<ICassetteConfiguration> { initialConfiguration };
-            allConfigurations.AddRange(configurations);
+            allConfigurations.AddRange(_configurations);
             return allConfigurations;
         }
 

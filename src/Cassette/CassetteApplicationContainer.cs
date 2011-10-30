@@ -23,7 +23,7 @@ using System.IO;
 
 namespace Cassette
 {
-    public class CassetteApplicationContainer<T> : IDisposable
+    class CassetteApplicationContainer<T> : IDisposable
         where T : ICassetteApplication
     {
         readonly Func<T> createApplication;

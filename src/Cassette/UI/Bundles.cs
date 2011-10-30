@@ -32,7 +32,7 @@ namespace Cassette.UI
     /// </summary>
     public static class Bundles
     {
-        public static Func<ICassetteApplication> GetApplication;
+        internal static Func<IReferenceBuilder> GetReferenceBuilder;
 
         /// <summary>
         /// Adds a reference to a bundle for the current page.
@@ -41,7 +41,7 @@ namespace Cassette.UI
         /// <param name="pageLocation">The optional page location of the referenced bundle. This controls where it will be rendered.</param>
         public static void Reference(string assetPathOrBundlePathOrUrl, string pageLocation = null)
         {
-            Application.GetReferenceBuilder().Reference(assetPathOrBundlePathOrUrl, pageLocation);
+            ReferenceBuilder.Reference(assetPathOrBundlePathOrUrl, pageLocation);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Cassette.UI
         /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
         public static void AddInlineScript(string scriptContent, string pageLocation = null)
         {
-            Application.GetReferenceBuilder().Reference(new InlineScriptBundle(scriptContent), pageLocation);
+            ReferenceBuilder.Reference(new InlineScriptBundle(scriptContent), pageLocation);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Cassette.UI
         /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
         public static void AddPageData(string globalVariable, object data, string pageLocation = null)
         {
-            Application.GetReferenceBuilder().Reference(new PageDataScriptBundle(globalVariable, data), pageLocation);
+            ReferenceBuilder.Reference(new PageDataScriptBundle(globalVariable, data), pageLocation);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Cassette.UI
         /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
         public static void AddPageData(string globalVariable, IEnumerable<KeyValuePair<string, object>> data, string pageLocation = null)
         {
-            Application.GetReferenceBuilder().Reference(new PageDataScriptBundle(globalVariable, data), pageLocation);
+            ReferenceBuilder.Reference(new PageDataScriptBundle(globalVariable, data), pageLocation);
         }
 
         /// <summary>
@@ -106,23 +106,23 @@ namespace Cassette.UI
             return Render<HtmlTemplateBundle>(pageLocation);
         }
 
-        static ICassetteApplication Application
+        static IReferenceBuilder ReferenceBuilder
         {
             get
             {
-                if (GetApplication == null)
+                if (GetReferenceBuilder == null)
                 {
                     // We rely on Cassette.Web (or some other) integration library to hook up its application object.
                     // If the delegate is null then the developer probably forgot to reference the integration library.
-                    throw new InvalidOperationException("A Cassette application has not been assigned. Make sure a Cassette integration library has been referenced. For example, reference Cassette.Web.dll");
+                    throw new InvalidOperationException("Make sure a Cassette integration library has been referenced. For example, reference Cassette.Web.dll");
                 }
-                return GetApplication();
+                return GetReferenceBuilder();
             }
         }
 
         static IHtmlString Render<T>(string location) where T : Bundle
         {
-            return Application.GetReferenceBuilder().Render<T>(location);            
+            return ReferenceBuilder.Render<T>(location);            
         }
     }
 }

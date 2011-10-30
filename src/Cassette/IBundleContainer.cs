@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace Cassette
 {
-    public interface IBundleContainer : IDisposable
+    interface IBundleContainer : IDisposable
     {
         IEnumerable<Bundle> Bundles { get; }
         Bundle FindBundleContainingPath(string path);

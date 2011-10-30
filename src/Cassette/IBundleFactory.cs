@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using Cassette.IO;
 
 namespace Cassette
@@ -28,17 +27,5 @@ namespace Cassette
         where T : Bundle
     {
         T CreateBundle(string path, IEnumerable<IFile> allFiles, BundleDescriptor bundleDescriptor);
-    }
-
-    static class BundleFactoryExtensions
-    {
-        public static T CreateExternalBundle<T>(this IBundleFactory<T> bundleFactory, string url)
-            where T : Bundle
-        {
-            return bundleFactory.CreateBundle(url, Enumerable.Empty<IFile>(), new BundleDescriptor
-            {
-                ExternalUrl = url
-            });
-        }
     }
 }
