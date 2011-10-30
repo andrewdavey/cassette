@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace Cassette.Persistence
 {
-    public interface IBundleCache
+    interface IBundleCache
     {
         bool InitializeBundlesFromCacheIfUpToDate(IEnumerable<Bundle> unprocessedSourceBundles);
         void SaveBundleContainer(IBundleContainer bundleContainer);

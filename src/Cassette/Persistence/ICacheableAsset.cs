@@ -23,7 +23,7 @@ using System.Xml.Linq;
 
 namespace Cassette.Persistence
 {
-    public interface ICacheableAsset
+    interface ICacheableAsset
     {
         IEnumerable<XElement> CreateCacheManifest();
     }
