@@ -27,8 +27,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Web
 {
-    class BundleRequestHandler<T> : IHttpHandler
-        where T : Bundle
+    class BundleRequestHandler : IHttpHandler
     {
         public BundleRequestHandler(IBundleContainer bundleContainer, RequestContext requestContext)
         {

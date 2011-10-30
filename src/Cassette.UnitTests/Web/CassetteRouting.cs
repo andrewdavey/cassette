@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Web;
 using System.Web.Routing;
-using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
@@ -164,7 +163,7 @@ namespace Cassette.Web
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));
-            httpHandler.ShouldBeType<BundleRequestHandler<ScriptBundle>>();
+            httpHandler.ShouldBeType<BundleRequestHandler>();
         }
 
         [Fact]
@@ -194,7 +193,7 @@ namespace Cassette.Web
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));
-            httpHandler.ShouldBeType<BundleRequestHandler<StylesheetBundle>>();
+            httpHandler.ShouldBeType<BundleRequestHandler>();
         }
 
         [Fact]
@@ -204,7 +203,7 @@ namespace Cassette.Web
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));
-            httpHandler.ShouldBeType<BundleRequestHandler<HtmlTemplateBundle>>();
+            httpHandler.ShouldBeType<BundleRequestHandler>();
         }
 
         [Fact]
