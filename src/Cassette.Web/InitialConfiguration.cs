@@ -6,23 +6,29 @@ namespace Cassette.Web
 {
     class InitialConfiguration : ICassetteConfiguration
     {
+        readonly CassetteConfigurationSection configurationSection;
+        readonly bool globalIsDebuggingEnabled;
         readonly string sourceDirectory;
         readonly string virtualDirectory;
         readonly IsolatedStorageFile storage;
-        readonly bool isDebuggingEnabled;
 
-        public InitialConfiguration(string sourceDirectory, string virtualDirectory, IsolatedStorageFile storage, bool isDebuggingEnabled)
+        public InitialConfiguration(CassetteConfigurationSection configurationSection, bool globalIsDebuggingEnabled, string sourceDirectory, string virtualDirectory, IsolatedStorageFile storage)
         {
+            this.configurationSection = configurationSection;
+            this.globalIsDebuggingEnabled = globalIsDebuggingEnabled;
             this.sourceDirectory = sourceDirectory;
             this.virtualDirectory = virtualDirectory;
             this.storage = storage;
-            this.isDebuggingEnabled = isDebuggingEnabled;
         }
 
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            settings.IsHtmlRewritingEnabled = true;
-            settings.IsDebuggingEnabled = isDebuggingEnabled;
+            settings.IsDebuggingEnabled = 
+                configurationSection.Debug == DebugMode.On ||
+               (configurationSection.Debug == DebugMode.Inherit && globalIsDebuggingEnabled);
+
+            settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
+
             settings.SourceDirectory = new FileSystemDirectory(sourceDirectory);
             settings.CacheDirectory = new IsolatedStorageDirectory(storage);
             settings.UrlModifier = new VirtualDirectoryPrepender(virtualDirectory);

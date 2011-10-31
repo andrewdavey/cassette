@@ -139,7 +139,7 @@ namespace Cassette.Web
 
         static CassetteApplication CreateCassetteApplication()
         {
-            var allConfigurations = GetAllConfigurations();
+            var allConfigurations = GetAllConfigurations(GetCassetteConfigurationSection());
             var cacheVersion = GetConfigurationVersion(allConfigurations, HttpRuntime.AppDomainAppVirtualPath);
             var settings = new CassetteSettings();
             var bundles = new BundleCollection(settings);
@@ -166,19 +166,25 @@ namespace Cassette.Web
             );
         }
 
-        static List<ICassetteConfiguration> GetAllConfigurations()
+        static List<ICassetteConfiguration> GetAllConfigurations(CassetteConfigurationSection section)
         {
-            var isDebuggingEnabled = GetSystemWebCompilationDebug();
             var initialConfiguration = new InitialConfiguration(
+                section,
+                GetSystemWebCompilationDebug(),
                 HttpRuntime.AppDomainAppPath,
                 HttpRuntime.AppDomainAppVirtualPath,
-                _storage,
-                isDebuggingEnabled
+                _storage
             );
 
             var allConfigurations = new List<ICassetteConfiguration> { initialConfiguration };
             allConfigurations.AddRange(_configurations);
             return allConfigurations;
+        }
+
+        static CassetteConfigurationSection GetCassetteConfigurationSection()
+        {
+            return (WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection) 
+                   ?? new CassetteConfigurationSection();
         }
 
         static bool GetSystemWebCompilationDebug()
