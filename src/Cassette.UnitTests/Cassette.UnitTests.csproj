@@ -115,7 +115,7 @@
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="TestableBundle.cs" />
-    <Compile Include="UI\Assets.cs" />
+    <Compile Include="UI\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="BundleContainer.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />

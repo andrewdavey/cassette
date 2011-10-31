@@ -30,11 +30,11 @@ using Xunit;
 
 namespace Cassette.UI
 {
-    public class Assets_Test
+    public class Bundles_Test
     {
         readonly Mock<IReferenceBuilder> referenceBuilder;
 
-        public Assets_Test()
+        public Bundles_Test()
         {
             referenceBuilder = new Mock<IReferenceBuilder>();
             Bundles.GetReferenceBuilder = () => referenceBuilder.Object;
