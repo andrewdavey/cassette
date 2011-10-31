@@ -262,6 +262,30 @@ namespace Cassette.Configuration
             }
         }
 
+        public static void AddPerIndividualFile<T>(this BundleCollection bundleCollection)
+            where T : Bundle
+        {
+            AddPerIndividualFile<T>(bundleCollection, "~");
+        }
+
+        public static void AddPerIndividualFile<T>(this BundleCollection bundleCollection, string directoryPath)
+            where T : Bundle
+        {
+            var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(directoryPath);
+            var fileSearch = bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+            var files = fileSearch.FindFiles(directory);
+            var bundleFactory = bundleCollection.Settings.BundleFactories[typeof(T)];
+            foreach (var file in files)
+            {
+                var bundle = bundleFactory.CreateBundle(
+                    file.FullPath,
+                    new[] { file },
+                    new BundleDescriptor { AssetFilenames = { "*" } }
+                );
+                bundleCollection.Add(bundle);
+            }
+        }
+
         static void TraceAssetFilePaths<T>(T bundle) where T : Bundle
         {
             foreach (var asset in bundle.Assets)
