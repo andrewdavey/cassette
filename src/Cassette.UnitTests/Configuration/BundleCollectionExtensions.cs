@@ -516,6 +516,41 @@ namespace Cassette.Configuration
             bundles["~/sub/file-c.js"].ShouldBeType<TestableBundle>();
         }
 
+        [Fact]
+        public void GivenCustomFileSearch_WhenAddPerIndividualFile_ThenCustomFileSearchIsUsedToFindFiles()
+        {
+            sourceDirectory
+                .Setup(d => d.GetDirectory("~"))
+                .Returns(sourceDirectory.Object);
+            FilesExist(sourceDirectory.Object, "~/file-a.js", "~/sub/file-b.js");
+
+            var customFileSearch = new Mock<IFileSearch>();
+            customFileSearch
+                .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(new IFile[0])
+                .Verifiable();
+
+            bundles.AddPerIndividualFile<TestableBundle>("~", customFileSearch.Object);
+
+            customFileSearch.Verify();
+        }
+
+        [Fact]
+        public void GivenCustomizeAction_WhenAddPerIndividualFile_ThenActionCalledForEachBundle()
+        {
+            sourceDirectory
+                .Setup(d => d.GetDirectory("~"))
+                .Returns(sourceDirectory.Object);
+            FilesExist(sourceDirectory.Object, "~/file-a.js", "~/file-b.js");
+
+            var customizeCalled = 0;
+            Action<TestableBundle> customize = b => customizeCalled++;
+
+            bundles.AddPerIndividualFile("~", customizeBundle: customize);
+
+            customizeCalled.ShouldEqual(2);
+        }
+
         void FilesExist(IDirectory directory, params string[] paths)
         {
             fileSearch

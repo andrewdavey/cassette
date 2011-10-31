@@ -262,19 +262,25 @@ namespace Cassette.Configuration
             }
         }
 
-        public static void AddPerIndividualFile<T>(this BundleCollection bundleCollection)
+        /// <summary>
+        /// Adds a bundle for each individual file found using the file search. If no file search is provided the application
+        /// default file search for the bundle type is used.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to create.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="directoryPath">The path to the directory to search. If null or empty the application source directory is used.</param>
+        /// <param name="fileSearch">The <see cref="IFileSearch"/> used to find files. If null the application default file search for the bundle type is used.</param>
+        /// <param name="customizeBundle">An optional action delegate called for each bundle.</param>
+        public static void AddPerIndividualFile<T>(this BundleCollection bundleCollection, string directoryPath = null, IFileSearch fileSearch = null, Action<T> customizeBundle = null)
             where T : Bundle
         {
-            AddPerIndividualFile<T>(bundleCollection, "~");
-        }
+            var directory = string.IsNullOrEmpty(directoryPath)
+                ? bundleCollection.Settings.SourceDirectory
+                : bundleCollection.Settings.SourceDirectory.GetDirectory(directoryPath);
 
-        public static void AddPerIndividualFile<T>(this BundleCollection bundleCollection, string directoryPath)
-            where T : Bundle
-        {
-            var directory = bundleCollection.Settings.SourceDirectory.GetDirectory(directoryPath);
-            var fileSearch = bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+            fileSearch = fileSearch ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
             var files = fileSearch.FindFiles(directory);
-            var bundleFactory = bundleCollection.Settings.BundleFactories[typeof(T)];
+            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             foreach (var file in files)
             {
                 var bundle = bundleFactory.CreateBundle(
@@ -282,6 +288,7 @@ namespace Cassette.Configuration
                     new[] { file },
                     new BundleDescriptor { AssetFilenames = { "*" } }
                 );
+                if (customizeBundle != null) customizeBundle(bundle);
                 bundleCollection.Add(bundle);
             }
         }
