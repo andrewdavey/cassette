@@ -4,10 +4,10 @@ namespace Cassette.Configuration
 {
     public sealed class CassetteConfigurationSection : ConfigurationSection
     {
-        [ConfigurationProperty("debug", DefaultValue = DebugMode.Inherit)]
-        public DebugMode Debug
+        [ConfigurationProperty("debug", DefaultValue = null)]
+        public bool? Debug
         {
-            get { return (DebugMode)this["debug"]; }
+            get { return (bool?)this["debug"]; }
             set { this["debug"] = value; }
         }
 

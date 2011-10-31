@@ -134,6 +134,7 @@
     <Compile Include="Web\AssetRequestHandler.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
+    <Compile Include="Web\InitialConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="UI\PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />

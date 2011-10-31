@@ -24,8 +24,8 @@ namespace Cassette.Web
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
             settings.IsDebuggingEnabled = 
-                configurationSection.Debug == DebugMode.On ||
-               (configurationSection.Debug == DebugMode.Inherit && globalIsDebuggingEnabled);
+                configurationSection.Debug.HasValue && configurationSection.Debug.Value ||
+               (!configurationSection.Debug.HasValue && globalIsDebuggingEnabled);
 
             settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
 
