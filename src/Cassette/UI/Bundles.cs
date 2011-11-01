@@ -32,7 +32,7 @@ namespace Cassette.UI
     /// </summary>
     public static class Bundles
     {
-        internal static Func<IReferenceBuilder> GetReferenceBuilder;
+        internal static Func<CassetteApplicationBase> GetApplication;
 
         /// <summary>
         /// Adds a reference to a bundle for the current page.
@@ -106,24 +106,39 @@ namespace Cassette.UI
             return Render<HtmlTemplateBundle>(pageLocation);
         }
 
-        static IReferenceBuilder ReferenceBuilder
+        /// <summary>
+        /// Returns the URL of the bundle with the given path.
+        /// </summary>
+        /// <param name="bundlePath">The path of the bundle.</param>
+        /// <returns>The URL of the bundle.</returns>
+        public static string Url(string bundlePath)
         {
-            get
+            var bundle = GetApplication().BundleContainer.FindBundleContainingPath(bundlePath);
+            if (bundle == null)
             {
-                if (GetReferenceBuilder == null)
-                {
-                    // We rely on Cassette.Web (or some other) integration library to hook up its application object.
-                    // If the delegate is null then the developer probably forgot to reference the integration library.
-                    throw new InvalidOperationException("Make sure a Cassette integration library has been referenced. For example, reference Cassette.Web.dll");
-                }
-                return GetReferenceBuilder();
+                throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
             }
+
+            return GetApplication().UrlGenerator.CreateBundleUrl(bundle);
         }
 
         static IHtmlString Render<T>(string location) where T : Bundle
         {
             return ReferenceBuilder.Render<T>(location);            
         }
+
+        static IReferenceBuilder ReferenceBuilder
+        {
+            get
+            {
+                if (GetApplication == null)
+                {
+                    // We rely on Cassette.Web (or some other) integration library to hook up its application object.
+                    // If the delegate is null then the developer probably forgot to reference the integration library.
+                    throw new InvalidOperationException("Make sure a Cassette integration library has been referenced. For example, reference Cassette.Web.dll");
+                }
+                return GetApplication().GetReferenceBuilder();
+            }
+        }
     }
 }
-

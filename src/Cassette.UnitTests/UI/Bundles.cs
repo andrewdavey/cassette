@@ -21,7 +21,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Web;
+using Cassette.Configuration;
 using Cassette.HtmlTemplates;
+using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
@@ -32,12 +34,19 @@ namespace Cassette.UI
 {
     public class Bundles_Test
     {
+        readonly TestableApplication application;
         readonly Mock<IReferenceBuilder> referenceBuilder;
+        readonly Mock<IUrlGenerator> urlGenerator;
+        readonly Mock<IBundleContainer> bundleContainer;
 
         public Bundles_Test()
         {
+            urlGenerator = new Mock<IUrlGenerator>();
             referenceBuilder = new Mock<IReferenceBuilder>();
-            Bundles.GetReferenceBuilder = () => referenceBuilder.Object;
+            bundleContainer = new Mock<IBundleContainer>();
+            application = new TestableApplication(urlGenerator.Object, referenceBuilder.Object, bundleContainer.Object);
+
+            Bundles.GetApplication = () => application;
         }
 
         [Fact]
@@ -142,9 +151,9 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenGetReferenceBuilderIsNull_WhenRenderScripts_ThenThrowInvalidOperationException()
+        public void GivenGetApplicationIsNull_WhenRenderScripts_ThenThrowInvalidOperationException()
         {
-            Bundles.GetReferenceBuilder = null;
+            Bundles.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
                 Bundles.RenderScripts();
@@ -152,9 +161,9 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenGetReferenceBuilderIsNull_WhenRenderStylesheets_ThenThrowInvalidOperationException()
+        public void GivenGetApplicationIsNull_WhenRenderStylesheets_ThenThrowInvalidOperationException()
         {
-            Bundles.GetReferenceBuilder = null;
+            Bundles.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
                 Bundles.RenderStylesheets();
@@ -162,13 +171,62 @@ namespace Cassette.UI
         }
 
         [Fact]
-        public void GivenGetReferenceBuilderIsNull_WhenRenderHtmlTemplates_ThenThrowInvalidOperationException()
+        public void GivenGetApplicationIsNull_WhenRenderHtmlTemplates_ThenThrowInvalidOperationException()
         {
-            Bundles.GetReferenceBuilder = null;
+            Bundles.GetApplication = null;
             Assert.Throws<InvalidOperationException>(delegate
             {
                 Bundles.RenderHtmlTemplates();
             });
+        }
+
+        [Fact]
+        public void UrlUsesGetBundleUrlDelegate()
+        {
+            var bundle = new TestableBundle("~/test");
+            bundleContainer
+                .Setup(c => c.FindBundleContainingPath("~/test"))
+                .Returns(bundle);
+            urlGenerator
+                .Setup(g => g.CreateBundleUrl(bundle))
+                .Returns("URL");
+
+            var url = Bundles.Url("~/test");
+
+            url.ShouldEqual("URL");
+        }
+
+
+        class TestableApplication : CassetteApplicationBase
+        {
+            readonly IReferenceBuilder referenceBuilder;
+            readonly IBundleContainer bundleContainer;
+
+            public TestableApplication(IUrlGenerator urlGenerator, IReferenceBuilder referenceBuilder, IBundleContainer bundleContainer)
+                : base(new Bundle[0], new CassetteSettings
+                {
+                    SourceDirectory = Mock.Of<IDirectory>(),
+                    IsDebuggingEnabled = true
+                }, urlGenerator, "")
+            {
+                this.referenceBuilder = referenceBuilder;
+                this.bundleContainer = bundleContainer;
+            }
+
+            internal override IBundleContainer BundleContainer
+            {
+                get { return bundleContainer; }
+            }
+
+            protected override IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create)
+            {
+                return referenceBuilder;
+            }
+
+            protected override IPlaceholderTracker GetPlaceholderTracker()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

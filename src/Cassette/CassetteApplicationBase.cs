@@ -62,7 +62,7 @@ namespace Cassette
             get { return urlGenerator; }
         }
 
-        internal IBundleContainer BundleContainer
+        internal virtual IBundleContainer BundleContainer
         {
             get { return bundleContainer; }
         }

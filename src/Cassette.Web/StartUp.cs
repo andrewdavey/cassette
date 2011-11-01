@@ -85,7 +85,7 @@ namespace Cassette.Web
                 ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
                 : new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);
 
-            Bundles.GetReferenceBuilder = () => CassetteApplication.GetReferenceBuilder();
+            Bundles.GetApplication = () => CassetteApplication;
         }
 
 // ReSharper disable UnusedMember.Global
