@@ -49,19 +49,11 @@ namespace Cassette.Stylesheets
         {
             if (string.IsNullOrEmpty(Media))
             {
-<<<<<<< HEAD
-                return new HtmlString(String.Format(HtmlConstants.LinkHtml, url));
+                return String.Format(HtmlConstants.LinkHtml, url);
             }
             else
             {
-                return new HtmlString(String.Format(HtmlConstants.LinkWithMediaHtml, url, Media));
-=======
-                return string.Format(LinkHtml, url);
-            }
-            else
-            {
-                return string.Format(LinkHtmlWithMedia, url, Media);
->>>>>>> Removing dependency on System.Web : Replaced IHttpString/HttpString with string, set Cassette project to .NET 4 Client Profile
+                return String.Format(HtmlConstants.LinkWithMediaHtml, url, Media);
             }
         }
 
