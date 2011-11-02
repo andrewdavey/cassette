@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using Should;
 using Xunit;
@@ -79,6 +80,19 @@ namespace Cassette.Scripts
                 "}());",
                 "</script>"
             }));
+        }
+
+        [Fact]
+        public void CreateDictonaryOfPropertiesCreatesDictionaryFromGenericObject()
+        {
+          var genericObject = new { property1 = 1, propertyB = "B", aMonkey = true };
+
+          var result = PageDataScriptModule.CreateDictionaryOfProperties(genericObject).ToList();
+
+          Assert.NotEmpty(result);
+          result.ShouldContain(new KeyValuePair<string, object>("property1", 1));
+          result.ShouldContain(new KeyValuePair<string, object>("propertyB", "B"));
+          result.ShouldContain(new KeyValuePair<string, object>("aMonkey", true));
         }
     }
 }
