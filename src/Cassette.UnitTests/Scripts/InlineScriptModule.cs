@@ -31,7 +31,7 @@ namespace Cassette.Scripts
         public void GivenInlineScriptModuleWithContent_WhenRender_ThenScriptElementCreatedWithContent()
         {
             var module = new InlineScriptModule("var x = 1;");
-            var html = module.Render(Mock.Of<ICassetteApplication>()).ToHtmlString();
+            var html = module.Render(Mock.Of<ICassetteApplication>());
             html.ShouldEqual(
                 "<script type=\"text/javascript\">" + Environment.NewLine + 
                 "var x = 1;" + Environment.NewLine + 

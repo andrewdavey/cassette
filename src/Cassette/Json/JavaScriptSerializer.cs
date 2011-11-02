@@ -34,8 +34,6 @@ using System.IO;
 using System.Collections;
 using System.Reflection;
 using System.ComponentModel;
-using System.Configuration;
-using System.Web.Configuration;
 
 namespace Cassette.Json
 {

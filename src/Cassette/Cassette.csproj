@@ -12,6 +12,7 @@
     <AssemblyName>Cassette</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,7 +43,6 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -56,6 +56,8 @@
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="DirectorySource.cs" />
     <Compile Include="FileSystemModuleSource.cs" />
+    <Compile Include="Helpers\HttpEncoder.cs" />
+    <Compile Include="Helpers\HttpUtility.cs" />
     <Compile Include="HtmlTemplates\WrapJQueryTemplateInInitializer.cs" />
     <Compile Include="HtmlTemplates\AssignRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateModuleRenderer.cs" />

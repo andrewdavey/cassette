@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Web;
 
 namespace Cassette.UI
 {
@@ -44,7 +43,7 @@ namespace Cassette.UI
         /// </summary>
         /// <param name="location">Optional. The page location that is being rendered.</param>
         /// <returns>The HTML elements that include into the page all the referenced modules and their dependencies</returns>
-        IHtmlString Render(string location = null);
+        string Render(string location = null);
 
         /// <summary>
         /// Returns the URL for the asset module with the given path.

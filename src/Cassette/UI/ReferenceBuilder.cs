@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Cassette.Utilities;
 
 namespace Cassette.UI
@@ -116,7 +115,7 @@ namespace Cassette.UI
             return moduleContainer.IncludeReferencesAndSortModules(modules);
         }
 
-        public IHtmlString Render(string location = null)
+        public string Render(string location = null)
         {
             renderedLocations.Add(location ?? "");
             return placeholderTracker.InsertPlaceholder(
@@ -134,13 +133,12 @@ namespace Cassette.UI
             return application.UrlGenerator.CreateModuleUrl(module);
         }
 
-        HtmlString CreateHtml(string location)
+        string CreateHtml(string location)
         {
-            return new HtmlString(string.Join(Environment.NewLine,
-                GetModules(location).Select(
-                    module => module.Render(application).ToHtmlString()
-                )
-            ));
+            return string.Join(Environment.NewLine,
+                               GetModules(location).Select(
+                               module => module.Render(application)
+                              ));
         }
 
         List<Module> GetOrCreateModuleSet(string location)

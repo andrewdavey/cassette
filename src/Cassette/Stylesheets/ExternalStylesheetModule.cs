@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
@@ -46,15 +45,23 @@ namespace Cassette.Stylesheets
             // No processing required.
         }
 
-        public override IHtmlString Render(ICassetteApplication application)
+        public override string Render(ICassetteApplication application)
         {
             if (string.IsNullOrEmpty(Media))
             {
+<<<<<<< HEAD
                 return new HtmlString(String.Format(HtmlConstants.LinkHtml, url));
             }
             else
             {
                 return new HtmlString(String.Format(HtmlConstants.LinkWithMediaHtml, url, Media));
+=======
+                return string.Format(LinkHtml, url);
+            }
+            else
+            {
+                return string.Format(LinkHtmlWithMedia, url, Media);
+>>>>>>> Removing dependency on System.Web : Replaced IHttpString/HttpString with string, set Cassette project to .NET 4 Client Profile
             }
         }
 

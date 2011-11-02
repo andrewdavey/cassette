@@ -18,13 +18,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Web;
 
 namespace Cassette
 {
     public interface IModuleHtmlRenderer<T>
         where T : Module
     {
-        IHtmlString Render(T module);
+        string Render(T module);
     }
 }

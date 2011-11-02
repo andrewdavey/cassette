@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Web;
 using Moq;
 using Should;
 using Xunit;
@@ -44,7 +43,7 @@ namespace Cassette.Scripts
             var fallbackRenderer = new Mock<IModuleHtmlRenderer<ScriptModule>>();
 
             var renderer = new ExternalScriptModuleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(module);
 
             html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\"></script>");
         }
@@ -58,10 +57,10 @@ namespace Cassette.Scripts
 
             var fallbackRenderer = new Mock<IModuleHtmlRenderer<ScriptModule>>();
             fallbackRenderer.Setup(r => r.Render(module))
-                            .Returns(new HtmlString("FALLBACK"));
+                            .Returns("FALLBACK");
 
             var renderer = new ExternalScriptModuleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(module);
 
             html.ShouldEqual(
                 "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
@@ -83,9 +82,9 @@ namespace Cassette.Scripts
             module.AddFallback("CONDITION", new[] { asset.Object });
 
             fallbackRenderer.Setup(r => r.Render(module))
-                            .Returns(new HtmlString("<script></script>"));
+                            .Returns("<script></script>");
 
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(module);
 
             html.ShouldContain("%3Cscript%3E%3C/script%3E");
         }
@@ -101,10 +100,10 @@ namespace Cassette.Scripts
 
             var fallbackRenderer = new Mock<IModuleHtmlRenderer<ScriptModule>>();
             fallbackRenderer.Setup(r => r.Render(module))
-                            .Returns(new HtmlString("<script></script>"));
+                            .Returns("<script></script>");
 
             var renderer = new ExternalScriptModuleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(module);
 
             html.ShouldEqual("<script></script>");
         }
