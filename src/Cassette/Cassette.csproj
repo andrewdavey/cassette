@@ -43,7 +43,6 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -75,6 +74,16 @@
     <Compile Include="IO\IsolatedStorageDirectory.cs" />
     <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="IUrlGenerator.cs" />
+    <Compile Include="Json\JavaScriptConverter.cs" />
+    <Compile Include="Json\JavaScriptSerializer.cs" />
+    <Compile Include="Json\JavaScriptTypeResolver.cs" />
+    <Compile Include="Json\Json.cs" />
+    <Compile Include="Json\JsonDeserializer.cs" />
+    <Compile Include="Json\JsonSerializer.cs" />
+    <Compile Include="Json\ReflectionUtils.cs" />
+    <Compile Include="Json\ScriptIgnoreAttribute.cs" />
+    <Compile Include="Json\SimpleTypeResolver.cs" />
+    <Compile Include="Json\StringBuilderExtensions.cs" />
     <Compile Include="ModuleConfiguration.cs" />
     <Compile Include="ModuleDescriptor.cs" />
     <Compile Include="ModuleProcessing\AddTransformerToAssets.cs" />

@@ -20,7 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Text;
 using System.Collections.Generic;
-using System.Web.Script.Serialization;
+using Cassette.Json;
 using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>;
 
 namespace Cassette.Scripts
