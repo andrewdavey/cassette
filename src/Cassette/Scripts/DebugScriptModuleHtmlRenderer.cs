@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Linq;
-using System.Web;
 
 namespace Cassette.Scripts
 {
@@ -33,7 +32,7 @@ namespace Cassette.Scripts
 
         readonly IUrlGenerator urlGenerator;
 
-        public IHtmlString Render(ScriptModule module)
+        public string Render(ScriptModule module)
         {
             var assetScripts = 
                 from asset in module.Assets
@@ -42,9 +41,7 @@ namespace Cassette.Scripts
                     : urlGenerator.CreateAssetUrl(asset)
                 select string.Format(HtmlConstants.ScriptHtml, url);
 
-            return new HtmlString(
-                string.Join(Environment.NewLine, assetScripts)
-            );
+            return string.Join(Environment.NewLine, assetScripts);
         }
     }
 }

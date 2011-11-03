@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Cassette.Scripts;
 using Moq;
 using Should;
@@ -228,8 +227,8 @@ namespace Cassette.UI
             moduleContainer.Setup(c => c.IncludeReferencesAndSortModules(It.IsAny<IEnumerable<Module>>()))
                            .Returns<IEnumerable<Module>>(ms => ms);
 
-            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
-                              .Returns(new HtmlString("output"));
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
+                              .Returns("output");
         }
 
         readonly ReferenceBuilder<Module> referenceBuilder;
@@ -249,7 +248,7 @@ namespace Cassette.UI
 
             var html = referenceBuilder.Render();
 
-            html.ToHtmlString().ShouldEqual("output");
+            html.ShouldEqual("output");
         }
 
         [Fact]
@@ -257,24 +256,24 @@ namespace Cassette.UI
         {
             var module = new Mock<Module>("~/stub");
             module.Setup(m => m.Render(application))
-                  .Returns(new HtmlString("output"));
+                  .Returns("output");
             moduleContainer.Setup(c => c.FindModuleContainingPath(It.IsAny<string>()))
                            .Returns(module.Object);
             referenceBuilder.Reference("test");
 
             var html = referenceBuilder.Render("body");
 
-            html.ToHtmlString().ShouldEqual("output");
+            html.ShouldEqual("output");
         }
 
         [Fact]
         public void GivenAddReferenceToTwoPaths_WhenRender_ThenModuleRenderOutputsSeparatedByNewLinesReturned()
         {
             var module1 = new Mock<Module>("~/stub1");
-            module1.Setup(m => m.Render(application).ToHtmlString())
+            module1.Setup(m => m.Render(application))
                    .Returns("output1");
             var module2 = new Mock<Module>("~/stub2");
-            module2.Setup(m => m.Render(application).ToHtmlString())
+            module2.Setup(m => m.Render(application))
                    .Returns("output2");
             moduleContainer.Setup(c => c.FindModuleContainingPath("~/stub1"))
                            .Returns(module1.Object);
@@ -284,14 +283,14 @@ namespace Cassette.UI
             referenceBuilder.Reference("~/stub1");
             referenceBuilder.Reference("~/stub2");
 
-            Func<IHtmlString> createHtml = null;
-            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
-                .Returns(new HtmlString("output"))
-                .Callback<Func<IHtmlString>>(f => createHtml = f);
+            Func<string> createHtml = null;
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
+                .Returns("output")
+                .Callback<Func<string>>(f => createHtml = f);
 
             referenceBuilder.Render();
 
-            createHtml().ToHtmlString().ShouldEqual("output1" + Environment.NewLine + "output2");
+            createHtml().ShouldEqual("output1" + Environment.NewLine + "output2");
         }
     }
 }
