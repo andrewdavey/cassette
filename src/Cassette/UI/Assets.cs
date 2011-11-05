@@ -46,8 +46,10 @@ namespace Cassette.UI
             return render(pageLocation);
         }
 
-        // TODO: Add `string ModuleUrl(string path)`
-
+        public string ModuleUrl(string path)
+        {
+            return Bundles.Url(path);
+        }
     }
 
     [Obsolete]
