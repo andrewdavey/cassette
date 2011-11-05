@@ -7,6 +7,7 @@ using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Stylesheets;
 
 namespace Cassette.Configuration
 {
@@ -331,6 +332,36 @@ namespace Cassette.Configuration
             bundles.AddUrl(url, customizeBundle);
 
             called.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void WhenAddUrlWithUrlEndingWithJS_ThenScriptBundleAdded()
+        {
+            bundles.AddUrl("http://test.com/test.js");
+            bundles["http://test.com/test.js"].ShouldBeType<ExternalScriptBundle>();
+        }
+
+
+        [Fact]
+        public void WhenAddUrlWithUrlEndingWithUpperCaseJS_ThenScriptBundleAdded()
+        {
+            bundles.AddUrl("http://test.com/test.JS");
+            bundles["http://test.com/test.JS"].ShouldBeType<ExternalScriptBundle>();
+        }
+
+        [Fact]
+        public void WhenAddUrlWithUrlEndingWithCSS_ThenStylesheetBundleAdded()
+        {
+            bundles.AddUrl("http://test.com/test.css");
+            bundles["http://test.com/test.css"].ShouldBeType<ExternalStylesheetBundle>();
+        }
+
+        [Fact]
+        public void WhenAddUrlWithUnknownFileExtension_ThenArgumentExceptionThrown()
+        {
+            Assert.Throws<ArgumentException>(
+                () => bundles.AddUrl("http://test.com/test")
+            );
         }
 
         [Fact]

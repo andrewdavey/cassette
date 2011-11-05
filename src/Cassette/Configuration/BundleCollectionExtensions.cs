@@ -248,11 +248,11 @@ namespace Cassette.Configuration
         /// <returns>A object used to further configure the bundle.</returns>
         public static IAddUrlConfiguration AddUrl(this BundleCollection bundleCollection, string url, Action<Bundle> customizeBundle = null)
         {
-            if (url.EndsWith(".js"))
+            if (url.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
             {
                 return AddUrl<Scripts.ScriptBundle>(bundleCollection, url, customizeBundle);
             }
-            else if (url.EndsWith(".css"))
+            else if (url.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
             {
                 return AddUrl<Stylesheets.StylesheetBundle>(bundleCollection, url, customizeBundle);
             }
