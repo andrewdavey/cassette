@@ -14,7 +14,7 @@ In addition you can specify a fallback URL if, for example, a CDN fails.
 {
     <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
     {
-        modules.Add(
+        moduleConfiguration.Add(
             <span class="keyword">new</span> <span class="code-type">ExternalScriptModule</span>(<span class="string">"twitter"</span>, <span class="string">"http://platform.twitter.com/widgets.js"</span>)
             {
                 Location = <span class="string">"body"</span> <span class="comment">// Module render location can be set here if required.</span>
