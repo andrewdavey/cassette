@@ -62,9 +62,14 @@ namespace Cassette
             get { return urlGenerator; }
         }
 
-        internal virtual IBundleContainer BundleContainer
+        protected IBundleContainer BundleContainer
         {
             get { return bundleContainer; }
+        }
+
+        public virtual Bundle FindBundleContainingPath(string path)
+        {
+            return bundleContainer.FindBundleContainingPath(path);
         }
 
         public IReferenceBuilder GetReferenceBuilder()

@@ -23,6 +23,28 @@ using System.IO;
 
 namespace Cassette
 {
+    public static class CassetteApplicationContainer
+    {
+        static Func<ICassetteApplication> _getApplication;
+
+        public static void SetAccessor(Func<ICassetteApplication> getApplication)
+        {
+            _getApplication = getApplication;
+        }
+
+        public static ICassetteApplication Application
+        {
+            get
+            {
+                if (_getApplication == null)
+                {
+                    throw new InvalidOperationException(); // TODO: nice descriptive error message here
+                }
+                return _getApplication();
+            }
+        }
+    }
+
     class CassetteApplicationContainer<T> : IDisposable
         where T : ICassetteApplication
     {

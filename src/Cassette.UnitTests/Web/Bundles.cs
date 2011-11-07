@@ -25,6 +25,7 @@ using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.Views;
 using Moq;
 using Should;
 using Xunit;
@@ -45,7 +46,7 @@ namespace Cassette.Web
             bundleContainer = new Mock<IBundleContainer>();
             application = new TestableApplication(urlGenerator.Object, referenceBuilder.Object, bundleContainer.Object);
 
-            Bundles.GetApplication = () => application;
+            CassetteApplicationContainer.SetAccessor(() => application);
         }
 
         [Fact]
@@ -150,36 +151,6 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void GivenGetApplicationIsNull_WhenRenderScripts_ThenThrowInvalidOperationException()
-        {
-            Bundles.GetApplication = null;
-            Assert.Throws<InvalidOperationException>(delegate
-            {
-                Bundles.RenderScripts();
-            });
-        }
-
-        [Fact]
-        public void GivenGetApplicationIsNull_WhenRenderStylesheets_ThenThrowInvalidOperationException()
-        {
-            Bundles.GetApplication = null;
-            Assert.Throws<InvalidOperationException>(delegate
-            {
-                Bundles.RenderStylesheets();
-            });
-        }
-
-        [Fact]
-        public void GivenGetApplicationIsNull_WhenRenderHtmlTemplates_ThenThrowInvalidOperationException()
-        {
-            Bundles.GetApplication = null;
-            Assert.Throws<InvalidOperationException>(delegate
-            {
-                Bundles.RenderHtmlTemplates();
-            });
-        }
-
-        [Fact]
         public void UrlUsesGetBundleUrlDelegate()
         {
             var bundle = new TestableBundle("~/test");
@@ -212,9 +183,9 @@ namespace Cassette.Web
                 this.bundleContainer = bundleContainer;
             }
 
-            internal override IBundleContainer BundleContainer
+            public override Bundle FindBundleContainingPath(string path)
             {
-                get { return bundleContainer; }
+                return bundleContainer.FindBundleContainingPath(path);
             }
 
             protected override IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create)

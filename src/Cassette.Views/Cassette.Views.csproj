@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</ProjectGuid>
+    <ProjectGuid>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cassette.Web</RootNamespace>
-    <AssemblyName>Cassette.Web</AssemblyName>
+    <RootNamespace>Cassette.Views</RootNamespace>
+    <AssemblyName>Cassette.Views</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,51 +31,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WebActivator">
-      <HintPath>..\packages\WebActivator.1.4.1\lib\net40\WebActivator.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CassetteApplication.cs" />
-    <None Include="CassetteConfiguration.cs.pp" />
-    <Compile Include="CassetteHttpModule.cs" />
-    <Compile Include="AssetRequestHandler.cs" />
-    <Compile Include="CassetteRoute.cs" />
-    <Compile Include="CassetteRouting.cs" />
-    <Compile Include="DelegateRouteHandler.cs" />
-    <Compile Include="BundleRequestHandler.cs" />
-    <Compile Include="InitialConfiguration.cs" />
-    <Compile Include="PlaceholderReplacingResponseFilter.cs" />
+    <Compile Include="Assets.cs" />
+    <Compile Include="Bundles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RawFileRequestHandler.cs" />
-    <Compile Include="StartUp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
       <Name>Cassette</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Cassette.Web.nuspec">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
-    <None Include="Views\Web.config.transform" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

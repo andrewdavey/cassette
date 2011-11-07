@@ -39,5 +39,9 @@ namespace Cassette
         /// Gets the <see cref="IUrlGenerator"/> used to generate the URLs of bundle and assets.
         /// </summary>
         IUrlGenerator UrlGenerator { get; }
+
+        Bundle FindBundleContainingPath(string path);
+
+        IReferenceBuilder GetReferenceBuilder();
     }
 }

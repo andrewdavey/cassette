@@ -21,7 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette
 {
-    interface IReferenceBuilder
+    public interface IReferenceBuilder
     {
         /// <summary>
         /// Adds a reference to the asset bundle with the given path.
