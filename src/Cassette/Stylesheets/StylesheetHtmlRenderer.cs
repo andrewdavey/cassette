@@ -35,21 +35,17 @@ namespace Cassette.Stylesheets
             var url = urlGenerator.CreateBundleUrl(bundle);
             if (string.IsNullOrEmpty(bundle.Media))
             {
-                return (
-                    string.Format(
-                        HtmlConstants.LinkHtml,
-                        url
-                    )
+                return string.Format(
+                    HtmlConstants.LinkHtml,
+                    url
                 );
             }
             else
             {
-                return (
-                    string.Format(
-                        HtmlConstants.LinkWithMediaHtml,
-                        url,
-                        bundle.Media
-                    )
+                return string.Format(
+                    HtmlConstants.LinkWithMediaHtml,
+                    url,
+                    bundle.Media
                 );
             }
         }

@@ -37,9 +37,7 @@ namespace Cassette.HtmlTemplates
                     GetTemplateContent(asset)
                 );
 
-            return (
-                string.Join(Environment.NewLine, elements)
-            );
+            return string.Join(Environment.NewLine, elements);
         }
 
         string GetTemplateContent(IAsset asset)

@@ -32,7 +32,7 @@ namespace Cassette
         {
             var id = Guid.NewGuid();
             creationFunctions[id] = futureHtml;
-            return (Environment.NewLine + id.ToString() + Environment.NewLine);
+            return Environment.NewLine + id + Environment.NewLine;
         }
 
         public string ReplacePlaceholders(string html)

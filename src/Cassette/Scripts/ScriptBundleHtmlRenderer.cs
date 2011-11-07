@@ -32,11 +32,9 @@ namespace Cassette.Scripts
 
         public string Render(ScriptBundle bundle)
         {
-            return (
-                string.Format(
-                    HtmlConstants.ScriptHtml, 
-                    urlGenerator.CreateBundleUrl(bundle)
-                )
+            return string.Format(
+                HtmlConstants.ScriptHtml, 
+                urlGenerator.CreateBundleUrl(bundle)
             );
         }
     }

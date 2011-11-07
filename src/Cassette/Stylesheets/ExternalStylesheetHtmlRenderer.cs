@@ -26,11 +26,11 @@ namespace Cassette.Stylesheets
             {
                 if (string.IsNullOrEmpty(bundle.Media))
                 {
-                    return (String.Format(HtmlConstants.LinkHtml, bundle.Url));
+                    return string.Format(HtmlConstants.LinkHtml, bundle.Url);
                 }
                 else
                 {
-                    return (String.Format(HtmlConstants.LinkWithMediaHtml, bundle.Url, bundle.Media));
+                    return string.Format(HtmlConstants.LinkWithMediaHtml, bundle.Url, bundle.Media);
                 }
             }
         }

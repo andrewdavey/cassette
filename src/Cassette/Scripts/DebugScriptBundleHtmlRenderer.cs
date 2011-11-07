@@ -39,9 +39,7 @@ namespace Cassette.Scripts
                 let url = urlGenerator.CreateAssetUrl(asset)
                 select string.Format(HtmlConstants.ScriptHtml, url);
 
-            return (
-                string.Join(Environment.NewLine, assetScripts)
-            );
+            return string.Join(Environment.NewLine, assetScripts);
         }
     }
 }

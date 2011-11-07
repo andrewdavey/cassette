@@ -46,26 +46,24 @@ namespace Cassette.Scripts
                 }
                 else
                 {
-                    return (externalScriptHtml);
+                    return externalScriptHtml;
                 }
             }
             else
             {
                 if (bundle.Assets.Any())
                 {
-                    return (
-                        string.Format(
-                            "{1}{0}<script type=\"text/javascript\">{0}if({2}){{{0}{3}{0}}}{0}</script>",
-                            Environment.NewLine,
-                            externalScriptHtml,
-                            bundle.FallbackCondition,
-                            CreateFallbackScripts(bundle)
-                        )
+                    return string.Format(
+                        "{1}{0}<script type=\"text/javascript\">{0}if({2}){{{0}{3}{0}}}{0}</script>",
+                        Environment.NewLine,
+                        externalScriptHtml,
+                        bundle.FallbackCondition,
+                        CreateFallbackScripts(bundle)
                     );
                 }
                 else
                 {
-                    return (externalScriptHtml);                    
+                    return externalScriptHtml;                    
                 }
             }
         }

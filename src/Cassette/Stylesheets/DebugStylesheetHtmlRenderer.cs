@@ -38,11 +38,9 @@ namespace Cassette.Stylesheets
             var assetUrls = GetAssetUrls(bundle);
             var createLink = GetCreateLinkFunc(bundle);
 
-            return (
-                string.Join(
-                    Environment.NewLine,
-                    assetUrls.Select(createLink)
-                )
+            return string.Join(
+                Environment.NewLine,
+                assetUrls.Select(createLink)
             );
         }
 
