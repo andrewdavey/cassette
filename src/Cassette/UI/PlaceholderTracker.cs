@@ -30,19 +30,36 @@ namespace Cassette.UI
 
         public string InsertPlaceholder(Func<string> futureHtml)
         {
+          
             var id = Guid.NewGuid();
-            creationFunctions[id] = futureHtml;
+            lock(creationFunctions)
+            {
+              creationFunctions[id] = futureHtml;
+            }
             return Environment.NewLine + id.ToString() + Environment.NewLine;
         }
 
         public string ReplacePlaceholders(string html)
         {
             var builder = new StringBuilder(html);
-            foreach (var item in creationFunctions)
+            lock(creationFunctions)
             {
-                builder.Replace(item.Key.ToString(), item.Value());
+              var replaced = new List<Guid>();
+              foreach (var item in creationFunctions)
+              {
+                  if(html.Contains(item.Key.ToString()))
+                  {
+                    replaced.Add(item.Key);
+                    builder.Replace(item.Key.ToString(), item.Value());
+                  }
+              }
+              foreach (var key in replaced)
+              {
+                creationFunctions.Remove(key);
+              }
             }
             return builder.ToString();
         }
+
     }
 }
