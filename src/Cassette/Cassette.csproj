@@ -55,7 +55,6 @@
     <Compile Include="BundleFactoryExtensions.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
-    <Compile Include="Configuration\DebugMode.cs" />
     <Compile Include="FileAsset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="AssetFinder.cs" />
