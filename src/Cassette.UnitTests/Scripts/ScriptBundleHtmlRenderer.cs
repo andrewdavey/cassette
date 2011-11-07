@@ -35,7 +35,7 @@ namespace Cassette.Scripts
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
                         .Returns("URL");
 
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("<script src=\"URL\" type=\"text/javascript\"></script>");
         }

@@ -20,14 +20,13 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Linq;
-using System.Web;
 using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
     class InlineHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
     {
-        public IHtmlString Render(HtmlTemplateBundle bundle)
+        public string Render(HtmlTemplateBundle bundle)
         {
             var elements = 
                 from asset in bundle.Assets
@@ -38,7 +37,7 @@ namespace Cassette.HtmlTemplates
                     GetTemplateContent(asset)
                 );
 
-            return new HtmlString(
+            return (
                 string.Join(Environment.NewLine, elements)
             );
         }

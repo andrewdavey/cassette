@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Web;
 
 namespace Cassette
 {
@@ -34,6 +33,6 @@ namespace Cassette
         /// </summary>
         /// <param name="bundle">The bundle to render.</param>
         /// <returns>The HTML elements that will include the bundle in a page.</returns>
-        IHtmlString Render(T bundle);
+        string Render(T bundle);
     }
 }

@@ -16,7 +16,7 @@ namespace Cassette.HtmlTemplates
             var renderer = new RemoteHtmlTemplateBundleRenderer(urlGenerator.Object);
             var html = renderer.Render(bundle);
 
-            html.ToHtmlString().ShouldEqual("<script src=\"/\" type=\"text/javascript\"></script>");
+            html.ShouldEqual("<script src=\"/\" type=\"text/javascript\"></script>");
         }
     }
 }

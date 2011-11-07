@@ -36,7 +36,7 @@ namespace Cassette.Stylesheets
                 .Verifiable();
 
             var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\"/>");
 
@@ -55,7 +55,7 @@ namespace Cassette.Stylesheets
                 .Returns("URL");
 
             var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\" media=\"MEDIA\"/>");
         }

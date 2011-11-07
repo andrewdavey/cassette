@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Web;
 
-namespace Cassette.UI
+namespace Cassette.Web
 {
     // Partial backwards compatibility with Cassette 0.8.
     // Allow people to keep using the Assets helper in their views.

@@ -288,7 +288,7 @@ namespace Cassette.Persistence
         }
 
         [Fact]
-        public void GivenBundlePathIsUrl_WhenSaveContainer_ThenBundleFileNameIsEncoded()
+        public void GivenBundlePathIsUrl_WhenSaveContainer_ThenThrowException()
         {
             using (var cacheDir = new TempDirectory())
             {
@@ -296,9 +296,9 @@ namespace Cassette.Persistence
                 var bundle = new TestableBundle("http://test.com/api.js");
                 bundle.Assets.Add(StubAsset().Object);
 
-                cache.SaveBundleContainer(new BundleContainer(new[] { bundle }));
-
-                File.Exists(Path.Combine(cacheDir, "http%3A%2F%2Ftest.com%2Fapi.js.bundle")).ShouldBeTrue();
+                Assert.Throws<ArgumentException>(
+                    () => cache.SaveBundleContainer(new BundleContainer(new[] { bundle }))
+                );
             }
         }
 

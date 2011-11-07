@@ -19,13 +19,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Web;
 
 namespace Cassette
 {
     interface IPlaceholderTracker
     {
-        IHtmlString InsertPlaceholder(Func<IHtmlString> futureHtml);
+        string InsertPlaceholder(Func<string> futureHtml);
         string ReplacePlaceholders(string html);
     }
 }

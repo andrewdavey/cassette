@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Web;
 
 namespace Cassette.Stylesheets
 {
@@ -51,7 +50,7 @@ namespace Cassette.Stylesheets
             externalHtmlRender = new ExternalStylesheetHtmlRenderer(Renderer, application);
         }
 
-        internal override IHtmlString Render()
+        internal override string Render()
         {
             return externalHtmlRender.Render(this);
         }

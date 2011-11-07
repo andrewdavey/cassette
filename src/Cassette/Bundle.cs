@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using Cassette.BundleProcessing;
 using Cassette.Utilities;
 
@@ -128,7 +127,7 @@ namespace Cassette
 
         internal abstract void Process(ICassetteApplication application);
 
-        internal abstract IHtmlString Render();
+        internal abstract string Render();
 
         internal virtual bool ContainsPath(string pathToFind)
         {

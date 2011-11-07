@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web;
 
 namespace Cassette.Stylesheets
 {
@@ -17,7 +16,7 @@ namespace Cassette.Stylesheets
             this.application = application;
         }
 
-        public IHtmlString Render(ExternalStylesheetBundle bundle)
+        public string Render(ExternalStylesheetBundle bundle)
         {
             if (application.IsDebuggingEnabled && bundle.Assets.Any())
             {
@@ -27,11 +26,11 @@ namespace Cassette.Stylesheets
             {
                 if (string.IsNullOrEmpty(bundle.Media))
                 {
-                    return new HtmlString(String.Format(HtmlConstants.LinkHtml, bundle.Url));
+                    return (String.Format(HtmlConstants.LinkHtml, bundle.Url));
                 }
                 else
                 {
-                    return new HtmlString(String.Format(HtmlConstants.LinkWithMediaHtml, bundle.Url, bundle.Media));
+                    return (String.Format(HtmlConstants.LinkWithMediaHtml, bundle.Url, bundle.Media));
                 }
             }
         }

@@ -24,7 +24,7 @@ namespace Cassette.Stylesheets
         {
             application.SetupGet(a => a.IsDebuggingEnabled).Returns(false);
             
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>");
         }
@@ -35,7 +35,7 @@ namespace Cassette.Stylesheets
             application.SetupGet(a => a.IsDebuggingEnabled).Returns(false);
             bundle.Media = "print";
 
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>");
         }

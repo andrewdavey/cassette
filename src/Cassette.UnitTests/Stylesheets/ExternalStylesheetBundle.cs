@@ -60,7 +60,7 @@ namespace Cassette.Stylesheets
 
             var html = bundle.Render();
 
-            html.ToHtmlString().ShouldContain(bundle.Url);
+            html.ShouldContain(bundle.Url);
         }
 
         [Fact]
@@ -78,8 +78,8 @@ namespace Cassette.Stylesheets
 
             var html = bundle.Render();
 
-            html.ToHtmlString().ShouldContain(bundle.Url);
-            html.ToHtmlString().ShouldContain("media=\"print\"");
+            html.ShouldContain(bundle.Url);
+            html.ShouldContain("media=\"print\"");
         }
 
         [Fact]

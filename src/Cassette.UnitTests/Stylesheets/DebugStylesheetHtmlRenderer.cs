@@ -41,7 +41,7 @@ namespace Cassette.Stylesheets
                         .Returns(assetUrls.Dequeue);
 
             var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual(
                 "<link href=\"asset1\" type=\"text/css\" rel=\"stylesheet\"/>" + 
@@ -66,7 +66,7 @@ namespace Cassette.Stylesheets
                         .Returns(assetUrls.Dequeue);
 
             var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual(
                 "<link href=\"asset1\" type=\"text/css\" rel=\"stylesheet\" media=\"MEDIA\"/>" +

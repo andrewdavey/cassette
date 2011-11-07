@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Web;
 
 namespace Cassette.HtmlTemplates
 {
@@ -31,9 +30,9 @@ namespace Cassette.HtmlTemplates
             this.urlGenerator = urlGenerator;
         }
 
-        public IHtmlString Render(HtmlTemplateBundle bundle)
+        public string Render(HtmlTemplateBundle bundle)
         {
-            return new HtmlString(
+            return (
                 string.Format(
                     "<script src=\"{0}\" type=\"text/javascript\"></script>",
                     urlGenerator.CreateBundleUrl(bundle)

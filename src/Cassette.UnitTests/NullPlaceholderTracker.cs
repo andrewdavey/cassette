@@ -1,8 +1,7 @@
-﻿using System.Web;
-using Should;
+﻿using Should;
 using Xunit;
 
-namespace Cassette.UI
+namespace Cassette
 {
     public class NullPlaceholderTracker_Tests
     {
@@ -10,8 +9,8 @@ namespace Cassette.UI
         public void InsertPlaceholderCallsFuncAndReturnsTheResult()
         {
             var tracker = new NullPlaceholderTracker();
-            var result = tracker.InsertPlaceholder(() => new HtmlString("<p></p>"));
-            result.ToHtmlString().ShouldEqual("<p></p>");
+            var result = tracker.InsertPlaceholder(() => ("<p></p>"));
+            result.ShouldEqual("<p></p>");
         }
 
         [Fact]

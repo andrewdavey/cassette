@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
@@ -30,7 +29,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.UI
+namespace Cassette.Web
 {
     public class Bundles_Test
     {
@@ -87,67 +86,67 @@ namespace Cassette.UI
         [Fact]
         public void RenderScriptsCallsReferenceBuilderRenderWithScriptBundleType()
         {
-            var expectedHtml = new HtmlString("html");
+            var expectedHtml = "html";
             referenceBuilder.Setup(b => b.Render<ScriptBundle>(null)).Returns(expectedHtml);
 
-            var html = Bundles.RenderScripts();
+            var html = Bundles.RenderScripts().ToHtmlString();
 
-            html.ShouldBeSameAs(expectedHtml);
+            html.ShouldEqual(expectedHtml);
         }
 
         [Fact]
         public void RenderScriptsWithLocationCallsReferenceBuilderRenderWithScriptBundleTypeAndLocation()
         {
-            var expectedHtml = new HtmlString("html");
+            var expectedHtml = "html";
             referenceBuilder.Setup(b => b.Render<ScriptBundle>("body")).Returns(expectedHtml);
 
-            var html = Bundles.RenderScripts("body");
+            var html = Bundles.RenderScripts("body").ToHtmlString();
 
-            html.ShouldBeSameAs(expectedHtml);
+            html.ShouldEqual(expectedHtml);
         }
 
         [Fact]
         public void RenderStylesheetsCallsReferenceBuilderRenderWithStylesheetBundleType()
         {
-            var expectedHtml = new HtmlString("html");
+            var expectedHtml = "html";
             referenceBuilder.Setup(b => b.Render<StylesheetBundle>(null)).Returns(expectedHtml);
 
-            var html = Bundles.RenderStylesheets();
+            var html = Bundles.RenderStylesheets().ToHtmlString();
 
-            html.ShouldBeSameAs(expectedHtml);
+            html.ShouldEqual(expectedHtml);
         }
 
         [Fact]
         public void RenderStylesheetsWithLocationCallsReferenceBuilderRenderWithStylesheetBundleTypeAndLocation()
         {
-            var expectedHtml = new HtmlString("html");
+            var expectedHtml = "html";
             referenceBuilder.Setup(b => b.Render<StylesheetBundle>("head")).Returns(expectedHtml);
 
-            var html = Bundles.RenderStylesheets("head");
+            var html = Bundles.RenderStylesheets("head").ToHtmlString();
 
-            html.ShouldBeSameAs(expectedHtml);
+            html.ShouldEqual(expectedHtml);
         }
 
         [Fact]
         public void RenderHtmlTemplatesCallsReferenceBuilderRenderWithHtmlTemplateBundleType()
         {
-            var expectedHtml = new HtmlString("html");
+            var expectedHtml = "html";
             referenceBuilder.Setup(b => b.Render<HtmlTemplateBundle>(null)).Returns(expectedHtml);
 
-            var html = Bundles.RenderHtmlTemplates();
+            var html = Bundles.RenderHtmlTemplates().ToHtmlString();
 
-            html.ShouldBeSameAs(expectedHtml);
+            html.ShouldEqual(expectedHtml);
         }
 
         [Fact]
         public void RenderHtmlTemplatesWithLocationCallsReferenceBuilderRenderWithHtmlTemplateBundleTypeAndLocation()
         {
-            var expectedHtml = new HtmlString("html");
+            var expectedHtml = "html";
             referenceBuilder.Setup(b => b.Render<HtmlTemplateBundle>("body")).Returns(expectedHtml);
 
-            var html = Bundles.RenderHtmlTemplates("body");
+            var html = Bundles.RenderHtmlTemplates("body").ToHtmlString();
 
-            html.ShouldBeSameAs(expectedHtml);
+            html.ShouldEqual(expectedHtml);
         }
 
         [Fact]

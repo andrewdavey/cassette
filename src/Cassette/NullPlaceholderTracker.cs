@@ -1,5 +1,4 @@
 using System;
-using System.Web;
 
 namespace Cassette
 {
@@ -8,7 +7,7 @@ namespace Cassette
     /// </summary>
     class NullPlaceholderTracker : IPlaceholderTracker
     {
-        public IHtmlString InsertPlaceholder(Func<IHtmlString> futureHtml)
+        public string InsertPlaceholder(Func<string> futureHtml)
         {
             return futureHtml();
         }

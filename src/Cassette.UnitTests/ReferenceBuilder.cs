@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -29,7 +28,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.UI
+namespace Cassette
 {
     public class ReferenceBuilder_Reference_Tests
     {
@@ -311,8 +310,8 @@ namespace Cassette.UI
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(ms => ms);
 
-            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
-                              .Returns(new HtmlString("output"));
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
+                              .Returns(("output"));
 
             referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, application, false);
         }
@@ -334,7 +333,7 @@ namespace Cassette.UI
 
             var html = referenceBuilder.Render<TestableBundle>();
 
-            html.ToHtmlString().ShouldEqual("output");
+            html.ShouldEqual("output");
         }
 
         [Fact]
@@ -347,7 +346,7 @@ namespace Cassette.UI
 
             var html = referenceBuilder.Render<TestableBundle>("body");
 
-            html.ToHtmlString().ShouldEqual("output");
+            html.ShouldEqual("output");
         }
 
         [Fact]
@@ -363,14 +362,14 @@ namespace Cassette.UI
             referenceBuilder.Reference("~/stub1");
             referenceBuilder.Reference("~/stub2");
 
-            Func<IHtmlString> createHtml = null;
-            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<IHtmlString>>()))
-                .Returns(new HtmlString("output"))
-                .Callback<Func<IHtmlString>>(f => createHtml = f);
+            Func<string> createHtml = null;
+            placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
+                .Returns(("output"))
+                .Callback<Func<string>>(f => createHtml = f);
 
             referenceBuilder.Render<TestableBundle>();
 
-            createHtml().ToHtmlString().ShouldEqual("output1" + Environment.NewLine + "output2");
+            createHtml().ShouldEqual("output1" + Environment.NewLine + "output2");
         }
     }
 }

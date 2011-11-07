@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Web;
 using Moq;
 using Should;
 using Xunit;
@@ -44,7 +43,7 @@ namespace Cassette.Scripts
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
 
             var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\"></script>");
         }
@@ -56,12 +55,12 @@ namespace Cassette.Scripts
             bundle.Assets.Add(Mock.Of<IAsset>());
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
             fallbackRenderer.Setup(r => r.Render(bundle))
-                            .Returns(new HtmlString("FALLBACK"));
+                            .Returns(("FALLBACK"));
             application.SetupGet(a => a.IsDebuggingEnabled)
                        .Returns(true);
 
             var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("FALLBACK");
         }
@@ -75,10 +74,10 @@ namespace Cassette.Scripts
 
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
             fallbackRenderer.Setup(r => r.Render(bundle))
-                            .Returns(new HtmlString("FALLBACK"));
+                            .Returns(("FALLBACK"));
 
             var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual(
                 "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
@@ -100,9 +99,9 @@ namespace Cassette.Scripts
             bundle.Assets.Add(asset.Object);
 
             fallbackRenderer.Setup(r => r.Render(bundle))
-                            .Returns(new HtmlString("<script></script>"));
+                            .Returns(("<script></script>"));
 
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldContain("%3Cscript%3E%3C/script%3E");
         }
@@ -118,10 +117,10 @@ namespace Cassette.Scripts
 
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
             fallbackRenderer.Setup(r => r.Render(bundle))
-                            .Returns(new HtmlString("<script></script>"));
+                            .Returns(("<script></script>"));
 
             var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual("<script></script>");
         }

@@ -115,15 +115,15 @@
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="TestableBundle.cs" />
-    <Compile Include="UI\Bundles.cs" />
+    <Compile Include="Web\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="BundleContainer.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\NullPlaceholderTracker.cs" />
-    <Compile Include="UI\ReferenceBuilder.cs" />
+    <Compile Include="NullPlaceholderTracker.cs" />
+    <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\ScriptBundleFactory.cs" />
     <Compile Include="BundleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="StubFileSystem.cs" />
@@ -136,7 +136,7 @@
     <Compile Include="Web\DelegateRouteHandler.cs" />
     <Compile Include="Web\InitialConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
-    <Compile Include="UI\PlaceholderTracker.cs" />
+    <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />

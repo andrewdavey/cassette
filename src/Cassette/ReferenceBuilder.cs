@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -146,7 +145,7 @@ namespace Cassette
             return bundleContainer.IncludeReferencesAndSortBundles(bundles);
         }
 
-        public IHtmlString Render<T>(string location = null)
+        public string Render<T>(string location = null)
             where T : Bundle
         {
             renderedLocations.Add(location ?? "");
@@ -155,14 +154,14 @@ namespace Cassette
             );
         }
 
-        HtmlString CreateHtml<T>(string location)
+        string CreateHtml<T>(string location)
             where T : Bundle
         {
-            return new HtmlString(string.Join(Environment.NewLine,
+            return string.Join(Environment.NewLine,
                 GetBundles(location).OfType<T>().Select(
-                    bundle => bundle.Render().ToHtmlString()
+                    bundle => bundle.Render()
                 )
-            ));
+            );
         }
 
         List<Bundle> GetOrCreateBundleSet(string location)

@@ -42,7 +42,7 @@ namespace Cassette.Scripts
 
             var renderer = new DebugScriptBundleHtmlRenderer(urlGenerator.Object);
 
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldEqual(
                 "<script src=\"asset1\" type=\"text/javascript\"></script>" + 

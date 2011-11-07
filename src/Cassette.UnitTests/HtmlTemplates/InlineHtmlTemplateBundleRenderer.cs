@@ -37,7 +37,7 @@ namespace Cassette.HtmlTemplates
             bundle.Assets.Add(asset.Object);
 
             var renderer = new InlineHtmlTemplateBundleRenderer();
-            var html = renderer.Render(bundle).ToHtmlString();
+            var html = renderer.Render(bundle);
 
             html.ShouldContain("id=\"sub-asset\"");
         }

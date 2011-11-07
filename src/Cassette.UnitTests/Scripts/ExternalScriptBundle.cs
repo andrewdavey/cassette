@@ -128,7 +128,7 @@ namespace Cassette.Scripts
             
             var html = bundle.Render();
 
-            html.ToHtmlString().ShouldContain("condition");
+            html.ShouldContain("condition");
         }
     }
 }

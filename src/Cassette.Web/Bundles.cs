@@ -25,7 +25,7 @@ using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
-namespace Cassette.UI
+namespace Cassette.Web
 {
     /// <summary>
     /// Cassette API facade used by views to reference bundles and render the required HTML elements.
@@ -124,7 +124,7 @@ namespace Cassette.UI
 
         static IHtmlString Render<T>(string location) where T : Bundle
         {
-            return ReferenceBuilder.Render<T>(location);            
+            return new HtmlString(ReferenceBuilder.Render<T>(location));
         }
 
         static IReferenceBuilder ReferenceBuilder

@@ -1,4 +1,3 @@
-using System.Web;
 
 namespace Cassette
 {
@@ -15,9 +14,9 @@ namespace Cassette
 
         public string RenderResult { get; set; }
 
-        internal override IHtmlString Render()
+        internal override string Render()
         {
-            return new HtmlString(RenderResult);
+            return (RenderResult);
         }
 
         internal override void Process(ICassetteApplication application)

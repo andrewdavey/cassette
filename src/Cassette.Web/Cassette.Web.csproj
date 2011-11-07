@@ -51,6 +51,8 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CassetteApplication.cs" />
+    <Compile Include="Assets.cs" />
+    <Compile Include="Bundles.cs" />
     <None Include="CassetteConfiguration.cs.pp" />
     <Compile Include="CassetteHttpModule.cs" />
     <Compile Include="AssetRequestHandler.cs" />

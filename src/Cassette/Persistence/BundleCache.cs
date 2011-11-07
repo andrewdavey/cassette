@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Xml.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
@@ -280,15 +279,13 @@ namespace Cassette.Persistence
         {
             if (bundle.Path.IsUrl())
             {
-                return HttpUtility.UrlEncode(bundle.Path) + ".bundle";
+                throw new ArgumentException("Cannot cache bundle with a URL as its path.");
             }
-            else
-            {
-                return bundle.Path.Substring(2) // Remove the "~/" prefix
-                             .Replace(Path.DirectorySeparatorChar, '`')
-                             .Replace(Path.AltDirectorySeparatorChar, '`')
-                           + ".bundle";
-            }
+
+            return bundle.Path.Substring(2) // Remove the "~/" prefix
+                         .Replace(Path.DirectorySeparatorChar, '`')
+                         .Replace(Path.AltDirectorySeparatorChar, '`')
+                   + ".bundle";
         }
     }
 }

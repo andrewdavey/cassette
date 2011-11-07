@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Web;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -70,7 +69,7 @@ namespace Cassette.Scripts
             externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, application);
         }
 
-        internal override IHtmlString Render()
+        internal override string Render()
         {
             return externalRenderer.Render(this);
         }

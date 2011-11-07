@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Web;
 
 namespace Cassette.Scripts
 {
@@ -36,9 +35,9 @@ namespace Cassette.Scripts
         {
         }
 
-        internal override IHtmlString Render()
+        internal override string Render()
         {
-            return new HtmlString(
+            return (
                 "<script type=\"text/javascript\">" + Environment.NewLine + 
                 scriptContent + Environment.NewLine + 
                 "</script>"

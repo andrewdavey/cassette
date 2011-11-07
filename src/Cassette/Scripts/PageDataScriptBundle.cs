@@ -18,8 +18,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>;
 
 namespace Cassette.Scripts
@@ -38,8 +41,11 @@ namespace Cassette.Scripts
 
         static JavaScriptObject CreateDictionaryOfProperties(object data)
         {
-            // RouteValueDictionary has a handy ability to convert an anonymous object into dictionary.
-            return new System.Web.Routing.RouteValueDictionary(data);
+            if (data == null) return null;
+
+            return from propertyDescriptor in TypeDescriptor.GetProperties(data).Cast<PropertyDescriptor>()
+                    let value = propertyDescriptor.GetValue(data)
+                    select new KeyValuePair<string, object>(propertyDescriptor.Name, value);
         }
 
         static string BuildScript(string globalVariable, JavaScriptObject dictionary)
@@ -54,10 +60,9 @@ namespace Cassette.Scripts
 
         static void BuildAssignments(JavaScriptObject dictionary, StringBuilder builder)
         {
-            var serializer = new JavaScriptSerializer();
             foreach (var pair in dictionary)
             {
-                builder.AppendFormat("d.{0}={1};", pair.Key, serializer.Serialize(pair.Value)).AppendLine();
+                builder.AppendFormat("d.{0}={1};", pair.Key, JsonConvert.SerializeObject(pair.Value)).AppendLine();
             }
         }
     }
