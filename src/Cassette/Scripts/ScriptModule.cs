@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Web;
 using Cassette.ModuleProcessing;
 
 namespace Cassette.Scripts
@@ -41,7 +40,7 @@ namespace Cassette.Scripts
             Processor.Process(this, application);
         }
 
-        public override IHtmlString Render(ICassetteApplication application)
+        public override string Render(ICassetteApplication application)
         {
             return Renderer.Render(this);
         }

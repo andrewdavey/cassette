@@ -19,7 +19,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Text;
-using System.Web.Script.Serialization;
+using System.Collections.Generic;
+using Cassette.Json;
 using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>;
 
 namespace Cassette.Scripts
@@ -36,10 +37,27 @@ namespace Cassette.Scripts
         {
         }
 
-        static JavaScriptObject CreateDictionaryOfProperties(object data)
+        internal static JavaScriptObject CreateDictionaryOfProperties(object data)
         {
-            // RouteValueDictionary has a handy ability to convert an anonymous object into dictionary.
-            return new System.Web.Routing.RouteValueDictionary(data);
+            // Chris Hogan : Replaced dependency on System.Web.Routing.RouteValueDictionary
+            var result = new List<KeyValuePair<string,object>>();
+            if(data == null)
+            {
+              return result;
+            }
+
+            foreach (var prop in data.GetType().GetProperties())
+            {
+                try
+                {
+                  result.Add(new KeyValuePair<string, object>(prop.Name, prop.GetValue(data, null)));
+                }
+                catch
+                {
+                }
+            }
+
+            return result;
         }
 
         static string BuildScript(string globalVariable, JavaScriptObject dictionary)

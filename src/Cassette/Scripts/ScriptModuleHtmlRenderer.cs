@@ -18,7 +18,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Web;
 
 namespace Cassette.Scripts
 {
@@ -31,14 +30,12 @@ namespace Cassette.Scripts
 
         readonly IUrlGenerator urlGenerator;
 
-        public IHtmlString Render(ScriptModule module)
+        public string Render(ScriptModule module)
         {
-            return new HtmlString(
-                string.Format(
+            return string.Format(
                     HtmlConstants.ScriptHtml, 
                     urlGenerator.CreateModuleUrl(module)
-                )
-            );
+                );
         }
     }
 }

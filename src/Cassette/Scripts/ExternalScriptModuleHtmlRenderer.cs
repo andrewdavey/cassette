@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Linq;
-using System.Web;
 
 namespace Cassette.Scripts
 {
@@ -35,27 +34,25 @@ namespace Cassette.Scripts
             this.application = application;
         }
 
-        public IHtmlString Render(ExternalScriptModule module)
+        public string Render(ExternalScriptModule module)
         {
             var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml, module.Url);
 
             if (string.IsNullOrEmpty(module.FallbackCondition))
             {
-                return new HtmlString(externalScriptHtml);
+                return externalScriptHtml;
             }
             else
             {
                 if (application.IsOutputOptimized)
                 {
-                    return new HtmlString(
-                        string.Format(
+                    return string.Format(
                             "{1}{0}<script type=\"text/javascript\">{0}if({2}){{{0}{3}{0}}}{0}</script>",
                             Environment.NewLine,
                             externalScriptHtml,
                             module.FallbackCondition,
                             CreateFallbackScripts(module)
-                            )
-                        );
+                            );
                 }
                 else
                 {
@@ -66,7 +63,7 @@ namespace Cassette.Scripts
 
         string CreateFallbackScripts(ExternalScriptModule module)
         {
-            var scripts = fallbackScriptRenderer.Render(module).ToHtmlString();
+            var scripts = fallbackScriptRenderer.Render(module);
             return ConvertToDocumentWriteCalls(scripts);
         }
 

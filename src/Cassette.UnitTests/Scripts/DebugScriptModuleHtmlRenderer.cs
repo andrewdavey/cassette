@@ -41,7 +41,7 @@ namespace Cassette.Scripts
 
             var renderer = new DebugScriptModuleHtmlRenderer(urlGenerator.Object);
 
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(module);
 
             html.ShouldEqual(
                 "<script src=\"asset1\" type=\"text/javascript\"></script>" + 
@@ -65,7 +65,7 @@ namespace Cassette.Scripts
 
             var renderer = new DebugScriptModuleHtmlRenderer(urlGenerator.Object);
 
-            var html = renderer.Render(module).ToHtmlString();
+            var html = renderer.Render(module);
             html.ShouldEqual("<script src=\"COMPILED-URL\" type=\"text/javascript\"></script>");
         }
     }

@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -85,7 +84,7 @@ namespace Cassette.Scripts
             base.Process(application);
         }
 
-        public override IHtmlString Render(ICassetteApplication application)
+        public override string Render(ICassetteApplication application)
         {
             var externalRenderer = new ExternalScriptModuleHtmlRenderer(Renderer, application);
             return externalRenderer.Render(this);

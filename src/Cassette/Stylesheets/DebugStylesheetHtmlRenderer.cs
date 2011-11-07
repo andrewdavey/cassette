@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Cassette.Stylesheets
 {
@@ -34,17 +33,15 @@ namespace Cassette.Stylesheets
 
         readonly IUrlGenerator urlGenerator;
 
-        public IHtmlString Render(StylesheetModule module)
+        public string Render(StylesheetModule module)
         {
             var assetUrls = GetAssetUrls(module);
             var createLink = GetCreateLinkFunc(module);
 
-            return new HtmlString(
-                string.Join(
+            return string.Join(
                     Environment.NewLine,
                     assetUrls.Select(createLink)
-                )
-            );
+                );
         }
 
         IEnumerable<string> GetAssetUrls(StylesheetModule module)

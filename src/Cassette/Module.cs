@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Cassette.ModuleProcessing;
 using Cassette.Utilities;
 
@@ -153,9 +152,9 @@ namespace Cassette
             }
         }
 
-        public virtual IHtmlString Render(ICassetteApplication application)
+        public virtual string Render(ICassetteApplication application)
         {
-            return new HtmlString("");
+            return "";
         }
 
         public void SortAssetsByDependency()

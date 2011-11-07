@@ -21,30 +21,45 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Web;
 
 namespace Cassette.UI
 {
     public class PlaceholderTracker : IPlaceholderTracker
     {
-        readonly Dictionary<Guid, Func<IHtmlString>> creationFunctions = new Dictionary<Guid, Func<IHtmlString>>();
+        readonly Dictionary<Guid, Func<string>> creationFunctions = new Dictionary<Guid, Func<string>>();
 
-        public IHtmlString InsertPlaceholder(Func<IHtmlString> futureHtml)
+        public string InsertPlaceholder(Func<string> futureHtml)
         {
+          
             var id = Guid.NewGuid();
-            creationFunctions[id] = futureHtml;
-            return new HtmlString(Environment.NewLine + id.ToString() + Environment.NewLine);
+            lock(creationFunctions)
+            {
+              creationFunctions[id] = futureHtml;
+            }
+            return Environment.NewLine + id.ToString() + Environment.NewLine;
         }
 
         public string ReplacePlaceholders(string html)
         {
             var builder = new StringBuilder(html);
-            foreach (var item in creationFunctions)
+            lock(creationFunctions)
             {
-                builder.Replace(item.Key.ToString(), item.Value().ToHtmlString());
+              var replaced = new List<Guid>();
+              foreach (var item in creationFunctions)
+              {
+                  if(html.Contains(item.Key.ToString()))
+                  {
+                    replaced.Add(item.Key);
+                    builder.Replace(item.Key.ToString(), item.Value());
+                  }
+              }
+              foreach (var key in replaced)
+              {
+                creationFunctions.Remove(key);
+              }
             }
             return builder.ToString();
         }
+
     }
 }
-
