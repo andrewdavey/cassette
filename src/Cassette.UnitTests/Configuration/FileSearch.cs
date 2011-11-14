@@ -2,12 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Cassette.Configuration;
 using Cassette.IO;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Configuration
 {
     public class FileSearch_Tests : IDisposable
     {

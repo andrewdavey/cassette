@@ -44,7 +44,7 @@ namespace Cassette.Configuration
         {
             if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
 
-            ReplaceBundleUsingFileSource(
+            ReplaceBundleUsingFileSearch(
                 new BundleDescriptor { ExternalUrl = url, AssetFilenames = { "*" } },
                 applicationRelativePath,
                 fileSearch
@@ -61,14 +61,14 @@ namespace Cassette.Configuration
             if (string.IsNullOrWhiteSpace(fallbackCondition)) throw new ArgumentException("Fallback condition is required.");
             if (applicationRelativePath == null) throw new ArgumentNullException("applicationRelativePath");
 
-            ReplaceBundleUsingFileSource(
+            ReplaceBundleUsingFileSearch(
                 new BundleDescriptor { ExternalUrl = url, FallbackCondition = fallbackCondition, AssetFilenames = { "*" } },
                 applicationRelativePath,
                 fileSearch
                 );
         }
 
-        void ReplaceBundleUsingFileSource(BundleDescriptor descriptor, string applicationRelativePath, IFileSearch fileSearch)
+        void ReplaceBundleUsingFileSearch(BundleDescriptor descriptor, string applicationRelativePath, IFileSearch fileSearch)
         {
             var factory = GetBundleFactory();
             var sourceDirectory = bundleCollection.Settings.SourceDirectory;
