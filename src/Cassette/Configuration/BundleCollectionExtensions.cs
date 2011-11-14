@@ -221,6 +221,28 @@ namespace Cassette.Configuration
             }
         }
 
+        public static void AddUrlWithLocalAssets<T>(this BundleCollection bundleCollection, string url, LocalAssetSettings settings, Action<T> customizeBundle = null)
+            where T : Bundle
+        {
+            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var bundle = bundleFactory.CreateExternalBundleWithLocalAssets(url, settings);
+            if (customizeBundle != null) customizeBundle(bundle);
+            bundleCollection.Add(bundle);
+        }
+
+        public static void AddUrlWithAlias<T>(this BundleCollection bundleCollection, string url, string alias, Action<T> customizeBundle = null)
+            where T : Bundle
+        {
+            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var bundle = bundleFactory.CreateBundle(
+                alias,
+                new IFile[0],
+                new BundleDescriptor { ExternalUrl = url }
+            );
+            if (customizeBundle != null) customizeBundle(bundle);
+            bundleCollection.Add(bundle);
+        }
+
         /// <summary>
         /// Adds a bundle that references a URL instead of local asset files.
         /// </summary>
