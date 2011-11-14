@@ -30,7 +30,6 @@ namespace Example
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
             bundles.Add<StylesheetBundle>("Styles");
-            bundles.AddPerIndividualFile<ScriptBundle>("Scripts");
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             bundles.AddUrl("http://platform.twitter.com/widgets.js", b => b.PageLocation = "body").WithAlias("twitter");
             

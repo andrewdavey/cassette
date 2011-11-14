@@ -25,6 +25,8 @@ namespace Cassette.Web
 {
     public class CassetteHttpModule : IHttpModule
     {
+        internal static Func<CassetteApplication> GetApplication;
+
         public void Init(HttpApplication httpApplication)
         {
             httpApplication.PostMapRequestHandler += HttpApplicationPostMapRequestHandler;
@@ -34,13 +36,13 @@ namespace Cassette.Web
         void HttpApplicationPostMapRequestHandler(object sender, EventArgs e)
         {
             var context = new HttpContextWrapper(((HttpApplication)sender).Context);
-            StartUp.CassetteApplication.OnPostMapRequestHandler(context);
+            GetApplication().OnPostMapRequestHandler(context);
         }
 
         void HttpApplicationPostRequestHandlerExecute(object sender, EventArgs e)
         {
             var context = new HttpContextWrapper(((HttpApplication)sender).Context);
-            StartUp.CassetteApplication.OnPostRequestHandlerExecute(context);
+            GetApplication().OnPostRequestHandlerExecute(context);
         }
 
         void IHttpModule.Dispose()

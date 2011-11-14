@@ -45,24 +45,28 @@ using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 namespace Cassette.Web
 {
+    /// <summary>
+    /// Controls the lifetime of the Cassette infrastructure by handling application startup and shutdown.
+    /// </summary>
     public static class StartUp
     {
         static IEnumerable<ICassetteConfiguration> _configurations;
         static IsolatedStorageFile _storage;
         static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
  
-        internal static CassetteApplication CassetteApplication
-        {
-            get { return _applicationContainer.Application; }
-        }
-
-// ReSharper disable FieldCanBeMadeReadOnly.Global
+        /// <summary>
+        /// The function delegate used to create Cassette configuration objects for the application.
+        /// By default this will scan the AppDomain's assemblies for all implementations of <see cref="ICassetteConfiguration"/>.
+        /// Assignment to this property should happen in Application_Start.
+        /// </summary>
 // ReSharper disable MemberCanBePrivate.Global
-        // If using an IoC container, this delegate can be replaced (in Application_Start) to
-        // provide an alternative way to create the configuration object.
-        public static Func<IEnumerable<ICassetteConfiguration>> CreateConfigurations = CreateConfigurationsByScanningAssembliesForType;
+        public static Func<IEnumerable<ICassetteConfiguration>> CreateConfigurations { get; set; }
 // ReSharper restore MemberCanBePrivate.Global
-// ReSharper restore FieldCanBeMadeReadOnly.Global
+
+        static StartUp()
+        {
+            CreateConfigurations = CreateConfigurationsByScanningAssembliesForType;
+        }
 
 // ReSharper disable UnusedMember.Global
         public static void PreApplicationStart()
@@ -84,7 +88,8 @@ namespace Cassette.Web
                 ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
                 : new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);
 
-            CassetteApplicationContainer.SetAccessor(() => CassetteApplication);
+            CassetteHttpModule.GetApplication = () => _applicationContainer.Application;
+            CassetteApplicationContainer.SetAccessor(() => _applicationContainer.Application);
         }
 
 // ReSharper disable UnusedMember.Global
@@ -208,4 +213,3 @@ namespace Cassette.Web
         }
     }
 }
-
