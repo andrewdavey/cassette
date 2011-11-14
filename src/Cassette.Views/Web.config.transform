@@ -3,7 +3,7 @@
     <system.web.webPages.razor>
         <pages>
             <namespaces>
-                <add namespace="Cassette.UI"/>
+                <add namespace="Cassette.Views"/>
             </namespaces>
         </pages>
     </system.web.webPages.razor>    
