@@ -225,8 +225,39 @@ namespace Cassette.Configuration
             where T : Bundle
         {
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
-            var bundle = bundleFactory.CreateExternalBundleWithLocalAssets(url, settings);
-            if (customizeBundle != null) customizeBundle(bundle);
+            var sourceDirectory = bundleCollection.Settings.SourceDirectory;
+            var defaultFileSearch = bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+            IEnumerable<IFile> files;
+            BundleDescriptor bundleDescriptor;
+
+            if (sourceDirectory.DirectoryExists(settings.Path))
+            {
+                var fileSearch = settings.FileSearch ?? defaultFileSearch;
+                var directory = sourceDirectory.GetDirectory(settings.Path);
+                files = fileSearch.FindFiles(directory);
+
+                var descriptorFile = TryGetDescriptorFile(directory);
+                bundleDescriptor = descriptorFile.Exists
+                                       ? new BundleDescriptorReader(descriptorFile).Read()
+                                       : new BundleDescriptor { AssetFilenames = { "*" } };
+            }
+            else
+            {
+                var singleFile = sourceDirectory.GetFile(settings.Path);
+                if (singleFile.Exists)
+                {
+                    files = new[] { singleFile };
+                    bundleDescriptor = new BundleDescriptor { AssetFilenames = { "*" } };
+                }
+                else
+                {
+                    throw new DirectoryNotFoundException(string.Format("File or directory not found: \"{0}\"", settings.Path));
+                }
+            }
+
+            bundleDescriptor.FallbackCondition = settings.FallbackCondition;
+            bundleDescriptor.ExternalUrl = url;
+            var bundle = bundleFactory.CreateBundle(settings.Path, files, bundleDescriptor);
             bundleCollection.Add(bundle);
         }
 

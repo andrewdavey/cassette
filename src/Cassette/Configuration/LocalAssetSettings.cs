@@ -5,6 +5,12 @@ namespace Cassette.Configuration
     /// </summary>
     public class LocalAssetSettings
     {
+        public LocalAssetSettings()
+        {
+            Path = "~/";
+            UseWhenDebugging = true;
+        }
+
         /// <summary>
         /// Gets or sets the application relative path to the local assets.
         /// </summary>

@@ -381,7 +381,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void WhenAddUrlWithDebug_ThenBundleHasAsset()
+        public void WhenAddUrlWithLocalAssets_ThenBundleHasAsset()
         {
             var fileSource = new Mock<IFileSearch>();
             var directory = new Mock<IDirectory>();
@@ -394,6 +394,7 @@ namespace Cassette.Configuration
             settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSource.Object;
             fileSource.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
             directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+            directory.Setup(d => d.GetFile("module.txt")).Returns(new NonExistentFile(""));
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings { Path = "path" });
 
@@ -401,7 +402,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void WhenAddUrlWithDebugWithFileSearch_ThenFileSourceUsed()
+        public void WhenAddUrlWithLocalAssetsWithFileSearch_ThenFileSourceUsed()
         {
             var fileSearch = new Mock<IFileSearch>();
             var directory = new Mock<IDirectory>();
@@ -413,6 +414,7 @@ namespace Cassette.Configuration
             settings.SourceDirectory = sourceDirectory.Object;
             fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
             directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+            directory.Setup(d => d.GetFile("module.txt")).Returns(new NonExistentFile(""));
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings
             {
@@ -424,7 +426,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void WhenAddWithDebugSingleFile_ThenBundleHasSingleAsset()
+        public void WhenAddUrlWithLocalAssetsSingleFile_ThenBundleHasSingleAsset()
         {
             var file = new Mock<IFile>();
 
@@ -456,6 +458,7 @@ namespace Cassette.Configuration
             settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSource.Object;
             fileSource.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
             directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+            directory.Setup(d => d.GetFile("module.txt")).Returns(new NonExistentFile(""));
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings
             {
