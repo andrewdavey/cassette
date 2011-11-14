@@ -221,6 +221,22 @@ namespace Cassette.Configuration
             }
         }
 
+        public static void AddUrlWithLocalAssets(this BundleCollection bundleCollection, string url, LocalAssetSettings settings, Action<Bundle> customizeBundle = null)
+        {
+            if (url.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+            {
+                AddUrlWithLocalAssets<Scripts.ScriptBundle>(bundleCollection, url, settings, customizeBundle);
+            }
+            else if (url.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            {
+                AddUrlWithLocalAssets<Stylesheets.StylesheetBundle>(bundleCollection, url, settings, customizeBundle);
+            }
+            else
+            {
+                throw new ArgumentException("Cannot determine the type of bundle to add. Specify the type using the generic overload of this method.");
+            }
+        }
+
         public static void AddUrlWithLocalAssets<T>(this BundleCollection bundleCollection, string url, LocalAssetSettings settings, Action<T> customizeBundle = null)
             where T : Bundle
         {
@@ -258,7 +274,24 @@ namespace Cassette.Configuration
             bundleDescriptor.FallbackCondition = settings.FallbackCondition;
             bundleDescriptor.ExternalUrl = url;
             var bundle = bundleFactory.CreateBundle(settings.Path, files, bundleDescriptor);
+            if (customizeBundle != null) customizeBundle(bundle);
             bundleCollection.Add(bundle);
+        }
+
+        public static void AddUrlWithAlias(this BundleCollection bundleCollection, string url, string alias, Action<Bundle> customizeBundle = null)
+        {
+            if (url.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+            {
+                AddUrlWithAlias<Scripts.ScriptBundle>(bundleCollection, url, alias, customizeBundle);
+            }
+            else if (url.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            {
+                AddUrlWithAlias<Stylesheets.StylesheetBundle>(bundleCollection, url, alias, customizeBundle);
+            }
+            else
+            {
+                throw new ArgumentException("Cannot determine the type of bundle to add. Specify the type using the generic overload of this method.");
+            }
         }
 
         public static void AddUrlWithAlias<T>(this BundleCollection bundleCollection, string url, string alias, Action<T> customizeBundle = null)
@@ -282,14 +315,13 @@ namespace Cassette.Configuration
         /// <param name="url">The URL to reference.</param>
         /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
         /// <returns>A object used to further configure the bundle.</returns>
-        public static IAddUrlConfiguration AddUrl<T>(this BundleCollection bundleCollection, string url, Action<T> customizeBundle = null)
+        public static void AddUrl<T>(this BundleCollection bundleCollection, string url, Action<T> customizeBundle = null)
             where T : Bundle
         {
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var bundle = bundleFactory.CreateExternalBundle(url);
             if (customizeBundle != null) customizeBundle(bundle);
             bundleCollection.Add(bundle);
-            return new AddUrlConfiguration<T>(bundleCollection, bundle, url, customizeBundle);
         }
 
         /// <summary>
@@ -299,15 +331,15 @@ namespace Cassette.Configuration
         /// <param name="url">The URL to reference.</param>
         /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
         /// <returns>A object used to further configure the bundle.</returns>
-        public static IAddUrlConfiguration AddUrl(this BundleCollection bundleCollection, string url, Action<Bundle> customizeBundle = null)
+        public static void AddUrl(this BundleCollection bundleCollection, string url, Action<Bundle> customizeBundle = null)
         {
             if (url.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
             {
-                return AddUrl<Scripts.ScriptBundle>(bundleCollection, url, customizeBundle);
+                AddUrl<Scripts.ScriptBundle>(bundleCollection, url, customizeBundle);
             }
             else if (url.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
             {
-                return AddUrl<Stylesheets.StylesheetBundle>(bundleCollection, url, customizeBundle);
+                AddUrl<Stylesheets.StylesheetBundle>(bundleCollection, url, customizeBundle);
             }
             else
             {

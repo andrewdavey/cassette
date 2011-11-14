@@ -64,7 +64,6 @@
     <Compile Include="BundleContainerExtensions.cs" />
     <Compile Include="BundleFactoryBase.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
-    <Compile Include="Configuration\AddUrlConfiguration.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
     <Compile Include="Configuration\BundleCollectionExtensions.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
-    <Compile Include="Configuration\IAddUrlConfiguration.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />

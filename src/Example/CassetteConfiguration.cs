@@ -31,7 +31,7 @@ namespace Example
         {
             bundles.Add<StylesheetBundle>("Styles");
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
-            bundles.AddUrl("http://platform.twitter.com/widgets.js", b => b.PageLocation = "body").WithAlias("twitter");
+            bundles.AddUrlWithAlias("http://platform.twitter.com/widgets.js", "twitter", b => b.PageLocation = "body");
             
             bundles.AddPerSubDirectory<HtmlTemplateBundle>(
                 "HtmlTemplates",
