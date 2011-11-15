@@ -93,7 +93,7 @@ namespace Cassette.Configuration
             bundleCollection.Add(bundle);
         }
 
-        internal static T CreateSingleFileBundle<T>(
+        static T CreateSingleFileBundle<T>(
             string applicationRelativePath,
             IFile file,
             IBundleFactory<T> bundleFactory,
@@ -106,7 +106,7 @@ namespace Cassette.Configuration
             return bundleFactory.CreateBundle(applicationRelativePath, new[] { file }, descriptor);
         }
 
-        internal static T CreateDirectoryBundle<T>(
+        static T CreateDirectoryBundle<T>(
             string applicationRelativePath,
             IBundleFactory<T> bundleFactory,
             IEnumerable<IFile> allFiles,
