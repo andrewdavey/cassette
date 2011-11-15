@@ -402,6 +402,48 @@ namespace Cassette.Configuration
         }
 
         [Fact]
+        public void WhenAddUrlWithLocalAssetsUntyped_ThenBundleTypeInferedFromExtension()
+        {
+            var fileSource = new Mock<IFileSearch>();
+            var directory = new Mock<IDirectory>();
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
+            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
+            settings.SourceDirectory = sourceDirectory.Object;
+            settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSource.Object;
+            fileSource.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
+            directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+            directory.Setup(d => d.GetFile("module.txt")).Returns(new NonExistentFile(""));
+
+            bundles.AddUrlWithLocalAssets("http://cdn.com/jquery.js", new LocalAssetSettings { Path = "path" });
+
+            bundles["path"].ShouldBeType<ExternalScriptBundle>();
+        }
+
+        [Fact]
+        public void WhenAddUrlWithLocalAssets_ThenBundleCanBeAccessedByUrl()
+        {
+            var fileSource = new Mock<IFileSearch>();
+            var directory = new Mock<IDirectory>();
+            var file = new Mock<IFile>();
+
+            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
+            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
+            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
+            settings.SourceDirectory = sourceDirectory.Object;
+            settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSource.Object;
+            fileSource.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
+            directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
+            directory.Setup(d => d.GetFile("module.txt")).Returns(new NonExistentFile(""));
+
+            bundles.AddUrlWithLocalAssets("http://cdn.com/jquery.js", new LocalAssetSettings { Path = "path" });
+
+            bundles["http://cdn.com/jquery.js"].ShouldBeType<ExternalScriptBundle>();
+        }
+
+        [Fact]
         public void WhenAddUrlWithLocalAssetsWithFileSearch_ThenFileSourceUsed()
         {
             var fileSearch = new Mock<IFileSearch>();
