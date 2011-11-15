@@ -155,7 +155,7 @@ namespace Cassette.Web
         {
             var bundle = new TestableBundle("~/test");
             bundleContainer
-                .Setup(c => c.FindBundleContainingPath("~/test"))
+                .Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                 .Returns(bundle);
             urlGenerator
                 .Setup(g => g.CreateBundleUrl(bundle))
@@ -166,6 +166,21 @@ namespace Cassette.Web
             url.ShouldEqual("URL");
         }
 
+        [Fact]
+        public void TypedUrlUsesGetBundleUrlDelegate()
+        {
+            var bundle = new TestableBundle("~/test");
+            bundleContainer
+                .Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
+                .Returns(bundle);
+            urlGenerator
+                .Setup(g => g.CreateBundleUrl(bundle))
+                .Returns("URL");
+
+            var url = Bundles.Url<TestableBundle>("~/test");
+
+            url.ShouldEqual("URL");
+        }
 
         class TestableApplication : CassetteApplicationBase
         {
@@ -183,9 +198,9 @@ namespace Cassette.Web
                 this.bundleContainer = bundleContainer;
             }
 
-            public override Bundle FindBundleContainingPath(string path)
+            public override T FindBundleContainingPath<T>(string path)
             {
-                return bundleContainer.FindBundleContainingPath(path);
+                return bundleContainer.FindBundleContainingPath<T>(path);
             }
 
             protected override IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create)

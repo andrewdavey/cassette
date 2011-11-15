@@ -67,9 +67,10 @@ namespace Cassette
             get { return bundleContainer; }
         }
 
-        public virtual Bundle FindBundleContainingPath(string path)
+        public virtual T FindBundleContainingPath<T>(string path)
+            where T : Bundle
         {
-            return bundleContainer.FindBundleContainingPath(path);
+            return bundleContainer.FindBundleContainingPath<T>(path);
         }
 
         public IReferenceBuilder GetReferenceBuilder()

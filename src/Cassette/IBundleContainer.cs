@@ -26,7 +26,7 @@ namespace Cassette
     interface IBundleContainer : IDisposable
     {
         IEnumerable<Bundle> Bundles { get; }
-        Bundle FindBundleContainingPath(string path);
+        T FindBundleContainingPath<T>(string path) where T : Bundle;
         IEnumerable<Bundle> IncludeReferencesAndSortBundles(IEnumerable<Bundle> bundles);
     }
 }

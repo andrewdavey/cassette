@@ -73,7 +73,7 @@ namespace Cassette.Web
         {
             var url = GetBundleRouteUrl<T>();
             var handler = new DelegateRouteHandler(
-                requestContext => new BundleRequestHandler(bundleContainer, requestContext)
+                requestContext => new BundleRequestHandler<T>(bundleContainer, requestContext)
             );
             Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
             // Insert Cassette's routes at the start of the table, 

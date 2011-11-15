@@ -111,7 +111,25 @@ namespace Cassette.Views
         /// <returns>The URL of the bundle.</returns>
         public static string Url(string bundlePath)
         {
-            var bundle = Application.FindBundleContainingPath(bundlePath);
+            var bundle = Application.FindBundleContainingPath<Bundle>(bundlePath);
+            if (bundle == null)
+            {
+                throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
+            }
+
+            return Application.UrlGenerator.CreateBundleUrl(bundle);
+        }
+
+        /// <summary>
+        /// Returns the URL of the bundle with the given path.
+        /// </summary>
+        /// <param name="bundlePath">The path of the bundle.</param>
+        /// <typeparamref name="T">Type of bundle.</typeparamref>
+        /// <returns>The URL of the bundle.</returns>
+        public static string Url<T>(string bundlePath)
+            where T : Bundle
+        {
+            var bundle = Application.FindBundleContainingPath<T>(bundlePath);
             if (bundle == null)
             {
                 throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));

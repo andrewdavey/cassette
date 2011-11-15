@@ -20,7 +20,7 @@ namespace Cassette.Configuration
             var factory = CreateFactory();
             var container = factory.Create(bundles, StubApplication());
 
-            container.FindBundleContainingPath("~/test").ShouldBeSameAs(bundles[0]);
+            container.FindBundleContainingPath<Bundle>("~/test").ShouldBeSameAs(bundles[0]);
         }
 
         [Fact]

@@ -4,7 +4,7 @@ namespace Cassette
     {
         public static bool TryGetAssetByPath(this IBundleContainer bundleContainer, string path, out IAsset asset, out Bundle bundle)
         {
-            bundle = bundleContainer.FindBundleContainingPath(path);
+            bundle = bundleContainer.FindBundleContainingPath<Bundle>(path);
             if (bundle == null)
             {
                 asset = null;

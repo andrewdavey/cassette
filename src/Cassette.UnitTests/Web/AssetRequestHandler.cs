@@ -27,7 +27,7 @@ namespace Cassette.Web
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
 
             var bundleContainer = new Mock<IBundleContainer>();
-            bundleContainer.Setup(c => c.FindBundleContainingPath(It.IsAny<string>()))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>(It.IsAny<string>()))
                            .Returns(() => bundle);
             handler = new AssetRequestHandler(requestContext.Object, bundleContainer.Object);
         }

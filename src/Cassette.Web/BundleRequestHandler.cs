@@ -27,7 +27,8 @@ using Cassette.Utilities;
 
 namespace Cassette.Web
 {
-    class BundleRequestHandler : IHttpHandler
+    class BundleRequestHandler<T> : IHttpHandler
+        where T : Bundle
     {
         public BundleRequestHandler(IBundleContainer bundleContainer, RequestContext requestContext)
         {
@@ -82,7 +83,7 @@ namespace Cassette.Web
             var path = "~/" + routeData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling bundle request for \"{0}\".", path);
             path = RemoveTrailingHashFromPath(path);
-            return bundleContainer.FindBundleContainingPath(path);
+            return bundleContainer.FindBundleContainingPath<T>(path);
         }
 
         /// <summary>

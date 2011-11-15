@@ -247,7 +247,7 @@ namespace Cassette.Persistence
                 from asset in bundle.Assets
                 from r in asset.References
                 where r.Type == AssetReferenceType.DifferentBundle || r.Type == AssetReferenceType.Url
-                select bundleContainer.FindBundleContainingPath(r.Path).Path
+                select bundleContainer.FindBundleContainingPath<Bundle>(r.Path).Path
             ).Concat(bundle.References)
              .Distinct(StringComparer.OrdinalIgnoreCase);
 

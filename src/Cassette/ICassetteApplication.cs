@@ -40,7 +40,7 @@ namespace Cassette
         /// </summary>
         IUrlGenerator UrlGenerator { get; }
 
-        Bundle FindBundleContainingPath(string path);
+        T FindBundleContainingPath<T>(string path) where T : Bundle;
 
         IReferenceBuilder GetReferenceBuilder();
     }

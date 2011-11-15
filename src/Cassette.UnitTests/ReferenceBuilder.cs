@@ -52,7 +52,7 @@ namespace Cassette
         public void WhenAddReferenceToBundleDirectory_ThenGetBundlesReturnTheBundle()
         {
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                            .Returns(bundle);
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns(new[] { bundle })
@@ -69,7 +69,7 @@ namespace Cassette
         public void WhenAddReferenceToSameBundleTwice_ThenGetBundlesReturnsOnlyOneBundle()
         {
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                            .Returns(bundle);
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns(new[] { bundle })
@@ -87,7 +87,7 @@ namespace Cassette
         {
             var bundle = new ScriptBundle("~/test");
             bundle.PageLocation = "body";
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                            .Returns(bundle);
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns(new[] { bundle })
@@ -106,9 +106,9 @@ namespace Cassette
             var bundle1 = new ScriptBundle("~/test1");
             var bundle2 = new ScriptBundle("~/test2");
             bundle1.PageLocation = "body";
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test1"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test1"))
                            .Returns(bundle1);
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test2"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test2"))
                            .Returns(bundle2);
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns(new[] { bundle1 });
@@ -123,7 +123,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToNonExistentBundle_ThenThrowException()
         {
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~\\test")).Returns((ScriptBundle)null);
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~\\test")).Returns((ScriptBundle)null);
 
             Assert.Throws<ArgumentException>(delegate
             {
@@ -137,7 +137,7 @@ namespace Cassette
             var bundleA = new ScriptBundle("~/a");
             var bundleB = new ScriptBundle("~/b");
 
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/a"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/a"))
                            .Returns(bundleA);
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns(new[] { bundleB, bundleA });
@@ -241,7 +241,7 @@ namespace Cassette
         public void WhenAddReferenceWithLocation_ThenGetBundlesForThatLocationReturnsTheBundle()
         {
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                            .Returns(bundle);
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns(new[] { bundle });
@@ -254,7 +254,7 @@ namespace Cassette
         public void GivenNullLocationAlreadyRendered_WhenAddReferenceToNullLocation_ThenExceptionThrown()
         {
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                            .Returns(bundle);
 
             builder.Render<ScriptBundle>();
@@ -268,7 +268,7 @@ namespace Cassette
         public void GivenLocationAlreadyRendered_WhenAddReferenceToThatLocation_ThenExceptionThrown()
         {
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                            .Returns(bundle);
 
             builder.Render<ScriptBundle>("location");
@@ -288,7 +288,7 @@ namespace Cassette
                 true
             );
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/test"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
                            .Returns(bundle);
             builder.Render<ScriptBundle>("test");
 
@@ -326,7 +326,7 @@ namespace Cassette
         public void GivenAddReferenceToPath_WhenRender_ThenBundleRenderOutputReturned()
         {
             var bundle = new TestableBundle("~/stub");
-            bundleContainer.Setup(c => c.FindBundleContainingPath(It.IsAny<string>()))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>(It.IsAny<string>()))
                            .Returns(bundle);
 
             referenceBuilder.Reference("test");
@@ -340,7 +340,7 @@ namespace Cassette
         public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenBundleRenderOutputReturned()
         {
             var bundle = new TestableBundle("~/stub") { RenderResult = "output" };
-            bundleContainer.Setup(c => c.FindBundleContainingPath(It.IsAny<string>()))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>(It.IsAny<string>()))
                            .Returns(bundle);
             referenceBuilder.Reference("test");
 
@@ -354,9 +354,9 @@ namespace Cassette
         {
             var bundle1 = new TestableBundle("~/stub1") { RenderResult = "output1" };
             var bundle2 = new TestableBundle("~/stub2") { RenderResult = "output2" };
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub1"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/stub1"))
                            .Returns(bundle1);
-            bundleContainer.Setup(c => c.FindBundleContainingPath("~/stub2"))
+            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/stub2"))
                            .Returns(bundle2);
 
             referenceBuilder.Reference("~/stub1");

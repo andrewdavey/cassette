@@ -65,10 +65,10 @@ namespace Cassette.Web
             container = new Mock<IBundleContainer>();
         }
 
-        internal BundleRequestHandler CreateRequestHandler(string bundlePath)
+        internal BundleRequestHandler<TestableBundle> CreateRequestHandler(string bundlePath)
         {
             routeData.Values.Add("path", bundlePath);
-            return new BundleRequestHandler(
+            return new BundleRequestHandler<TestableBundle>(
                 container.Object,
                 requestContext
             );
@@ -82,8 +82,8 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             bundle.Assets.Add(asset.Object);
-            container.Setup(c => c.FindBundleContainingPath("~/test"))
-                        .Returns(bundle);
+            container.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
+                     .Returns(bundle);
         }
 
         void IDisposable.Dispose()
@@ -102,8 +102,8 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             bundle.Assets.Add(asset.Object);
-            container.Setup(c => c.FindBundleContainingPath("~/test"))
-                        .Returns(bundle);
+            container.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
+                     .Returns(bundle);
 
             var handler = CreateRequestHandler("test_010203");
             handler.ProcessRequest();
