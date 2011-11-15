@@ -6,11 +6,14 @@ using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
+    /// <summary>
+    /// A collection of asset bundles.
+    /// </summary>
     public class BundleCollection : IEnumerable<Bundle>
     {
         readonly CassetteSettings settings;
-        readonly Dictionary<string, List<Bundle>> bundlesByPath = new Dictionary<string, List<Bundle>>();
-
+        readonly List<Bundle> bundles = new List<Bundle>(); 
+        
         public BundleCollection(CassetteSettings settings)
         {
             this.settings = settings;
@@ -21,75 +24,82 @@ namespace Cassette.Configuration
             get { return settings; }
         }
 
+        /// <summary>
+        /// Adds a <see cref="Bundle"/> to the collection.
+        /// </summary>
+        /// <param name="bundle">The bundle to add.</param>
         public void Add(Bundle bundle)
         {
-            var bundles = GetOrCreateBundleList(bundle.Path);
-            var bundleTypeAlreadyAdded = bundles.Any(b => b.GetType() == bundle.GetType());
+            var bundleTypeAlreadyAdded = bundles.Any(
+                b => b.ContainsPath(bundle.Path) 
+                  && b.GetType() == bundle.GetType()
+            );
             if (bundleTypeAlreadyAdded)
             {
                 throw new ArgumentException(
-                    string.Format("A bundle with the path \"{0}\" has already been added to the collection.", bundle.Path)
+                    string.Format("A {0} with the path \"{1}\" has already been added to the collection.", bundle.GetType().Name, bundle.Path)
                 );
             }
             bundles.Add(bundle);
         }
 
+        /// <summary>
+        /// Gets a strongly-typed <see cref="Bundle"/> from the collection, by path.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle.</typeparam>
+        /// <param name="path">The bundle path to find.</param>
+        /// <returns>A strongly-typed bundle</returns>
+        /// <exception cref="ArgumentException">Thrown when bundle is not found.</exception>
         public T Get<T>(string path)
             where T : Bundle
         {
-            return Get(path, bundles => bundles.OfType<T>().First());
+            return Get(path, bundleArray => bundleArray.OfType<T>().First());
         }
 
+        /// <summary>
+        /// Gets a <see cref="Bundle"/> from the collection, by path.
+        /// </summary>
+        /// <param name="path">The bundle path to find.</param>
+        /// <returns>A bundle.</returns>
+        /// <exception cref="ArgumentException">Thrown when bundle is not found.</exception>
         public Bundle Get(string path)
         {
-            return Get(path, bundles => bundles[0]);
+            return Get(path, bundleArray => bundleArray[0]);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Bundle"/> from the collection, by path.
+        /// </summary>
+        /// <returns>A bundle.</returns>
+        /// <exception cref="ArgumentException">Thrown when bundle is not found.</exception>
         public Bundle this[string path]
         {
             get { return Get(path); }
         }
 
-        public IEnumerator<Bundle> GetEnumerator()
+        IEnumerator<Bundle> IEnumerable<Bundle>.GetEnumerator()
         {
-            return bundlesByPath.SelectMany(kvp => kvp.Value).GetEnumerator();
-        }
-
-        internal void Remove(Bundle bundle)
-        {
-            var bundles = GetOrCreateBundleList(bundle.Path);
-            bundles.Remove(bundle);
+            return bundles.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return bundles.GetEnumerator();
         }
 
-        T Get<T>(string path, Func<List<Bundle>, T> getFromList)
+        T Get<T>(string path, Func<Bundle[], T> getFromMatching)
         {
             path = PathUtilities.AppRelative(path);
-            List<Bundle> bundles;
-            if (bundlesByPath.TryGetValue(path, out bundles))
+            var matchingBundles = bundles.Where(b => b.ContainsPath(path)).ToArray();
+
+            if (matchingBundles.Length == 0)
             {
-                return getFromList(bundles);
+                throw new ArgumentException(
+                    string.Format("Bundle not found with path \"{0}\".", path)
+                );
             }
 
-            throw new ArgumentException(
-                string.Format("Bundle not found with path \"{0}\".", path)
-            );
-        }
-
-        List<Bundle> GetOrCreateBundleList(string path)
-        {
-            List<Bundle> bundles;
-            if (!bundlesByPath.TryGetValue(path, out bundles))
-            {
-                bundles = new List<Bundle>();
-                bundlesByPath[path] = bundles;
-            }
-
-            return bundles;
+            return getFromMatching(matchingBundles);
         }
     }
 }

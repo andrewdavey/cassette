@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Moq;
 using Should;
 using Xunit;
 
@@ -77,6 +78,17 @@ namespace Cassette.Configuration
             var set = new HashSet<Bundle>(bundles);
 
             set.SetEquals(new[] { bundle1, bundle2 }).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenBundleThatReturnsTrueForContainsPathWithOtherPath_WhenGetByOtherPath_ThenBundleReturned()
+        {
+            var bundle = new Mock<TestableBundle>("~/path");
+            bundle.Setup(b => b.ContainsPath("~/OTHER")).Returns(true);
+
+            bundles.Add(bundle.Object);
+
+            bundles["OTHER"].ShouldBeSameAs(bundle.Object);
         }
     }
 }
