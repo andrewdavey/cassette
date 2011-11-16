@@ -63,6 +63,41 @@ namespace Cassette
         }
     }
     
+    public class CssCommentParser_Tests
+    {
+        [Fact]
+        public void WhenParseMultilineComment_ThenReturnCommentPerLine()
+        {
+            var parser = new CssCommentParser();
+            var comments = parser.Parse("/*text1\r\ntext2*/").ToArray();
+            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].Value.ShouldEqual("text1");
+            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].Value.ShouldEqual("text2");
+        }
+
+        [Fact]
+        public void WhenParseMultilineCommentWithUnixNewLines_ThenReturnCommentPerLine()
+        {
+            var parser = new CssCommentParser();
+            var comments = parser.Parse("/*text1\ntext2*/").ToArray();
+            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].Value.ShouldEqual("text1");
+            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].Value.ShouldEqual("text2");
+        }
+    }
+
+    public class HtmlTemplateCommentParser_Tests
+    {
+        
+    }
+
+    public class CoffeeScriptCommentParser_Tests
+    {
+        
+    }
+    
     public class ReferenceParser_Test
     {
         ReferenceParser parser = new ReferenceParser(new JavaScriptCommentParser());
@@ -188,6 +223,103 @@ namespace Cassette
                         if (i < code.Length - 1 && code[i] == '\r' && code[i + 1] == '\n') i++;
                         line++;
                         state = State.Code;
+                        break;
+
+                    case State.MultiLineComment:
+                        // Scan forwards until "*/" or end of code.
+                        while (i < code.Length - 1 && (code[i] != '*' || code[i + 1] != '/'))
+                        {
+                            // Track new lines within the comment.
+                            if (code[i] == '\r')
+                            {
+                                yield return new Comment
+                                {
+                                    SourceLineNumber = line,
+                                    Value = code.Substring(commentStart, i - commentStart)
+                                };
+                                i++;
+                                if (i < code.Length && code[i] == '\n')
+                                {
+                                    i++;
+                                }
+                                commentStart = i;
+                                line++;
+                                continue;
+                            }
+                            else if (code[i] == '\n')
+                            {
+                                yield return new Comment
+                                {
+                                    SourceLineNumber = line,
+                                    Value = code.Substring(commentStart, i - commentStart)
+                                };
+                                i++;
+                                commentStart = i;
+                                line++;
+                                continue;
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                        }
+                        yield return new Comment
+                        {
+                            SourceLineNumber = line,
+                            Value = code.Substring(commentStart, i - commentStart)
+                        };
+                        i++; // Skip the '/'
+                        state = State.Code;
+                        break;
+                }
+            }
+        }
+    }
+
+    public class CssCommentParser : ICommentParser
+    {
+        enum State
+        {
+            Code, MultiLineComment
+        }
+
+        public IEnumerable<Comment> Parse(string code)
+        {
+            var state = State.Code;
+            var commentStart = 0;
+            var line = 1;
+            for (var i = 0; i < code.Length; i++)
+            {
+                var c = code[i];
+
+                if (c == '\r')
+                {
+                    i++;
+                    if (i < code.Length && code[i] == '\n')
+                    {
+                        i++;
+                    }
+                    line++;
+                    continue;
+                }
+                else if (c == '\n')
+                {
+                    i++;
+                    line++;
+                    continue;
+                }
+
+                switch (state)
+                {
+                    case State.Code:
+                        if (c != '/') continue;
+                        if (i >= code.Length - 2) yield break;
+                        if (code[i + 1] == '*')
+                        {
+                            state = State.MultiLineComment;
+                            commentStart = i + 2;
+                            i++; // Skip the '*'
+                        }
                         break;
 
                     case State.MultiLineComment:
