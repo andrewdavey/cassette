@@ -90,7 +90,109 @@ namespace Cassette
 
     public class HtmlTemplateCommentParser_Tests
     {
+        readonly HtmlTemplateCommentParser parser = new HtmlTemplateCommentParser();
         
+        [Fact]
+        public void WhenParseEmptyComment_ThenReturnCommentWithEmptyValue()
+        {
+            parser.Parse("<!---->").Single().Value.ShouldEqual("");
+        }
+
+        [Fact]
+        public void WhenParseHtmlComment_ThenReturnComment()
+        {
+            var comment = parser.Parse("<!-- text -->").Single();
+            comment.SourceLineNumber.ShouldEqual(1);
+            comment.Value.ShouldEqual(" text ");
+        }
+
+        [Fact]
+        public void WhenParseHtmlCommentWithNewLines_ThenReturnCommentPerLine()
+        {
+            var comments = parser.Parse("<!--text1\r\ntext2-->").ToArray();
+            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].Value.ShouldEqual("text1");
+            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].Value.ShouldEqual("text2");
+        }
+
+        [Fact]
+        public void WhenParseHtmlCommentWithUnixNewLines_ThenReturnCommentPerLine()
+        {
+            var comments = parser.Parse("<!--text1\ntext2-->").ToArray();
+            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].Value.ShouldEqual("text1");
+            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].Value.ShouldEqual("text2");
+        }
+    }
+
+    class HtmlTemplateCommentParser : ICommentParser
+    {
+        enum State
+        {
+            Code, Comment
+        }
+
+        public IEnumerable<Comment> Parse(string code)
+        {
+            var state = State.Code;
+            var commentStart = 0;
+            var line = 1;
+            for (var i = 0; i <= code.Length - 3; i++)
+            {
+                switch (state)
+                {
+                    case State.Code:
+                        if (code.Substring(i, 4) == "<!--")
+                        {
+                            state = State.Comment;
+                            i += 3;
+                            commentStart = i + 1;
+                        }
+                        break;
+
+                    case State.Comment:
+                        if (code.Substring(i, 3) == "-->")
+                        {
+                            yield return new Comment
+                            {
+                                SourceLineNumber = line,
+                                Value = code.Substring(commentStart, i - commentStart)
+                            };
+                            i += 2;
+                            state = State.Code;
+                        }
+                        else if (code[i] == '\r')
+                        {
+                            i++;
+                            if (i < code.Length && code[i] == '\n')
+                            {
+                                yield return new Comment
+                                {
+                                    SourceLineNumber = line,
+                                    Value = code.Substring(commentStart, i - commentStart - 1)
+                                };
+                                i++;
+                                commentStart = i;
+                            }
+                            line++;
+                        }
+                        else if (code[i] == '\n')
+                        {
+                            yield return new Comment
+                            {
+                                SourceLineNumber = line,
+                                Value = code.Substring(commentStart, i - commentStart)
+                            };
+                            i++;
+                            line++;
+                            commentStart = i;
+                        }
+                        break;
+                }
+            }
+        }
     }
 
     public class CoffeeScriptCommentParser_Tests
@@ -280,7 +382,7 @@ namespace Cassette
     {
         enum State
         {
-            Code, MultiLineComment
+            Code, Comment
         }
 
         public IEnumerable<Comment> Parse(string code)
@@ -316,13 +418,13 @@ namespace Cassette
                         if (i >= code.Length - 2) yield break;
                         if (code[i + 1] == '*')
                         {
-                            state = State.MultiLineComment;
+                            state = State.Comment;
                             commentStart = i + 2;
                             i++; // Skip the '*'
                         }
                         break;
 
-                    case State.MultiLineComment:
+                    case State.Comment:
                         // Scan forwards until "*/" or end of code.
                         while (i < code.Length - 1 && (code[i] != '*' || code[i + 1] != '/'))
                         {
