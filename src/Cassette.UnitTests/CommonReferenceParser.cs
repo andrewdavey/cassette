@@ -62,14 +62,67 @@ namespace Cassette
             comments[1].Value.ShouldEqual("text2");
         }
     }
-
-    public class Comment
+    
+    public class ReferenceParser_Test
     {
-        public int SourceLineNumber;
-        public string Value;
+        ReferenceParser parser = new ReferenceParser(new JavaScriptCommentParser());
+        IAsset asset = Mock.Of<IAsset>();
+
+        [Fact]
+        public void CanParseSimpleReference()
+        {
+            var javascript = "// @reference ~/path";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path");
+            references[0].SourceLineNumber.ShouldEqual(1);
+            references[0].Type.ShouldEqual(AssetReferenceType.SameBundle);
+        }
+
+        [Fact]
+        public void CanParseTwoReferencesOnOneLine()
+        {
+            var javascript = "// @reference ~/path1 ~/path2";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path1");
+            references[1].Path.ShouldEqual("~/path2");
+        }
+
+        [Fact]
+        public void CanParseReferencesOnTwoLines()
+        {
+            var javascript = "// @reference ~/path1\r\n// @reference ~/path2";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path1");
+            references[0].SourceLineNumber.ShouldEqual(1);
+            references[1].Path.ShouldEqual("~/path2");
+            references[1].SourceLineNumber.ShouldEqual(2);
+        }
+
+        [Fact]
+        public void CanParseReferencesInMultilineComment()
+        {
+            var javascript = "/* @reference ~/path1\r\n@reference ~/path2*/";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path1");
+            references[1].Path.ShouldEqual("~/path2");
+            references[1].SourceLineNumber.ShouldEqual(2);
+        }
+
+        [Fact]
+        public void IgnoresTrailingSemicolonInComment()
+        {
+            var javascript = "// @reference ~/path1;";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path1");
+        }
     }
 
-    public class JavaScriptCommentParser
+    public class JavaScriptCommentParser : ICommentParser
     {
         enum State
         {
@@ -188,84 +241,31 @@ namespace Cassette
         }
     }
 
-    public class JavaScriptReferenceParser_Test
+    public class Comment
     {
-        [Fact]
-        public void CanParseSimpleReference()
-        {
-            var javascript = "// @reference ~/path";
-            var asset = Mock.Of<IAsset>();
-
-            var parser = new JavaScriptReferenceParser();
-            var references = parser.Parse(javascript, asset).ToArray();
-
-            references[0].Path.ShouldEqual("~/path");
-            references[0].SourceLineNumber.ShouldEqual(1);
-            references[0].Type.ShouldEqual(AssetReferenceType.SameBundle);
-        }
-
-        [Fact]
-        public void CanParseTwoReferencesOnOneLine()
-        {
-            var javascript = "// @reference ~/path1 ~/path2";
-            var asset = Mock.Of<IAsset>();
-
-            var parser = new JavaScriptReferenceParser();
-            var references = parser.Parse(javascript, asset).ToArray();
-
-            references[0].Path.ShouldEqual("~/path1");
-            references[1].Path.ShouldEqual("~/path2");
-        }
-
-        [Fact]
-        public void CanParseReferencesOnTwoLines()
-        {
-            var javascript = "// @reference ~/path1\r\n// @reference ~/path2";
-            var asset = Mock.Of<IAsset>();
-
-            var parser = new JavaScriptReferenceParser();
-            var references = parser.Parse(javascript, asset).ToArray();
-
-            references[0].Path.ShouldEqual("~/path1");
-            references[0].SourceLineNumber.ShouldEqual(1);
-            references[1].Path.ShouldEqual("~/path2");
-            references[1].SourceLineNumber.ShouldEqual(2);
-        }
-
-        [Fact]
-        public void CanParseReferencesInMultilineComment()
-        {
-            var javascript = "/* @reference ~/path1\r\n@reference ~/path2*/";
-            var asset = Mock.Of<IAsset>();
-
-            var parser = new JavaScriptReferenceParser();
-            var references = parser.Parse(javascript, asset).ToArray();
-
-            references[0].Path.ShouldEqual("~/path1");
-            references[1].Path.ShouldEqual("~/path2");
-            references[1].SourceLineNumber.ShouldEqual(2);
-        }
-
-        [Fact]
-        public void IgnoresTrailingSemicolonInComment()
-        {
-            var javascript = "// @reference ~/path1;";
-            var asset = Mock.Of<IAsset>();
-
-            var parser = new JavaScriptReferenceParser();
-            var references = parser.Parse(javascript, asset).ToArray();
-
-            references[0].Path.ShouldEqual("~/path1");
-        }
+        public int SourceLineNumber;
+        public string Value;
     }
 
-    public abstract class CommonReferenceParser
+    public interface ICommentParser
     {
+        IEnumerable<Comment> Parse(string code);
+    }
+
+    public class ReferenceParser
+    {
+        readonly ICommentParser commentParser;
+
+        public ReferenceParser(ICommentParser commentParser)
+        {
+            this.commentParser = commentParser;
+        }
+
         public IEnumerable<AssetReference> Parse(string code, IAsset sourceAsset)
         {
-            var comments = ParseComments(code);
+            var comments = commentParser.Parse(code);
             return from comment in comments
-                   from reference in ParseReferences(comment.Item1, comment.Item2, sourceAsset)
+                   from reference in ParseReferences(comment.SourceLineNumber, comment.Value, sourceAsset)
                    select reference;
         }
 
@@ -276,107 +276,6 @@ namespace Cassette
                    let parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                    from path in parts.Skip(1)
                    select new AssetReference(path.TrimEnd(';'), sourceAsset, lineNumber, AssetReferenceType.SameBundle);            
-        }
-
-        protected abstract IEnumerable<Tuple<int, string>> ParseComments(string code);
-    }
-
-    public class JavaScriptReferenceParser : CommonReferenceParser
-    {
-        enum State
-        {
-            Code, SingleLineComment, MultiLineComment
-        }
-
-        protected override IEnumerable<Tuple<int, string>> ParseComments(string code)
-        {
-            var state = State.Code;
-            var commentStart = 0;
-            var line = 1;
-            for (var i = 0; i < code.Length; i++)
-            {
-                var c = code[i];
-                
-                if (c == '\r')
-                {
-                    i++;
-                    if (i < code.Length && code[i] == '\n')
-                    {
-                        i++;
-                    }
-                    line++;
-                    continue;
-                }
-                else if (c == '\n')
-                {
-                    i++;
-                    line++;
-                    continue;
-                }
-
-                switch (state)
-                {
-                    case State.Code:
-                        if (c != '/') continue;
-                        if (i >= code.Length-2) yield break;
-                        if (code[i+1] == '/')
-                        {
-                            state = State.SingleLineComment;
-                            commentStart = i + 2;
-                            i++; // Skip the '/'
-                        }
-                        else if (code[i+1] == '*')
-                        {
-                            state = State.MultiLineComment;
-                            commentStart = i + 2;
-                            i++; // Skip the '*'
-                        }
-                        break;
-
-                    case State.SingleLineComment:
-                        // Scan forward until newline or end of code.
-                        while (i < code.Length && code[i] != '\r' && code[i] != '\n')
-                        {
-                            i++;
-                        }
-                        yield return Tuple.Create(line, code.Substring(commentStart, i - commentStart));
-                        if (i < code.Length - 1 && code[i] == '\r' && code[i + 1] == '\n') i++;
-                        line++;
-                        state = State.Code;
-                        break;
-
-                    case State.MultiLineComment:
-                        // Scan forwards until "*/" or end of code.
-                        while (i < code.Length - 1 && (code[i] != '*' || code[i + 1] != '/'))
-                        {
-                            // Track new lines within the comment.
-                            if (code[i] == '\r')
-                            {
-                                i++;
-                                if (i < code.Length && code[i] == '\n')
-                                {
-                                    i++;
-                                }
-                                line++;
-                                continue;
-                            }
-                            else if (code[i] == '\n')
-                            {
-                                i++;
-                                line++;
-                                continue;
-                            }
-                            else
-                            {
-                                i++;                                
-                            }
-                        }
-                        yield return Tuple.Create(line, code.Substring(commentStart, i - commentStart));
-                        i++; // Skip the '/'
-                        state = State.Code;
-                        break;
-                }
-            }
         }
     }
 }
