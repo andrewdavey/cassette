@@ -111,6 +111,7 @@
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
+    <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Stylesheets\AssignRenderer.cs" />

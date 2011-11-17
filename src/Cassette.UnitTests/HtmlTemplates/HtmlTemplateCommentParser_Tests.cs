@@ -18,7 +18,7 @@ namespace Cassette.HtmlTemplates
         public void WhenParseHtmlComment_ThenReturnComment()
         {
             var comment = parser.Parse("<!-- text -->").Single();
-            comment.SourceLineNumber.ShouldEqual(1);
+            comment.LineNumber.ShouldEqual(1);
             comment.Value.ShouldEqual(" text ");
         }
 
@@ -26,9 +26,9 @@ namespace Cassette.HtmlTemplates
         public void WhenParseHtmlCommentWithNewLines_ThenReturnCommentPerLine()
         {
             var comments = parser.Parse("<!--text1\r\ntext2-->").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual("text1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("text2");
         }
 
@@ -36,9 +36,9 @@ namespace Cassette.HtmlTemplates
         public void WhenParseHtmlCommentWithUnixNewLines_ThenReturnCommentPerLine()
         {
             var comments = parser.Parse("<!--text1\ntext2-->").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual("text1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("text2");
         }
     }

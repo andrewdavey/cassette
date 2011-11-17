@@ -18,19 +18,32 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Text.RegularExpressions;
+using System.IO;
 using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ParseJavaScriptReferences : LineBasedAssetReferenceParser<Bundle>
+    public class ParseJavaScriptReferences : ProcessAssetsThatMatchFileExtension<Bundle>
     {
-        public ParseJavaScriptReferences() : base("js", ReferenceRegex) { }
+        public ParseJavaScriptReferences() : base("js") { }
 
-        static readonly Regex ReferenceRegex = new Regex(
-            @"/// \s* \<reference \s+ path \s* = \s* (?<quote>[""']) (?<path>.*?) \<quote> \s* /?>",
-            RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
-        );
+        protected override void Process(IAsset asset, Bundle bundle)
+        {
+            string code;
+            using (var stream = asset.OpenStream())
+            using (var reader = new StreamReader(stream))
+            {
+                code = reader.ReadToEnd();
+            }
+
+            var commentParser = new JavaScriptCommentParser();
+            var referenceParser = new JavaScriptReferenceParser(commentParser);
+            var references = referenceParser.Parse(code, asset);
+            foreach (var reference in references)
+            {
+                asset.AddReference(reference.Path, reference.LineNumber);
+            }
+        }
     }
 }
 

@@ -12,7 +12,7 @@ namespace Cassette.Scripts
         public void WhenParseSingleLineComment_ThenReturnSingleComment()
         {
             var comment = parser.Parse("# comment").Single();
-            comment.SourceLineNumber.ShouldEqual(1);
+            comment.LineNumber.ShouldEqual(1);
             comment.Value.ShouldEqual(" comment");
         }
 
@@ -20,9 +20,9 @@ namespace Cassette.Scripts
         public void WhenParseTwoSingleLineComments_ThenReturnTwoComments()
         {
             var comments = parser.Parse("# comment1\r\n# comment2").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual(" comment1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual(" comment2");
         }
 
@@ -30,9 +30,9 @@ namespace Cassette.Scripts
         public void WhenParseTwoSingleLineCommentsSeperatedByUnixNewLine_ThenReturnTwoComments()
         {
             var comments = parser.Parse("# comment1\n# comment2").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual(" comment1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual(" comment2");
         }
 
@@ -40,9 +40,9 @@ namespace Cassette.Scripts
         public void WhenParseMultilineComment_ThenReturnCommentPerLine()
         {
             var comments = parser.Parse("###comment1\r\ncomment2###").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual("comment1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("comment2");
         }
 
@@ -50,9 +50,9 @@ namespace Cassette.Scripts
         public void WhenParseMultilineCommentWithUnixNewLines_ThenReturnCommentPerLine()
         {
             var comments = parser.Parse("###comment1\ncomment2###").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual("comment1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("comment2");
         }
     }

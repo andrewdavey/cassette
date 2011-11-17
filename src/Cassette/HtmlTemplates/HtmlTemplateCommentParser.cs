@@ -32,7 +32,7 @@ namespace Cassette.HtmlTemplates
                         {
                             yield return new Comment
                             {
-                                SourceLineNumber = line,
+                                LineNumber = line,
                                 Value = code.Substring(commentStart, i - commentStart)
                             };
                             i += 2;
@@ -45,7 +45,7 @@ namespace Cassette.HtmlTemplates
                             {
                                 yield return new Comment
                                 {
-                                    SourceLineNumber = line,
+                                    LineNumber = line,
                                     Value = code.Substring(commentStart, i - commentStart - 1)
                                 };
                                 i++;
@@ -57,7 +57,7 @@ namespace Cassette.HtmlTemplates
                         {
                             yield return new Comment
                             {
-                                SourceLineNumber = line,
+                                LineNumber = line,
                                 Value = code.Substring(commentStart, i - commentStart)
                             };
                             i++;

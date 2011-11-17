@@ -2,7 +2,7 @@ namespace Cassette
 {
     class Comment
     {
-        public int SourceLineNumber;
+        public int LineNumber;
         public string Value;
     }
 }

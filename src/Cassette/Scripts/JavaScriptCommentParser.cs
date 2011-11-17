@@ -60,7 +60,7 @@ namespace Cassette.Scripts
                         }
                         yield return new Comment
                         {
-                            SourceLineNumber = line,
+                            LineNumber = line,
                             Value = code.Substring(commentStart, i - commentStart)
                         };
                         if (i < code.Length - 1 && code[i] == '\r' && code[i + 1] == '\n') i++;
@@ -77,7 +77,7 @@ namespace Cassette.Scripts
                             {
                                 yield return new Comment
                                 {
-                                    SourceLineNumber = line,
+                                    LineNumber = line,
                                     Value = code.Substring(commentStart, i - commentStart)
                                 };
                                 i++;
@@ -93,7 +93,7 @@ namespace Cassette.Scripts
                             {
                                 yield return new Comment
                                 {
-                                    SourceLineNumber = line,
+                                    LineNumber = line,
                                     Value = code.Substring(commentStart, i - commentStart)
                                 };
                                 i++;
@@ -108,7 +108,7 @@ namespace Cassette.Scripts
                         }
                         yield return new Comment
                         {
-                            SourceLineNumber = line,
+                            LineNumber = line,
                             Value = code.Substring(commentStart, i - commentStart)
                         };
                         i++; // Skip the '/'

@@ -18,8 +18,7 @@ namespace Cassette
             var references = parser.Parse(javascript, asset).ToArray();
 
             references[0].Path.ShouldEqual("~/path");
-            references[0].SourceLineNumber.ShouldEqual(1);
-            references[0].Type.ShouldEqual(AssetReferenceType.SameBundle);
+            references[0].LineNumber.ShouldEqual(1);
         }
 
         [Fact]
@@ -39,9 +38,9 @@ namespace Cassette
             var references = parser.Parse(javascript, asset).ToArray();
 
             references[0].Path.ShouldEqual("~/path1");
-            references[0].SourceLineNumber.ShouldEqual(1);
+            references[0].LineNumber.ShouldEqual(1);
             references[1].Path.ShouldEqual("~/path2");
-            references[1].SourceLineNumber.ShouldEqual(2);
+            references[1].LineNumber.ShouldEqual(2);
         }
 
         [Fact]
@@ -52,7 +51,7 @@ namespace Cassette
 
             references[0].Path.ShouldEqual("~/path1");
             references[1].Path.ShouldEqual("~/path2");
-            references[1].SourceLineNumber.ShouldEqual(2);
+            references[1].LineNumber.ShouldEqual(2);
         }
 
         [Fact]
@@ -90,15 +89,6 @@ namespace Cassette
 
             references[0].Path.ShouldEqual("~/path1");
             references[1].Path.ShouldEqual("~/path2");
-        }
-
-        [Fact]
-        public void PathCanBeRelativeToAssetAndIsConvertedToAppAbsolute()
-        {
-            var javascript = "// @reference path";
-            var references = parser.Parse(javascript, asset).ToArray();
-
-            references[0].Path.ShouldEqual("~/path");
         }
     }
 }

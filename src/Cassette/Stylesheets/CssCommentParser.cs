@@ -55,7 +55,7 @@ namespace Cassette.Stylesheets
                             {
                                 yield return new Comment
                                 {
-                                    SourceLineNumber = line,
+                                    LineNumber = line,
                                     Value = code.Substring(commentStart, i - commentStart)
                                 };
                                 i++;
@@ -71,7 +71,7 @@ namespace Cassette.Stylesheets
                             {
                                 yield return new Comment
                                 {
-                                    SourceLineNumber = line,
+                                    LineNumber = line,
                                     Value = code.Substring(commentStart, i - commentStart)
                                 };
                                 i++;
@@ -86,7 +86,7 @@ namespace Cassette.Stylesheets
                         }
                         yield return new Comment
                         {
-                            SourceLineNumber = line,
+                            LineNumber = line,
                             Value = code.Substring(commentStart, i - commentStart)
                         };
                         i++; // Skip the '/'

@@ -11,7 +11,7 @@ namespace Cassette.Scripts
         {
             var parser = new JavaScriptCommentParser();
             var comment = parser.Parse("// text").Single();
-            comment.SourceLineNumber.ShouldEqual(1);
+            comment.LineNumber.ShouldEqual(1);
             comment.Value.ShouldEqual(" text");
         }
 
@@ -20,9 +20,9 @@ namespace Cassette.Scripts
         {
             var parser = new JavaScriptCommentParser();
             var comments = parser.Parse("// text1\r\n// text2").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual(" text1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual(" text2");
         }
 
@@ -31,9 +31,9 @@ namespace Cassette.Scripts
         {
             var parser = new JavaScriptCommentParser();
             var comments = parser.Parse("// text1\n// text2").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual(" text1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual(" text2");
         }
 
@@ -42,9 +42,9 @@ namespace Cassette.Scripts
         {
             var parser = new JavaScriptCommentParser();
             var comments = parser.Parse("/*text1\r\ntext2*/").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual("text1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("text2");
         }
 
@@ -53,9 +53,9 @@ namespace Cassette.Scripts
         {
             var parser = new JavaScriptCommentParser();
             var comments = parser.Parse("/*text1\ntext2*/").ToArray();
-            comments[0].SourceLineNumber.ShouldEqual(1);
+            comments[0].LineNumber.ShouldEqual(1);
             comments[0].Value.ShouldEqual("text1");
-            comments[1].SourceLineNumber.ShouldEqual(2);
+            comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("text2");
         }
     }
