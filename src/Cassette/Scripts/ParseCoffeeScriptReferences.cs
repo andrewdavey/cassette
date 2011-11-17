@@ -18,23 +18,34 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Text.RegularExpressions;
+using System.IO;
 using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ParseCoffeeScriptReferences : LineBasedAssetReferenceParser<Bundle>
+    public class ParseCoffeeScriptReferences : ProcessAssetsThatMatchFileExtension<Bundle>
     {
-        public ParseCoffeeScriptReferences() : base("coffee", ReferenceRegex)
+        public ParseCoffeeScriptReferences() : base("coffee")
         {
         }
 
-        static readonly Regex ReferenceRegex = new Regex(
-            @"(#\s*reference\s+(?<quote>[""'])(?<path>.*?)\<quote>)"+
-            "|"+
-            @"(#\s*\<reference\s+path\s*=\s*(?<quote>[""'])(?<path>.*?)\<quote>\s*/?>)",
-            RegexOptions.IgnoreCase
-        );
+        protected override void Process(IAsset asset, Bundle bundle)
+        {
+            string code;
+            using (var stream = asset.OpenStream())
+            using (var reader = new StreamReader(stream))
+            {
+                code = reader.ReadToEnd();
+            }
+
+            var commentParser = new CoffeeScriptCommentParser();
+            var referenceParser = new ReferenceParser(commentParser);
+            var references = referenceParser.Parse(code, asset);
+            foreach (var reference in references)
+            {
+                asset.AddReference(reference.Path, reference.LineNumber);
+            }
+        }
     }
 }
 
