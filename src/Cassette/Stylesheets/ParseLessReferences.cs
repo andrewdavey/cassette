@@ -18,21 +18,37 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Text.RegularExpressions;
+using System.IO;
 using Cassette.BundleProcessing;
+using Cassette.Scripts;
 
 namespace Cassette.Stylesheets
 {
-    public class ParseLessReferences : LineBasedAssetReferenceParser<Bundle>
+    public class ParseLessReferences : ProcessAssetsThatMatchFileExtension<Bundle>
     {
         public ParseLessReferences() 
-            : base("less", ReferenceRegex)
+            : base("less")
         {
         }
 
-        static readonly Regex ReferenceRegex = new Regex(
-            @"// \s* @reference \s+ (?<quote>[""']) (?<path>.*?) \<quote> \s* ;?",
-            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
-        );
+        protected override void Process(IAsset asset, Bundle bundle)
+        {
+            string code;
+            using (var stream = asset.OpenStream())
+            using (var reader = new StreamReader(stream))
+            {
+                code = reader.ReadToEnd();
+            }
+
+            // LESS supports the same comment syntax as JavaScript.
+            // So we'll just reuse the JavaScript comment parser!
+            var commentParser = new JavaScriptCommentParser();
+            var referenceParser = new ReferenceParser(commentParser);
+            var references = referenceParser.Parse(code, asset);
+            foreach (var reference in references)
+            {
+                asset.AddReference(reference.Path, reference.LineNumber);
+            }
+        }
     }
 }

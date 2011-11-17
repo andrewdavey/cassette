@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Cassette
+namespace Cassette.BundleProcessing
 {
     interface ICommentParser
     {

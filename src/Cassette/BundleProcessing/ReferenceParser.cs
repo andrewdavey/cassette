@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cassette
+namespace Cassette.BundleProcessing
 {
     class ReferenceParser
     {

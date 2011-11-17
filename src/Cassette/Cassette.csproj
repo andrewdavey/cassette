@@ -56,7 +56,9 @@
     </Compile>
     <Compile Include="BundleFactoryExtensions.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
-    <Compile Include="Comment.cs" />
+    <Compile Include="BundleProcessing\Comment.cs" />
+    <Compile Include="BundleProcessing\ICommentParser.cs" />
+    <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
     <Compile Include="FileAsset.cs" />
@@ -87,7 +89,6 @@
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="Configuration\IFileSearch.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
-    <Compile Include="ICommentParser.cs" />
     <Compile Include="IO\FileExtensions.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\IFile.cs" />
@@ -105,7 +106,6 @@
     <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="ReferenceParser.cs" />
     <Compile Include="Scripts\AssignRenderer.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
@@ -163,7 +163,6 @@
     <Compile Include="BundleProcessing\ConcatenatedAsset.cs" />
     <Compile Include="Stylesheets\LessCompileException.cs" />
     <Compile Include="Stylesheets\LessCompiler.cs" />
-    <Compile Include="BundleProcessing\LineBasedAssetReferenceParser.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="Bundle.cs" />

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Cassette.BundleProcessing;
 using Cassette.Scripts;
 using Moq;
 using Should;

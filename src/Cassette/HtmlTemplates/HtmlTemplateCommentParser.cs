@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
