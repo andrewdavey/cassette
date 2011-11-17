@@ -110,10 +110,12 @@ namespace Cassette
 
         public override void AddRawFileReference(string relativeFilename)
         {
-            var appRelativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
-                SourceFile.Directory.FullPath,
-                relativeFilename
-            ));
+            var appRelativeFilename = relativeFilename.StartsWith("~")
+                ? relativeFilename 
+                : PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
+                    SourceFile.Directory.FullPath,
+                    relativeFilename
+                ));
             
             var alreadyExists = references.Any(r => r.Path.Equals(appRelativeFilename, StringComparison.OrdinalIgnoreCase));
             if (alreadyExists) return;

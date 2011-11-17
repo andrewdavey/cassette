@@ -31,42 +31,42 @@ namespace Cassette.IO
         [Fact]
         public void GivenFileDoesNotExist_WhenCallExists_ThenReturnFalse()
         {
-            var file = new IsolatedStorageFileWrapper("not-exists.js", storage, directory);
+            var file = new IsolatedStorageFileWrapper("/not-exists.js", storage, directory);
             file.Exists.ShouldBeFalse();
         }
 
         [Fact]
         public void GivenFileDoesExist_WhenCallExists_ThenReturnTrue()
         {
-            var file = new IsolatedStorageFileWrapper("exists.js", storage, directory);
+            var file = new IsolatedStorageFileWrapper("/exists.js", storage, directory);
             file.Exists.ShouldBeTrue();
         }
 
         [Fact]
         public void FullPathReturnsFilename()
         {
-            var file = new IsolatedStorageFileWrapper("exists.js", storage, directory);
-            file.FullPath.ShouldEqual("exists.js");            
+            var file = new IsolatedStorageFileWrapper("/exists.js", storage, directory);
+            file.FullPath.ShouldEqual("/exists.js");            
         }
 
         [Fact]
         public void DirectoryReturnsDirectoryPassedToConstructor()
         {
-            var file = new IsolatedStorageFileWrapper("exists.js", storage, directory);
+            var file = new IsolatedStorageFileWrapper("/exists.js", storage, directory);
             file.Directory.ShouldBeSameAs(directory);
         }
 
         [Fact]
         public void GetLastWriteTimeUtcReturnsFileWriteTime()
         {
-            var file = new IsolatedStorageFileWrapper("exists.js", storage, directory);
+            var file = new IsolatedStorageFileWrapper("/exists.js", storage, directory);
             file.LastWriteTimeUtc.ShouldEqual(storage.GetLastWriteTime("exists.js").UtcDateTime);            
         }
 
         [Fact]
         public void OpenStreamReturnsFileStream()
         {
-            var file = new IsolatedStorageFileWrapper("exists.js", storage, directory);
+            var file = new IsolatedStorageFileWrapper("/exists.js", storage, directory);
             var content = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read).ReadToEnd();
             content.ShouldEqual("content");
         }

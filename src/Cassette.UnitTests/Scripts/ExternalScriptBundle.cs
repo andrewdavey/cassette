@@ -23,6 +23,7 @@ using Cassette.BundleProcessing;
 using Moq;
 using Should;
 using Xunit;
+using System.IO;
 
 namespace Cassette.Scripts
 {
@@ -120,6 +121,10 @@ namespace Cassette.Scripts
         public void GivenBundleIsProcessed_WhenRender_ThenExternalRendererUsed()
         {
             var bundle = new ExternalScriptBundle(Url, "~/test", "condition");
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            bundle.Assets.Add(asset.Object);
             var application = new Mock<ICassetteApplication>();
             var urlGenerator = new Mock<IUrlGenerator>();
             application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);

@@ -49,17 +49,17 @@ namespace Cassette.IO
 
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
-            return storage.OpenFile(filename, mode, access, fileShare);
+            return storage.OpenFile(filename.Substring(1), mode, access, fileShare);
         }
 
         public bool Exists
         {
-            get { return storage.FileExists(filename); }
+            get { return storage.FileExists(filename.Substring(1)); }
         }
 
         public DateTime LastWriteTimeUtc
         {
-            get { return storage.GetLastWriteTime(filename).UtcDateTime; }
+            get { return storage.GetLastWriteTime(filename.Substring(1)).UtcDateTime; }
         }
     }
 }
