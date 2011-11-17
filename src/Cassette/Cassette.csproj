@@ -56,6 +56,7 @@
     </Compile>
     <Compile Include="BundleFactoryExtensions.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
+    <Compile Include="Comment.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
     <Compile Include="FileAsset.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\AssignRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="Configuration\IFileSearch.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
+    <Compile Include="ICommentParser.cs" />
     <Compile Include="IO\FileExtensions.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\IFile.cs" />
@@ -101,14 +104,17 @@
     <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="ReferenceBuilder.cs" />
+    <Compile Include="ReferenceParser.cs" />
     <Compile Include="Scripts\AssignRenderer.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
+    <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Stylesheets\AssignRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
+    <Compile Include="Stylesheets\CssCommentParser.cs" />
     <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
