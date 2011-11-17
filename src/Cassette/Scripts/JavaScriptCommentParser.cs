@@ -20,8 +20,7 @@ namespace Cassette.Scripts
 
                 if (c == '\r')
                 {
-                    i++;
-                    if (i < code.Length && code[i] == '\n')
+                    if (i < code.Length - 1 && code[i + 1] == '\n')
                     {
                         i++;
                     }
@@ -30,7 +29,6 @@ namespace Cassette.Scripts
                 }
                 else if (c == '\n')
                 {
-                    i++;
                     line++;
                     continue;
                 }

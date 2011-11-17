@@ -106,6 +106,7 @@
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="ReferenceParser.cs" />
     <Compile Include="Scripts\AssignRenderer.cs" />
+    <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />

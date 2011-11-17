@@ -1,20 +1,21 @@
 using System.Collections.Generic;
 
-namespace Cassette.Stylesheets
+namespace Cassette.Scripts
 {
-    class CssCommentParser : ICommentParser
+    class CoffeeScriptCommentParser : ICommentParser
     {
         enum State
         {
-            Code, Comment
+            Code, SingleLineComment, MultiLineComment
         }
 
         public IEnumerable<Comment> Parse(string code)
         {
             var state = State.Code;
-            var commentStart = 0;
             var line = 1;
-            for (var i = 0; i < code.Length; i++)
+            var commentStart = 0;
+
+            for (int i = 0; i < code.Length; i++)
             {
                 var c = code[i];
 
@@ -36,19 +37,38 @@ namespace Cassette.Stylesheets
                 switch (state)
                 {
                     case State.Code:
-                        if (c != '/') continue;
-                        if (i >= code.Length - 2) yield break;
-                        if (code[i + 1] == '*')
+                        if (c == '#')
                         {
-                            state = State.Comment;
-                            commentStart = i + 2;
-                            i++; // Skip the '*'
+                            state = State.SingleLineComment;
+
+                            if (i < code.Length - 2 && code[i + 1] == '#' && code[i + 2] == '#')
+                            {
+                                state = State.MultiLineComment;
+                                i += 2;
+                            }
+                            commentStart = i + 1;
                         }
                         break;
 
-                    case State.Comment:
-                        // Scan forwards until "*/" or end of code.
-                        while (i < code.Length - 1 && (code[i] != '*' || code[i + 1] != '/'))
+                    case State.SingleLineComment:
+                        // Scan forward until newline or end of code.
+                        while (i < code.Length && code[i] != '\r' && code[i] != '\n')
+                        {
+                            i++;
+                        }
+                        yield return new Comment
+                        {
+                            SourceLineNumber = line,
+                            Value = code.Substring(commentStart, i - commentStart)
+                        };
+                        if (i < code.Length - 1 && code[i] == '\r' && code[i + 1] == '\n') i++;
+                        line++;
+                        state = State.Code;
+                        break;
+
+                    case State.MultiLineComment:
+                        // Scan forwards until "###" or end of code.
+                        while (i < code.Length - 2 && (code[i] != '#' || code[i + 1] != '#' || code[i + 2] != '#'))
                         {
                             // Track new lines within the comment.
                             if (code[i] == '\r')
@@ -89,7 +109,7 @@ namespace Cassette.Stylesheets
                             SourceLineNumber = line,
                             Value = code.Substring(commentStart, i - commentStart)
                         };
-                        i++; // Skip the '/'
+                        i += 2; // Skip the '###'
                         state = State.Code;
                         break;
                 }
