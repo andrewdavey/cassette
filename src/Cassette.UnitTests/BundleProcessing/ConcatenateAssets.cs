@@ -31,6 +31,14 @@ namespace Cassette.BundleProcessing
     public class ConcatenateAssets_Tests
     {
         [Fact]
+        public void GivenEmptyBundle_WhenConcatenateAssets_ThenNoAssetAddedToBundle()
+        {
+            var bundle = new TestableBundle("~");
+            bundle.ConcatenateAssets();
+            bundle.Assets.Count.ShouldEqual(0);
+        }
+
+        [Fact]
         public void GivenBundleWithTwoAssets_WhenConcatenateAssetsProcessesBundle_ThenASingleAssetReplacesTheTwoOriginalAssets()
         {
             var bundle = new TestableBundle("~");

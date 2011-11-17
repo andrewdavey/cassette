@@ -182,6 +182,8 @@ namespace Cassette
 
         internal void ConcatenateAssets()
         {
+            if (assets.Count == 0) return;
+
             var concatenated = new ConcatenatedAsset(assets);
             assets.Clear();
             assets.Add(concatenated);
