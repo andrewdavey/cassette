@@ -29,7 +29,11 @@ namespace Website
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
             bundles.Add<StylesheetBundle>("assets/styles");
-            bundles.AddUrlWithAlias("//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js", "jquery");
+            bundles.AddUrlWithLocalAssets("//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js", new LocalAssetSettings
+            {
+                Path = "~/assets/scripts/jquery",
+                FallbackCondition = "!window.jQuery"
+            });
             bundles.AddPerSubDirectory<ScriptBundle>("assets/scripts");
         }
     }

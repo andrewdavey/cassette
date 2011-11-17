@@ -1,4 +1,4 @@
-﻿/// <reference path="~/jquery"/>
+﻿/// <reference path="../jquery/jquery.js"/>
 
 $(function () {
 

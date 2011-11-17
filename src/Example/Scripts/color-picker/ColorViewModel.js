@@ -4,7 +4,7 @@
 /// <reference path="../jquery/jquery.js" />
 /// <reference path="helpers.js" />
 // A script can also reference stylesheets and HTML templates!
-/// <reference path="~/HtmlTemplates/color-picker"/>
+// @reference ~/HtmlTemplates/color-picker
 
 (function () {
 
