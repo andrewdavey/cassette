@@ -48,5 +48,11 @@ namespace Cassette.HtmlTemplates
             var comments = parser.Parse("\r\n<!--text-->").ToArray();
             comments[0].LineNumber.ShouldEqual(2);
         }
+
+        [Fact]
+        public void WhenParseHtmlWithNoComments_ThenReturnNoComments()
+        {
+            parser.Parse("<div></div>").ToArray().Length.ShouldEqual(0);
+        }
     }
 }

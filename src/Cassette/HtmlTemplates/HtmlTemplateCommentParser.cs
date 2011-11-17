@@ -34,7 +34,7 @@ namespace Cassette.HtmlTemplates
                             line++;
                             continue;
                         }
-                        else if (code.Substring(i, 4) == "<!--")
+                        else if (i < code.Length - 4 && code.Substring(i, 4) == "<!--")
                         {
                             state = State.Comment;
                             i += 3;
@@ -55,16 +55,15 @@ namespace Cassette.HtmlTemplates
                         }
                         else if (code[i] == '\r')
                         {
-                            i++;
-                            if (i < code.Length && code[i] == '\n')
+                            if (i < code.Length - 1 && code[i + 1] == '\n')
                             {
                                 yield return new Comment
                                 {
                                     LineNumber = line,
-                                    Value = code.Substring(commentStart, i - commentStart - 1)
+                                    Value = code.Substring(commentStart, i - commentStart)
                                 };
                                 i++;
-                                commentStart = i;
+                                commentStart = i + 1;
                             }
                             line++;
                         }
