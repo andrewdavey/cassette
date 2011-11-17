@@ -41,5 +41,12 @@ namespace Cassette.HtmlTemplates
             comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("text2");
         }
+
+        [Fact]
+        public void SkipsNewLinesBeforeComment()
+        {
+            var comments = parser.Parse("\r\n<!--text-->").ToArray();
+            comments[0].LineNumber.ShouldEqual(2);
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace Cassette.HtmlTemplates
     {
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, ICassetteApplication application)
         {
+            yield return new ParseHtmlTemplateReferences();
             yield return new AddTransformerToAssets(
                 new CompileAsset(new JQueryTmplCompiler())
             );

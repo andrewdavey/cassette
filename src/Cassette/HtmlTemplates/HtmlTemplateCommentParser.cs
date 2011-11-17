@@ -19,7 +19,21 @@ namespace Cassette.HtmlTemplates
                 switch (state)
                 {
                     case State.Code:
-                        if (code.Substring(i, 4) == "<!--")
+                        if (code[i] == '\r')
+                        {
+                            if (i < code.Length - 1 && code[i + 1] == '\n')
+                            {
+                                i++;
+                            }
+                            line++;
+                            continue;
+                        }
+                        else if (code[i] == '\n')
+                        {
+                            line++;
+                            continue;
+                        }
+                        else if (code.Substring(i, 4) == "<!--")
                         {
                             state = State.Comment;
                             i += 3;

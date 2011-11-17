@@ -75,6 +75,7 @@
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
+    <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\AssignRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />

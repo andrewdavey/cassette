@@ -27,5 +27,16 @@ namespace Cassette.Stylesheets
             comments[1].LineNumber.ShouldEqual(2);
             comments[1].Value.ShouldEqual("text2");
         }
+
+        [Fact]
+        public void WhenNewLinesBeforeComments_ThenReturnCommentsWithCorrectLineNumbers()
+        {
+            var parser = new CssCommentParser();
+            var comments = parser.Parse("\r\n/*text1*/\r\n\r\n/*text2*/").ToArray();
+            comments[0].LineNumber.ShouldEqual(2);
+            comments[0].Value.ShouldEqual("text1");
+            comments[1].LineNumber.ShouldEqual(4);
+            comments[1].Value.ShouldEqual("text2");
+        }
     }
 }
