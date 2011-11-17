@@ -58,10 +58,47 @@ namespace Cassette
         [Fact]
         public void IgnoresTrailingSemicolonInComment()
         {
-            var javascript = "// @reference ~/path1;";
+            var javascript = "// @reference ~/path;";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path");
+        }
+
+        [Fact]
+        public void MatchesDoubleQuotesButReturnsOnlyTheContent()
+        {
+            var javascript = "// @reference \"~/path\"";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path");
+        }
+
+        [Fact]
+        public void MatchesSingleQuotesButReturnsOnlyTheContent()
+        {
+            var javascript = "// @reference '~/path'";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path");
+        }
+
+        [Fact]
+        public void MatchesMultipleQuotedPathsButReturnsOnlyTheContent()
+        {
+            var javascript = "// @reference '~/path1' '~/path2'";
             var references = parser.Parse(javascript, asset).ToArray();
 
             references[0].Path.ShouldEqual("~/path1");
+            references[1].Path.ShouldEqual("~/path2");
+        }
+
+        [Fact]
+        public void PathCanBeRelativeToAssetAndIsConvertedToAppAbsolute()
+        {
+            var javascript = "// @reference path";
+            var references = parser.Parse(javascript, asset).ToArray();
+
+            references[0].Path.ShouldEqual("~/path");
         }
     }
 }
