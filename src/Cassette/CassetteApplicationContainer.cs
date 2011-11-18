@@ -38,7 +38,7 @@ namespace Cassette
             {
                 if (_getApplication == null)
                 {
-                    throw new InvalidOperationException(); // TODO: nice descriptive error message here
+                    throw new InvalidOperationException("Cassette infrastructure library missing. Make sure Cassette.Web has been added to the web application.");
                 }
                 return _getApplication();
             }
@@ -148,4 +148,3 @@ namespace Cassette
         }
     }
 }
-
