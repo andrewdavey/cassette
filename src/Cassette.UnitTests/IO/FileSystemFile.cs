@@ -76,9 +76,16 @@ namespace Cassette.IO
             }
         }
 
+        [Fact]
+        public void DeleteRemovesFileFromDirectory()
+        {
+            file.Delete();
+            File.Exists(filename).ShouldBeFalse();
+        }
+
         public void Dispose()
         {
-            File.Delete(filename);
+            if (File.Exists(filename)) File.Delete(filename);
         }
     }
 }

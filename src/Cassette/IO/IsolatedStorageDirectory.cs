@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Diagnostics;
+using System.Linq;
 
 namespace Cassette.IO
 {
@@ -30,10 +30,10 @@ namespace Cassette.IO
     /// This class only implements enough of IDirectory to support BundleCache.
     /// Other methods simply throw NotSupportException for now.
     /// </remarks>
-    public class IsolatedStorageDirectory : IDirectory
+    class IsolatedStorageDirectory : IDirectory
     {
         public IsolatedStorageDirectory(IsolatedStorageFile storage)
-            : this(storage, "/")
+            : this(storage, "~/")
         {
         }
 
@@ -49,23 +49,6 @@ namespace Cassette.IO
         public string FullPath
         {
             get { return basePath; }
-        }
-
-        public void DeleteContents()
-        {
-            foreach (var filename in storage.GetFileNames(basePath.TrimEnd('/') + "/*"))
-            {
-                try
-                {
-                    storage.DeleteFile(GetAbsolutePath(filename));
-                }
-                catch (IsolatedStorageException exception)
-                {
-                    // File created by another user cannot always be deleted by a different user.
-                    // However, they can still be modified. So we'll just skip it.
-                    Trace.Source.TraceEvent(TraceEventType.Error, 0, exception.ToString());
-                }
-            }
         }
 
         public IFile GetFile(string filename)
@@ -95,7 +78,8 @@ namespace Cassette.IO
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
-            throw new NotSupportedException();
+            return storage.GetFileNames(searchPattern)
+                          .Select(filename => new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this));
         }
 
         public IEnumerable<IDirectory> GetDirectories()

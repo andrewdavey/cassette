@@ -61,6 +61,11 @@ namespace Cassette.IO
         {
             get { return File.GetLastWriteTimeUtc(systemAbsoluteFilename); }
         }
+
+        public void Delete()
+        {
+            File.Delete(systemAbsoluteFilename);
+        }
     }
 }
 

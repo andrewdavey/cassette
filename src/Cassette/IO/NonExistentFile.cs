@@ -66,6 +66,11 @@ namespace Cassette.IO
             return null;
         }
 
+        public void Delete()
+        {
+            ThrowFileNotFoundException();
+        }
+
         void ThrowFileNotFoundException()
         {
             throw new FileNotFoundException("File not found \"" + filename + "\".", filename);

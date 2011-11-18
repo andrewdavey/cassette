@@ -29,12 +29,14 @@ namespace Cassette.IO
         readonly string filename;
         readonly IsolatedStorageFile storage;
         readonly IsolatedStorageDirectory directory;
+        readonly string systemFilename;
 
         public IsolatedStorageFileWrapper(string filename, IsolatedStorageFile storage, IsolatedStorageDirectory directory)
         {
             this.filename = filename;
             this.storage = storage;
             this.directory = directory;
+            systemFilename = filename.Substring(2); // Skip the "~/" prefix.
         }
 
         public IDirectory Directory
@@ -49,17 +51,22 @@ namespace Cassette.IO
 
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
-            return storage.OpenFile(filename.Substring(1), mode, access, fileShare);
+            return storage.OpenFile(systemFilename, mode, access, fileShare);
         }
 
         public bool Exists
         {
-            get { return storage.FileExists(filename.Substring(1)); }
+            get { return storage.FileExists(systemFilename); }
         }
 
         public DateTime LastWriteTimeUtc
         {
-            get { return storage.GetLastWriteTime(filename.Substring(1)).UtcDateTime; }
+            get { return storage.GetLastWriteTime(systemFilename).UtcDateTime; }
+        }
+
+        public void Delete()
+        {
+            storage.DeleteFile(systemFilename);
         }
     }
 }

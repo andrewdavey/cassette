@@ -30,10 +30,7 @@ namespace Cassette.IO
         IFile GetFile(string filename);
         IDirectory GetDirectory(string path);
         bool DirectoryExists(string path);
-
         IEnumerable<IDirectory> GetDirectories();
         IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption);
-
-        void DeleteContents();
     }
 }

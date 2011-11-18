@@ -30,15 +30,29 @@ namespace Cassette.IO
         /// </summary>
         IDirectory Directory { get; }
 
+        /// <summary>
+        /// Gets if the file exists.
+        /// </summary>
         bool Exists { get; }
 
+        /// <summary>
+        /// Gets the last write time (UTC) of the file.
+        /// </summary>
         DateTime LastWriteTimeUtc { get; }
 
+        /// <summary>
+        /// Gets the full application relative path of the file.
+        /// </summary>
         string FullPath { get; }
      
         /// <summary>
         /// Opens a stream to the file.
         /// </summary>
         Stream Open(FileMode mode, FileAccess access, FileShare fileShare);
+
+        /// <summary>
+        /// Deletes the file.
+        /// </summary>
+        void Delete();
     }
 }

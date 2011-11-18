@@ -47,7 +47,7 @@ namespace Cassette.IntegrationTests
                     reader.ReadToEnd().ShouldEqual("test");
                 }
 
-                directory.DeleteContents();
+                file.Delete();
                 store.FileExists("test.txt").ShouldBeFalse();
             }
         }

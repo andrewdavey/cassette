@@ -80,7 +80,7 @@
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
-    <Compile Include="HtmlTemplates\AssignRenderer.cs" />
+    <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\RemoteHtmlTemplateBundleRenderer.cs" />
@@ -107,7 +107,7 @@
     <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="Scripts\AssignRenderer.cs" />
+    <Compile Include="Scripts\AssignScriptRenderer.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
@@ -116,7 +116,7 @@
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
-    <Compile Include="Stylesheets\AssignRenderer.cs" />
+    <Compile Include="Stylesheets\AssignStylesheetsRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
     <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
@@ -130,7 +130,7 @@
     <Compile Include="BundleDescriptorReader.cs" />
     <Compile Include="Scripts\ExternalScriptBundle.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundle.cs" />
-    <Compile Include="Stylesheets\CompileLessAssets.cs" />
+    <Compile Include="Stylesheets\CompileLess.cs" />
     <Compile Include="BundleProcessing\CompileAsset.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
@@ -151,7 +151,7 @@
     <Compile Include="AssetReferenceException.cs" />
     <Compile Include="AssetReferenceType.cs" />
     <Compile Include="Persistence\CachedAsset.cs" />
-    <Compile Include="Scripts\CompileCoffeeScriptAssets.cs" />
+    <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
     <Compile Include="IAsset.cs" />

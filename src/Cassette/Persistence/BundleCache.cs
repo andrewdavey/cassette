@@ -180,11 +180,19 @@ namespace Cassette.Persistence
 
         public void SaveBundleContainer(IBundleContainer bundleContainer)
         {
-            cacheDirectory.DeleteContents();
+            DeleteExistingFiles();
             SaveContainerXml(bundleContainer);
             foreach (var bundle in bundleContainer.Bundles)
             {
                 SaveBundle(bundle);
+            }
+        }
+
+        void DeleteExistingFiles()
+        {
+            foreach (var file in cacheDirectory.GetFiles("*", SearchOption.AllDirectories))
+            {
+                file.Delete();
             }
         }
 
