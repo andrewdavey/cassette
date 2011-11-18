@@ -70,6 +70,7 @@
     <Compile Include="Views\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\iestyles\buttons.css" />
     <Content Include="assets\scripts\disqus\disqus.js" />
     <Content Include="assets\scripts\home\tweets.js" />
     <Content Include="assets\scripts\licensing-buy\form.js" />
@@ -98,6 +99,8 @@
     <Content Include="assets\styles\top.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="robots.txt" />
+    <Content Include="sitemap.xml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
