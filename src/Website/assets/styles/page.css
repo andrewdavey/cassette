@@ -37,9 +37,13 @@ h2 {
     margin: 0px 0px .75em 0px;
 }
 
+p + h2 {
+    margin-top: 1em;
+}
+
 h3 {
     font-family: "Droid Sans" , sans-serif;
-    font-size: 1em;
+    font-size: 0.9em;
     margin: 0px 0px .75em 0px;
 }
 
@@ -49,12 +53,12 @@ p {
     line-height: 1.4em;
 }
 
-p + h2, .main ul + h2 {
+.documentation p + h2, .main ul + h2 {
     margin-top: 1.5em; 
 }
 
-p + h3, .ul + h3 {
-    margin: 1.5em 0 .5em 0;
+.documentation p + h3, .ul + h3 {
+    margin: 1.5em 0 .75em 0;
 }
 
 p.last {
@@ -104,7 +108,7 @@ dd + dt {
     margin-top: 0.5em;
 }
 
-dl a {
+dt a {
     text-decoration: none;
 }
 
