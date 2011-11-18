@@ -39,7 +39,7 @@ namespace Cassette.HtmlTemplates
             // Join all the JavaScript together
             yield return new ConcatenateAssets();
             // Assign the renderer to output a link to the bundle.
-            yield return new AssignRenderer(
+            yield return new AssignHtmlTemplateRenderer(
                 new RemoteHtmlTemplateBundleRenderer(application.UrlGenerator)
             );
         }

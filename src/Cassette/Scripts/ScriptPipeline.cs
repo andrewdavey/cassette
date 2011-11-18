@@ -40,7 +40,7 @@ namespace Cassette.Scripts
             if (CompileCoffeeScript)
             {
                 yield return new ParseCoffeeScriptReferences();
-                yield return new CompileCoffeeScriptAssets(new CoffeeScriptCompiler());
+                yield return new CompileCoffeeScript(new CoffeeScriptCompiler());
             }
             yield return new SortAssetsByDependency();
             if (!application.IsDebuggingEnabled)
@@ -48,7 +48,7 @@ namespace Cassette.Scripts
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(Minifier);
             }
-            yield return new AssignRenderer();
+            yield return new AssignScriptRenderer();
         }
     }
 }

@@ -58,6 +58,7 @@
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />
     <Compile Include="BundleProcessing\ICommentParser.cs" />
+    <Compile Include="BundleProcessing\ParseReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
@@ -167,7 +168,6 @@
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="BundleContainer.cs" />
-    <Compile Include="BundleProcessing\ProcessAssetsThatMatchFileExtension.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />

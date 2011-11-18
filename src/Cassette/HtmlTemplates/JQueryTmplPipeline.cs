@@ -36,7 +36,7 @@ namespace Cassette.HtmlTemplates
                 new RegisterTemplateWithJQueryTmpl(bundle)
             );
             yield return new ConcatenateAssets();
-            yield return new AssignRenderer(
+            yield return new AssignHtmlTemplateRenderer(
                 new RemoteHtmlTemplateBundleRenderer(application.UrlGenerator)
             );
         }

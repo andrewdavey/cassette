@@ -18,21 +18,28 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System;
 using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class AssignRenderer : IBundleProcessor<ScriptBundle>
+    public class CompileCoffeeScript : IBundleProcessor<Bundle>
     {
-        public void Process(ScriptBundle bundle, ICassetteApplication application)
+        readonly ICompiler coffeeScriptCompiler;
+
+        public CompileCoffeeScript(ICompiler coffeeScriptCompiler)
         {
-            if (application.IsDebuggingEnabled)
+            this.coffeeScriptCompiler = coffeeScriptCompiler;
+        }
+
+        public void Process(Bundle bundle, ICassetteApplication application)
+        {
+            foreach (var asset in bundle.Assets)
             {
-                bundle.Renderer = new DebugScriptBundleHtmlRenderer(application.UrlGenerator);
-            }
-            else
-            {
-                bundle.Renderer = new ScriptBundleHtmlRenderer(application.UrlGenerator);
+                if (asset.SourceFile.FullPath.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
+                {
+                    asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler));                    
+                }
             }
         }
     }

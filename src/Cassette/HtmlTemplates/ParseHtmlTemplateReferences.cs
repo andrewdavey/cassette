@@ -1,34 +1,19 @@
-using System.IO;
+using System;
 using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class ParseHtmlTemplateReferences : IBundleProcessor<HtmlTemplateBundle>
+    public class ParseHtmlTemplateReferences : ParseReferences<HtmlTemplateBundle>
     {
-        public void Process(HtmlTemplateBundle bundle, ICassetteApplication application)
+        protected override bool ShouldParseAsset(IAsset asset)
         {
-            foreach (var asset in bundle.Assets)
-            {
-                ProcessAsset(asset);
-            }
+            return asset.SourceFile.FullPath.EndsWith(".htm", StringComparison.OrdinalIgnoreCase)
+                || asset.SourceFile.FullPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase);
         }
 
-        void ProcessAsset(IAsset asset)
+        internal override ICommentParser CreateCommentParser()
         {
-            string code;
-            using (var stream = asset.OpenStream())
-            using (var reader = new StreamReader(stream))
-            {
-                code = reader.ReadToEnd();
-            }
-
-            var commentParser = new HtmlTemplateCommentParser();
-            var referenceParser = new ReferenceParser(commentParser);
-            var references = referenceParser.Parse(code, asset);
-            foreach (var reference in references)
-            {
-                asset.AddReference(reference.Path, reference.LineNumber);
-            }
+            return new HtmlTemplateCommentParser();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenProductionMode_WhenProcess_ThenBundleRenderIsStylesheetHtmlRenderer()
         {
-            var processor = new AssignRenderer();
+            var processor = new AssignStylesheetsRenderer();
             var application = new Mock<ICassetteApplication>();
             application.SetupGet(a => a.IsDebuggingEnabled).Returns(false);
             var bundle = new StylesheetBundle("~/test");
@@ -22,7 +22,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenDebugMode_WhenProcess_ThenBundleRenderIsDebugStylesheetHtmlRenderer()
         {
-            var processor = new AssignRenderer();
+            var processor = new AssignStylesheetsRenderer();
             var application = new Mock<ICassetteApplication>();
             application.SetupGet(a => a.IsDebuggingEnabled).Returns(true);
             var bundle = new StylesheetBundle("~/test");

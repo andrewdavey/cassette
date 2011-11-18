@@ -22,19 +22,18 @@ using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class CompileLessAssets : ProcessAssetsThatMatchFileExtension<StylesheetBundle>
+    public class AssignStylesheetsRenderer : IBundleProcessor<StylesheetBundle>
     {
-        public CompileLessAssets(ICompiler compiler)
-            : base("less")
+        public void Process(StylesheetBundle bundle, ICassetteApplication application)
         {
-            this.compiler = compiler;
-        }
-
-        readonly ICompiler compiler;
-
-        protected override void Process(IAsset asset, Bundle bundle)
-        {
-            asset.AddAssetTransformer(new CompileAsset(compiler));
+            if (application.IsDebuggingEnabled)
+            {
+                bundle.Renderer = new DebugStylesheetHtmlRenderer(application.UrlGenerator);
+            }
+            else
+            {
+                bundle.Renderer = new StylesheetHtmlRenderer(application.UrlGenerator);
+            }
         }
     }
 }

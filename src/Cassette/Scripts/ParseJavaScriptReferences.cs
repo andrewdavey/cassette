@@ -18,32 +18,26 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.IO;
+using System;
 using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ParseJavaScriptReferences : ProcessAssetsThatMatchFileExtension<Bundle>
+    public class ParseJavaScriptReferences : ParseReferences<ScriptBundle>
     {
-        public ParseJavaScriptReferences() : base("js") { }
-
-        protected override void Process(IAsset asset, Bundle bundle)
+        protected override bool ShouldParseAsset(IAsset asset)
         {
-            string code;
-            using (var stream = asset.OpenStream())
-            using (var reader = new StreamReader(stream))
-            {
-                code = reader.ReadToEnd();
-            }
+            return asset.SourceFile.FullPath.EndsWith(".js", StringComparison.OrdinalIgnoreCase);
+        }
 
-            var commentParser = new JavaScriptCommentParser();
-            var referenceParser = new JavaScriptReferenceParser(commentParser);
-            var references = referenceParser.Parse(code, asset);
-            foreach (var reference in references)
-            {
-                asset.AddReference(reference.Path, reference.LineNumber);
-            }
+        internal override ICommentParser CreateCommentParser()
+        {
+            return new JavaScriptCommentParser();
+        }
+
+        internal override ReferenceParser CreateReferenceParser(ICommentParser commentParser)
+        {
+            return new JavaScriptReferenceParser(commentParser);
         }
     }
 }
-

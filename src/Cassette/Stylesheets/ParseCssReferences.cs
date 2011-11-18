@@ -18,41 +18,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.IO;
+using System;
 using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class ParseCssReferences : ProcessAssetsThatMatchFileExtension<StylesheetBundle>
+    public class ParseCssReferences : ParseReferences<StylesheetBundle>
     {
-        public ParseCssReferences()
-            : base("css")
+        protected override bool ShouldParseAsset(IAsset asset)
         {
+            return asset.SourceFile.FullPath.EndsWith(".css", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override void Process(IAsset asset, Bundle bundle)
+        internal override ICommentParser CreateCommentParser()
         {
-            var css = ReadAllCss(asset);
-            AddReferences(css, asset);
-        }
-
-        string ReadAllCss(IAsset asset)
-        {
-            using (var reader = new StreamReader(asset.OpenStream()))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        void AddReferences(string css, IAsset asset)
-        {
-            var commentParser = new CssCommentParser();
-            var referenceParser = new ReferenceParser(commentParser);
-            var references = referenceParser.Parse(css, asset);
-            foreach (var reference in references)
-            {
-                asset.AddReference(reference.Path, reference.LineNumber);
-            }
+            return new CssCommentParser();
         }
     }
 }

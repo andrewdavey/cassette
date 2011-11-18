@@ -18,22 +18,29 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System;
 using Cassette.BundleProcessing;
 
-namespace Cassette.HtmlTemplates
+namespace Cassette.Stylesheets
 {
-    public class AssignRenderer : IBundleProcessor<HtmlTemplateBundle>
+    public class CompileLess : IBundleProcessor<StylesheetBundle>
     {
-        public AssignRenderer(IBundleHtmlRenderer<HtmlTemplateBundle> renderer)
+        readonly ICompiler lessCompiler;
+
+        public CompileLess(ICompiler lessCompiler)
         {
-            this.renderer = renderer;
+            this.lessCompiler = lessCompiler;
         }
 
-        readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
-
-        public void Process(HtmlTemplateBundle bundle, ICassetteApplication application)
+        public void Process(StylesheetBundle bundle, ICassetteApplication application)
         {
-            bundle.Renderer = renderer;
+            foreach (var asset in bundle.Assets)
+            {
+                if (asset.SourceFile.FullPath.EndsWith(".less", StringComparison.OrdinalIgnoreCase))
+                {
+                    asset.AddAssetTransformer(new CompileAsset(lessCompiler));
+                }
+            }
         }
     }
 }

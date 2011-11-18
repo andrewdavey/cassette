@@ -28,7 +28,7 @@ namespace Cassette.HtmlTemplates
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, ICassetteApplication application)
         {
             yield return new ParseHtmlTemplateReferences();
-            yield return new AssignRenderer(new InlineHtmlTemplateBundleRenderer());
+            yield return new AssignHtmlTemplateRenderer(new InlineHtmlTemplateBundleRenderer());
         }
     }
 }

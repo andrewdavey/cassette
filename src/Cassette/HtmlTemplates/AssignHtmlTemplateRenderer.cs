@@ -20,21 +20,20 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using Cassette.BundleProcessing;
 
-namespace Cassette.Scripts
+namespace Cassette.HtmlTemplates
 {
-    public class CompileCoffeeScriptAssets : ProcessAssetsThatMatchFileExtension<Bundle>
+    public class AssignHtmlTemplateRenderer : IBundleProcessor<HtmlTemplateBundle>
     {
-        public CompileCoffeeScriptAssets(ICompiler coffeeScriptCompiler)
-            : base("coffee")
+        public AssignHtmlTemplateRenderer(IBundleHtmlRenderer<HtmlTemplateBundle> renderer)
         {
-            this.coffeeScriptCompiler = coffeeScriptCompiler;
+            this.renderer = renderer;
         }
 
-        readonly ICompiler coffeeScriptCompiler;
+        readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
 
-        protected override void Process(IAsset asset, Bundle bundle)
+        public void Process(HtmlTemplateBundle bundle, ICassetteApplication application)
         {
-            asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler));
+            bundle.Renderer = renderer;
         }
     }
 }

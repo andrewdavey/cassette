@@ -138,7 +138,7 @@ namespace Cassette.Stylesheets
         public void CssReferencesAreParsed()
         {
             new StylesheetPipeline().Process(bundle, application.Object);
-            asset1.Verify(a => a.AddReference("asset2.css", -1));
+            asset1.Verify(a => a.AddReference("asset2.css", 1));
         }
 
         [Fact]

@@ -41,7 +41,7 @@ namespace Cassette.Stylesheets
             if (CompileLess)
             {
                 yield return new ParseLessReferences();
-                yield return new CompileLessAssets(new LessCompiler());
+                yield return new CompileLess(new LessCompiler());
             }
             if (ConvertImageUrlsToDataUris)
             {
@@ -54,7 +54,7 @@ namespace Cassette.Stylesheets
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);
             }
-            yield return new AssignRenderer();
+            yield return new AssignStylesheetsRenderer();
         }
     }
 }
