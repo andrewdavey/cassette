@@ -84,6 +84,23 @@ namespace Cassette.Persistence
         }
 
         [Fact]
+        public void GivenBundle_WhenSaveContainer_ThenXmlHasBundleElementWithHashAttribute()
+        {
+            using (var cacheDir = new TempDirectory())
+            {
+                var cache = new BundleCache("VERSION", new FileSystemDirectory(cacheDir), Mock.Of<IDirectory>());
+                var bundle = new TestableBundle("~/test");
+                var asset1 = StubAsset();
+                bundle.Assets.Add(asset1.Object);
+
+                cache.SaveBundleContainer(new BundleContainer(new[] { bundle }));
+
+                var xml = File.ReadAllText(Path.Combine(cacheDir, "container.xml"));
+                xml.ShouldContain("Hash=\"010203\"");
+            }
+        }
+
+        [Fact]
         public void GivenBundleWithReference_WhenSaveContainer_ThenXmlHasReferenceElement()
         {
             using (var cacheDir = new TempDirectory())
@@ -306,7 +323,7 @@ namespace Cassette.Persistence
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns(path);
-            asset.SetupGet(a => a.Hash).Returns(new byte[0]);
+            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));

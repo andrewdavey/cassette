@@ -36,6 +36,9 @@ namespace Cassette.Scripts
 
         protected override IEnumerable<IBundleProcessor<ScriptBundle>> CreatePipeline(ScriptBundle bundle, ICassetteApplication application)
         {
+            yield return new AssignScriptRenderer();
+            if (bundle.IsFromCache) yield break;
+
             yield return new ParseJavaScriptReferences();
             if (CompileCoffeeScript)
             {
@@ -48,7 +51,6 @@ namespace Cassette.Scripts
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(Minifier);
             }
-            yield return new AssignScriptRenderer();
         }
     }
 }

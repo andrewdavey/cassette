@@ -27,21 +27,20 @@ namespace Cassette.HtmlTemplates
     {
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, ICassetteApplication application)
         {
-            yield return new ParseHtmlTemplateReferences();
-            // Compile each template into JavaScript.
-            yield return new AddTransformerToAssets(
-                new CompileAsset(new KnockoutJQueryTmplCompiler())
-            );
-            yield return new AssignContentType("text/javascript");
-            yield return new AddTransformerToAssets(
-                new RegisterTemplateWithJQueryTmpl(bundle)
-            );
-            // Join all the JavaScript together
-            yield return new ConcatenateAssets();
-            // Assign the renderer to output a link to the bundle.
             yield return new AssignHtmlTemplateRenderer(
                 new RemoteHtmlTemplateBundleRenderer(application.UrlGenerator)
             );
+            yield return new AssignContentType("text/javascript");
+            if (bundle.IsFromCache) yield break;
+
+            yield return new ParseHtmlTemplateReferences();
+            yield return new AddTransformerToAssets(
+                new CompileAsset(new KnockoutJQueryTmplCompiler())
+            );
+            yield return new AddTransformerToAssets(
+                new RegisterTemplateWithJQueryTmpl(bundle)
+            );
+            yield return new ConcatenateAssets();
         }
     }
 }

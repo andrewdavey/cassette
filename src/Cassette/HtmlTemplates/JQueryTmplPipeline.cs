@@ -27,18 +27,21 @@ namespace Cassette.HtmlTemplates
     {
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, ICassetteApplication application)
         {
+            yield return new AssignHtmlTemplateRenderer(
+                new RemoteHtmlTemplateBundleRenderer(application.UrlGenerator)
+            );
+            yield return new AssignContentType("text/javascript");
+            if (bundle.IsFromCache) yield break;
+
             yield return new ParseHtmlTemplateReferences();
+            // TODO: Create classes for these two steps
             yield return new AddTransformerToAssets(
                 new CompileAsset(new JQueryTmplCompiler())
             );
-            yield return new AssignContentType("text/javascript");
             yield return new AddTransformerToAssets(
                 new RegisterTemplateWithJQueryTmpl(bundle)
             );
             yield return new ConcatenateAssets();
-            yield return new AssignHtmlTemplateRenderer(
-                new RemoteHtmlTemplateBundleRenderer(application.UrlGenerator)
-            );
         }
     }
 }

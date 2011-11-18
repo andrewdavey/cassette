@@ -88,6 +88,10 @@ namespace Cassette
             get { return references; }
         }
 
+        // When bundle loaded from cache we don't need to do most of the asset processing.
+        // However some steps, like assigning the renderer still need to happen.
+        internal bool IsFromCache { get; set; }
+
         internal bool IsSorted { get; set; }
 
         /// <summary>

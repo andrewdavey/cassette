@@ -37,6 +37,9 @@ namespace Cassette.Stylesheets
 
         protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, ICassetteApplication application)
         {
+            yield return new AssignStylesheetsRenderer();
+            if (bundle.IsFromCache) yield break;
+
             yield return new ParseCssReferences();
             if (CompileLess)
             {
@@ -54,7 +57,6 @@ namespace Cassette.Stylesheets
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);
             }
-            yield return new AssignStylesheetsRenderer();
         }
     }
 }

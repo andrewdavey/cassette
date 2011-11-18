@@ -135,9 +135,8 @@ namespace Cassette.Persistence
             var file = cacheDirectory.GetFile(filename);
             if (bundle.Assets.Count > 0 && !file.Exists) return null;
 
-            var references = GetBundleReferences(bundleElement).ToArray();
-
             var childAssets = bundle.Assets.ToArray();
+            var references = GetBundleReferences(bundleElement).ToArray();
             return () =>
             {
                 if (bundle.Assets.Count > 0)
@@ -149,6 +148,7 @@ namespace Cassette.Persistence
                 {
                     bundle.AddReference(reference);                    
                 }
+                // TODO: bundle.Process(application);
             };
         }
 
@@ -231,6 +231,7 @@ namespace Cassette.Persistence
             return new XElement(
                 "Bundle",
                 new XAttribute("Path", bundle.Path),
+                bundle.Assets.Count > 0 ? new XAttribute("Hash", bundle.Hash.ToHexString()) : null,
                 referenceElements,
                 fileElements
             );
