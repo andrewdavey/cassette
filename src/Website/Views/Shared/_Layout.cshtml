@@ -7,22 +7,25 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="keywords" content=".net asset management, asp.net, developer tools, web development" />
+    <meta name="description" content="@ViewBag.Description" />
     <title>@ViewBag.Title</title>
     @Assets.Stylesheets.Render()
 </head>
 <body>
-    <div class="top">
+    <div class="topwrap">
+        <div class="top">
         <div class="wrap">
             <a class="logo" href="@Url.RouteUrl("Home")"></a>
             <ul class="links">
-                <!--
-                <li>
+            
+                <li id="tweet">
                     <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset management for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
                 </li>
-                <li>
+                <li id="g1">
                     <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
                 </li>
-                -->
+     
                 <li>
                     <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
                 </li>
@@ -30,10 +33,10 @@
                     <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
                 </li>
                 <li>
-                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation")">Documentation</a>
+                    <a @ActiveClassIf("licensing") href="@Url.Action("index", "licensing")">Licensing</a>
                 </li>
                 <li>
-                    <a @ActiveClassIf("licensing") href="@Url.Action("index", "licensing")">Licensing</a>
+                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation")">Documentation</a>
                 </li>
                 <li>
                     <a @ActiveClassIf("faqs") href="@Url.RouteUrl("FAQs")">FAQs</a>
@@ -44,12 +47,17 @@
             </ul>
         </div>
     </div>
+    </div>
+
     @RenderBody()
 
-    <div class="footer"></div>
+    <div class="footer">
+        <p><a target="_blank" id="twittericon" href="http://twitter.com/getcassette"></a></p>
+        <p>&#169; 2011 <a target="_blank" href="http://www.aboutcode.net">Andrew Davey</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk">Equin Ltd</a></p>
+    </div>
 
     @Assets.Scripts.Render("body")
-
+    
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-25354265-1']);

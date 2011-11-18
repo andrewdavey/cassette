@@ -1,4 +1,8 @@
-﻿.top {
+﻿.topwrap {
+    background-image: url(images/topnoise.png);
+}
+
+.top {
     height: 77px;
     max-width: 960px;
     margin: 0 auto;
@@ -8,7 +12,7 @@
     display: block;
     height: 77px;
     width: 218px;
-    background-image: url(images/cassette-logo.png);
+    background-image: url(images/cassette-logo-new.png);
     background-repeat: no-repeat;
     background-position: left 16px;
 }
@@ -41,7 +45,16 @@
     padding: 0;
     display: table-cell;
     vertical-align: middle;
-    padding-left: 30px;
+    padding-left: 25px;
+}
+
+#tweet, #g1 {
+    padding-top: 5px;
+}
+
+#g1 {
+    padding-left: 6px;
+    padding-right: 35px;
 }
 
 .top .links a {

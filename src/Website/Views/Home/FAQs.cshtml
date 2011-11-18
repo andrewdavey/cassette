@@ -1,11 +1,60 @@
 ﻿@{
-    ViewBag.Title = "FAQs";
+    ViewBag.Title = "Cassette | FAQs";
     ViewBag.Section = "faqs";    
+    Assets.Scripts.Reference("~/assets/scripts/questions", "body");
 }
 
 <div class="main">
     <h1>FAQs</h1>
     <div class="content">
-        <p>Our FAQs are under construction... they'll be here shortly!</p>
+        <p>Got questions that aren't answered here? Just <a href="@Url.RouteUrl("contact")">get in touch</a> and we'd be happy to help.</p>
+        <h2>Support</h2>
+        <dl>
+                <dt><a href="#" class="helpquestion">Where can I get support for Cassette?</a></dt>
+                <dd class="helpanswer"><p>Free support for Cassette is currently available for everyone, via the Google Groups 
+                <a target="_blank" href="http://groups.google.com/group/cassette">Cassette forum</a>. </p></dd>
+
+                <dt><a href="#" class="helpquestion">What is Priority Live Support?</a></dt>
+                <dd class="helpanswer"><p>Priority live support is currently only available to holders of an Unlimited license. For 12 months after purchase 
+                of an Unlimited license, priorty live support will be provided by Andrew Davey, creator of Cassette, and will be primarily in the form of 
+                direct email, IM or Skype. </p></dd>
+                
+                <dt><a href="#" class="helpquestion">Where's the best place to report a bug?</a></dt>
+                <dd class="helpanswer"><p>If you find a bug in Cassette, the best way to let us know is by 
+                <a href="https://github.com/andrewdavey/cassette/issues" target="_blank">creating an issue</a> over on GitHub.</p></dd>
+                
+                <dt><a href="#" class="helpquestion">Where's the best place to submit feature requests?</a></dt>
+                <dd class="helpanswer"><p>We're constantly improving and adding to Cassette, so if you've got a feature request we'd love to hear it over 
+                on <a href="https://github.com/andrewdavey/cassette/issues" target="_blank">GitHub</a>. A few features already in the pipeline:</p>
+                <ul>
+                    <li>Sass support</li>
+                    <li>Anything else???</li>
+                </ul></dd>
+        </dl>
+        <h2>Licensing</h2>
+        <dl>
+                <dt><a href="#" class="helpquestion">Why does Cassette have a dual license?</a></dt>
+                <dd class="helpanswer"><p>We're passionate about Open Source software and want to support it - so Cassette is free for other Open Source
+                projects to use, and the code is available on <a href="https://github.com/andrewdavey/cassette" target="_blank">GitHub</a> for everyone 
+                to look at, tweak and improve.</p>
+                <p>We're also passionate about Cassette, and want it to be a viable, sustainable project for the long-term. 
+                Our proprietary licenses help support the development of Cassette - we hope that if Cassette helps your business save time/work/money/stress, 
+                the expense will be worthwhile. Feel differently? <a href="http://groups.google.com/group/cassette" target="_blank">Join the discussion</a>.</p></dd>
+                
+                <dt><a href="#" class="helpquestion">How do we change our license to include more servers?</a></dt>
+                <dd class="helpanswer"><p>You can buy additional licenses for more servers at any time, as you need them. If you reach 15 servers in total, we'll 
+                automatically upgrade you to an Unlimited license, and you'll receive 12 month priority live support as well.</p></dd>
+
+                <dt><a href="#" class="helpquestion">What license should I buy if I'm using cloud hosting?</a></dt>
+                <dd class="helpanswer"><p>Deploying your application into Azure, EC2 or some other cloud host? The Unlimited Cassette license is probably the 
+                best fit. You can scale out any number of servers and you'll receive priority live support. You could also buy a license for the maximum number 
+                of servers you're likely to be using, and buy additional licenses later if and when you need them.</p>
+                <p>Alternatively, contact <a href="mailto:sales@equin.co.uk">sales@equin.co.uk</a> to discuss your requirements.</p></dd>
+
+                <dt><a href="#" class="helpquestion">Are OEM licenses available?</a></dt>
+                <dd class="helpanswer"><p>If you're interested in buying OEM licenses, we may be able to provide a discounted rate for your clients. 
+                Get in touch at <a href="mailto:sales@equin.co.uk">sales@equin.co.uk</a> to let us know your requirements.</p></dd>
+
+        </dl>
     </div>
 </div>

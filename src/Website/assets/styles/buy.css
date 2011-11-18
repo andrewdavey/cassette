@@ -4,24 +4,6 @@
 
 /* Choose Your License Form */
 
-.buypage form {
-    position: absolute;    
-    top: 4.5em;
-    left: 2.1em;
-    border: 1px solid #cacaca;
-    margin: 3px 35px 30px 0;    
-}
-
-.buypage input {
-    width: 370px;
-    display: block;
-}
-
-.buypage select {
-    margin-bottom: 2em;
-    display: block;
-}
-
 .buypage form .total {
     color: #787878;
     font-size: 1.5em;
@@ -42,33 +24,11 @@
     color: #171717;
 }
 
-.buypage form button {
-    margin-bottom: .5em;
-}
-
-#buttonsupport {
-    font-size: .8em;
-    text-align: center;
-    font-weight: normal;
-}
-
 /* Help Section */
 
 .buyinghelp {
-    padding-left: 30em;
+    padding: 5px 0 0 30em;
     min-height: 440px;
-}
-
-.helpquestion {
-    padding-left: 20px;
-    font-weight: bold;
-    background-image: url(images/bullet_toggle_plus.png);
-    background-repeat: no-repeat;
-    background-position: left 6px;
-}
-
-.helpquestion.open {
-    background-image: url(images/bullet_toggle_minus.png);    
 }
 
 .buyinghelp dd {

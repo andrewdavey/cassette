@@ -95,14 +95,6 @@ textarea {
    Links
    ========================================================================== */
 
-a {
-    color: #00e;
-}
-
-a:visited {
-    color: #551a8b;
-}
-
 /*
  * Addresses outline displayed oddly in Chrome
  */
