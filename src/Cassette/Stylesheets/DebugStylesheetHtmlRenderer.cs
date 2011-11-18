@@ -21,11 +21,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Cassette.Stylesheets
 {
-    public class DebugStylesheetHtmlRenderer : IModuleHtmlRenderer<StylesheetModule>
+    class DebugStylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
         public DebugStylesheetHtmlRenderer(IUrlGenerator urlGenerator)
         {
@@ -34,31 +33,25 @@ namespace Cassette.Stylesheets
 
         readonly IUrlGenerator urlGenerator;
 
-        public IHtmlString Render(StylesheetModule module)
+        public string Render(StylesheetBundle bundle)
         {
-            var assetUrls = GetAssetUrls(module);
-            var createLink = GetCreateLinkFunc(module);
+            var assetUrls = GetAssetUrls(bundle);
+            var createLink = GetCreateLinkFunc(bundle);
 
-            return new HtmlString(
-                string.Join(
-                    Environment.NewLine,
-                    assetUrls.Select(createLink)
-                )
+            return string.Join(
+                Environment.NewLine,
+                assetUrls.Select(createLink)
             );
         }
 
-        IEnumerable<string> GetAssetUrls(StylesheetModule module)
+        IEnumerable<string> GetAssetUrls(StylesheetBundle bundle)
         {
-            return module.Assets.Select(
-                asset => asset.HasTransformers 
-                    ? urlGenerator.CreateAssetCompileUrl(module, asset)
-                    : urlGenerator.CreateAssetUrl(asset)
-            );
+            return bundle.Assets.Select(urlGenerator.CreateAssetUrl);
         }
 
-        Func<string, string> GetCreateLinkFunc(StylesheetModule module)
+        Func<string, string> GetCreateLinkFunc(StylesheetBundle bundle)
         {
-            if (string.IsNullOrEmpty(module.Media))
+            if (string.IsNullOrEmpty(bundle.Media))
             {
                 return url => string.Format(
                     HtmlConstants.LinkHtml,
@@ -70,7 +63,7 @@ namespace Cassette.Stylesheets
                 return url => string.Format(
                     HtmlConstants.LinkWithMediaHtml,
                     url,
-                    module.Media
+                    bundle.Media
                 );
             }
         }

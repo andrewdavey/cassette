@@ -22,13 +22,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Diagnostics;
+using System.Linq;
 
 namespace Cassette.IO
 {
-    public class IsolatedStorageDirectory : IDirectory
+    /// <remarks>
+    /// This class only implements enough of IDirectory to support BundleCache.
+    /// Other methods simply throw NotSupportException for now.
+    /// </remarks>
+    class IsolatedStorageDirectory : IDirectory
     {
-        public IsolatedStorageDirectory(IsolatedStorageFile storage, string basePath = "/")
+        public IsolatedStorageDirectory(IsolatedStorageFile storage)
+            : this(storage, "~/")
+        {
+        }
+
+        IsolatedStorageDirectory(IsolatedStorageFile storage, string basePath)
         {
             this.storage = storage;
             this.basePath = basePath;
@@ -37,21 +46,14 @@ namespace Cassette.IO
         readonly IsolatedStorageFile storage;
         readonly string basePath;
 
-        public void DeleteContents()
+        public string FullPath
         {
-            foreach (var filename in storage.GetFileNames(basePath + "/*"))
-            {
-                try
-                {
-                    storage.DeleteFile(GetAbsolutePath(filename));
-                }
-                catch (IsolatedStorageException exception)
-                {
-                    // File created by another user cannot always be deleted by a different user.
-                    // However, they can still be modified. So we'll just skip it.
-                    Trace.Source.TraceEvent(TraceEventType.Error, 0, exception.ToString());
-                }
-            }
+            get { return basePath; }
+        }
+
+        public IFile GetFile(string filename)
+        {
+            return new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this);
         }
 
         string GetAbsolutePath(string path)
@@ -59,41 +61,30 @@ namespace Cassette.IO
             return Path.Combine(basePath, path);
         }
 
-        public IDirectory GetDirectory(string path, bool createIfNotExists)
+        public bool DirectoryExists(string path)
         {
-            var fullPath = GetAbsolutePath(path);
-            if (storage.DirectoryExists(fullPath) == false)
-            {
-                if (createIfNotExists)
-                {
-                    storage.CreateDirectory(fullPath);
-                }
-                else
-                {
-                    throw new DirectoryNotFoundException("Directory not found: " + fullPath);
-                }
-            }
-            return new IsolatedStorageDirectory(storage, fullPath);
+            throw new NotSupportedException();
         }
 
-        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
+        public FileAttributes Attributes
         {
-            throw new NotImplementedException();
+            get { throw new NotSupportedException(); }
         }
 
-        public IEnumerable<string> GetDirectoryPaths(string relativePath)
+        public IDirectory GetDirectory(string path)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
-        public FileAttributes GetAttributes(string path)
+        public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
-            throw new NotImplementedException();
+            return storage.GetFileNames(searchPattern)
+                          .Select(filename => new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this));
         }
 
-        public IFile GetFile(string filename)
+        public IEnumerable<IDirectory> GetDirectories()
         {
-            return new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this);
+            throw new NotSupportedException();
         }
     }
 }

@@ -75,9 +75,9 @@ namespace Cassette.Scripts
 
         ScriptEngine CreateScriptEngineWithCoffeeScriptLoaded()
         {
-            var scriptEngine = new ScriptEngine();
-            scriptEngine.Execute(Properties.Resources.coffeescript);
-            return scriptEngine;
+            var engine = new ScriptEngine();
+            engine.Execute(Properties.Resources.coffeescript);
+            return engine;
         }
 
         ScriptEngine ScriptEngine

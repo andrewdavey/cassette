@@ -1,7 +1,7 @@
 ﻿@{
-    Assets.Stylesheets.Reference("assets/styles");
-    Assets.Scripts.Reference("http://platform.twitter.com/widgets.js", "body");
-    Assets.Scripts.Reference("https://apis.google.com/js/plusone.js", "body");
+    Bundles.Reference("assets/styles");
+    Bundles.Reference("http://platform.twitter.com/widgets.js", "body");
+    Bundles.Reference("https://apis.google.com/js/plusone.js", "body");
 }
 <!DOCTYPE html>
 <html>
@@ -10,7 +10,7 @@
     <meta name="keywords" content=".net asset management, asp.net, developer tools, web development" />
     <meta name="description" content="@ViewBag.Description" />
     <title>@ViewBag.Title</title>
-    @Assets.Stylesheets.Render()
+    @Bundles.RenderStylesheets()
 </head>
 <body>
     <div class="topwrap">
@@ -55,9 +55,7 @@
         <p><a target="_blank" id="twittericon" href="http://twitter.com/getcassette"></a></p>
         <p>&#169; 2011 <a target="_blank" href="http://www.aboutcode.net">Andrew Davey</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk">Equin Ltd</a></p>
     </div>
-
-    @Assets.Scripts.Render("body")
-    
+    @Bundles.RenderScripts("body")
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-25354265-1']);

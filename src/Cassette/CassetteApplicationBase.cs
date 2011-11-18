@@ -20,187 +20,92 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Cassette.HtmlTemplates;
-using Cassette.IO;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
-using Cassette.UI;
+using Cassette.Configuration;
+using Cassette.Persistence;
 
 namespace Cassette
 {
-    public abstract class CassetteApplicationBase : ICassetteApplication
+    abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(IEnumerable<ICassetteConfiguration> configurations, IDirectory rootDirectory, IDirectory cacheDirectory, IUrlGenerator urlGenerator, bool isOutputOptimized, string version)
+        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, string cacheVersion)
         {
-            this.rootDirectory = rootDirectory;
-            this.isOutputOptimized = isOutputOptimized;
-            this.urlGenerator = urlGenerator;
-            HtmlRewritingEnabled = true;
-            moduleFactories = CreateModuleFactories();
-            moduleContainers = CreateModuleContainers(
-                configurations,
-                cacheDirectory,
-                CombineVersionWithCassetteVersion(version)
-            );
+            this.settings = settings;
+            bundleContainer = CreateBundleContainer(bundles, settings, cacheVersion);
         }
 
-        bool isOutputOptimized;
-        readonly IDirectory rootDirectory;
-        IUrlGenerator urlGenerator;
-        readonly Dictionary<Type, IModuleContainer<Module>> moduleContainers;
-        readonly Dictionary<Type, object> moduleFactories;
+        readonly CassetteSettings settings;
+        readonly IBundleContainer bundleContainer;
 
-        public bool IsOutputOptimized
+        public CassetteSettings Settings
         {
-            get { return isOutputOptimized; }
-            set { isOutputOptimized = value; }
+            get { return settings; }
         }
 
-        public IDirectory RootDirectory
+        protected IBundleContainer BundleContainer
         {
-            get { return rootDirectory; }
+            get { return bundleContainer; }
         }
 
-        public IUrlGenerator UrlGenerator
+        public virtual T FindBundleContainingPath<T>(string path)
+            where T : Bundle
         {
-            get { return urlGenerator; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException("value", "UrlGenerator cannot be null.");
-                urlGenerator = value;
-            }
+            return bundleContainer.FindBundleContainingPath<T>(path);
         }
 
-        public bool HtmlRewritingEnabled { get; set; }
-
-        public IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Module
+        public IReferenceBuilder GetReferenceBuilder()
         {
-            return GetOrCreateReferenceBuilder(CreateReferenceBuilder<T>);
+            return GetOrCreateReferenceBuilder(CreateReferenceBuilder);
         }
 
-        protected abstract IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create) where T : Module;
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing) return;
-
-            foreach(var container in moduleContainers.Values)
-            {
-                container.Dispose();
-            }
-            GC.SuppressFinalize(this); 
-        }
-
-        IReferenceBuilder<T> CreateReferenceBuilder<T>()
-            where T : Module
-        {
-            return new ReferenceBuilder<T>(
-                GetModuleContainer<T>(),
-                (IModuleFactory<T>)moduleFactories[typeof(T)],
-                GetPlaceholderTracker(),
-                this
-            );
-        }
+        protected abstract IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create);
 
         protected abstract IPlaceholderTracker GetPlaceholderTracker();
 
-        protected IModuleContainer<T> GetModuleContainer<T>()
-            where T: Module
+        public void Dispose()
         {
-            IModuleContainer<Module> container;
-            if (moduleContainers.TryGetValue(typeof(T), out container))
+            bundleContainer.Dispose();
+        }
+
+        IReferenceBuilder CreateReferenceBuilder()
+        {
+            return new ReferenceBuilder(
+                bundleContainer,
+                settings.BundleFactories,
+                GetPlaceholderTracker(),
+                settings
+            );
+        }
+
+        static IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles, CassetteSettings settings, string cacheVersion)
+        {
+            IBundleContainerFactory containerFactory;
+            if (settings.IsDebuggingEnabled)
             {
-                return (IModuleContainer<T>)container;
+                containerFactory = new BundleContainerFactory(settings.BundleFactories);
             }
             else
             {
-                return new ModuleContainer<T>(Enumerable.Empty<T>());
+                containerFactory = new CachedBundleContainerFactory(
+                    new BundleCache(
+                        cacheVersion,
+                        settings
+                    ),
+                    settings.BundleFactories
+                );
             }
+            return containerFactory.Create(bundles, settings);
         }
 
-        public Module FindModuleContainingPath(string path)
+        protected IPlaceholderTracker CreatePlaceholderTracker()
         {
-            return moduleContainers.Values
-                .Select(container => container.FindModuleContainingPath(path))
-                .FirstOrDefault(module => module != null);
-        }
-
-        Dictionary<Type, IModuleContainer<Module>> CreateModuleContainers(IEnumerable<ICassetteConfiguration> configurations, IDirectory cacheDirectory, string version)
-        {
-            var moduleConfiguration = new ModuleConfiguration(this, cacheDirectory, rootDirectory, moduleFactories, version);
-            foreach (var configuration in configurations)
+            if (Settings.IsHtmlRewritingEnabled)
             {
-                configuration.Configure(moduleConfiguration, this);
+                return new PlaceholderTracker();
             }
-            AddDefaultModuleSourcesIfEmpty(moduleConfiguration);
-            return moduleConfiguration.CreateModuleContainers(isOutputOptimized, version);
-        }
-
-        Dictionary<Type, object> CreateModuleFactories()
-        {
-            return new Dictionary<Type, object>
+            else
             {
-                { typeof(ScriptModule), new ScriptModuleFactory() },
-                { typeof(StylesheetModule), new StylesheetModuleFactory() },
-                { typeof(HtmlTemplateModule), new HtmlTemplateModuleFactory() }
-            };
-        }
-
-        /// <remarks>
-        /// We need module container cache to depend on both the application version
-        /// and the Cassette version. So if either is upgraded, then the cache is discarded.
-        /// </remarks>
-        string CombineVersionWithCassetteVersion(string version)
-        {
-            return version + "|" + GetType().Assembly.GetName().Version;
-        }
-
-        void AddDefaultModuleSourcesIfEmpty(ModuleConfiguration moduleConfiguration)
-        {
-            if (moduleConfiguration.ContainsModuleSources(typeof(ScriptModule)) == false)
-            {
-                moduleConfiguration.Add(DefaultScriptModuleSource());
+                return new NullPlaceholderTracker();
             }
-            if (moduleConfiguration.ContainsModuleSources(typeof(StylesheetModule)) == false)
-            {
-                moduleConfiguration.Add(DefaultStylesheetModuleSource());
-            }
-            if (moduleConfiguration.ContainsModuleSources(typeof(HtmlTemplateModule)) == false)
-            {
-                moduleConfiguration.Add(DefaultHtmlTemplateModuleSource());
-            }
-        }
-
-        IModuleSource<ScriptModule> DefaultScriptModuleSource()
-        {
-            return new PerFileSource<ScriptModule>("")
-            {
-                FilePattern = "*.js;*.coffee",
-                Exclude = new Regex("-vsdoc\\.js$")
-            };
-        }
-
-        IModuleSource<StylesheetModule> DefaultStylesheetModuleSource()
-        {
-            return new PerFileSource<StylesheetModule>("")
-            {
-                FilePattern = "*.css;*.less"
-            };
-        }
-
-        IModuleSource<HtmlTemplateModule> DefaultHtmlTemplateModuleSource()
-        {
-            return new PerFileSource<HtmlTemplateModule>("")
-            {
-                FilePattern = "*.htm;*.html"
-            };
         }
     }
 }

@@ -22,12 +22,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Xml.Linq;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Persistence;
 
 namespace Cassette
 {
@@ -64,10 +62,8 @@ namespace Cassette
         public GivenConcatenatedAsset_WithTwoChildren()
         {
             child1 = new Mock<IAsset>();
-            cacheableChild1 = child1.As<ICacheableAsset>();
             child1.Setup(c => c.OpenStream()).Returns(() => Stream.Null);
             child2 = new Mock<IAsset>();
-            cacheableChild2 = child2.As<ICacheableAsset>();
             child2.Setup(c => c.OpenStream()).Returns(() => Stream.Null);
             asset = new ConcatenatedAsset(
                 new[] { child1.Object, child2.Object }
@@ -76,8 +72,6 @@ namespace Cassette
 
         readonly ConcatenatedAsset asset;
         readonly Mock<IAsset> child1, child2;
-        readonly Mock<ICacheableAsset> cacheableChild1;
-        readonly Mock<ICacheableAsset> cacheableChild2;
 
         [Fact]
         public void RepeatedOpenStreamCallsReturnNewStreams()
@@ -92,19 +86,10 @@ namespace Cassette
         [Fact]
         public void AcceptCallsVisitOnVisitorForEachChildAsset()
         {
-            var visitor = new Mock<IAssetVisitor>();
+            var visitor = new Mock<IBundleVisitor>();
             asset.Accept(visitor.Object);
             visitor.Verify(v => v.Visit(child1.Object));
             visitor.Verify(v => v.Visit(child2.Object));
-        }
-
-        [Fact]
-        public void CreateCacheManifestCreatesElementForEachAsset()
-        {
-            cacheableChild1.Setup(c => c.CreateCacheManifest()).Returns(new[] { new XElement("Asset") });
-            cacheableChild2.Setup(c => c.CreateCacheManifest()).Returns(new[] { new XElement("Asset") });
-            var assetElements = asset.CreateCacheManifest().ToArray();
-            assetElements.Length.ShouldEqual(2);
         }
 
         public void Dispose()

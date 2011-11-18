@@ -20,10 +20,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette.Stylesheets
 {
-    class HtmlConstants
+    static class HtmlConstants
     {
-        public static readonly string LinkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
-        public static readonly string LinkWithMediaHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
+        public const string LinkHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\"/>";
+        public const string LinkWithMediaHtml = "<link href=\"{0}\" type=\"text/css\" rel=\"stylesheet\" media=\"{1}\"/>";
     }
 }
 

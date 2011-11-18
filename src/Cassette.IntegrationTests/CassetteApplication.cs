@@ -22,9 +22,9 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Web;
@@ -47,56 +47,84 @@ namespace Cassette.IntegrationTests
         readonly IsolatedStorageFile storage;
         readonly RouteCollection routes;
 
-        CassetteApplication CreateApplication(Action<ModuleConfiguration, ICassetteApplication> configure)
-        {
-            var config = new Mock<ICassetteConfiguration>();
-            config.Setup(c => c.Configure(It.IsAny<ModuleConfiguration>(), It.IsAny<ICassetteApplication>()))
-                  .Callback(configure);
-
-            return new CassetteApplication(
-                new[] { config.Object },
-                new FileSystemDirectory(Path.GetFullPath(@"assets")),
-                new IsolatedStorageDirectory(storage),
-                isOutputOptmized: true,
-                version: Guid.NewGuid().ToString(), // unique version
-                urlGenerator: new UrlGenerator("/"),
-                routes: routes,
-                getCurrentHttpContext: () => Mock.Of<HttpContextBase>()
-            );
-        }
-
         [Fact]
-        public void CanGetScriptModuleA()
+        public void CanGetScriptBundleA()
         {
-            CreateApplication((modules, app) =>
-                modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
-                {
-                    Exclude = new Regex(@"\.vsdoc\.js$")
-                })
-            );
-
-            using (var http = new HttpTestHarness(routes))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
             {
-                http.Get("~/_assets/scripts/scripts/module-a");
-                http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset2(){}function asset1(){}");
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/scriptbundle/scripts/bundle-a");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset2(){}function asset1(){}");
+                }
             }
         }
 
         [Fact]
-        public void CanGetScriptModuleB()
+        public void CanGetScriptBundleB()
         {
-            CreateApplication((modules, app) =>
-                modules.Add(new PerSubDirectorySource<ScriptModule>("scripts")
-                {
-                    Exclude = new Regex(@"\.vsdoc\.js$")
-                })
-            );
-
-            using (var http = new HttpTestHarness(routes))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
             {
-                http.Get("~/_assets/scripts/scripts/module-b");
-                http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset3(){}");
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/scriptbundle/scripts/bundle-b");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("function asset3(){}");
+                }
             }
+        }
+
+        [Fact]
+        public void CanGetAsset()
+        {
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/asset/scripts/bundle-a/asset-1.js?123");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual(@"/// <reference path=""asset-2.js""/>
+
+function asset1() {
+}");
+                }
+            }
+        }
+
+        [Fact]
+        public void GetCoffeeScriptAssetReturnsItCompiledInToJavaScript()
+        {
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/asset/scripts/bundle-c/asset.coffee?123");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual(@"(function() {
+  var x;
+  x = 1;
+}).call(this);
+".Replace("\r\n", "\n"));
+                }
+            }
+            
+        }
+
+        CassetteApplication CreateApplication(Action<BundleCollection> configure)
+        {
+            var settings = new CassetteSettings
+            {
+                CacheDirectory = new IsolatedStorageDirectory(storage),
+                SourceDirectory = new FileSystemDirectory(Path.GetFullPath("assets"))
+            };
+            var bundles = new BundleCollection(settings);
+            configure(bundles);
+            var application = new CassetteApplication(
+                bundles,
+                settings,
+                new CassetteRouting(new VirtualDirectoryPrepender("/")),
+                Mock.Of<HttpContextBase>,
+                ""
+            );
+            application.InstallRoutes(routes);
+            return application;
         }
 
         void RemoveExistingCache()
@@ -150,12 +178,16 @@ namespace Cassette.IntegrationTests
 
         public void Get(string url)
         {
+            var queryStringStart = url.IndexOf('?');
+            if (queryStringStart >= 0) url = url.Substring(0, queryStringStart);
+
             Request.SetupGet(r => r.RequestType).Returns("GET");
             Request.SetupGet(r => r.HttpMethod).Returns("GET");
             Request.SetupGet(r => r.AppRelativeCurrentExecutionFilePath)
                    .Returns(url);
 
             var routeData = routes.GetRouteData(Context.Object);
+            if (routeData == null) throw new Exception("Route not found for URL: " + url);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(Context.Object, routeData));
             httpHandler.ProcessRequest(null);
             ResponseOutputStream.Position = 0;

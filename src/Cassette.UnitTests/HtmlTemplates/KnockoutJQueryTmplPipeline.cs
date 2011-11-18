@@ -18,7 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Moq;
+using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -27,14 +27,14 @@ namespace Cassette.HtmlTemplates
     public class KnockoutJQueryTmplPipeline_Tests
     {
         [Fact]
-        public void WhenProcessModule_ThenModuleContentTypeIsTextJavascript()
+        public void WhenProcessBundle_ThenBundleContentTypeIsTextJavascript()
         {
             var pipeline = new KnockoutJQueryTmplPipeline();
-            var module = new HtmlTemplateModule("~/");
+            var bundle = new HtmlTemplateBundle("~/");
 
-            pipeline.Process(module, Mock.Of<ICassetteApplication>());
+            pipeline.Process(bundle, new CassetteSettings());
 
-            module.ContentType.ShouldEqual("text/javascript");
+            bundle.ContentType.ShouldEqual("text/javascript");
         }
     }
 }

@@ -23,8 +23,8 @@ using System.Linq;
 
 namespace Cassette
 {
-    public class PerSubDirectorySource<T> : FileSystemModuleSource<T>
-        where T : Module
+    public class PerSubDirectorySource<T> : FileSystemBundleSource<T>
+        where T : Bundle
     {
         public PerSubDirectorySource(string baseDirectory)
         {
@@ -33,7 +33,7 @@ namespace Cassette
 
         readonly string baseDirectory;
 
-        protected override IEnumerable<string> GetModuleDirectoryPaths(ICassetteApplication application)
+        protected override IEnumerable<string> GetBundleDirectoryPaths(ICassetteApplication application)
         {
             return application.RootDirectory.GetDirectoryPaths(baseDirectory).Select(EnsureApplicationRelativePath);
         }

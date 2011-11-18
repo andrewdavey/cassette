@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\scripts\disqus\disqus.js" />
+    <Content Include="assets\scripts\jquery\jquery.js" />
     <Content Include="assets\scripts\licensing-buy\form.js" />
     <Content Include="assets\scripts\questions\questions.js" />
     <Content Include="assets\styles\buy.css" />
@@ -96,7 +97,9 @@
     <Content Include="assets\styles\top.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

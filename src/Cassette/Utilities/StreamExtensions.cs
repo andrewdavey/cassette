@@ -23,7 +23,7 @@ using System.Security.Cryptography;
 
 namespace Cassette.Utilities
 {
-    public static class StreamExtensions
+    static class StreamExtensions
     {
 // ReSharper disable InconsistentNaming
         public static byte[] ComputeSHA1Hash(this Stream stream)

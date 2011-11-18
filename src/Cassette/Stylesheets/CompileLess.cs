@@ -18,23 +18,30 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using System;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    public class CompileLess : ModuleProcessorOfAssetsMatchingFileExtension<StylesheetModule>
+    public class CompileLess : IBundleProcessor<StylesheetBundle>
     {
-        public CompileLess(ICompiler compiler)
-            : base("less")
+        readonly ICompiler lessCompiler;
+
+        public CompileLess(ICompiler lessCompiler)
         {
-            this.compiler = compiler;
+            this.lessCompiler = lessCompiler;
         }
 
-        readonly ICompiler compiler;
-
-        protected override void Process(IAsset asset, Module module)
+        public void Process(StylesheetBundle bundle, CassetteSettings settings)
         {
-            asset.AddAssetTransformer(new CompileAsset(compiler));
+            foreach (var asset in bundle.Assets)
+            {
+                if (asset.SourceFile.FullPath.EndsWith(".less", StringComparison.OrdinalIgnoreCase))
+                {
+                    asset.AddAssetTransformer(new CompileAsset(lessCompiler));
+                }
+            }
         }
     }
 }

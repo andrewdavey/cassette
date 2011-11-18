@@ -47,7 +47,7 @@ namespace Cassette.Utilities
         [Fact]
         public void BackSlashesConvertedToForwardSlashes()
         {
-            PathUtilities.NormalizePath("test\\module\\foo").ShouldEqual("test/module/foo");
+            PathUtilities.NormalizePath("test\\bundle\\foo").ShouldEqual("test/bundle/foo");
         }
 
         [Fact]

@@ -20,7 +20,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.IO;
 using System.Linq;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -41,35 +42,95 @@ namespace Cassette.Stylesheets
         {
             new StylesheetPipeline().StylesheetMinifier.ShouldBeType<MicrosoftStyleSheetMinifier>();
         }
+
+        [Fact]
+        public void GivenCompileLessIsTrue_WhenProcessBundle_ThenLessAssetHasCompileAssetTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { CompileLess = true };
+            pipeline.Process(bundle, new CassetteSettings());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
+        }
+
+        [Fact]
+        public void GivenCompileLessIsFalse_WhenProcessBundle_ThenLessAssetHasNoCompileAssetTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { CompileLess = false };
+            pipeline.Process(bundle, new CassetteSettings());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
+        }
+
+        [Fact]
+        public void GivenConvertImageUrlsToDataUrisIsTrue_WhenProcessBundle_ThenLessAssetHasDataUriTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { ConvertImageUrlsToDataUris = true };
+            pipeline.Process(bundle, new CassetteSettings());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)));
+        }
+
+        [Fact]
+        public void GivenConvertImageUrlsToDataUrisIsFalse_WhenProcessBundle_ThenLessAssetHasNoDataUriTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { ConvertImageUrlsToDataUris = false };
+            pipeline.Process(bundle, new CassetteSettings());
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)), Times.Never());
+        }
     }
 
     public class StylesheetPipeline_Process_TestBase
     {
         public StylesheetPipeline_Process_TestBase()
         {
-            application = new Mock<ICassetteApplication>();            
-            module = new StylesheetModule("~");
+            settings = new CassetteSettings();
+            bundle = new StylesheetBundle("~");
             asset1 = new Mock<IAsset>();
             asset2 = new Mock<IAsset>();
-            module.Assets.Add(asset1.Object);
-            module.Assets.Add(asset2.Object);
+            bundle.Assets.Add(asset1.Object);
+            bundle.Assets.Add(asset2.Object);
 
-            asset1.SetupGet(a => a.SourceFilename)
+            asset1.SetupGet(a => a.SourceFile.FullPath)
                   .Returns("~/asset1.css");
             asset1.Setup(a => a.OpenStream())
                   .Returns(() => "/* @reference \"asset2.css\"; */".AsStream());
-            asset2.SetupGet(a => a.SourceFilename)
+            asset2.SetupGet(a => a.SourceFile.FullPath)
                   .Returns("~/asset2.css");
             asset2.Setup(a => a.OpenStream())
                   .Returns(() => "p { color: White; }".AsStream());
             asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/asset2.css", asset1.Object, -1, AssetReferenceType.SameModule) });
+                  .Returns(new[] { new AssetReference("~/asset2.css", asset1.Object, -1, AssetReferenceType.SameBundle) });
         }
 
         protected readonly Mock<IAsset> asset1;
         protected readonly Mock<IAsset> asset2;
-        protected readonly StylesheetModule module;
-        protected readonly Mock<ICassetteApplication> application;
+        protected readonly StylesheetBundle bundle;
+        protected readonly CassetteSettings settings;
     }
 
     public class StylesheetPipeline_Process_Tests : StylesheetPipeline_Process_TestBase
@@ -77,15 +138,15 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CssReferencesAreParsed()
         {
-            new StylesheetPipeline().Process(module, application.Object);
-            asset1.Verify(a => a.AddReference("asset2.css", -1));
+            new StylesheetPipeline().Process(bundle, settings);
+            asset1.Verify(a => a.AddReference("asset2.css", 1));
         }
 
         [Fact]
-        public void GivenApplicationIsOutputOptimized_ThenCssUrlsAreExpanded()
+        public void GivenDebugMode_ThenCssUrlsAreExpanded()
         {
-            application.SetupGet(a => a.IsOutputOptimized).Returns(true);
-            new StylesheetPipeline().Process(module, application.Object);
+            settings.IsDebuggingEnabled = false;
+            new StylesheetPipeline().Process(bundle, settings);
             asset2.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(
                 transformer => transformer is ExpandCssUrlsAssetTransformer)
             ));
@@ -94,23 +155,24 @@ namespace Cassette.Stylesheets
         [Fact]
         public void AssetsAreSortedByDependency()
         {
-            new StylesheetPipeline().Process(module, application.Object);
-            module.Assets.SequenceEqual(new[] { asset2.Object, asset1.Object }).ShouldBeTrue();
+            settings.IsDebuggingEnabled = true;
+            new StylesheetPipeline().Process(bundle, settings);
+            bundle.Assets.SequenceEqual(new[] { asset2.Object, asset1.Object }).ShouldBeTrue();
         }
     }
 
-    public class StylesheetPipelineWhereApplicationIsOutputOptimized : StylesheetPipeline_Process_TestBase
+    public class StylesheetPipelineInDebugMode : StylesheetPipeline_Process_TestBase
     {
-        public StylesheetPipelineWhereApplicationIsOutputOptimized()
+        public StylesheetPipelineInDebugMode()
         {
-            application.Setup(a => a.IsOutputOptimized).Returns(true);
+            settings.IsDebuggingEnabled = false;
         }
 
         [Fact]
         public void AssetsAreConcatenated()
         {
-            new StylesheetPipeline().Process(module, application.Object);
-            module.Assets.Count.ShouldEqual(1);
+            new StylesheetPipeline().Process(bundle, settings);
+            bundle.Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
@@ -118,9 +180,9 @@ namespace Cassette.Stylesheets
         {
             var pipeline = new StylesheetPipeline();
 
-            pipeline.Process(module, application.Object);
+            pipeline.Process(bundle, settings);
 
-            using (var reader = new StreamReader(module.Assets[0].OpenStream()))
+            using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
             {
                 reader.ReadToEnd().ShouldEqual("p{color:#fff}");
             }
@@ -132,9 +194,9 @@ namespace Cassette.Stylesheets
         public StylesheetPipelineWhereLessCompilerTrue()
         {
             asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.less");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("asset.less");
             asset.Setup(a => a.OpenStream()).Returns(() => "// @reference 'other.less';".AsStream());
-            module.Assets.Add(asset.Object);
+            bundle.Assets.Add(asset.Object);
             pipeline = new StylesheetPipeline();
             pipeline.CompileLess = true;
         }
@@ -145,14 +207,14 @@ namespace Cassette.Stylesheets
         [Fact]
         public void ReferenceInLessAssetIsParsed()
         {
-            pipeline.Process(module, application.Object);
+            pipeline.Process(bundle, settings);
             asset.Verify(a => a.AddReference("other.less", 1));
         }
 
         [Fact]
         public void LessAssetIsCompiled()
         {
-            pipeline.Process(module, application.Object);
+            pipeline.Process(bundle, settings);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(
                 t => t is CompileAsset

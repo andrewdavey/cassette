@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <system.web.webPages.razor>
+        <pages>
+            <namespaces>
+                <add namespace="Cassette.Views"/>
+            </namespaces>
+        </pages>
+    </system.web.webPages.razor>    
+</configuration>

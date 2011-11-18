@@ -20,7 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 namespace Cassette.Utilities
 {
-    public static class JavaScriptUtilities
+    static class JavaScriptUtilities
     {
         public static string EscapeJavaScriptString(string s)
         {

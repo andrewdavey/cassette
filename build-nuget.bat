@@ -4,5 +4,6 @@ if exist build\nuget. (
 	mkdir build\nuget
 )
 
-nuget pack -Build src\Cassette.Web\Cassette.Web.csproj -Symbols -OutputDirectory build\nuget -Prop Configuration=Release
 nuget pack -Build src\Cassette\Cassette.csproj -Symbols -OutputDirectory build\nuget -Prop Configuration=Release
+nuget pack -Build src\Cassette.Views\Cassette.Views.csproj -Symbols -OutputDirectory build\nuget -Prop Configuration=Release
+nuget pack -Build src\Cassette.Web\Cassette.Web.csproj -Symbols -OutputDirectory build\nuget -Prop Configuration=Release

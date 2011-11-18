@@ -22,26 +22,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using Cassette.IO;
-using Cassette.ModuleProcessing;
-using Cassette.Persistence;
 
 namespace Cassette
 {
-    /// <summary>
-    /// Base class for <see cref="Asset"/> and <see cref="ConcatenatedAsset"/>.
-    /// </summary>
-    public abstract class AssetBase : IAsset, ICacheableAsset
+    public abstract class AssetBase : IAsset
     {
         readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
 
-        public abstract void Accept(IAssetVisitor visitor);
-
-        public bool HasTransformers
-        {
-            get { return transformers.Any(); }
-        }
+        public abstract void Accept(IBundleVisitor visitor);
 
         public void AddAssetTransformer(IAssetTransformer transformer)
         {
@@ -64,8 +53,6 @@ namespace Cassette
 
         public abstract IFile SourceFile { get; }
 
-        public abstract string SourceFilename { get; }
-
         public abstract byte[] Hash { get; }
 
         public abstract IEnumerable<AssetReference> References { get; }
@@ -73,8 +60,6 @@ namespace Cassette
         public abstract void AddReference(string path, int lineNumber);
 
         public abstract void AddRawFileReference(string relativeFilename);
-
-        public abstract IEnumerable<XElement> CreateCacheManifest();
     }
 }
 

@@ -18,7 +18,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Moq;
 using Xunit;
 
@@ -30,12 +31,12 @@ namespace Cassette.Stylesheets
         public void GivenACompiler_WhenProcessCalled_ThenCompileAssetTransformerAddedToLessAsset()
         {
             var processor = new CompileLess(Mock.Of<ICompiler>());
-            var module = new StylesheetModule("~");
+            var bundle = new StylesheetBundle("~");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("test.less");
-            module.Assets.Add(asset.Object);
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.less");
+            bundle.Assets.Add(asset.Object);
 
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)));
         }
@@ -44,15 +45,14 @@ namespace Cassette.Stylesheets
         public void GivenACompiler_WhenProcessCalled_ThenCompileAssetTransformerNotAddedToCssAsset()
         {
             var processor = new CompileLess(Mock.Of<ICompiler>());
-            var module = new StylesheetModule("~");
+            var bundle = new StylesheetBundle("~");
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("test.css");
-            module.Assets.Add(asset.Object);
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.css");
+            bundle.Assets.Add(asset.Object);
 
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)), Times.Never());
         }
     }
 }
-

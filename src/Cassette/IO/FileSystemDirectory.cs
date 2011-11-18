@@ -25,23 +25,44 @@ using Cassette.Utilities;
 
 namespace Cassette.IO
 {
-    public class FileSystemDirectory : IDirectory
+    class FileSystemDirectory : IDirectory
     {
-        public FileSystemDirectory(string rootDirectory)
+        public FileSystemDirectory(string fullSystemPath)
         {
-            this.rootDirectory = rootDirectory.TrimEnd('\\', '/');
+            this.fullSystemPath = PathUtilities.NormalizePath(fullSystemPath);
         }
 
-        readonly string rootDirectory;
+        readonly string fullSystemPath;
+        FileSystemDirectory parent;
+
+        public string FullPath
+        {
+            get
+            {
+                if (parent == null)
+                {
+                    return "~/";
+                }
+                else
+                {
+                    return "~/" + fullSystemPath.Substring(GetRootDirectory().fullSystemPath.Length + 1);
+                }
+            }
+        }
 
         public IFile GetFile(string filename)
         {
             try
             {
+                if (filename.Replace('\\', '/').StartsWith(fullSystemPath))
+                {
+                    filename = filename.Substring(fullSystemPath.Length + 1);
+                }
+
                 var subDirectoryPath = Path.GetDirectoryName(filename);
-                var subDirectory = GetDirectory(subDirectoryPath, false);
+                var subDirectory = GetDirectory(subDirectoryPath);
                 var path = GetAbsolutePath(filename);
-                return new FileSystemFile(path, subDirectory);
+                return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
             }
             catch (DirectoryNotFoundException)
             {
@@ -49,13 +70,24 @@ namespace Cassette.IO
             }
         }
 
+        public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
+        {
+            return Directory.GetFiles(fullSystemPath, searchPattern, searchOption)
+                            .Select(GetFile);
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(GetAbsolutePath(path));
+        }
+
         public void DeleteContents()
         {
-            foreach (var directory in Directory.GetDirectories(rootDirectory))
+            foreach (var directory in Directory.GetDirectories(fullSystemPath))
             {
                 Directory.Delete(directory, true);
             }
-            foreach (var filename in Directory.GetFiles(rootDirectory))
+            foreach (var filename in Directory.GetFiles(fullSystemPath))
             {
                 File.Delete(filename);
             }
@@ -63,44 +95,54 @@ namespace Cassette.IO
 
         string GetAbsolutePath(string filename)
         {
-            return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(rootDirectory, filename));
+            if (filename == "~")
+            {
+                return fullSystemPath;
+            }
+            if (filename.StartsWith("~/"))
+            {
+                return GetRootDirectory().GetAbsolutePath(filename.Substring(2));
+            }
+
+            return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(fullSystemPath, filename));
         }
 
-        string ToRelativePath(string fullPath)
+        public IDirectory GetDirectory(string path)
         {
-            return fullPath.Substring(rootDirectory.Length + 1);
-        }
+            if (path == "") return this;
+            if (path[0] == '~')
+            {
+                path = path.Length == 1 ? "" : path.Substring(2);
+                return GetRootDirectory().GetDirectory(path);
+            }
 
-        public IDirectory GetDirectory(string path, bool createIfNotExists)
-        {
             var fullPath = GetAbsolutePath(path);
             if (Directory.Exists(fullPath) == false)
             {
-                if (createIfNotExists)
-                {
-                    Directory.CreateDirectory(fullPath);
-                }
-                else
-                {
-                    throw new DirectoryNotFoundException("Directory not found: " + fullPath);
-                }
+                throw new DirectoryNotFoundException("Directory not found: " + fullPath);
             }
-            return new FileSystemDirectory(fullPath);
+            return new FileSystemDirectory(fullPath)
+            {
+                parent = this
+            };
         }
 
-        public IEnumerable<string> GetDirectoryPaths(string relativePath)
+        public IEnumerable<IDirectory> GetDirectories()
         {
-            return Directory.EnumerateDirectories(GetAbsolutePath(relativePath)).Select(ToRelativePath);
+            return Directory.EnumerateDirectories(fullSystemPath)
+                            .Select(GetDirectory);
         }
 
-        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
+        public FileAttributes Attributes
         {
-            return Directory.GetFiles(GetAbsolutePath(directory), searchPattern, searchOption).Select(ToRelativePath);
+            get { return File.GetAttributes(fullSystemPath); }
         }
 
-        public FileAttributes GetAttributes(string path)
+        FileSystemDirectory GetRootDirectory()
         {
-            return File.GetAttributes(GetAbsolutePath(path));
+            return (parent == null)
+                ? this 
+                : parent.GetRootDirectory();
         }
     }
 }
