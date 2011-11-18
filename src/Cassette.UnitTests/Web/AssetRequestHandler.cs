@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Specialized;
+using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Routing;
@@ -15,7 +16,10 @@ namespace Cassette.Web
         {
             var requestContext = new Mock<RequestContext>();
             var routeData = new RouteData();
+            request = new Mock<HttpRequestBase>();
             response = new Mock<HttpResponseBase>();
+            cache = new Mock<HttpCachePolicyBase>();
+            requestHeaders = new NameValueCollection();
 
             routeData.Values.Add("path", "test/asset.js");
             requestContext.SetupGet(r => r.RouteData)
@@ -23,8 +27,12 @@ namespace Cassette.Web
 
             requestContext.SetupGet(r => r.HttpContext.Response)
                           .Returns(response.Object);
+            requestContext.SetupGet(r => r.HttpContext.Request)
+                          .Returns(request.Object);
 
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
+            response.SetupGet(r => r.Cache).Returns(cache.Object);
+            request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
             var bundleContainer = new Mock<IBundleContainer>();
             bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>(It.IsAny<string>()))
@@ -33,7 +41,10 @@ namespace Cassette.Web
         }
 
         readonly AssetRequestHandler handler;
+        readonly Mock<HttpRequestBase> request;
         readonly Mock<HttpResponseBase> response;
+        readonly Mock<HttpCachePolicyBase> cache;
+        readonly NameValueCollection requestHeaders;
         Bundle bundle;
         MemoryStream outputStream;
 

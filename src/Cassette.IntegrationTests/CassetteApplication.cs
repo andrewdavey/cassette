@@ -116,13 +116,15 @@ function asset1() {
             };
             var bundles = new BundleCollection(settings);
             configure(bundles);
-            return new CassetteApplication(
+            var application = new CassetteApplication(
                 bundles,
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")),
                 Mock.Of<HttpContextBase>,
                 ""
             );
+            application.InstallRoutes(routes);
+            return application;
         }
 
         void RemoveExistingCache()
@@ -185,7 +187,7 @@ function asset1() {
                    .Returns(url);
 
             var routeData = routes.GetRouteData(Context.Object);
-            if (routeData == null) return;
+            if (routeData == null) throw new Exception("Route not found for URL: " + url);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(Context.Object, routeData));
             httpHandler.ProcessRequest(null);
             ResponseOutputStream.Position = 0;
