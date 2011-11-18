@@ -5,7 +5,7 @@
 .banner {
     max-width: 960px;
     margin: 0 auto;
-    min-height: 390px;
+    min-height: 375px;
 }
 
 .banner h1 {
@@ -15,28 +15,8 @@
     padding-top: 10px;
 }
 
-.banner .about {
-    display: table;
-}
-
-.banner .intro, .banner .screencast {
-    display: table-cell;
-    vertical-align: top;
-}
-
-.banner .intro {
-    padding-right: 1em;
-}
-
 .intro a {
     font-size: 1em;
-}
-
-.banner .screencast {
-    width: 172px;
-    background-color: #7ab0d5;
-    padding: 30px;
-    border: solid 1px #0a517d;
 }
 
 .banner p {
@@ -46,10 +26,56 @@
     text-shadow: 0 1px 0 #01456D;
 }
 
-.screencast p {
-    color: Black;
-    font-size: 1em;
+/* Fav Tweets */
+
+.favtweets {
+    width: 235px;
+    float: right;
+    padding-top: 1.8em;
+    margin-left: 3em;
+}
+
+.favtweets h2 {
+    font-family: Helvetica;
+    color: #fff;
+    padding-left: 1em;
+    font-size: 1.2em;
+    margin-bottom: 1.1em;
+}
+
+.favtweets img {
+    margin-right: 0.5em;
+}
+
+.favtweets p.tweet {
+    font-size: 0.9em;
+    line-height: 1.6em;
+    color: #fff;
     text-shadow: none;
+    margin-bottom: 0.3em;
+}
+
+.favtweets p.tweeter {
+    font-size: 0.8em;
+    color: #2A2A2A;
+    text-shadow: none;
+    margin-bottom: 1.5em;
+}
+
+.tweet a {
+    color: #fff;
+}
+
+.tweet a:hover {
+    color: #EBEBEB;
+}
+
+.tweeter a {
+    color: #2A2A2A;
+}
+
+.tweeter a:hover {
+    color: #000;
 }
 
 /* Secondary Content */
@@ -70,10 +96,14 @@
 }
 
 .file-details {
-    width: 300px;
-    padding: 20px 25px 10px 25px;
+    width: 275px;
+    padding: 25px 25px 20px 25px;
     display: table-cell;
     vertical-align: top;
+}
+
+.file-details p {
+    margin-bottom: 0.6em;
 }
 
 .file {
@@ -81,7 +111,7 @@
     border-left: 1px solid #ccc;
     display: table-cell;
     vertical-align: top;
-    padding: 20px 25px;
+    padding: 30px 10px 20px 20px;
 }
 
 .section ul {
@@ -106,5 +136,5 @@ p.minor a:hover {
 }
 
 .more {
-    padding: 20px 25px;
+    padding: 25px 25px 30px 25px;
 }

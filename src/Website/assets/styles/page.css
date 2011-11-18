@@ -45,7 +45,7 @@ h3 {
 
 p {
     color: #171717;
-    margin: 0 0 1em 0;
+    margin: 0 0 0.9em 0;
     line-height: 1.4em;
 }
 
@@ -70,6 +70,9 @@ a:hover {
     color: #1d3d01;
 }
 
+dl a {
+    text-decoration: none;
+}
 
 .helpquestion {
     color: #171717;

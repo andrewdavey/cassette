@@ -1,8 +1,8 @@
 ﻿pre {
-    padding: .5em;
-    margin: 1.8em 0 0 0;
     font-family: Consolas, Inconsolata, monospace;
-    font-size: 10pt;
+    font-size: 9.5pt;
+    margin: 0;
+    padding: 0;
 }
 code {
     font-family: Consolas, Inconsolata, monospace;    
