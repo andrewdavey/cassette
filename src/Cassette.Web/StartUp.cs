@@ -53,7 +53,7 @@ namespace Cassette.Web
         static IEnumerable<ICassetteConfiguration> _configurations;
         static IsolatedStorageFile _storage;
         static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
-        static bool _firstCreation;
+        static bool _firstCreation = true;
         readonly static object CreationLock = new object();
 
         /// <summary>

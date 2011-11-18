@@ -63,7 +63,7 @@ namespace Cassette.Persistence
         {
             foreach (var child in children)
             {
-                visitor.Visit(child);
+                child.Accept(visitor);
             }
         }
 

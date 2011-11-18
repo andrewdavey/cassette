@@ -54,6 +54,7 @@ namespace Cassette.Configuration
 
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
 
+        // TODO: Make this abstract and override in Cassette.Web subclass.
         public IUrlGenerator UrlGenerator { get; set; }
 
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()

@@ -88,8 +88,7 @@ namespace Cassette
                 containerFactory = new CachedBundleContainerFactory(
                     new BundleCache(
                         cacheVersion,
-                        settings.CacheDirectory,
-                        settings.SourceDirectory
+                        settings
                     ),
                     settings.BundleFactories
                 );

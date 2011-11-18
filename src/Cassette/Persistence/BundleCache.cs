@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Utilities;
 
@@ -30,17 +31,19 @@ namespace Cassette.Persistence
 {
     class BundleCache : IBundleCache
     {
-        public BundleCache(string version, IDirectory cacheDirectory, IDirectory sourceDirectory)
+        public BundleCache(string version, CassetteSettings settings)
         {
             this.version = version;
-            this.cacheDirectory = cacheDirectory;
-            this.sourceDirectory = sourceDirectory;
+            this.settings = settings;
+            cacheDirectory = settings.CacheDirectory;
+            sourceDirectory = settings.SourceDirectory;
             containerFile = cacheDirectory.GetFile(ContainerFilename);
         }
 
         const string ContainerFilename = "container.xml";
 
         readonly string version;
+        readonly CassetteSettings settings;
         readonly IDirectory cacheDirectory;
         readonly IDirectory sourceDirectory;
         readonly IFile containerFile;
@@ -148,7 +151,8 @@ namespace Cassette.Persistence
                 {
                     bundle.AddReference(reference);                    
                 }
-                // TODO: bundle.Process(application);
+                bundle.IsFromCache = true;
+                bundle.Process(settings);
             };
         }
 
