@@ -35,12 +35,8 @@ namespace Cassette.HtmlTemplates
             if (bundle.IsFromCache) yield break;
 
             yield return new ParseHtmlTemplateReferences();
-            yield return new AddTransformerToAssets(
-                new CompileAsset(new KnockoutJQueryTmplCompiler())
-            );
-            yield return new AddTransformerToAssets(
-                new RegisterTemplateWithJQueryTmpl(bundle)
-            );
+            yield return new CompileKnockoutJQueryTmpl();
+            yield return new RegisterTemplatesWithJQueryTmpl(bundle);
             yield return new ConcatenateAssets();
         }
     }

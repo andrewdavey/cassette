@@ -35,13 +35,8 @@ namespace Cassette.HtmlTemplates
             if (bundle.IsFromCache) yield break;
 
             yield return new ParseHtmlTemplateReferences();
-            // TODO: Create classes for these two steps
-            yield return new AddTransformerToAssets(
-                new CompileAsset(new JQueryTmplCompiler())
-            );
-            yield return new AddTransformerToAssets(
-                new RegisterTemplateWithJQueryTmpl(bundle)
-            );
+            yield return new CompileJQueryTmpl();
+            yield return new RegisterTemplatesWithJQueryTmpl(bundle);
             yield return new ConcatenateAssets();
         }
     }

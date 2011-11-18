@@ -77,8 +77,11 @@
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
+    <Compile Include="HtmlTemplates\CompileJQueryTmpl.cs" />
+    <Compile Include="HtmlTemplates\CompileKnockoutJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplatesWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />

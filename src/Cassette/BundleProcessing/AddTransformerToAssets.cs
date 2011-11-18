@@ -22,9 +22,9 @@ using Cassette.Configuration;
 
 namespace Cassette.BundleProcessing
 {
-    public class AddTransformerToAssets : IBundleProcessor<Bundle>
+    public abstract class AddTransformerToAssets : IBundleProcessor<Bundle>
     {
-        public AddTransformerToAssets(IAssetTransformer assetTransformer)
+        protected AddTransformerToAssets(IAssetTransformer assetTransformer)
         {
             this.assetTransformer = assetTransformer;
         }
