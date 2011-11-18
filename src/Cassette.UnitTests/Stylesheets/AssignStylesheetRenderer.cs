@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -10,11 +10,10 @@ namespace Cassette.Stylesheets
         public void GivenProductionMode_WhenProcess_ThenBundleRenderIsStylesheetHtmlRenderer()
         {
             var processor = new AssignStylesheetsRenderer();
-            var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsDebuggingEnabled).Returns(false);
+            var settings = new CassetteSettings { IsDebuggingEnabled = false };
             var bundle = new StylesheetBundle("~/test");
 
-            processor.Process(bundle, application.Object);
+            processor.Process(bundle, settings);
 
             bundle.Renderer.ShouldBeType<StylesheetHtmlRenderer>();
         }
@@ -23,11 +22,10 @@ namespace Cassette.Stylesheets
         public void GivenDebugMode_WhenProcess_ThenBundleRenderIsDebugStylesheetHtmlRenderer()
         {
             var processor = new AssignStylesheetsRenderer();
-            var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsDebuggingEnabled).Returns(true);
+            var settings = new CassetteSettings { IsDebuggingEnabled = true };
             var bundle = new StylesheetBundle("~/test");
 
-            processor.Process(bundle, application.Object);
+            processor.Process(bundle, settings);
 
             bundle.Renderer.ShouldBeType<DebugStylesheetHtmlRenderer>();
         }

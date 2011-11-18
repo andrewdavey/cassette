@@ -20,25 +20,26 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Linq;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
     class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ExternalScriptBundle>
     {
         readonly IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer;
-        readonly ICassetteApplication application;
+        readonly CassetteSettings settings;
 
-        public ExternalScriptBundleHtmlRenderer(IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer, ICassetteApplication application)
+        public ExternalScriptBundleHtmlRenderer(IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer, CassetteSettings settings)
         {
             this.fallbackScriptRenderer = fallbackScriptRenderer;
-            this.application = application;
+            this.settings = settings;
         }
 
         public string Render(ExternalScriptBundle bundle)
         {
             var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml, bundle.Url);
 
-            if (application.IsDebuggingEnabled)
+            if (settings.IsDebuggingEnabled)
             {
                 if (bundle.Assets.Any())
                 {

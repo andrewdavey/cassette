@@ -22,25 +22,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Utilities;
+using Cassette.Configuration;
 
 namespace Cassette
 {
     class ReferenceBuilder : IReferenceBuilder
     {
-        public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, ICassetteApplication application, bool isHtmlRewritingEnabled)
+        public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, CassetteSettings settings)
         {
             this.bundleContainer = bundleContainer;
             this.bundleFactories = bundleFactories;
             this.placeholderTracker = placeholderTracker;
-            this.application = application;
-            this.isHtmlRewritingEnabled = isHtmlRewritingEnabled;
+            this.settings = settings;
         }
 
         readonly IBundleContainer bundleContainer;
         readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
         readonly IPlaceholderTracker placeholderTracker;
-        readonly ICassetteApplication application;
-        readonly bool isHtmlRewritingEnabled;
+        readonly CassetteSettings settings;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
         readonly HashSet<string> renderedLocations = new HashSet<string>();
  
@@ -85,7 +84,7 @@ namespace Cassette
             if (bundle == null && path.IsUrl())
             {
                 bundle = createExternalBundle();
-                bundle.Process(application);
+                bundle.Process(settings);
             }
 
             if (bundle == null)
@@ -98,7 +97,7 @@ namespace Cassette
 
         public void Reference(Bundle bundle, string location = null)
         {
-            if (!isHtmlRewritingEnabled && HasRenderedLocation(location))
+            if (!settings.IsHtmlRewritingEnabled && HasRenderedLocation(location))
             {
                 ThrowRewritingRequiredException(location);
             }

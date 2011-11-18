@@ -29,16 +29,16 @@ namespace Cassette.Web
 {
     class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(IEnumerable<Bundle> bundles, CassetteSettings settings, CassetteRouting routing, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext, string cacheVersion)
-            : base(bundles, settings, routing, cacheVersion)
+        public CassetteApplication(IEnumerable<Bundle> bundles, CassetteSettings settings, CassetteRouting routing, Func<HttpContextBase> getCurrentHttpContext, string cacheVersion)
+            : base(bundles, settings, cacheVersion)
         {
             this.getCurrentHttpContext = getCurrentHttpContext;
-
-            routing.InstallRoutes(routes, BundleContainer);
+            this.routing = routing;
         }
 
         readonly Func<HttpContextBase> getCurrentHttpContext;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
+        readonly CassetteRouting routing;
 
         public void OnPostMapRequestHandler(HttpContextBase httpContext)
         {
@@ -47,7 +47,7 @@ namespace Cassette.Web
 
         public void OnPostRequestHandlerExecute(HttpContextBase httpContext)
         {
-            if (!IsHtmlRewritingEnabled) return;
+            if (!Settings.IsHtmlRewritingEnabled) return;
             
             if (httpContext.CurrentHandler is AssemblyResourceLoader)
             {
@@ -66,6 +66,11 @@ namespace Cassette.Web
                 tracker
             );
             response.Filter = filter;
+        }
+
+        internal void InstallRoutes(RouteCollection routes)
+        {
+            routing.InstallRoutes(routes, BundleContainer);
         }
 
         bool CanRewriteOutput(HttpContextBase httpContext)
@@ -106,4 +111,3 @@ namespace Cassette.Web
         }
     }
 }
-

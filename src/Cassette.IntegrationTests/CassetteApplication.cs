@@ -120,7 +120,6 @@ function asset1() {
                 bundles,
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")),
-                routes,
                 Mock.Of<HttpContextBase>,
                 ""
             );

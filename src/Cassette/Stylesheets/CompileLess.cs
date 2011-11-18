@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
@@ -32,7 +33,7 @@ namespace Cassette.Stylesheets
             this.lessCompiler = lessCompiler;
         }
 
-        public void Process(StylesheetBundle bundle, ICassetteApplication application)
+        public void Process(StylesheetBundle bundle, CassetteSettings settings)
         {
             foreach (var asset in bundle.Assets)
             {

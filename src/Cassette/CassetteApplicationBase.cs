@@ -21,45 +21,24 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using Cassette.Configuration;
-using Cassette.IO;
 using Cassette.Persistence;
 
 namespace Cassette
 {
     abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, IUrlGenerator urlGenerator, string cacheVersion)
+        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, string cacheVersion)
         {
             this.settings = settings;
-            this.urlGenerator = urlGenerator;
-
-            // Bundle container must be created after the above fields are assigned.
-            // This application object may get used during bundle processing, so its properties must be ready to use.
-            bundleContainer = CreateBundleContainer(bundles, settings, this, cacheVersion);
+            bundleContainer = CreateBundleContainer(bundles, settings, cacheVersion);
         }
 
         readonly CassetteSettings settings;
-        readonly IUrlGenerator urlGenerator;
         readonly IBundleContainer bundleContainer;
 
-        public bool IsDebuggingEnabled
+        public CassetteSettings Settings
         {
-            get { return settings.IsDebuggingEnabled; }
-        }
-
-        public bool IsHtmlRewritingEnabled
-        {
-            get { return settings.IsHtmlRewritingEnabled; }
-        }
-
-        public IDirectory SourceDirectory
-        {
-            get { return settings.SourceDirectory; }
-        }
-
-        public IUrlGenerator UrlGenerator
-        {
-            get { return urlGenerator; }
+            get { return settings; }
         }
 
         protected IBundleContainer BundleContainer
@@ -93,12 +72,11 @@ namespace Cassette
                 bundleContainer,
                 settings.BundleFactories,
                 GetPlaceholderTracker(),
-                this,
-                IsHtmlRewritingEnabled
+                settings
             );
         }
 
-        static IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles, CassetteSettings settings, ICassetteApplication application, string cacheVersion)
+        static IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles, CassetteSettings settings, string cacheVersion)
         {
             IBundleContainerFactory containerFactory;
             if (settings.IsDebuggingEnabled)
@@ -116,12 +94,12 @@ namespace Cassette
                     settings.BundleFactories
                 );
             }
-            return containerFactory.Create(bundles, application);
+            return containerFactory.Create(bundles, settings);
         }
 
         protected IPlaceholderTracker CreatePlaceholderTracker()
         {
-            if (IsHtmlRewritingEnabled)
+            if (Settings.IsHtmlRewritingEnabled)
             {
                 return new PlaceholderTracker();
             }

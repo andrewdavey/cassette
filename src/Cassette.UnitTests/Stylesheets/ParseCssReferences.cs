@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Xunit;
@@ -34,7 +35,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("test.css", 1));
         }
@@ -47,7 +48,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("test.css", 1));
         }
@@ -60,7 +61,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("test.css", 1));
         }
@@ -73,7 +74,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("test1.css", 1));
             asset.Verify(a => a.AddReference("test2.css", 2));
@@ -87,7 +88,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("test1.css", 1));
             asset.Verify(a => a.AddReference("test2.css", 2));

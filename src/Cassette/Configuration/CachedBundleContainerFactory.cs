@@ -15,12 +15,12 @@ namespace Cassette.Configuration
             this.cache = cache;
         }
 
-        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, ICassetteApplication application)
+        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, CassetteSettings settings)
         {
             // The bundles may get altered, so force the evaluation of the enumerator first.
             var bundlesArray = unprocessedBundles.ToArray();
 
-            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, application);
+            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, settings);
 
             if (cache.InitializeBundlesFromCacheIfUpToDate(bundlesArray))
             {
@@ -28,7 +28,7 @@ namespace Cassette.Configuration
             }
             else
             {
-                ProcessAllBundles(bundlesArray, application);
+                ProcessAllBundles(bundlesArray, settings);
                 var container = new BundleContainer(bundlesArray.Concat(externalBundles));
                 cache.SaveBundleContainer(container);
                 cache.InitializeBundlesFromCacheIfUpToDate(bundlesArray);

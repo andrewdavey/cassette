@@ -19,20 +19,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
     public class AssignScriptRenderer : IBundleProcessor<ScriptBundle>
     {
-        public void Process(ScriptBundle bundle, ICassetteApplication application)
+        public void Process(ScriptBundle bundle, CassetteSettings settings)
         {
-            if (application.IsDebuggingEnabled)
+            if (settings.IsDebuggingEnabled)
             {
-                bundle.Renderer = new DebugScriptBundleHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new DebugScriptBundleHtmlRenderer(settings.UrlGenerator);
             }
             else
             {
-                bundle.Renderer = new ScriptBundleHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new ScriptBundleHtmlRenderer(settings.UrlGenerator);
             }
         }
     }

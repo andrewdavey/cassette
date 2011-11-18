@@ -20,7 +20,7 @@ namespace Cassette.Configuration
             var bundles = new[] { bundle1, bundle2 };
 
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
-            var container = builder.Create(bundles, StubApplication());
+            var container = builder.Create(bundles, CreateSettings());
 
             container.FindBundleContainingPath<Bundle>("~/test1").ShouldBeSameAs(bundle1);
             container.FindBundleContainingPath<Bundle>("~/test2").ShouldBeSameAs(bundle2);
@@ -30,10 +30,10 @@ namespace Cassette.Configuration
         public void WhenCreateWithBundle_ThenBundleIsProcessed()
         {
             var bundle = new TestableBundle("~/test");
-            var application = StubApplication();
+            var settings = CreateSettings();
 
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
-            builder.Create(new[] { bundle }, application);
+            builder.Create(new[] { bundle }, settings);
 
             bundle.WasProcessed.ShouldBeTrue();
         }
@@ -52,7 +52,7 @@ namespace Cassette.Configuration
             factories[typeof(TestableBundle)] = factory.Object;
 
             var builder = CreateFactory(factories);
-            var container = builder.Create(new[] { bundle }, StubApplication());
+            var container = builder.Create(new[] { bundle }, CreateSettings());
 
             container.FindBundleContainingPath<Bundle>("http://external.com/api.js").ShouldBeSameAs(externalBundle);
         }
@@ -74,7 +74,7 @@ namespace Cassette.Configuration
             factories[typeof(TestableBundle)] = factory.Object;
 
             var builder = CreateFactory(factories);
-            var container = builder.Create(bundles, StubApplication());
+            var container = builder.Create(bundles, CreateSettings());
 
             container.Bundles.Count().ShouldEqual(3);
         }
@@ -96,8 +96,8 @@ namespace Cassette.Configuration
 
             var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(asset.Object);
-            var application = StubApplication();
-            var container = containerFactory.Create(new[] { bundle }, application);
+            var settings = CreateSettings();
+            var container = containerFactory.Create(new[] { bundle }, settings);
 
             container.FindBundleContainingPath<Bundle>("http://test.com/").ShouldBeSameAs(externalBundle);
         }
@@ -120,8 +120,8 @@ namespace Cassette.Configuration
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
             bundle.Assets.Add(asset.Object);
-            var application = StubApplication();
-            var container = containerFactory.Create(new[] { bundle }, application);
+            var settings = CreateSettings();
+            var container = containerFactory.Create(new[] { bundle }, settings);
 
             container.FindBundleContainingPath<Bundle>("http://test.com/").ShouldBeSameAs(externalBundle);
         }
@@ -143,9 +143,9 @@ namespace Cassette.Configuration
 
             var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(asset.Object);
-            var application = StubApplication();
+            var settings = CreateSettings();
             
-            containerFactory.Create(new[] { bundle }, application);
+            containerFactory.Create(new[] { bundle }, settings);
 
             externalBundle.WasProcessed.ShouldBeTrue();
         }
@@ -164,19 +164,20 @@ namespace Cassette.Configuration
 
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
-            var application = StubApplication();
+            var settings = CreateSettings();
 
-            containerFactory.Create(new[] { bundle }, application);
+            containerFactory.Create(new[] { bundle }, settings);
 
             externalBundle.WasProcessed.ShouldBeTrue();
         }
 
-        protected ICassetteApplication StubApplication()
+        protected CassetteSettings CreateSettings()
         {
-            var appMock = new Mock<ICassetteApplication>();
-            appMock.SetupGet(a => a.SourceDirectory)
-                   .Returns(Mock.Of<IDirectory>());
-            return appMock.Object;
+            var settings = new CassetteSettings
+            {
+                SourceDirectory = Mock.Of<IDirectory>()
+            };
+            return settings;
         }
     }
 }

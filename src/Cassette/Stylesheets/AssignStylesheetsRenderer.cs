@@ -19,20 +19,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
     public class AssignStylesheetsRenderer : IBundleProcessor<StylesheetBundle>
     {
-        public void Process(StylesheetBundle bundle, ICassetteApplication application)
+        public void Process(StylesheetBundle bundle, CassetteSettings settings)
         {
-            if (application.IsDebuggingEnabled)
+            if (settings.IsDebuggingEnabled)
             {
-                bundle.Renderer = new DebugStylesheetHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new DebugStylesheetHtmlRenderer(settings.UrlGenerator);
             }
             else
             {
-                bundle.Renderer = new StylesheetHtmlRenderer(application.UrlGenerator);
+                bundle.Renderer = new StylesheetHtmlRenderer(settings.UrlGenerator);
             }
         }
     }

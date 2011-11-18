@@ -11,14 +11,14 @@ namespace Cassette.Configuration
         {
         }
 
-        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, ICassetteApplication application)
+        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, CassetteSettings settings)
         {
             // The bundles may get altered, so force the evaluation of the enumerator first.
             var bundlesArray = unprocessedBundles.ToArray();
 
-            ProcessAllBundles(bundlesArray, application);
+            ProcessAllBundles(bundlesArray, settings);
 
-            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, application);
+            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, settings);
 
             return new BundleContainer(bundlesArray.Concat(externalBundles));
         }

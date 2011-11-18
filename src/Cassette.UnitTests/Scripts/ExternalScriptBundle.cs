@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -78,12 +79,12 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle(Url);
             var processor = new Mock<IBundleProcessor<ScriptBundle>>();
-            var application = Mock.Of<ICassetteApplication>();
+            var settings = new CassetteSettings();
 
             bundle.Processor = processor.Object;
-            bundle.Process(application);
+            bundle.Process(settings);
 
-            processor.Verify(p => p.Process(bundle, application));
+            processor.Verify(p => p.Process(bundle, settings));
         }
 
         [Fact]
@@ -125,11 +126,10 @@ namespace Cassette.Scripts
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
-            var application = new Mock<ICassetteApplication>();
             var urlGenerator = new Mock<IUrlGenerator>();
-            application.SetupGet(a => a.UrlGenerator).Returns(urlGenerator.Object);
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            bundle.Process(application.Object);
+            var settings = new CassetteSettings { UrlGenerator = urlGenerator.Object };
+            bundle.Process(settings);
             
             var html = bundle.Render();
 

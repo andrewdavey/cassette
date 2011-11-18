@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
 using Moq;
 using Xunit;
 
@@ -35,7 +36,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset1.Object);
             bundle.Assets.Add(asset2.Object);
 
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset1.Verify(a => a.AddAssetTransformer(
                 It.Is<IAssetTransformer>(t => t is ExpandCssUrlsAssetTransformer)
@@ -46,4 +47,3 @@ namespace Cassette.Stylesheets
         }
     }
 }
-

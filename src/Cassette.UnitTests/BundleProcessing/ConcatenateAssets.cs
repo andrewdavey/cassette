@@ -21,6 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.IO;
 using System.Linq;
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -50,7 +51,7 @@ namespace Cassette.BundleProcessing
             bundle.Assets.Add(asset2.Object);
 
             var processor = new ConcatenateAssets();
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             bundle.Assets.Count.ShouldEqual(1);
             using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
@@ -81,7 +82,7 @@ namespace Cassette.BundleProcessing
             bundle.Assets.Add(asset2.Object);
 
             var processor = new ConcatenateAssets();
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             bundle.Assets[0].References
                 .Select(r => r.Path)

@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -12,7 +12,7 @@ namespace Cassette.HtmlTemplates
             var bundle = new HtmlTemplateBundle("~");
             var pipeline = new HtmlTemplatePipeline();
 
-            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.Renderer.ShouldBeType<InlineHtmlTemplateBundleRenderer>();
         }

@@ -18,7 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Moq;
+using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -32,7 +32,7 @@ namespace Cassette.HtmlTemplates
             var pipeline = new JQueryTmplPipeline();
             var bundle = new HtmlTemplateBundle("~/");
 
-            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.ContentType.ShouldEqual("text/javascript");
         }

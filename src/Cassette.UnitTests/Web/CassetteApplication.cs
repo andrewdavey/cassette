@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Handlers;
-using System.Web.Routing;
 using Cassette.Configuration;
 using Cassette.IO;
 using Moq;
@@ -43,35 +42,6 @@ namespace Cassette.Web
             sourceDir = new TempDirectory();
             cacheDir = new TempDirectory();
             httpContext = new Mock<HttpContextBase>();
-        }
-
-        [Fact]
-        public void IsDebuggingEnabledPropertyIsAssignedFromSettings()
-        {
-            var application = StubApplication(settings => settings.IsDebuggingEnabled = true);
-            application.IsDebuggingEnabled.ShouldBeTrue();
-        }
-
-        [Fact]
-        public void SourceDirectoryPropertyIsAssignedFromSettings()
-        {
-            var directory = Mock.Of<IDirectory>();
-            var application = StubApplication(settings => settings.SourceDirectory = directory);
-            application.SourceDirectory.ShouldBeSameAs(directory);
-        }
-
-        [Fact]
-        public void IsHtmlRewritingEnabledPropertyIsAssignedFromSettings()
-        {
-            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
-            application.IsHtmlRewritingEnabled.ShouldBeTrue();
-        }
-
-        [Fact]
-        public void UrlGeneratorIsAssigned()
-        {
-            var application = StubApplication();
-            application.UrlGenerator.ShouldNotBeNull();
         }
 
         [Fact]
@@ -128,7 +98,6 @@ namespace Cassette.Web
                 bundles, 
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")), 
-                new RouteCollection(), 
                 () => httpContext.Object,
                 ""
             );

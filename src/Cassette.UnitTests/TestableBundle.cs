@@ -1,4 +1,5 @@
 
+using Cassette.Configuration;
 namespace Cassette
 {
     // Subclass so we can test the non-abstract implementation.
@@ -19,7 +20,7 @@ namespace Cassette
             return (RenderResult);
         }
 
-        internal override void Process(ICassetteApplication application)
+        internal override void Process(CassetteSettings settings)
         {
             WasProcessed = true;
         }

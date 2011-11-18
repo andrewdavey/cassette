@@ -24,6 +24,7 @@ using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
@@ -39,14 +40,12 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenProductionMode_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
         {
-            var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsDebuggingEnabled)
-                       .Returns(false);
+            var settings = new CassetteSettings { IsDebuggingEnabled = false };
 
             var bundle = new ScriptBundle("~/test");
 
             var pipeline = new ScriptPipeline();
-            pipeline.Process(bundle, application.Object);
+            pipeline.Process(bundle, settings);
 
             bundle.Renderer.ShouldBeType<ScriptBundleHtmlRenderer>();
         }
@@ -54,14 +53,12 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenDebugMode_WhenProcessBundle_ThenRendererIsDebugScriptBundleHtmlRenderer()
         {
-            var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsDebuggingEnabled)
-                       .Returns(true);
+            var settings = new CassetteSettings { IsDebuggingEnabled = true };
 
             var bundle = new ScriptBundle("~/test");
 
             var pipeline = new ScriptPipeline();
-            pipeline.Process(bundle, application.Object);
+            pipeline.Process(bundle, settings);
 
             bundle.Renderer.ShouldBeType<DebugScriptBundleHtmlRenderer>();
         }
@@ -74,7 +71,7 @@ namespace Cassette.Scripts
             var asset = StubCoffeeScriptAsset();
             bundle.Assets.Add(asset.Object);
             
-            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()), Times.Never());
         }
@@ -87,7 +84,7 @@ namespace Cassette.Scripts
             var asset = StubCoffeeScriptAsset();
             bundle.Assets.Add(asset.Object);
 
-            pipeline.Process(bundle, Mock.Of<ICassetteApplication>());
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()));
         }

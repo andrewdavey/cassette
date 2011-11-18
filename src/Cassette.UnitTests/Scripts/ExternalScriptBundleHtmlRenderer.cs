@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -29,12 +30,13 @@ namespace Cassette.Scripts
     {
         public ExternalScriptBundleHtmlRenderer_Tests()
         {
-            application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsDebuggingEnabled)
-                       .Returns(false);
+            settings = new CassetteSettings
+            {
+                IsDebuggingEnabled = false
+            };
         }
 
-        readonly Mock<ICassetteApplication> application;
+        readonly CassetteSettings settings;
 
         [Fact]
         public void WhenRenderExternalScriptBundle_ThenHtmlIsScriptElement()
@@ -42,7 +44,7 @@ namespace Cassette.Scripts
             var bundle = new ExternalScriptBundle("http://test.com/");
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
 
-            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
             var html = renderer.Render(bundle);
 
             html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\"></script>");
@@ -56,10 +58,9 @@ namespace Cassette.Scripts
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns(("FALLBACK"));
-            application.SetupGet(a => a.IsDebuggingEnabled)
-                       .Returns(true);
+            settings.IsDebuggingEnabled = true;
 
-            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
             var html = renderer.Render(bundle);
 
             html.ShouldEqual("FALLBACK");
@@ -76,7 +77,7 @@ namespace Cassette.Scripts
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns(("FALLBACK"));
 
-            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
             var html = renderer.Render(bundle);
 
             html.ShouldEqual(
@@ -93,7 +94,7 @@ namespace Cassette.Scripts
         public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlEscapesFallbackScriptTags()
         {
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
-            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
             var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
             var asset = new Mock<IAsset>();
             bundle.Assets.Add(asset.Object);
@@ -109,7 +110,7 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenExternalScriptBundleWithFallbackAssetsAndDebugMode_WhenRender_ThenOnlyOutputFallbackScripts()
         {
-            application.SetupGet(a => a.IsDebuggingEnabled).Returns(true);
+            settings.IsDebuggingEnabled = true;
 
             var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
             var asset = new Mock<IAsset>();
@@ -119,7 +120,7 @@ namespace Cassette.Scripts
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns(("<script></script>"));
 
-            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, application.Object);
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
             var html = renderer.Render(bundle);
 
             html.ShouldEqual("<script></script>");

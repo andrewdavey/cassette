@@ -18,12 +18,13 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
+
 namespace Cassette.BundleProcessing
 {
     public interface IBundleProcessor<in T>
         where T : Bundle
     {
-        void Process(T bundle, ICassetteApplication application);
+        void Process(T bundle, CassetteSettings settings);
     }
 }
-

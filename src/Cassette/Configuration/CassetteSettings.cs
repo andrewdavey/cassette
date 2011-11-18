@@ -54,6 +54,8 @@ namespace Cassette.Configuration
 
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
 
+        public IUrlGenerator UrlGenerator { get; set; }
+
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {
             return new Dictionary<Type, IBundleFactory<Bundle>>

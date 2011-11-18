@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using Cassette.Configuration;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -61,12 +62,12 @@ namespace Cassette.Scripts
             get { return fallbackCondition; }
         }
 
-        internal override void Process(ICassetteApplication application)
+        internal override void Process(CassetteSettings settings)
         {
             // Any fallback assets are processed like a regular ScriptBundle.
-            base.Process(application);
+            base.Process(settings);
             // We just need a special renderer instead.
-            externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, application);
+            externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, settings);
         }
 
         internal override string Render()

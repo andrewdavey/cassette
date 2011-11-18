@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
@@ -31,7 +32,7 @@ namespace Cassette.Scripts
             this.scriptContent = scriptContent;
         }
 
-        internal override void Process(ICassetteApplication application)
+        internal override void Process(CassetteSettings settings)
         {
         }
 

@@ -117,7 +117,7 @@ namespace Cassette.Views
                 throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
             }
 
-            return Application.UrlGenerator.CreateBundleUrl(bundle);
+            return Application.Settings.UrlGenerator.CreateBundleUrl(bundle);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Cassette.Views
                 throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
             }
 
-            return Application.UrlGenerator.CreateBundleUrl(bundle);
+            return Application.Settings.UrlGenerator.CreateBundleUrl(bundle);
         }
 
         static IHtmlString Render<T>(string location) where T : Bundle

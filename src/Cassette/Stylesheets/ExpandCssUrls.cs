@@ -19,16 +19,17 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
     public class ExpandCssUrls : IBundleProcessor<StylesheetBundle>
     {
-        public void Process(StylesheetBundle bundle, ICassetteApplication application)
+        public void Process(StylesheetBundle bundle, CassetteSettings settings)
         {
             foreach (var asset in bundle.Assets)
             {
-                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(application.SourceDirectory, application.UrlGenerator));
+                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(settings.SourceDirectory, settings.UrlGenerator));
             }
         }
     }

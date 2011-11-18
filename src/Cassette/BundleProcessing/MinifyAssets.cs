@@ -18,6 +18,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
+
 namespace Cassette.BundleProcessing
 {
     public class MinifyAssets : IBundleProcessor<Bundle>
@@ -29,7 +31,7 @@ namespace Cassette.BundleProcessing
 
         readonly IAssetTransformer minifier;
 
-        public void Process(Bundle bundle, ICassetteApplication application)
+        public void Process(Bundle bundle, CassetteSettings settings)
         {
             foreach (var asset in bundle.Assets)
             {

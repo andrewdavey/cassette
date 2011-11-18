@@ -18,7 +18,7 @@ namespace Cassette.Configuration
             CacheIsUpToDate(bundles);
 
             var factory = CreateFactory();
-            var container = factory.Create(bundles, StubApplication());
+            var container = factory.Create(bundles, CreateSettings());
 
             container.FindBundleContainingPath<Bundle>("~/test").ShouldBeSameAs(bundles[0]);
         }
@@ -28,7 +28,7 @@ namespace Cassette.Configuration
         {
             var bundle = new TestableBundle("~/test");
             var bundles = new[] { bundle };
-            var application = StubApplication();
+            var application = CreateSettings();
             CacheIsUpToDate(bundles);
 
             var factory = CreateFactory();
@@ -42,7 +42,7 @@ namespace Cassette.Configuration
         {
             var bundle = new TestableBundle("~/test");
             var bundles = new[] { bundle };
-            var application = StubApplication();
+            var application = CreateSettings();
             CacheIsOutOfDate(bundles);
 
             var factory = CreateFactory();
@@ -55,7 +55,7 @@ namespace Cassette.Configuration
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenContainerSavedToCache()
         {
             var bundles = new TestableBundle[0];
-            var application = StubApplication();
+            var application = CreateSettings();
             CacheIsOutOfDate(bundles);
 
             var factory = CreateFactory();
@@ -68,7 +68,7 @@ namespace Cassette.Configuration
         public void GivenCacheOutOfDate_WhenCreateWithBundle_ThenBundlesInitializedFromNewCache()
         {
             var bundles = new TestableBundle[0];
-            var application = StubApplication();
+            var application = CreateSettings();
             CacheIsOutOfDate(bundles);
             
             var factory = CreateFactory();

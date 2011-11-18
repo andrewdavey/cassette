@@ -191,8 +191,9 @@ namespace Cassette.Web
                 : base(new Bundle[0], new CassetteSettings
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
-                    IsDebuggingEnabled = true
-                }, urlGenerator, "")
+                    IsDebuggingEnabled = true,
+                    UrlGenerator = urlGenerator
+                }, "")
             {
                 this.referenceBuilder = referenceBuilder;
                 this.bundleContainer = bundleContainer;

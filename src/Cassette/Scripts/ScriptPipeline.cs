@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Collections.Generic;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
@@ -34,7 +35,7 @@ namespace Cassette.Scripts
         public bool CompileCoffeeScript { get; set; }
         public IAssetTransformer Minifier { get; set; }
 
-        protected override IEnumerable<IBundleProcessor<ScriptBundle>> CreatePipeline(ScriptBundle bundle, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<ScriptBundle>> CreatePipeline(ScriptBundle bundle, CassetteSettings settings)
         {
             yield return new AssignScriptRenderer();
             if (bundle.IsFromCache) yield break;
@@ -46,7 +47,7 @@ namespace Cassette.Scripts
                 yield return new CompileCoffeeScript(new CoffeeScriptCompiler());
             }
             yield return new SortAssetsByDependency();
-            if (!application.IsDebuggingEnabled)
+            if (!settings.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(Minifier);

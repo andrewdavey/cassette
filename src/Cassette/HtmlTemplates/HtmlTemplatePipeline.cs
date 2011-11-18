@@ -20,12 +20,13 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Collections.Generic;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplatePipeline : MutablePipeline<HtmlTemplateBundle>
     {
-        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
             yield return new AssignHtmlTemplateRenderer(new InlineHtmlTemplateBundleRenderer());
             if (bundle.IsFromCache) yield break;

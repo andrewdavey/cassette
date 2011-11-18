@@ -21,6 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Configuration;
 
 namespace Cassette.BundleProcessing
 {
@@ -29,15 +30,15 @@ namespace Cassette.BundleProcessing
     {
         readonly List<Func<IEnumerable<IBundleProcessor<T>>, IEnumerable<IBundleProcessor<T>>>> pipelineModifiers = new List<Func<IEnumerable<IBundleProcessor<T>>, IEnumerable<IBundleProcessor<T>>>>();
 
-        public void Process(T bundle, ICassetteApplication application)
+        public void Process(T bundle, CassetteSettings settings)
         {
             var steps = pipelineModifiers.Aggregate(
-                CreatePipeline(bundle, application),
+                CreatePipeline(bundle, settings),
                 (pipeline, modify) => modify(pipeline)
             );
             foreach (var step in steps)
             {
-                step.Process(bundle, application);
+                step.Process(bundle, settings);
             }
         }
 
@@ -119,6 +120,6 @@ namespace Cassette.BundleProcessing
             return this;
         }
 
-        protected abstract IEnumerable<IBundleProcessor<T>> CreatePipeline(T bundle, ICassetteApplication application);
+        protected abstract IEnumerable<IBundleProcessor<T>> CreatePipeline(T bundle, CassetteSettings settings);
     }
 }

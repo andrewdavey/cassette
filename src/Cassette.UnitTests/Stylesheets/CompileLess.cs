@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Moq;
 using Xunit;
 
@@ -35,7 +36,7 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.less");
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)));
         }
@@ -49,10 +50,9 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.css");
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)), Times.Never());
         }
     }
 }
-

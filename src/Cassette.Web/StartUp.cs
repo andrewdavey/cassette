@@ -53,7 +53,9 @@ namespace Cassette.Web
         static IEnumerable<ICassetteConfiguration> _configurations;
         static IsolatedStorageFile _storage;
         static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
- 
+        static bool _firstCreation;
+        readonly static object CreationLock = new object();
+
         /// <summary>
         /// The function delegate used to create Cassette configuration objects for the application.
         /// By default this will scan the AppDomain's assemblies for all implementations of <see cref="ICassetteConfiguration"/>.
@@ -143,31 +145,43 @@ namespace Cassette.Web
 
         static CassetteApplication CreateCassetteApplication()
         {
-            var allConfigurations = GetAllConfigurations(GetCassetteConfigurationSection());
-            var cacheVersion = GetConfigurationVersion(allConfigurations, HttpRuntime.AppDomainAppVirtualPath);
-            var settings = new CassetteSettings();
-            var bundles = new BundleCollection(settings);
-
-            foreach (var configuration in allConfigurations)
+            lock (CreationLock)
             {
-                Trace.Source.TraceInformation("Executing configuration {0}", configuration.GetType().AssemblyQualifiedName);
-                configuration.Configure(bundles, settings);
+                var allConfigurations = GetAllConfigurations(GetCassetteConfigurationSection());
+                var cacheVersion = GetConfigurationVersion(allConfigurations, HttpRuntime.AppDomainAppVirtualPath);
+                var settings = new CassetteSettings();
+                var bundles = new BundleCollection(settings);
+
+                foreach (var configuration in allConfigurations)
+                {
+                    Trace.Source.TraceInformation("Executing configuration {0}",
+                                                  configuration.GetType().AssemblyQualifiedName);
+                    configuration.Configure(bundles, settings);
+                }
+
+                var routing = new CassetteRouting(settings.UrlModifier);
+                settings.UrlGenerator = routing;
+
+                Trace.Source.TraceInformation("Creating Cassette application object");
+                Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", settings.IsDebuggingEnabled);
+                Trace.Source.TraceInformation("Cache version: {0}", cacheVersion);
+
+                var application = new CassetteApplication(
+                    bundles,
+                    settings,
+                    routing,
+                    GetCurrentHttpContext,
+                    cacheVersion
+                    );
+
+                if (_firstCreation)
+                {
+                    _firstCreation = false;
+                    application.InstallRoutes(RouteTable.Routes);
+                }
+
+                return application;
             }
-            
-            var routing = new CassetteRouting(settings.UrlModifier);
-
-            Trace.Source.TraceInformation("Creating Cassette application object");
-            Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", settings.IsDebuggingEnabled);
-            Trace.Source.TraceInformation("Cache version: {0}", cacheVersion);
-
-            return new CassetteApplication(
-                bundles,
-                settings,
-                routing,
-                RouteTable.Routes,
-                GetCurrentHttpContext,
-                cacheVersion
-            );
         }
 
         static List<ICassetteConfiguration> GetAllConfigurations(CassetteConfigurationSection section)

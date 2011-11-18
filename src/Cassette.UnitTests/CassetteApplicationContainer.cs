@@ -21,6 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.IO;
 using System.Threading;
+using Cassette.Configuration;
 using Cassette.IO;
 using Moq;
 using Should;
@@ -181,9 +182,8 @@ namespace Cassette
         Mock<ICassetteApplication> CreateApplication()
         {
             var app = new Mock<ICassetteApplication>();
-            var directory = new Mock<IDirectory>();
-            app.SetupGet(a => a.SourceDirectory)
-               .Returns(directory.Object);
+            var settings = new CassetteSettings { SourceDirectory = Mock.Of<IDirectory>() };
+            app.SetupGet(a => a.Settings).Returns(settings);
             return app;
         }
 

@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Collections.Generic;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
@@ -35,7 +36,7 @@ namespace Cassette.Stylesheets
         public bool CompileLess { get; set; }
         public bool ConvertImageUrlsToDataUris { get; set; }
 
-        protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, CassetteSettings settings)
         {
             yield return new AssignStylesheetsRenderer();
             if (bundle.IsFromCache) yield break;
@@ -52,7 +53,7 @@ namespace Cassette.Stylesheets
             }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
-            if (!application.IsDebuggingEnabled)
+            if (!settings.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);

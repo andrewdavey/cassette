@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
@@ -32,7 +33,7 @@ namespace Cassette.Scripts
             this.coffeeScriptCompiler = coffeeScriptCompiler;
         }
 
-        public void Process(Bundle bundle, ICassetteApplication application)
+        public void Process(Bundle bundle, CassetteSettings settings)
         {
             foreach (var asset in bundle.Assets)
             {

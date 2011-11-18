@@ -1,23 +1,22 @@
 ﻿using System.Linq;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
     class ExternalStylesheetHtmlRenderer : IBundleHtmlRenderer<ExternalStylesheetBundle>
     {
         readonly IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer;
-        readonly ICassetteApplication application;
+        readonly CassetteSettings settings;
 
-        public ExternalStylesheetHtmlRenderer(
-            IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer,
-            ICassetteApplication application)
+        public ExternalStylesheetHtmlRenderer(IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer, CassetteSettings settings)
         {
             this.fallbackRenderer = fallbackRenderer;
-            this.application = application;
+            this.settings = settings;
         }
 
         public string Render(ExternalStylesheetBundle bundle)
         {
-            if (application.IsDebuggingEnabled && bundle.Assets.Any())
+            if (settings.IsDebuggingEnabled && bundle.Assets.Any())
             {
                 return fallbackRenderer.Render(bundle);
             }

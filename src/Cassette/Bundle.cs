@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -129,7 +130,7 @@ namespace Cassette
             }
         }
 
-        internal abstract void Process(ICassetteApplication application);
+        internal abstract void Process(CassetteSettings settings);
 
         internal abstract string Render();
 

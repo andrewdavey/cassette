@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
 using Moq;
 using Xunit;
 
@@ -41,7 +42,7 @@ namespace Cassette.BundleProcessing
             var asset = new Mock<IAsset>();
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(minifier.Object));
         }

@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Moq;
 using Xunit;
 
@@ -42,7 +43,7 @@ namespace Cassette.Scripts
             coffeeScriptAsset.SetupGet(a => a.SourceFile.FullPath).Returns("test.coffee");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(bundle, Mock.Of<ICassetteApplication>());
+            step.Process(bundle, new CassetteSettings());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(
@@ -61,7 +62,7 @@ namespace Cassette.Scripts
             coffeeScriptAsset.SetupGet(a => a.SourceFile.FullPath).Returns("test.js");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(bundle, Mock.Of<ICassetteApplication>());
+            step.Process(bundle, new CassetteSettings());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(

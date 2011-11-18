@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
@@ -40,9 +41,9 @@ namespace Cassette.Stylesheets
 
         public IBundleHtmlRenderer<StylesheetBundle> Renderer { get; set; }
 
-        internal override void Process(ICassetteApplication application)
+        internal override void Process(CassetteSettings settings)
         {
-            Processor.Process(this, application);
+            Processor.Process(this, settings);
         }
 
         internal override string Render()

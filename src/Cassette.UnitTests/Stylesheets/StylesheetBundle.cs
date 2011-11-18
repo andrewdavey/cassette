@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -57,9 +58,9 @@ namespace Cassette.Stylesheets
             var processor = new Mock<IBundleProcessor<StylesheetBundle>>();
             bundle.Processor = processor.Object;
             
-            bundle.Process(Mock.Of<ICassetteApplication>());
+            bundle.Process(new CassetteSettings());
 
-            processor.Verify(p => p.Process(bundle, It.IsAny<ICassetteApplication>()));
+            processor.Verify(p => p.Process(bundle, It.IsAny<CassetteSettings>()));
         }
     }
 }

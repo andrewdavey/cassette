@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
@@ -31,7 +32,7 @@ namespace Cassette.HtmlTemplates
 
         readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
 
-        public void Process(HtmlTemplateBundle bundle, ICassetteApplication application)
+        public void Process(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
             bundle.Renderer = renderer;
         }
