@@ -37,24 +37,28 @@ h2 {
     margin: 0px 0px .75em 0px;
 }
 
+p + h2 {
+    margin-top: 1em;
+}
+
 h3 {
     font-family: "Droid Sans" , sans-serif;
-    font-size: 1em;
+    font-size: 0.9em;
     margin: 0px 0px .75em 0px;
 }
 
 p {
     color: #171717;
-    margin: 0 0 1em 0;
+    margin: 0 0 0.9em 0;
     line-height: 1.4em;
 }
 
-p + h2, .main ul + h2 {
+.documentation p + h2, .main ul + h2 {
     margin-top: 1.5em; 
 }
 
-p + h3, .ul + h3 {
-    margin: 1.5em 0 .5em 0;
+.documentation p + h3, .ul + h3 {
+    margin: 1.5em 0 .75em 0;
 }
 
 p.last {
@@ -69,7 +73,6 @@ a {
 a:hover {
     color: #1d3d01;
 }
-
 
 .helpquestion {
     color: #171717;
@@ -98,11 +101,15 @@ dt, dd {
 }
 
 dd {
-    margin-left: 1em;
+    margin-left: 1.4em;
 }
 
 dd + dt {
     margin-top: 0.5em;
+}
+
+dt a {
+    text-decoration: none;
 }
 
 /* Forms */
