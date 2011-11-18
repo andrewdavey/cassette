@@ -70,10 +70,6 @@ a:hover {
     color: #1d3d01;
 }
 
-dl a {
-    text-decoration: none;
-}
-
 .helpquestion {
     color: #171717;
     padding-left: 20px;
@@ -101,11 +97,15 @@ dt, dd {
 }
 
 dd {
-    margin-left: 1em;
+    margin-left: 1.4em;
 }
 
 dd + dt {
     margin-top: 0.5em;
+}
+
+dl a {
+    text-decoration: none;
 }
 
 /* Forms */

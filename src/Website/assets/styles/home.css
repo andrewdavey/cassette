@@ -33,18 +33,25 @@
     float: right;
     padding-top: 1.8em;
     margin-left: 3em;
+    height: 350px;
+    position: relative;
+}
+
+.tweets {
+    position: absolute;
+    top: 70px;
 }
 
 .favtweets h2 {
     font-family: Helvetica;
     color: #fff;
-    padding-left: 1em;
+    padding-left: 1.4em;
     font-size: 1.2em;
     margin-bottom: 1.1em;
 }
 
 .favtweets img {
-    margin-right: 0.5em;
+    margin-right: 0.6em;
 }
 
 .favtweets p.tweet {

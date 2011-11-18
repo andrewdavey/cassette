@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\scripts\disqus\disqus.js" />
+    <Content Include="assets\scripts\home\tweets.js" />
     <Content Include="assets\scripts\licensing-buy\form.js" />
     <Content Include="assets\scripts\questions\questions.js" />
     <Content Include="assets\styles\buy.css" />

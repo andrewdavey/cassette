@@ -2,14 +2,23 @@
     ViewBag.Description = "Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS and HTML templates to help you manage your client-side code.";
     ViewBag.Title = "Cassette | Asset bundling for .NET web apps";
     ViewBag.Section = "home";
+    Assets.Scripts.Reference("assets/scripts/home", "body");
 }
 <div class="banner">
         <div class="favtweets">
             <h2><img src="../../assets/styles/images/whitetwittericon.png" />Twitter Love</h2>
-            <p class="tweet">&#8220;Excellent! Automagic asset (scripts, CSS, Less, CoffeeScript) management for .NET web apps getcassette.net via &#64;getcassette&#8221;</p>
-            <p class="tweeter">via <a href="www.twitter.com/shanselman">shanselman</a></span></p>
-            <p class="tweet">&#8220;Tested &#64;getcassette and very impressed so far. Get the docs finished and its nearly perfect. Should be bundled with ASP.NET!&#8221;</p>
-            <p class="tweeter">via <a href="www.twitter.com/kfuglsang">kfuglsang</a></p>
+            <div class="tweets">
+                <p class="tweet">&#8220;Excellent! Automagic asset (scripts, CSS, Less, CoffeeScript) management for .NET web apps getcassette.net via &#64;getcassette&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/shanselman">shanselman</a></p>
+                <p class="tweet">&#8220;Tested &#64;getcassette and very impressed so far. Get the docs finished and its nearly perfect. Should be bundled with ASP.NET!&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/kfuglsang">kfuglsang</a></p>
+            </div>
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;Nice naming of &#64;getcassette with "asset" --> "cASSETte" #clever&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/jeffhandley">JeffHandley</a></p>
+                <p class="tweet">&#8220;After a little configuration and with help from its owner &#64;andrewdavey Cassette is working extremely well! #minification #css #javascript&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/fransstridh">fransstridh</a></p>
+            </div>
         </div>
         <h1>Asset bundling for .NET web apps</h1>
         <div class="intro">
@@ -28,7 +37,7 @@
             <p>Cassette's <code>Assets</code> helper works in view pages, layouts and partials.</p>
             <p>Reference the scripts you directly require.</p>
             <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
-            <p class="minor"><a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new{path="html-templates"})">HTML Templates</a> are also supported</p>
+            <p class="minor"><a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new { path = "html-templates" })">HTML Templates</a> are also supported</p>
         </div>
         <div class="file">
             <pre><code><span class="code-tag">@@{</span>
