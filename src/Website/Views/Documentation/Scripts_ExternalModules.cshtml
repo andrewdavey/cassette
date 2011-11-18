@@ -32,8 +32,8 @@ In addition you can specify a fallback URL if, for example, a CDN fails.
 }</code></pre>
 <p>Now in view pages, these external scripts can be referenced by name.</p>
 <pre><code><span class="code-tag">@@{</span>
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"jquery"</span>);
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"twitter"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"jquery"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"twitter"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>

@@ -24,20 +24,20 @@
     <div class="section">
         <div class="file-details">
             <h2>Easy to use</h2>
-            <p>Cassette's <code>Assets</code> helper works in view pages, layouts and partials.</p>
+            <p>Cassette's <code>Bundles</code> helper works in view pages, layouts and partials.</p>
             <p>Reference the scripts you directly require.</p>
             <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
             <p class="minor"><a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new{path="html-templates"})">HTML Templates</a> are also supported</p>
         </div>
         <div class="file">
             <pre><code><span class="code-tag">@@{</span>
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/app/page.js"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/app/page.js"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
   <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-  <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Assets</span>.Scripts.Render()</span>
+  <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderScripts()</span>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
   ...
@@ -81,9 +81,9 @@
             <h2>Production runtime output</h2>
             <p>With a single change to Web.config, <strong><code>debug="false"</code></strong>, Cassette switches into high performance mode.</p>
             <ul>
-                <li>Cassette <em>concatenates</em> and <em>minifies</em> the scripts into "modules".</li>
+                <li>Cassette <em>concatenates</em> and <em>minifies</em> the scripts into "bundles".</li>
                 <li>HTTP output is <em>compressed</em>.</li>
-                <li>Aggressive cache headers are sent. So browsers download each module only once.</li>
+                <li>Aggressive cache headers are sent. So browsers download each bundle only once.</li>
                 <li>Hash included in the URL. So new versions have different URLs.</li>
             </ul>
         </div>

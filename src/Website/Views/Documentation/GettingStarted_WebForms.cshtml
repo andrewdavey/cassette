@@ -1,6 +1,6 @@
 ﻿<h1>Using Cassette in Web Forms</h1>
 <p>
-The Cassette <code>Assets</code> helper class is in the <code>Cassette.UI</code> namespace.
+The Cassette <code>Bundles</code> helper class is in the <code>Cassette.Views</code> namespace.
 You can update your <code>Web.config</code> file to make this namespace available in all pages.
 </p>
 <pre><code><span class="open-tag">&lt;</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
@@ -9,7 +9,7 @@ You can update your <code>Web.config</code> file to make this namespace availabl
         <span class="open-tag">&lt;</span><span class="tag">pages</span><span class="close-tag">&gt;</span>
             <span class="open-tag">&lt;</span><span class="tag">namespaces</span><span class="close-tag">&gt;</span>
                 ...
-                <strong><span class="open-tag">&lt;</span><span class="tag">add</span> <span class="attribute">namespace</span><span class="attribute-value">="Cassette.UI"</span><span class="close-tag">/&gt;</span></strong>
+                <strong><span class="open-tag">&lt;</span><span class="tag">add</span> <span class="attribute">namespace</span><span class="attribute-value">="Cassette.Views"</span><span class="close-tag">/&gt;</span></strong>
             <span class="open-tag">&lt;/</span><span class="tag">namespaces</span><span class="close-tag">&gt;</span>
         <span class="open-tag">&lt;/</span><span class="tag">pages</span><span class="close-tag">&gt;</span>
     <span class="open-tag">&lt;/</span><span class="tag">system.web</span><span class="close-tag">&gt;</span>
@@ -21,18 +21,18 @@ You can update your <code>Web.config</code> file to make this namespace availabl
 <p>Use aspx code blocks to defined references. Use aspx expressions for the render calls.</p>
 <pre><code><span class="code-tag">&lt;%@@</span> <span class="tag">Page</span> <span class="attribute">Language</span><span class="attribute-value">="C#"</span> <span class="code-tag">%&gt;</span>
 <span class="code-tag">&lt;%</span>
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"scripts/lib/jquery.js"</span>);
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"scripts/app/home.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/lib/jquery.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/app/home.js"</span>);
 <span class="code-tag">%&gt;</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
     <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-    <span class="code-tag">&lt;%</span>: <span class="code-type">Assets</span>.Stylesheets.Render() <span class="code-tag">%&gt;</span>
+    <span class="code-tag">&lt;%</span>: <span class="code-type">Bundles</span>.RenderStylesheets() <span class="code-tag">%&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
     ...
-    <span class="code-tag">&lt;%</span>: <span class="code-type">Assets</span>.Scripts.Render() <span class="code-tag">%&gt;</span>
+    <span class="code-tag">&lt;%</span>: <span class="code-type">Bundles</span>.RenderScripts() <span class="code-tag">%&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 </code></pre>

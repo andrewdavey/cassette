@@ -39,7 +39,7 @@ script module and provides a friendly name:</p>
     <span class="keyword">new</span> <span class="code-type">ExternalScriptModule</span>(<span class="string">"twitter"</span>, <span class="string">"http://platform.twitter.com/widgets.js"</span>)
 );</code></pre>
 <p>Pages and assets can now reference this module by name. For example:</p>
-<pre><code><span class="code-tag">@@{</span> <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"twitter"</span>); <span class="code-tag">}</span></code></pre>
+<pre><code><span class="code-tag">@@{</span> <span class="code-type">Bundles</span>.Reference(<span class="string">"twitter"</span>); <span class="code-tag">}</span></code></pre>
 <p>and:</p>
 <pre><code><span class="comment">/// &lt;reference path="~/twitter"/&gt;</span></code></pre>
 <p>The friendly name is optional, but probably nicer than repeating the URL everywhere in your application.</p>

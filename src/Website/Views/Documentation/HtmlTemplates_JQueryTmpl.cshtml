@@ -19,10 +19,10 @@ benefits of Cassette's module versioning and caching.
 <h2>Using in pages</h2>
 <p>In a view page, reference your templates just like any other module:</p>
 <pre><code><span class="code-tag">@@{</span>
-    <span class="code-type">Assets</span>.HtmlTemplates.Reference(<span class="string">"HtmlTemplates"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"HtmlTemplates"</span>);
 }</code></pre>
 <p>Also, tell Cassette where to render the HTML required to include the templates:</p>
-<pre><code><span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Assets</span>.HtmlTemplates.Render()</span></code></pre>
+<pre><code><span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderHtmlTemplates()</span></code></pre>
 
 <p>Now when the page runs, instead of embedding the template sources into the page, a single script include is generated:</p>
 <pre><code><span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/_assets/htmltemplates/HtmlTemplates_7d879cec"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span></code></pre>
