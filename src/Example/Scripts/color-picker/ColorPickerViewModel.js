@@ -1,7 +1,7 @@
 ﻿/// <reference path="../app/namespace.js" />
 /// <reference path="../lib/Class.js" />
 /// <reference path="../lib/knockout.js" />
-/// <reference path="../lib/jquery.js" />
+/// <reference path="../jquery/jquery.js" />
 /// <reference path="ColorViewModel.js" />
 /// <reference path="helpers.js" />
 

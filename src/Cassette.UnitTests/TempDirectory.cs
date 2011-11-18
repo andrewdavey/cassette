@@ -27,7 +27,7 @@ namespace Cassette
     {
         public TempDirectory()
         {
-            path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString());
+            path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(path);
         }
 

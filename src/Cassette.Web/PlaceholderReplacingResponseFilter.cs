@@ -21,11 +21,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.IO;
 using System.Web;
-using Cassette.UI;
 
 namespace Cassette.Web
 {
-    public class PlaceholderReplacingResponseFilter : MemoryStream
+    class PlaceholderReplacingResponseFilter : MemoryStream
     {
         public PlaceholderReplacingResponseFilter(HttpResponseBase response, IPlaceholderTracker placeholderTracker)
         {
@@ -42,7 +41,7 @@ namespace Cassette.Web
         {
             if (HttpRuntime.UsingIntegratedPipeline && response.Headers["Content-Encoding"] != null)
             {
-                throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set ICassetteApplication.HtmlRewritingEnabled to false in the Cassette configuration, or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
+                throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set ICassetteApplication.IsHtmlRewritingEnabled to false in the Cassette configuration, or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
             }
 
             buffer = ReplacePlaceholders(buffer, offset, count);

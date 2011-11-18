@@ -25,13 +25,12 @@ namespace Cassette.IO
 {
     public interface IDirectory
     {
+        FileAttributes Attributes { get; }
+        string FullPath { get; }
         IFile GetFile(string filename);
-        IDirectory GetDirectory(string path, bool createIfNotExists);
-
-        IEnumerable<string> GetDirectoryPaths(string relativePath);
-        IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern);
-        FileAttributes GetAttributes(string path);
-
-        void DeleteContents();
+        IDirectory GetDirectory(string path);
+        bool DirectoryExists(string path);
+        IEnumerable<IDirectory> GetDirectories();
+        IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption);
     }
 }

@@ -18,7 +18,8 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Moq;
 using Xunit;
 
@@ -35,14 +36,14 @@ namespace Cassette.Scripts
         readonly CompileCoffeeScript step;
 
         [Fact]
-        public void WhenProcessModuleContainingCoffeeScriptAsset_ThenCompileCoffeeScriptAssetTransformIsAddedToAsset()
+        public void WhenProcessBundleContainingCoffeeScriptAsset_ThenCompileCoffeeScriptAssetTransformIsAddedToAsset()
         {
-            var module = new Module("~");
+            var bundle = new TestableBundle("~");
             var coffeeScriptAsset = new Mock<IAsset>();
-            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.coffee");
-            module.Assets.Add(coffeeScriptAsset.Object);
+            coffeeScriptAsset.SetupGet(a => a.SourceFile.FullPath).Returns("test.coffee");
+            bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(module, Mock.Of<ICassetteApplication>());
+            step.Process(bundle, new CassetteSettings());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(
@@ -54,14 +55,14 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void WhenProcessModuleContainingJavaScriptAsset_ThenNoTransformsAreAddedToAsset()
+        public void WhenProcessBundleContainingJavaScriptAsset_ThenNoTransformsAreAddedToAsset()
         {
-            var module = new Module("~");
+            var bundle = new TestableBundle("~");
             var coffeeScriptAsset = new Mock<IAsset>();
-            coffeeScriptAsset.SetupGet(a => a.SourceFilename).Returns("test.js");
-            module.Assets.Add(coffeeScriptAsset.Object);
+            coffeeScriptAsset.SetupGet(a => a.SourceFile.FullPath).Returns("test.js");
+            bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(module, Mock.Of<ICassetteApplication>());
+            step.Process(bundle, new CassetteSettings());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(

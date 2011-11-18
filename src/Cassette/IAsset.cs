@@ -27,22 +27,26 @@ namespace Cassette
     public interface IAsset
     {
         /// <summary>
-        /// The application relative path of the asset.
-        /// </summary>
-        string SourceFilename { get; }
-
-        /// <summary>
-        /// The hash of the original asset contents, before any transformations are applied.
+        /// Gets the hash of the original asset contents, before any transformations are applied.
         /// </summary>
         byte[] Hash { get; }
 
+        /// <summary>
+        /// Gets the file containing the source of this asset.
+        /// </summary>
         IFile SourceFile { get; }
-        IEnumerable<AssetReference> References { get; }
-        bool HasTransformers { get; }
 
-        void Accept(IAssetVisitor visitor);
+        /// <summary>
+        /// Gets the references made by this asset.
+        /// </summary>
+        IEnumerable<AssetReference> References { get; }
+        
+        void Accept(IBundleVisitor visitor);
+
         void AddAssetTransformer(IAssetTransformer transformer);
-        void AddReference(string path, int lineNumber);
+
+        void AddReference(string assetRelativePath, int lineNumber);
+
         void AddRawFileReference(string relativeFilename);
 
         /// <summary>

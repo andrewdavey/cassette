@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Cassette.Views</id>
+        <version>$version$</version>
+        <authors>Andrew Davey</authors>
+        <owners>Andrew Davey</owners>
+        <licenseUrl>http://getcassette.net/licensing</licenseUrl>
+        <projectUrl>https://github.com/andrewdavey/cassette</projectUrl>
+        <description>ASP.NET view helpers for Cassette. Cassette automatically builds JavaScript, CSS and HTML template modules based on the dependencies between files. CoffeeScript and LESS are also supported.</description>
+        <tags>web javascript coffeescript css html templates asp.net</tags>
+        <dependencies>
+            <dependency id="Cassette" version="$version$" />
+        </dependencies>
+    </metadata>
+
+    <files>
+        <file src="Web.config.transform" target="content\Views"/>
+    </files>
+</package>

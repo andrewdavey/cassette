@@ -19,11 +19,12 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetPipeline : MutablePipeline<StylesheetModule>
+    public class StylesheetPipeline : MutablePipeline<StylesheetBundle>
     {
         public StylesheetPipeline()
         {
@@ -35,8 +36,11 @@ namespace Cassette.Stylesheets
         public bool CompileLess { get; set; }
         public bool ConvertImageUrlsToDataUris { get; set; }
 
-        protected override IEnumerable<IModuleProcessor<StylesheetModule>> CreatePipeline(StylesheetModule module, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, CassetteSettings settings)
         {
+            yield return new AssignStylesheetsRenderer();
+            if (bundle.IsFromCache) yield break;
+
             yield return new ParseCssReferences();
             if (CompileLess)
             {
@@ -45,16 +49,15 @@ namespace Cassette.Stylesheets
             }
             if (ConvertImageUrlsToDataUris)
             {
-                yield return new AddTransformerToAssets(new DataUriGenerator());
+                yield return new ConvertImageUrlsToDataUris();
             }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
-            if (application.IsOutputOptimized)
+            if (!settings.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();
                 yield return new MinifyAssets(StylesheetMinifier);
             }
-            yield return new AssignRenderer();
         }
     }
 }

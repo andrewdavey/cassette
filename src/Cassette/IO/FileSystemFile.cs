@@ -20,18 +20,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.IO;
+using Cassette.Utilities;
 
 namespace Cassette.IO
 {
-    public class FileSystemFile : IFile
+    class FileSystemFile : IFile
     {
-        readonly string filename;
+        readonly string name;
+        readonly string systemAbsoluteFilename;
         readonly IDirectory directory;
 
-        public FileSystemFile(string filename, IDirectory directory)
+        public FileSystemFile(string name, IDirectory directory, string systemAbsoluteFilename)
         {
-            this.filename = filename;
+            this.name = name;
             this.directory = directory;
+            this.systemAbsoluteFilename = systemAbsoluteFilename;
         }
 
         public IDirectory Directory
@@ -41,22 +44,27 @@ namespace Cassette.IO
 
         public string FullPath
         {
-            get { return filename; }
+            get { return PathUtilities.CombineWithForwardSlashes(directory.FullPath, name); }
         }
 
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
-            return File.Open(filename, mode, access, fileShare);
+            return File.Open(systemAbsoluteFilename, mode, access, fileShare);
         }
 
         public bool Exists
         {
-            get { return File.Exists(filename); }
+            get { return File.Exists(systemAbsoluteFilename); }
         }
 
         public DateTime LastWriteTimeUtc
         {
-            get { return File.GetLastWriteTimeUtc(filename); }
+            get { return File.GetLastWriteTimeUtc(systemAbsoluteFilename); }
+        }
+
+        public void Delete()
+        {
+            File.Delete(systemAbsoluteFilename);
         }
     }
 }

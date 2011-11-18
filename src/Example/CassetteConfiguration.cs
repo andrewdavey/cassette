@@ -18,8 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Text.RegularExpressions;
-using Cassette;
+using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -28,34 +27,16 @@ namespace Example
 {
     public class CassetteConfiguration : ICassetteConfiguration
     {
-        public void Configure(ModuleConfiguration modules, ICassetteApplication application)
+        public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            modules.Add(
-                new PerSubDirectorySource<ScriptModule>("Scripts")
-                {
-                    FilePattern = "*.js",
-                    Exclude = new Regex("-vsdoc\\.js$")
-                },
-                new ExternalScriptModule("twitter", "http://platform.twitter.com/widgets.js")
-                {
-                    Location = "body"
-                }
+            bundles.Add<StylesheetBundle>("Styles");
+            bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
+            bundles.AddUrlWithAlias("http://platform.twitter.com/widgets.js", "twitter", b => b.PageLocation = "body");
+            
+            bundles.AddPerSubDirectory<HtmlTemplateBundle>(
+                "HtmlTemplates",
+                bundle => bundle.Processor = new KnockoutJQueryTmplPipeline()
             );
-
-            modules.Add(new DirectorySource<StylesheetModule>("Styles")
-            {
-                FilePattern = "*.css;*.less",
-                CustomizeModule = module => module.Processor = new StylesheetPipeline
-                {
-                    CompileLess = true,
-                    ConvertImageUrlsToDataUris = true
-                }
-            });
-
-            modules.Add(new PerSubDirectorySource<HtmlTemplateModule>("HtmlTemplates")
-            {
-                CustomizeModule = module => module.Processor = new KnockoutJQueryTmplPipeline()
-            });
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿/// <reference path="../lib/knockout.js" />
-/// <reference path="../lib/jquery.js" />
+﻿/// <reference path="../jquery/jquery.js" />
+/// <reference path="../lib/knockout.js" />
 /// <reference path="../lib/jquery-ui.js" />
 
 (function () {

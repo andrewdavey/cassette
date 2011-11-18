@@ -1,4 +1,4 @@
-﻿/// <reference path="~/jquery"/>
+﻿/// <reference path="~/assets/scripts/jquery/jquery.js"/>
 $(function () {
     setInterval(function () {
         $(".tweets:visible").fadeOut(2000);

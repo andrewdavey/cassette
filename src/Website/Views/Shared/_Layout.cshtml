@@ -1,7 +1,7 @@
 ﻿@{
-    Assets.Stylesheets.Reference("assets/styles");
-    Assets.Scripts.Reference("http://platform.twitter.com/widgets.js", "body");
-    Assets.Scripts.Reference("https://apis.google.com/js/plusone.js", "body");
+    Bundles.Reference("assets/styles");
+    Bundles.Reference("http://platform.twitter.com/widgets.js", "body");
+    Bundles.Reference("https://apis.google.com/js/plusone.js", "body");
 }
 <!DOCTYPE html>
 <html>
@@ -10,7 +10,7 @@
     <meta name="keywords" content=".net asset management, asp.net, developer tools, web development" />
     <meta name="description" content="@ViewBag.Description" />
     <title>@ViewBag.Title</title>
-    @Assets.Stylesheets.Render()
+    @Bundles.RenderStylesheets()
     <meta name="google-site-verification" content="XDRKm8pVfIwYbs7Jbb1kX5riGAhGXFOTHpxfV8VwfYc" />
     <!--[if IE 9]>
         <link rel="stylesheet" type="text/css" href="assets/iestyles/buttons.css">
@@ -40,7 +40,7 @@
                     <a @ActiveClassIf("licensing") href="@Url.Action("index", "licensing")">Licensing</a>
                 </li>
                 <li>
-                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation")">Documentation</a>
+                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation", new { path = "" })">Documentation</a>
                 </li>
                 <li>
                     <a @ActiveClassIf("faqs") href="@Url.RouteUrl("FAQs")">FAQs</a>
@@ -60,9 +60,7 @@
         <p>&#169; 2011 <a target="_blank" href="http://www.aboutcode.net">Andrew Davey</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk">Equin Ltd</a></p>
         <p>Icons from <a href="http://symb.ly/">Symb.ly</a></p>    
     </div>
-
-    @Assets.Scripts.Render("body")
-    
+    @Bundles.RenderScripts("body")
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-25354265-1']);

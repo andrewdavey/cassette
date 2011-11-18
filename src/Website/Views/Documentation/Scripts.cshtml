@@ -15,7 +15,7 @@ then File-A is included the HTML before File-B, because File-B depends on File-A
 
 <p>The path is relative to the current file. So <code>path="tools.js"</code> will look for a file called <code>tools.js</code> in the same directory as the file making the reference.</p>
 
-<p>A script can also reference a file in another module. For example:</p>
+<p>A script can also reference a file in another bundle. For example:</p>
 
 <pre><code><span class="comment">/// &lt;reference path="../libs/jquery.js"/&gt;</span></code></pre>
 
@@ -23,58 +23,58 @@ then File-A is included the HTML before File-B, because File-B depends on File-A
 
 <pre><code><span class="comment">/// &lt;reference path="~/scripts/libs/jquery.js"/&gt;</span></code></pre>
 
-<h2>Module Referencing Shortcut</h2>
+<h2>Bundle Referencing Shortcut</h2>
 <p>
-You can reference an entire module, rather than a specific file from it. Just set the reference path to be the module's directory. For example:
+You can reference an entire bundle, rather than a specific file from it. Just set the reference path to be the bundle's directory. For example:
 </p>
 <pre><code><span class="comment">/// &lt;reference path="~/scripts/lib"/&gt;</span></code></pre>
 
 <h2>Using scripts in-page</h2>
 <p>
-Use the <code>Assets.Scripts</code> helper in your view pages to reference. Paths are always relative to the application root directory.
+Use the <code>Bundles.Scripts</code> helper in your view pages to reference. Paths are always relative to the application root directory.
 </p>
 <pre><code><span class="code-tag">@@{</span>
   <span class="comment">// Reference path can be to a specific file</span>
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/app/page.js"</span>);
-  <span class="comment">// Or it can just be a module directory</span>
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/other"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/app/page.js"</span>);
+  <span class="comment">// Or it can just be a bundle directory</span>
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/other"</span>);
   <span class="comment">// An external URL can also be referenced</span>
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"http://platform.twitter.com/widgets.js"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"http://platform.twitter.com/widgets.js"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
   <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-  <span class="code-tag">@@</span><span class="code-type">Assets</span>.Scripts.Render()
+  <span class="code-tag">@@</span><span class="code-type">Bundles</span>.RenderScripts()
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
   ...
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 
-<p class="minor">The <code>Assets</code> class is defined in the <code>Cassette.UI</code> namespace. So make sure you've referenced this in <code>~\Views\Web.config</code>. The Cassette.Web nuget package does this for you.</p>
-<p>The call to <code>Assets.Scripts.Render()</code> generates <code>&lt;script&gt;</code> tags to include the referenced scripts.</p>
+<p class="minor">The <code>Bundles</code> class is defined in the <code>Cassette.Views</code> namespace. So make sure you've referenced this in <code>~\Views\Web.config</code>. The Cassette.Web nuget package does this for you.</p>
+<p>The call to <code>Bundles.RenderScripts()</code> generates <code>&lt;script&gt;</code> tags to include the referenced scripts.</p>
 
-<h2>Module render locations</h2>
+<h2>Bundle render locations</h2>
 <p>
 Not all HTML <code>&lt;script&gt;</code> tags have to be generated in the same place. For example, some scripts only progressively
 enhance the page and can be left until the very end to be included. Others may need to be in the <code>&lt;head&gt;</code>.
 </p>
 <p>The helper methods are overloaded to accept a <code>location</code> argument.</p>
 <pre><code><span class="code-tag">@@{</span>
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/app"</span>);
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"http://platform.twitter.com/widgets.js"</span>, <span class="string">"body"</span>);
-  <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"https://apis.google.com/js/plusone.js"</span>, <span class="string">"body"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/app"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"http://platform.twitter.com/widgets.js"</span>, <span class="string">"body"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"https://apis.google.com/js/plusone.js"</span>, <span class="string">"body"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
   <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-  <span class="code-tag">@@</span><span class="code-type">Assets</span>.Scripts.Render()
+  <span class="code-tag">@@</span><span class="code-type">Bundles</span>.RenderScripts()
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
   ...
-  <span class="code-tag">@@</span><span class="code-type">Assets</span>.Scripts.Render(<span class="string">"body"</span>)
+  <span class="code-tag">@@</span><span class="code-type">Bundles</span>.RenderScripts(<span class="string">"body"</span>)
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 <p>

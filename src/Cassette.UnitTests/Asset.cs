@@ -35,35 +35,38 @@ namespace Cassette
         public Asset_Tests()
         {
             root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            root.CreateSubdirectory("module");
+            root.CreateSubdirectory("bundle");
             
-            module = new Module("~/module");
-            asset = new Asset("~/module/test.js", module, StubFile("asset content"));
-            module.Assets.Add(asset);
+            bundle = new TestableBundle("~/bundle");
+            sourceFile = StubFile("asset content");
+            asset = new FileAsset(sourceFile, bundle);
+            bundle.Assets.Add(asset);
 
-            var another = new Asset("~/module/another.js", module, StubFile());
-            module.Assets.Add(another);
+            var another = new FileAsset(StubFile(fullPath: "~/bundle/another.js"), bundle);
+            bundle.Assets.Add(another);
         }
 
-        readonly Asset asset;
+        readonly FileAsset asset;
         readonly DirectoryInfo root;
-        readonly Module module;
+        readonly Bundle bundle;
+        readonly IFile sourceFile;
 
-        IFile StubFile(string content = "")
+        IFile StubFile(string content = "", string fullPath = null)
         {
             var file = new Mock<IFile>();
+            var directory = new Mock<IDirectory>();
+            directory.SetupGet(d => d.FullPath).Returns("~/bundle");
+            file.SetupGet(f => f.Directory).Returns(directory.Object);
+            file.SetupGet(f => f.FullPath).Returns(fullPath ?? "~/bundle/asset.js");
             file.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), FileShare.ReadWrite))
                 .Returns(() => content.AsStream());
             return file.Object;
         }
 
         [Fact]
-        public void ConstructorNormalizesPath()
+        public void SourceFileIsPassedViaConstructor()
         {
-            root.CreateSubdirectory("module\\test");
-            File.WriteAllText(Path.Combine(root.FullName, "module", "test", "bar.js"), "");
-            var asset = new Asset("~\\module\\test\\bar.js", module, StubFile());
-            asset.SourceFilename.ShouldEqual("~/module/test/bar.js");
+            asset.SourceFile.ShouldBeSameAs(sourceFile);
         }
 
         [Fact]
@@ -89,14 +92,6 @@ namespace Cassette
             }
 
             asset.Hash.SequenceEqual(expectedHash).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void WhenAddAssetTransformer_ThenHasTransformersIsTrue()
-        {
-            asset.AddAssetTransformer(Mock.Of<IAssetTransformer>());
-
-            asset.HasTransformers.ShouldBeTrue();
         }
 
         [Fact]
@@ -142,20 +137,20 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~/module/another.js");
+            asset.References.First().Path.ShouldEqual("~/bundle/another.js");
         }
 
         [Fact]
         public void AddReferenceToSiblingFilenameInSubDirectory_ExpandsFilenameToAbsolutePath()
         {
-            root.CreateSubdirectory("module\\sub");
-            File.WriteAllText(Path.Combine(root.FullName, "module", "sub", "another.js"), "");
-            var another = new Asset("~/module/sub/another.js", module, StubFile());
-            module.Assets.Add(another);
+            root.CreateSubdirectory("bundle\\sub");
+            File.WriteAllText(Path.Combine(root.FullName, "bundle", "sub", "another.js"), "");
+            var another = new FileAsset(StubFile(fullPath: "~/bundle/sub/another.js"), bundle);
+            bundle.Assets.Add(another);
 
             asset.AddReference("sub\\another.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~/module/sub/another.js");
+            asset.References.First().Path.ShouldEqual("~/bundle/sub/another.js");
         }
 
         [Fact]
@@ -167,15 +162,15 @@ namespace Cassette
         }
 
         [Fact]
-        public void AddReferenceToSiblingFilename_CreatesSameModuleReference()
+        public void AddReferenceToSiblingFilename_CreatesSameBundleReference()
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().Type.ShouldEqual(AssetReferenceType.SameModule);
+            asset.References.First().Type.ShouldEqual(AssetReferenceType.SameBundle);
         }
 
         [Fact]
-        public void AddReferenceToAssetInAnotherModule_ExpandsFilenameToAbsolutePath()
+        public void AddReferenceToAssetInAnotherBundle_ExpandsFilenameToAbsolutePath()
         {
             asset.AddReference("../another/test.js", 1);
 
@@ -183,11 +178,19 @@ namespace Cassette
         }
 
         [Fact]
-        public void AddReferenceToAssetInAnotherModule_CreatesDifferentModuleReference()
+        public void AddReferenceToAssetInAnotherBundle_CreatesDifferentBundleReference()
         {
             asset.AddReference("../another/test.js", 1);
 
-            asset.References.First().Type.ShouldEqual(AssetReferenceType.DifferentModule);
+            asset.References.First().Type.ShouldEqual(AssetReferenceType.DifferentBundle);
+        }
+
+        [Fact]
+        public void AddReferenceToAssetInAnotherBundleWithShorterPath_CreatesDifferentBundleReference()
+        {
+            asset.AddReference("~/a.js", 1);
+
+            asset.References.First().Type.ShouldEqual(AssetReferenceType.DifferentBundle);
         }
 
         [Fact]
@@ -197,7 +200,7 @@ namespace Cassette
 
             var reference = asset.References.First();
             reference.Path.ShouldEqual("~/another/test.js");
-            reference.Type.ShouldEqual(AssetReferenceType.DifferentModule);
+            reference.Type.ShouldEqual(AssetReferenceType.DifferentBundle);
         }
 
         [Fact]
@@ -210,11 +213,11 @@ namespace Cassette
         }
 
         [Fact]
-        public void AddReferenceToAssetThatIsNotInSameModuleThrowsAssetReferenceException()
+        public void AddReferenceToAssetThatIsNotInSameBundleThrowsAssetReferenceException()
         {
             Assert.Throws<AssetReferenceException>(delegate
             {
-                asset.AddReference("not-in-module.js", 1);
+                asset.AddReference("not-in-bundle.js", 1);
             });
         }
 
@@ -239,14 +242,14 @@ namespace Cassette
         [Fact]
         public void WhenAddRawReferenceTwiceWithSameEffectivePath_ThenReferencesHasItOnlyOnce()
         {
-            asset.AddRawFileReference("../module/test.png");
+            asset.AddRawFileReference("../bundle/test.png");
             asset.AddRawFileReference("./test.png");
 
             asset.References.Count().ShouldEqual(1);
         }
 
         [Fact]
-        public void WhenAddReferenceToUrl_ThenReferenceIsDifferentModule()
+        public void WhenAddReferenceToUrl_ThenReferenceIsDifferentBundle()
         {
             var url = "http://maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
@@ -255,7 +258,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void WhenAddReferenceToHttpsUrl_ThenReferenceIsDifferentModule()
+        public void WhenAddReferenceToHttpsUrl_ThenReferenceIsDifferentBundle()
         {
             var url = "https://maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
@@ -264,7 +267,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void WhenAddReferenceToProtocolRelativeUrl_ThenReferenceIsDifferentModule()
+        public void WhenAddReferenceToProtocolRelativeUrl_ThenReferenceIsDifferentBundle()
         {
             var url = "//maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
@@ -275,7 +278,7 @@ namespace Cassette
         [Fact]
         public void AcceptCallsVisitOnVisitor()
         {
-            var visitor = new Mock<IAssetVisitor>();
+            var visitor = new Mock<IBundleVisitor>();
             asset.Accept(visitor.Object);
             visitor.Verify(v => v.Visit(asset));
         }
@@ -285,50 +288,4 @@ namespace Cassette
             root.Delete(true);
         }
     }
-
-    public class Asset_CreateCacheManifest_Tests : IDisposable
-    {
-        public Asset_CreateCacheManifest_Tests()
-        {
-            root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            root.CreateSubdirectory("module");
-            filename = Path.Combine(root.FullName, "module", "test.js");
-            // Write some testable content to the file.
-            File.WriteAllText(filename, "asset content");
-            var fileSystem = new FileSystemDirectory(root.FullName);
-
-            var module = new Module("~/module");
-            asset = new Asset("~/module/test.js", module, fileSystem.GetFile("module\\test.js"));
-            module.Assets.Add(asset);
-
-            File.WriteAllText(Path.Combine(root.FullName, "module", "another.js"), "");
-            var another = new Asset("~/module/another.js", module, fileSystem.GetFile("module\\another.js"));
-            module.Assets.Add(another);
-        }
-
-        readonly string filename;
-        readonly Asset asset;
-        readonly DirectoryInfo root;
-
-        [Fact]
-        public void CreateCacheManifestReturnsSingleXElement()
-        {
-            var element = asset.CreateCacheManifest().Single();
-            element.Name.LocalName.ShouldEqual("Asset");
-        }
-
-        [Fact]
-        public void GivenAssetHasReference_ThenXElementHasReferenceChildElement()
-        {
-            asset.AddReference("another.js", 1);
-            var element = asset.CreateCacheManifest().Single();
-            element.Element("Reference").ShouldNotBeNull();
-        }
-
-        public void Dispose()
-        {
-            root.Delete(true);
-        }
-    }
 }
-

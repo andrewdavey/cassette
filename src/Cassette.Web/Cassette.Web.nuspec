@@ -11,11 +11,11 @@
         <tags>web javascript coffeescript css html templates asp.net</tags>
         <dependencies>
             <dependency id="Cassette" version="$version$" />
+            <dependency id="Cassette.Views" version="$version$" />
         </dependencies>
     </metadata>
     
     <files>
-        <file src="Views\Web.config.transform" target="content\Views"/>
         <file src="CassetteConfiguration.cs.pp" target="content"/>
     </files>
 </package>

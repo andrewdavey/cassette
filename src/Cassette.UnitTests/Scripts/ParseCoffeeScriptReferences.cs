@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Xunit;
@@ -27,33 +28,29 @@ namespace Cassette.Scripts
     public class ParseCoffeeScriptReferences_Tests
     {
         [Fact]
-        public void ProcessAddsReferencesToCoffeeScriptAssetInModule()
+        public void ProcessAddsReferencesToCoffeeScriptAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.coffee");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.coffee");
 
             var coffeeScriptSource = @"
-# reference ""another1.js""
-# reference 'another2.coffee'
-# reference ""/another3.coffee""
-# <reference path=""another4.coffee""/>
-# <reference path='another5.coffee'/>
+# @reference ""another1.js""
+# @reference 'another2.coffee'
+# @reference another3.coffee
 
 class Foo
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(coffeeScriptSource.AsStream());
-            var module = new Module("~");
-            module.Assets.Add(asset.Object);
+            var bundle = new ScriptBundle("~");
+            bundle.Assets.Add(asset.Object);
 
             var processor = new ParseCoffeeScriptReferences();
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.coffee", 3));
-            asset.Verify(a => a.AddReference("/another3.coffee", 4));
-            asset.Verify(a => a.AddReference("another4.coffee", 5));
-            asset.Verify(a => a.AddReference("another5.coffee", 6));
+            asset.Verify(a => a.AddReference("another3.coffee", 4));
         }
     }
 }

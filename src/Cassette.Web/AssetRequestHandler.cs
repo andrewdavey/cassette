@@ -18,22 +18,22 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System;
 using System.Web;
 using System.Web.Routing;
+using Cassette.Utilities;
 
 namespace Cassette.Web
 {
-    public class AssetRequestHandler : IHttpHandler
+    class AssetRequestHandler : IHttpHandler
     {
-        public AssetRequestHandler(RequestContext requestContext, Func<string, Module> getModuleForPath)
+        public AssetRequestHandler(RequestContext requestContext, IBundleContainer bundleContainer)
         {
             this.requestContext = requestContext;
-            this.getModuleForPath = getModuleForPath;
+            this.bundleContainer = bundleContainer;
         }
 
         readonly RequestContext requestContext;
-        readonly Func<string, Module> getModuleForPath;
+        readonly IBundleContainer bundleContainer;
 
         public bool IsReusable
         {
@@ -45,38 +45,51 @@ namespace Cassette.Web
             var path = "~/" + requestContext.RouteData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             var response = requestContext.HttpContext.Response;
-            var module = getModuleForPath(path);
-            if (module == null)
+            IAsset asset;
+            Bundle bundle;
+            if (!bundleContainer.TryGetAssetByPath(path, out asset, out bundle))
             {
-                Trace.Source.TraceInformation("Module not found for asset path \"{0}\".", path);
-                NotFound(response);
-                return;
-            }
-            
-            var asset = module.FindAssetByPath(path);
-            if (asset == null)
-            {
-                Trace.Source.TraceInformation("Asset not found \"{0}\".", path);
+                Trace.Source.TraceInformation("Bundle asset not found with path \"{0}\".", path);
                 NotFound(response);
                 return;
             }
 
-            SendAsset(response, module, asset);
+            var request = requestContext.HttpContext.Request;
+            SendAsset(request, response, bundle, asset);
         }
 
-        void SendAsset(HttpResponseBase response, Module module, IAsset asset)
+        void SendAsset(HttpRequestBase request, HttpResponseBase response, Bundle bundle, IAsset asset)
         {
-            response.ContentType = module.ContentType;
-            using (var stream = asset.OpenStream())
+            response.ContentType = bundle.ContentType;
+
+            var actualETag = "\"" + asset.Hash.ToHexString() + "\"";
+            response.Cache.SetCacheability(HttpCacheability.Public);
+            response.Cache.SetETag(actualETag);
+
+            var givenETag = request.Headers["If-None-Match"];
+            if (givenETag == actualETag)
             {
-                stream.CopyTo(response.OutputStream);
+                SendNotModified(response);
             }
+            else
+            {
+                using (var stream = asset.OpenStream())
+                {
+                    stream.CopyTo(response.OutputStream);
+                }
+            }
+        }
+
+        void SendNotModified(HttpResponseBase response)
+        {
+            response.StatusCode = 304; // Not Modified
+            response.SuppressContent = true;
         }
 
         void NotFound(HttpResponseBase response)
         {
             response.StatusCode = 404;
-            response.End();
+            response.SuppressContent = true;
         }
     }
 }

@@ -18,23 +18,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Text.RegularExpressions;
-using Cassette.ModuleProcessing;
+using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    public class ParseCoffeeScriptReferences : LineBasedAssetReferenceParser<Module>
+    public class ParseCoffeeScriptReferences : ParseReferences<ScriptBundle>
     {
-        public ParseCoffeeScriptReferences() : base("coffee", ReferenceRegex)
+        protected override bool ShouldParseAsset(IAsset asset)
         {
+            return asset.SourceFile.FullPath.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase);
         }
 
-        static readonly Regex ReferenceRegex = new Regex(
-            @"(#\s*reference\s+(?<quote>[""'])(?<path>.*?)\<quote>)"+
-            "|"+
-            @"(#\s*\<reference\s+path\s*=\s*(?<quote>[""'])(?<path>.*?)\<quote>\s*/?>)",
-            RegexOptions.IgnoreCase
-        );
+        internal override ICommentParser CreateCommentParser()
+        {
+            return new CoffeeScriptCommentParser();
+        }
     }
 }
-

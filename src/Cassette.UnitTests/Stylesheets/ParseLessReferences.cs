@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Xunit;
@@ -27,10 +28,10 @@ namespace Cassette.Stylesheets
     public class ParseLessReferences_Tests
     {
         [Fact]
-        public void ProcessAddsReferencesToLessAssetInModule()
+        public void ProcessAddsReferencesToLessAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.less");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.less");
 
             var lessSource = @"
 // @reference ""another1.less"";
@@ -39,11 +40,11 @@ namespace Cassette.Stylesheets
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(lessSource.AsStream());
-            var module = new Module("~");
-            module.Assets.Add(asset.Object);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
 
             var processor = new ParseLessReferences();
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("another1.less", 2));
             asset.Verify(a => a.AddReference("/another2.less", 3));

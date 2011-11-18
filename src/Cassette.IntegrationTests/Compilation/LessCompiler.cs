@@ -39,7 +39,7 @@ namespace Cassette
                 .Returns("test.less");
             file.SetupGet(f => f.Directory)
                 .Returns(directory.Object);
-            directory.Setup(d => d.GetDirectory(It.IsAny<string>(), false))
+            directory.Setup(d => d.GetDirectory(It.IsAny<string>()))
                      .Returns(directory.Object);
         }
 
@@ -97,14 +97,14 @@ namespace Cassette
         public void Can_Compile_LESS_that_imports_another_LESS_file_from_different_directory()
         {
             var otherFile = new Mock<IFile>();
-            directory.Setup(d => d.GetFile("../module-b/lib.less"))
+            directory.Setup(d => d.GetFile("../bundle-b/lib.less"))
                      .Returns(otherFile.Object);
             otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => "@color: red;".AsStream());
 
             var compiler = new LessCompiler();
             var css = compiler.Compile(
-                "@import \"../module-b/lib.less\";\nbody{ color: @color }",
+                "@import \"../bundle-b/lib.less\";\nbody{ color: @color }",
                 file.Object
             );
             css.ShouldEqual("body {\n  color: red;\n}\n");
@@ -116,10 +116,10 @@ namespace Cassette
             // Mocking out IFileSystem here would be lots of work, given the directory navigations
             // that are required. So it's easier to use a temp directory and a real FileSystemDirectory object.
             var root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var moduleA = root.CreateSubdirectory("module-a");
-            var moduleB = root.CreateSubdirectory("module-b");
+            var bundleA = root.CreateSubdirectory("bundle-a");
+            var bundleB = root.CreateSubdirectory("bundle-b");
             file.SetupGet(f => f.Directory)
-                .Returns(new FileSystemDirectory(moduleA.FullName));
+                .Returns(new FileSystemDirectory(bundleA.FullName));
 
             try
             {
@@ -128,13 +128,13 @@ namespace Cassette
                     "@size: 100px;"
                 );
                 File.WriteAllText(
-                    Path.Combine(moduleB.FullName, "_lib.less"),
+                    Path.Combine(bundleB.FullName, "_lib.less"),
                     "@import \"../_base.less\";\n@color: red; p { height: @size; }"
                 );
 
                 var compiler = new LessCompiler();
                 var css = compiler.Compile(
-                    "@import \"../module-b/_lib.less\";\nbody{ color: @color }",
+                    "@import \"../bundle-b/_lib.less\";\nbody{ color: @color }",
                     file.Object
                 );
                 css.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: red;\n}\n");
@@ -151,16 +151,16 @@ namespace Cassette
             var root = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
             try
             {
-                var moduleA = root.CreateSubdirectory("module-a");
+                var bundleA = root.CreateSubdirectory("bundle-a");
                 file.SetupGet(f => f.Directory)
-                    .Returns(new FileSystemDirectory(moduleA.FullName));
-                root.CreateSubdirectory("module-b");
+                    .Returns(new FileSystemDirectory(bundleA.FullName));
+                root.CreateSubdirectory("bundle-b");
 
                 var compiler = new LessCompiler();
                 var exception = Assert.Throws<FileNotFoundException>(delegate
                 {
                     compiler.Compile(
-                        "@import \"../module-b/_MISSING.less\";\nbody{ color: @color }",
+                        "@import \"../bundle-b/_MISSING.less\";\nbody{ color: @color }",
                         file.Object
                     );
                 });

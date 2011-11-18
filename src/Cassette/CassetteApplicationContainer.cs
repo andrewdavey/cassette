@@ -23,7 +23,29 @@ using System.IO;
 
 namespace Cassette
 {
-    public class CassetteApplicationContainer<T> : IDisposable
+    public static class CassetteApplicationContainer
+    {
+        static Func<ICassetteApplication> _getApplication;
+
+        public static void SetAccessor(Func<ICassetteApplication> getApplication)
+        {
+            _getApplication = getApplication;
+        }
+
+        public static ICassetteApplication Application
+        {
+            get
+            {
+                if (_getApplication == null)
+                {
+                    throw new InvalidOperationException("Cassette infrastructure library missing. Make sure Cassette.Web has been added to the web application.");
+                }
+                return _getApplication();
+            }
+        }
+    }
+
+    class CassetteApplicationContainer<T> : IDisposable
         where T : ICassetteApplication
     {
         readonly Func<T> createApplication;
@@ -126,4 +148,3 @@ namespace Cassette
         }
     }
 }
-

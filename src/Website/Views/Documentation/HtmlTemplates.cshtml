@@ -25,21 +25,19 @@ CassetteConfiguration.cs</code></pre>
     &lt;input type="text" name="lastname" /&gt;
 &lt;/div&gt;</code></pre>
 
-<h2>Add a module in configuration</h2>
-<p>In the Cassette configuration class, we create a module for the directory:</p>
+<h2>Add a bundle in configuration</h2>
+<p>In the Cassette configuration class, we create a bundle for the directory:</p>
 <pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
 {
-    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
     {
-        moduleConfiguration.Add(
-            <span class="keyword">new</span> <span class="code-type">DirectorySource</span>&lt;<span class="code-type">HtmlTemplateModule</span>&gt;(<span class="string">"HtmlTemplates"</span>)
-        );
+        bundles.Add&lt;<span class="code-type">HtmlTemplate</span>&gt;(<span class="string">"HtmlTemplates"</span>);
     }
 }</code></pre>
 
-<p>Now in the <code>List.cshtml</code> view, we can reference this module.</p>
+<p>Now in the <code>List.cshtml</code> view, we can reference this bundle.</p>
 <pre><code><span class="code-tag">@@{</span>
-    <span class="code-type">Assets</span>.HtmlTemplates.Reference(<span class="string">"HtmlTemplates"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"HtmlTemplates"</span>);
 }
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
@@ -48,7 +46,7 @@ CassetteConfiguration.cs</code></pre>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
     ...
-    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Assets</span>.HtmlTemplates.Render()</span>
+    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderHtmlTemplates()</span>
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 

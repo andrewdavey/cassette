@@ -18,17 +18,18 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    public class ExpandCssUrls : IModuleProcessor<StylesheetModule>
+    public class ExpandCssUrls : IBundleProcessor<StylesheetBundle>
     {
-        public void Process(StylesheetModule module, ICassetteApplication application)
+        public void Process(StylesheetBundle bundle, CassetteSettings settings)
         {
-            foreach (var asset in module.Assets)
+            foreach (var asset in bundle.Assets)
             {
-                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(application));
+                asset.AddAssetTransformer(new ExpandCssUrlsAssetTransformer(settings.SourceDirectory, settings.UrlGenerator));
             }
         }
     }

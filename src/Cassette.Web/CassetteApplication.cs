@@ -23,45 +23,31 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.Handlers;
 using System.Web.Routing;
-using Cassette.HtmlTemplates;
-using Cassette.IO;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
-using Cassette.UI;
+using Cassette.Configuration;
 
 namespace Cassette.Web
 {
-    public class CassetteApplication : CassetteApplicationBase
+    class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(IEnumerable<ICassetteConfiguration> configurations, IDirectory sourceFileSystem, IDirectory cacheFileSystem, bool isOutputOptmized, string version, UrlGenerator urlGenerator, RouteCollection routes, Func<HttpContextBase> getCurrentHttpContext)
-            : base(configurations, sourceFileSystem, cacheFileSystem, urlGenerator, isOutputOptmized, version)
+        public CassetteApplication(IEnumerable<Bundle> bundles, CassetteSettings settings, CassetteRouting routing, Func<HttpContextBase> getCurrentHttpContext, string cacheVersion)
+            : base(bundles, settings, cacheVersion)
         {
-            this.urlGenerator = urlGenerator;
             this.getCurrentHttpContext = getCurrentHttpContext;
-            InstallRoutes(routes);
+            this.routing = routing;
         }
 
-        readonly UrlGenerator urlGenerator;
         readonly Func<HttpContextBase> getCurrentHttpContext;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
+        readonly CassetteRouting routing;
 
         public void OnPostMapRequestHandler(HttpContextBase httpContext)
         {
-            IPlaceholderTracker tracker;
-            if (HtmlRewritingEnabled)
-            {
-                tracker = new PlaceholderTracker();
-            }
-            else
-            {
-                tracker = new NullPlaceholderTracker();
-            }
-            httpContext.Items[PlaceholderTrackerKey] = tracker;
+            httpContext.Items[PlaceholderTrackerKey] = CreatePlaceholderTracker();
         }
 
         public void OnPostRequestHandlerExecute(HttpContextBase httpContext)
         {
-            if (!HtmlRewritingEnabled) return;
+            if (!Settings.IsHtmlRewritingEnabled) return;
             
             if (httpContext.CurrentHandler is AssemblyResourceLoader)
             {
@@ -82,11 +68,16 @@ namespace Cassette.Web
             response.Filter = filter;
         }
 
+        internal void InstallRoutes(RouteCollection routes)
+        {
+            routing.InstallRoutes(routes, BundleContainer);
+        }
+
         bool CanRewriteOutput(HttpContextBase httpContext)
         {
             var statusCode = httpContext.Response.StatusCode;
             if (300 <= statusCode && statusCode < 400) return false;
-            if (statusCode == 401) return false; // 401 gets converted into a redirect by FormsAuthenticationModule.
+            if (statusCode == 401) return false; // 401 gets converted into a redirect by FormsAuthenticationBundle.
 
             return IsHtmlResponse(httpContext);
         }
@@ -103,13 +94,13 @@ namespace Cassette.Web
             return (IPlaceholderTracker)items[PlaceholderTrackerKey];
         }
 
-        protected override IReferenceBuilder<T> GetOrCreateReferenceBuilder<T>(Func<IReferenceBuilder<T>> create)
+        protected override IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create)
         {
             var items = getCurrentHttpContext().Items;
-            var key = "ReferenceBuilder:" + typeof(T).FullName;
+            const string key = "Cassette.ReferenceBuilder";
             if (items.Contains(key))
             {
-                return (IReferenceBuilder<T>)items[key];
+                return (IReferenceBuilder)items[key];
             }
             else
             {
@@ -118,56 +109,5 @@ namespace Cassette.Web
                 return builder;
             }
         }
-
-        void InstallRoutes(RouteCollection routes)
-        {
-            InstallModuleRoute<ScriptModule>(routes);
-            InstallModuleRoute<StylesheetModule>(routes);
-            InstallModuleRoute<HtmlTemplateModule>(routes);
-
-            InstallRawFileRoute(routes);
-
-            InstallAssetRoute(routes);
-        }
-
-        void InstallModuleRoute<T>(RouteCollection routes)
-            where T : Module
-        {
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            var url = urlGenerator.GetModuleRouteUrl<T>();
-            var handler = new DelegateRouteHandler(
-                requestContext => new ModuleRequestHandler<T>(GetModuleContainer<T>(), requestContext)
-            );
-            Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
-            routes.Insert(0, new CassetteRoute(url, handler));
-        }
-
-        void InstallRawFileRoute(RouteCollection routes)
-        {
-            var url = urlGenerator.GetRawFileRouteUrl();
-            var handler = new DelegateRouteHandler(
-                requestContext => new RawFileRequestHandler(requestContext)
-            );
-            Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
-            routes.Insert(0, new CassetteRoute(url, handler));
-        }
-
-        void InstallAssetRoute(RouteCollection routes)
-        {
-            // Used to return compiled coffeescript, less, etc.
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            var url = urlGenerator.GetAssetRouteUrl();
-            var handler = new DelegateRouteHandler(
-                requestContext => new AssetRequestHandler(
-                    requestContext,
-                    FindModuleContainingPath
-                )
-            );
-            Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);
-            routes.Insert(0, new CassetteRoute(url, handler));
-        }
     }
 }
-

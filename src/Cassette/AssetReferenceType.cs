@@ -23,13 +23,13 @@ namespace Cassette
     public enum AssetReferenceType
     {
         /// <summary>
-        /// A reference to an asset in the same module as the referencing asset.
+        /// A reference to an asset in the same bundle as the referencing asset.
         /// </summary>
-        SameModule,
+        SameBundle,
         /// <summary>
-        /// A reference to an asset in another module, or to an entire other module itself.
+        /// A reference to an asset in another bundle, or to an entire other bundle itself.
         /// </summary>
-        DifferentModule,
+        DifferentBundle,
         /// <summary>
         /// For example, a reference to an image from a CSS file.
         /// </summary>

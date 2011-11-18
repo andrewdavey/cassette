@@ -22,9 +22,8 @@ namespace Cassette
 {
     public interface IUrlGenerator
     {
-        string CreateModuleUrl(Module module);
+        string CreateBundleUrl(Bundle bundle);
         string CreateAssetUrl(IAsset asset);
-        string CreateAssetCompileUrl(Module module, IAsset asset);
         string CreateRawFileUrl(string filename, string hash);
     }
 }

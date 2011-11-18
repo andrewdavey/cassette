@@ -6,12 +6,12 @@ Cassette works with both WebForms and MVC projects. If using WebForms, please re
 </p>
 <p>The examples here will use Razor views, but aspx, spark, etc, will also work.</p>
 <p>
-In your view page, reference scripts and stylesheets using Cassette's <code>Assets</code> helper class.
+In your view page, reference scripts and stylesheets using Cassette's <code>Bundles</code> helper class.
 </p>
 <pre><code><span class="code-tag">@@{</span>
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/jquery.js"</span>);
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/page.js"</span>);
-    <span class="code-type">Assets</span>.Stylesheets.Reference(<span class="string">"Styles/page.css"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/jquery.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/page.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Styles/page.css"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
     <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
@@ -23,19 +23,19 @@ Next, we need say where to render the HTML required to include these scripts and
 Use the <code>Render</code> methods to insert the HTML into the page.
 </p>
 <pre><code><span class="code-tag">@@{</span>
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/jquery.js"</span>);
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/page.js"</span>);
-    <span class="code-type">Assets</span>.Stylesheets.Reference(<span class="string">"Styles/page.css"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/jquery.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/page.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Styles/page.css"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
     <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Assets</span>.Stylesheets.Render()</span>
+    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderStylesheets()</span>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
     ...
-    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Assets</span>.Scripts.Render()</span>
+    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderScripts()</span>
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 
@@ -61,24 +61,24 @@ You can even reference assets from a partial view and they will be rendered in t
 </p>
 <p>For example, here's a layout page that declares one reference:</p>
 <pre><code><span class="code-tag">@@{</span>
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/jquery.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/jquery.js"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
     <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Assets</span>.Stylesheets.Render()</span>
+    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderStylesheets()</span>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
     <span class="code-tag">@@</span>RenderBody()
-    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Assets</span>.Scripts.Render()</span>
+    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderScripts()</span>
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
 <p>And then the content page adds some more:</p>
 <pre><code><span class="code-tag">@@{</span>
     Layout = <span class="string">"~/Views/Shared/Layout.cshtml"</span>;
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/page.js"</span>);
-    <span class="code-type">Assets</span>.Stylesheets.Reference(<span class="string">"Styles/page.css"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/page.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Styles/page.css"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;</span><span class="tag">p</span><span class="close-tag">&gt;</span>My page<span class="open-tag">&lt;</span><span class="tag">/p</span><span class="close-tag">&gt;</span>
 </code></pre>
@@ -108,9 +108,9 @@ Cassette parses the reference comments and then inserts all the required assets 
 Therefore we can delete the explicit jQuery reference from the page.
 </p>
 <pre><code><span class="code-tag">@@{</span>
-    <span style="text-decoration: line-through"><span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/jquery.js"</span>);</span>
-    <span class="code-type">Assets</span>.Scripts.Reference(<span class="string">"Scripts/page.js"</span>);
-    <span class="code-type">Assets</span>.Stylesheets.Reference(<span class="string">"Styles/page.css"</span>);
+    <span style="text-decoration: line-through"><span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/jquery.js"</span>);</span>
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/page.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"Styles/page.css"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
     <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
@@ -124,7 +124,7 @@ This introduction has only scratched the surface of what Cassette can do. Includ
 individually into a page is bad for production performance. Let's learn how to configure Cassette
 to concatenate related scripts...
 </p>
-<p><a class="action" href="@Url.DocumentationUrl("getting-started/combine-assets-into-modules")">Read about combining assets &#187;</a></p>
+<p><a class="action" href="@Url.DocumentationUrl("getting-started/assets-and-bundles")">Read about Assets and Bundles &#187;</a></p>
 
 <h2>Questions?</h2>
 <p>Please visit the <a href="http://groups.google.com/group/cassette">Cassette Google Group</a> to ask for help.</p>

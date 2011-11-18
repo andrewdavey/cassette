@@ -2,8 +2,8 @@
     ViewBag.Title = "Cassette | Buy a Proprietary License";
     ViewBag.Description = "If a GNU license isn't an option for you, you can buy a proprietary software license here, from $40/server, using PayPal";
     ViewBag.Section = "licensing";
-    Assets.Scripts.Reference("~/assets/scripts/licensing-buy", "body");
-    Assets.Scripts.Reference("~/assets/scripts/questions", "body");
+    Bundles.Reference("~/assets/scripts/licensing-buy", "body");
+    Bundles.Reference("~/assets/scripts/questions", "body");
 }
 <div class="main">
     <h1>LICENSING</h1>
@@ -76,8 +76,8 @@
             <input type="hidden" name="cn" value="Add special instructions to the seller"/>
             <input type="hidden" name="no_shipping" value="2"/>
             <input type="hidden" name="rm" value="1"/>
-            <input type="hidden" name="return" value="@Url.Action("Purchased", "Licensing", null, "http")"/>
-            <input type="hidden" name="cancel_return" value="@Url.Action("Index", "Licensing", null, "http")"/>
+            <input type="hidden" name="return" value="@Url.ToPublicUrl(Url.Action("purchased"))"/>
+            <input type="hidden" name="cancel_return" value="@Url.ToPublicUrl(Url.Action("index"))"/>
             <input type="hidden" name="on0" value="Company Name"/>
         </form>
         

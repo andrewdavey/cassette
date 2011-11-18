@@ -18,11 +18,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Web;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetHtmlRenderer : IModuleHtmlRenderer<StylesheetModule>
+    class StylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
         public StylesheetHtmlRenderer(IUrlGenerator urlGenerator)
         {
@@ -31,29 +30,24 @@ namespace Cassette.Stylesheets
 
         readonly IUrlGenerator urlGenerator;
 
-        public IHtmlString Render(StylesheetModule module)
+        public string Render(StylesheetBundle bundle)
         {
-            var url = urlGenerator.CreateModuleUrl(module);
-            if (string.IsNullOrEmpty(module.Media))
+            var url = urlGenerator.CreateBundleUrl(bundle);
+            if (string.IsNullOrEmpty(bundle.Media))
             {
-                return new HtmlString(
-                    string.Format(
-                        HtmlConstants.LinkHtml,
-                        url
-                    )
+                return string.Format(
+                    HtmlConstants.LinkHtml,
+                    url
                 );
             }
             else
             {
-                return new HtmlString(
-                    string.Format(
-                        HtmlConstants.LinkWithMediaHtml,
-                        url,
-                        module.Media
-                    )
+                return string.Format(
+                    HtmlConstants.LinkWithMediaHtml,
+                    url,
+                    bundle.Media
                 );
             }
         }
     }
 }
-

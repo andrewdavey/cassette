@@ -19,30 +19,25 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
-    public class KnockoutJQueryTmplPipeline : MutablePipeline<HtmlTemplateModule>
+    public class KnockoutJQueryTmplPipeline : MutablePipeline<HtmlTemplateBundle>
     {
-        protected override IEnumerable<IModuleProcessor<HtmlTemplateModule>> CreatePipeline(HtmlTemplateModule module, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
-            // Compile each template into JavaScript.
-            yield return new AddTransformerToAssets(
-                new CompileAsset(new KnockoutJQueryTmplCompiler())
+            yield return new AssignHtmlTemplateRenderer(
+                new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)
             );
-            yield return new Customize<HtmlTemplateModule>(
-                m => m.ContentType = "text/javascript"
-            );
-            yield return new AddTransformerToAssets(
-                new WrapJQueryTemplateInInitializer(module)
-            );
-            // Join all the JavaScript together
+            yield return new AssignContentType("text/javascript");
+            if (bundle.IsFromCache) yield break;
+
+            yield return new ParseHtmlTemplateReferences();
+            yield return new CompileKnockoutJQueryTmpl();
+            yield return new RegisterTemplatesWithJQueryTmpl(bundle);
             yield return new ConcatenateAssets();
-            // Assign the renderer to output a link to the module.
-            yield return new AssignRenderer(
-                new RemoteHtmlTemplateModuleRenderer(application.UrlGenerator)
-            );
         }
     }
 }

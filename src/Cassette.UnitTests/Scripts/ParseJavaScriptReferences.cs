@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Xunit;
@@ -27,10 +28,10 @@ namespace Cassette.Scripts
     public class ParseJavaScriptReferences_Tests
     {
         [Fact]
-        public void ProcessAddsReferencesToJavaScriptAssetInModule()
+        public void ProcessAddsReferencesToJavaScriptAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFilename).Returns("asset.js");
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.js");
 
             var javaScriptSource = @"
 /// <reference path=""another1.js""/>
@@ -39,11 +40,11 @@ namespace Cassette.Scripts
 ";
             asset.Setup(a => a.OpenStream())
                  .Returns(javaScriptSource.AsStream());
-            var module = new Module("~");
-            module.Assets.Add(asset.Object);
+            var bundle = new ScriptBundle("~");
+            bundle.Assets.Add(asset.Object);
 
             var processor = new ParseJavaScriptReferences();
-            processor.Process(module, Mock.Of<ICassetteApplication>());
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("/another2.js", 3));
@@ -51,4 +52,3 @@ namespace Cassette.Scripts
         }
     }
 }
-

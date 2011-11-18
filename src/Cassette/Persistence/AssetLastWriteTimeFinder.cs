@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace Cassette.Persistence
 {
-    class AssetLastWriteTimeFinder : IAssetVisitor
+    class AssetLastWriteTimeFinder : IBundleVisitor
     {
         DateTime max;
 
@@ -32,15 +32,15 @@ namespace Cassette.Persistence
             get { return max; }
         }
 
-        public void Visit(IEnumerable<Module> unprocessedSourceModules)
+        public void Visit(IEnumerable<Bundle> unprocessedSourceBundles)
         {
-            foreach (var module in unprocessedSourceModules)
+            foreach (var bundle in unprocessedSourceBundles)
             {
-                module.Accept(this);
+                bundle.Accept(this);
             }
         }
 
-        public void Visit(Module module)
+        public void Visit(Bundle bundle)
         {
         }
 

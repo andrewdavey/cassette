@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace Cassette.Utilities
 {
-    public static class ByteArrayExtensions
+    static class ByteArrayExtensions
     {
         public static string ToHexString(this IEnumerable<byte> bytes)
         {

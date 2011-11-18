@@ -19,18 +19,16 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using Cassette.IO;
-using Cassette.UI;
+using Cassette.Configuration;
 
 namespace Cassette
 {
     public interface ICassetteApplication : IDisposable
     {
-        IDirectory RootDirectory { get; }
-        bool IsOutputOptimized { get; set; }
-        IUrlGenerator UrlGenerator { get; set; }
-        bool HtmlRewritingEnabled { get; set; }
+        CassetteSettings Settings { get; }
 
-        IReferenceBuilder<T> GetReferenceBuilder<T>() where T : Module;
+        T FindBundleContainingPath<T>(string path) where T : Bundle;
+
+        IReferenceBuilder GetReferenceBuilder();
     }
 }

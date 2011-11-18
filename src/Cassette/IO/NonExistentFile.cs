@@ -23,7 +23,7 @@ using System.IO;
 
 namespace Cassette.IO
 {
-    public class NonExistentFile : IFile
+    class NonExistentFile : IFile
     {
         readonly string filename;
 
@@ -64,6 +64,11 @@ namespace Cassette.IO
         {
             ThrowFileNotFoundException();
             return null;
+        }
+
+        public void Delete()
+        {
+            ThrowFileNotFoundException();
         }
 
         void ThrowFileNotFoundException()

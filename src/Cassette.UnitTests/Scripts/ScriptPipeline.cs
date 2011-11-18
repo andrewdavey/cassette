@@ -18,43 +18,88 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.IO;
+using Cassette.BundleProcessing;
+using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
     public class ScriptPipeline_Tests
     {
         [Fact]
-        public void GivenApplicationIsOptimized_WhenProcessModule_ThenRendererIsScriptModuleHtmlRenderer()
+        public void CompileCoffeeScriptDefaultsToTrue()
         {
-            var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsOutputOptimized)
-                       .Returns(true);
-
-            var module = new ScriptModule("~/test");
-
             var pipeline = new ScriptPipeline();
-            pipeline.Process(module, application.Object);
-
-            module.Renderer.ShouldBeType<ScriptModuleHtmlRenderer>();
+            pipeline.CompileCoffeeScript.ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenApplicationIsNotOptimized_WhenProcessModule_ThenRendererIsDebugScriptModuleHtmlRenderer()
+        public void GivenProductionMode_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
         {
-            var application = new Mock<ICassetteApplication>();
-            application.SetupGet(a => a.IsOutputOptimized)
-                       .Returns(false);
+            var settings = new CassetteSettings { IsDebuggingEnabled = false };
 
-            var module = new ScriptModule("~/test");
+            var bundle = new ScriptBundle("~/test");
 
             var pipeline = new ScriptPipeline();
-            pipeline.Process(module, application.Object);
+            pipeline.Process(bundle, settings);
 
-            module.Renderer.ShouldBeType<DebugScriptModuleHtmlRenderer>();
+            bundle.Renderer.ShouldBeType<ScriptBundleHtmlRenderer>();
+        }
+
+        [Fact]
+        public void GivenDebugMode_WhenProcessBundle_ThenRendererIsDebugScriptBundleHtmlRenderer()
+        {
+            var settings = new CassetteSettings { IsDebuggingEnabled = true };
+
+            var bundle = new ScriptBundle("~/test");
+
+            var pipeline = new ScriptPipeline();
+            pipeline.Process(bundle, settings);
+
+            bundle.Renderer.ShouldBeType<DebugScriptBundleHtmlRenderer>();
+        }
+
+        [Fact]
+        public void GivenCompileCoffeeScriptIsFalse_WhenProcessBundle_ThenCompileAssetTransformerNotAddedToAsset()
+        {
+            var pipeline = new ScriptPipeline { CompileCoffeeScript = false };
+            var bundle = new ScriptBundle("~");
+            var asset = StubCoffeeScriptAsset();
+            bundle.Assets.Add(asset.Object);
+            
+            pipeline.Process(bundle, new CassetteSettings());
+
+            asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()), Times.Never());
+        }
+
+        [Fact]
+        public void GivenCompileCoffeeScriptIsTrue_WhenProcessBundle_ThenCompileAssetTransformerIsAddedToAsset()
+        {
+            var pipeline = new ScriptPipeline { CompileCoffeeScript = true };
+            var bundle = new ScriptBundle("~");
+            var asset = StubCoffeeScriptAsset();
+            bundle.Assets.Add(asset.Object);
+
+            pipeline.Process(bundle, new CassetteSettings());
+
+            asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()));
+        }
+
+        static Mock<IAsset> StubCoffeeScriptAsset()
+        {
+            var asset = new Mock<IAsset>();
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath)
+                .Returns("~/test.coffee");
+            asset.Setup(f => f.OpenStream())
+                .Returns(Stream.Null);
+            asset.SetupGet(a => a.SourceFile)
+                .Returns(file.Object);
+            return asset;
         }
     }
 }
-

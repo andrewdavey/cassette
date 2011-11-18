@@ -18,61 +18,21 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Cassette.ModuleProcessing;
+using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class ParseCssReferences : ModuleProcessorOfAssetsMatchingFileExtension<StylesheetModule>
+    public class ParseCssReferences : ParseReferences<StylesheetBundle>
     {
-        public ParseCssReferences()
-            : base("css")
+        protected override bool ShouldParseAsset(IAsset asset)
         {
+            return asset.SourceFile.FullPath.EndsWith(".css", StringComparison.OrdinalIgnoreCase);
         }
 
-        static readonly Regex CssCommentRegex = new Regex(
-            @"/\*(?<body>.*?)\*/",
-            RegexOptions.Singleline
-        );
-        static readonly Regex ReferenceRegex = new Regex(
-            @"@reference \s+ (?<quote>[""']) (?<path>.*?) \<quote> \s* ;?",
-            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
-        );
-
-        protected override void Process(IAsset asset, Module module)
+        internal override ICommentParser CreateCommentParser()
         {
-            var css = ReadAllCss(asset);
-            foreach (var reference in ParseReferences(css))
-            {
-                // TODO: Add line number tracking to the parser.
-                // For now use -1 as dummy line number.
-                asset.AddReference(reference, -1);
-            }
-        }
-
-        string ReadAllCss(IAsset asset)
-        {
-            using (var reader = new StreamReader(asset.OpenStream()))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        IEnumerable<string> ParseReferences(string css)
-        {
-            var commentBodies = CssCommentRegex
-                    .Matches(css)
-                    .Cast<Match>()
-                    .Select(match => match.Groups["body"].Value);
-
-            return from body in commentBodies
-                   from match in ReferenceRegex.Matches(body).Cast<Match>()
-                   where match.Groups["path"].Success
-                   select match.Groups["path"].Value;
+            return new CssCommentParser();
         }
     }
 }
-

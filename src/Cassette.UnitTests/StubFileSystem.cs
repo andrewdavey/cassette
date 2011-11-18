@@ -40,7 +40,7 @@ namespace Cassette
             fileStreams.Clear();
         }
 
-        public IDirectory GetDirectory(string path, bool createIfNotExists)
+        public IDirectory GetDirectory(string path)
         {
             return new StubFileSystem(
                 fileStreams
@@ -52,9 +52,19 @@ namespace Cassette
                 );
         }
 
-        public IEnumerable<string> GetDirectoryPaths(string relativePath)
+        public bool DirectoryExists(string path)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<IDirectory> GetDirectories()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string FullPath
+        {
+            get { return "~/"; }
         }
 
         public IFile GetFile(string filename)
@@ -62,21 +72,14 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetFilePaths(string directory, SearchOption searchOption, string searchPattern)
-        {
-            if (searchPattern == "*")
-            {
-                return fileStreams.Keys;
-            }
-            else
-            {
-                return fileStreams.Keys.Where(key => key.EndsWith(searchPattern.Substring(1)));
-            }
-        }
-
-        public FileAttributes GetAttributes(string path)
+        public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
             throw new NotImplementedException();
+        }
+
+        public FileAttributes Attributes
+        {
+            get { return FileAttributes.Directory; }
         }
     }
 }

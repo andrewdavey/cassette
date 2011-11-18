@@ -18,46 +18,95 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Handlers;
-using System.Web.Routing;
-using Cassette.HtmlTemplates;
+using Cassette.Configuration;
 using Cassette.IO;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
-using Cassette.UI;
 using Moq;
 using Should;
 using Xunit;
 
 namespace Cassette.Web
 {
-    public class CassetteApplication_Tests
+    public class CassetteApplication_Tests : IDisposable
     {
-        protected static CassetteApplication StubApplication()
+        readonly TempDirectory cacheDir;
+        readonly TempDirectory sourceDir;
+        readonly Mock<HttpContextBase> httpContext;
+
+        public CassetteApplication_Tests()
         {
+            sourceDir = new TempDirectory();
+            cacheDir = new TempDirectory();
+            httpContext = new Mock<HttpContextBase>();
+        }
+
+        [Fact]
+        public void WhenGetReferenceBuilder_ThenReferenceBuilderObjectIsStoredInHttpContextItems()
+        {
+            var items = new Dictionary<string, object>();
+            httpContext.SetupGet(c => c.Items).Returns(items);
+
+            var application = StubApplication();
+            var builder = application.GetReferenceBuilder();
+            
+            builder.ShouldNotBeNull();
+            var storedBuilder = items["Cassette.ReferenceBuilder"];
+            storedBuilder.ShouldBeSameAs(builder);
+        }
+
+        [Fact]
+        public void GivenReferenceBuilderCreatedOnce_WhenGetReferenceBuilderAgain_ThenTheSameObjectIsReturned()
+        {
+            var items = new Dictionary<string, object>();
+            httpContext.SetupGet(c => c.Items).Returns(items);
+            var application = StubApplication();
+            var builder = application.GetReferenceBuilder();
+
+            var builder2 = application.GetReferenceBuilder();
+            builder2.ShouldBeSameAs(builder);
+        }
+
+        [Fact]
+        public void WhenDispose_ThenBundleIsDisposed()
+        {
+            var bundle = new TestableBundle("~");
+            var application = StubApplication(createBundles: settings => new BundleCollection(settings) { bundle });
+            
+            application.Dispose();
+
+            bundle.WasDisposed.ShouldBeTrue();
+        }
+
+        internal CassetteApplication StubApplication(Action<CassetteSettings> alterSettings = null, Func<CassetteSettings, BundleCollection> createBundles = null)
+        {
+            var settings = new CassetteSettings
+            {
+                CacheDirectory = new FileSystemDirectory(cacheDir),
+                SourceDirectory = new FileSystemDirectory(sourceDir)
+            };
+            if (alterSettings != null) alterSettings(settings);
+
+            var bundles = createBundles == null 
+                ? new BundleCollection(settings) 
+                : createBundles(settings);
+
             return new CassetteApplication(
-                new[] { new StubConfig() },
-                Mock.Of<IDirectory>(),
-                Mock.Of<IDirectory>(),
-                false,
-                "",
-                new UrlGenerator(""),
-                new RouteCollection(),
-                () => null
+                bundles, 
+                settings,
+                new CassetteRouting(new VirtualDirectoryPrepender("/")), 
+                () => httpContext.Object,
+                ""
             );
         }
 
-        class StubConfig : ICassetteConfiguration
+        public void Dispose()
         {
-            public void Configure(ModuleConfiguration moduleConfiguration, ICassetteApplication application)
-            {
-                moduleConfiguration.Add(Mock.Of<IModuleSource<ScriptModule>>());
-                moduleConfiguration.Add(Mock.Of<IModuleSource<StylesheetModule>>());
-                moduleConfiguration.Add(Mock.Of<IModuleSource<HtmlTemplateModule>>());
-            }
+           cacheDir.Dispose();
+           sourceDir.Dispose();
         }
     }
 
@@ -66,8 +115,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenHtmlRewritingEnabled_WhenOnPostMapRequestHandler_ThenPlaceholderTrackerAddedToContextItems()
         {
-            var application = StubApplication();
-            application.HtmlRewritingEnabled = true;
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
 
             var context = new Mock<HttpContextBase>();
             var items = new Dictionary<string, object>();
@@ -81,8 +129,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenHtmlRewritingDisabled_WhenOnPostMapRequestHandler_ThenNullPlaceholderTrackerAddedToContextItems()
         {
-            var application = StubApplication();
-            application.HtmlRewritingEnabled = false;
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = false);
 
             var context = new Mock<HttpContextBase>();
             var items = new Dictionary<string, object>();
@@ -99,8 +146,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenHtmlRewritingDisabled_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
-            var application = StubApplication();
-            application.HtmlRewritingEnabled = false;
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = false);
 
             var context = new Mock<HttpContextBase>();
             var response = new Mock<HttpResponseBase>();
@@ -115,8 +161,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenCurrentHandlerIsAssemblyResourceLoader_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
-            var application = StubApplication();
-            application.HtmlRewritingEnabled = true;
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
 
             var context = new Mock<HttpContextBase>();
             context.SetupGet(c => c.CurrentHandler)
@@ -132,4 +177,3 @@ namespace Cassette.Web
         }
     }
 }
-

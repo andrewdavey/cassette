@@ -1,2 +1,10 @@
 ﻿<h1>Data URIs</h1>
-<p>Documentation under construction. Please check back soon!</p>
+<p>Warning: This feature is still experimental!</p>
+<p>Cassette can convert CSS images into data-URIs. Enable this feature with the following configuration.</p>
+<pre><code>bundles.Add&lt;StylesheetBundle&gt;(
+    "styles",
+    b => b.Processor = new StylesheetPipeline
+    {
+        ConvertImageUrlsToDataUris = true
+    }
+);</code></pre>

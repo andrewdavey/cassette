@@ -26,7 +26,7 @@ using Cassette.IO;
 
 namespace Cassette.Persistence
 {
-    public class CachedAsset : IAsset
+    class CachedAsset : IAsset
     {
         public CachedAsset(IFile file, byte[] hash, IEnumerable<IAsset> children)
         {
@@ -54,28 +54,17 @@ namespace Cassette.Persistence
             get { return children.SelectMany(asset => asset.References); }
         }
 
-        public bool HasTransformers
-        {
-            get { return false; }
-        }
-
         public Stream OpenStream()
         {
             return file.OpenRead();
         }
 
-        public void Accept(IAssetVisitor visitor)
+        public void Accept(IBundleVisitor visitor)
         {
             foreach (var child in children)
             {
-                visitor.Visit(child);
+                child.Accept(visitor);
             }
-        }
-
-
-        public string SourceFilename
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public void AddReference(string path, int lineNumber)

@@ -19,27 +19,25 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.Collections.Generic;
-using Cassette.ModuleProcessing;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
-    public class JQueryTmplPipeline : MutablePipeline<HtmlTemplateModule>
+    public class JQueryTmplPipeline : MutablePipeline<HtmlTemplateBundle>
     {
-        protected override IEnumerable<IModuleProcessor<HtmlTemplateModule>> CreatePipeline(HtmlTemplateModule module, ICassetteApplication application)
+        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
-            yield return new AddTransformerToAssets(
-                new CompileAsset(new JQueryTmplCompiler())
+            yield return new AssignHtmlTemplateRenderer(
+                new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)
             );
-            yield return new Customize<HtmlTemplateModule>(
-                m => m.ContentType = "text/javascript"
-            );
-            yield return new AddTransformerToAssets(
-                new WrapJQueryTemplateInInitializer(module)
-            );
+            yield return new AssignContentType("text/javascript");
+            if (bundle.IsFromCache) yield break;
+
+            yield return new ParseHtmlTemplateReferences();
+            yield return new CompileJQueryTmpl();
+            yield return new RegisterTemplatesWithJQueryTmpl(bundle);
             yield return new ConcatenateAssets();
-            yield return new AssignRenderer(
-                new RemoteHtmlTemplateModuleRenderer(application.UrlGenerator)
-            );
         }
     }
 }
