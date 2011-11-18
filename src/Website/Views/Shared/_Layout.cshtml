@@ -7,6 +7,8 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="keywords" content=".net asset management, asp.net, developer tools, web development" />
+    <meta name="description" content="@ViewBag.Description" />
     <title>@ViewBag.Title</title>
     @Assets.Stylesheets.Render()
 </head>
@@ -31,10 +33,10 @@
                     <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
                 </li>
                 <li>
-                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation")">Documentation</a>
+                    <a @ActiveClassIf("licensing") href="@Url.Action("index", "licensing")">Licensing</a>
                 </li>
                 <li>
-                    <a @ActiveClassIf("licensing") href="@Url.Action("index", "licensing")">Licensing</a>
+                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation")">Documentation</a>
                 </li>
                 <li>
                     <a @ActiveClassIf("faqs") href="@Url.RouteUrl("FAQs")">FAQs</a>
@@ -51,7 +53,7 @@
 
     <div class="footer">
         <p><a target="_blank" id="twittericon" href="http://twitter.com/getcassette"></a></p>
-        <p>&#169; 2011 <a target="_blank" href="http://www.aboutcode.net">Andrew Davey</a> &#183; Cassette is distributed by Equin Ltd</p>
+        <p>&#169; 2011 <a target="_blank" href="http://www.aboutcode.net">Andrew Davey</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk">Equin Ltd</a></p>
     </div>
 
     @Assets.Scripts.Render("body")

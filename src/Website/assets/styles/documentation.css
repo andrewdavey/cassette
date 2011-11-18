@@ -23,10 +23,6 @@
     color: #171717;
 }
 
-.activedoc {
-    font-weight: bold;    
-}
-
 .main .documentation {
     display: table;
     width: 100%;
@@ -70,7 +66,17 @@
 }
 
 .tree a {
-    color: #171717;
+    color: #494949;
+}
+
+.tree a:hover {
+    color: #000000;
+}
+
+.tree a.activedoc {
+    font-weight: bold;
+    text-decoration: none;
+    color: #000000;    
 }
 
 .documentation .item {

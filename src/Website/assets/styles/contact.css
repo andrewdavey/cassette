@@ -1,8 +1,8 @@
-﻿.contactpage {
+﻿/*
+
+.contactpage {
     position: relative;
 }
-
-/* Enquiry Form */
 
 #enquiryform button {
     clear: left;
@@ -18,9 +18,9 @@
     text-align: left;
 }
 
-/* Contact Details */
-
 #contactdetails {
     padding: 5px 0 0 30em;
     min-height: 480px;
 }
+
+*/

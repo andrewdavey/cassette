@@ -12,7 +12,7 @@ body {
 
 .main {
     max-width: 960px;
-    margin: 0 auto 2em auto;
+    margin: 0 auto 1.5em auto;
 }
 
 .content {
@@ -63,16 +63,13 @@ p.last {
 
 a {
     color: #377302;
-    text-decoration: none;
-}
-
-a:hover {
     text-decoration: underline;
 }
 
-a:visited {
-    color: #377302;
+a:hover {
+    color: #1d3d01;
 }
+
 
 .helpquestion {
     color: #171717;
