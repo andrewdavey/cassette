@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Web;
 using System.Web.Routing;
+using Cassette.Utilities;
 
 namespace Cassette.Web
 {
@@ -53,22 +54,42 @@ namespace Cassette.Web
                 return;
             }
 
-            SendAsset(response, bundle, asset);
+            var request = requestContext.HttpContext.Request;
+            SendAsset(request, response, bundle, asset);
         }
 
-        void SendAsset(HttpResponseBase response, Bundle bundle, IAsset asset)
+        void SendAsset(HttpRequestBase request, HttpResponseBase response, Bundle bundle, IAsset asset)
         {
             response.ContentType = bundle.ContentType;
-            using (var stream = asset.OpenStream())
+
+            var actualETag = "\"" + asset.Hash.ToHexString() + "\"";
+            response.Cache.SetCacheability(HttpCacheability.Public);
+            response.Cache.SetETag(actualETag);
+
+            var givenETag = request.Headers["If-None-Match"];
+            if (givenETag == actualETag)
             {
-                stream.CopyTo(response.OutputStream);
+                SendNotModified(response);
             }
+            else
+            {
+                using (var stream = asset.OpenStream())
+                {
+                    stream.CopyTo(response.OutputStream);
+                }
+            }
+        }
+
+        void SendNotModified(HttpResponseBase response)
+        {
+            response.StatusCode = 304; // Not Modified
+            response.SuppressContent = true;
         }
 
         void NotFound(HttpResponseBase response)
         {
             response.StatusCode = 404;
-            response.End();
+            response.SuppressContent = true;
         }
     }
 }
