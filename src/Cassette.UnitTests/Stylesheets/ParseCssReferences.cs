@@ -36,7 +36,7 @@ namespace Cassette.Stylesheets
             var processor = new ParseCssReferences();
             processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            asset.Verify(a => a.AddReference("test.css", -1));
+            asset.Verify(a => a.AddReference("test.css", 1));
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace Cassette.Stylesheets
             var processor = new ParseCssReferences();
             processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            asset.Verify(a => a.AddReference("test.css", -1));
+            asset.Verify(a => a.AddReference("test.css", 1));
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace Cassette.Stylesheets
             var processor = new ParseCssReferences();
             processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            asset.Verify(a => a.AddReference("test.css", -1));
+            asset.Verify(a => a.AddReference("test.css", 1));
         }
 
         [Fact]
@@ -75,8 +75,8 @@ namespace Cassette.Stylesheets
             var processor = new ParseCssReferences();
             processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            asset.Verify(a => a.AddReference("test1.css", -1));
-            asset.Verify(a => a.AddReference("test2.css", -1));
+            asset.Verify(a => a.AddReference("test1.css", 1));
+            asset.Verify(a => a.AddReference("test2.css", 2));
         }
 
         [Fact]
@@ -89,8 +89,8 @@ namespace Cassette.Stylesheets
             var processor = new ParseCssReferences();
             processor.Process(bundle, Mock.Of<ICassetteApplication>());
 
-            asset.Verify(a => a.AddReference("test1.css", -1));
-            asset.Verify(a => a.AddReference("test2.css", -1));
+            asset.Verify(a => a.AddReference("test1.css", 1));
+            asset.Verify(a => a.AddReference("test2.css", 2));
         }
 
         Mock<IAsset> AddCssAsset(StylesheetBundle bundle, string css)

@@ -18,10 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
@@ -33,24 +30,10 @@ namespace Cassette.Stylesheets
         {
         }
 
-        static readonly Regex CssCommentRegex = new Regex(
-            @"/\*(?<body>.*?)\*/",
-            RegexOptions.Singleline
-        );
-        static readonly Regex ReferenceRegex = new Regex(
-            @"@reference \s+ (?<quote>[""']) (?<path>.*?) \<quote> \s* ;?",
-            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
-        );
-
         protected override void Process(IAsset asset, Bundle bundle)
         {
             var css = ReadAllCss(asset);
-            foreach (var reference in ParseReferences(css))
-            {
-                // TODO: Add line number tracking to the parser.
-                // For now use -1 as dummy line number.
-                asset.AddReference(reference, -1);
-            }
+            AddReferences(css, asset);
         }
 
         string ReadAllCss(IAsset asset)
@@ -61,18 +44,15 @@ namespace Cassette.Stylesheets
             }
         }
 
-        IEnumerable<string> ParseReferences(string css)
+        void AddReferences(string css, IAsset asset)
         {
-            var commentBodies = CssCommentRegex
-                    .Matches(css)
-                    .Cast<Match>()
-                    .Select(match => match.Groups["body"].Value);
-
-            return from body in commentBodies
-                   from match in ReferenceRegex.Matches(body).Cast<Match>()
-                   where match.Groups["path"].Success
-                   select match.Groups["path"].Value;
+            var commentParser = new CssCommentParser();
+            var referenceParser = new ReferenceParser(commentParser);
+            var references = referenceParser.Parse(css, asset);
+            foreach (var reference in references)
+            {
+                asset.AddReference(reference.Path, reference.LineNumber);
+            }
         }
     }
 }
-
