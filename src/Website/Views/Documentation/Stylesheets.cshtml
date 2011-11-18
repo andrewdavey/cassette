@@ -16,9 +16,9 @@ It will then sort them correctly for you.</p>
 }</code></pre>
 <p class="minor">Note that @@import was not chosen because that is designed for browser-side evaluation.</p>
 
-<h2>Module Descriptor File</h2>
+<h2>Bundle Descriptor File</h2>
 <p>If you'd rather not use reference comments, then this is the alternative.</p>
-<p>Create a file called <code>module.txt</code> in the same directory as your stylesheets.</p>
+<p>Create a file called <code>bundle.txt</code> in the same directory as your stylesheets.</p>
 <p>List each CSS file name, relative to the directory. For example:</p>
 <pre><code>reset.css
 fonts.css
@@ -27,7 +27,7 @@ footer.css</code></pre>
 
 <h2>Production Mode</h2>
 <p>
-When your application is in production mode, the assets of each stylesheet module
+When your application is in production mode, the assets of each stylesheet bundle
 are concatenated and minified. By default, Cassette uses the Microsoft Ajax CSS Minifier.
 </p>
 

@@ -167,19 +167,10 @@
     <Content Include="Views\Documentation\Configuration.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\Scripts_ExternalModules.cshtml" />
+    <Content Include="Views\Documentation\Scripts_External.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\Configuration_PerSubDirectorySource.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Documentation\Configuration_DirectorySource.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Documentation\Configuration_ModuleSources.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Documentation\GettingStarted_CombineAssetsIntoModules.cshtml" />
+    <Content Include="Views\Documentation\GettingStarted_AssetsAndBundles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\Index.cshtml" />
@@ -191,10 +182,7 @@
     <Content Include="Views\Documentation\GettingStarted_Mvc.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\Configuration_PerFileSource.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Documentation\Configuration_ModuleDescriptorFile.cshtml" />
+    <Content Include="Views\Documentation\Configuration_BundleDescriptorFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Licensing\Index.cshtml" />
@@ -210,6 +198,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Licensing\ExpiredDiscount.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Configuration_AddDirectory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Configuration_AddPerSubDirectory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\AssetReferences.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\BundlesHelper.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

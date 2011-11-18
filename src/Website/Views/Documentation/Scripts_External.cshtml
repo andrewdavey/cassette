@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "External Script";
+}
+<h1>External Scripts</h1>
+<p>
+You may want to reference an external script URL in multiple pages. Repeating the URL in each page is not ideal. If you ever need to change
+it you'll have to search through all the pages.
+</p>
+<p>
+Cassette supports the definition of external script URLs at the application level. You can then reference them by a short, fixed, name.
+In addition you can specify a fallback URL if, for example, a CDN fails.
+</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        bundles.AddUrlWithAlias(
+            <span class="string">"http://platform.twitter.com/widgets.js"</span>,
+            <span class="string">"twitter"</span>
+        );
+
+        bundles.AddUrlWithLocalAssets(
+            <span class="string">"//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"</span>,
+            <span class="keyword">new</span> <span class="code-type">LocalAssetSettings</span>
+            {
+                <span class="comment">// Local assets for use in debug mode.</span>
+                Path = <span class="string">"scripts/jquery.js"</span>,
+                <span class="comment">// When condition is true, uses the local assets</span>
+                FallbackCondition = <span class="string">"!window.jQuery"</span>
+            }
+        );
+    }
+}</code></pre>
+<p>Now in view pages, these external scripts can be referenced by path.</p>
+<pre><code><span class="code-tag">@@{</span>
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/jquery.js"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"twitter"</span>);
+<span class="code-tag">}</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+...
+</code></pre>

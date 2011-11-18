@@ -2,12 +2,12 @@
 <p>This feature works the same as the <a href="@Url.DocumentationUrl("html-templates/jquery-tmpl")">jQuery-tmpl templates</a> compilation.
 However, the templates are also rewritten to work with the <a href="http://knockoutjs.com">KnockoutJS</a> data-binding system.
 </p>
-<p>To enable this feature, use the following module configuration:</p>
-<pre><code>moduleConfiguration.Add(<span class="keyword">new</span> <span class="code-type">DirectorySource</span>&lt;<span class="code-type">HtmlTemplateModule</span>&gt;(<span class="string">"HtmlTemplates"</span>)
-{
-    <span class="comment">// Assign the KnockoutJS processor to the HTML template modules</span>
-    CustomizeModule = module => module.Processor = <span class="keyword">new</span> <span class="code-type">KnockoutJQueryTmplPipeline</span>()
-});</code></pre>
+<p>To enable this feature, use the following configuration:</p>
+<pre><code>bundles.Add&lt;<span class="code-type">HtmlTemplate</span>&gt;(
+    <span class="string">"HtmlTemplates"</span>
+    <span class="comment">// Assign the jQuery-tmpl processor to the HTML template bundles</span>
+    bundle => bundle.Processor = <span class="keyword">new</span> <span class="code-type">KnockoutJQueryTmplPipeline</span>()
+);</code></pre>
 
 <h2>Example compilation output</h2>
 <p>Given this template:</p>

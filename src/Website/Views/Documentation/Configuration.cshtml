@@ -1,29 +1,33 @@
 ﻿<h1>Configuration</h1>
-<p>Cassette uses code-based configuration to define asset modules and what processing to apply to them.
+<p>Cassette uses code-based configuration to define asset bundles and what processing to apply to them.
 Your web application can contain a public class that implements <code>Cassette.ICassetteConfiguration</code>.</p>
 <p>During application start-up, Cassette will create your configuration class and call the <code>Configure</code> method.</p>
 <p>Here's the outline of a configuration class:</p>
-<pre><code><span class="keyword">using</span> Cassette;
+<pre><code><span class="keyword">using</span> Cassette.Configuration;
 
 <span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
 {
-    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">ModuleConfiguration</span> moduleConfiguration, <span class="code-type">ICassetteApplication</span> application)
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
     {
-        <span class="comment">// Put configuration here</span>
+        <span class="comment">// Put configuration here...</span>
+        <span class="comment">// Add bundles to the bundles collection.</span>
     }
 }</code></pre>
 <p class="minor">The <code>Cassette.Web</code> nuget package adds the <code>CassetteConfiguration.cs</code> file to your project.</p>
 
-<h2>Next...</h2>
-<p>Add some <a href="@Url.DocumentationUrl("configuration/module-sources")">module sources</a> to the configuration.</p>
+<h2>Cassette settings</h2>
+<p>The <code>CassetteSettings</code> controls the runtime behavior of Cassette.</p>
 
-<h2>Advanced ICassetteApplication Properties</h2>
-<p>The <code>ICassetteApplication</code> object passed to the <code>Configure</code> methods has some properties you can set.</p>
 <dl>
-    <dt><code>IsOutputOptimized</code></dt>
-    <dd>When true, asset modules are concatenated, minified, cached, versioned, etc.</dd>
-    <dd>Defaults to <code>true</code> when <code>debug="false"</code> in Web.config, otherwise is false.</dd>
-    <dd>You might force this to be true, even when debugging, so you can debug the production-mode output.</dd>
+    <dt><code>IsDebugingEnabled</code></dt>
+    <dd>When true, asset bundles are concatenated, minified, cached, versioned, etc.</dd>
+    <dd>Default value is read from Web.config.</dd>
+    
+    <dt><code>UrlModifier</code></dt>
+    <dd>If you need to change how Cassette generates URLs for assets and bundles, this is the place to provide your own
+    implementation of <code>Cassette.IUrlModifier</code>.</dd>
+    <dd>The main use case would be prefixing URLs with a static/CDN domain name.</dd>
+    <dd>Please ask in the <a href="http://groups.google.com/group/cassette">Cassette Google Group</a> for help with this.</dd>
 
     <dt><code>IsHtmlRewritingEnabled</code></dt>
     <dd>Defaults to <code>true</code>.</dd>
@@ -31,12 +35,15 @@ Your web application can contain a public class that implements <code>Cassette.I
     has been rendered, the required <code>&lt;link&gt;</code> can still be inserted.</dd>
     <dd>Please note, this does not work in IIS when <code>&lt;urlCompression dynamicCompressionBeforeCache="true"/&gt;</code>.
     You will need to disable <code>IsHtmlRewritingEnabled</code> if you use that feature of IIS.</dd>
-
-    <dt><code>UrlGenerator</code></dt>
-    <dd>If you need to change how Cassette generates URLs for assets and modules, this is the place to provide your own
-    implementation of <code>Cassette.IUrlGenerator</code>.</dd>
-    <dd>The main use case would be prefixing URLs with a static/CDN domain name.</dd>
-    <dd>Please ask in the <a href="http://groups.google.com/group/cassette">Cassette Google Group</a> for help with this.</dd>
-
 </dl>
 
+<h2>Web.config</h2>
+<p>Cassette provides a optional configuration section you can add to Web.config.</p>
+<pre><code><span class="open-tag">&lt;</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">configSections</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">section</span> <span class="attribute">name</span><span class="attribute-value">="cassette"</span> <span class="attribute">type</span><span class="attribute-value">="Cassette.Configuration.CassetteConfigurationSection, Cassette"</span><span class="close-tag">/></span>
+  <span class="open-tag">&lt;/</span><span class="tag">configSections</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">cassette</span> <span class="attribute">debug</span><span class="attribute-value">="true"</span> <span class="attribute">rewriteHtml</span><span class="attribute-value">="true"</span><span class="close-tag">/&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">configuration</span><span class="close-tag">&gt;</span></code></pre>
+
+<p>If the <code>debug</code> attribute is missing then the value of <code>&lt;system.web&gt;/&lt;compilation debug="..."&gt;</code> is used.</p>

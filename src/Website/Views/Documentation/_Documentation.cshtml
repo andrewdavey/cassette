@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Cassette | Documentation";
-    ViewBag.Section = "documentation";    
+    ViewBag.Section = "documentation";
     Bundles.Reference("assets/scripts/disqus", "body");
 }
 <div class="main">
@@ -16,7 +16,7 @@
                 <li>
                     @DocLink("getting-started", "Getting Started")
                     <ul>
-                        <li>@DocLink("getting-started/combine-assets-into-modules", "Combine assets into modules")</li>
+                        <li>@DocLink("getting-started/assets-and-bundles", "Assets and Bundles")</li>
                         <li>@DocLink("getting-started/mvc", "Using Cassette in MVC")</li>
                         <li>@DocLink("getting-started/webforms", "Using Cassette in WebForms")</li>
                     </ul>
@@ -24,17 +24,21 @@
                 <li>
                     @DocLink("configuration", "Configuration")
                     <ul>
-                        <li>@DocLink("configuration/module-sources", "Module Sources")</li>
-                        <li>@DocLink("configuration/directorysource", "DirectorySource")</li>
-                        <li>@DocLink("configuration/persubdirectorysource", "PerSubDirectorySource")</li>
-                        <li>@DocLink("configuration/perfilesource", "PerFileSource")</li>
-                        <li>@DocLink("configuration/module-descriptor-file", "Module descriptor file")</li>
+                        <li>@DocLink("configuration/add-directory", "Add Directory")</li>
+                        <li>@DocLink("configuration/add-per-sub-directory", "Add Per Sub-Directory")</li>
+                        <li>@DocLink("configuration/bundle-descriptor-file", "Bundle descriptor file")</li>
                     </ul>
+                </li>
+                <li>
+                    @DocLink("AssetReferences", "Asset References")
+                </li>
+                <li>
+                    @DocLink("BundlesHelper", "Bundles Helper")
                 </li>
                 <li>
                     @DocLink("scripts", "Scripts")
                     <ul>
-                        <li>@DocLink("scripts/external-modules", "External Modules")</li>
+                        <li>@DocLink("scripts/external", "External")</li>
                         <li>@DocLink("scripts/coffeescript", "CoffeeScript")</li>
                     </ul>
                 </li>
@@ -56,12 +60,15 @@
         </div>
         <div class="item">
             @RenderBody()
-
+            @if (!Request.IsLocal)
+            {
             <div id="disqus_thread"></div>
+            }
         </div>
     </div>
 </div>
-@helper DocLink(string path, string text) {
+@helper DocLink(string path, string text)
+    {
     if (Request.Url.AbsolutePath.EndsWith("documentation/" + path))
     {
     <a class="activedoc" href=@Url.DocumentationUrl(path)>@text</a>
