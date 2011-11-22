@@ -177,9 +177,34 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void GivenContentTypeIsNotHtml_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotInstalled()
+        public void GivenContentTypeIsNotHtml_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
-            throw new NotImplementedException();
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
+            var context = new Mock<HttpContextBase>();
+            var response = new Mock<HttpResponseBase>();
+            context.Setup(c => c.Response).Returns(response.Object);
+            response.SetupGet(r => r.ContentType).Returns("text/plain");
+
+            application.OnPostRequestHandlerExecute(context.Object);
+
+            response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Never());
+        }
+
+        [Fact]
+        public void GivenContentTypeisHtml_WhenOnPostRequestHandlerExecute_ThenPlaceholderReplacingResponseFilterIsInstalled()
+        {
+            var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
+            var context = new Mock<HttpContextBase>();
+            var response = new Mock<HttpResponseBase>();
+            var items = new Dictionary<string, object>();
+            context.Setup(c => c.Items).Returns(items);
+            context.Setup(c => c.Response).Returns(response.Object);
+            response.SetupGet(r => r.ContentType).Returns("text/html");
+            items[typeof(IPlaceholderTracker).FullName] = Mock.Of<IPlaceholderTracker>();
+
+            application.OnPostRequestHandlerExecute(context.Object);
+
+            response.VerifySet(r => r.Filter = It.IsAny<PlaceholderReplacingResponseFilter>());
         }
     }
 }
