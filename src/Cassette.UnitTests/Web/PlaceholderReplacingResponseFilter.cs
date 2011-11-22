@@ -18,9 +18,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web;
 using Moq;
@@ -29,7 +29,7 @@ using Xunit;
 
 namespace Cassette.Web
 {
-    public class PlaceholderReplacingResponseFilter_Tests
+    public class PlaceholderReplacingResponseFilter_Tests : IDisposable
     {
         readonly MemoryStream outputStream;
         readonly Mock<HttpResponseBase> response;
@@ -45,7 +45,6 @@ namespace Cassette.Web
             placeholderTracker.Setup(h => h.ReplacePlaceholders(It.IsAny<string>()))
                       .Returns<string>(s => s);
 
-            response.SetupGet(r => r.ContentType).Returns("text/html");
             response.SetupGet(r => r.Output.Encoding).Returns(Encoding.ASCII);
             response.SetupGet(r => r.Filter).Returns(outputStream);
             response.SetupGet(r => r.Headers).Returns(new NameValueCollection());
@@ -53,42 +52,65 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void Write_sends_buffer_to_output_stream()
+        public void WhenWrite_ThenDataWrittenToOutputStream()
         {
-            var html = "<html>\r\n";
-            filter.Write(Encoding.ASCII.GetBytes(html), 0, html.Length);
-            outputStream.Length.ShouldEqual(html.Length);
+            Write("<html></html>");
+
+            Encoding.ASCII.GetString(outputStream.ToArray()).ShouldEqual("<html></html>");
         }
 
         [Fact]
-        public void Html_has_placeholders_replaced()
+        public void WhenWrite_ThenReplacePlaceholdersIsCalled()
         {
-            response.SetupGet(r => r.ContentType).Returns("text/html");
+            Write("<html></html>");
 
-            filter.Write(Encoding.ASCII.GetBytes("<html/>"), 0, 7);
-
-            placeholderTracker.Verify(t => t.ReplacePlaceholders("<html/>"));
+            placeholderTracker.Verify(t => t.ReplacePlaceholders("<html></html>"));
         }
 
         [Fact]
-        public void XHtml_has_placeholders_replaced()
+        public void WhenTwoWriteCalls_ThenAllOutputIsWrittenToOutputStream()
         {
-            response.SetupGet(r => r.ContentType).Returns("application/xhtml+xml");
+            Write("<html>start");
+            Write("end</html>");
 
-            filter.Write(Encoding.ASCII.GetBytes("<html/>"), 0, 7);
-
-            placeholderTracker.Verify(t => t.ReplacePlaceholders("<html/>"));
+            Encoding.ASCII.GetString(outputStream.ToArray()).ShouldEqual("<html>startend</html>");
         }
 
         [Fact]
-        public void Non_html_output_does_not_have_placeholders_replaced()
+        public void WhenTwoWriteCalls_ThenReplacePlaceholdersIsCalledWithAllOutput()
         {
-            response.SetupGet(r => r.ContentType).Returns("text/plain");
+            Write("<html>start");
+            Write("end</html>");
 
-            filter.Write(Encoding.ASCII.GetBytes("test"), 0, 4);
+            placeholderTracker.Verify(t => t.ReplacePlaceholders("<html>startend</html>"));
+        }
 
-            outputStream.GetBuffer().SequenceEqual(Encoding.ASCII.GetBytes("test"));
+        [Fact]
+        public void GivenWrittenContentDoesNotHaveCloseHtmlTag_WhenClose_ThenThrowInvalidOperationException()
+        {
+            Write("<html>start");
+
+            Assert.Throws<InvalidOperationException>(() => filter.Close());
+        }
+
+        [Fact]
+        public void WhenWriteContentAfterClosingHtmlTag_ThenItIsWrittenToOutputStream()
+        {
+            Write("<html></html>");
+            Write("more");
+
+            Encoding.ASCII.GetString(outputStream.ToArray()).ShouldEqual("<html></html>more");
+        }
+
+        void Write(string content)
+        {
+            filter.Write(Encoding.ASCII.GetBytes(content), 0, content.Length);
+        }
+
+        void IDisposable.Dispose()
+        {
+            filter.Dispose();
+            outputStream.Dispose();
         }
     }
 }
-

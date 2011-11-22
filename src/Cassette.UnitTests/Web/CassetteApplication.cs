@@ -175,5 +175,11 @@ namespace Cassette.Web
 
             response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Never());
         }
+
+        [Fact]
+        public void GivenContentTypeIsNotHtml_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotInstalled()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
