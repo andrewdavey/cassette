@@ -10,8 +10,9 @@
         <description>Core library for Cassette. Cassette automatically builds JavaScript, CSS and HTML template bundles based on the dependencies between files. CoffeeScript and LESS are also supported.</description>
         <tags>web javascript coffeescript css html templates asp.net</tags>
         <dependencies>
-            <dependency id="AjaxMin" version="4.19" />
-            <dependency id="Jurassic" version="2.1" />
+            <dependency id="AjaxMin" version="4.30" />
+            <dependency id="Jurassic" version="2.1.1" />
+            <dependency id="Newtonsoft.Json" version="4.0.4" />
         </dependencies>
     </metadata>
 </package>
