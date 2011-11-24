@@ -52,26 +52,29 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void WhenWrite_ThenDataWrittenToOutputStream()
+        public void WhenWriteAndClose_ThenDataWrittenToOutputStream()
         {
             Write("<html></html>");
+            Close();
 
             Encoding.ASCII.GetString(outputStream.ToArray()).ShouldEqual("<html></html>");
         }
 
         [Fact]
-        public void WhenWrite_ThenReplacePlaceholdersIsCalled()
+        public void WhenWriteAndClose_ThenReplacePlaceholdersIsCalled()
         {
             Write("<html></html>");
+            Close();
 
             placeholderTracker.Verify(t => t.ReplacePlaceholders("<html></html>"));
         }
 
         [Fact]
-        public void WhenTwoWriteCalls_ThenAllOutputIsWrittenToOutputStream()
+        public void WhenTwoWriteCallsAndClose_ThenAllOutputIsWrittenToOutputStream()
         {
             Write("<html>start");
             Write("end</html>");
+            Close();
 
             Encoding.ASCII.GetString(outputStream.ToArray()).ShouldEqual("<html>startend</html>");
         }
@@ -81,30 +84,27 @@ namespace Cassette.Web
         {
             Write("<html>start");
             Write("end</html>");
+            Close();
 
             placeholderTracker.Verify(t => t.ReplacePlaceholders("<html>startend</html>"));
         }
 
         [Fact]
-        public void GivenWrittenContentDoesNotHaveCloseHtmlTag_WhenClose_ThenThrowInvalidOperationException()
+        public void WhenWriteAndNoClose_ThenNoOutputWrittenToStream()
         {
-            Write("<html>start");
+            Write("<html>start</html>");
 
-            Assert.Throws<InvalidOperationException>(() => filter.Close());
-        }
-
-        [Fact]
-        public void WhenWriteContentAfterClosingHtmlTag_ThenItIsWrittenToOutputStream()
-        {
-            Write("<html></html>");
-            Write("more");
-
-            Encoding.ASCII.GetString(outputStream.ToArray()).ShouldEqual("<html></html>more");
+            Encoding.ASCII.GetString(outputStream.ToArray()).ShouldEqual("");
         }
 
         void Write(string content)
         {
             filter.Write(Encoding.ASCII.GetBytes(content), 0, content.Length);
+        }
+
+        void Close()
+        {
+            filter.Close();
         }
 
         void IDisposable.Dispose()

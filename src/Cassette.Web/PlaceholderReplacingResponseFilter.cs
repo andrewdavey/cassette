@@ -40,7 +40,6 @@ namespace Cassette.Web
         readonly IPlaceholderTracker placeholderTracker;
         readonly StringBuilder htmlBuffer;
         bool hasWrittenToOutputStream;
-        bool isClosed;
 
         public override void Write(byte[] buffer, int offset, int count)
         {
@@ -49,37 +48,33 @@ namespace Cassette.Web
                 throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set ICassetteApplication.IsHtmlRewritingEnabled to false in the Cassette configuration, or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
             }
 
-            if (hasWrittenToOutputStream)
-            {
-                // Page contains content after the </html>.
-                // There shouldn't be any placeholders there, so just output the content verbatim.
-                outputStream.Write(buffer, offset, count);
-                return;
-            }
-
-            var encoding = response.Output.Encoding;
-            var html = encoding.GetString(buffer, offset, count);
-
-            // Buffer output until we see the </html>.
-            htmlBuffer.Append(html);
-            
-            if (!html.Contains("</html>")) return;
-
-            var output = placeholderTracker.ReplacePlaceholders(htmlBuffer.ToString());
-            var outputBytes = encoding.GetBytes(output);
-            outputStream.Write(outputBytes, 0, outputBytes.Length);
-            hasWrittenToOutputStream = true;
+            BufferOutput(buffer, offset, count);
         }
 
         public override void Close()
         {
-            if (isClosed) return;
-            isClosed = true;
+            if (!hasWrittenToOutputStream)
+            {
+                WriteBufferedOutput();
+                hasWrittenToOutputStream = true;
+            }
 
             base.Close();
-            if (hasWrittenToOutputStream) return;
+        }
 
-            throw new InvalidOperationException("Output is missing the \"</html>\" tag.");
+        void BufferOutput(byte[] buffer, int offset, int count)
+        {
+            var encoding = response.Output.Encoding;
+            var html = encoding.GetString(buffer, offset, count);
+            htmlBuffer.Append(html);
+        }
+
+        void WriteBufferedOutput()
+        {
+            var encoding = response.Output.Encoding;
+            var output = placeholderTracker.ReplacePlaceholders(htmlBuffer.ToString());
+            var outputBytes = encoding.GetBytes(output);
+            outputStream.Write(outputBytes, 0, outputBytes.Length);
         }
     }
 }
