@@ -19,12 +19,14 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Configuration;
+using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Web;
@@ -42,10 +44,15 @@ namespace Cassette.IntegrationTests
 
             storage = IsolatedStorageFile.GetMachineStoreForAssembly();
             routes = new RouteCollection();
+            httpContext = new Mock<HttpContextBase>();
+            httpContextItems = new Dictionary<string, object>();
+            httpContext.Setup(c => c.Items).Returns(httpContextItems);
         }
 
         readonly IsolatedStorageFile storage;
         readonly RouteCollection routes;
+        readonly Mock<HttpContextBase> httpContext;
+        readonly Dictionary<string, object> httpContextItems;
 
         [Fact]
         public void CanGetScriptBundleA()
@@ -107,6 +114,23 @@ function asset1() {
             
         }
 
+        [Fact]
+        public void HtmlTemplatesCanBeRenderedInlineInPage()
+        {
+            using (var app = CreateApplication(bundles => bundles.Add<HtmlTemplateBundle>("templates")))
+            {
+                app.OnPostMapRequestHandler(httpContext.Object);
+
+                var referenceBuilder = app.GetReferenceBuilder();
+                referenceBuilder.Reference("templates");
+                var html = referenceBuilder.Render<HtmlTemplateBundle>(null);
+                html.ShouldEqual(
+                    "<script id=\"asset-1\" type=\"text/html\"><p>asset 1</p></script>" +
+                    Environment.NewLine + 
+                    "<script id=\"asset-2\" type=\"text/html\"><p>asset 2</p></script>");
+            }
+        }
+
         CassetteApplication CreateApplication(Action<BundleCollection> configure)
         {
             var settings = new CassetteSettings
@@ -120,7 +144,7 @@ function asset1() {
                 bundles,
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/")),
-                Mock.Of<HttpContextBase>,
+                () => httpContext.Object,
                 ""
             );
             application.InstallRoutes(routes);

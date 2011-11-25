@@ -28,10 +28,12 @@ namespace Cassette.HtmlTemplates
     {
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
-            yield return new AssignHtmlTemplateRenderer(new InlineHtmlTemplateBundleRenderer());
             if (bundle.IsFromCache) yield break;
 
             yield return new ParseHtmlTemplateReferences();
+            yield return new WrapHtmlTemplatesInScriptElements();
+            yield return new AssignHtmlTemplateRenderer(new InlineHtmlTemplateBundleRenderer());
+            yield return new ConcatenateAssets();
         }
     }
 }

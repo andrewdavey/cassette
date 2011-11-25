@@ -19,19 +19,33 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.Linq;
+using System.IO;
 using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
-    class InlineHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
+    class WrapHtmlTemplateInScriptElement : IAssetTransformer
     {
-        public string Render(HtmlTemplateBundle bundle)
+        readonly HtmlTemplateBundle bundle;
+
+        public WrapHtmlTemplateInScriptElement(HtmlTemplateBundle bundle)
         {
-            return string.Join(
-                Environment.NewLine,
-                bundle.Assets.Select(asset => asset.OpenStream().ReadToEnd())
-            );
+            this.bundle = bundle;
+        }
+
+        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        {
+            return delegate
+            {
+                var template = openSourceStream().ReadToEnd();
+                var scriptElement = String.Format(
+                    "<script id=\"{0}\" type=\"{1}\">{2}</script>",
+                    bundle.GetTemplateId(asset),
+                    bundle.ContentType,
+                    template
+                    );
+                return scriptElement.AsStream();
+            };
         }
     }
 }

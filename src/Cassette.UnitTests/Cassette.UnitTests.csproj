@@ -76,7 +76,7 @@
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
-    <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
+    <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplCompiler.cs" />

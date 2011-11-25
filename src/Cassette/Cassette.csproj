@@ -93,6 +93,8 @@
     <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="Configuration\IFileSearch.cs" />
+    <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptElement.cs" />
+    <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
     <Compile Include="IO\FileExtensions.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />

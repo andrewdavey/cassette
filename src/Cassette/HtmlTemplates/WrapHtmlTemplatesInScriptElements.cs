@@ -18,28 +18,19 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.IO;
-using Moq;
-using Should;
-using Xunit;
+using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
-    public class InlineHtmlTemplateBundleRenderer_Tests
+    public class WrapHtmlTemplatesInScriptElements : IBundleProcessor<HtmlTemplateBundle>
     {
-        [Fact]
-        public void GivenAssetInSubDirectory_WhenRender_ThenScriptIdHasSlashesReplacedWithDashes()
+        public void Process(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
-            var bundle = new HtmlTemplateBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/sub/asset.htm");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            bundle.Assets.Add(asset.Object);
-
-            var renderer = new InlineHtmlTemplateBundleRenderer();
-            var html = renderer.Render(bundle);
-
-            html.ShouldContain("id=\"sub-asset\"");
+            foreach (var asset in bundle.Assets)
+            {
+                asset.AddAssetTransformer(new WrapHtmlTemplateInScriptElement(bundle));
+            }
         }
     }
 }
