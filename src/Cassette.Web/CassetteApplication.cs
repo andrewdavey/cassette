@@ -40,15 +40,16 @@ namespace Cassette.Web
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
         readonly CassetteRouting routing;
 
-        public void OnPostMapRequestHandler(HttpContextBase httpContext)
+        public void OnPostMapRequestHandler()
         {
-            httpContext.Items[PlaceholderTrackerKey] = CreatePlaceholderTracker();
+            getCurrentHttpContext().Items[PlaceholderTrackerKey] = CreatePlaceholderTracker();
         }
 
-        public void OnPostRequestHandlerExecute(HttpContextBase httpContext)
+        public void OnPostRequestHandlerExecute()
         {
             if (!Settings.IsHtmlRewritingEnabled) return;
-            
+
+            var httpContext = getCurrentHttpContext();
             if (httpContext.CurrentHandler is AssemblyResourceLoader)
             {
                 // The AssemblyResourceLoader handler (for WebResource.axd requests) prevents further writes via some internal puke code.

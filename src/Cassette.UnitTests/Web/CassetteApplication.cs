@@ -35,13 +35,15 @@ namespace Cassette.Web
     {
         readonly TempDirectory cacheDir;
         readonly TempDirectory sourceDir;
-        readonly Mock<HttpContextBase> httpContext;
+        protected readonly Mock<HttpContextBase> httpContext;
+        protected readonly Dictionary<string, object> httpContextItems = new Dictionary<string, object>();
 
         public CassetteApplication_Tests()
         {
             sourceDir = new TempDirectory();
             cacheDir = new TempDirectory();
             httpContext = new Mock<HttpContextBase>();
+            httpContext.SetupGet(c => c.Items).Returns(httpContextItems);
         }
 
         [Fact]
@@ -117,13 +119,9 @@ namespace Cassette.Web
         {
             var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
 
-            var context = new Mock<HttpContextBase>();
-            var items = new Dictionary<string, object>();
-            context.SetupGet(c => c.Items).Returns(items);
+            application.OnPostMapRequestHandler();
 
-            application.OnPostMapRequestHandler(context.Object);
-
-            items[typeof(IPlaceholderTracker).FullName].ShouldBeType<PlaceholderTracker>();
+            httpContextItems[typeof(IPlaceholderTracker).FullName].ShouldBeType<PlaceholderTracker>();
         }
 
         [Fact]
@@ -131,13 +129,9 @@ namespace Cassette.Web
         {
             var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = false);
 
-            var context = new Mock<HttpContextBase>();
-            var items = new Dictionary<string, object>();
-            context.SetupGet(c => c.Items).Returns(items);
+            application.OnPostMapRequestHandler();
 
-            application.OnPostMapRequestHandler(context.Object);
-
-            items[typeof(IPlaceholderTracker).FullName].ShouldBeType<NullPlaceholderTracker>();
+            httpContextItems[typeof(IPlaceholderTracker).FullName].ShouldBeType<NullPlaceholderTracker>();
         }
     }
 
@@ -148,12 +142,11 @@ namespace Cassette.Web
         {
             var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = false);
 
-            var context = new Mock<HttpContextBase>();
             var response = new Mock<HttpResponseBase>();
-            context.Setup(c => c.Response)
-                   .Returns(response.Object);
+            httpContext.Setup(c => c.Response)
+                       .Returns(response.Object);
 
-            application.OnPostRequestHandlerExecute(context.Object);
+            application.OnPostRequestHandlerExecute();
 
             response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Never());
         }
@@ -163,15 +156,14 @@ namespace Cassette.Web
         {
             var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
 
-            var context = new Mock<HttpContextBase>();
-            context.SetupGet(c => c.CurrentHandler)
-                   .Returns(new AssemblyResourceLoader());
+            httpContext.SetupGet(c => c.CurrentHandler)
+                       .Returns(new AssemblyResourceLoader());
 
             var response = new Mock<HttpResponseBase>();
-            context.Setup(c => c.Response)
-                   .Returns(response.Object);
+            httpContext.Setup(c => c.Response)
+                       .Returns(response.Object);
 
-            application.OnPostRequestHandlerExecute(context.Object);
+            application.OnPostRequestHandlerExecute();
 
             response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Never());
         }
@@ -180,12 +172,11 @@ namespace Cassette.Web
         public void GivenContentTypeIsNotHtml_WhenOnPostRequestHandlerExecute_ThenResponseFilterIsNotSet()
         {
             var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
-            var context = new Mock<HttpContextBase>();
             var response = new Mock<HttpResponseBase>();
-            context.Setup(c => c.Response).Returns(response.Object);
+            httpContext.Setup(c => c.Response).Returns(response.Object);
             response.SetupGet(r => r.ContentType).Returns("text/plain");
 
-            application.OnPostRequestHandlerExecute(context.Object);
+            application.OnPostRequestHandlerExecute();
 
             response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Never());
         }
@@ -194,15 +185,14 @@ namespace Cassette.Web
         public void GivenContentTypeisHtml_WhenOnPostRequestHandlerExecute_ThenPlaceholderReplacingResponseFilterIsInstalled()
         {
             var application = StubApplication(settings => settings.IsHtmlRewritingEnabled = true);
-            var context = new Mock<HttpContextBase>();
             var response = new Mock<HttpResponseBase>();
             var items = new Dictionary<string, object>();
-            context.Setup(c => c.Items).Returns(items);
-            context.Setup(c => c.Response).Returns(response.Object);
+            httpContext.Setup(c => c.Items).Returns(items);
+            httpContext.Setup(c => c.Response).Returns(response.Object);
             response.SetupGet(r => r.ContentType).Returns("text/html");
             items[typeof(IPlaceholderTracker).FullName] = Mock.Of<IPlaceholderTracker>();
 
-            application.OnPostRequestHandlerExecute(context.Object);
+            application.OnPostRequestHandlerExecute();
 
             response.VerifySet(r => r.Filter = It.IsAny<PlaceholderReplacingResponseFilter>());
         }

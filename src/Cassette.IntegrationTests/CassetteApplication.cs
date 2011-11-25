@@ -119,7 +119,7 @@ function asset1() {
         {
             using (var app = CreateApplication(bundles => bundles.Add<HtmlTemplateBundle>("templates")))
             {
-                app.OnPostMapRequestHandler(httpContext.Object);
+                app.OnPostMapRequestHandler();
 
                 var referenceBuilder = app.GetReferenceBuilder();
                 referenceBuilder.Reference("templates");
