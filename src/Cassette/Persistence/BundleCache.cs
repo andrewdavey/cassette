@@ -196,7 +196,13 @@ namespace Cassette.Persistence
         {
             foreach (var file in cacheDirectory.GetFiles("*", SearchOption.AllDirectories))
             {
-                file.Delete();
+                try
+                {
+                    file.Delete();
+                }
+                catch
+                {
+                }
             }
         }
 

@@ -395,6 +395,33 @@ namespace Cassette.Persistence
             }
         }
 
+        [Fact]
+        public void GivenCachedFileThrowsWhenDeleted_WhenSaveContainer_ThenSecondCachedFileIsStillDeleted()
+        {
+            var firstFile = new Mock<IFile>();
+            firstFile.Setup(f => f.Delete()).Throws<IOException>();
+            var secondFile = new Mock<IFile>();
+            var cacheDirectory = new Mock<IDirectory>();
+            cacheDirectory.Setup(d => d.GetFiles("*", SearchOption.AllDirectories))
+                          .Returns(new[] { firstFile.Object, secondFile.Object });
+            var containerFile = new Mock<IFile>();
+            cacheDirectory.Setup(d => d.GetFile("container.xml"))
+                          .Returns(containerFile.Object);
+            containerFile.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
+                         .Returns(Stream.Null);
+
+            var settings = new CassetteSettings
+            {
+                SourceDirectory = Mock.Of<IDirectory>(),
+                CacheDirectory = cacheDirectory.Object
+            };
+
+            var cache = new BundleCache("VERSION", settings);
+            cache.SaveBundleContainer(new BundleContainer(Enumerable.Empty<Bundle>()));
+
+            secondFile.Verify(f => f.Delete());
+        }
+
         Mock<IAsset> StubAsset(string path = null)
         {
             var asset = new Mock<IAsset>();
