@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using Cassette.Configuration;
-using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -49,7 +48,6 @@ namespace Cassette.Scripts
         {
             if (url == null) throw new ArgumentNullException("url");
             if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
-            if (!url.IsUrl()) throw new ArgumentException(string.Format("Invalid URL: {0}", url), "url");
         }
 
         internal string Url
