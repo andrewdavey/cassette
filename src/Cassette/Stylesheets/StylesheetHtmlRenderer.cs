@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Text;
 
 namespace Cassette.Stylesheets
 {
@@ -33,21 +34,26 @@ namespace Cassette.Stylesheets
         public string Render(StylesheetBundle bundle)
         {
             var url = urlGenerator.CreateBundleUrl(bundle);
+            var html = new StringBuilder();
+            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
+            if (hasCondition)
+            {
+                html.AppendLine("<!--[if " + bundle.Condition + "]>");
+            }
             if (string.IsNullOrEmpty(bundle.Media))
             {
-                return string.Format(
-                    HtmlConstants.LinkHtml,
-                    url
-                );
+                html.AppendFormat(HtmlConstants.LinkHtml, url);
             }
             else
             {
-                return string.Format(
-                    HtmlConstants.LinkWithMediaHtml,
-                    url,
-                    bundle.Media
-                );
+                html.AppendFormat(HtmlConstants.LinkWithMediaHtml, url, bundle.Media);
             }
+            if (hasCondition)
+            {
+                html.AppendLine();
+                html.Append("<![endif]-->");
+            }
+            return html.ToString();
         }
     }
 }

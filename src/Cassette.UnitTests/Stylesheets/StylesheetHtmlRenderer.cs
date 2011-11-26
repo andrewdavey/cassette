@@ -21,6 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using Should;
 using Xunit;
 using Moq;
+using System;
 
 namespace Cassette.Stylesheets
 {
@@ -58,6 +59,26 @@ namespace Cassette.Stylesheets
             var html = renderer.Render(bundle);
 
             html.ShouldEqual("<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\" media=\"MEDIA\"/>");
+        }
+
+        [Fact]
+        public void GivenStylesheetBundleWithCondition_WhenRender_ThenHtmlConditionalCommentWrapsLink()
+        {
+            var bundle = new StylesheetBundle("~/test")
+            {
+                Condition = "CONDITION"
+            };
+            var urlGenerator = new Mock<IUrlGenerator>();
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("URL");
+
+            var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if CONDITION]>" + Environment.NewLine + 
+                "<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\"/>" + Environment.NewLine + 
+                "<![endif]-->"
+            );
         }
     }
 }

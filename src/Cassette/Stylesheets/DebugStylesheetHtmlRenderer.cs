@@ -21,6 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Cassette.Stylesheets
 {
@@ -37,11 +38,24 @@ namespace Cassette.Stylesheets
         {
             var assetUrls = GetAssetUrls(bundle);
             var createLink = GetCreateLinkFunc(bundle);
+            var html = new StringBuilder();
 
-            return string.Join(
+            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
+            if (hasCondition)
+            {
+                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
+                html.AppendLine();
+            }
+            html.Append(string.Join(
                 Environment.NewLine,
                 assetUrls.Select(createLink)
-            );
+            ));
+            if (hasCondition)
+            {
+                html.AppendLine();
+                html.Append(HtmlConstants.ConditionalCommentEnd);
+            }
+            return html.ToString();
         }
 
         IEnumerable<string> GetAssetUrls(StylesheetBundle bundle)

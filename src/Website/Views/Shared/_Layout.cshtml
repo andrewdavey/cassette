@@ -1,5 +1,6 @@
 ﻿@{
     Bundles.Reference("assets/styles");
+    Bundles.Reference("assets/iestyles");
     Bundles.Reference("http://platform.twitter.com/widgets.js", "body");
     Bundles.Reference("https://apis.google.com/js/plusone.js", "body");
 }
@@ -12,9 +13,6 @@
     <title>@ViewBag.Title</title>
     @Bundles.RenderStylesheets()
     <meta name="google-site-verification" content="XDRKm8pVfIwYbs7Jbb1kX5riGAhGXFOTHpxfV8VwfYc" />
-    <!--[if IE 9]>
-        <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/iestyles/buttons.css")">
-    <![endif]-->
 </head>
 <body>
     <div class="topwrap">

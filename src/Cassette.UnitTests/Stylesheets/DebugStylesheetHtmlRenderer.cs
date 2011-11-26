@@ -74,5 +74,32 @@ namespace Cassette.Stylesheets
                 "<link href=\"asset2\" type=\"text/css\" rel=\"stylesheet\" media=\"MEDIA\"/>"
             );
         }
+
+        [Fact]
+        public void GivenStylesheetCondition_WhenRender_ThenConditionalCommentWrapsLinks()
+        {
+            var bundle = new StylesheetBundle("~/test")
+            {
+                Condition = "CONDITION"
+            };
+            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(Mock.Of<IAsset>());
+
+            var urlGenerator = new Mock<IUrlGenerator>();
+            var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
+            urlGenerator.Setup(g => g.CreateAssetUrl(It.IsAny<IAsset>()))
+                        .Returns(assetUrls.Dequeue);
+
+            var renderer = new DebugStylesheetHtmlRenderer(urlGenerator.Object);
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if CONDITION]>" + Environment.NewLine +
+                "<link href=\"asset1\" type=\"text/css\" rel=\"stylesheet\"/>" +
+                Environment.NewLine +
+                "<link href=\"asset2\" type=\"text/css\" rel=\"stylesheet\"/>" + Environment.NewLine +
+                "<![endif]-->"
+            );
+        }
     }
 }
