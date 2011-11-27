@@ -11,8 +11,8 @@
         <tags>web javascript coffeescript css html templates asp.net</tags>
         <dependencies>
             <dependency id="AjaxMin" version="4.37" />
-            <dependency id="Jurassic" version="2.1.1" />
-            <dependency id="Newtonsoft.Json" version="4.0.4" />
+            <dependency id="Jurassic" version="2.1" />
+            <dependency id="Newtonsoft.Json" version="4.0" />
         </dependencies>
     </metadata>
 </package>
