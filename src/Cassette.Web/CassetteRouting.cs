@@ -46,6 +46,7 @@ namespace Cassette.Web
                 InstallBundleRoute<ScriptBundle>(routes, bundleContainer);
                 InstallBundleRoute<StylesheetBundle>(routes, bundleContainer);
                 InstallBundleRoute<HtmlTemplateBundle>(routes, bundleContainer);
+                InstallHudRoute(routes, bundleContainer);
 
                 InstallRawFileRoute(routes);
 
@@ -124,6 +125,11 @@ namespace Cassette.Web
                 RoutePrefix,
                 ConventionalBundlePathName(typeof(T))
             );
+        }
+
+        void InstallHudRoute(RouteCollection routes, IBundleContainer bundleContainer)
+        {
+            routes.Insert(0, new CassetteRoute(RoutePrefix, new DelegateRouteHandler(context => new HudRequestHandler(bundleContainer, context, this))));
         }
 
         void InstallRawFileRoute(RouteCollection routes)

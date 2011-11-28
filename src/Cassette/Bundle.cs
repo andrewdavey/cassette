@@ -79,7 +79,14 @@ namespace Cassette
         {
             get
             {
-                RequireSingleAsset();
+                if (assets.Count == 0)
+                {
+                    return new byte[0];
+                }
+                if (assets.Count > 1)
+                {
+                    return new ConcatenatedAsset(assets).Hash;
+                }
                 return assets[0].Hash;
             }
         }

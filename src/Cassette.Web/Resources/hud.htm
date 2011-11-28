@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cassette</title>
+</head>
+<body>
+    <h1>Cassette</h1>
+    <ul>
+        <li>
+            <span>Scripts</span>
+            <ul data-bind="foreach: Scripts">
+                <li>
+                    <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <ul data-bind="foreach: Assets">
+                        <li>
+                            <a data-bind="text: Path, attr: { href: Url }"></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <span>Stylesheets</span>
+            <ul data-bind="foreach: Stylesheets">
+                <li>
+                    <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <ul data-bind="foreach: Assets">
+                        <li>
+                            <a data-bind="text: Path, attr: { href: Url }"></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <span>HTML Templates</span>
+            <ul data-bind="foreach: HtmlTemplates">
+                <li>
+                    <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <ul data-bind="foreach: Assets">
+                        <li>
+                            <a data-bind="text: Path, attr: { href: Url }"></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    
+    <script type="text/javascript" src="?knockout.js"></script>
+    <script type="text/javascript">
+        var data = $json$;
+        ko.applyBindings(data);
+    </script>
+</body>
+</html>
