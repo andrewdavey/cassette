@@ -35,13 +35,11 @@ namespace Cassette.Web
 
         void HttpApplicationPostMapRequestHandler(object sender, EventArgs e)
         {
-            var context = new HttpContextWrapper(((HttpApplication)sender).Context);
             GetApplication().OnPostMapRequestHandler();
         }
 
         void HttpApplicationPostRequestHandlerExecute(object sender, EventArgs e)
         {
-            var context = new HttpContextWrapper(((HttpApplication)sender).Context);
             GetApplication().OnPostRequestHandlerExecute();
         }
 
