@@ -34,8 +34,7 @@ namespace Cassette.Web
 
             var htm = Properties.Resources.hud;
             var json = CreateJson();
-            htm = htm.Replace("$json$", json)
-                     .Replace("$knockout$", Properties.Resources.knockout);
+            htm = htm.Replace("$json$", json);
 
             response.ContentType = "text/html";
             response.Write(htm);
@@ -49,35 +48,44 @@ namespace Cassette.Web
 
             var data = new
             {
-                Scripts =
-                    from script in scripts
-                    select new
-                    {
-                        script.Path,
-                        Url = urlGenerator.CreateBundleUrl(script),
-                        Assets = AssetPaths(script)
-                    },
-                Stylesheets =
-                    from stylesheet in stylesheets
-                    select new
-                    {
-                        stylesheet.Path,
-                        Url = urlGenerator.CreateBundleUrl(stylesheet),
-                        stylesheet.Media,
-                        stylesheet.Condition,
-                        Assets = AssetPaths(stylesheet)
-                    },
-                HtmlTemplates =
-                    from htmlTemplate in htmlTemplates
-                    select new
-                    {
-                        htmlTemplate.Path,
-                        Url = urlGenerator.CreateBundleUrl(htmlTemplate),
-                        Assets = AssetPaths(htmlTemplate)
-                    }
+                Scripts = scripts.Select(ScriptData),
+                Stylesheets = stylesheets.Select(StylesheetData),
+                HtmlTemplates = htmlTemplates.Select(HtmlTemplateData)
             };
             var json = new JavaScriptSerializer().Serialize(data);
             return json;
+        }
+
+        object HtmlTemplateData(HtmlTemplateBundle htmlTemplate)
+        {
+            return new
+            {
+                htmlTemplate.Path,
+                Url = urlGenerator.CreateBundleUrl(htmlTemplate),
+                Assets = AssetPaths(htmlTemplate)
+            };
+        }
+
+        object StylesheetData(StylesheetBundle stylesheet)
+        {
+            return new
+            {
+                stylesheet.Path,
+                Url = urlGenerator.CreateBundleUrl(stylesheet),
+                stylesheet.Media,
+                stylesheet.Condition,
+                Assets = AssetPaths(stylesheet)
+            };
+        }
+
+        object ScriptData(ScriptBundle script)
+        {
+            return new
+            {
+                script.Path,
+                Url = urlGenerator.CreateBundleUrl(script),
+                Assets = AssetPaths(script)
+            };
         }
 
         IEnumerable<AssetLink> AssetPaths(Bundle bundle)
