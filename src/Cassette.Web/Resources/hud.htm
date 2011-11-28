@@ -2,46 +2,62 @@
 <html>
 <head>
     <title>Cassette</title>
+    <style type="text/css">
+        .bundles {
+            font-family: Consolas, 'Courier New', monospace;
+        }
+        .bundle {
+            margin-bottom: 1em;
+        }
+    </style>
 </head>
 <body>
     <h1>Cassette</h1>
-    <ul>
+    <ul class="bundles">
         <li>
             <span>Scripts</span>
             <ul data-bind="foreach: Scripts">
-                <li>
+                <li class="bundle">
                     <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <p>Assets:</p>
                     <ul data-bind="foreach: Assets">
                         <li>
                             <a data-bind="text: Path, attr: { href: Url }"></a>
                         </li>
                     </ul>
+                    <p data-bind="visible: References.length">References: <span data-bind="text: References.join(', ')"></span></p>
                 </li>
             </ul>
         </li>
         <li>
             <span>Stylesheets</span>
             <ul data-bind="foreach: Stylesheets">
-                <li>
+                <li class="bundle">
                     <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <span data-bind="visible: Media, text: 'Media=' + Media"></span>
+                    <span data-bind="visible: Condition, text: 'Condition=' + Condition"></span>
+                    <p>Assets:</p>
                     <ul data-bind="foreach: Assets">
                         <li>
                             <a data-bind="text: Path, attr: { href: Url }"></a>
                         </li>
                     </ul>
+                    <p data-bind="visible: References.length">References: <span data-bind="text: References.join(', ')"></span></p>
                 </li>
             </ul>
         </li>
         <li>
             <span>HTML Templates</span>
             <ul data-bind="foreach: HtmlTemplates">
-                <li>
+                <li class="bundle">
                     <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <p>Assets:</p>
                     <ul data-bind="foreach: Assets">
                         <li>
                             <a data-bind="text: Path, attr: { href: Url }"></a>
                         </li>
                     </ul>
+                    <p data-bind="visible: References.length">References: <span data-bind="text: References.join(', ')"></span></p>
                 </li>
             </ul>
         </li>

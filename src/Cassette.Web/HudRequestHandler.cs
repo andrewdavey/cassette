@@ -62,7 +62,8 @@ namespace Cassette.Web
             {
                 htmlTemplate.Path,
                 Url = urlGenerator.CreateBundleUrl(htmlTemplate),
-                Assets = AssetPaths(htmlTemplate)
+                Assets = AssetPaths(htmlTemplate),
+                htmlTemplate.References
             };
         }
 
@@ -74,7 +75,8 @@ namespace Cassette.Web
                 Url = urlGenerator.CreateBundleUrl(stylesheet),
                 stylesheet.Media,
                 stylesheet.Condition,
-                Assets = AssetPaths(stylesheet)
+                Assets = AssetPaths(stylesheet),
+                stylesheet.References
             };
         }
 
@@ -84,7 +86,8 @@ namespace Cassette.Web
             {
                 script.Path,
                 Url = urlGenerator.CreateBundleUrl(script),
-                Assets = AssetPaths(script)
+                Assets = AssetPaths(script),
+                script.References
             };
         }
 
