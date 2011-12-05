@@ -28,13 +28,12 @@ namespace Cassette.Scripts
 {
     public class CoffeeScriptCompiler : ICompiler
     {
-        public CoffeeScriptCompiler()
+        static CoffeeScriptCompiler()
         {
-            //ScriptEngine is expensive to create and initialize with CoffeeScript compiler, so this is done lazily.
             scriptEngine = new Lazy<ScriptEngine>(CreateScriptEngineWithCoffeeScriptLoaded);
         }
 
-        readonly Lazy<ScriptEngine> scriptEngine;
+        readonly static Lazy<ScriptEngine> scriptEngine;
 
         public string Compile(string coffeeScriptSource, IFile sourceFile)
         {
@@ -73,7 +72,7 @@ namespace Cassette.Scripts
             }
         }
 
-        ScriptEngine CreateScriptEngineWithCoffeeScriptLoaded()
+        static ScriptEngine CreateScriptEngineWithCoffeeScriptLoaded()
         {
             var engine = new ScriptEngine();
             engine.Execute(Properties.Resources.coffeescript);
