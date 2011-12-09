@@ -267,6 +267,28 @@ namespace Cassette.Configuration
         }
 
         [Fact]
+        public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectoryWithCustomizeAction_ThenBundleForTopLevelIsCustomized()
+        {
+            File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
+            CreateDirectory("test");
+            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            defaultAssetSource
+                .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
+                .Returns(new[] { StubFile() });
+
+            factory.Setup(f => f.CreateBundle(
+                "~",
+                It.Is<IEnumerable<IFile>>(files => files.Count() == 1),
+                It.IsAny<BundleDescriptor>())
+            ).Returns(new TestableBundle("~"));
+
+            bundles.AddPerSubDirectory<TestableBundle>("~", b => b.PageLocation = "test");
+
+            bundles["~"].PageLocation.ShouldEqual("test");
+        }
+
+        [Fact]
         public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectoryWithExcludeTopLevelTrue_ThenBundleNotCreatedForTopLevel()
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");

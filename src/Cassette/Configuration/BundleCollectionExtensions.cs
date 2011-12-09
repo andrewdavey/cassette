@@ -221,6 +221,7 @@ namespace Cassette.Configuration
                 if (topLevelFiles.Any())
                 {
                     var directoryBundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, topLevelFiles, parentDirectory);
+                    if (customizeBundle != null) customizeBundle(directoryBundle);
                     bundleCollection.Add(directoryBundle);
                 }
             }
