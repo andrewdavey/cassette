@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Cassette.Interop;
 using Cassette.Interop;
 using ComImports.JavaScriptEngine;
 using EXCEPINFO = System.Runtime.InteropServices.ComTypes.EXCEPINFO;
@@ -16,6 +16,7 @@ namespace Cassette
         ActiveScriptParseWrapper parser;
         Type dispatchType;
         object dispatch;
+        readonly Dictionary<string, object> globals = new Dictionary<string, object>();
 
         public IEJavaScriptEngine()
         {
@@ -63,6 +64,12 @@ namespace Cassette
             throw ex;
         }
 
+        public void AddGlobalValue(string name, object globalData)
+        {
+            globals[name] = globalData;
+            engine.AddNamedItem(name, ScriptItemFlags.IsVisible);
+        }
+
         public T CallFunction<T>(string functionName, params object[] arguments)
         {
             try
@@ -83,7 +90,18 @@ namespace Cassette
 
         public void GetItemInfo(string name, ScriptInfoFlags returnMask, out object item, IntPtr typeInfo)
         {
-            item = null;
+            if (globals.TryGetValue(name, out item))
+            {
+                if (typeInfo != IntPtr.Zero)
+                {
+                    Marshal.WriteIntPtr(typeInfo, Marshal.GetITypeInfoForType(item.GetType()));
+                }
+            }
+            else
+            {
+                const int TYPE_E_ELEMENTNOTFOUND = unchecked((int)0x8002802BL);
+                throw new COMException(name + " is unknown", TYPE_E_ELEMENTNOTFOUND);
+            }
         }
 
         public void GetDocVersionString(out string versionString)
