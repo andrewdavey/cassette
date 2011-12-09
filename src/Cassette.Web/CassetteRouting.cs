@@ -39,6 +39,8 @@ namespace Cassette.Web
 
         public void InstallRoutes(RouteCollection routes, IBundleContainer bundleContainer)
         {
+            RemoveExistingCassetteRoutes(routes);
+
             InstallBundleRoute<ScriptBundle>(routes, bundleContainer);
             InstallBundleRoute<StylesheetBundle>(routes, bundleContainer);
             InstallBundleRoute<HtmlTemplateBundle>(routes, bundleContainer);
@@ -86,6 +88,17 @@ namespace Cassette.Web
                 hash,
                 extension
             ));
+        }
+
+        static void RemoveExistingCassetteRoutes(RouteCollection routes)
+        {
+            for (int i = routes.Count - 1; i >= 0; i--)
+            {
+                if (routes[i] is CassetteRoute)
+                {
+                    routes.RemoveAt(i);
+                }
+            }
         }
 
         void InstallBundleRoute<T>(RouteCollection routes, IBundleContainer bundleContainer)

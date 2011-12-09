@@ -53,7 +53,6 @@ namespace Cassette.Web
         static IEnumerable<ICassetteConfiguration> _configurations;
         static IsolatedStorageFile _storage;
         static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
-        static bool _firstCreation = true;
         readonly static object CreationLock = new object();
 
         /// <summary>
@@ -174,11 +173,7 @@ namespace Cassette.Web
                     cacheVersion
                     );
 
-                if (_firstCreation)
-                {
-                    _firstCreation = false;
-                    application.InstallRoutes(RouteTable.Routes);
-                }
+                application.InstallRoutes(RouteTable.Routes);
 
                 return application;
             }
