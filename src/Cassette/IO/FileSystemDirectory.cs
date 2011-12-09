@@ -104,7 +104,7 @@ namespace Cassette.IO
                 return GetRootDirectory().GetAbsolutePath(filename.Substring(2));
             }
 
-            return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(fullSystemPath, filename));
+            return PathUtilities.NormalizePath(Path.Combine(fullSystemPath, filename));
         }
 
         public IDirectory GetDirectory(string path)

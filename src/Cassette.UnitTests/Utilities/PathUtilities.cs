@@ -58,6 +58,12 @@ namespace Cassette.Utilities
                 PathUtilities.NormalizePath("test\\..\\..\\foo");
             });
         }
+
+        [Fact]
+        public void NetworkSharePathRetainsLeadingDoubleSlash()
+        {
+            PathUtilities.NormalizePath(@"\\mbp\Users").ShouldEqual(@"\\mbp\Users");
+        }
     }
 
     public class PathUtilities_AppRelative_Tests

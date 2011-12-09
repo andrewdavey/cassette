@@ -34,6 +34,7 @@ namespace Cassette.Utilities
 
         public static string NormalizePath(string path)
         {
+            var isNetworkSharePath = path.StartsWith(@"\\");
             var slashes = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
             var parts = path.Split(slashes, StringSplitOptions.RemoveEmptyEntries);
             var stack = new Stack<string>();
@@ -59,7 +60,14 @@ namespace Cassette.Utilities
                     stack.Push(part);
                 }
             }
-            return String.Join("/", stack.Reverse());
+            if (isNetworkSharePath)
+            {
+                return @"\\" + string.Join(@"\", stack.Reverse());
+            }
+            else
+            {
+                return string.Join("/", stack.Reverse());
+            }
         }
 
         public static bool PathsEqual(string path1, string path2)
