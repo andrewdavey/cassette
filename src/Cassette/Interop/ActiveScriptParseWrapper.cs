@@ -1,39 +1,47 @@
-﻿using System;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
+
+using System;
 using System.Runtime.InteropServices.ComTypes;
-using Cassette.Interop;
 
-namespace Cassette.Interop {
-    sealed class ActiveScriptParseWrapper : IActiveScriptParseWrapper {
+namespace Cassette.Interop
+{
+    sealed class ActiveScriptParseWrapper : IActiveScriptParseWrapper
+    {
+        const string NeitherValidMessage =
+            "The parser you passed implements neither IActiveScriptParse32 nor IActiveScriptParse64";
 
-        private const string NeitherValidMessage = "The parser you passed implements neither IActiveScriptParse32 nor IActiveScriptParse64";
+        readonly IActiveScriptParse32 parse32;
+        readonly IActiveScriptParse64 parse64;
 
-        private IActiveScriptParse32 _parse32;
-        private IActiveScriptParse64 _parse64;
-
-        private EXCEPINFO _exceptionInfo;
+        EXCEPINFO exceptionInfo;
 
         /// <summary>
         /// Gets the last COM exception.
         /// </summary>
-        public EXCEPINFO LastException { get { return _exceptionInfo; } }
+        public EXCEPINFO LastException
+        {
+            get { return exceptionInfo; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActiveScriptParseWrapper"/> class.
         /// </summary>
         /// <param name="parser">The parser.  Must implement IActiveScriptParse32 or IActiveScriptParse64.</param>
-        public ActiveScriptParseWrapper(object parser) {
-            _parse32 = parser as IActiveScriptParse32;
-            _parse64 = parser as IActiveScriptParse64;
+        public ActiveScriptParseWrapper(object parser)
+        {
+            parse32 = parser as IActiveScriptParse32;
+            parse64 = parser as IActiveScriptParse64;
         }
 
         /// <summary>
         /// Initializes the scripting engine.
         /// </summary>
-        public void InitNew() {
-            if (_parse32 != null)
-                _parse32.InitNew();
-            else if (_parse64 != null)
-                _parse64.InitNew();
+        public void InitNew()
+        {
+            if (parse32 != null)
+                parse32.InitNew();
+            else if (parse64 != null)
+                parse64.InitNew();
             else throw new NotImplementedException(NeitherValidMessage);
         }
 
@@ -90,12 +98,12 @@ namespace Cassette.Interop {
             string delimiter,
             IntPtr sourceContextCookie,
             uint startingLineNumber,
-            ScriptTextFlags flags) {
-
+            ScriptTextFlags flags)
+        {
             string name;
 
-            if (_parse32 != null)
-                _parse32.AddScriptlet(
+            if (parse32 != null)
+                parse32.AddScriptlet(
                     defaultName,
                     code,
                     itemName,
@@ -106,9 +114,9 @@ namespace Cassette.Interop {
                     startingLineNumber,
                     flags,
                     out name,
-                    out _exceptionInfo);
-            else if (_parse64 != null)
-                _parse64.AddScriptlet(
+                    out exceptionInfo);
+            else if (parse64 != null)
+                parse64.AddScriptlet(
                     defaultName,
                     code,
                     itemName,
@@ -119,7 +127,7 @@ namespace Cassette.Interop {
                     startingLineNumber,
                     flags,
                     out name,
-                    out _exceptionInfo);
+                    out exceptionInfo);
             else throw new NotImplementedException(NeitherValidMessage);
 
             return name;
@@ -163,12 +171,12 @@ namespace Cassette.Interop {
             string delimiter,
             IntPtr sourceContextCookie,
             uint startingLineNumber,
-            ScriptTextFlags flags) {
-
+            ScriptTextFlags flags)
+        {
             object result;
 
-            if (_parse32 != null)
-                _parse32.ParseScriptText(
+            if (parse32 != null)
+                parse32.ParseScriptText(
                     code,
                     itemName,
                     context,
@@ -177,9 +185,9 @@ namespace Cassette.Interop {
                     startingLineNumber,
                     flags,
                     out result,
-                    out _exceptionInfo);
-            else if (_parse64 != null)
-                _parse64.ParseScriptText(
+                    out exceptionInfo);
+            else if (parse64 != null)
+                parse64.ParseScriptText(
                     code,
                     itemName,
                     context,
@@ -188,7 +196,7 @@ namespace Cassette.Interop {
                     startingLineNumber,
                     flags,
                     out result,
-                    out _exceptionInfo);
+                    out exceptionInfo);
             else throw new NotImplementedException(NeitherValidMessage);
 
             return result;

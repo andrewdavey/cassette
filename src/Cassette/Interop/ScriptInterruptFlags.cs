@@ -1,11 +1,15 @@
-﻿namespace Cassette.Interop {
-    using System;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
 
+using System;
+
+namespace Cassette.Interop
+{
     /// <summary>
     /// Thread interruption options.
     /// </summary>
     [Flags]
-    enum ScriptInterruptFlags : uint {
+    enum ScriptInterruptFlags : uint
+    {
         /// <summary>
         /// No flags.
         /// </summary>

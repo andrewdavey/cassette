@@ -1,8 +1,12 @@
-﻿namespace Cassette.Interop {
-    using System;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
 
+using System;
+
+namespace Cassette.Interop
+{
     [Flags]
-    enum ScriptItemFlags : uint {
+    enum ScriptItemFlags : uint
+    {
         /// <summary>
         /// No flags.
         /// </summary>

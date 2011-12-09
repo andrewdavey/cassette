@@ -9,14 +9,19 @@ using EXCEPINFO = System.Runtime.InteropServices.ComTypes.EXCEPINFO;
 
 namespace Cassette
 {
+    // Huge thanks to kogir's work in https://github.com/xpaulbettsx/SassAndCoffee.
+    // This class is based on that project's Internet Explorer JScript interop work.
+
     class IEJavaScriptEngine : IActiveScriptSite, IDisposable
     {
-        ActiveScriptException scriptException;
         IActiveScript engine;
-        ActiveScriptParseWrapper parser;
-        Type dispatchType;
+        readonly ActiveScriptParseWrapper parser;
+        readonly Type dispatchType;
         object dispatch;
+        ActiveScriptException lastScriptException;
         readonly Dictionary<string, object> globals = new Dictionary<string, object>();
+
+        const int TYPE_E_ELEMENTNOTFOUND = unchecked((int)0x8002802BL);
 
         public IEJavaScriptEngine()
         {
@@ -58,9 +63,9 @@ namespace Cassette
 
         void ThrowAndResetIfScriptException()
         {
-            if (scriptException == null) return;
-            var ex = scriptException;
-            scriptException = null;
+            if (lastScriptException == null) return;
+            var ex = lastScriptException;
+            lastScriptException = null;
             throw ex;
         }
 
@@ -99,7 +104,6 @@ namespace Cassette
             }
             else
             {
-                const int TYPE_E_ELEMENTNOTFOUND = unchecked((int)0x8002802BL);
                 throw new COMException(name + " is unknown", TYPE_E_ELEMENTNOTFOUND);
             }
         }
@@ -119,7 +123,7 @@ namespace Cassette
 
         public void OnScriptError(IActiveScriptError scriptError)
         {
-            scriptException = ActiveScriptException.Create(scriptError);
+            lastScriptException = ActiveScriptException.Create(scriptError);
         }
 
         public void OnEnterScript()
@@ -140,7 +144,7 @@ namespace Cassette
             Dispose(false);
         }
 
-        protected virtual void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             ComRelease(ref dispatch, !disposing);
             ComRelease(ref engine, !disposing);

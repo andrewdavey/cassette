@@ -1,10 +1,10 @@
-﻿using Cassette.Interop;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
 
-namespace Cassette.Interop {
-    using System;
-    using System.Runtime.InteropServices;
-    using ComTypes = System.Runtime.InteropServices.ComTypes;
+using System;
+using System.Runtime.InteropServices;
 
+namespace Cassette.Interop
+{
     /// <summary>
     /// If the Windows Script engine allows raw text code scriptlets to be added to the script
     /// or allows expression text to be evaluated at run time, it implements the
@@ -24,7 +24,8 @@ namespace Cassette.Interop {
     /// </remarks>
     [Guid("BB1A2AE2-A4F9-11cf-8F20-00805F2CD064")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IActiveScriptParse32 {
+    interface IActiveScriptParse32
+    {
         /// <summary>
         /// Initializes the scripting engine.
         /// </summary>
@@ -85,7 +86,7 @@ namespace Cassette.Interop {
             uint startingLineNumber,
             ScriptTextFlags flags,
             [MarshalAs(UnmanagedType.BStr)] out string name,
-            out ComTypes.EXCEPINFO exceptionInfo);
+            out System.Runtime.InteropServices.ComTypes.EXCEPINFO exceptionInfo);
 
         /// <summary>
         /// Parses the given code scriptlet, adding declarations into the namespace and
@@ -127,6 +128,6 @@ namespace Cassette.Interop {
             uint startingLineNumber,
             ScriptTextFlags flags,
             out object result,
-            out ComTypes.EXCEPINFO exceptionInfo);
+            out System.Runtime.InteropServices.ComTypes.EXCEPINFO exceptionInfo);
     }
 }

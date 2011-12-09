@@ -1,84 +1,66 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
+
+using System;
 using System.Runtime.InteropServices.ComTypes;
-using Cassette.Interop;
 
 namespace Cassette.Interop
 {
-    [Serializable]
-    public class ActiveScriptException : Exception {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActiveScriptException"/> class.
-        /// </summary>
-        public ActiveScriptException() {
-        }
-
+    public sealed class ActiveScriptException : Exception
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActiveScriptException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public ActiveScriptException(string message)
-            : base(message) {
+        ActiveScriptException(string message)
+            : base(message)
+        {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActiveScriptException"/> class.
-        /// </summary>
-        /// <param name="innerException">The inner exception.</param>
-        public ActiveScriptException(Exception innerException)
-            : base(null, innerException) {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActiveScriptException"/> class.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        public ActiveScriptException(string message, Exception innerException)
-            : base(message, innerException) {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActiveScriptException"/> class.
-        /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
-        /// <exception cref="T:System.ArgumentNullException">
-        /// The <paramref name="info"/> parameter is null.
-        ///   </exception>
-        ///   
-        /// <exception cref="T:System.Runtime.Serialization.SerializationException">
-        /// The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
-        ///   </exception>
-        protected ActiveScriptException(SerializationInfo info, StreamingContext context)
-            : base(info, context) {
-        }
-
-        internal static ActiveScriptException Create(IActiveScriptError error) {
-            string source = "";
+        internal static ActiveScriptException Create(IActiveScriptError error)
+        {
+            var source = "";
             uint sourceContext = 0;
             uint lineNumber = 0;
-            int characterPosition = 0;
+            var characterPosition = 0;
 
-            string message = "";
+            var message = "";
 
-            try {
+            try
+            {
                 error.GetSourceLineText(out source);
-            } catch { }
+            }
+// ReSharper disable EmptyGeneralCatchClause
+            catch
+// ReSharper restore EmptyGeneralCatchClause
+            {
+            }
 
-            try {
+            try
+            {
                 error.GetSourcePosition(out sourceContext, out lineNumber, out characterPosition);
                 ++lineNumber;
                 ++characterPosition;
-            } catch { }
+            }
+// ReSharper disable EmptyGeneralCatchClause
+            catch
+// ReSharper restore EmptyGeneralCatchClause
+            {
+            }
 
-            try {
+            try
+            {
                 EXCEPINFO excepInfo;
                 error.GetExceptionInfo(out excepInfo);
                 message = excepInfo.bstrDescription;
-            } catch { }
+            }
+// ReSharper disable EmptyGeneralCatchClause
+            catch
+// ReSharper restore EmptyGeneralCatchClause
+            {
+            }
 
-            return new ActiveScriptException(message) {
+            return new ActiveScriptException(message)
+            {
                 LineContent = source,
                 SourceContext = sourceContext,
                 LineNumber = lineNumber,

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
+
+using System;
 
 namespace Cassette.Interop
 {

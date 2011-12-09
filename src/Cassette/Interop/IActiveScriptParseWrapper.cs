@@ -1,9 +1,10 @@
-﻿using Cassette.Interop;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
 
-namespace Cassette.Interop {
-    using System;
-    using System.Runtime.InteropServices;
+using System;
+using System.Runtime.InteropServices;
 
+namespace Cassette.Interop
+{
     /// <summary>
     /// If the Windows Script engine allows raw text code scriptlets to be added to the script
     /// or allows expression text to be evaluated at run time, it implements the
@@ -22,7 +23,8 @@ namespace Cassette.Interop {
     /// than once.
     /// </remarks>
     [ComVisible(false)]
-    interface IActiveScriptParseWrapper {
+    interface IActiveScriptParseWrapper
+    {
         /// <summary>
         /// Initializes the scripting engine.
         /// </summary>

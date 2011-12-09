@@ -1,8 +1,9 @@
-﻿namespace Cassette.Interop {
-    using System;
-    using System.Runtime.InteropServices;
-    using ComTypes = System.Runtime.InteropServices.ComTypes;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
 
+using System.Runtime.InteropServices;
+
+namespace Cassette.Interop
+{
     /// <summary>
     /// An object implementing this interface is passed to the IActiveScriptSite.OnScriptError method
     /// whenever the scripting engine encounters an unhandled error. The host then calls methods on
@@ -10,13 +11,14 @@
     /// </summary>
     [Guid("EAE1BA61-A4ED-11cf-8F20-00805F2CD064")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IActiveScriptError {
+    interface IActiveScriptError
+    {
         /// <summary>
         /// Retrieves information about an error that occurred while the scripting engine was running
         /// a script.
         /// </summary>
         /// <param name="exceptionInfo">An EXCEPINFO structure that receives error information.</param>
-        void GetExceptionInfo(out ComTypes.EXCEPINFO exceptionInfo);
+        void GetExceptionInfo(out System.Runtime.InteropServices.ComTypes.EXCEPINFO exceptionInfo);
 
         /// <summary>
         /// Retrieves the location in the source code where an error occurred while the scripting engine

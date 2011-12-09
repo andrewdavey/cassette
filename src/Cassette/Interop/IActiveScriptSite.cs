@@ -1,8 +1,10 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using Cassette.Interop;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
 
-namespace Cassette.Interop {
+using System;
+using System.Runtime.InteropServices;
+
+namespace Cassette.Interop
+{
     /// <summary>
     /// Implemented by the host to create a site for the Windows Script engine. Usually, this site
     /// will be associated with the container of all the objects that are visible to the script
@@ -13,7 +15,8 @@ namespace Cassette.Interop {
     /// </summary>
     [Guid("DB01A1E3-A42B-11cf-8F20-00805F2CD064")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IActiveScriptSite {
+    interface IActiveScriptSite
+    {
         /// <summary>
         /// Retrieves the locale identifier associated with the host's user interface. The scripting
         /// engine uses the identifier to ensure that error strings and other user-interface elements

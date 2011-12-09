@@ -1,10 +1,13 @@
-﻿namespace ComImports.JavaScriptEngine {
-    using System;
-    using System.Runtime.InteropServices;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
 
+using System.Runtime.InteropServices;
+
+namespace ComImports.JavaScriptEngine
+{
     // ProgId: JScript
     [ComImport]
     [Guid("f414c260-6ac0-11cf-b6d1-00aa00bbbb58")]
-    class JavaScriptEngine {
+    class JavaScriptEngine
+    {
     }
 }

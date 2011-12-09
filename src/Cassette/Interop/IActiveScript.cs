@@ -1,16 +1,19 @@
-﻿using System;
+﻿// Modified from the COM interop code used in https://github.com/xpaulbettsx/SassAndCoffee by @kogir
+
+using System;
 using System.Runtime.InteropServices;
-using Cassette.Interop;
 using EXCEPINFO = System.Runtime.InteropServices.ComTypes.EXCEPINFO;
 
-namespace Cassette.Interop {
+namespace Cassette.Interop
+{
     /// <summary>
     /// Provides the methods necessary to initialize the scripting engine. The scripting engine must
     /// implement the IActiveScript interface.
     /// </summary>
     [Guid("BB1A2AE1-A4F9-11cf-8F20-00805F2CD064")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IActiveScript {
+    interface IActiveScript
+    {
         /// <summary>
         /// Informs the scripting engine of the IActiveScriptSite interface site provided by the host.
         /// Call this method before any other IActiveScript interface methods is used.
