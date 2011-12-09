@@ -30,9 +30,12 @@ namespace Cassette.Scripts
         {
             Minifier = new MicrosoftJavaScriptMinifier();
             CompileCoffeeScript = true;
+            // Default to the slower, but medium trust compatible, compiler.
+            CoffeeScriptCompiler = new JurassicCoffeeScriptCompiler();
         }
 
         public bool CompileCoffeeScript { get; set; }
+        public ICompiler CoffeeScriptCompiler { get; set; }
         public IAssetTransformer Minifier { get; set; }
 
         protected override IEnumerable<IBundleProcessor<ScriptBundle>> CreatePipeline(ScriptBundle bundle, CassetteSettings settings)
@@ -44,7 +47,7 @@ namespace Cassette.Scripts
             if (CompileCoffeeScript)
             {
                 yield return new ParseCoffeeScriptReferences();
-                yield return new CompileCoffeeScript(new CoffeeScriptCompiler());
+                yield return new CompileCoffeeScript(CoffeeScriptCompiler);
             }
             yield return new SortAssetsByDependency();
             if (!settings.IsDebuggingEnabled)

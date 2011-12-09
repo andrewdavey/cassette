@@ -148,6 +148,7 @@
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
+    <Compile Include="Scripts\IECoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
@@ -212,7 +213,7 @@
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
-    <Compile Include="Scripts\CoffeeScriptCompiler.cs" />
+    <Compile Include="Scripts\JurassicCoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\CoffeeScriptCompileException.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

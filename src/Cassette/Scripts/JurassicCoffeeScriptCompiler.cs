@@ -20,15 +20,13 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using Cassette.IO;
-using Cassette.Utilities;
 using Jurassic;
-using Jurassic.Library;
 
 namespace Cassette.Scripts
 {
-    public class CoffeeScriptCompiler : ICompiler
+    public class JurassicCoffeeScriptCompiler : ICompiler
     {
-        static CoffeeScriptCompiler()
+        static JurassicCoffeeScriptCompiler()
         {
             scriptEngine = new Lazy<ScriptEngine>(CreateScriptEngineWithCoffeeScriptLoaded);
         }

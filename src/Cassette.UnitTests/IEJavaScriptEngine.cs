@@ -2,7 +2,6 @@
 using Cassette.Interop;
 using Should;
 using Xunit;
-using System;
 
 namespace Cassette
 {
