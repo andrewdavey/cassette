@@ -37,37 +37,15 @@ namespace Cassette.Scripts
 
         public string Compile(string coffeeScriptSource, IFile sourceFile)
         {
-            var callCoffeeCompile =
-                "(function() { try { return CoffeeScript.compile('"
-                + JavaScriptUtilities.EscapeJavaScriptString(coffeeScriptSource)
-                + "'); } catch (e) { return e; } })()";
-            
-            object result;
             lock (ScriptEngine) // ScriptEngine is NOT thread-safe, so we MUST lock.
             {
-                result = ScriptEngine.Evaluate(callCoffeeCompile);
-            }
-            var javascript = result as string;
-            if (javascript != null)
-            {
-                return javascript;
-            }
-            else
-            {
-                var error = result as ErrorInstance;
-                if (error != null)
+                try
                 {
-                    throw new CoffeeScriptCompileException(
-                        error.Message + " in " + sourceFile.FullPath,
-                        sourceFile.FullPath
-                    );
+                    return ScriptEngine.CallGlobalFunction<string>("compile", coffeeScriptSource);
                 }
-                else
+                catch (Exception ex)
                 {
-                    throw new CoffeeScriptCompileException(
-                        "Unknown CoffeeScript compilation failure.",
-                        sourceFile.FullPath
-                    );
+                    throw new CoffeeScriptCompileException(ex.Message + " in " + sourceFile.FullPath, sourceFile.FullPath, ex);
                 }
             }
         }
@@ -76,6 +54,7 @@ namespace Cassette.Scripts
         {
             var engine = new ScriptEngine();
             engine.Execute(Properties.Resources.coffeescript);
+            engine.Execute("function compile(c) { return CoffeeScript.compile(c); }");
             return engine;
         }
 
