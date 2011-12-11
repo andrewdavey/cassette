@@ -91,6 +91,8 @@ namespace Cassette.Web
 
             CassetteHttpModule.GetApplication = () => _applicationContainer.Application;
             CassetteApplicationContainer.SetAccessor(() => _applicationContainer.Application);
+
+            _applicationContainer.Initialize();
         }
 
 // ReSharper disable UnusedMember.Global

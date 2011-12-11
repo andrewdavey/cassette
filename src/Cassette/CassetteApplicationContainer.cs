@@ -146,5 +146,10 @@ namespace Cassette
                 application.Value.Dispose();
             }
         }
+
+        public void Initialize()
+        {
+            CreateApplication();
+        }
     }
 }
