@@ -21,6 +21,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
@@ -34,11 +35,13 @@ namespace Cassette.Web
         {
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
+            request = requestContext.HttpContext.Request;
             server = requestContext.HttpContext.Server;
         }
 
         readonly RouteData routeData;
         readonly HttpResponseBase response;
+        readonly HttpRequestBase request;
         readonly HttpServerUtilityBase server;
 
         readonly Dictionary<string, string> contentTypes =
@@ -76,6 +79,19 @@ namespace Cassette.Web
             var fullPath = server.MapPath("~/" + filename);
             if (File.Exists(fullPath))
             {
+                var eTag = GetETag(fullPath);
+                response.Cache.SetCacheability(HttpCacheability.Public);
+                response.Cache.SetExpires(DateTime.Now.AddYears(1));
+                response.Cache.SetETag(eTag);
+
+                var requestETag = request.Headers["If-None-Match"];
+                if (requestETag == eTag)
+                {
+                    response.StatusCode = 304; // Not Modified
+                    response.SuppressContent = true;
+                    return;
+                }
+
                 var contentType = ContentTypeFromExtension(extension);
                 if (contentType != null)
                 {
@@ -87,14 +103,23 @@ namespace Cassette.Web
                     contentType = "application/octet-stream";
                 }
                 response.ContentType = contentType;
-                response.Cache.SetCacheability(HttpCacheability.Public);
-                response.Cache.SetExpires(DateTime.Now.AddYears(1));
                 response.WriteFile(fullPath);
             }
             else
             {
                 Trace.Source.TraceEvent(TraceEventType.Error, 0, "File not found \"{0}\".", fullPath);
                 response.StatusCode = 404;
+            }
+        }
+
+        string GetETag(string fullPath)
+        {
+            using (var hash = SHA1.Create())
+            {
+                using (var file = File.OpenRead(fullPath))
+                {
+                    return "\"" + Convert.ToBase64String(hash.ComputeHash(file)) + "\"";
+                }
             }
         }
 

@@ -83,6 +83,7 @@
     <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
     <Compile Include="HtmlTemplates\RemoteHtmlTemplateBundleRenderer.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
+    <Compile Include="HttpTestHarness.cs" />
     <Compile Include="IEJavaScriptEngine.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Web\CassetteApplication.cs" />
     <Compile Include="Web\BundleRequestHandler.cs" />
     <Compile Include="Web\CassetteRouting.cs" />
+    <Compile Include="Web\RawFileRequestHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
