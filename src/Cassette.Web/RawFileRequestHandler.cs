@@ -43,8 +43,8 @@ namespace Cassette.Web
         readonly HttpResponseBase response;
         readonly HttpRequestBase request;
         readonly HttpServerUtilityBase server;
-
-        readonly Dictionary<string, string> contentTypes =
+        
+        static readonly Dictionary<string, string> ContentTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { "png", "image/png" },
@@ -69,47 +69,78 @@ namespace Cassette.Web
             var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+_(?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
             if (match.Success == false)
             {
-                Trace.Source.TraceEvent(TraceEventType.Error, 0, "Invalid file path in URL \"{0}\".", path);
-                response.StatusCode = 404;
+                NotFound(path);
                 return;
             }
-            var extension = match.Groups["extension"].Value;
 
+            var extension = match.Groups["extension"].Value;
             var filename = match.Groups["filename"].Value + "." + extension;
             var fullPath = server.MapPath("~/" + filename);
             if (File.Exists(fullPath))
             {
-                var eTag = GetETag(fullPath);
-                response.Cache.SetCacheability(HttpCacheability.Public);
-                response.Cache.SetExpires(DateTime.Now.AddYears(1));
-                response.Cache.SetETag(eTag);
-
-                var requestETag = request.Headers["If-None-Match"];
-                if (requestETag == eTag)
-                {
-                    response.StatusCode = 304; // Not Modified
-                    response.SuppressContent = true;
-                    return;
-                }
-
-                var contentType = ContentTypeFromExtension(extension);
-                if (contentType != null)
-                {
-                    Trace.Source.TraceEvent(TraceEventType.Error, 0, "Sending file \"{0}\" with content type {1}.", fullPath, response.ContentType);
-                }
-                else
-                {
-                    Trace.Source.TraceEvent(TraceEventType.Warning, 0, "Could not determine content type for file \"{0}\". Defaulting to \"application/octet-stream\".", fullPath);
-                    contentType = "application/octet-stream";
-                }
-                response.ContentType = contentType;
-                response.WriteFile(fullPath);
+                SendFile(fullPath, extension);
             }
             else
             {
                 Trace.Source.TraceEvent(TraceEventType.Error, 0, "File not found \"{0}\".", fullPath);
                 response.StatusCode = 404;
             }
+        }
+
+        void NotFound(string path)
+        {
+            Trace.Source.TraceEvent(TraceEventType.Error, 0, "Invalid file path in URL \"{0}\".", path);
+            response.StatusCode = 404;
+        }
+
+        void SendFile(string fullPath, string extension)
+        {
+            var eTag = GetETag(fullPath);
+            response.Cache.SetCacheability(HttpCacheability.Public);
+            response.Cache.SetExpires(DateTime.Now.AddYears(1));
+            response.Cache.SetETag(eTag);
+
+            var requestETag = request.Headers["If-None-Match"];
+            if (requestETag == eTag)
+            {
+                NotModified();
+                return;
+            }
+
+            SetResponseContentType(fullPath, extension);
+            response.WriteFile(fullPath);
+        }
+
+        void NotModified()
+        {
+            response.StatusCode = 304; // Not Modified
+            response.SuppressContent = true;
+        }
+
+        void SetResponseContentType(string fullPath, string extension)
+        {
+            var contentType = ContentTypeFromExtension(extension);
+            if (contentType != null)
+            {
+                Trace.Source.TraceEvent(
+                    TraceEventType.Error,
+                    0,
+                    "Sending file \"{0}\" with content type {1}.",
+                    fullPath,
+                    response.ContentType
+                    );
+            }
+            else
+            {
+                Trace.Source.TraceEvent(
+                    TraceEventType.Warning,
+                    0,
+                    "Could not determine content type for file \"{0}\". Defaulting to \"application/octet-stream\".",
+                    fullPath
+                    );
+                contentType = "application/octet-stream";
+            }
+            response.ContentType = contentType;
         }
 
         string GetETag(string fullPath)
@@ -126,7 +157,7 @@ namespace Cassette.Web
         string ContentTypeFromExtension(string extension)
         {
             string contentType;
-            if (contentTypes.TryGetValue(extension, out contentType))
+            if (ContentTypes.TryGetValue(extension, out contentType))
             {
                 return contentType;
             }
