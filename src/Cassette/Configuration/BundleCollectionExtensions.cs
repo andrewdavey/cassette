@@ -17,7 +17,7 @@ namespace Cassette.Configuration
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath)
             where T : Bundle
         {
-            Add<T>(bundleCollection, applicationRelativePath, null, null);
+            Add<T>(bundleCollection, applicationRelativePath, (IFileSearch)null, null);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Cassette.Configuration
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, Action<T> customizeBundle)
             where T : Bundle
         {
-            Add(bundleCollection, applicationRelativePath, null, customizeBundle);
+            Add(bundleCollection, applicationRelativePath, (IFileSearch)null, customizeBundle);
         }
 
         /// <summary>
@@ -92,13 +92,23 @@ namespace Cassette.Configuration
 
             bundleCollection.Add(bundle);
         }
-
+        
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IEnumerable<string> assetFilenames)
+            where T : Bundle
         {
-            var files = from filename in assetFilenames
-                        select bundleCollection.Settings.SourceDirectory.GetFile(filename);
+            Add<T>(bundleCollection, applicationRelativePath, assetFilenames, null);
+        }
 
-            var factory = bundleCollection.Settings.BundleFactories[typeof(T)];
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IEnumerable<string> assetFilenames, Action<T> customizeBundle)
+            where T : Bundle
+        {
+            var bundleDirectoryExists = bundleCollection.Settings.SourceDirectory.DirectoryExists(applicationRelativePath);
+            var directory = bundleDirectoryExists
+                                ? bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath)
+                                : bundleCollection.Settings.SourceDirectory;
+            var files = assetFilenames.Select(directory.GetFile);
+
+            var factory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
 
             var bundle = factory.CreateBundle(
                 applicationRelativePath,
@@ -107,6 +117,11 @@ namespace Cassette.Configuration
             );
             
             bundle.IsSorted = true;
+
+            if (customizeBundle!=null)
+            {
+                customizeBundle(bundle);
+            }
 
             bundleCollection.Add(bundle);
         }
