@@ -93,6 +93,24 @@ namespace Cassette.Configuration
             bundleCollection.Add(bundle);
         }
 
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IEnumerable<string> assetFilenames)
+        {
+            var files = from filename in assetFilenames
+                        select bundleCollection.Settings.SourceDirectory.GetFile(filename);
+
+            var factory = bundleCollection.Settings.BundleFactories[typeof(T)];
+
+            var bundle = factory.CreateBundle(
+                applicationRelativePath,
+                files,
+                new BundleDescriptor { AssetFilenames = { "*" } }
+            );
+            
+            bundle.IsSorted = true;
+
+            bundleCollection.Add(bundle);
+        }
+
         static T CreateSingleFileBundle<T>(
             string applicationRelativePath,
             IFile file,
