@@ -103,8 +103,7 @@ namespace Cassette.Stylesheets
                         "Less compile error in {0}:\r\n{1}",
                         file.FullPath,
                         message
-                    ),
-                    ex
+                    )
                 );
             }
             catch (InvalidOperationException ex)

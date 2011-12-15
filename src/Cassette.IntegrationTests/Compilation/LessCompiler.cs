@@ -66,6 +66,18 @@ namespace Cassette
         }
 
         [Fact]
+        public void Compile_LESS_with_unknown_mixin_throws_exception()
+        {
+            var less = "form { \nmargin-bottom: @baseline; }";
+            var compiler = new LessCompiler();
+            var exception = Assert.Throws<LessCompileException>(delegate
+            {
+                compiler.Compile(less, file.Object);
+            });
+            exception.Message.ShouldEqual("Less compile error in test.less:\r\nvariable @baseline is undefined");
+        }
+
+        [Fact]
         public void Compile_LESS_that_fails_parsing_throws_LessCompileException()
         {
             var compiler = new LessCompiler();
@@ -83,14 +95,14 @@ namespace Cassette
             directory.Setup(d => d.GetFile("lib.less"))
                      .Returns(otherFile.Object);
             otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                     .Returns(() => "@color: red;".AsStream());
+                     .Returns(() => "@color: #ffffff;".AsStream());
 
             var compiler = new LessCompiler();
             var css = compiler.Compile(
                 "@import \"lib\";\nbody{ color: @color }",
                 file.Object
             );
-            css.ShouldEqual("body {\n  color: red;\n}\n");
+            css.ShouldEqual("body {\n  color: #ffffff;\n}\n");
         }
 
         [Fact]
@@ -100,14 +112,14 @@ namespace Cassette
             directory.Setup(d => d.GetFile("../bundle-b/lib.less"))
                      .Returns(otherFile.Object);
             otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                .Returns(() => "@color: red;".AsStream());
+                .Returns(() => "@color: #ffffff;".AsStream());
 
             var compiler = new LessCompiler();
             var css = compiler.Compile(
                 "@import \"../bundle-b/lib.less\";\nbody{ color: @color }",
                 file.Object
             );
-            css.ShouldEqual("body {\n  color: red;\n}\n");
+            css.ShouldEqual("body {\n  color: #ffffff;\n}\n");
         }
 
         [Fact]
@@ -129,7 +141,7 @@ namespace Cassette
                 );
                 File.WriteAllText(
                     Path.Combine(bundleB.FullName, "_lib.less"),
-                    "@import \"../_base.less\";\n@color: red; p { height: @size; }"
+                    "@import \"../_base.less\";\n@color: #ffffff; p { height: @size; }"
                 );
 
                 var compiler = new LessCompiler();
@@ -137,7 +149,7 @@ namespace Cassette
                     "@import \"../bundle-b/_lib.less\";\nbody{ color: @color }",
                     file.Object
                 );
-                css.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: red;\n}\n");
+                css.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: #ffffff;\n}\n");
             }
             finally
             {
