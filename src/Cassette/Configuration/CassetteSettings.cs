@@ -55,12 +55,12 @@ namespace Cassette.Configuration
         /// <summary>
         /// The directory containing the original bundle asset files.
         /// </summary>
-        internal IDirectory SourceDirectory { get; set; }
+        public IDirectory SourceDirectory { get; set; }
 
         /// <summary>
         /// The directory used to cache combined, minified bundles.
         /// </summary>
-        internal IDirectory CacheDirectory { get; set; }
+        public IDirectory CacheDirectory { get; set; }
 
         /// <summary>
         /// The <see cref="IUrlModifier"/> used to convert application relative URLs into absolute URLs.
