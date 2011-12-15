@@ -20,18 +20,17 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.IO;
-using System.IO.IsolatedStorage;
 
 namespace Cassette.IO
 {
-    class IsolatedStorageFileWrapper : IFile
+    public class IsolatedStorageFile : IFile
     {
         readonly string filename;
-        readonly IsolatedStorageFile storage;
+        readonly System.IO.IsolatedStorage.IsolatedStorageFile storage;
         readonly IsolatedStorageDirectory directory;
         readonly string systemFilename;
 
-        public IsolatedStorageFileWrapper(string filename, IsolatedStorageFile storage, IsolatedStorageDirectory directory)
+        public IsolatedStorageFile(string filename, System.IO.IsolatedStorage.IsolatedStorageFile storage, IsolatedStorageDirectory directory)
         {
             this.filename = filename;
             this.storage = storage;

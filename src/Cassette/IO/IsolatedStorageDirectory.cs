@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Linq;
 
 namespace Cassette.IO
@@ -30,20 +29,20 @@ namespace Cassette.IO
     /// This class only implements enough of IDirectory to support BundleCache.
     /// Other methods simply throw NotSupportException for now.
     /// </remarks>
-    class IsolatedStorageDirectory : IDirectory
+    public class IsolatedStorageDirectory : IDirectory
     {
-        public IsolatedStorageDirectory(IsolatedStorageFile storage)
+        public IsolatedStorageDirectory(System.IO.IsolatedStorage.IsolatedStorageFile storage)
             : this(storage, "~/")
         {
         }
 
-        IsolatedStorageDirectory(IsolatedStorageFile storage, string basePath)
+        IsolatedStorageDirectory(System.IO.IsolatedStorage.IsolatedStorageFile storage, string basePath)
         {
             this.storage = storage;
             this.basePath = basePath;
         }
 
-        readonly IsolatedStorageFile storage;
+        readonly System.IO.IsolatedStorage.IsolatedStorageFile storage;
         readonly string basePath;
 
         public string FullPath
@@ -53,7 +52,7 @@ namespace Cassette.IO
 
         public IFile GetFile(string filename)
         {
-            return new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this);
+            return new IsolatedStorageFile(GetAbsolutePath(filename), storage, this);
         }
 
         string GetAbsolutePath(string path)
@@ -79,7 +78,7 @@ namespace Cassette.IO
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
             return storage.GetFileNames(searchPattern)
-                          .Select(filename => new IsolatedStorageFileWrapper(GetAbsolutePath(filename), storage, this));
+                          .Select(filename => new IsolatedStorageFile(GetAbsolutePath(filename), storage, this));
         }
 
         public IEnumerable<IDirectory> GetDirectories()

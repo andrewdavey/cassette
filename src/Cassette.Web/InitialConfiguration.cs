@@ -18,9 +18,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using System.IO.IsolatedStorage;
 using Cassette.Configuration;
 using Cassette.IO;
+using IsolatedStorageFile = System.IO.IsolatedStorage.IsolatedStorageFile;
 
 namespace Cassette.Web
 {

@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Configuration;
@@ -33,6 +32,7 @@ using Cassette.Web;
 using Moq;
 using Should;
 using Xunit;
+using IsolatedStorageFile = System.IO.IsolatedStorage.IsolatedStorageFile;
 
 namespace Cassette.IntegrationTests
 {

@@ -19,10 +19,10 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System.IO;
-using System.IO.IsolatedStorage;
 using Cassette.IO;
 using Should;
 using Xunit;
+using IsolatedStorageFile = System.IO.IsolatedStorage.IsolatedStorageFile;
 
 namespace Cassette.IntegrationTests
 {

@@ -19,7 +19,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using Should;
 using Xunit;
@@ -29,11 +28,11 @@ namespace Cassette.IO
 {
     public class IsolatedStorageDirectory_Tests : IDisposable
     {
-        readonly IsolatedStorageFile storage;
+        readonly System.IO.IsolatedStorage.IsolatedStorageFile storage;
 
         public IsolatedStorageDirectory_Tests()
         {
-            storage = IsolatedStorageFile.GetUserStoreForAssembly();
+            storage = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly();
             foreach (var filename in storage.GetFileNames())
             {
                 storage.DeleteFile(filename);
@@ -60,7 +59,7 @@ namespace Cassette.IO
             var directory = new IsolatedStorageDirectory(storage);
             var file = directory.GetFile("test.js");
 
-            file.ShouldBeType<IsolatedStorageFileWrapper>();
+            file.ShouldBeType<IsolatedStorageFile>();
             file.FullPath.ShouldEqual("~/test.js");
             file.Directory.ShouldBeSameAs(directory);
         }
@@ -74,9 +73,9 @@ namespace Cassette.IO
             var directory = new IsolatedStorageDirectory(storage);
             var files = directory.GetFiles("*", SearchOption.AllDirectories).ToArray();
 
-            files[0].ShouldBeType<IsolatedStorageFileWrapper>();
+            files[0].ShouldBeType<IsolatedStorageFile>();
             files[0].FullPath.ShouldEqual("~/test1.js");
-            files[1].ShouldBeType<IsolatedStorageFileWrapper>();
+            files[1].ShouldBeType<IsolatedStorageFile>();
             files[1].FullPath.ShouldEqual("~/test2.js");
         }
     }

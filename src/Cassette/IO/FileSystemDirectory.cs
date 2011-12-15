@@ -25,7 +25,7 @@ using Cassette.Utilities;
 
 namespace Cassette.IO
 {
-    class FileSystemDirectory : IDirectory
+    public class FileSystemDirectory : IDirectory
     {
         public FileSystemDirectory(string fullSystemPath)
         {
