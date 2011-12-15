@@ -45,7 +45,7 @@ namespace Cassette
         void AddAssets(Bundle bundle, IFile[] allFiles, IEnumerable<string> descriptorFilenames)
         {
             var remainingFiles = new HashSet<IFile>(allFiles);
-            var filesByPath = allFiles.ToDictionary(f => f.FullPath);
+            var filesByPath = allFiles.ToDictionary(f => f.FullPath, StringComparer.OrdinalIgnoreCase);
 
             foreach (var filename in descriptorFilenames)
             {

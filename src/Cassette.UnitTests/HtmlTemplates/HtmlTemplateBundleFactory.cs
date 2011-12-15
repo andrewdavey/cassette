@@ -103,6 +103,20 @@ namespace Cassette.HtmlTemplates
         }
 
         [Fact]
+        public void GivenBundleDescriptorWithExplicitFilenameHavingDifferentCasing_WhenCreateBundle_ThenBundleHasAssetForFile()
+        {
+            FilesExist("~/test/file.htm");
+            var bundleDescriptor = new BundleDescriptor
+            {
+                AssetFilenames = { "~/test/FILE.HTM" }
+            };
+
+            var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
+
+            bundle.Assets[0].SourceFile.FullPath.ShouldEqual("~/test/file.htm");
+        }
+
+        [Fact]
         public void GivenBundleDescriptorWithExplicitFilename_WhenCreateBundle_ThenBundleIsSorted()
         {
             FilesExist("~/test/file.htm");
