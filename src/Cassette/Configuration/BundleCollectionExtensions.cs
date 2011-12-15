@@ -92,13 +92,28 @@ namespace Cassette.Configuration
 
             bundleCollection.Add(bundle);
         }
-        
+
+        /// <summary>
+        /// Adds a new bundle with an explicit list of assets.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to add.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
+        /// <param name="assetFilenames">The filenames of assets to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IEnumerable<string> assetFilenames)
             where T : Bundle
         {
             Add<T>(bundleCollection, applicationRelativePath, assetFilenames, null);
         }
 
+        /// <summary>
+        /// Adds a new bundle with an explicit list of assets.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to add.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
+        /// <param name="assetFilenames">The filenames of assets to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
+        /// <param name="customizeBundle">An action delegate used to customize the created bundle.</param>
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IEnumerable<string> assetFilenames, Action<T> customizeBundle)
             where T : Bundle
         {
