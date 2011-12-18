@@ -55,7 +55,15 @@ namespace Cassette.Web
         static IsolatedStorageFile _storage;
         static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
         static Stopwatch _startupTimer;
-        readonly static object CreationLock = new object();
+        static readonly object CreationLock = new object();
+        /// <summary>
+        /// Collects all of Cassette's trace output during start-up.
+        /// </summary>
+        static readonly TraceListener StartupTraceListener = new StringBuilderTraceListener
+        {
+            TraceOutputOptions = TraceOptions.DateTime,
+            Filter = new EventTypeFilter(SourceLevels.All)
+        };
 
         /// <summary>
         /// The function delegate used to create Cassette configuration objects for the application.
@@ -71,11 +79,12 @@ namespace Cassette.Web
             CreateConfigurations = CreateConfigurationsByScanningAssembliesForType;
         }
 
-
 // ReSharper disable UnusedMember.Global
         public static void PreApplicationStart()
 // ReSharper restore UnusedMember.Global
         {
+            Trace.Source.Listeners.Add(StartupTraceListener);
+
             _startupTimer = Stopwatch.StartNew();
             Trace.Source.TraceInformation("Registering CassetteHttpModule.");
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
@@ -102,6 +111,9 @@ namespace Cassette.Web
 
             Trace.Source.TraceInformation("Cassette startup completed. It took " + _startupTimer.ElapsedMilliseconds + "ms.");
             _startupTimer.Stop();
+
+            StartupTraceListener.Flush();
+            Trace.Source.Listeners.Remove(StartupTraceListener);
         }
 
 // ReSharper disable UnusedMember.Global
@@ -111,6 +123,11 @@ namespace Cassette.Web
             Trace.Source.TraceInformation("Application shutdown - disposing resources.");
             _storage.Dispose();
             _applicationContainer.Dispose();
+        }
+
+        static internal string TraceOutput
+        {
+            get { return StartupTraceListener.ToString(); }
         }
 
         static IEnumerable<ICassetteConfiguration> CreateConfigurationsByScanningAssembliesForType()

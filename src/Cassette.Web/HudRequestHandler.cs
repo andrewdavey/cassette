@@ -50,7 +50,8 @@ namespace Cassette.Web
             {
                 Scripts = scripts.Select(ScriptData),
                 Stylesheets = stylesheets.Select(StylesheetData),
-                HtmlTemplates = htmlTemplates.Select(HtmlTemplateData)
+                HtmlTemplates = htmlTemplates.Select(HtmlTemplateData),
+                StartupTrace = StartUp.TraceOutput
             };
             var json = new JavaScriptSerializer().Serialize(data);
             return json;
