@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
@@ -53,6 +54,7 @@ namespace Cassette.Web
         static IEnumerable<ICassetteConfiguration> _configurations;
         static IsolatedStorageFile _storage;
         static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
+        static Stopwatch _startupTimer;
         readonly static object CreationLock = new object();
 
         /// <summary>
@@ -69,10 +71,12 @@ namespace Cassette.Web
             CreateConfigurations = CreateConfigurationsByScanningAssembliesForType;
         }
 
+
 // ReSharper disable UnusedMember.Global
         public static void PreApplicationStart()
 // ReSharper restore UnusedMember.Global
         {
+            _startupTimer = Stopwatch.StartNew();
             Trace.Source.TraceInformation("Registering CassetteHttpModule.");
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
@@ -82,6 +86,8 @@ namespace Cassette.Web
         public static void PostApplicationStart()
 // ReSharper restore UnusedMember.Global
         {
+            Trace.Source.TraceInformation("PostApplicationStart.");
+
             _storage = IsolatedStorageFile.GetMachineStoreForAssembly(); // TODO: Check if this should be GetMachineStoreForApplication instead
             
             _configurations = CreateConfigurations();
@@ -93,6 +99,9 @@ namespace Cassette.Web
             CassetteApplicationContainer.SetAccessor(() => _applicationContainer.Application);
 
             _applicationContainer.Initialize();
+
+            Trace.Source.TraceInformation("Cassette startup completed. It took " + _startupTimer.ElapsedMilliseconds + "ms.");
+            _startupTimer.Stop();
         }
 
 // ReSharper disable UnusedMember.Global
