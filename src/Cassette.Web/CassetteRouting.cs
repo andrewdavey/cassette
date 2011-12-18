@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Web.Routing;
-using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -31,27 +30,29 @@ namespace Cassette.Web
     class CassetteRouting : IUrlGenerator
     {
         readonly IUrlModifier urlModifier;
+        readonly Func<IBundleContainer> getBundleContainer;
         const string RoutePrefix = "_cassette";
 
-        public CassetteRouting(IUrlModifier urlModifier)
+        public CassetteRouting(IUrlModifier urlModifier, Func<IBundleContainer> getBundleContainer)
         {
             this.urlModifier = urlModifier;
+            this.getBundleContainer = getBundleContainer;
         }
 
-        public void InstallRoutes(RouteCollection routes, IBundleContainer bundleContainer, CassetteSettings settings)
+        public void InstallRoutes(RouteCollection routes)
         {
             using (routes.GetWriteLock())
             {
                 RemoveExistingCassetteRoutes(routes);
 
-                InstallBundleRoute<ScriptBundle>(routes, bundleContainer);
-                InstallBundleRoute<StylesheetBundle>(routes, bundleContainer);
-                InstallBundleRoute<HtmlTemplateBundle>(routes, bundleContainer);
-                InstallHudRoute(routes, bundleContainer, settings);
+                InstallBundleRoute<ScriptBundle>(routes, getBundleContainer);
+                InstallBundleRoute<StylesheetBundle>(routes, getBundleContainer);
+                InstallBundleRoute<HtmlTemplateBundle>(routes, getBundleContainer);
+                InstallHudRoute(routes);
 
                 InstallRawFileRoute(routes);
 
-                InstallAssetCompileRoute(routes, bundleContainer);
+                InstallAssetCompileRoute(routes, getBundleContainer);
             }
         }
 
@@ -106,12 +107,12 @@ namespace Cassette.Web
             }
         }
 
-        void InstallBundleRoute<T>(RouteCollection routes, IBundleContainer bundleContainer)
+        void InstallBundleRoute<T>(RouteCollection routes, Func<IBundleContainer> getBundleContainer)
             where T : Bundle
         {
             var url = GetBundleRouteUrl<T>();
             var handler = new DelegateRouteHandler(
-                requestContext => new BundleRequestHandler<T>(bundleContainer, requestContext)
+                requestContext => new BundleRequestHandler<T>(getBundleContainer, requestContext)
             );
             Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
             // Insert Cassette's routes at the start of the table, 
@@ -128,9 +129,13 @@ namespace Cassette.Web
             );
         }
 
-        void InstallHudRoute(RouteCollection routes, IBundleContainer bundleContainer, CassetteSettings settings)
+        void InstallHudRoute(RouteCollection routes)
         {
-            routes.Insert(0, new CassetteRoute(RoutePrefix, new DelegateRouteHandler(context => new HudRequestHandler(bundleContainer, context, this, settings))));
+            var route = new CassetteRoute(
+                RoutePrefix,
+                new DelegateRouteHandler(context => new HudRequestHandler(() => (CassetteApplication)CassetteApplicationContainer.Application, context))
+            );
+            routes.Insert(0, route);
         }
 
         void InstallRawFileRoute(RouteCollection routes)
@@ -145,14 +150,14 @@ namespace Cassette.Web
             routes.Insert(0, new CassetteRoute(url, handler));
         }
 
-        void InstallAssetCompileRoute(RouteCollection routes, IBundleContainer bundleContainer)
+        void InstallAssetCompileRoute(RouteCollection routes, Func<IBundleContainer> getBundleContainer)
         {
             // Used to return compiled coffeescript, less, etc.
             const string url = RoutePrefix + "/asset/{*path}";
             var handler = new DelegateRouteHandler(
                 requestContext => new AssetRequestHandler(
                     requestContext,
-                    bundleContainer
+                    getBundleContainer
                 )
             );
             Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);

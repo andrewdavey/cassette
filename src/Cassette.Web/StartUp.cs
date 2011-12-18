@@ -186,7 +186,7 @@ namespace Cassette.Web
                     configuration.Configure(bundles, settings);
                 }
 
-                var routing = new CassetteRouting(settings.UrlModifier);
+                var routing = new CassetteRouting(settings.UrlModifier, () => ((CassetteApplication)CassetteApplicationContainer.Application).BundleContainer);
                 settings.UrlGenerator = routing;
 
                 Trace.Source.TraceInformation("Creating Cassette application object");

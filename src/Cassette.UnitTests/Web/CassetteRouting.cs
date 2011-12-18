@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System.Web;
 using System.Web.Routing;
-using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -41,7 +40,7 @@ namespace Cassette.Web
             urlModifier.Setup(m => m.Modify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
-            routing = new CassetteRouting(urlModifier.Object);
+            routing = new CassetteRouting(urlModifier.Object, Mock.Of<IBundleContainer>);
         }
     }
 
@@ -148,7 +147,7 @@ namespace Cassette.Web
         public UrlGenerator_InstallRoutes_Tests()
         {
             routes = new RouteCollection();
-            routing.InstallRoutes(routes, Mock.Of<IBundleContainer>(), new CassetteSettings());
+            routing.InstallRoutes(routes);
             httpContext = new Mock<HttpContextBase>();
         }
 

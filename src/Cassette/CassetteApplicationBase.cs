@@ -41,7 +41,7 @@ namespace Cassette
             get { return settings; }
         }
 
-        protected IBundleContainer BundleContainer
+        protected internal IBundleContainer BundleContainer
         {
             get { return bundleContainer; }
         }

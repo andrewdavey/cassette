@@ -60,7 +60,7 @@ namespace Cassette.Web
             var bundleContainer = new Mock<IBundleContainer>();
             bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>(It.IsAny<string>()))
                            .Returns(() => bundle);
-            handler = new AssetRequestHandler(requestContext.Object, bundleContainer.Object);
+            handler = new AssetRequestHandler(requestContext.Object, () => bundleContainer.Object);
         }
 
         readonly AssetRequestHandler handler;

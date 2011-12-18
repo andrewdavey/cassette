@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
@@ -26,14 +27,14 @@ namespace Cassette.Web
 {
     class AssetRequestHandler : IHttpHandler
     {
-        public AssetRequestHandler(RequestContext requestContext, IBundleContainer bundleContainer)
+        public AssetRequestHandler(RequestContext requestContext, Func<IBundleContainer> getBundleContainer)
         {
             this.requestContext = requestContext;
-            this.bundleContainer = bundleContainer;
+            this.getBundleContainer = getBundleContainer;
         }
 
         readonly RequestContext requestContext;
-        readonly IBundleContainer bundleContainer;
+        readonly Func<IBundleContainer> getBundleContainer;
 
         public bool IsReusable
         {
@@ -48,7 +49,7 @@ namespace Cassette.Web
             var response = requestContext.HttpContext.Response;
             IAsset asset;
             Bundle bundle;
-            if (!bundleContainer.TryGetAssetByPath(path, out asset, out bundle))
+            if (!getBundleContainer().TryGetAssetByPath(path, out asset, out bundle))
             {
                 Trace.Source.TraceInformation("Bundle asset not found with path \"{0}\".", path);
                 NotFound(response);

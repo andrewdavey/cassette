@@ -140,13 +140,16 @@ function asset1() {
             };
             var bundles = new BundleCollection(settings);
             configure(bundles);
+            IBundleContainer bundleContainer = null;
             var application = new CassetteApplication(
                 bundles,
                 settings,
-                new CassetteRouting(new VirtualDirectoryPrepender("/")),
+                new CassetteRouting(new VirtualDirectoryPrepender("/"), () => bundleContainer),
                 () => httpContext.Object,
                 ""
             );
+            bundleContainer = application.BundleContainer;
+
             application.InstallRoutes(routes);
             return application;
         }

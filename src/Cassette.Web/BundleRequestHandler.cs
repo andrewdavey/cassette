@@ -30,9 +30,9 @@ namespace Cassette.Web
     class BundleRequestHandler<T> : IHttpHandler
         where T : Bundle
     {
-        public BundleRequestHandler(IBundleContainer bundleContainer, RequestContext requestContext)
+        public BundleRequestHandler(Func<IBundleContainer> getBundleContainer, RequestContext requestContext)
         {
-            this.bundleContainer = bundleContainer;
+            this.getBundleContainer = getBundleContainer;
             
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
@@ -40,7 +40,7 @@ namespace Cassette.Web
             httpContext = requestContext.HttpContext;
         }
 
-        readonly IBundleContainer bundleContainer;
+        readonly Func<IBundleContainer> getBundleContainer;
         readonly RouteData routeData;
         readonly HttpResponseBase response;
         readonly HttpRequestBase request;
@@ -86,7 +86,7 @@ namespace Cassette.Web
             var path = "~/" + routeData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling bundle request for \"{0}\".", path);
             path = RemoveTrailingHashFromPath(path);
-            return bundleContainer.FindBundleContainingPath<T>(path);
+            return getBundleContainer().FindBundleContainingPath<T>(path);
         }
 
         /// <summary>

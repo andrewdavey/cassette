@@ -71,7 +71,7 @@ namespace Cassette.Web
         {
             routeData.Values.Add("path", bundlePath);
             return new BundleRequestHandler<TestableBundle>(
-                container.Object,
+                () => container.Object,
                 requestContext
             );
         }

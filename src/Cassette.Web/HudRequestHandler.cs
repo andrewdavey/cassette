@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,24 +8,18 @@ using System.Web.Script.Serialization;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-using System;
-using Cassette.Configuration;
 
 namespace Cassette.Web
 {
     class HudRequestHandler : IHttpHandler
     {
-        readonly IBundleContainer bundleContainer;
+        readonly Func<CassetteApplication> getApplication;
         readonly RequestContext requestContext;
-        readonly IUrlGenerator urlGenerator;
-        readonly CassetteSettings settings;
 
-        public HudRequestHandler(IBundleContainer bundleContainer, RequestContext requestContext, IUrlGenerator urlGenerator, CassetteSettings settings)
+        public HudRequestHandler(Func<CassetteApplication> getApplication, RequestContext requestContext)
         {
-            this.bundleContainer = bundleContainer;
+            this.getApplication = getApplication;
             this.requestContext = requestContext;
-            this.urlGenerator = urlGenerator;
-            this.settings = settings;
         }
 
         public void ProcessRequest(HttpContext _)
@@ -57,15 +52,20 @@ namespace Cassette.Web
 
         string CreateJson()
         {
+            var application = getApplication();
+            var settings = application.Settings;
+            var bundleContainer = application.BundleContainer;
+            var urlGenerator = settings.UrlGenerator;
+
             var scripts = bundleContainer.Bundles.OfType<ScriptBundle>();
             var stylesheets = bundleContainer.Bundles.OfType<StylesheetBundle>();
             var htmlTemplates = bundleContainer.Bundles.OfType<HtmlTemplateBundle>();
 
             var data = new
             {
-                Scripts = scripts.Select(ScriptData),
-                Stylesheets = stylesheets.Select(StylesheetData),
-                HtmlTemplates = htmlTemplates.Select(HtmlTemplateData),
+                Scripts = scripts.Select(b => ScriptData(b, urlGenerator)),
+                Stylesheets = stylesheets.Select(b => StylesheetData(b, urlGenerator)),
+                HtmlTemplates = htmlTemplates.Select(b => HtmlTemplateData(b, urlGenerator)),
                 StartupTrace = StartUp.TraceOutput,
                 Cassette = new
                 {
@@ -80,19 +80,19 @@ namespace Cassette.Web
             return json;
         }
 
-        object HtmlTemplateData(HtmlTemplateBundle htmlTemplate)
+        object HtmlTemplateData(HtmlTemplateBundle htmlTemplate, IUrlGenerator urlGenerator)
         {
             return new
             {
                 htmlTemplate.Path,
                 Url = urlGenerator.CreateBundleUrl(htmlTemplate),
-                Assets = AssetPaths(htmlTemplate),
+                Assets = AssetPaths(htmlTemplate, urlGenerator),
                 htmlTemplate.References,
                 Size = BundleSize(htmlTemplate)
             };
         }
 
-        object StylesheetData(StylesheetBundle stylesheet)
+        object StylesheetData(StylesheetBundle stylesheet, IUrlGenerator urlGenerator)
         {
             return new
             {
@@ -100,19 +100,19 @@ namespace Cassette.Web
                 Url = urlGenerator.CreateBundleUrl(stylesheet),
                 stylesheet.Media,
                 stylesheet.Condition,
-                Assets = AssetPaths(stylesheet),
+                Assets = AssetPaths(stylesheet, urlGenerator),
                 stylesheet.References,
                 Size = BundleSize(stylesheet)
             };
         }
 
-        object ScriptData(ScriptBundle script)
+        object ScriptData(ScriptBundle script, IUrlGenerator urlGenerator)
         {
             return new
             {
                 script.Path,
                 Url = urlGenerator.CreateBundleUrl(script),
-                Assets = AssetPaths(script),
+                Assets = AssetPaths(script, urlGenerator),
                 script.References,
                 Size = BundleSize(script)
             };
@@ -130,7 +130,7 @@ namespace Cassette.Web
             return -1;
         }
 
-        IEnumerable<AssetLink> AssetPaths(Bundle bundle)
+        IEnumerable<AssetLink> AssetPaths(Bundle bundle, IUrlGenerator urlGenerator)
         {
             var visitor = new CollectAssetPaths(urlGenerator);
             bundle.Accept(visitor);
