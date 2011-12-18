@@ -94,7 +94,22 @@
             </ul>
         </div>
         <div id="trace">
-            <pre data-bind="text: StartupTrace"></pre>
+            <pre data-bind="text: StartupTrace, visible: StartupTrace"></pre>
+            <div data-bind="visible: !StartupTrace">
+            <p>
+            To enable Cassette tracing please add this to <code>web.config</code>:
+            </p>
+            <pre>
+&lt;system.diagnostics&gt;
+    &lt;sources&gt;
+        &lt;source name="Cassette" switchName="CassetteSwitch" switchType="System.Diagnostics.SourceSwitch" /&gt;
+    &lt;/sources&gt;
+    &lt;switches&gt;
+        &lt;add name="CassetteSwitch" value="All" /&gt;
+    &lt;/switches&gt;
+&lt;/system.diagnostics&gt;
+            </pre>
+            </div>
         </div>
     </div>
 

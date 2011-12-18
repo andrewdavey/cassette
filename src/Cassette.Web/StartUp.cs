@@ -111,8 +111,8 @@ namespace Cassette.Web
 
             Trace.Source.TraceInformation("Cassette startup completed. It took " + _startupTimer.ElapsedMilliseconds + "ms.");
             _startupTimer.Stop();
-
-            StartupTraceListener.Flush();
+            
+            Trace.Source.Flush();
             Trace.Source.Listeners.Remove(StartupTraceListener);
         }
 
