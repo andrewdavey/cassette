@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Cassette.IO;
 
 namespace Cassette.Scripts
@@ -14,16 +15,20 @@ namespace Cassette.Scripts
 
         public string Compile(string source, IFile sourceFile)
         {
+            Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
             var engine = lazyEngine.Value;
             lock (engine)
             {
                 try
                 {
+                    Trace.Source.TraceInformation("Compiled {0}", sourceFile.FullPath);
                     return engine.CallFunction<string>("compile", source);
                 }
                 catch (Exception ex)
                 {
-                    throw new CoffeeScriptCompileException(ex.Message + " in " + sourceFile.FullPath, sourceFile.FullPath, ex);                    
+                    var message = ex.Message + " in " + sourceFile.FullPath;
+                    Trace.Source.TraceEvent(TraceEventType.Critical, 0, message);
+                    throw new CoffeeScriptCompileException(message, sourceFile.FullPath, ex);                    
                 }
             }
         }

@@ -196,9 +196,11 @@ namespace Cassette
         {
             if (assets.Count == 0) return;
 
+            Trace.Source.TraceInformation("Concatenating assets of {0}", path);
             var concatenated = new ConcatenatedAsset(assets);
             assets.Clear();
             assets.Add(concatenated);
+            Trace.Source.TraceInformation("Concatenated assets of {0}", path);
         }
 
         string ConvertReferenceToAppRelative(string reference)

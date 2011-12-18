@@ -229,7 +229,7 @@ namespace Cassette.Configuration
             var directories = parentDirectory.GetDirectories().Where(IsNotHidden);
             foreach (var directory in directories)
             {
-                Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
+                Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
                 var descriptorFile = TryGetDescriptorFile(directory);
                 var descriptor = descriptorFile.Exists
                     ? new BundleDescriptorReader(descriptorFile).Read()

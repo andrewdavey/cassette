@@ -25,6 +25,7 @@ using Cassette.IO;
 using Cassette.Utilities;
 using Jurassic;
 using Jurassic.Library;
+using System.Diagnostics;
 
 namespace Cassette.Stylesheets
 {
@@ -63,6 +64,7 @@ namespace Cassette.Stylesheets
 
         public string Compile(string lessSource, IFile sourceFile)
         {
+            Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
             lock (engine)
             {
                 currentFiles.Clear();
@@ -70,17 +72,18 @@ namespace Cassette.Stylesheets
                 var result = CompileImpl(lessSource, sourceFile);
                 if (result.Css != null)
                 {
+                    Trace.Source.TraceInformation("Compiled {0}", sourceFile.FullPath);
                     return result.Css;
                 }
                 else
                 {
-                    throw new LessCompileException(
-                        string.Format(
-                            "Less compile error in {0}:\r\n{1}", 
-                            sourceFile.FullPath, 
-                            result.ErrorMessage
-                        )
+                    var message = string.Format(
+                        "Less compile error in {0}:\r\n{1}", 
+                        sourceFile.FullPath, 
+                        result.ErrorMessage
                     );
+                    Trace.Source.TraceEvent(TraceEventType.Critical, 0, message);
+                    throw new LessCompileException(message);
                 }
             }
         }

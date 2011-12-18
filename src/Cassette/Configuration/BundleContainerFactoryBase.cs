@@ -37,10 +37,13 @@ namespace Cassette.Configuration
 
         protected void ProcessAllBundles(IEnumerable<Bundle> bundles, CassetteSettings settings)
         {
+            Trace.Source.TraceInformation("Processing bundles...");
             foreach (var bundle in bundles)
             {
+                Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
                 bundle.Process(settings);
             }
+            Trace.Source.TraceInformation("Bundle processing completed.");
         }
 
         protected IEnumerable<Bundle> CreateExternalBundlesFromReferences(IEnumerable<Bundle> bundlesArray, CassetteSettings settings)

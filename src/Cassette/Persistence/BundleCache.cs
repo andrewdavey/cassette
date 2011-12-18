@@ -184,12 +184,14 @@ namespace Cassette.Persistence
 
         public void SaveBundleContainer(IBundleContainer bundleContainer)
         {
+            Trace.Source.TraceInformation("Saving bundle container to cache.");
             DeleteExistingFiles();
             SaveContainerXml(bundleContainer);
             foreach (var bundle in bundleContainer.Bundles)
             {
                 SaveBundle(bundle);
             }
+            Trace.Source.TraceInformation("Saved bundle container to cache.");
         }
 
         void DeleteExistingFiles()
@@ -283,6 +285,7 @@ namespace Cassette.Persistence
                 throw new InvalidOperationException("Cannot cache a bundle when assets have not been concatenated into a single asset.");
             }
             
+            Trace.Source.TraceInformation("Saving bundle \"{0}\" to cache.", bundle.Path);
             var file = cacheDirectory.GetFile(BundleAssetCacheFilename(bundle));
             using (var fileStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
             {
@@ -292,6 +295,7 @@ namespace Cassette.Persistence
                 }
                 fileStream.Flush();
             }
+            Trace.Source.TraceInformation("Saved bundle \"{0}\" to cache.", bundle.Path);
         }
 
         string BundleAssetCacheFilename(Bundle bundle)

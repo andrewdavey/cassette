@@ -19,6 +19,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.Diagnostics;
 using Cassette.IO;
 using Jurassic;
 
@@ -35,15 +36,19 @@ namespace Cassette.Scripts
 
         public string Compile(string coffeeScriptSource, IFile sourceFile)
         {
+            Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
             lock (ScriptEngine) // ScriptEngine is NOT thread-safe, so we MUST lock.
             {
                 try
                 {
+                    Trace.Source.TraceInformation("Compiled {0}", sourceFile.FullPath);
                     return ScriptEngine.CallGlobalFunction<string>("compile", coffeeScriptSource);
                 }
                 catch (Exception ex)
                 {
-                    throw new CoffeeScriptCompileException(ex.Message + " in " + sourceFile.FullPath, sourceFile.FullPath, ex);
+                    var message = ex.Message + " in " + sourceFile.FullPath;
+                    Trace.Source.TraceEvent(TraceEventType.Critical, 0, message);
+                    throw new CoffeeScriptCompileException(message, sourceFile.FullPath, ex);
                 }
             }
         }
