@@ -21,9 +21,11 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -251,25 +253,25 @@ namespace Cassette
         }
 
         [Fact]
-        public void HashThrowsExceptionIfMoreThanOneAsset()
+        public void GivenMoreThanOneAsset_HashIsConcatenatedAssetHash()
         {
             var bundle = new TestableBundle("~");
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            bundle.Assets.Add(Mock.Of<IAsset>());
+            var asset1 = new Mock<IAsset>();
+            asset1.Setup(a => a.OpenStream()).Returns(() => "a".AsStream());
+            var asset2 = new Mock<IAsset>();
+            asset2.Setup(a => a.OpenStream()).Returns(() => "b".AsStream());
+            bundle.Assets.Add(asset1.Object);
+            bundle.Assets.Add(asset2.Object);
 
-            Assert.Throws<InvalidOperationException>(
-                () => bundle.Hash            
-            );
+            var expected = SHA1.Create().ComputeHash(("a" + Environment.NewLine + "b").AsStream());
+            bundle.Hash.SequenceEqual(expected).ShouldBeTrue();
         }
 
         [Fact]
-        public void HashThrowsExceptionIfNoAssets()
+        public void GivenNoAssets_ThenHashIsZeroLengthArray()
         {
             var bundle = new TestableBundle("~");
-
-            Assert.Throws<InvalidOperationException>(
-                () => bundle.Hash
-            );
+            bundle.Hash.Length.ShouldEqual(0);
         }
 
         [Fact]
