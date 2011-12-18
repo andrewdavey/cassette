@@ -21,9 +21,9 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Web.Routing;
 using Cassette.HtmlTemplates;
+using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.Utilities;
-using Cassette.Scripts;
 
 namespace Cassette.Web
 {
@@ -39,15 +39,18 @@ namespace Cassette.Web
 
         public void InstallRoutes(RouteCollection routes, IBundleContainer bundleContainer)
         {
-            RemoveExistingCassetteRoutes(routes);
+            using (routes.GetWriteLock())
+            {
+                RemoveExistingCassetteRoutes(routes);
 
-            InstallBundleRoute<ScriptBundle>(routes, bundleContainer);
-            InstallBundleRoute<StylesheetBundle>(routes, bundleContainer);
-            InstallBundleRoute<HtmlTemplateBundle>(routes, bundleContainer);
+                InstallBundleRoute<ScriptBundle>(routes, bundleContainer);
+                InstallBundleRoute<StylesheetBundle>(routes, bundleContainer);
+                InstallBundleRoute<HtmlTemplateBundle>(routes, bundleContainer);
 
-            InstallRawFileRoute(routes);
+                InstallRawFileRoute(routes);
 
-            InstallAssetCompileRoute(routes, bundleContainer);
+                InstallAssetCompileRoute(routes, bundleContainer);
+            }
         }
 
         public string CreateBundleUrl(Bundle bundle)
