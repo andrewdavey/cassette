@@ -71,7 +71,7 @@ namespace Cassette.Web
 
         internal void InstallRoutes(RouteCollection routes)
         {
-            routing.InstallRoutes(routes, BundleContainer);
+            routing.InstallRoutes(routes, BundleContainer, Settings);
         }
 
         bool CanRewriteOutput(HttpContextBase httpContext)

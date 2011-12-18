@@ -20,6 +20,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -37,7 +38,7 @@ namespace Cassette.Web
             this.urlModifier = urlModifier;
         }
 
-        public void InstallRoutes(RouteCollection routes, IBundleContainer bundleContainer)
+        public void InstallRoutes(RouteCollection routes, IBundleContainer bundleContainer, CassetteSettings settings)
         {
             using (routes.GetWriteLock())
             {
@@ -46,7 +47,7 @@ namespace Cassette.Web
                 InstallBundleRoute<ScriptBundle>(routes, bundleContainer);
                 InstallBundleRoute<StylesheetBundle>(routes, bundleContainer);
                 InstallBundleRoute<HtmlTemplateBundle>(routes, bundleContainer);
-                InstallHudRoute(routes, bundleContainer);
+                InstallHudRoute(routes, bundleContainer, settings);
 
                 InstallRawFileRoute(routes);
 
@@ -127,9 +128,9 @@ namespace Cassette.Web
             );
         }
 
-        void InstallHudRoute(RouteCollection routes, IBundleContainer bundleContainer)
+        void InstallHudRoute(RouteCollection routes, IBundleContainer bundleContainer, CassetteSettings settings)
         {
-            routes.Insert(0, new CassetteRoute(RoutePrefix, new DelegateRouteHandler(context => new HudRequestHandler(bundleContainer, context, this))));
+            routes.Insert(0, new CassetteRoute(RoutePrefix, new DelegateRouteHandler(context => new HudRequestHandler(bundleContainer, context, this, settings))));
         }
 
         void InstallRawFileRoute(RouteCollection routes)

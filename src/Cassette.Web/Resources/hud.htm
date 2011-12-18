@@ -8,10 +8,19 @@
             font-size: 62.5%;
         }
         .bundle {
-            margin-bottom: 1em;
+            margin-bottom: 1.5em;
+        }
+        .bundle > a {
+            font-weight: bold;
         }
         .bundle ul {
+            margin-top: .5em;
+        }
+        .bundle ul, .bundle p {
             margin-left: 2em;
+        }
+        .size {
+            color: #666;
         }
         pre {
             font-size: 1.4em;
@@ -35,14 +44,18 @@
             <li><a href="#trace">Start-up Trace</a></li>
         </ul>
         <div id="about">
-            <h1>Cassette</h1>
             <p>Version: <span data-bind="text: Cassette.Version"></span></p>
-            <p>Website: <a href="http://getcassette.net/">getcassette.net</a> - Copyright &copy; 2011 Andrew Davey</p>
+            <p>Source Directory: <span data-bind="text: Cassette.SourceDirectory"></span></p>
+            <p>Cache Directory: <span data-bind="text: Cassette.CacheDirectory"></span></p>
+            <p>IsDebuggingEnabled: <span data-bind="text: Cassette.IsDebuggingEnabled"></span></p>
+            <p>IsHtmlRewritingEnabled: <span data-bind="text: Cassette.IsHtmlRewritingEnabled"></span></p>
+            <p>Website: <a href="http://getcassette.net/">getcassette.net</a></p>
+            <p>Copyright &copy; 2011 Andrew Davey</p>
         </div>
         <div id="scripts">
             <ul data-bind="foreach: Scripts">
                 <li class="bundle">
-                    <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <a data-bind="text: Path, attr: { href: Url }"></a> <span class="size" data-bind="visible: Size !== -1"><span data-bind="text: Size"></span> bytes</span>
                     <ul data-bind="foreach: Assets">
                         <li>
                             <a data-bind="text: Path, attr: { href: Url }"></a>
@@ -55,7 +68,7 @@
         <div id="stylesheets">
             <ul data-bind="foreach: Stylesheets">
                 <li class="bundle">
-                    <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <a data-bind="text: Path, attr: { href: Url }"></a> <span class="size" data-bind="visible: Size !== -1"><span data-bind="text: Size"></span> bytes</span>
                     <span data-bind="visible: Media, text: 'Media=' + Media"></span>
                     <span data-bind="visible: Condition, text: 'Condition=' + Condition"></span>
                     <ul data-bind="foreach: Assets">
@@ -70,7 +83,7 @@
         <div id="htmltemplates">
             <ul data-bind="foreach: HtmlTemplates">
                 <li class="bundle">
-                    <a data-bind="text: Path, attr: { href: Url }"></a>
+                    <a data-bind="text: Path, attr: { href: Url }"></a> <span class="size" data-bind="visible: Size !== -1"><span data-bind="text: Size"></span> bytes</span>
                     <ul data-bind="foreach: Assets">
                         <li>
                             <a data-bind="text: Path, attr: { href: Url }"></a>

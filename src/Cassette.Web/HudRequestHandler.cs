@@ -8,6 +8,7 @@ using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using System;
+using Cassette.Configuration;
 
 namespace Cassette.Web
 {
@@ -16,18 +17,30 @@ namespace Cassette.Web
         readonly IBundleContainer bundleContainer;
         readonly RequestContext requestContext;
         readonly IUrlGenerator urlGenerator;
+        readonly CassetteSettings settings;
 
-        public HudRequestHandler(IBundleContainer bundleContainer, RequestContext requestContext, IUrlGenerator urlGenerator)
+        public HudRequestHandler(IBundleContainer bundleContainer, RequestContext requestContext, IUrlGenerator urlGenerator, CassetteSettings settings)
         {
             this.bundleContainer = bundleContainer;
             this.requestContext = requestContext;
             this.urlGenerator = urlGenerator;
+            this.settings = settings;
         }
 
         public void ProcessRequest(HttpContext _)
         {
             var response = requestContext.HttpContext.Response;
-            if (requestContext.HttpContext.Request.Url.Query == "?knockout.js")
+            var request = requestContext.HttpContext.Request;
+
+            // Security: Only allow local requests to access the HUD.
+            // Perhaps add a config setting for this in the future?
+            if (!request.IsLocal)
+            {
+                response.StatusCode = 404;
+                return;
+            }
+
+            if (request.Url.Query == "?knockout.js")
             {
                 response.ContentType = "application/json";
                 response.Write(Properties.Resources.knockout);
@@ -56,7 +69,11 @@ namespace Cassette.Web
                 StartupTrace = StartUp.TraceOutput,
                 Cassette = new
                 {
-                    Version = new AssemblyName(typeof(ICassetteApplication).Assembly.FullName).Version.ToString()
+                    Version = new AssemblyName(typeof(ICassetteApplication).Assembly.FullName).Version.ToString(),
+                    CacheDirectory = settings.CacheDirectory.FullPath + " (" + settings.CacheDirectory.GetType().FullName + ")",
+                    SourceDirectory = settings.SourceDirectory.FullPath + " (" + settings.SourceDirectory.GetType().FullName + ")",
+                    settings.IsHtmlRewritingEnabled,
+                    settings.IsDebuggingEnabled
                 }
             };
             var json = new JavaScriptSerializer().Serialize(data);
@@ -70,7 +87,8 @@ namespace Cassette.Web
                 htmlTemplate.Path,
                 Url = urlGenerator.CreateBundleUrl(htmlTemplate),
                 Assets = AssetPaths(htmlTemplate),
-                htmlTemplate.References
+                htmlTemplate.References,
+                Size = BundleSize(htmlTemplate)
             };
         }
 
@@ -83,7 +101,8 @@ namespace Cassette.Web
                 stylesheet.Media,
                 stylesheet.Condition,
                 Assets = AssetPaths(stylesheet),
-                stylesheet.References
+                stylesheet.References,
+                Size = BundleSize(stylesheet)
             };
         }
 
@@ -94,8 +113,21 @@ namespace Cassette.Web
                 script.Path,
                 Url = urlGenerator.CreateBundleUrl(script),
                 Assets = AssetPaths(script),
-                script.References
+                script.References,
+                Size = BundleSize(script)
             };
+        }
+
+        long BundleSize(Bundle script)
+        {
+            if (script.Assets.Count == 1 && script.Assets[0] is BundleProcessing.ConcatenatedAsset)
+            {
+                using (var s = script.OpenStream())
+                {
+                    return s.Length;
+                }
+            }
+            return -1;
         }
 
         IEnumerable<AssetLink> AssetPaths(Bundle bundle)
