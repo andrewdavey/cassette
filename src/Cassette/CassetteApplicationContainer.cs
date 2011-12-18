@@ -149,7 +149,8 @@ namespace Cassette
 
         public void Initialize()
         {
-            CreateApplication();
+            // Force the initial creation of the application.
+            var ignored = application.Value;
         }
     }
 }
