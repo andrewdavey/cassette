@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using System;
 
 namespace Cassette.Web
 {
@@ -51,7 +53,11 @@ namespace Cassette.Web
                 Scripts = scripts.Select(ScriptData),
                 Stylesheets = stylesheets.Select(StylesheetData),
                 HtmlTemplates = htmlTemplates.Select(HtmlTemplateData),
-                StartupTrace = StartUp.TraceOutput
+                StartupTrace = StartUp.TraceOutput,
+                Cassette = new
+                {
+                    Version = new AssemblyName(typeof(ICassetteApplication).Assembly.FullName).Version.ToString()
+                }
             };
             var json = new JavaScriptSerializer().Serialize(data);
             return json;
@@ -108,6 +114,7 @@ namespace Cassette.Web
         {
             readonly IUrlGenerator urlGenerator;
             readonly List<AssetLink> assetLinks = new List<AssetLink>();
+            string bundlePath;
 
             public CollectAssetPaths(IUrlGenerator urlGenerator)
             {
@@ -121,11 +128,16 @@ namespace Cassette.Web
 
             public void Visit(Bundle bundle)
             {
+                bundlePath = bundle.Path;
             }
 
             public void Visit(IAsset asset)
             {
                 var path = asset.SourceFile.FullPath;
+                if (path.StartsWith(bundlePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    path = path.Substring(bundlePath.Length + 1);
+                }
                 var url = urlGenerator.CreateAssetUrl(asset);
                 AssetLinks.Add(new AssetLink { Path = path, Url = url });
             }
