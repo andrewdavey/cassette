@@ -37,15 +37,18 @@ namespace Cassette.Web
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
             request = requestContext.HttpContext.Request;
+            httpContext = requestContext.HttpContext;
         }
 
         readonly IBundleContainer bundleContainer;
         readonly RouteData routeData;
         readonly HttpResponseBase response;
         readonly HttpRequestBase request;
+        readonly HttpContextBase httpContext;
 
         public void ProcessRequest()
         {
+            httpContext.DisableHtmlRewriting();
             var bundle = FindBundle();
             if (bundle == null)
             {

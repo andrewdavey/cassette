@@ -18,6 +18,7 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
@@ -49,6 +50,8 @@ namespace Cassette.Web
                           .Returns(response.Object);
             requestContext.SetupGet(r => r.HttpContext.Request)
                           .Returns(request.Object);
+            requestContext.SetupGet(r => r.HttpContext.Items)
+                          .Returns(new Dictionary<string, object>());
 
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
             response.SetupGet(r => r.Cache).Returns(cache.Object);

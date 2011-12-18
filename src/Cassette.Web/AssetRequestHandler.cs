@@ -44,6 +44,7 @@ namespace Cassette.Web
         {
             var path = "~/" + requestContext.RouteData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
+            requestContext.HttpContext.DisableHtmlRewriting();
             var response = requestContext.HttpContext.Response;
             IAsset asset;
             Bundle bundle;

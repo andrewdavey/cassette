@@ -21,7 +21,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Web.Handlers;
 using System.Web.Routing;
 using Cassette.Configuration;
 
@@ -47,17 +46,9 @@ namespace Cassette.Web
 
         public void OnPostRequestHandlerExecute()
         {
-            if (!Settings.IsHtmlRewritingEnabled) return;
-
             var httpContext = getCurrentHttpContext();
-            if (httpContext.CurrentHandler is AssemblyResourceLoader)
-            {
-                // The AssemblyResourceLoader handler (for WebResource.axd requests) prevents further writes via some internal puke code.
-                // This prevents response filters from working. The result is an empty response body!
-                // So don't bother installing a filter for these requests. We don't need to rewrite them anyway.
-                return;
-            }
-
+            if (!Settings.IsHtmlRewritingEnabled) return;
+            if (!httpContext.IsHtmlRewritingEnabled()) return;
             if (!CanRewriteOutput(httpContext)) return;
 
             var response = httpContext.Response;

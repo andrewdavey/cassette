@@ -182,6 +182,8 @@ function asset1() {
                    .Returns(Request.Object);
             Context.SetupGet(c => c.Response)
                    .Returns(Response.Object);
+            Context.SetupGet(c => c.Items)
+                   .Returns(new Dictionary<string, object>());
 
             Request.SetupGet(r => r.PathInfo).Returns("");
             Request.SetupGet(r => r.Headers).Returns(RequestHeaders);

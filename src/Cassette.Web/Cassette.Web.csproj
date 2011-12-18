@@ -56,6 +56,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CassetteApplication.cs" />
+    <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="StringBuilderTraceListener.cs" />
     <None Include="CassetteConfiguration.cs.pp" />
     <Compile Include="CassetteHttpModule.cs" />
