@@ -26,7 +26,7 @@ Cassette does all this!
 
 This will add the assembly references and Cassette HTTP module and handler to Web.config. 
 
-The head over to the wiki to [Get Started](https://github.com/andrewdavey/cassette/wiki/Getting-Started).
+The head over to the wiki to [Get Started](http://getcassette.net/documentation/getting-started).
 
 If you have questions, please let [@andrewdavey](http://twitter.com/andrewdavey) know.
 
