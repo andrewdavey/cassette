@@ -56,13 +56,11 @@ namespace Cassette.Web
 
         void ProcessPost()
         {
-            if (requestContext.HttpContext.Request.Form["action"] == "clear-cache")
+            if (requestContext.HttpContext.Request.Form["action"] == "rebuild-cache")
             {
                 CassetteApplicationContainer.Instance.Application.Settings.BundleCache.Clear();
                 CassetteApplicationContainer.Instance.RecycleApplication();
             }
-
-            requestContext.HttpContext.Response.Redirect("~/_cassette");
         }
 
         bool CanAccessHud(HttpRequestBase request)
