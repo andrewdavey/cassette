@@ -96,8 +96,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\hud.htm" />
-    <Content Include="Resources\knockout.js" />
+    <None Include="Resources\hud.htm" />
+    <None Include="Resources\knockout.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
