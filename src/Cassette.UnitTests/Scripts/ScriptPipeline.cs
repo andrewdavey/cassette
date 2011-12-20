@@ -40,7 +40,7 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenProductionMode_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
         {
-            var settings = new CassetteSettings { IsDebuggingEnabled = false };
+            var settings = new CassetteSettings("") { IsDebuggingEnabled = false };
 
             var bundle = new ScriptBundle("~/test");
 
@@ -53,7 +53,7 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenDebugMode_WhenProcessBundle_ThenRendererIsDebugScriptBundleHtmlRenderer()
         {
-            var settings = new CassetteSettings { IsDebuggingEnabled = true };
+            var settings = new CassetteSettings("") { IsDebuggingEnabled = true };
 
             var bundle = new ScriptBundle("~/test");
 
@@ -71,7 +71,7 @@ namespace Cassette.Scripts
             var asset = StubCoffeeScriptAsset();
             bundle.Assets.Add(asset.Object);
             
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()), Times.Never());
         }
@@ -84,7 +84,7 @@ namespace Cassette.Scripts
             var asset = StubCoffeeScriptAsset();
             bundle.Assets.Add(asset.Object);
 
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()));
         }

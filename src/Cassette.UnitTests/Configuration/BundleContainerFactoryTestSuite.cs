@@ -193,7 +193,7 @@ namespace Cassette.Configuration
 
         protected CassetteSettings CreateSettings()
         {
-            var settings = new CassetteSettings
+            var settings = new CassetteSettings("")
             {
                 SourceDirectory = Mock.Of<IDirectory>()
             };

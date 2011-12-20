@@ -38,7 +38,7 @@ namespace Cassette.BundleProcessing
         public void ProcessCallsCreatePipeline()
         {
             var pipeline = new MockPipeline();
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
             pipeline.CreatePipelineCalled.ShouldBeTrue();
         }
 
@@ -46,7 +46,7 @@ namespace Cassette.BundleProcessing
         public void ProcessCallsStep()
         {
             var pipeline = new MockPipeline();
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
             pipeline.DummyStep.ProcessCalled.ShouldBeTrue();
         }
 
@@ -56,7 +56,7 @@ namespace Cassette.BundleProcessing
             var pipeline = new MockPipeline();
             pipeline.Remove<MockStep>();
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             pipeline.DummyStep.ProcessCalled.ShouldBeFalse();
         }
@@ -68,7 +68,7 @@ namespace Cassette.BundleProcessing
             var newStep = new MockStep();
             pipeline.Replace<MockStep>(newStep);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             newStep.ProcessCalled.ShouldBeTrue();
         }
@@ -80,7 +80,7 @@ namespace Cassette.BundleProcessing
             var newStep = new MockStep();
             pipeline.Replace<MockStep>(newStep);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             pipeline.DummyStep.ProcessCalled.ShouldBeFalse();
         }
@@ -92,7 +92,7 @@ namespace Cassette.BundleProcessing
             var newStep = new MockStep();
             pipeline.InsertAfter<MockStep>(newStep);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             newStep.ProcessCalled.ShouldBeTrue();
         }
@@ -104,7 +104,7 @@ namespace Cassette.BundleProcessing
             var newStep = new MockStep();
             pipeline.InsertAfter<MockStep>(newStep);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             (newStep.CallIndex > pipeline.DummyStep.CallIndex).ShouldBeTrue();
         }
@@ -116,7 +116,7 @@ namespace Cassette.BundleProcessing
             var newStep = new MockStep();
             pipeline.InsertBefore<MockStep>(newStep);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             newStep.ProcessCalled.ShouldBeTrue();
         }
@@ -128,7 +128,7 @@ namespace Cassette.BundleProcessing
             var newStep = new MockStep();
             pipeline.InsertBefore<MockStep>(newStep);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             (newStep.CallIndex < pipeline.DummyStep.CallIndex).ShouldBeTrue();
         }
@@ -139,7 +139,7 @@ namespace Cassette.BundleProcessing
             var pipeline = new MockPipeline();
             pipeline.Update<MockStep>(step => step.Updated = true);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             pipeline.DummyStep.Updated.ShouldBeTrue();
         }
@@ -151,7 +151,7 @@ namespace Cassette.BundleProcessing
             var step = new MockStep();
             pipeline.Prepend(step);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             (step.CallIndex < pipeline.DummyStep.CallIndex).ShouldBeTrue();
         }
@@ -163,7 +163,7 @@ namespace Cassette.BundleProcessing
             var step = new MockStep();
             pipeline.Append(step);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             (step.CallIndex > pipeline.DummyStep.CallIndex).ShouldBeTrue();
         }
@@ -176,7 +176,7 @@ namespace Cassette.BundleProcessing
             var step2 = new MockStep();
             pipeline.Append(step1).Append(step2);
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
 
             step1.CallIndex.ShouldEqual(1);
             step2.CallIndex.ShouldEqual(2);

@@ -42,7 +42,7 @@ namespace Cassette.IntegrationTests
         {
             RemoveExistingCache();
 
-            storage = IsolatedStorageFile.GetMachineStoreForAssembly();
+            storage = IsolatedStorageFile.GetMachineStoreForDomain();
             routes = new RouteCollection();
             httpContext = new Mock<HttpContextBase>();
             httpContextItems = new Dictionary<string, object>();
@@ -133,7 +133,7 @@ function asset1() {
 
         CassetteApplication CreateApplication(Action<BundleCollection> configure)
         {
-            var settings = new CassetteSettings
+            var settings = new CassetteSettings("")
             {
                 CacheDirectory = new IsolatedStorageDirectory(storage),
                 SourceDirectory = new FileSystemDirectory(Path.GetFullPath("assets"))
@@ -145,8 +145,7 @@ function asset1() {
                 bundles,
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/"), () => bundleContainer),
-                () => httpContext.Object,
-                ""
+                () => httpContext.Object
             );
             bundleContainer = application.BundleContainer;
 
@@ -156,7 +155,7 @@ function asset1() {
 
         void RemoveExistingCache()
         {
-            using (var storage = IsolatedStorageFile.GetMachineStoreForAssembly())
+            using (var storage = IsolatedStorageFile.GetMachineStoreForDomain())
             {
                 storage.Remove();
             }

@@ -36,7 +36,7 @@ namespace Cassette.Web
         {
             storage = IsolatedStorageFile.GetUserStoreForAssembly();
             section = new CassetteConfigurationSection();
-            settings = new CassetteSettings();
+            settings = new CassetteSettings("");
         }
 
         [Fact]

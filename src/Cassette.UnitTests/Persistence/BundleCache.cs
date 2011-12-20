@@ -41,7 +41,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -59,7 +59,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -82,7 +82,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -104,7 +104,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -126,7 +126,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -147,7 +147,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -173,7 +173,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -201,7 +201,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -236,7 +236,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -266,7 +266,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -291,7 +291,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -316,7 +316,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -340,7 +340,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -359,7 +359,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -380,7 +380,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -410,7 +410,7 @@ namespace Cassette.Persistence
             containerFile.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
                          .Returns(Stream.Null);
 
-            var settings = new CassetteSettings
+            var settings = new CassetteSettings("")
             {
                 SourceDirectory = Mock.Of<IDirectory>(),
                 CacheDirectory = cacheDirectory.Object
@@ -441,7 +441,7 @@ namespace Cassette.Persistence
         {
             using (var cacheDir = new TempDirectory())
             {
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -465,7 +465,7 @@ namespace Cassette.Persistence
                     "<?xml version=\"1.0\"?><Container Version=\"VERSION-1\" AssetCount=\"0\"></Container>"
                     );
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -494,7 +494,7 @@ namespace Cassette.Persistence
                 bundleWithAsset.Assets.Add(asset.Object);
                 var sourceBundles = new[] { bundleWithAsset };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -522,7 +522,7 @@ namespace Cassette.Persistence
                 bundleWithAsset.Assets.Add(asset.Object);
                 var sourceBundles = new[] { bundleWithAsset };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -551,7 +551,7 @@ namespace Cassette.Persistence
                 var bundle = new TestableBundle("~/test");
                 var sourceBundles = new[] { bundle };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -581,7 +581,7 @@ namespace Cassette.Persistence
                 bundleWithAsset.Assets.Add(asset.Object);
                 var sourceBundles = new[] { bundleWithAsset };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -606,7 +606,7 @@ namespace Cassette.Persistence
                 var bundle = new TestableBundle("~/test");
                 var sourceBundles = new[] { bundle };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -639,7 +639,7 @@ namespace Cassette.Persistence
                 bundle2.Assets.Add(asset2.Object);
                 var sourceBundles = new[] { bundle1, bundle2 };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -670,7 +670,7 @@ namespace Cassette.Persistence
                 var bundle2 = new TestableBundle("~/test2");
                 var sourceBundles = new[] { bundle1, bundle2 };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -701,7 +701,7 @@ namespace Cassette.Persistence
                 var bundle = new TestableBundle("~/test");
                 var sourceBundles = new[] { bundle };
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = new FileSystemDirectory(sourceDir),
                     CacheDirectory = new FileSystemDirectory(cacheDir)
@@ -731,7 +731,7 @@ namespace Cassette.Persistence
                 var sourceBundles = new[] { bundle };
 
 
-                var settings = new CassetteSettings
+                var settings = new CassetteSettings("")
                 {
                     SourceDirectory = new FileSystemDirectory(sourceDir),
                     CacheDirectory = new FileSystemDirectory(cacheDir)

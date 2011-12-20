@@ -50,7 +50,7 @@ namespace Cassette.Configuration
                        (path, files, d) => (createdBundle = new TestableBundle(path))
                    );
             defaultFileSource = new Mock<IFileSearch>();
-            settings = new CassetteSettings
+            settings = new CassetteSettings("")
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory),
                 BundleFactories = { { typeof(TestableBundle), factory.Object } },
@@ -179,7 +179,7 @@ namespace Cassette.Configuration
                        (path, files, d) => createdBundle = new TestableBundle(path)
                    );
             defaultAssetSource = new Mock<IFileSearch>();
-            settings = new CassetteSettings
+            settings = new CassetteSettings("")
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory),
                 BundleFactories = { { typeof(TestableBundle), factory.Object } },
@@ -332,7 +332,7 @@ namespace Cassette.Configuration
         public BundleCollection_AddUrl_Tests()
         {
             sourceDirectory = new Mock<IDirectory>();
-            settings = new CassetteSettings
+            settings = new CassetteSettings("")
             {
                 SourceDirectory = sourceDirectory.Object
             };
@@ -570,7 +570,7 @@ namespace Cassette.Configuration
 
             sourceDirectory = new Mock<IDirectory>();
             fileSearch = new Mock<IFileSearch>();
-            settings = new CassetteSettings
+            settings = new CassetteSettings("")
             {
                 SourceDirectory = sourceDirectory.Object,
                 BundleFactories = { { typeof(TestableBundle), factory.Object } },

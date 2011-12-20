@@ -46,7 +46,7 @@ namespace Cassette.Web
             bundleContainer = new Mock<IBundleContainer>();
             application = new TestableApplication(urlGenerator.Object, referenceBuilder.Object, bundleContainer.Object);
 
-            CassetteApplicationContainer.SetAccessor(() => application);
+            CassetteApplicationContainer.Instance = new CassetteApplicationContainer(() => application);
         }
 
         [Fact]
@@ -188,12 +188,12 @@ namespace Cassette.Web
             readonly IBundleContainer bundleContainer;
 
             public TestableApplication(IUrlGenerator urlGenerator, IReferenceBuilder referenceBuilder, IBundleContainer bundleContainer)
-                : base(new Bundle[0], new CassetteSettings
+                : base(new Bundle[0], new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     IsDebuggingEnabled = true,
                     UrlGenerator = urlGenerator
-                }, "")
+                })
             {
                 this.referenceBuilder = referenceBuilder;
                 this.bundleContainer = bundleContainer;

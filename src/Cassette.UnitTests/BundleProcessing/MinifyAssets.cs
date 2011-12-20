@@ -42,7 +42,7 @@ namespace Cassette.BundleProcessing
             var asset = new Mock<IAsset>();
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(minifier.Object));
         }

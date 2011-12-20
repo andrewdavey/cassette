@@ -32,7 +32,7 @@ namespace Cassette.HtmlTemplates
             var pipeline = new KnockoutJQueryTmplPipeline();
             var bundle = new HtmlTemplateBundle("~/");
 
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle, new CassetteSettings(""));
 
             bundle.ContentType.ShouldEqual("text/javascript");
         }

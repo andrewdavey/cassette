@@ -36,7 +36,7 @@ namespace Cassette.Configuration
 
         static FileSearch GetDefaultInitializer()
         {
-            var settings = new CassetteSettings();
+            var settings = new CassetteSettings("");
             return settings.DefaultFileSearches[typeof(T)] as FileSearch;
         }
     }

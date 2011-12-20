@@ -153,7 +153,7 @@ namespace Cassette.Views
 
         static ICassetteApplication Application
         {
-            get { return CassetteApplicationContainer.Application; }
+            get { return CassetteApplicationContainer.Instance.Application; }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Cassette.Configuration
 {
     public class BundleCollection_Tests
     {
-        readonly BundleCollection bundles = new BundleCollection(new CassetteSettings());
+        readonly BundleCollection bundles = new BundleCollection(new CassetteSettings(""));
 
         [Fact]
         public void GivenBundleAdded_WhenGetByAppRelativePath_ThenBundleReturned()

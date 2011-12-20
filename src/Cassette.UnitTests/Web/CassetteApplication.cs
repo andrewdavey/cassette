@@ -85,7 +85,7 @@ namespace Cassette.Web
 
         internal CassetteApplication StubApplication(Action<CassetteSettings> alterSettings = null, Func<CassetteSettings, BundleCollection> createBundles = null)
         {
-            var settings = new CassetteSettings
+            var settings = new CassetteSettings("")
             {
                 CacheDirectory = new FileSystemDirectory(cacheDir),
                 SourceDirectory = new FileSystemDirectory(sourceDir)
@@ -100,8 +100,7 @@ namespace Cassette.Web
                 bundles, 
                 settings,
                 new CassetteRouting(new VirtualDirectoryPrepender("/"), Mock.Of<IBundleContainer>), 
-                () => httpContext.Object,
-                ""
+                () => httpContext.Object
             );
         }
 

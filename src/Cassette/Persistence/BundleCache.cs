@@ -75,6 +75,11 @@ namespace Cassette.Persistence
             return true;
         }
 
+        public void Clear()
+        {
+            DeleteExistingFiles();
+        }
+
         bool FilesAreUpToDate(XElement containerXml)
         {
             var filePaths = (

@@ -35,7 +35,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddReference("test.css", 1));
         }
@@ -48,7 +48,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddReference("test.css", 1));
         }
@@ -61,7 +61,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddReference("test.css", 1));
         }
@@ -74,7 +74,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddReference("test1.css", 1));
             asset.Verify(a => a.AddReference("test2.css", 2));
@@ -88,7 +88,7 @@ namespace Cassette.Stylesheets
             var asset = AddCssAsset(bundle, css);
 
             var processor = new ParseCssReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddReference("test1.css", 1));
             asset.Verify(a => a.AddReference("test2.css", 2));

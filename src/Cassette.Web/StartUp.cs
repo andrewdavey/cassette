@@ -53,7 +53,6 @@ namespace Cassette.Web
     {
         static IEnumerable<ICassetteConfiguration> _configurations;
         static IsolatedStorageFile _storage;
-        static CassetteApplicationContainer<CassetteApplication> _applicationContainer;
         static Stopwatch _startupTimer;
         static readonly object CreationLock = new object();
         /// <summary>
@@ -100,18 +99,13 @@ namespace Cassette.Web
             _storage = IsolatedStorageFile.GetMachineStoreForAssembly(); // TODO: Check if this should be GetMachineStoreForApplication instead
             
             _configurations = CreateConfigurations();
-            _applicationContainer = GetSystemWebCompilationDebug() 
-                ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
-                : new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);
 
-            CassetteHttpModule.GetApplication = () => _applicationContainer.Application;
-            CassetteApplicationContainer.SetAccessor(() => _applicationContainer.Application);
-
-            _applicationContainer.Initialize();
+            var container = CreateCassetteApplicationContainer();
+            container.ForceApplicationCreation();
+            CassetteApplicationContainer.Instance = container;
 
             Trace.Source.TraceInformation("Cassette startup completed. It took " + _startupTimer.ElapsedMilliseconds + "ms.");
             _startupTimer.Stop();
-            
             Trace.Source.Flush();
             Trace.Source.Listeners.Remove(StartupTraceListener);
         }
@@ -122,7 +116,14 @@ namespace Cassette.Web
         {
             Trace.Source.TraceInformation("Application shutdown - disposing resources.");
             _storage.Dispose();
-            _applicationContainer.Dispose();
+            CassetteApplicationContainer.Instance.Dispose();
+        }
+
+        static CassetteApplicationContainer CreateCassetteApplicationContainer()
+        {
+            return GetSystemWebCompilationDebug()
+                       ? new CassetteApplicationContainer(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
+                       : new CassetteApplicationContainer(CreateCassetteApplication);
         }
 
         static internal string TraceOutput
@@ -176,7 +177,7 @@ namespace Cassette.Web
             {
                 var allConfigurations = GetAllConfigurations(GetCassetteConfigurationSection());
                 var cacheVersion = GetConfigurationVersion(allConfigurations, HttpRuntime.AppDomainAppVirtualPath);
-                var settings = new CassetteSettings();
+                var settings = new CassetteSettings(cacheVersion);
                 var bundles = new BundleCollection(settings);
 
                 foreach (var configuration in allConfigurations)
@@ -186,7 +187,7 @@ namespace Cassette.Web
                     configuration.Configure(bundles, settings);
                 }
 
-                var routing = new CassetteRouting(settings.UrlModifier, () => ((CassetteApplication)CassetteApplicationContainer.Application).BundleContainer);
+                var routing = new CassetteRouting(settings.UrlModifier, () => ((CassetteApplication)CassetteApplicationContainer.Instance.Application).BundleContainer);
                 settings.UrlGenerator = routing;
 
                 Trace.Source.TraceInformation("Creating Cassette application object");
@@ -197,9 +198,8 @@ namespace Cassette.Web
                     bundles,
                     settings,
                     routing,
-                    GetCurrentHttpContext,
-                    cacheVersion
-                    );
+                    GetCurrentHttpContext
+                );
 
                 application.InstallRoutes(RouteTable.Routes);
 

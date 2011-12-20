@@ -34,7 +34,7 @@ namespace Cassette.Stylesheets
 
         public ExternalStylesheetHtmlRenderer_Tests()
         {
-            settings = new CassetteSettings();
+            settings = new CassetteSettings("");
             fallbackRenderer = new Mock<IBundleHtmlRenderer<StylesheetBundle>>(); 
             renderer = new ExternalStylesheetHtmlRenderer(fallbackRenderer.Object, settings);
             bundle = new ExternalStylesheetBundle("http://test.com/");

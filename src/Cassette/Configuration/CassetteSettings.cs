@@ -26,6 +26,7 @@ using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.Persistence;
 
 namespace Cassette.Configuration
 {
@@ -34,10 +35,13 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
-        public CassetteSettings()
+        readonly Lazy<IBundleCache> bundleCache;
+ 
+        public CassetteSettings(string cacheVersion)
         {
             DefaultFileSearches = CreateDefaultFileSearches();
             BundleFactories = CreateBundleFactories();
+            bundleCache = new Lazy<IBundleCache>(() => new BundleCache(cacheVersion, this));
         }
 
         /// <summary>
@@ -124,6 +128,23 @@ namespace Cassette.Configuration
                 Pattern = "*.htm;*.html",
                 SearchOption = SearchOption.AllDirectories
             };
+        }
+
+        internal IBundleCache BundleCache
+        {
+            get { return bundleCache.Value; }
+        }
+
+        internal IBundleContainerFactory GetBundleContainerFactory()
+        {
+            if (IsDebuggingEnabled)
+            {
+                return new BundleContainerFactory(BundleFactories);
+            }
+            else
+            {
+                return new CachedBundleContainerFactory(BundleCache, BundleFactories);
+            }
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Cassette.Stylesheets
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
             var urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings
+            var settings = new CassetteSettings("")
             {
                 UrlGenerator = urlGenerator.Object
             };
@@ -75,7 +75,7 @@ namespace Cassette.Stylesheets
             };
             var urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings
+            var settings = new CassetteSettings("")
             {
                 UrlGenerator = urlGenerator.Object
             };
@@ -94,7 +94,7 @@ namespace Cassette.Stylesheets
             var processor = new Mock<IBundleProcessor<StylesheetBundle>>();
             bundle.Processor = processor.Object;
 
-            bundle.Process(new CassetteSettings());
+            bundle.Process(new CassetteSettings(""));
 
             processor.Verify(p => p.Process(bundle, It.IsAny<CassetteSettings>()));
         }

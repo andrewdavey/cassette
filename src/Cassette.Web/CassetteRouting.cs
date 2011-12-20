@@ -133,7 +133,7 @@ namespace Cassette.Web
         {
             var route = new CassetteRoute(
                 RoutePrefix,
-                new DelegateRouteHandler(context => new HudRequestHandler(() => (CassetteApplication)CassetteApplicationContainer.Application, context))
+                new DelegateRouteHandler(context => new HudRequestHandler(() => (CassetteApplication)CassetteApplicationContainer.Instance.Application, context))
             );
             routes.Insert(0, route);
         }

@@ -20,46 +20,32 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.IO;
+using System.Diagnostics;
 
 namespace Cassette
 {
-    public static class CassetteApplicationContainer
+    public interface ICassetteApplicationContainer : IDisposable
     {
-        static Func<ICassetteApplication> _getApplication;
-
-        public static void SetAccessor(Func<ICassetteApplication> getApplication)
-        {
-            _getApplication = getApplication;
-        }
-
-        public static ICassetteApplication Application
-        {
-            get
-            {
-                if (_getApplication == null)
-                {
-                    throw new InvalidOperationException("Cassette infrastructure library missing. Make sure Cassette.Web has been added to the web application.");
-                }
-                return _getApplication();
-            }
-        }
+        ICassetteApplication Application { get; }
+        void RecycleApplication();
     }
 
-    class CassetteApplicationContainer<T> : IDisposable
-        where T : ICassetteApplication
+    public class CassetteApplicationContainer : ICassetteApplicationContainer
     {
-        readonly Func<T> createApplication;
+        public static ICassetteApplicationContainer Instance { get; set; }
+
+        readonly Func<ICassetteApplication> createApplication;
         FileSystemWatcher watcher;
-        Lazy<T> application;
+        Lazy<ICassetteApplication> application;
         bool creationFailed;
 
-        public CassetteApplicationContainer(Func<T> createApplication)
+        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication)
         {
             this.createApplication = createApplication;
-            application = new Lazy<T>(CreateApplication);
+            application = new Lazy<ICassetteApplication>(CreateApplication);
         }
 
-        public CassetteApplicationContainer(Func<T> createApplication, string rootDirectoryToWatch)
+        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication, string rootDirectoryToWatch)
             : this(createApplication)
         {
 
@@ -73,7 +59,7 @@ namespace Cassette
             StartWatchingFileSystem(rootDirectoryToWatch);
         }
 
-        public T Application
+        public ICassetteApplication Application
         {
             get
             {
@@ -88,13 +74,18 @@ namespace Cassette
                 IncludeSubdirectories = true,
                 EnableRaisingEvents = true
             };
-            watcher.Created += RecycleApplication;
-            watcher.Changed += RecycleApplication;
-            watcher.Renamed += RecycleApplication;
-            watcher.Deleted += RecycleApplication;
+            watcher.Created += HandleFileSystemChange;
+            watcher.Changed += HandleFileSystemChange;
+            watcher.Renamed += HandleFileSystemChange;
+            watcher.Deleted += HandleFileSystemChange;
         }
 
-        void RecycleApplication(object sender, FileSystemEventArgs e)
+        void HandleFileSystemChange(object sender, FileSystemEventArgs e)
+        {
+            RecycleApplication();
+        }
+
+        public void RecycleApplication()
         {
             if (IsPendingCreation) return; // Already recycled, awaiting first creation.
 
@@ -111,7 +102,19 @@ namespace Cassette
                     application.Value.Dispose();
                 }
                 // Re-create the lazy object. So the application isn't created until it's asked for.
-                application = new Lazy<T>(CreateApplication);
+                application = new Lazy<ICassetteApplication>(CreateApplication);
+            }
+        }
+
+        internal void ForceApplicationCreation()
+        {
+            try
+            {
+                var forceCreation = application.Value;
+            }
+            catch (Exception ex)
+            {
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, "CassetteApplicationContainer.ForceApplicationCreation() exception: {0}", ex.Message);
             }
         }
 
@@ -120,7 +123,7 @@ namespace Cassette
             get { return creationFailed == false && application.IsValueCreated == false; }
         }
 
-        T CreateApplication()
+        ICassetteApplication CreateApplication()
         {
             try
             {
@@ -145,12 +148,6 @@ namespace Cassette
             {
                 application.Value.Dispose();
             }
-        }
-
-        public void Initialize()
-        {
-            // Force the initial creation of the application.
-            var ignored = application.Value;
         }
     }
 }

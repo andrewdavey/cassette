@@ -79,7 +79,7 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle(Url);
             var processor = new Mock<IBundleProcessor<ScriptBundle>>();
-            var settings = new CassetteSettings();
+            var settings = new CassetteSettings("");
 
             bundle.Processor = processor.Object;
             bundle.Process(settings);
@@ -128,7 +128,7 @@ namespace Cassette.Scripts
             bundle.Assets.Add(asset.Object);
             var urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings { UrlGenerator = urlGenerator.Object };
+            var settings = new CassetteSettings("") { UrlGenerator = urlGenerator.Object };
             bundle.Process(settings);
             
             var html = bundle.Render();

@@ -41,7 +41,7 @@ namespace Cassette
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(ms => ms);
 
-            builder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, Mock.Of<IPlaceholderTracker>(), new CassetteSettings());
+            builder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, Mock.Of<IPlaceholderTracker>(), new CassetteSettings(""));
         }
 
         ReferenceBuilder builder;
@@ -285,7 +285,7 @@ namespace Cassette
             builder = new ReferenceBuilder(
                 bundleContainer.Object,
                 bundleFactories, Mock.Of<IPlaceholderTracker>(), 
-                new CassetteSettings { IsHtmlRewritingEnabled = true }
+                new CassetteSettings("") { IsHtmlRewritingEnabled = true }
             );
             var bundle = new ScriptBundle("~/test");
             bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
@@ -313,7 +313,7 @@ namespace Cassette
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
                               .Returns(("output"));
 
-            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, new CassetteSettings());
+            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, new CassetteSettings(""));
         }
 
         readonly ReferenceBuilder referenceBuilder;

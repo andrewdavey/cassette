@@ -21,16 +21,15 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using Cassette.Configuration;
-using Cassette.Persistence;
 
 namespace Cassette
 {
     abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings, string cacheVersion)
+        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings)
         {
             this.settings = settings;
-            bundleContainer = CreateBundleContainer(bundles, settings, cacheVersion);
+            bundleContainer = CreateBundleContainer(bundles);
         }
 
         readonly CassetteSettings settings;
@@ -76,24 +75,10 @@ namespace Cassette
             );
         }
 
-        static IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles, CassetteSettings settings, string cacheVersion)
+        IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles)
         {
-            IBundleContainerFactory containerFactory;
-            if (settings.IsDebuggingEnabled)
-            {
-                containerFactory = new BundleContainerFactory(settings.BundleFactories);
-            }
-            else
-            {
-                containerFactory = new CachedBundleContainerFactory(
-                    new BundleCache(
-                        cacheVersion,
-                        settings
-                    ),
-                    settings.BundleFactories
-                );
-            }
-            return containerFactory.Create(bundles, settings);
+            var factory = settings.GetBundleContainerFactory();
+            return factory.Create(bundles, settings);
         }
 
         protected IPlaceholderTracker CreatePlaceholderTracker()

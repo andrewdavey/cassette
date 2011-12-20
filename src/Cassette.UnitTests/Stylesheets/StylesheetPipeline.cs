@@ -53,7 +53,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var pipeline = new StylesheetPipeline { CompileLess = true };
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
         }
@@ -68,7 +68,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var pipeline = new StylesheetPipeline { CompileLess = false };
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
         }
@@ -83,7 +83,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var pipeline = new StylesheetPipeline { ConvertImageUrlsToDataUris = true };
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)));
         }
@@ -98,7 +98,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var pipeline = new StylesheetPipeline { ConvertImageUrlsToDataUris = false };
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)), Times.Never());
         }
@@ -108,7 +108,7 @@ namespace Cassette.Stylesheets
     {
         public StylesheetPipeline_Process_TestBase()
         {
-            settings = new CassetteSettings();
+            settings = new CassetteSettings("");
             bundle = new StylesheetBundle("~");
             asset1 = new Mock<IAsset>();
             asset2 = new Mock<IAsset>();

@@ -30,7 +30,7 @@ namespace Cassette.Scripts
     {
         public ExternalScriptBundleHtmlRenderer_Tests()
         {
-            settings = new CassetteSettings
+            settings = new CassetteSettings("")
             {
                 IsDebuggingEnabled = false
             };

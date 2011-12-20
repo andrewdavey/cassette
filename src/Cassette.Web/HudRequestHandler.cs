@@ -40,12 +40,29 @@ namespace Cassette.Web
                 return;
             }
 
+            if (request.HttpMethod.Equals("post", StringComparison.OrdinalIgnoreCase))
+            {
+                ProcessPost();
+                return;
+            }
+
             var htm = Properties.Resources.hud;
             var json = CreateJson();
             htm = htm.Replace("$json$", json);
 
             response.ContentType = "text/html";
             response.Write(htm);
+        }
+
+        void ProcessPost()
+        {
+            if (requestContext.HttpContext.Request.Form["action"] == "clear-cache")
+            {
+                CassetteApplicationContainer.Instance.Application.Settings.BundleCache.Clear();
+                CassetteApplicationContainer.Instance.RecycleApplication();
+            }
+
+            requestContext.HttpContext.Response.Redirect("~/_cassette");
         }
 
         bool CanAccessHud(HttpRequestBase request)
