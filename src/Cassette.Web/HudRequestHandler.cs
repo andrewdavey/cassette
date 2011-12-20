@@ -166,7 +166,7 @@ namespace Cassette.Web
             public void Visit(IAsset asset)
             {
                 var path = asset.SourceFile.FullPath;
-                if (path.StartsWith(bundlePath, StringComparison.OrdinalIgnoreCase))
+                if (path.Length > bundlePath.Length && path.StartsWith(bundlePath, StringComparison.OrdinalIgnoreCase))
                 {
                     path = path.Substring(bundlePath.Length + 1);
                 }
