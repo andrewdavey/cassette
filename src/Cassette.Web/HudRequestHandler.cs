@@ -94,10 +94,11 @@ namespace Cassette.Web
 
         object StylesheetData(StylesheetBundle stylesheet, IUrlGenerator urlGenerator)
         {
+            var external = stylesheet as ExternalStylesheetBundle;
             return new
             {
                 stylesheet.Path,
-                Url = urlGenerator.CreateBundleUrl(stylesheet),
+                Url = external == null ? urlGenerator.CreateBundleUrl(stylesheet) : external.Url,
                 stylesheet.Media,
                 stylesheet.Condition,
                 Assets = AssetPaths(stylesheet, urlGenerator),
@@ -108,10 +109,11 @@ namespace Cassette.Web
 
         object ScriptData(ScriptBundle script, IUrlGenerator urlGenerator)
         {
+            var external = script as ExternalScriptBundle;
             return new
             {
                 script.Path,
-                Url = urlGenerator.CreateBundleUrl(script),
+                Url = external == null ? urlGenerator.CreateBundleUrl(script) : external.Url,
                 Assets = AssetPaths(script, urlGenerator),
                 script.References,
                 Size = BundleSize(script)
