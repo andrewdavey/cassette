@@ -50,7 +50,7 @@
             <p>IsDebuggingEnabled: <span data-bind="text: Cassette.IsDebuggingEnabled"></span></p>
             <p>IsHtmlRewritingEnabled: <span data-bind="text: Cassette.IsHtmlRewritingEnabled"></span></p>
             
-            <p>
+            <p data-bind="visible: !Cassette.IsDebuggingEnabled">
                 <button id="rebuild-cache">Rebuild Bundle Cache</button>
             </p>
 
@@ -130,8 +130,14 @@
 
             $("#rebuild-cache").click(function (e) {
                 e.preventDefault();
+                
+                var button = $(this);
+                var text = button.text();
+                button.attr("disabled", "disabled").text("Rebuilding...");
+                
                 $.post(window.location, { action: "rebuild-cache" }, function () {
                     alert("Bundle cache rebuilt.");
+                    button.removeAttr("disabled").text(text);
                 });
             });
         });
