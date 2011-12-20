@@ -30,9 +30,9 @@ namespace Cassette.Views
     [Obsolete("The Assets helper class is obsolete. Use the Bundles helper class instead.")]
     public static class Assets
     {
-        public static ObsoleteBundleHelper Scripts
+        public static ObsoleteScriptBundleHelper Scripts
         {
-            get { return new ObsoleteScriptHelper(); }
+            get { return new ObsoleteScriptBundleHelper(); }
         }
 
         public static ObsoleteBundleHelper Stylesheets
@@ -72,10 +72,10 @@ namespace Cassette.Views
         }
     }
 
-    [Obsolete]
-    public class ObsoleteScriptHelper : ObsoleteBundleHelper
+    [Obsolete("This class will be removed from the next version of Cassette. Do not use.")]
+    public class ObsoleteScriptBundleHelper : ObsoleteBundleHelper
     {
-        public ObsoleteScriptHelper()
+        public ObsoleteScriptBundleHelper()
             : base(Bundles.RenderScripts)
         {
         }
