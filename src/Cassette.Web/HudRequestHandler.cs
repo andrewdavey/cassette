@@ -27,9 +27,7 @@ namespace Cassette.Web
             var response = requestContext.HttpContext.Response;
             var request = requestContext.HttpContext.Request;
 
-            // Security: Only allow local requests to access the HUD.
-            // Perhaps add a config setting for this in the future?
-            if (!request.IsLocal)
+            if (!CanAccessHud(request))
             {
                 response.StatusCode = 404;
                 return;
@@ -48,6 +46,11 @@ namespace Cassette.Web
 
             response.ContentType = "text/html";
             response.Write(htm);
+        }
+
+        bool CanAccessHud(HttpRequestBase request)
+        {
+            return request.IsLocal || getApplication().Settings.AllowRemoteDiagnostics;
         }
 
         string CreateJson()

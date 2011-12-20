@@ -37,5 +37,12 @@ namespace Cassette.Configuration
             get { return (bool)this["rewriteHtml"]; }
             set { this["rewriteHtml"] = value; }
         }
+
+        [ConfigurationProperty("allowRemoteDiagnostics", DefaultValue = false)]
+        public bool AllowRemoteDiagnostics
+        {
+            get { return (bool)this["allowRemoteDiagnostics"]; }
+            set { this["allowRemoteDiagnostics"] = value; }
+        }
     }
 }

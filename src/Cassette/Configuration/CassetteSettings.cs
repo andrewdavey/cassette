@@ -72,9 +72,11 @@ namespace Cassette.Configuration
         /// </summary>
         public IDictionary<Type, IFileSearch> DefaultFileSearches { get; private set; }
 
+        public IUrlGenerator UrlGenerator { get; set; }
+
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
 
-        public IUrlGenerator UrlGenerator { get; set; }
+        internal bool AllowRemoteDiagnostics { get; set; }
 
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {

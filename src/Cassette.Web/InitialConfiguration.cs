@@ -48,6 +48,7 @@ namespace Cassette.Web
                (!configurationSection.Debug.HasValue && globalIsDebuggingEnabled);
 
             settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
+            settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
 
             settings.SourceDirectory = new FileSystemDirectory(sourceDirectory);
             settings.CacheDirectory = new IsolatedStorageDirectory(storage);
