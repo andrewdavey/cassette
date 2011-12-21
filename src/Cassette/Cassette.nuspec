@@ -5,10 +5,12 @@
         <version>$version$</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
+        <copyright>© Andrew Davey 2011</copyright>
         <licenseUrl>http://getcassette.net/licensing</licenseUrl>
-        <projectUrl>https://github.com/andrewdavey/cassette</projectUrl>
+        <projectUrl>http://getcassette.net/</projectUrl>
         <description>Core library for Cassette. Cassette automatically builds JavaScript, CSS and HTML template bundles based on the dependencies between files. CoffeeScript and LESS are also supported.</description>
         <tags>web javascript coffeescript css html templates asp.net</tags>
+        <iconUrl>http://getcassette.net/nuget-icon.png</iconUrl>
         <dependencies>
             <dependency id="AjaxMin" version="4.37" />
             <dependency id="Jurassic" version="2.1" />

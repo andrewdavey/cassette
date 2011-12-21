@@ -100,6 +100,7 @@
     <Content Include="assets\styles\top.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="nuget-icon.png" />
     <Content Include="robots.txt" />
     <Content Include="sitemap.xml" />
     <Content Include="Web.config" />
