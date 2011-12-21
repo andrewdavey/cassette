@@ -94,20 +94,32 @@ namespace Cassette.Web
         public static void PostApplicationStart()
 // ReSharper restore UnusedMember.Global
         {
-            Trace.Source.TraceInformation("PostApplicationStart.");
+            try
+            {
+                Trace.Source.TraceInformation("PostApplicationStart.");
 
-            _storage = IsolatedStorageFile.GetMachineStoreForAssembly(); // TODO: Check if this should be GetMachineStoreForApplication instead
-            
-            _configurations = CreateConfigurations();
+                _storage = IsolatedStorageFile.GetMachineStoreForAssembly();
+                // TODO: Check if this should be GetMachineStoreForApplication instead
 
-            var container = CreateCassetteApplicationContainer();
-            container.ForceApplicationCreation();
-            CassetteApplicationContainer.Instance = container;
+                _configurations = CreateConfigurations();
 
-            Trace.Source.TraceInformation("Cassette startup completed. It took " + _startupTimer.ElapsedMilliseconds + "ms.");
-            _startupTimer.Stop();
-            Trace.Source.Flush();
-            Trace.Source.Listeners.Remove(StartupTraceListener);
+                var container = CreateCassetteApplicationContainer();
+                CassetteApplicationContainer.Instance = container;
+                container.ForceApplicationCreation();
+
+                Trace.Source.TraceInformation("Cassette startup completed. It took {0} ms.", _startupTimer.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, ex.Message);
+                throw;
+            }
+            finally
+            {
+                _startupTimer.Stop();
+                Trace.Source.Flush();
+                Trace.Source.Listeners.Remove(StartupTraceListener);
+            }
         }
 
 // ReSharper disable UnusedMember.Global

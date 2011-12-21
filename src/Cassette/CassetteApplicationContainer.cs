@@ -20,7 +20,6 @@ Cassette. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.IO;
-using System.Diagnostics;
 
 namespace Cassette
 {
@@ -102,14 +101,7 @@ namespace Cassette
 
         public void ForceApplicationCreation()
         {
-            try
-            {
-                var forceCreation = application.Value;
-            }
-            catch (Exception ex)
-            {
-                Trace.Source.TraceEvent(TraceEventType.Error, 0, "CassetteApplicationContainer.ForceApplicationCreation() exception: {0}", ex.Message);
-            }
+            var forceCreation = application.Value;
         }
 
         bool IsPendingCreation
