@@ -23,7 +23,7 @@ using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    public class AssignStylesheetsRenderer : IBundleProcessor<StylesheetBundle>
+    public class AssignStylesheetRenderer : IBundleProcessor<StylesheetBundle>
     {
         public void Process(StylesheetBundle bundle, CassetteSettings settings)
         {

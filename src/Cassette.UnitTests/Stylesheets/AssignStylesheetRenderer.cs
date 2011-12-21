@@ -29,7 +29,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenProductionMode_WhenProcess_ThenBundleRenderIsStylesheetHtmlRenderer()
         {
-            var processor = new AssignStylesheetsRenderer();
+            var processor = new AssignStylesheetRenderer();
             var settings = new CassetteSettings("") { IsDebuggingEnabled = false };
             var bundle = new StylesheetBundle("~/test");
 
@@ -41,7 +41,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenDebugMode_WhenProcess_ThenBundleRenderIsDebugStylesheetHtmlRenderer()
         {
-            var processor = new AssignStylesheetsRenderer();
+            var processor = new AssignStylesheetRenderer();
             var settings = new CassetteSettings("") { IsDebuggingEnabled = true };
             var bundle = new StylesheetBundle("~/test");
 
