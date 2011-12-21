@@ -40,7 +40,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void StylesheetMinifierDefaultsToMicrosoft()
         {
-            new StylesheetPipeline().StylesheetMinifier.ShouldBeType<MicrosoftStyleSheetMinifier>();
+            new StylesheetPipeline().StylesheetMinifier.ShouldBeType<MicrosoftStylesheetMinifier>();
         }
 
         [Fact]

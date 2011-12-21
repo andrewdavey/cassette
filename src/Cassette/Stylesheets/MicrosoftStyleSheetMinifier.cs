@@ -25,14 +25,14 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class MicrosoftStyleSheetMinifier : IAssetTransformer
+    public class MicrosoftStylesheetMinifier : IAssetTransformer
     {
-        public MicrosoftStyleSheetMinifier()
+        public MicrosoftStylesheetMinifier()
             : this(new CssSettings())
         {
         }
 
-        public MicrosoftStyleSheetMinifier(CssSettings cssSettings)
+        public MicrosoftStylesheetMinifier(CssSettings cssSettings)
         {
             this.cssSettings = cssSettings;
         }

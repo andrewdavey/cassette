@@ -28,7 +28,7 @@ namespace Cassette.Stylesheets
     {
         public StylesheetPipeline()
         {
-            StylesheetMinifier = new MicrosoftStyleSheetMinifier();
+            StylesheetMinifier = new MicrosoftStylesheetMinifier();
             CompileLess = true;
         }
 

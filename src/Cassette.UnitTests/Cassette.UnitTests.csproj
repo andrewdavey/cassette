@@ -119,7 +119,7 @@
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundle.cs" />
     <Compile Include="Stylesheets\LessCompileException.cs" />
-    <Compile Include="Stylesheets\MicrosoftStyleSheetMinifier.cs" />
+    <Compile Include="Stylesheets\MicrosoftStylesheetMinifier.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />

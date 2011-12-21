@@ -171,7 +171,7 @@
     <Compile Include="IO\IsolatedStorageFile.cs" />
     <Compile Include="Persistence\BundleCache.cs" />
     <Compile Include="BundleContainsPathPredicate.cs" />
-    <Compile Include="Stylesheets\MicrosoftStyleSheetMinifier.cs" />
+    <Compile Include="Stylesheets\MicrosoftStylesheetMinifier.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />

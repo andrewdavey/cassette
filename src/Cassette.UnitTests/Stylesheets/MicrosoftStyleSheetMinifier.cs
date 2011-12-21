@@ -30,7 +30,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void TransformMinifiesCss()
         {
-            var minifier = new MicrosoftStyleSheetMinifier();
+            var minifier = new MicrosoftStylesheetMinifier();
             var getResult = minifier.Transform(() => "p { color: White; }".AsStream(), Mock.Of<IAsset>());
             using (var result = getResult())
             {
