@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Cassette.Interop;
 using Cassette.IO;
 
 namespace Cassette.Scripts

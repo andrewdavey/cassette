@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace ComImports.JavaScriptEngine
+namespace Cassette.Interop
 {
     // ProgId: JScript
     [ComImport]

@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using Cassette.Interop;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Interop
 {
     public class IEJavaScriptEngine_Tests
     {

@@ -1,13 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Cassette.Interop;
-using ComImports.JavaScriptEngine;
 using EXCEPINFO = System.Runtime.InteropServices.ComTypes.EXCEPINFO;
 
-namespace Cassette
+namespace Cassette.Interop
 {
     // Huge thanks to kogir's work in https://github.com/xpaulbettsx/SassAndCoffee.
     // This class is based on that project's Internet Explorer JScript interop work.

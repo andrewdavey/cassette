@@ -97,7 +97,6 @@
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
     <Compile Include="ICassetteApplicationContainer.cs" />
-    <Compile Include="IEJavaScriptEngine.cs" />
     <Compile Include="Interop\ActiveScriptException.cs" />
     <Compile Include="Interop\ActiveScriptParseWrapper.cs" />
     <Compile Include="Interop\ChakraJavaScriptEngine.cs" />
@@ -107,6 +106,7 @@
     <Compile Include="Interop\IActiveScriptParse64.cs" />
     <Compile Include="Interop\IActiveScriptParseWrapper.cs" />
     <Compile Include="Interop\IActiveScriptSite.cs" />
+    <Compile Include="Interop\IEJavaScriptEngine.cs" />
     <Compile Include="Interop\JavaScriptEngine.cs" />
     <Compile Include="Interop\ScriptInfoFlags.cs" />
     <Compile Include="Interop\ScriptInterruptFlags.cs" />
