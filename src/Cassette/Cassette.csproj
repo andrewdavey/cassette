@@ -96,6 +96,7 @@
     <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptElement.cs" />
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
+    <Compile Include="ICassetteApplicationContainer.cs" />
     <Compile Include="IEJavaScriptEngine.cs" />
     <Compile Include="Interop\ActiveScriptException.cs" />
     <Compile Include="Interop\ActiveScriptParseWrapper.cs" />

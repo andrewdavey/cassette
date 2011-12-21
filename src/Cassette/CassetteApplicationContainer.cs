@@ -24,13 +24,7 @@ using System.Diagnostics;
 
 namespace Cassette
 {
-    public interface ICassetteApplicationContainer : IDisposable
-    {
-        ICassetteApplication Application { get; }
-        void RecycleApplication();
-    }
-
-    public class CassetteApplicationContainer : ICassetteApplicationContainer
+    class CassetteApplicationContainer : ICassetteApplicationContainer
     {
         public static ICassetteApplicationContainer Instance { get; set; }
 
@@ -106,7 +100,7 @@ namespace Cassette
             }
         }
 
-        internal void ForceApplicationCreation()
+        public void ForceApplicationCreation()
         {
             try
             {
