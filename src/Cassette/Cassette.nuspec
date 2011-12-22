@@ -5,7 +5,7 @@
         <version>$version$</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
-        <copyright>© Andrew Davey 2011</copyright>
+        <copyright>© 2011 Andrew Davey</copyright>
         <licenseUrl>http://getcassette.net/licensing</licenseUrl>
         <projectUrl>http://getcassette.net/</projectUrl>
         <description>Core library for Cassette. Cassette automatically builds JavaScript, CSS and HTML template bundles based on the dependencies between files. CoffeeScript and LESS are also supported.</description>

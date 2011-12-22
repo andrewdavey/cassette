@@ -2,7 +2,7 @@
 
 [assembly: AssemblyCompany("Andrew Davey")]
 [assembly: AssemblyProduct("Cassette")]
-[assembly: AssemblyCopyright("Copyright © Andrew Davey 2011")]
+[assembly: AssemblyCopyright("Copyright © 2011 Andrew Davey")]
 
-[assembly: AssemblyVersion("0.9.6.1")]
-[assembly: AssemblyFileVersion("0.9.6.1")]
+[assembly: AssemblyVersion("1.0.0.*")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
