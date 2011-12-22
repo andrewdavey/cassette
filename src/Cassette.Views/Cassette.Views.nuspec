@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Cassette.Views</id>
-        <version>$version$</version>
+        <version>1.0.0</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
         <copyright>© 2011 Andrew Davey</copyright>
@@ -12,7 +12,7 @@
         <tags>web javascript coffeescript css html templates asp.net</tags>
         <iconUrl>http://getcassette.net/nuget-icon.png</iconUrl>
         <dependencies>
-            <dependency id="Cassette" version="$version$" />
+            <dependency id="Cassette" version="1.0.0" />
         </dependencies>
     </metadata>
 

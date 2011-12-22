@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Cassette</id>
-        <version>$version$</version>
+        <version>1.0.0</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
         <copyright>© 2011 Andrew Davey</copyright>
         <licenseUrl>http://getcassette.net/licensing</licenseUrl>
         <projectUrl>http://getcassette.net/</projectUrl>
-        <description>Core library for Cassette. Cassette automatically builds JavaScript, CSS and HTML template bundles based on the dependencies between files. CoffeeScript and LESS are also supported.</description>
+        <description>Important: This is just the core library for Cassette. You probably want to install the Cassette.Web package for ASP.NET support.</description>
         <tags>web javascript coffeescript css html templates asp.net</tags>
         <iconUrl>http://getcassette.net/nuget-icon.png</iconUrl>
         <dependencies>
