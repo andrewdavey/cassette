@@ -14,7 +14,12 @@ namespace Website.Controllers
             return View();
         }
 
-        public ActionResult Faqs()
+        public ActionResult Licensing()
+        {
+            return View();
+        }
+
+        public ActionResult Support()
         {
             return View();
         }

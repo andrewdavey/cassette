@@ -17,9 +17,10 @@ namespace Website
             routes.MapRoute("Home", "", new { controller = "Home", action = "Index" });
             routes.MapRoute("Download", "download", new { controller = "Home", action = "Download" });
             routes.MapRoute("FAQs", "faqs", new { controller = "Home", action = "FAQs" });
+            routes.MapRoute("Support", "support", new { controller = "Home", action = "Support" });
             routes.MapRoute("Contact", "contact", new { controller = "Home", action = "Contact" });
             routes.MapRoute("Documentation", "documentation/{*path}", new { controller = "Documentation", action = "Index", path="" });
-            routes.MapRoute("Licensing", "licensing/{action}", new { controller = "Licensing", action = "Index" });
+            routes.MapRoute("Licensing", "licensing", new { controller = "Home", action = "Licensing" });
 
             routes.MapRoute(
                 "Default", // Route name

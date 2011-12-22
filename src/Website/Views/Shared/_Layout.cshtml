@@ -14,41 +14,38 @@
     @Bundles.RenderStylesheets()
     <meta name="google-site-verification" content="XDRKm8pVfIwYbs7Jbb1kX5riGAhGXFOTHpxfV8VwfYc" />
 </head>
-<body>
+<body class="@ViewBag.Section">
     <div class="topwrap">
         <div class="top">
-        <div class="wrap">
-            <a class="logo" href="@Url.RouteUrl("Home")"></a>
-            <ul class="links">
+            <div class="wrap">
+                <a class="logo" href="@Url.RouteUrl("Home")"></a>
+                <ul class="links">
             
-                <li id="tweet">
-                    <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset bundling for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
-                </li>
-                <li id="g1">
-                    <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
-                </li>
+                    <li id="tweet">
+                        <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset bundling for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
+                    </li>
+                    <li id="g1">
+                        <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
+                    </li>
      
-                <li>
-                    <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
-                </li>
-                <li>
-                    <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
-                </li>
-                <li>
-                    <a @ActiveClassIf("licensing") href="@Url.Action("index", "licensing")">Licensing</a>
-                </li>
-                <li>
-                    <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation", new { path = "" })">Documentation</a>
-                </li>
-                <li>
-                    <a @ActiveClassIf("faqs") href="@Url.RouteUrl("FAQs")">FAQs</a>
-                </li>
-                <li>
-                    <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
-                </li>
-            </ul>
+                    <li>
+                        <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
+                    </li>
+                    <li>
+                        <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
+                    </li>
+                    <li>
+                        <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation", new { path = "" })">Documentation</a>
+                    </li>
+                    <li>
+                        <a @ActiveClassIf("support") href="@Url.RouteUrl("Support")">Support</a>
+                    </li>
+                    <li>
+                        <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
     </div>
 
     @RenderBody()

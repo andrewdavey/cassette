@@ -62,7 +62,6 @@
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\DocumentationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LicensingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -193,19 +192,7 @@
     <Content Include="Views\Documentation\Configuration_BundleDescriptorFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Licensing\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Licensing\Purchased.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\FAQs.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Licensing\Buy.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Licensing\ExpiredDiscount.cshtml" />
+    <Content Include="Views\Home\Licensing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\Configuration_AddDirectory.cshtml" />
@@ -218,6 +205,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\BundlesHelper.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Support.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
