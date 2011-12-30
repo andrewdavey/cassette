@@ -131,6 +131,19 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void GivenCssWithRelativeTopMostUrl_WhenTransformed_ThenUrlIsExpanded()
+        {
+            SetupDirectoryGetFile(StubImageFile().Object);
+            var css = "p { background-image: url(/Content/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/Content/test.png", It.IsAny<string>()));
+        }
+
+        [Fact]
         public void GivenCssWithProtocolRelativeUrl_WhenTransformed_ThenUrlNotChanged()
         {
             var css = "p { background-image: url(//test.com/test.png); }";
