@@ -21,7 +21,7 @@ namespace Cassette.Stylesheets
         }
 
         static readonly Regex CssUrlRegex = new Regex(
-            @"\b url \s* \( \s* (?<quote>['""]?) (?<url>.*?) \<quote> \s* \)", 
+            @"\b url \s* \( \s* (?<quote>['""]?) (?<url>.*?) \<quote> \s* \)",
             RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
         static readonly Regex AbsoluteUrlRegex = new Regex(
@@ -78,7 +78,7 @@ namespace Cassette.Stylesheets
         void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
         {
             relativeFilename = RemoveFragment(relativeFilename);
-            var file = sourceDirectory.GetFile(relativeFilename.Substring(2));
+            var file = sourceDirectory.GetFile(relativeFilename.TrimStart('~', '/'));
             if (!file.Exists) return;
 
             var hash = HashFileContents(file);
@@ -105,6 +105,10 @@ namespace Cassette.Stylesheets
         string GetImageFilename(Group matchedUrlGroup, string currentDirectory)
         {
             var originalUrl = matchedUrlGroup.Value.Trim('"', '\'');
+            if (originalUrl.StartsWith("/"))
+            {
+                return PathUtilities.NormalizePath("~" + originalUrl);
+            }
             return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(currentDirectory, originalUrl));
         }
     }
