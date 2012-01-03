@@ -87,6 +87,7 @@
     <Content Include="Scripts\color-picker\slider.js" />
     <Content Include="Scripts\jquery\bundle.txt" />
     <Content Include="Scripts\lib\Class.js" />
+    <Content Include="Scripts\lib\hogan.js" />
     <Content Include="Scripts\lib\jquery.tmpl.js" />
     <Content Include="Scripts\lib\knockout.js" />
     <Content Include="Styles\color-picker\images\color_swatch.png" />
