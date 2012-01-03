@@ -24,11 +24,9 @@ namespace Cassette.HtmlTemplates
                 var template = ns + "['" + id + "']";
                 var sb = new StringBuilder();
                 
-                sb.AppendLine(";(function(){");
-                sb.AppendLine("window." + ns + "=window." + ns + "||{};");
+                sb.AppendLine("var " + ns + " = " + ns + "|| {};");
                 sb.AppendLine(template + "= new HoganTemplate();");
                 sb.AppendLine(template + ".render = " + compiled);
-                sb.AppendLine("})();");
                 
                 return sb.ToString().AsStream();
             };
