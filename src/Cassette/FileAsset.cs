@@ -70,16 +70,9 @@ namespace Cassette
 
         void AddBundleReference(string appRelativeFilename, int lineNumber)
         {
-            AssetReferenceType type;
-            if (ParentBundleCouldContain(appRelativeFilename))
-            {
-                RequireBundleContainsReference(lineNumber, appRelativeFilename);
-                type = AssetReferenceType.SameBundle;
-            }
-            else
-            {
-                type = AssetReferenceType.DifferentBundle;
-            }
+            var type = parentBundle.ContainsPath(appRelativeFilename)
+                ? AssetReferenceType.SameBundle
+                : AssetReferenceType.DifferentBundle;
             references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
         }
 
