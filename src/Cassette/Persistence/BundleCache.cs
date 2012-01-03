@@ -290,7 +290,7 @@ namespace Cassette.Persistence
                 throw new ArgumentException("Cannot cache bundle with a URL as its path.");
             }
 
-            return bundle.Path.Substring(2) // Remove the "~/" prefix
+            return bundle.Path.TrimStart('~', '/') // Remove the "~/" prefix
                          .Replace(Path.DirectorySeparatorChar, '`')
                          .Replace(Path.AltDirectorySeparatorChar, '`')
                    + ".bundle";

@@ -402,6 +402,27 @@ namespace Cassette.Persistence
             secondFile.Verify(f => f.Delete());
         }
 
+        [Fact]
+        public void CanSaveBundleWherePathIsJustATilde()
+        {
+            var bundle = new TestableBundle("~");
+            bundle.Assets.Add(StubAsset().Object);
+
+            using (var source = new TempDirectory())
+            using (var cache = new TempDirectory())
+            {
+                var container = new BundleContainer(new[] { bundle });
+                var settings = new CassetteSettings("")
+                {
+                    SourceDirectory = new FileSystemDirectory(source),
+                    CacheDirectory = new FileSystemDirectory(cache)
+                };
+                settings.BundleCache.SaveBundleContainer(container);
+
+                File.Exists(Path.Combine(cache, ".bundle")).ShouldBeTrue();
+            }
+        }
+
         Mock<IAsset> StubAsset(string path = null)
         {
             var asset = new Mock<IAsset>();
