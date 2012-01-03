@@ -105,25 +105,6 @@ namespace Cassette
             }
         }
 
-        bool ParentBundleCouldContain(string path)
-        {
-            if (path.Length < parentBundle.Path.Length) return false;
-            var prefix = path.Substring(0, parentBundle.Path.Length);
-            return PathUtilities.PathsEqual(prefix, parentBundle.Path);
-        }
-
-        void RequireBundleContainsReference(int lineNumber, string path)
-        {
-            if (parentBundle.ContainsPath(path)) return;
-            
-            throw new AssetReferenceException(
-                string.Format(
-                    "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    SourceFile.FullPath, lineNumber, path
-                )
-            );
-        }
-
         protected override Stream OpenStreamCore()
         {
             return sourceFile.OpenRead();
