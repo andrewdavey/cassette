@@ -22,8 +22,8 @@ namespace Cassette.Configuration
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
             var container = builder.Create(bundles, CreateSettings());
 
-            container.FindBundleContainingPath<Bundle>("~/test1").ShouldBeSameAs(bundle1);
-            container.FindBundleContainingPath<Bundle>("~/test2").ShouldBeSameAs(bundle2);
+            container.FindBundlesContainingPath("~/test1").First().ShouldBeSameAs(bundle1);
+            container.FindBundlesContainingPath("~/test2").First().ShouldBeSameAs(bundle2);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace Cassette.Configuration
             var builder = CreateFactory(factories);
             var container = builder.Create(new[] { bundle }, CreateSettings());
 
-            container.FindBundleContainingPath<Bundle>("http://external.com/api.js").ShouldBeSameAs(externalBundle);
+            container.FindBundlesContainingPath("http://external.com/api.js").First().ShouldBeSameAs(externalBundle);
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Cassette.Configuration
             var settings = CreateSettings();
             var container = containerFactory.Create(new[] { bundle }, settings);
 
-            container.FindBundleContainingPath<Bundle>("http://test.com/").ShouldBeSameAs(externalBundle);
+            container.FindBundlesContainingPath("http://test.com/").First().ShouldBeSameAs(externalBundle);
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace Cassette.Configuration
             var settings = CreateSettings();
             var container = containerFactory.Create(new[] { bundle }, settings);
 
-            container.FindBundleContainingPath<Bundle>("http://test.com/").ShouldBeSameAs(externalBundle);
+            container.FindBundlesContainingPath("http://test.com/").First().ShouldBeSameAs(externalBundle);
         }
 
         [Fact]

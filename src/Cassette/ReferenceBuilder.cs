@@ -26,13 +26,13 @@ namespace Cassette
         public void Reference<T>(string path, string location = null)
             where T : Bundle
         {
-            var bundle = GetBundle(path, () => bundleFactories[typeof(T)].CreateExternalBundle(path));
-            Reference(bundle, location);
+            var bundles = GetBundles(path, () => bundleFactories[typeof(T)].CreateExternalBundle(path));
+            Reference(bundles, location);
         }
 
         public void Reference(string path, string location = null)
         {
-            var bundle = GetBundle(path, () =>
+            var bundles = GetBundles(path, () =>
             {
                 if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
                 {
@@ -53,45 +53,54 @@ namespace Cassette
                 }
             });
 
-            Reference(bundle, location);
+            Reference(bundles, location);
         }
 
-        Bundle GetBundle(string path, Func<Bundle> createExternalBundle)
+        IEnumerable<Bundle> GetBundles(string path, Func<Bundle> createExternalBundle)
         {
             path = PathUtilities.AppRelative(path);
 
-            var bundle = bundleContainer.FindBundleContainingPath<Bundle>(path);
-            if (bundle == null && path.IsUrl())
+            var bundles = bundleContainer.FindBundlesContainingPath(path).ToArray();
+            if (bundles.Length == 0 && path.IsUrl())
             {
-                bundle = createExternalBundle();
+                var bundle = createExternalBundle();
                 bundle.Process(settings);
+                bundles = new[] { bundle };
             }
 
-            if (bundle == null)
+            if (bundles.Length == 0)
             {
                 throw new ArgumentException("Cannot find an asset bundle containing the path \"" + path + "\".");
             }
 
-            return bundle;
+            return bundles;
         }
 
         public void Reference(Bundle bundle, string location = null)
+        {
+            Reference(new[] { bundle }, location);
+        }
+
+        void Reference(IEnumerable<Bundle> bundles, string location = null)
         {
             if (!settings.IsHtmlRewritingEnabled && HasRenderedLocation(location))
             {
                 ThrowRewritingRequiredException(location);
             }
 
-            // Bundle can define it's own prefered location. Use this when we aren't given
-            // an explicit location argument i.e. null.
-            if (location == null)
+            foreach (var bundle in bundles)
             {
-                location = bundle.PageLocation;
-            }
+                // Bundle can define it's own prefered location. Use this when we aren't given
+                // an explicit location argument i.e. null.
+                if (location == null)
+                {
+                    location = bundle.PageLocation;
+                }
 
-            var bundles = GetOrCreateBundleSet(location);
-            if (bundles.Contains(bundle)) return;
-            bundles.Add(bundle);
+                var bundlesForLocation = GetOrCreateBundleSet(location);
+                if (bundlesForLocation.Contains(bundle)) return;
+                bundlesForLocation.Add(bundle);
+            }
         }
 
         bool HasRenderedLocation(string location)

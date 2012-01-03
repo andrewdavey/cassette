@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
@@ -135,8 +136,8 @@ namespace Cassette.Web
         {
             var bundle = new TestableBundle("~/test");
             bundleContainer
-                .Setup(c => c.FindBundleContainingPath<Bundle>("~/test"))
-                .Returns(bundle);
+                .Setup(c => c.FindBundlesContainingPath("~/test"))
+                .Returns(new[] { bundle });
             urlGenerator
                 .Setup(g => g.CreateBundleUrl(bundle))
                 .Returns("URL");
@@ -151,8 +152,8 @@ namespace Cassette.Web
         {
             var bundle = new TestableBundle("~/test");
             bundleContainer
-                .Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
-                .Returns(bundle);
+                .Setup(c => c.FindBundlesContainingPath("~/test"))
+                .Returns(new[] { bundle });
             urlGenerator
                 .Setup(g => g.CreateBundleUrl(bundle))
                 .Returns("URL");
@@ -181,9 +182,9 @@ namespace Cassette.Web
 
             public override T FindBundleContainingPath<T>(string path)
             {
-                return bundleContainer.FindBundleContainingPath<T>(path);
+                return bundleContainer.FindBundlesContainingPath(path).OfType<T>().FirstOrDefault();
             }
-
+            
             protected override IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create)
             {
                 return referenceBuilder;

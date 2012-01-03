@@ -37,9 +37,9 @@ namespace Cassette.Web
             response.SetupGet(r => r.Cache).Returns(cache.Object);
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            var bundleContainer = new Mock<IBundleContainer>();
-            bundleContainer.Setup(c => c.FindBundleContainingPath<Bundle>(It.IsAny<string>()))
-                           .Returns(() => bundle);
+            bundleContainer = new Mock<IBundleContainer>();
+            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
+                           .Returns(() => new[] { bundle });
             handler = new AssetRequestHandler(requestContext.Object, () => bundleContainer.Object);
         }
 
@@ -48,6 +48,7 @@ namespace Cassette.Web
         readonly Mock<HttpResponseBase> response;
         readonly Mock<HttpCachePolicyBase> cache;
         readonly NameValueCollection requestHeaders;
+        readonly Mock<IBundleContainer> bundleContainer;
         Bundle bundle;
         MemoryStream outputStream;
 
@@ -58,8 +59,10 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void GivenBundleIsNull_WhenProcessRequest_ThenNotFoundResponse()
+        public void GivenBundleNotFound_WhenProcessRequest_ThenNotFoundResponse()
         {
+            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
+                           .Returns(() => new Bundle[0]);
             handler.ProcessRequest(null);
             response.VerifySet(r => r.StatusCode = 404);
         }

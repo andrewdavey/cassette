@@ -102,10 +102,9 @@ namespace Cassette
             }
         }
 
-        public T FindBundleContainingPath<T>(string path)
-            where T : Bundle
+        public IEnumerable<Bundle> FindBundlesContainingPath(string path)
         {
-            return bundles.OfType<T>().FirstOrDefault(bundle => bundle.ContainsPath(path));
+            return bundles.Where(bundle => bundle.ContainsPath(path));
         }
 
         void ValidateBundleReferences()
@@ -153,7 +152,7 @@ namespace Cassette
                                  || r.Type == AssetReferenceType.Url)
                         .Select(r => r.Path)
                         .Concat(bundle.References)
-                        .Select(FindBundleContainingPath<Bundle>)
+                        .SelectMany(FindBundlesContainingPath)
                     ) 
                 }
             ).ToDictionary(x => x.bundle, x => x.references);

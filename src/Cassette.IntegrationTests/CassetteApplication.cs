@@ -8,6 +8,7 @@ using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;
+using Cassette.Stylesheets;
 using Cassette.Web;
 using Moq;
 using Should;
@@ -111,16 +112,40 @@ function asset1() {
             }
         }
 
-        CassetteApplication CreateApplication(Action<BundleCollection> configure)
+        [Fact]
+        public void GivenReferenceToBundlesWithSharedPath_WhenRenderEachType_ThenHtmlIsReturnedForEach()
         {
+            Action<BundleCollection> config = bundles =>
+            {
+                bundles.Add<StylesheetBundle>("~/");
+                bundles.Add<ScriptBundle>("~/");
+            };
+            
+            using (var app = CreateApplication(config, "overlap"))
+            {
+                app.OnPostMapRequestHandler();
+                var builder = app.GetReferenceBuilder();
+                
+                builder.Reference("~");
+                var scriptHtml = builder.Render<ScriptBundle>(null);
+                var stylesheetHtml = builder.Render<StylesheetBundle>(null);
+
+                stylesheetHtml.ShouldContain("<link");
+                scriptHtml.ShouldContain("<script");
+            }
+        }
+
+        CassetteApplication CreateApplication(Action<BundleCollection> configure, string sourceDirectory = "assets")
+        {
+            IBundleContainer bundleContainer = null;
             var settings = new CassetteSettings("")
             {
                 CacheDirectory = new IsolatedStorageDirectory(storage),
-                SourceDirectory = new FileSystemDirectory(Path.GetFullPath("assets"))
+                SourceDirectory = new FileSystemDirectory(Path.GetFullPath(sourceDirectory)),
+                UrlGenerator = new CassetteRouting(new VirtualDirectoryPrepender("/"), () => bundleContainer)
             };
             var bundles = new BundleCollection(settings);
             configure(bundles);
-            IBundleContainer bundleContainer = null;
             var application = new CassetteApplication(
                 bundles,
                 settings,

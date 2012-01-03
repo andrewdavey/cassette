@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
@@ -66,7 +67,7 @@ namespace Cassette.Web
             var path = "~/" + routeData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling bundle request for \"{0}\".", path);
             path = RemoveTrailingHashFromPath(path);
-            return getBundleContainer().FindBundleContainingPath<T>(path);
+            return getBundleContainer().FindBundlesContainingPath(path).OfType<T>().FirstOrDefault();
         }
 
         /// <summary>

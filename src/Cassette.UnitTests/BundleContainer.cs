@@ -50,7 +50,7 @@ namespace Cassette
             var container = new BundleContainer(new[] {
                 expectedBundle
             });
-            var actualBundle = container.FindBundleContainingPath<Bundle>("~/test");
+            var actualBundle = container.FindBundlesContainingPath("~/test").First();
             actualBundle.ShouldBeSameAs(expectedBundle);
         }
 
@@ -60,8 +60,8 @@ namespace Cassette
             var container = new BundleContainer(new[] {
                 new TestableBundle("~/test")
             });
-            var actualBundle = container.FindBundleContainingPath<Bundle>("~/WRONG");
-            actualBundle.ShouldBeNull();
+            var actualBundle = container.FindBundlesContainingPath("~/WRONG");
+            actualBundle.ShouldBeEmpty();
         }
 
         [Fact]
@@ -76,7 +76,7 @@ namespace Cassette
             var container = new BundleContainer(new[] {
                 expectedBundle
             });
-            var actualBundle = container.FindBundleContainingPath<Bundle>("~/test/test.js");
+            var actualBundle = container.FindBundlesContainingPath("~/test/test.js").First();
             actualBundle.ShouldBeSameAs(expectedBundle);
         }
 
