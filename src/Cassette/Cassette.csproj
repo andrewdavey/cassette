@@ -80,11 +80,11 @@
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
     <Compile Include="HtmlTemplates\CompileJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\CompileKnockoutJQueryTmpl.cs" />
-    <Compile Include="HtmlTemplates\CompileHoganTmpl.cs" />
-    <Compile Include="HtmlTemplates\HoganTmplCompiler.cs" />
-    <Compile Include="HtmlTemplates\HoganTmplPipeline.cs" />
-    <Compile Include="HtmlTemplates\RegisterTemplatesWithHoganTmpl.cs" />
-    <Compile Include="HtmlTemplates\RegisterTemplateWithHoganTmpl.cs" />
+    <Compile Include="HtmlTemplates\CompileHogan.cs" />
+    <Compile Include="HtmlTemplates\HoganCompiler.cs" />
+    <Compile Include="HtmlTemplates\HoganPipeline.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplatesWithHogan.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplateWithHogan.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplatesWithJQueryTmpl.cs" />

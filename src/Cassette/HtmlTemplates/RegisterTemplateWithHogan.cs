@@ -5,11 +5,11 @@ using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
-    class RegisterTemplateWithHoganTmpl : IAssetTransformer
+    class RegisterTemplateWithHogan : IAssetTransformer
     {
         readonly HtmlTemplateBundle bundle;
 
-        public RegisterTemplateWithHoganTmpl(HtmlTemplateBundle bundle)
+        public RegisterTemplateWithHogan(HtmlTemplateBundle bundle)
         {
             this.bundle = bundle;
         }

@@ -4,7 +4,7 @@ using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HoganTmplPipeline : MutablePipeline<HtmlTemplateBundle>
+    public class HoganPipeline : MutablePipeline<HtmlTemplateBundle>
     {
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
@@ -15,8 +15,8 @@ namespace Cassette.HtmlTemplates
             if (bundle.IsFromCache) yield break;
 
             yield return new ParseHtmlTemplateReferences();
-            yield return new CompileHoganTmpl();
-            yield return new RegisterTemplatesWithHoganTmpl(bundle);
+            yield return new CompileHogan();
+            yield return new RegisterTemplatesWithHogan(bundle);
             yield return new ConcatenateAssets();
         }
     }

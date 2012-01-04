@@ -5,9 +5,9 @@ using Jurassic.Library;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HoganTmplCompiler : ICompiler
+    public class HoganCompiler : ICompiler
     {
-        public HoganTmplCompiler()
+        public HoganCompiler()
         {
             ScriptEngine = new ScriptEngine();
             ScriptEngine.Execute(Properties.Resources.hogan);
