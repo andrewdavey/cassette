@@ -11,6 +11,16 @@ Add <code>.coffee</code> files to your project and Cassette will compile them in
     <li>In the Properties window, set Build Action to <code>Content</code></li>
 </ol>
 
+<h2>References</h2>
+<p>Reference the other assets a coffee file depends on using following special comment syntax:</p>
+<pre><code><span class="comment"># @@reference ../jquery.js</span></code></pre>
+<p>or</p>
+<pre><code><span class="comment">###
+@@reference ../jquery.js
+@@reference other.coffee another.js example.coffee
+###</span></code></pre>
+<p>Reference paths are relative to the current coffee file.</p>
+
 <h2>Improving Performance</h2>
 <p>Cassette's default CoffeeScript compiler can be slow for large files. To improve performance try using the Internet Explorer based compiler.
 In <code>CassetteConfiguration</code> change the compiler:</p>
