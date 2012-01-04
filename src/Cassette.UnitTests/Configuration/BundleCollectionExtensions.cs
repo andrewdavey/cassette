@@ -649,7 +649,7 @@ namespace Cassette.Configuration
             {
                 File.WriteAllText(Path.Combine(temp, "file1.js"), "");
 
-                var settings = new CassetteSettings();
+                var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);
                 settings.SourceDirectory = new FileSystemDirectory(temp);
 
@@ -667,7 +667,7 @@ namespace Cassette.Configuration
                 File.WriteAllText(Path.Combine(temp, "file1.js"), "");
                 File.WriteAllText(Path.Combine(temp, "file2.js"), "");
 
-                var settings = new CassetteSettings();
+                var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);
                 settings.SourceDirectory = new FileSystemDirectory(temp);
 
@@ -685,7 +685,7 @@ namespace Cassette.Configuration
             {
                 File.WriteAllText(Path.Combine(temp, "file1.js"), "");
 
-                var settings = new CassetteSettings();
+                var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);
                 settings.SourceDirectory = new FileSystemDirectory(temp);
 
@@ -702,7 +702,7 @@ namespace Cassette.Configuration
             {
                 File.WriteAllText(Path.Combine(temp, "file1.js"), "");
 
-                var settings = new CassetteSettings();
+                var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);
                 settings.SourceDirectory = new FileSystemDirectory(temp);
 
@@ -720,7 +720,7 @@ namespace Cassette.Configuration
                 Directory.CreateDirectory(Path.Combine(temp, "bundle"));
                 File.WriteAllText(Path.Combine(temp, "bundle", "file1.js"), "");
 
-                var settings = new CassetteSettings();
+                var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);
                 settings.SourceDirectory = new FileSystemDirectory(temp);
 
@@ -737,7 +737,7 @@ namespace Cassette.Configuration
             {
                 File.WriteAllText(Path.Combine(temp, "file1.js"), "");
 
-                var settings = new CassetteSettings();
+                var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);
                 settings.SourceDirectory = new FileSystemDirectory(temp);
 
