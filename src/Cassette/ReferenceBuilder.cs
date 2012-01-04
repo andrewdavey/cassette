@@ -130,7 +130,8 @@ namespace Cassette
         public IEnumerable<Bundle> GetBundles(string location)
         {
             var bundles = GetOrCreateBundleSet(location);
-            return bundleContainer.IncludeReferencesAndSortBundles(bundles);
+            var bundlesForLocation = GetOrCreateBundleSet(location);
+            return bundleContainer.IncludeReferencesAndSortBundles(bundles).Where(b => bundlesForLocation.Contains(b) || b.PageLocation == location);
         }
 
         public string Render<T>(string location = null)
