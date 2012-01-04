@@ -193,15 +193,6 @@ namespace Cassette
         }
 
         [Fact]
-        public void AddReferenceToAssetThatIsNotInSameBundleThrowsAssetReferenceException()
-        {
-            Assert.Throws<AssetReferenceException>(delegate
-            {
-                asset.AddReference("not-in-bundle.js", 1);
-            });
-        }
-
-        [Fact]
         public void AddRawFileReferenceNormalizesPathToBeAppRelative()
         {
             asset.AddRawFileReference("../test.png");

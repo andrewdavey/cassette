@@ -41,7 +41,7 @@ namespace Cassette.Web
             return urlModifier.Modify(string.Format("{0}/{1}/{2}_{3}",
                 RoutePrefix,
                 ConventionalBundlePathName(bundle.GetType()),
-                bundle.Path.Substring(2),
+                bundle.PathWithoutPrefix,
                 bundle.Hash.ToHexString()
             ));
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cassette.Persistence;
 using Moq;
 using Should;
@@ -20,7 +21,7 @@ namespace Cassette.Configuration
             var factory = CreateFactory();
             var container = factory.Create(bundles, CreateSettings());
 
-            container.FindBundleContainingPath<Bundle>("~/test").ShouldBeSameAs(bundles[0]);
+            container.FindBundlesContainingPath("~/test").SequenceEqual(bundles).ShouldBeTrue();
         }
 
         [Fact]

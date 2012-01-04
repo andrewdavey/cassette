@@ -249,13 +249,16 @@ namespace Cassette.Persistence
 
         IEnumerable<XElement> CreateReferenceElements(Bundle bundle, IBundleContainer bundleContainer)
         {
-            var references = (
-                from asset in bundle.Assets
-                from r in asset.References
-                where r.Type == AssetReferenceType.DifferentBundle || r.Type == AssetReferenceType.Url
-                select bundleContainer.FindBundleContainingPath<Bundle>(r.Path).Path
-            ).Concat(bundle.References)
-             .Distinct(StringComparer.OrdinalIgnoreCase);
+            var paths = from asset in bundle.Assets
+                        from r in asset.References
+                        where r.Type == AssetReferenceType.DifferentBundle || r.Type == AssetReferenceType.Url
+                        select r.Path;
+
+            var references = paths
+                .SelectMany(bundleContainer.FindBundlesContainingPath)
+                .Select(b => b.Path)
+                .Concat(bundle.References)
+                .Distinct(StringComparer.OrdinalIgnoreCase);
 
             return from reference in references
                    select new XElement("Reference", new XAttribute("Path", reference));
@@ -290,7 +293,7 @@ namespace Cassette.Persistence
                 throw new ArgumentException("Cannot cache bundle with a URL as its path.");
             }
 
-            return bundle.Path.Substring(2) // Remove the "~/" prefix
+            return bundle.PathWithoutPrefix
                          .Replace(Path.DirectorySeparatorChar, '`')
                          .Replace(Path.AltDirectorySeparatorChar, '`')
                    + ".bundle";

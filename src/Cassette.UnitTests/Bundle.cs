@@ -271,6 +271,21 @@ namespace Cassette
         }
 
         [Fact]
+        public void PathWithoutPrefixRemovesTildeSlashFromStart()
+        {
+            var bundle = new TestableBundle("~/test");
+            bundle.PathWithoutPrefix.ShouldEqual("test");
+        }
+
+
+        [Fact]
+        public void GivenPathIsRoot_ThenPathWithoutPrefixReturnsEmptyString()
+        {
+            var bundle = new TestableBundle("~");
+            bundle.PathWithoutPrefix.ShouldEqual("");
+        }
+
+        [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
             var bundle = new TestableBundle("~");

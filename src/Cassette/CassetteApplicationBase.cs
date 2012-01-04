@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cassette.Configuration;
 
 namespace Cassette
@@ -28,7 +29,7 @@ namespace Cassette
         public virtual T FindBundleContainingPath<T>(string path)
             where T : Bundle
         {
-            return bundleContainer.FindBundleContainingPath<T>(path);
+            return bundleContainer.FindBundlesContainingPath(path).OfType<T>().FirstOrDefault();
         }
 
         public IReferenceBuilder GetReferenceBuilder()

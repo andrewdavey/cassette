@@ -70,16 +70,9 @@ namespace Cassette
 
         void AddBundleReference(string appRelativeFilename, int lineNumber)
         {
-            AssetReferenceType type;
-            if (ParentBundleCouldContain(appRelativeFilename))
-            {
-                RequireBundleContainsReference(lineNumber, appRelativeFilename);
-                type = AssetReferenceType.SameBundle;
-            }
-            else
-            {
-                type = AssetReferenceType.DifferentBundle;
-            }
+            var type = parentBundle.ContainsPath(appRelativeFilename)
+                ? AssetReferenceType.SameBundle
+                : AssetReferenceType.DifferentBundle;
             references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
         }
 
@@ -110,25 +103,6 @@ namespace Cassette
             {
                 return sha1.ComputeHash(fileStream);
             }
-        }
-
-        bool ParentBundleCouldContain(string path)
-        {
-            if (path.Length < parentBundle.Path.Length) return false;
-            var prefix = path.Substring(0, parentBundle.Path.Length);
-            return PathUtilities.PathsEqual(prefix, parentBundle.Path);
-        }
-
-        void RequireBundleContainsReference(int lineNumber, string path)
-        {
-            if (parentBundle.ContainsPath(path)) return;
-            
-            throw new AssetReferenceException(
-                string.Format(
-                    "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    SourceFile.FullPath, lineNumber, path
-                )
-            );
         }
 
         protected override Stream OpenStreamCore()

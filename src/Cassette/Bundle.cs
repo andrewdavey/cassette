@@ -34,6 +34,11 @@ namespace Cassette
             get { return path; }
         }
 
+        internal string PathWithoutPrefix
+        {
+            get { return path.TrimStart('~', '/'); }
+        }
+
         /// <summary>
         /// The value sent in the HTTP Content-Type header.
         /// </summary>
