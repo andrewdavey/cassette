@@ -3,8 +3,11 @@ using System.IO;
 
 namespace Cassette
 {
-    class CassetteApplicationContainer : ICassetteApplicationContainer
+    public class CassetteApplicationContainer : ICassetteApplicationContainer
     {
+        /// <summary>
+        /// Gets or sets the singleton <see cref="ICassetteApplicationContainer"/> instance.
+        /// </summary>
         public static ICassetteApplicationContainer Instance { get; set; }
 
         readonly Func<ICassetteApplication> createApplication;
@@ -12,13 +15,16 @@ namespace Cassette
         Lazy<ICassetteApplication> application;
         bool creationFailed;
 
-        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication)
+        // Constructors are internal because calling code should never need to create an instance.
+        // Class in public to provide a handy place to stick the static Instance singleton property.
+
+        internal CassetteApplicationContainer(Func<ICassetteApplication> createApplication)
         {
             this.createApplication = createApplication;
             application = new Lazy<ICassetteApplication>(CreateApplication);
         }
 
-        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication, string rootDirectoryToWatch)
+        internal CassetteApplicationContainer(Func<ICassetteApplication> createApplication, string rootDirectoryToWatch)
             : this(createApplication)
         {
 
@@ -79,9 +85,11 @@ namespace Cassette
             }
         }
 
-        public void ForceApplicationCreation()
+        internal void ForceApplicationCreation()
         {
+// ReSharper disable UnusedVariable
             var forceCreation = application.Value;
+// ReSharper restore UnusedVariable
         }
 
         bool IsPendingCreation

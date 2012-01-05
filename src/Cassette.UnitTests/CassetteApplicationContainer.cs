@@ -139,7 +139,7 @@ namespace Cassette
                 throw exception;
             });
             create = failingCreate;
-            
+
             var container = new CassetteApplicationContainer(() => create(), rootPath);
             var actualException = Assert.Throws<Exception>(delegate
             {
