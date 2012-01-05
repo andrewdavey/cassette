@@ -104,6 +104,7 @@ namespace Cassette
 
         public IEnumerable<Bundle> FindBundlesContainingPath(string path)
         {
+            path = PathUtilities.AppRelative(path);
             return bundles.Where(bundle => bundle.ContainsPath(path));
         }
 
