@@ -121,9 +121,7 @@
   <Target Name="AfterBuild">
   </Target>
   <Target Name="CreateBundles" AfterTargets="AfterBuild" Condition="'$(CreateBundles)'=='true'">
-    <CreateBundles SourceDir="$(WebProjectOutputDir)" 
-                   Assembly="bin\$(AssemblyName).dll" 
-                   OutputDir="$(WebProjectOutputDir)\App_Bundles" />
+    <CreateBundles SourceDir="$(WebProjectOutputDir)" Assembly="bin\$(AssemblyName).dll" OutputDir="$(WebProjectOutputDir)\App_Bundles" />
   </Target>
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />

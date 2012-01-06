@@ -59,6 +59,7 @@
     <Compile Include="CassetteApplication.cs" />
     <Compile Include="CassetteApplicationContainerFactory.cs" />
     <Compile Include="HttpContextExtensions.cs" />
+    <Compile Include="PreBuiltCassetteApplication.cs" />
     <Compile Include="IsolatedStorageContainer.cs" />
     <Compile Include="DelegateCassetteConfigurationFactory.cs" />
     <Compile Include="RoutingHelpers.cs" />
