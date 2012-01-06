@@ -6,4 +6,5 @@
 build/
 *.swp
 _ReSharper*
+App_Bundles/
 *.ncrunch*
