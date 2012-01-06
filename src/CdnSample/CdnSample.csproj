@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\images\accept.png" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\jquery\bundle.txt" />
@@ -117,8 +118,12 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target> -->
-  <Target Name="AfterBuild" Condition="'$(CreateBundles)'=='true'">
-    <CreateBundles AssemblyName="$(AssemblyName)" />
+  <Target Name="AfterBuild">
+  </Target>
+  <Target Name="CreateBundles" AfterTargets="AfterBuild" Condition="'$(CreateBundles)'=='true'">
+    <CreateBundles SourceDir="$(WebProjectOutputDir)" 
+                   Assembly="bin\$(AssemblyName).dll" 
+                   OutputDir="$(WebProjectOutputDir)\App_Bundles" />
   </Target>
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
