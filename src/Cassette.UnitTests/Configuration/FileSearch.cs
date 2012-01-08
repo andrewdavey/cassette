@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -138,6 +139,113 @@ namespace Cassette.Configuration
         {
             var filename = Path.Combine(temp, Path.Combine(paths));
             File.WriteAllText(filename, "");
+        }
+    }
+
+    public class FileSearch_SpecialMinifiedFileDetection : IDisposable
+    {
+        public FileSearch_SpecialMinifiedFileDetection()
+        {
+            temp = new TempDirectory();
+            directory = new FileSystemDirectory(temp);
+        }
+
+        readonly TempDirectory temp;
+        readonly FileSystemDirectory directory;
+
+        [Fact]
+        public void GivenMinAndNonMinFilesExist_WhenFindFiles_ThenMinFileIgnored()
+        {
+            CreateFile("jquery.js");
+            CreateFile("jquery.min.js");
+
+            var search = new FileSearch { Pattern = "*.js" };
+            var files = search.FindFiles(directory);
+
+            files.Single().FullPath.ShouldEqual("~/jquery.js");
+        }
+
+        [Fact]
+        public void GivenOnlyMinFile_WhenFindFiles_ThenMinFileIsIncluded()
+        {
+            CreateFile("jquery.min.js");
+
+            var search = new FileSearch { Pattern = "*.js" };
+            var files = search.FindFiles(directory);
+
+            files.Single().FullPath.ShouldEqual("~/jquery.min.js");
+        }
+
+        [Fact]
+        public void GivenOnlyNonMinFile_WhenFindFiles_ThenFileIsIncluded()
+        {
+            CreateFile("jquery.js");
+
+            var search = new FileSearch { Pattern = "*.js" };
+            var files = search.FindFiles(directory);
+
+            files.Single().FullPath.ShouldEqual("~/jquery.js");
+        }
+
+        [Fact]
+        public void GivenDebugAndRegularFiles_WhenFindFiles_ThenOnlyDebugFileIsIncluded()
+        {
+            CreateFile("jquery.debug.js");
+            CreateFile("jquery.js");
+
+            var search = new FileSearch { Pattern = "*.js" };
+            var files = search.FindFiles(directory);
+
+            files.Single().FullPath.ShouldEqual("~/jquery.debug.js");
+        }
+
+        [Fact]
+        public void GivenOnlyDebugFile_WhenFindFiles_ThenFileIsIncluded()
+        {
+            CreateFile("jquery.debug.js");
+
+            var search = new FileSearch { Pattern = "*.js" };
+            var files = search.FindFiles(directory);
+
+            files.Single().FullPath.ShouldEqual("~/jquery.debug.js");
+        }
+
+        [Fact]
+        public void GivenMinCssAndNonMinCss_WhenFindFiles_ThenOnlyNonMinCssIncluded()
+        {
+            CreateFile("test.min.css");
+            CreateFile("test.css");
+
+            var search = new FileSearch { Pattern = "*.css" };
+            var files = search.FindFiles(directory);
+
+            files.Single().FullPath.ShouldEqual("~/test.css");
+        }
+
+        [Fact]
+        public void GivenMinAndNonMinScripts_WhenFindFiles_ThenOnlyIncludeNonMinScripts()
+        {
+            CreateFile("jquery.js");
+            CreateFile("jquery.min.js");
+            CreateFile("jquery-ui.js");
+            CreateFile("jquery-ui.min.js");
+
+            var search = new FileSearch { Pattern = "*.js" };
+            var files = search.FindFiles(directory).ToArray();
+
+            var names = new HashSet<string>(files.Select(f => f.FullPath));
+            names.SetEquals(new[] { "~/jquery.js", "~/jquery-ui.js" });
+        }
+
+        void CreateFile(params string[] paths)
+        {
+            var filename = Path.Combine(temp, Path.Combine(paths));
+            File.WriteAllText(filename, "");
+        }
+
+        public void Dispose()
+        {
+            temp.Dispose();
         }
     }
 }
