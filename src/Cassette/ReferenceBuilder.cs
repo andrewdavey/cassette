@@ -22,6 +22,7 @@ namespace Cassette
         readonly CassetteSettings settings;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
         readonly HashSet<string> renderedLocations = new HashSet<string>();
+        readonly Dictionary<Bundle, string> bundlePageLocations = new Dictionary<Bundle, string>();
  
         public void Reference<T>(string path, string location = null)
             where T : Bundle
@@ -97,6 +98,8 @@ namespace Cassette
                     location = bundle.PageLocation;
                 }
 
+                bundlePageLocations[bundle] = location;
+
                 var bundlesForLocation = GetOrCreateBundleSet(location);
                 if (bundlesForLocation.Contains(bundle)) return;
                 bundlesForLocation.Add(bundle);
@@ -131,7 +134,18 @@ namespace Cassette
         {
             var bundles = GetOrCreateBundleSet(location);
             var bundlesForLocation = GetOrCreateBundleSet(location);
-            return bundleContainer.IncludeReferencesAndSortBundles(bundles).Where(b => bundlesForLocation.Contains(b) || b.PageLocation == location);
+            return bundleContainer.IncludeReferencesAndSortBundles(bundles)
+                                  .Where(b => bundlesForLocation.Contains(b) || BundlePageLocationIs(b, location));
+        }
+
+        bool BundlePageLocationIs(Bundle bundle, string location)
+        {
+            string assignedLocation;
+            if (bundlePageLocations.TryGetValue(bundle, out assignedLocation))
+            {
+                return assignedLocation == location;
+            }
+            return bundle.PageLocation == location;
         }
 
         public string Render<T>(string location = null)

@@ -303,7 +303,6 @@ namespace Cassette
             builder.GetBundles(null).Count().ShouldEqual(1);
         }
 
-
         [Fact]
         public void GivenBundleReferencedInOneLocationAlsoUsedInAnotherAndPageLocationIsOverridden_WhenGetBundlesForSecondLocation_ThenBundleForFirstLocationIsNotIncluded()
         {
@@ -317,6 +316,64 @@ namespace Cassette
 
             builder.Reference("~/test2", "LOCATION");
             builder.GetBundles("LOCATION").Count().ShouldEqual(1);
+        }
+
+        [Fact]
+        public void GivenBundlesWithNoPageLocationAssigned_WhenReferenceCallAssignsPageLocation_ThenGetBundlesHonoursTheNewAsignment()
+        {
+            var jquery = new TestableBundle("~/jquery");
+            var app = new TestableBundle("~/app");
+            app.AddReference("~/jquery");
+
+            var findResultQueue = new Queue<IEnumerable<Bundle>>(new[]
+            {
+                new Bundle[] { jquery },
+                new Bundle[] { app }
+            });
+
+            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
+                           .Returns<string>(s => findResultQueue.Dequeue());
+
+            var queue = new Queue<IEnumerable<Bundle>>();
+            queue.Enqueue(new[] { jquery });
+            queue.Enqueue(new[] { jquery, app });
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(ms => queue.Dequeue());
+
+            builder.Reference("~/jquery", "head");
+            builder.Reference("~/app");
+
+            builder.GetBundles("head").Single().ShouldBeSameAs(jquery);
+            builder.GetBundles(null).Single().ShouldBeSameAs(app);
+        }
+
+        [Fact]
+        public void GivenBundlesWithOnePageLocationAssigned_WhenReferenceCallOmitsPageLocation_ThenGetBundlesHonoursTheOriginalPageLocation()
+        {
+            var jquery = new TestableBundle("~/jquery") { PageLocation = "head" };
+            var app = new TestableBundle("~/app");
+            app.AddReference("~/jquery");
+
+            var findResultQueue = new Queue<IEnumerable<Bundle>>(new[]
+            {
+                new Bundle[] { jquery },
+                new Bundle[] { app }
+            });
+
+            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
+                           .Returns<string>(s => findResultQueue.Dequeue());
+
+            var queue = new Queue<IEnumerable<Bundle>>();
+            queue.Enqueue(new[] { jquery });
+            queue.Enqueue(new[] { jquery, app });
+            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
+                           .Returns<IEnumerable<Bundle>>(ms => queue.Dequeue());
+
+            builder.Reference("~/jquery");
+            builder.Reference("~/app");
+
+            builder.GetBundles("head").Single().ShouldBeSameAs(jquery);
+            builder.GetBundles(null).Single().ShouldBeSameAs(app);
         }
     }
 
