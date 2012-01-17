@@ -220,6 +220,13 @@ namespace Cassette
         }
 
         [Fact]
+        public void WhenAddRawFileReferenceStartingWithForwardSlash_ThenReferencePathhasTildePrefixAdded()
+        {
+            asset.AddRawFileReference("/test.png");
+            asset.References.First().Path.ShouldEqual("~/test.png");
+        }
+
+        [Fact]
         public void WhenAddReferenceToUrl_ThenReferenceIsDifferentBundle()
         {
             var url = "http://maps.google.com/maps/api/js?v=3.2&sensor=false";
