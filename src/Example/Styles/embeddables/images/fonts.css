@@ -1,0 +1,5 @@
+﻿@font-face {
+  font-family: 'DroidSansBold';
+  src: url(/fonts/droidsans-bold-webfont.eot);
+  src: local('Droid Sans Bold'), local('DroidSansBold'), url(~/fonts/embed/droidsans-bold-webfont.ttf) format('truetype');
+}

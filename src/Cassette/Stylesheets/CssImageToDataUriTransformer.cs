@@ -12,7 +12,12 @@ namespace Cassette.Stylesheets
     class CssImageToDataUriTransformer : IAssetTransformer
     {
         static readonly Regex UrlRegex = new Regex(
-            @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",
+            @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*/embed/.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",
+            RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
+        );
+
+        static readonly Regex BackgroundUrlRegex = new Regex(
+            @"\bbackground .* (?<value>url \s* \( \s* (?<quote>[""']?) (?<path>.*/embed/.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)?) .* ;",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
@@ -21,7 +26,7 @@ namespace Cassette.Stylesheets
             return delegate
             {
                 var css = openSourceStream().ReadToEnd();
-                var matches = UrlRegex.Matches(css)
+                var matches = BackgroundUrlRegex.Matches(css)
                                       .Cast<Match>()
                                       .Select(match => new UrlMatch(asset, match))
                                       .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
@@ -30,7 +35,7 @@ namespace Cassette.Stylesheets
                 foreach (var match in matches)
                 {
                     match.ReplaceWithin(output);
-
+                    
                     asset.AddRawFileReference(match.Url);
                 }
                 return output.ToString().AsStream();
@@ -42,8 +47,11 @@ namespace Cassette.Stylesheets
             public UrlMatch(IAsset asset, Match match)
             {
                 sourceAsset = asset;
-                index = match.Index; 
+                index = match.Index;
                 length = match.Length;
+                property = match.Value;
+                valueIndex = match.Groups["value"].Index;
+                valueLength = match.Groups["value"].Length;
                 url = match.Groups["path"].Value + "." + match.Groups["extension"].Value;
                 extension = match.Groups["extension"].Value;
                 file = sourceAsset.SourceFile.Directory.GetFile(url);
@@ -52,6 +60,9 @@ namespace Cassette.Stylesheets
             readonly IAsset sourceAsset;
             readonly int index;
             readonly int length;
+            readonly string property;
+            readonly int valueIndex;
+            readonly int valueLength;
             readonly string url;
             readonly string extension;
             readonly IFile file;
@@ -105,8 +116,9 @@ namespace Cassette.Stylesheets
             {
                 if (!file.Exists) return;
                 
-                output.Remove(index, length);
-                output.Insert(index, DataUri);
+                output.Remove(valueIndex, valueLength);
+                output.Insert(valueIndex, DataUri);
+                output.Insert(index, property + "\n");
             }
         }
     }
