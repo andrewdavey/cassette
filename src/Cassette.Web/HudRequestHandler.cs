@@ -13,12 +13,12 @@ namespace Cassette.Web
 {
     class HudRequestHandler : IHttpHandler
     {
-        readonly Func<CassetteApplication> getApplication;
+        readonly ICassetteApplicationContainer<ICassetteApplication> container;
         readonly RequestContext requestContext;
 
-        public HudRequestHandler(Func<CassetteApplication> getApplication, RequestContext requestContext)
+        public HudRequestHandler(ICassetteApplicationContainer<ICassetteApplication> container, RequestContext requestContext)
         {
-            this.getApplication = getApplication;
+            this.container = container;
             this.requestContext = requestContext;
         }
 
@@ -58,26 +58,24 @@ namespace Cassette.Web
         {
             if (requestContext.HttpContext.Request.Form["action"] == "rebuild-cache")
             {
-                CassetteApplicationContainer.Instance.Application.Settings.BundleCache.Clear();
-                CassetteApplicationContainer.Instance.RecycleApplication();
+                Application.Settings.BundleCache.Clear();
+                container.RecycleApplication();
             }
         }
 
         bool CanAccessHud(HttpRequestBase request)
         {
-            return request.IsLocal || getApplication().Settings.AllowRemoteDiagnostics;
+            return request.IsLocal || Application.Settings.AllowRemoteDiagnostics;
         }
 
         string CreateJson()
         {
-            var application = getApplication();
-            var settings = application.Settings;
-            var bundleContainer = application.BundleContainer;
+            var settings = Application.Settings;
             var urlGenerator = settings.UrlGenerator;
 
-            var scripts = bundleContainer.Bundles.OfType<ScriptBundle>();
-            var stylesheets = bundleContainer.Bundles.OfType<StylesheetBundle>();
-            var htmlTemplates = bundleContainer.Bundles.OfType<HtmlTemplateBundle>();
+            var scripts = Application.Bundles.OfType<ScriptBundle>();
+            var stylesheets = Application.Bundles.OfType<StylesheetBundle>();
+            var htmlTemplates = Application.Bundles.OfType<HtmlTemplateBundle>();
 
             var data = new
             {
@@ -96,6 +94,11 @@ namespace Cassette.Web
             };
             var json = new JavaScriptSerializer().Serialize(data);
             return json;
+        }
+
+        ICassetteApplication Application
+        {
+            get { return container.Application; }
         }
 
         object HtmlTemplateData(HtmlTemplateBundle htmlTemplate, IUrlGenerator urlGenerator)
