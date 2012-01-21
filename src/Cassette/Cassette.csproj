@@ -122,6 +122,7 @@
     <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="IPlaceholderTracker.cs" />
     <Compile Include="IReferenceBuilder.cs" />
+    <Compile Include="DisposableLazy.cs" />
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="BundleDescriptor.cs" />
     <Compile Include="BundleProcessing\AddTransformerToAssets.cs" />

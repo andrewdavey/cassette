@@ -1,6 +1,5 @@
 ﻿using Cassette.Configuration;
 using Cassette.IO;
-using IsolatedStorageFile = System.IO.IsolatedStorage.IsolatedStorageFile;
 
 namespace Cassette.Web
 {
@@ -10,15 +9,13 @@ namespace Cassette.Web
         readonly bool globalIsDebuggingEnabled;
         readonly string sourceDirectory;
         readonly string virtualDirectory;
-        readonly IsolatedStorageFile storage;
 
-        public InitialConfiguration(CassetteConfigurationSection configurationSection, bool globalIsDebuggingEnabled, string sourceDirectory, string virtualDirectory, IsolatedStorageFile storage)
+        public InitialConfiguration(CassetteConfigurationSection configurationSection, bool globalIsDebuggingEnabled, string sourceDirectory, string virtualDirectory)
         {
             this.configurationSection = configurationSection;
             this.globalIsDebuggingEnabled = globalIsDebuggingEnabled;
             this.sourceDirectory = sourceDirectory;
             this.virtualDirectory = virtualDirectory;
-            this.storage = storage;
         }
 
         public void Configure(BundleCollection bundles, CassetteSettings settings)
@@ -31,7 +28,7 @@ namespace Cassette.Web
             settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
 
             settings.SourceDirectory = new FileSystemDirectory(sourceDirectory);
-            settings.CacheDirectory = new IsolatedStorageDirectory(storage);
+            settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
             settings.UrlModifier = new VirtualDirectoryPrepender(virtualDirectory);
         }
     }
