@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -33,7 +32,6 @@ namespace Cassette.Web
     {
         static CassetteApplicationContainer<CassetteApplication> _container;
         static IEnumerable<ICassetteConfiguration> _configurations;
-        static IsolatedStorageFile _storage;
         static Stopwatch _startupTimer;
         static readonly object CreationLock = new object();
         /// <summary>
@@ -79,9 +77,6 @@ namespace Cassette.Web
             {
                 Trace.Source.TraceInformation("PostApplicationStart.");
 
-                _storage = IsolatedStorageFile.GetMachineStoreForAssembly();
-                // TODO: Check if this should be GetMachineStoreForApplication instead
-
                 _configurations = CreateConfigurations();
 
                 _container = CreateCassetteApplicationContainer();
@@ -108,7 +103,6 @@ namespace Cassette.Web
 // ReSharper restore UnusedMember.Global
         {
             Trace.Source.TraceInformation("Application shutdown - disposing resources.");
-            _storage.Dispose();
             _container.Dispose();
         }
 
@@ -206,8 +200,7 @@ namespace Cassette.Web
                 section,
                 GetSystemWebCompilationDebug(),
                 HttpRuntime.AppDomainAppPath,
-                HttpRuntime.AppDomainAppVirtualPath,
-                _storage
+                HttpRuntime.AppDomainAppVirtualPath
             );
 
             var allConfigurations = new List<ICassetteConfiguration> { initialConfiguration };

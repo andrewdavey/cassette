@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="CassetteApplication.cs" />
     <Compile Include="HttpContextExtensions.cs" />
+    <Compile Include="IsolatedStorageContainer.cs" />
     <Compile Include="StringBuilderTraceListener.cs" />
     <None Include="CassetteConfiguration.cs.pp" />
     <Compile Include="CassetteHttpModule.cs" />
