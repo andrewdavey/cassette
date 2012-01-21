@@ -29,10 +29,19 @@ namespace Cassette.Configuration
         /// <returns>A collection of files.</returns>
         public IEnumerable<IFile> FindFiles(IDirectory directory)
         {
-            return from pattern in GetFilePatterns()
-                   from file in directory.GetFiles(pattern, SearchOption)
-                   where IsAssetFile(file)
-                   select file;
+            var files =
+                from pattern in GetFilePatterns()
+                from file in directory.GetFiles(pattern, SearchOption)
+                where IsAssetFile(file)
+                select file;
+            
+            return RemoveMinifiedFilesWhereNonMinExist(files);
+        }
+
+        IEnumerable<IFile> RemoveMinifiedFilesWhereNonMinExist(IEnumerable<IFile> files)
+        {
+            var filter = new ConventionalMinifiedFileFilter();
+            return filter.Apply(files);
         }
 
         IEnumerable<string> GetFilePatterns()
