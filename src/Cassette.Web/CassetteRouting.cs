@@ -10,13 +10,13 @@ namespace Cassette.Web
     class CassetteRouting : IUrlGenerator
     {
         readonly IUrlModifier urlModifier;
-        readonly Func<IBundleContainer> getBundleContainer;
+        readonly ICassetteApplicationContainer<ICassetteApplication> container;
         const string RoutePrefix = "_cassette";
 
-        public CassetteRouting(IUrlModifier urlModifier, Func<IBundleContainer> getBundleContainer)
+        public CassetteRouting(IUrlModifier urlModifier, ICassetteApplicationContainer<ICassetteApplication> container)
         {
             this.urlModifier = urlModifier;
-            this.getBundleContainer = getBundleContainer;
+            this.container = container;
         }
 
         public void InstallRoutes(RouteCollection routes)
@@ -25,14 +25,14 @@ namespace Cassette.Web
             {
                 RemoveExistingCassetteRoutes(routes);
 
-                InstallBundleRoute<ScriptBundle>(routes, getBundleContainer);
-                InstallBundleRoute<StylesheetBundle>(routes, getBundleContainer);
-                InstallBundleRoute<HtmlTemplateBundle>(routes, getBundleContainer);
+                InstallBundleRoute<ScriptBundle>(routes);
+                InstallBundleRoute<StylesheetBundle>(routes);
+                InstallBundleRoute<HtmlTemplateBundle>(routes);
                 InstallHudRoute(routes);
 
                 InstallRawFileRoute(routes);
 
-                InstallAssetCompileRoute(routes, getBundleContainer);
+                InstallAssetCompileRoute(routes);
             }
         }
 
@@ -87,12 +87,12 @@ namespace Cassette.Web
             }
         }
 
-        void InstallBundleRoute<T>(RouteCollection routes, Func<IBundleContainer> getBundleContainer)
+        void InstallBundleRoute<T>(RouteCollection routes)
             where T : Bundle
         {
             var url = GetBundleRouteUrl<T>();
             var handler = new DelegateRouteHandler(
-                requestContext => new BundleRequestHandler<T>(getBundleContainer, requestContext)
+                requestContext => new BundleRequestHandler<T>(container.Application, requestContext)
             );
             Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
             // Insert Cassette's routes at the start of the table, 
@@ -113,7 +113,7 @@ namespace Cassette.Web
         {
             var route = new CassetteRoute(
                 RoutePrefix,
-                new DelegateRouteHandler(context => new HudRequestHandler(() => (CassetteApplication)CassetteApplicationContainer.Instance.Application, context))
+                new DelegateRouteHandler(context => new HudRequestHandler(container, context))
             );
             routes.Insert(0, route);
         }
@@ -130,14 +130,14 @@ namespace Cassette.Web
             routes.Insert(0, new CassetteRoute(url, handler));
         }
 
-        void InstallAssetCompileRoute(RouteCollection routes, Func<IBundleContainer> getBundleContainer)
+        void InstallAssetCompileRoute(RouteCollection routes)
         {
             // Used to return compiled coffeescript, less, etc.
             const string url = RoutePrefix + "/asset/{*path}";
             var handler = new DelegateRouteHandler(
                 requestContext => new AssetRequestHandler(
                     requestContext,
-                    getBundleContainer
+                    container.Application.Bundles
                 )
             );
             Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);
@@ -165,4 +165,3 @@ namespace Cassette.Web
         }
     }
 }
-

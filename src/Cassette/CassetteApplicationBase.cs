@@ -21,9 +21,9 @@ namespace Cassette
             get { return settings; }
         }
 
-        protected internal IBundleContainer BundleContainer
+        public IEnumerable<Bundle> Bundles
         {
-            get { return bundleContainer; }
+            get { return bundleContainer.Bundles; }
         }
 
         public virtual T FindBundleContainingPath<T>(string path)

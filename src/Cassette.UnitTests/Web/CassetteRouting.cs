@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
@@ -6,7 +7,7 @@ using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;
-using System;
+using System.Linq;
 
 namespace Cassette.Web
 {
@@ -20,7 +21,9 @@ namespace Cassette.Web
             urlModifier.Setup(m => m.Modify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
-            routing = new CassetteRouting(urlModifier.Object, Mock.Of<IBundleContainer>);
+            var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
+            container.SetupGet(c => c.Application.Bundles).Returns(Enumerable.Empty<Bundle>());
+            routing = new CassetteRouting(urlModifier.Object, container.Object);
         }
     }
 
