@@ -62,6 +62,7 @@
     <Compile Include="BundleProcessing\ParseReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
+    <Compile Include="Configuration\ConventionalMinifiedFileFilter.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
     <Compile Include="FileAsset.cs" />
     <Compile Include="AssetBase.cs" />
