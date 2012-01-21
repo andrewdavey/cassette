@@ -40,60 +40,8 @@ namespace Cassette.Configuration
 
         IEnumerable<IFile> RemoveMinifiedFilesWhereNonMinExist(IEnumerable<IFile> files)
         {
-            var filenameRegex = new Regex(@"^(?<name>.*?)(?<type>(\.|-)min|(\.|-)debug|)(?<extension>\.(js|css))$", RegexOptions.IgnoreCase);
-            var items = (
-                from file in files
-                let name = file.FullPath.Split('/', '\\').Last()
-                select new
-                {
-                    Match = filenameRegex.Match(name),
-                    File = file,
-                    Name = name
-                }
-            ).ToArray();
-
-            // Any non-matching filenames don't receive special filtering, so just return them all.
-            foreach (var item in items)
-            {
-                if (!item.Match.Success) yield return item.File;
-            }
-
-            // Create set of filenames for quick look-up.
-            var filenames = new HashSet<string>(
-                from item in items
-                where item.Match.Success
-                select item.Name,
-                StringComparer.OrdinalIgnoreCase
-            );
-
-            foreach (var item in items)
-            {
-                var name = item.Match.Groups["name"].Value;
-                var type = item.Match.Groups["type"].Value.TrimStart('.', '-');
-                var extension = item.Match.Groups["extension"].Value;
-
-                if (type.Equals("min", StringComparison.OrdinalIgnoreCase))
-                {
-                    var nonMinFileExists = filenames.Contains(name + extension);
-                    if (!nonMinFileExists)
-                    {
-                        yield return item.File;
-                    }
-                }
-                else if (type.Equals("debug", StringComparison.OrdinalIgnoreCase))
-                {
-                    yield return item.File;
-                }
-                else
-                {
-                    var debugFileExists = filenames.Contains(name + ".debug" + extension) 
-                                       || filenames.Contains(name + "-debug" + extension);
-                    if (!debugFileExists)
-                    {
-                        yield return item.File;
-                    }
-                }
-            }
+            var filter = new ConventionalMinifiedFileFilter();
+            return filter.Apply(files);
         }
 
         IEnumerable<string> GetFilePatterns()
