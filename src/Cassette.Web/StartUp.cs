@@ -31,6 +31,7 @@ namespace Cassette.Web
     /// </summary>
     public static class StartUp
     {
+        static CassetteApplicationContainer<CassetteApplication> _container;
         static IEnumerable<ICassetteConfiguration> _configurations;
         static IsolatedStorageFile _storage;
         static Stopwatch _startupTimer;
@@ -83,9 +84,9 @@ namespace Cassette.Web
 
                 _configurations = CreateConfigurations();
 
-                var container = CreateCassetteApplicationContainer();
-                CassetteApplicationContainer.Instance = container;
-                container.ForceApplicationCreation();
+                _container = CreateCassetteApplicationContainer();
+                CassetteApplicationContainer.SetContainerSingleton(_container);
+                _container.ForceApplicationCreation();
 
                 Trace.Source.TraceInformation("Cassette startup completed. It took {0} ms.", _startupTimer.ElapsedMilliseconds);
             }
@@ -108,14 +109,14 @@ namespace Cassette.Web
         {
             Trace.Source.TraceInformation("Application shutdown - disposing resources.");
             _storage.Dispose();
-            CassetteApplicationContainer.Instance.Dispose();
+            _container.Dispose();
         }
 
-        static CassetteApplicationContainer CreateCassetteApplicationContainer()
+        static CassetteApplicationContainer<CassetteApplication> CreateCassetteApplicationContainer()
         {
             return GetSystemWebCompilationDebug()
-                       ? new CassetteApplicationContainer(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
-                       : new CassetteApplicationContainer(CreateCassetteApplication);
+                       ? new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
+                       : new CassetteApplicationContainer<CassetteApplication>(CreateCassetteApplication);
         }
 
         static internal string TraceOutput
@@ -179,7 +180,7 @@ namespace Cassette.Web
                     configuration.Configure(bundles, settings);
                 }
 
-                var routing = new CassetteRouting(settings.UrlModifier, () => ((CassetteApplication)CassetteApplicationContainer.Instance.Application).BundleContainer);
+                var routing = new CassetteRouting(settings.UrlModifier, _container);
                 settings.UrlGenerator = routing;
 
                 Trace.Source.TraceInformation("Creating Cassette application object");

@@ -36,11 +36,8 @@ namespace Cassette.Web
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
             response.SetupGet(r => r.Cache).Returns(cache.Object);
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
-
-            bundleContainer = new Mock<IBundleContainer>();
-            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
-                           .Returns(() => new[] { bundle });
-            handler = new AssetRequestHandler(requestContext.Object, () => bundleContainer.Object);
+            bundles = new List<Bundle>();
+            handler = new AssetRequestHandler(requestContext.Object, bundles);
         }
 
         readonly AssetRequestHandler handler;
@@ -48,8 +45,7 @@ namespace Cassette.Web
         readonly Mock<HttpResponseBase> response;
         readonly Mock<HttpCachePolicyBase> cache;
         readonly NameValueCollection requestHeaders;
-        readonly Mock<IBundleContainer> bundleContainer;
-        Bundle bundle;
+        readonly List<Bundle> bundles;
         MemoryStream outputStream;
 
         [Fact]
@@ -61,8 +57,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenBundleNotFound_WhenProcessRequest_ThenNotFoundResponse()
         {
-            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
-                           .Returns(() => new Bundle[0]);
+            bundles.Clear();
             handler.ProcessRequest(null);
             response.VerifySet(r => r.StatusCode = 404);
         }
@@ -70,7 +65,7 @@ namespace Cassette.Web
         [Fact]
         public void GivenBundleFoundButAssetIsNull_WhenProcessRequest_ThenNotFoundResponse()
         {
-            bundle = new TestableBundle("~/test");
+            bundles.Add(new TestableBundle("~/test"));
             handler.ProcessRequest(null);
             response.VerifySet(r => r.StatusCode = 404);
         }
@@ -78,10 +73,10 @@ namespace Cassette.Web
         [Fact]
         public void GivenAssetExists_WhenProcessRequest_ThenResponseContentTypeIsBundleContentType()
         {
-            bundle = new TestableBundle("~/test")
+            bundles.Add(new TestableBundle("~/test")
             {
                 ContentType = "CONTENT/TYPE"
-            };
+            });
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
@@ -89,7 +84,7 @@ namespace Cassette.Web
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(Stream.Null);
-            bundle.Assets.Add(asset.Object);
+            bundles[0].Assets.Add(asset.Object);
 
             using (outputStream = new MemoryStream())
             {
@@ -102,10 +97,10 @@ namespace Cassette.Web
         [Fact]
         public void GivenAssetExists_WhenProcessRequest_ThenResponseOutputIsAssetContent()
         {
-            bundle = new TestableBundle("~/test")
+            bundles.Add(new TestableBundle("~/test")
             {
                 ContentType = "CONTENT/TYPE"
-            };
+            });
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
@@ -113,7 +108,7 @@ namespace Cassette.Web
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(() => "output".AsStream());
-            bundle.Assets.Add(asset.Object);
+            bundles[0].Assets.Add(asset.Object);
 
             using (outputStream = new MemoryStream())
             {

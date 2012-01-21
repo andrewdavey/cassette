@@ -22,7 +22,7 @@ namespace Cassette.Web
         protected RouteData routeData;
         protected RequestContext requestContext;
         protected Stream outputStream;
-        internal Mock<IBundleContainer> container;
+        internal Mock<ICassetteApplication> application;
 
         public BundleRequestHandler_Tests()
         {
@@ -44,14 +44,14 @@ namespace Cassette.Web
 
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            container = new Mock<IBundleContainer>();
+            application = new Mock<ICassetteApplication>();
         }
 
         internal BundleRequestHandler<TestableBundle> CreateRequestHandler(string bundlePath)
         {
             routeData.Values.Add("path", bundlePath);
             return new BundleRequestHandler<TestableBundle>(
-                () => container.Object,
+                application.Object,
                 requestContext
             );
         }
@@ -64,8 +64,8 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             bundle.Assets.Add(asset.Object);
-            container.Setup(c => c.FindBundlesContainingPath("~/test"))
-                     .Returns(new[] { bundle });
+            application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
+                       .Returns(bundle);
         }
 
         void IDisposable.Dispose()
@@ -84,8 +84,8 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             bundle.Assets.Add(asset.Object);
-            container.Setup(c => c.FindBundlesContainingPath("~/test"))
-                     .Returns(new[] { bundle });
+            application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
+                       .Returns(bundle);
 
             var handler = CreateRequestHandler("test_010203");
             handler.ProcessRequest();

@@ -21,7 +21,7 @@ namespace Cassette
         [Fact]
         public void WhenCreateContainer_ThenApplicationPropertyReturnsApplicationCreatedByFactoryMethod()
         {
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 container.Application.ShouldBeSameAs(applicationInstances[0].Object);
             }
@@ -30,7 +30,7 @@ namespace Cassette
         [Fact]
         public void WhenFileCreated_TheApplicationFactoryCalledAgain()
         {
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 var first = container.Application;
                 File.WriteAllText(Path.Combine(rootPath, "test.txt"), "");
@@ -43,7 +43,7 @@ namespace Cassette
         [Fact]
         public void WhenFileCreated_ApplicationPropertyReturnsSecondApplication()
         {
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 var first = container.Application;
                 File.WriteAllText(Path.Combine(rootPath, "test.txt"), "");
@@ -57,7 +57,7 @@ namespace Cassette
         {
             var filename = Path.Combine(rootPath, "test.txt");
             File.WriteAllText(filename, "");
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 var first = container.Application;
                 File.Delete(filename);
@@ -72,7 +72,7 @@ namespace Cassette
         {
             var filename = Path.Combine(rootPath, "test.txt");
             File.WriteAllText(filename, "");
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 var first = container.Application;
                 File.WriteAllText(filename, "changed");
@@ -87,7 +87,7 @@ namespace Cassette
         {
             var filename = Path.Combine(rootPath, "test.txt");
             File.WriteAllText(filename, "");
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 var first = container.Application;
                 File.Move(filename, filename + ".new");
@@ -101,7 +101,7 @@ namespace Cassette
         public void WhenCreatingANewApplication_ThenOldApplicationIsDisposed()
         {
             var filename = Path.Combine(rootPath, "test.txt");
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 var first = container.Application;
                 File.WriteAllText(filename, "");
@@ -115,7 +115,7 @@ namespace Cassette
         [Fact]
         public void WhenDispose_ThenCurrentApplicationInstanceDisposed()
         {
-            using (var container = new CassetteApplicationContainer(StubApplicationFactory, rootPath))
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
             {
                 var first = container.Application;                
             }
@@ -139,8 +139,8 @@ namespace Cassette
                 throw exception;
             });
             create = failingCreate;
-            
-            var container = new CassetteApplicationContainer(() => create(), rootPath);
+
+            var container = new CassetteApplicationContainer<ICassetteApplication>(() => create(), rootPath) as ICassetteApplicationContainer<ICassetteApplication>;
             var actualException = Assert.Throws<Exception>(delegate
             {
                 var app1 = container.Application;

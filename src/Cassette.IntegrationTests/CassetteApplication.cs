@@ -137,22 +137,22 @@ function asset1() {
 
         CassetteApplication CreateApplication(Action<BundleCollection> configure, string sourceDirectory = "assets")
         {
-            IBundleContainer bundleContainer = null;
+            var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
             var settings = new CassetteSettings("")
             {
                 CacheDirectory = new IsolatedStorageDirectory(storage),
                 SourceDirectory = new FileSystemDirectory(Path.GetFullPath(sourceDirectory)),
-                UrlGenerator = new CassetteRouting(new VirtualDirectoryPrepender("/"), () => bundleContainer)
+                UrlGenerator = new CassetteRouting(new VirtualDirectoryPrepender("/"), container.Object)
             };
             var bundles = new BundleCollection(settings);
             configure(bundles);
             var application = new CassetteApplication(
                 bundles,
                 settings,
-                new CassetteRouting(new VirtualDirectoryPrepender("/"), () => bundleContainer),
+                new CassetteRouting(new VirtualDirectoryPrepender("/"), container.Object),
                 () => httpContext.Object
             );
-            bundleContainer = application.BundleContainer;
+            container.Setup(c => c.Application).Returns(() => application);
 
             application.InstallRoutes(routes);
             return application;

@@ -3,22 +3,52 @@ using System.IO;
 
 namespace Cassette
 {
-    class CassetteApplicationContainer : ICassetteApplicationContainer
+    /// <summary>
+    /// Provides access to the current Cassette application object.
+    /// </summary>
+    public static class CassetteApplicationContainer
     {
-        public static ICassetteApplicationContainer Instance { get; set; }
+        static ICassetteApplicationContainer<ICassetteApplication> _containerSingleton;
 
-        readonly Func<ICassetteApplication> createApplication;
-        FileSystemWatcher watcher;
-        Lazy<ICassetteApplication> application;
-        bool creationFailed;
-
-        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication)
+        /// <summary>
+        /// Gets the current <see cref="ICassetteApplication"/> used by Cassette.
+        /// </summary>
+        public static ICassetteApplication Application
         {
-            this.createApplication = createApplication;
-            application = new Lazy<ICassetteApplication>(CreateApplication);
+            get { return _containerSingleton.Application; }
         }
 
-        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication, string rootDirectoryToWatch)
+        /// <summary>
+        /// Sets the container used to access the current Cassette application object.
+        /// Unit tests can use this method to assign a stub container for testing purposes.
+        /// </summary>
+        public static void SetContainerSingleton<T>(T containerSingleton)
+            where T : ICassetteApplicationContainer<ICassetteApplication>
+        {
+            _containerSingleton = containerSingleton;
+        }
+    }
+
+    class CassetteApplicationContainer<T> : ICassetteApplicationContainer<T>
+        where T : ICassetteApplication
+    {
+        public static T Application
+        {
+            get { return (T)CassetteApplicationContainer.Application; }
+        }
+
+        readonly Func<T> createApplication;
+        FileSystemWatcher watcher;
+        Lazy<T> application;
+        bool creationFailed;
+
+        public CassetteApplicationContainer(Func<T> createApplication)
+        {
+            this.createApplication = createApplication;
+            application = new Lazy<T>(CreateApplication);
+        }
+
+        public CassetteApplicationContainer(Func<T> createApplication, string rootDirectoryToWatch)
             : this(createApplication)
         {
 
@@ -32,7 +62,7 @@ namespace Cassette
             StartWatchingFileSystem(rootDirectoryToWatch);
         }
 
-        public ICassetteApplication Application
+        T ICassetteApplicationContainer<T>.Application
         {
             get
             {
@@ -75,13 +105,15 @@ namespace Cassette
                     application.Value.Dispose();
                 }
                 // Re-create the lazy object. So the application isn't created until it's asked for.
-                application = new Lazy<ICassetteApplication>(CreateApplication);
+                application = new Lazy<T>(CreateApplication);
             }
         }
 
-        public void ForceApplicationCreation()
+        internal void ForceApplicationCreation()
         {
+// ReSharper disable UnusedVariable
             var forceCreation = application.Value;
+// ReSharper restore UnusedVariable
         }
 
         bool IsPendingCreation
@@ -89,7 +121,7 @@ namespace Cassette
             get { return creationFailed == false && application.IsValueCreated == false; }
         }
 
-        ICassetteApplication CreateApplication()
+        T CreateApplication()
         {
             try
             {
