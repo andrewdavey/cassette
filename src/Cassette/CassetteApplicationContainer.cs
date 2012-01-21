@@ -22,8 +22,7 @@ namespace Cassette
         /// Sets the container used to access the current Cassette application object.
         /// Unit tests can use this method to assign a stub container for testing purposes.
         /// </summary>
-        public static void SetContainerSingleton<T>(T containerSingleton)
-            where T : ICassetteApplicationContainer<ICassetteApplication>
+        public static void SetContainerSingleton(ICassetteApplicationContainer<ICassetteApplication> containerSingleton)
         {
             _containerSingleton = containerSingleton;
         }
