@@ -69,7 +69,7 @@ namespace Cassette.Web
         {
             var factory = CreateApplicationContainerFactory();
             _container = factory.CreateContainer();
-            CassetteApplicationContainer.SetContainerSingleton(() => _container.Application);
+            CassetteApplicationContainer.SetApplicationAccessor(() => _container.Application);
         }
 
         static CassetteApplicationContainerFactory CreateApplicationContainerFactory()

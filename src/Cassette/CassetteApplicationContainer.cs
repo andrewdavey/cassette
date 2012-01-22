@@ -19,10 +19,10 @@ namespace Cassette
         }
 
         /// <summary>
-        /// Sets the container used to access the current Cassette application object.
-        /// Unit tests can use this method to assign a stub container for testing purposes.
+        /// Sets the function used to access the current Cassette application object.
+        /// Unit tests can use this method to assign a stub application for testing purposes.
         /// </summary>
-        public static void SetContainerSingleton(Func<ICassetteApplication> getApplication)
+        public static void SetApplicationAccessor(Func<ICassetteApplication> getApplication)
         {
             if (getApplication == null) throw new ArgumentNullException("getApplication");
             _getApplication = getApplication;
