@@ -27,7 +27,7 @@ namespace Cassette.Web
             bundleContainer = new Mock<IBundleContainer>();
             application = new TestableApplication(urlGenerator.Object, referenceBuilder.Object, bundleContainer.Object);
 
-            CassetteApplicationContainer.SetContainerSingleton(new CassetteApplicationContainer<ICassetteApplication>(() => application));
+            CassetteApplicationContainer.SetContainerSingleton(() => application);
         }
 
         [Fact]

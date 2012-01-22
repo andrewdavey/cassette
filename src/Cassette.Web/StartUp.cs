@@ -69,7 +69,7 @@ namespace Cassette.Web
         {
             var factory = CreateApplicationContainerFactory();
             _container = factory.CreateContainer();
-            CassetteApplicationContainer.SetContainerSingleton(_container);
+            CassetteApplicationContainer.SetContainerSingleton(() => _container.Application);
         }
 
         static CassetteApplicationContainerFactory CreateApplicationContainerFactory()
@@ -115,7 +115,7 @@ namespace Cassette.Web
         // ReSharper restore UnusedAutoPropertyAccessor.Global
         // ReSharper restore MemberCanBePrivate.Global
 
-        static internal string TraceOutput
+        internal static string TraceOutput
         {
             get { return StartUpTraceRecorder.TraceOutput; }
         }
