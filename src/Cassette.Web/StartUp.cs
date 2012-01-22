@@ -30,21 +30,12 @@ namespace Cassette.Web
     public static class StartUp
     {
         static CassetteApplicationContainer<CassetteApplication> _container;
-        static Stopwatch _startupTimer;
-        /// <summary>
-        /// Collects all of Cassette's trace output during start-up.
-        /// </summary>
-        static readonly TraceListener StartupTraceListener = new StringBuilderTraceListener
-        {
-            TraceOutputOptions = TraceOptions.DateTime,
-            Filter = new EventTypeFilter(SourceLevels.All)
-        };
+        static readonly StartUpTraceRecorder StartUpTraceRecorder = new StartUpTraceRecorder();
 
         // ReSharper disable UnusedMember.Global
         public static void PreApplicationStart()
         {
-            _startupTimer = Stopwatch.StartNew();
-            Trace.Source.Listeners.Add(StartupTraceListener);
+            StartUpTraceRecorder.Start();
             Trace.Source.TraceInformation("Registering CassetteHttpModule.");
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
@@ -59,7 +50,7 @@ namespace Cassette.Web
             {
                 InitializeApplicationContainer();
                 InstallRoutes();
-                Trace.Source.TraceInformation("Cassette startup completed. It took {0} ms.", _startupTimer.ElapsedMilliseconds);
+                Trace.Source.TraceInformation("Cassette startup completed. It took {0} ms.", StartUpTraceRecorder.ElapsedMilliseconds);
             }
             catch (Exception ex)
             {
@@ -68,23 +59,25 @@ namespace Cassette.Web
             }
             finally
             {
-                if (_startupTimer != null) _startupTimer.Stop();
-                Trace.Source.Flush();
-                Trace.Source.Listeners.Remove(StartupTraceListener);
+                StartUpTraceRecorder.Stop();
             }
         }
         // ReSharper restore UnusedMember.Global
 
         static void InitializeApplicationContainer()
         {
-            var factory = new CassetteApplicationContainerFactory(
+            var factory = CreateApplicationContainerFactory();
+            _container = factory.CreateContainer();
+            CassetteApplicationContainer.SetContainerSingleton(_container);
+        }
+
+        static CassetteApplicationContainerFactory CreateApplicationContainerFactory()
+        {
+            return new CassetteApplicationContainerFactory(
                 CassetteConfigurationFactory(),
                 GetCassetteConfigurationSection(),
                 IsAspNetDebugging()
             );
-            _container = factory.CreateContainer();
-            CassetteApplicationContainer.SetContainerSingleton(_container);
-            _container.ForceApplicationCreation();
         }
 
         static void InstallRoutes()
@@ -114,7 +107,7 @@ namespace Cassette.Web
 
         static internal string TraceOutput
         {
-            get { return StartupTraceListener.ToString(); }
+            get { return StartUpTraceRecorder.TraceOutput; }
         }
 
         static CassetteConfigurationSection GetCassetteConfigurationSection()

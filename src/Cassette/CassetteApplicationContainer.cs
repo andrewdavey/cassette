@@ -96,13 +96,6 @@ namespace Cassette
             }
         }
 
-        internal void ForceApplicationCreation()
-        {
-// ReSharper disable UnusedVariable
-            var forceCreation = application.Value;
-// ReSharper restore UnusedVariable
-        }
-
         bool IsPendingCreation
         {
             get { return creationFailed == false && application.IsValueCreated == false; }
