@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Web.Routing;
 using Cassette.Configuration;
 
 namespace Cassette.Web
 {
     class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(IEnumerable<Bundle> bundles, CassetteSettings settings, CassetteRouting routing, Func<HttpContextBase> getCurrentHttpContext)
+        public CassetteApplication(IEnumerable<Bundle> bundles, CassetteSettings settings, Func<HttpContextBase> getCurrentHttpContext)
             : base(bundles, settings)
         {
             this.getCurrentHttpContext = getCurrentHttpContext;
-            this.routing = routing;
         }
 
         readonly Func<HttpContextBase> getCurrentHttpContext;
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
-        readonly CassetteRouting routing;
 
         public void OnPostMapRequestHandler()
         {
@@ -38,11 +35,6 @@ namespace Cassette.Web
                 tracker
             );
             response.Filter = filter;
-        }
-
-        internal void InstallRoutes(RouteCollection routes)
-        {
-            routing.InstallRoutes(routes);
         }
 
         bool CanRewriteOutput(HttpContextBase httpContext)

@@ -23,7 +23,7 @@ namespace Cassette.Web
 
         CassetteApplication Application
         {
-            get { return CassetteApplicationContainer<CassetteApplication>.Application; }
+            get { return (CassetteApplication)CassetteApplicationContainer.Application; }
         }
 
         void IHttpModule.Dispose()

@@ -55,10 +55,15 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssignUrlGenerator.cs" />
     <Compile Include="CassetteApplication.cs" />
+    <Compile Include="CassetteApplicationContainerFactory.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="IsolatedStorageContainer.cs" />
+    <Compile Include="DelegateCassetteConfigurationFactory.cs" />
+    <Compile Include="RoutingHelpers.cs" />
     <Compile Include="StringBuilderTraceListener.cs" />
+    <Compile Include="UrlGenerator.cs" />
     <None Include="CassetteConfiguration.cs.pp" />
     <Compile Include="CassetteHttpModule.cs" />
     <Compile Include="AssetRequestHandler.cs" />
