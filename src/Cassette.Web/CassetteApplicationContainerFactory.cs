@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -8,12 +9,27 @@ namespace Cassette.Web
 {
     class CassetteApplicationContainerFactory : CassetteApplicationContainerFactoryBase<CassetteApplication>
     {
+        readonly CassetteConfigurationSection configurationSection;
+        readonly string physicalDirectory;
+        readonly string virtualDirectory;
         readonly bool isAspNetDebuggingEnabled;
+        readonly Func<HttpContextBase> getHttpContext;
 
-        public CassetteApplicationContainerFactory(ICassetteConfigurationFactory cassetteConfigurationFactory, CassetteConfigurationSection configurationSection, bool isAspNetDebuggingEnabled)
-            : base(cassetteConfigurationFactory, configurationSection)
+        public CassetteApplicationContainerFactory(
+            ICassetteConfigurationFactory cassetteConfigurationFactory,
+            CassetteConfigurationSection configurationSection,
+            string physicalDirectory,
+            string virtualDirectory,
+            bool isAspNetDebuggingEnabled,
+            Func<HttpContextBase> getHttpContext
+            )
+            : base(cassetteConfigurationFactory)
         {
+            this.configurationSection = configurationSection;
+            this.physicalDirectory = physicalDirectory;
+            this.virtualDirectory = virtualDirectory;
             this.isAspNetDebuggingEnabled = isAspNetDebuggingEnabled;
+            this.getHttpContext = getHttpContext;
         }
 
         protected override IEnumerable<ICassetteConfiguration> CreateCassetteConfigurations()
@@ -29,10 +45,10 @@ namespace Cassette.Web
         InitialConfiguration CreateInitialConfiguration()
         {
             return new InitialConfiguration(
-                ConfigurationSection,
+                configurationSection,
                 isAspNetDebuggingEnabled,
-                HttpRuntime.AppDomainAppPath,
-                HttpRuntime.AppDomainAppVirtualPath
+                physicalDirectory,
+                virtualDirectory
             );
         }
 
@@ -43,7 +59,7 @@ namespace Cassette.Web
                 .Distinct()
                 .Select(name => new AssemblyName(name).Version.ToString());
 
-            var parts = assemblyVersion.Concat(new[] { HttpRuntime.AppDomainAppVirtualPath });
+            var parts = assemblyVersion.Concat(new[] { virtualDirectory });
             return string.Join("|", parts);
         }
 
@@ -52,7 +68,7 @@ namespace Cassette.Web
             return new CassetteApplication(
                 Bundles,
                 Settings,
-                GetCurrentHttpContext
+                getHttpContext
             );
         }
 
@@ -60,9 +76,9 @@ namespace Cassette.Web
         {
             get
             {
-                if (ConfigurationSection.WatchFileSystem.HasValue)
+                if (configurationSection.WatchFileSystem.HasValue)
                 {
-                    return ConfigurationSection.WatchFileSystem.Value;
+                    return configurationSection.WatchFileSystem.Value;
                 }
                 else
                 {
@@ -71,14 +87,9 @@ namespace Cassette.Web
             }
         }
 
-        protected override string ApplicationDirectory
+        protected override string PhysicalApplicationDirectory
         {
-            get { return HttpRuntime.AppDomainAppPath; }
-        }
-
-        static HttpContextBase GetCurrentHttpContext()
-        {
-            return new HttpContextWrapper(HttpContext.Current);
+            get { return physicalDirectory; }
         }
     }
 }
