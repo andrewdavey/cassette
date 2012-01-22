@@ -152,7 +152,7 @@ function asset1() {
                 () => httpContext.Object
             );
             container.Setup(c => c.Application).Returns(() => application);
-            new CassetteRouting(container.Object, "_cassette").InstallRoutes(routes);
+            new RouteInstaller(container.Object, "_cassette").InstallRoutes(routes);
             return application;
         }
 
