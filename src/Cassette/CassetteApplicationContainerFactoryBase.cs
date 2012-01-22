@@ -10,17 +10,15 @@ namespace Cassette
         readonly object creationLock = new object();
         IEnumerable<ICassetteConfiguration> cassetteConfigurations;
 
-        protected CassetteApplicationContainerFactoryBase(ICassetteConfigurationFactory cassetteConfigurationFactory, CassetteConfigurationSection configurationSection)
+        protected CassetteApplicationContainerFactoryBase(ICassetteConfigurationFactory cassetteConfigurationFactory)
         {
             this.cassetteConfigurationFactory = cassetteConfigurationFactory;
-            ConfigurationSection = configurationSection;
         }
 
         protected BundleCollection Bundles { get; private set; }
         protected CassetteSettings Settings { get; private set; }
-        protected CassetteConfigurationSection ConfigurationSection { get; private set; }
         protected abstract bool ShouldWatchFileSystem { get; }
-        protected abstract string ApplicationDirectory { get; }
+        protected abstract string PhysicalApplicationDirectory { get; }
 
         public CassetteApplicationContainer<T> CreateContainer()
         {
@@ -28,7 +26,7 @@ namespace Cassette
             var container = new CassetteApplicationContainer<T>(CreateApplication);
             if (ShouldWatchFileSystem)
             {
-                container.CreateNewApplicationWhenFileSystemChanges(ApplicationDirectory);
+                container.CreateNewApplicationWhenFileSystemChanges(PhysicalApplicationDirectory);
             }
             return container;
         }

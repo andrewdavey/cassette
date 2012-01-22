@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Compilation;
 using System.Web.Configuration;
 using System.Web.Routing;
@@ -74,10 +75,18 @@ namespace Cassette.Web
         static CassetteApplicationContainerFactory CreateApplicationContainerFactory()
         {
             return new CassetteApplicationContainerFactory(
-                CassetteConfigurationFactory(),
-                GetCassetteConfigurationSection(),
-                IsAspNetDebugging()
+                CreateCassetteConfigurationFactory(),
+                GetCassetteConfigurationSection,
+                HttpRuntime.AppDomainAppPath,
+                HttpRuntime.AppDomainAppVirtualPath,
+                IsAspNetDebugging,
+                GetCurrentHttpContext
             );
+        }
+
+        static HttpContextBase GetCurrentHttpContext()
+        {
+            return new HttpContextWrapper(HttpContext.Current);
         }
 
         static void InstallRoutes()
@@ -110,19 +119,25 @@ namespace Cassette.Web
             get { return StartUpTraceRecorder.TraceOutput; }
         }
 
-        static CassetteConfigurationSection GetCassetteConfigurationSection()
+        static CassetteConfigurationSection GetCassetteConfigurationSection
         {
-            return (WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection) 
-                   ?? new CassetteConfigurationSection();
+            get
+            {
+                return (WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection)
+                       ?? new CassetteConfigurationSection();
+            }
         }
 
-        static bool IsAspNetDebugging()
+        static bool IsAspNetDebugging
         {
-            var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-            return compilation != null && compilation.Debug;
+            get
+            {
+                var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
+                return compilation != null && compilation.Debug;
+            }
         }
 
-        static ICassetteConfigurationFactory CassetteConfigurationFactory()
+        static ICassetteConfigurationFactory CreateCassetteConfigurationFactory()
         {
             if (CreateConfigurations == null)
             {
