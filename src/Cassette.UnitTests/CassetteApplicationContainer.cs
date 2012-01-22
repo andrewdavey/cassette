@@ -21,7 +21,7 @@ namespace Cassette
         [Fact]
         public void WhenCreateContainer_ThenApplicationPropertyReturnsApplicationCreatedByFactoryMethod()
         {
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
                 container.Application.ShouldBeSameAs(applicationInstances[0].Object);
             }
@@ -30,8 +30,9 @@ namespace Cassette
         [Fact]
         public void WhenFileCreated_TheApplicationFactoryCalledAgain()
         {
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
+                container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(Path.Combine(rootPath, "test.txt"), "");
                 Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
@@ -43,8 +44,9 @@ namespace Cassette
         [Fact]
         public void WhenFileCreated_ApplicationPropertyReturnsSecondApplication()
         {
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
+                container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(Path.Combine(rootPath, "test.txt"), "");
                 Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
@@ -57,8 +59,9 @@ namespace Cassette
         {
             var filename = Path.Combine(rootPath, "test.txt");
             File.WriteAllText(filename, "");
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
+                container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.Delete(filename);
                 Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
@@ -72,8 +75,9 @@ namespace Cassette
         {
             var filename = Path.Combine(rootPath, "test.txt");
             File.WriteAllText(filename, "");
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
+                container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(filename, "changed");
                 Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
@@ -87,8 +91,9 @@ namespace Cassette
         {
             var filename = Path.Combine(rootPath, "test.txt");
             File.WriteAllText(filename, "");
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
+                container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.Move(filename, filename + ".new");
                 Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
@@ -101,8 +106,9 @@ namespace Cassette
         public void WhenCreatingANewApplication_ThenOldApplicationIsDisposed()
         {
             var filename = Path.Combine(rootPath, "test.txt");
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
+                container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(filename, "");
                 Thread.Sleep(500);
@@ -115,7 +121,7 @@ namespace Cassette
         [Fact]
         public void WhenDispose_ThenCurrentApplicationInstanceDisposed()
         {
-            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory, rootPath) as ICassetteApplicationContainer<ICassetteApplication>)
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
             {
                 var first = container.Application;                
             }
@@ -140,7 +146,8 @@ namespace Cassette
             });
             create = failingCreate;
 
-            var container = new CassetteApplicationContainer<ICassetteApplication>(() => create(), rootPath) as ICassetteApplicationContainer<ICassetteApplication>;
+            var container = new CassetteApplicationContainer<ICassetteApplication>(() => create());
+            container.CreateNewApplicationWhenFileSystemChanges(rootPath);
             var actualException = Assert.Throws<Exception>(delegate
             {
                 var app1 = container.Application;

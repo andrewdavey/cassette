@@ -61,9 +61,11 @@
     <Compile Include="BundleProcessing\ICommentParser.cs" />
     <Compile Include="BundleProcessing\ParseReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
+    <Compile Include="CassetteApplicationContainerFactoryBase.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
     <Compile Include="Configuration\ConventionalMinifiedFileFilter.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
+    <Compile Include="AssemblyScanningCassetteConfigurationFactory.cs" />
     <Compile Include="FileAsset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="AssetFinder.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
     <Compile Include="ICassetteApplicationContainer.cs" />
+    <Compile Include="ICassetteConfigurationFactory.cs" />
     <Compile Include="Interop\ActiveScriptException.cs" />
     <Compile Include="Interop\ActiveScriptParseWrapper.cs" />
     <Compile Include="Interop\ChakraJavaScriptEngine.cs" />

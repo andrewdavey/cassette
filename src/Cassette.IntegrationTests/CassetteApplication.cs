@@ -142,19 +142,17 @@ function asset1() {
             {
                 CacheDirectory = new IsolatedStorageDirectory(storage),
                 SourceDirectory = new FileSystemDirectory(Path.GetFullPath(sourceDirectory)),
-                UrlGenerator = new CassetteRouting(new VirtualDirectoryPrepender("/"), container.Object)
+                UrlGenerator = new UrlGenerator(new VirtualDirectoryPrepender("/"), "_cassette")
             };
             var bundles = new BundleCollection(settings);
             configure(bundles);
             var application = new CassetteApplication(
                 bundles,
                 settings,
-                new CassetteRouting(new VirtualDirectoryPrepender("/"), container.Object),
                 () => httpContext.Object
             );
             container.Setup(c => c.Application).Returns(() => application);
-
-            application.InstallRoutes(routes);
+            new CassetteRouting(container.Object, "_cassette").InstallRoutes(routes);
             return application;
         }
 

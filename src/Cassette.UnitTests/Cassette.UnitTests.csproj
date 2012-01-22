@@ -144,6 +144,7 @@
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
+    <Compile Include="Web\UrlGenerator.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
     <Compile Include="Web\InitialConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />

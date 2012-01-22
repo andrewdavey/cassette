@@ -24,5 +24,12 @@ namespace Cassette.Configuration
             get { return (bool)this["allowRemoteDiagnostics"]; }
             set { this["allowRemoteDiagnostics"] = value; }
         }
+
+        [ConfigurationProperty("watchFileSystem", DefaultValue = null)]
+        public bool? WatchFileSystem
+        {
+            get { return (bool?)this["watchFileSystem"]; }
+            set { this["watchFileSystem"] = value; }
+        }
     }
 }

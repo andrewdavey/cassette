@@ -31,11 +31,6 @@ namespace Cassette
     class CassetteApplicationContainer<T> : ICassetteApplicationContainer<T>
         where T : ICassetteApplication
     {
-        public static T Application
-        {
-            get { return (T)CassetteApplicationContainer.Application; }
-        }
-
         readonly Func<T> createApplication;
         FileSystemWatcher watcher;
         Lazy<T> application;
@@ -47,21 +42,7 @@ namespace Cassette
             application = new Lazy<T>(CreateApplication);
         }
 
-        public CassetteApplicationContainer(Func<T> createApplication, string rootDirectoryToWatch)
-            : this(createApplication)
-        {
-
-            // In production mode we don't expect the asset files to change
-            // while the application is running. Changes to assets will involve a 
-            // re-deployment and restart of the app pool. So new assets are loaded then.
-
-            // In development mode, asset files will likely change while application is
-            // running. So watch the file system and recycle the application object 
-            // when files are created/changed/deleted/etc.
-            StartWatchingFileSystem(rootDirectoryToWatch);
-        }
-
-        T ICassetteApplicationContainer<T>.Application
+        public T Application
         {
             get
             {
@@ -69,8 +50,15 @@ namespace Cassette
             }
         }
 
-        void StartWatchingFileSystem(string rootDirectoryToWatch)
+        public void CreateNewApplicationWhenFileSystemChanges(string rootDirectoryToWatch)
         {
+            // In production mode we don't expect the asset files to change
+            // while the application is running. Changes to assets will involve a 
+            // re-deployment and restart of the app pool. So new assets are loaded then.
+
+            // In development mode, asset files will likely change while application is
+            // running. So watch the file system and recycle the application object 
+            // when files are created/changed/deleted/etc.
             watcher = new FileSystemWatcher(rootDirectoryToWatch)
             {
                 IncludeSubdirectories = true,

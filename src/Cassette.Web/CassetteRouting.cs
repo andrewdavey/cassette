@@ -1,93 +1,45 @@
-﻿using System;
-using System.Web.Routing;
+﻿using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-using Cassette.Utilities;
 
 namespace Cassette.Web
 {
-    class CassetteRouting : IUrlGenerator
+    class CassetteRouting
     {
-        readonly IUrlModifier urlModifier;
         readonly ICassetteApplicationContainer<ICassetteApplication> container;
-        const string RoutePrefix = "_cassette";
+        readonly string routePrefix;
+        RouteCollection routes;
 
-        public CassetteRouting(IUrlModifier urlModifier, ICassetteApplicationContainer<ICassetteApplication> container)
+        public CassetteRouting(ICassetteApplicationContainer<ICassetteApplication> container, string routePrefix)
         {
-            this.urlModifier = urlModifier;
             this.container = container;
+            this.routePrefix = routePrefix;
         }
 
-        public void InstallRoutes(RouteCollection routes)
+        public void InstallRoutes(RouteCollection routeCollection)
         {
+            routes = routeCollection;
             using (routes.GetWriteLock())
             {
-                RemoveExistingCassetteRoutes(routes);
-
-                InstallBundleRoute<ScriptBundle>(routes);
-                InstallBundleRoute<StylesheetBundle>(routes);
-                InstallBundleRoute<HtmlTemplateBundle>(routes);
-                InstallHudRoute(routes);
-
-                InstallRawFileRoute(routes);
-
-                InstallAssetCompileRoute(routes);
+                InstallHudRoute();
+                InstallBundleRoute<ScriptBundle>();
+                InstallBundleRoute<StylesheetBundle>();
+                InstallBundleRoute<HtmlTemplateBundle>();
+                InstallAssetCompileRoute();
+                InstallRawFileRoute();
             }
         }
 
-        public string CreateBundleUrl(Bundle bundle)
+        void InstallHudRoute()
         {
-            return urlModifier.Modify(string.Format("{0}/{1}/{2}_{3}",
-                RoutePrefix,
-                ConventionalBundlePathName(bundle.GetType()),
-                bundle.PathWithoutPrefix,
-                bundle.Hash.ToHexString()
-            ));
+            var url = routePrefix;
+            var handler = new DelegateRouteHandler(context => new HudRequestHandler(container, context));
+            Trace.Source.TraceInformation("Installing diagnostics route handler for \"_cassette\".");
+            InsertRouteIntoTable(url, handler);
         }
 
-        public string CreateAssetUrl(IAsset asset)
-        {
-            return urlModifier.Modify(string.Format(
-                "{0}/asset/{1}?{2}",
-                RoutePrefix,
-                asset.SourceFile.FullPath.Substring(2),
-                asset.Hash.ToHexString()
-            ));
-        }
-
-        public string CreateRawFileUrl(string filename, string hash)
-        {
-            if (filename.StartsWith("~") == false)
-            {
-                throw new ArgumentException("Image filename must be application relative (starting with '~').");
-            }
-
-            filename = filename.Substring(2); // Remove the "~/"
-            var dotIndex = filename.LastIndexOf('.');
-            var name = filename.Substring(0, dotIndex);
-            var extension = filename.Substring(dotIndex + 1);
-            
-            return urlModifier.Modify(string.Format("{0}/file/{1}_{2}_{3}",
-                RoutePrefix,
-                ConvertToForwardSlashes(name),
-                hash,
-                extension
-            ));
-        }
-
-        static void RemoveExistingCassetteRoutes(RouteCollection routes)
-        {
-            for (int i = routes.Count - 1; i >= 0; i--)
-            {
-                if (routes[i] is CassetteRoute)
-                {
-                    routes.RemoveAt(i);
-                }
-            }
-        }
-
-        void InstallBundleRoute<T>(RouteCollection routes)
+        void InstallBundleRoute<T>()
             where T : Bundle
         {
             var url = GetBundleRouteUrl<T>();
@@ -95,45 +47,22 @@ namespace Cassette.Web
                 requestContext => new BundleRequestHandler<T>(container.Application, requestContext)
             );
             Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            routes.Insert(0, new CassetteRoute(url, handler));
+            InsertRouteIntoTable(url, handler);
         }
 
         string GetBundleRouteUrl<T>()
         {
             return string.Format(
                 "{0}/{1}/{{*path}}",
-                RoutePrefix,
-                ConventionalBundlePathName(typeof(T))
+                routePrefix,
+                RoutingHelpers.ConventionalBundlePathName(typeof(T))
             );
         }
 
-        void InstallHudRoute(RouteCollection routes)
-        {
-            var route = new CassetteRoute(
-                RoutePrefix,
-                new DelegateRouteHandler(context => new HudRequestHandler(container, context))
-            );
-            routes.Insert(0, route);
-        }
-
-        void InstallRawFileRoute(RouteCollection routes)
-        {
-            const string url = RoutePrefix + "/file/{*path}";
-            var handler = new DelegateRouteHandler(
-                requestContext => new RawFileRequestHandler(requestContext)
-            );
-            Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
-            // Insert Cassette's routes at the start of the table, 
-            // to avoid conflicts with the application's own routes.
-            routes.Insert(0, new CassetteRoute(url, handler));
-        }
-
-        void InstallAssetCompileRoute(RouteCollection routes)
+        void InstallAssetCompileRoute()
         {
             // Used to return compiled coffeescript, less, etc.
-            const string url = RoutePrefix + "/asset/{*path}";
+            var url = routePrefix + "/asset/{*path}";
             var handler = new DelegateRouteHandler(
                 requestContext => new AssetRequestHandler(
                     requestContext,
@@ -141,27 +70,29 @@ namespace Cassette.Web
                 )
             );
             Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);
+            InsertRouteIntoTable(url, handler);
+        }
+
+        void InstallRawFileRoute()
+        {
+            var url = routePrefix + "/file/{*path}";
+            var handler = new DelegateRouteHandler(
+                requestContext => new RawFileRequestHandler(requestContext)
+            );
+            Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
+            InsertRouteIntoTable(url, handler);
+        }
+
+        void InsertRouteIntoTable(string url, IRouteHandler routeHandler)
+        {
+            InsertRouteIntoTable(new CassetteRoute(url, routeHandler));
+        }
+
+        void InsertRouteIntoTable(RouteBase route)
+        {
             // Insert Cassette's routes at the start of the table, 
             // to avoid conflicts with the application's own routes.
-            routes.Insert(0, new CassetteRoute(url, handler));
-        }
-
-        static string ConventionalBundlePathName(Type bundleType)
-        {
-            // ExternalScriptBundle subclasses ScriptBundle, but we want the name to still be "scripts"
-            // So walk up the inheritance chain until we get to something that directly inherits from Bundle.
-            while (bundleType != null && bundleType.BaseType != typeof(Bundle))
-            {
-                bundleType = bundleType.BaseType;
-            }
-            if (bundleType == null) throw new ArgumentException("Type must be a subclass of Cassette.Bundle.", "bundleType");
-
-            return bundleType.Name.ToLowerInvariant();
-        }
-
-        string ConvertToForwardSlashes(string path)
-        {
-            return path.Replace('\\', '/');
+            routes.Insert(0, route);
         }
     }
 }
