@@ -154,7 +154,7 @@
     <Compile Include="Utilities\PathUtilities.cs" />
     <Compile Include="Web\CassetteApplication.cs" />
     <Compile Include="Web\BundleRequestHandler.cs" />
-    <Compile Include="Web\CassetteRouting.cs" />
+    <Compile Include="Web\RouteInstaller.cs" />
     <Compile Include="Web\RawFileRequestHandler.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,13 +5,13 @@ using Cassette.Stylesheets;
 
 namespace Cassette.Web
 {
-    class CassetteRouting
+    class RouteInstaller
     {
         readonly ICassetteApplicationContainer<ICassetteApplication> container;
         readonly string routePrefix;
         RouteCollection routes;
 
-        public CassetteRouting(ICassetteApplicationContainer<ICassetteApplication> container, string routePrefix)
+        public RouteInstaller(ICassetteApplicationContainer<ICassetteApplication> container, string routePrefix)
         {
             this.container = container;
             this.routePrefix = routePrefix;

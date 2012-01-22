@@ -10,23 +10,23 @@ using Xunit;
 
 namespace Cassette.Web
 {
-    public abstract class CassetteRouting_Tests
+    public abstract class RouteInstaller_Tests
     {
         protected readonly Mock<IUrlModifier> urlModifier = new Mock<IUrlModifier>();
-        internal readonly CassetteRouting routing;
+        internal readonly RouteInstaller routing;
 
-        public CassetteRouting_Tests()
+        public RouteInstaller_Tests()
         {
             urlModifier.Setup(m => m.Modify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
             var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
             container.SetupGet(c => c.Application.Bundles).Returns(Enumerable.Empty<Bundle>());
-            routing = new CassetteRouting(container.Object, "_cassette");
+            routing = new RouteInstaller(container.Object, "_cassette");
         }
     }
 
-    public class UrlGenerator_InstallRoutes_Tests : CassetteRouting_Tests
+    public class UrlGenerator_InstallRoutes_Tests : RouteInstaller_Tests
     {
         readonly RouteCollection routes;
         readonly Mock<HttpContextBase> httpContext;

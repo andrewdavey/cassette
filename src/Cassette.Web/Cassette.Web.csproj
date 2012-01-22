@@ -69,7 +69,7 @@
     <Compile Include="CassetteHttpModule.cs" />
     <Compile Include="AssetRequestHandler.cs" />
     <Compile Include="CassetteRoute.cs" />
-    <Compile Include="CassetteRouting.cs" />
+    <Compile Include="RouteInstaller.cs" />
     <Compile Include="DelegateRouteHandler.cs" />
     <Compile Include="BundleRequestHandler.cs" />
     <Compile Include="HudRequestHandler.cs" />
