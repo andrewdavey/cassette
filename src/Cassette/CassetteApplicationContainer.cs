@@ -8,23 +8,24 @@ namespace Cassette
     /// </summary>
     public static class CassetteApplicationContainer
     {
-        static ICassetteApplicationContainer<ICassetteApplication> _containerSingleton;
+        static Func<ICassetteApplication> _getApplication;
 
         /// <summary>
         /// Gets the current <see cref="ICassetteApplication"/> used by Cassette.
         /// </summary>
         public static ICassetteApplication Application
         {
-            get { return _containerSingleton.Application; }
+            get { return _getApplication(); }
         }
 
         /// <summary>
         /// Sets the container used to access the current Cassette application object.
         /// Unit tests can use this method to assign a stub container for testing purposes.
         /// </summary>
-        public static void SetContainerSingleton(ICassetteApplicationContainer<ICassetteApplication> containerSingleton)
+        public static void SetContainerSingleton(Func<ICassetteApplication> getApplication)
         {
-            _containerSingleton = containerSingleton;
+            if (getApplication == null) throw new ArgumentNullException("getApplication");
+            _getApplication = getApplication;
         }
     }
 
