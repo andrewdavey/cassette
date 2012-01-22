@@ -187,8 +187,12 @@ namespace Cassette.Persistence
                 {
                     file.Delete();
                 }
-                catch
+// ReSharper disable EmptyGeneralCatchClause
+                catch 
+// ReSharper restore EmptyGeneralCatchClause
                 {
+                    // Isolated storage files can get locked, when different user is accessing.
+                    // We can't do anything about it, so just skip this error.
                 }
             }
         }

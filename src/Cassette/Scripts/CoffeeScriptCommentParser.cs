@@ -72,37 +72,37 @@ namespace Cassette.Scripts
                         while (i < code.Length - 2 && (code[i] != '#' || code[i + 1] != '#' || code[i + 2] != '#'))
                         {
                             // Track new lines within the comment.
-                            if (code[i] == '\r')
+                            switch (code[i])
                             {
-                                yield return new Comment
-                                {
-                                    LineNumber = line,
-                                    Value = code.Substring(commentStart, i - commentStart)
-                                };
-                                i++;
-                                if (i < code.Length && code[i] == '\n')
-                                {
+                                case '\r':
+                                    yield return new Comment
+                                    {
+                                        LineNumber = line,
+                                        Value = code.Substring(commentStart, i - commentStart)
+                                    };
                                     i++;
-                                }
-                                commentStart = i;
-                                line++;
-                                continue;
-                            }
-                            else if (code[i] == '\n')
-                            {
-                                yield return new Comment
-                                {
-                                    LineNumber = line,
-                                    Value = code.Substring(commentStart, i - commentStart)
-                                };
-                                i++;
-                                commentStart = i;
-                                line++;
-                                continue;
-                            }
-                            else
-                            {
-                                i++;
+                                    if (i < code.Length && code[i] == '\n')
+                                    {
+                                        i++;
+                                    }
+                                    commentStart = i;
+                                    line++;
+                                    break;
+
+                                case '\n':
+                                    yield return new Comment
+                                    {
+                                        LineNumber = line,
+                                        Value = code.Substring(commentStart, i - commentStart)
+                                    };
+                                    i++;
+                                    commentStart = i;
+                                    line++;
+                                    break;
+
+                                default:
+                                    i++;
+                                    break;
                             }
                         }
                         yield return new Comment

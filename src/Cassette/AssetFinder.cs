@@ -15,7 +15,6 @@ namespace Cassette
 
         public void Visit(Bundle bundle)
         {
-            if (FoundAsset != null) return;
         }
 
         public void Visit(IAsset asset)
