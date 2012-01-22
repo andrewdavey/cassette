@@ -31,11 +31,7 @@ namespace Cassette.Utilities
                         throw new ArgumentException("Too many \"..\" in the path \"" + path + "\".");
                     }
                 }
-                else if (part == ".")
-                {
-                    continue;
-                }
-                else
+                else if (part != ".")
                 {
                     stack.Push(part);
                 }
