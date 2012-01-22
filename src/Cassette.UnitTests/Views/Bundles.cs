@@ -9,7 +9,7 @@ namespace Cassette.Views
         public void ReferenceUsesReferenceBuilderFromTheApplicationInTheContainer()
         {
             var application = new Mock<ICassetteApplication>();
-            CassetteApplicationContainer.SetContainerSingleton(() => application.Object);
+            CassetteApplicationContainer.SetApplicationAccessor(() => application.Object);
             
             var referenceBuilder = Mock.Of<IReferenceBuilder>();
             application.Setup(a => a.GetReferenceBuilder())
@@ -25,7 +25,7 @@ namespace Cassette.Views
         public void RenderScriptsUsesReferenceBuilderFromTheApplicationInTheContainer()
         {
             var application = new Mock<ICassetteApplication>();
-            CassetteApplicationContainer.SetContainerSingleton(() => application.Object);
+            CassetteApplicationContainer.SetApplicationAccessor(() => application.Object);
 
             var referenceBuilder = Mock.Of<IReferenceBuilder>();
             application.Setup(a => a.GetReferenceBuilder())
