@@ -1,22 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Cassette.IO;
 using Cassette.Utilities;
 using Jurassic;
 using Jurassic.Library;
-using System.Diagnostics;
 
 namespace Cassette.Stylesheets
 {
     public class LessCompiler : ICompiler
     {
-        public LessCompiler()
+        static readonly Lazy<ScriptEngine> LazyEngine = new Lazy<ScriptEngine>(CreateScriptEngine);
+        readonly Stack<IFile> currentFiles = new Stack<IFile>();
+
+        static ScriptEngine CreateScriptEngine()
         {
-            engine = new ScriptEngine();
-            engine.Execute("window = { location: { href: '/', protocol: 'http:', host: 'localhost' } };");
-            engine.SetGlobalFunction("xhr", new Action<ObjectInstance, ObjectInstance, FunctionInstance, FunctionInstance>(Xhr));
+            var engine = new ScriptEngine();
+            const string stubWindowLocationForCompiler = "window = { location: { href: '/', protocol: 'http:', host: 'localhost' } };";
+            engine.Execute(stubWindowLocationForCompiler);
             engine.Execute(Properties.Resources.less);
+            return engine;
+        }
+
+        static ScriptEngine ScriptEngine
+        {
+            get { return LazyEngine.Value; }
         }
 
         void Xhr(ObjectInstance href, ObjectInstance type, FunctionInstance callback, FunctionInstance errorCallback)
@@ -39,15 +48,13 @@ namespace Cassette.Stylesheets
             }
         }
 
-        readonly ScriptEngine engine;
-        readonly Stack<IFile> currentFiles = new Stack<IFile>();
-
         public string Compile(string lessSource, IFile sourceFile)
         {
             Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
-            lock (engine)
+            lock (ScriptEngine)
             {
                 currentFiles.Clear();
+                ScriptEngine.SetGlobalFunction("xhr", new Action<ObjectInstance, ObjectInstance, FunctionInstance, FunctionInstance>(Xhr));
 
                 var result = CompileImpl(lessSource, sourceFile);
                 if (result.Css != null)
@@ -71,9 +78,9 @@ namespace Cassette.Stylesheets
         CompileResult CompileImpl(string lessSource, IFile file)
         {
             currentFiles.Push(file);
-            
-            var parser = (ObjectInstance)engine.Evaluate("(new window.less.Parser)");
-            var callback = new CompileResult(engine);
+
+            var parser = (ObjectInstance)ScriptEngine.Evaluate("(new window.less.Parser)");
+            var callback = new CompileResult(ScriptEngine);
             try
             {
                 parser.CallMemberFunction("parse", lessSource, callback);
@@ -153,6 +160,4 @@ namespace Cassette.Stylesheets
             }
         }
     }
-
 }
-
