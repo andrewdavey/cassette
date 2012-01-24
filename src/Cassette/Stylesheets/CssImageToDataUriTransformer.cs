@@ -52,7 +52,8 @@ namespace Cassette.Stylesheets
                 property = match.Value;
                 valueIndex = match.Groups["value"].Index;
                 valueLength = match.Groups["value"].Length;
-                url = match.Groups["path"].Value + "." + match.Groups["extension"].Value;
+                path = match.Groups["path"].Value;
+                url = (path.StartsWith("/") ? "~" : "") + path + "." + match.Groups["extension"].Value;
                 extension = match.Groups["extension"].Value;
                 file = sourceAsset.SourceFile.Directory.GetFile(url);
             }
@@ -63,6 +64,7 @@ namespace Cassette.Stylesheets
             readonly string property;
             readonly int valueIndex;
             readonly int valueLength;
+            readonly string path;
             readonly string url;
             readonly string extension;
             readonly IFile file;

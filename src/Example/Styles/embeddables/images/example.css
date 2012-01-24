@@ -2,7 +2,7 @@
     float: left;
     padding-right: 40px; margin: 100px;
     color: #333;
-    background: url('~/images/embed/google-plus-32.png') right no-repeat;
+    background: url('/images/embed/google-plus-32.png') right no-repeat;
     font-family: 'DroidSansBold', serif;
     font-size: 24px; line-height: 32px;
 }
