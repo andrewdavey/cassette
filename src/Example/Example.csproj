@@ -76,6 +76,7 @@
     <Content Include="Fonts\embed\droidsans-bold-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\color-picker\ColorListItem.htm" />
+    <Content Include="Images\embed\big-chicken.png" />
     <Content Include="Images\embed\google-plus-32.png" />
     <Content Include="Images\google-plus-32.png" />
     <Content Include="Scripts\app\Event.js" />

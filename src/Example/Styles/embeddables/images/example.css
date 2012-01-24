@@ -6,3 +6,6 @@
     font-family: 'DroidSansBold', serif;
     font-size: 24px; line-height: 32px;
 }
+h2 {
+    background: url('/images/embed/big-chicken.png') right no-repeat;
+}

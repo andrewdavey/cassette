@@ -116,7 +116,17 @@ namespace Cassette.Stylesheets
 
             public void ReplaceWithin(StringBuilder output)
             {
-                if (!file.Exists) return;
+                if (!file.Exists)
+                {
+                    return;
+                }
+                
+                // Internet Explorer 8 will not render images larger than 32 kB
+                if (file.Exists
+                    && file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite).Length > 32000)
+                {
+                    return;
+                }
                 
                 output.Remove(valueIndex, valueLength);
                 output.Insert(valueIndex, DataUri);
