@@ -20,7 +20,7 @@ namespace Cassette
         protected abstract bool ShouldWatchFileSystem { get; }
         protected abstract string PhysicalApplicationDirectory { get; }
 
-        public CassetteApplicationContainer<T> CreateContainer()
+        public virtual CassetteApplicationContainer<T> CreateContainer()
         {
             cassetteConfigurations = CreateCassetteConfigurations();
             var container = new CassetteApplicationContainer<T>(CreateApplication);
