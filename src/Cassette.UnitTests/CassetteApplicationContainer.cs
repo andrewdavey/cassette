@@ -6,6 +6,7 @@ using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
+using System.Text.RegularExpressions;
 
 namespace Cassette
 {
@@ -35,7 +36,7 @@ namespace Cassette
                 container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(Path.Combine(rootPath, "test.txt"), "");
-                Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
+                PauseForFileSystemEvent();
                 var getItAgain = container.Application;
             }
             factoryCallCount.ShouldEqual(2);
@@ -49,7 +50,7 @@ namespace Cassette
                 container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(Path.Combine(rootPath, "test.txt"), "");
-                Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
+                PauseForFileSystemEvent();
                 container.Application.ShouldBeSameAs(applicationInstances[1].Object);
             }
         }
@@ -64,7 +65,7 @@ namespace Cassette
                 container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.Delete(filename);
-                Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
+                PauseForFileSystemEvent();
                 var getItAgain = container.Application;
             }
             factoryCallCount.ShouldEqual(2);
@@ -80,7 +81,7 @@ namespace Cassette
                 container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(filename, "changed");
-                Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
+                PauseForFileSystemEvent();
                 var getItAgain = container.Application;
             }
             factoryCallCount.ShouldEqual(2);
@@ -96,7 +97,7 @@ namespace Cassette
                 container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.Move(filename, filename + ".new");
-                Thread.Sleep(500); // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
+                PauseForFileSystemEvent();
                 var getItAgain = container.Application;
             }
             factoryCallCount.ShouldEqual(2);
@@ -111,8 +112,7 @@ namespace Cassette
                 container.CreateNewApplicationWhenFileSystemChanges(rootPath);
                 var first = container.Application;
                 File.WriteAllText(filename, "");
-                Thread.Sleep(500);
-                    // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
+                PauseForFileSystemEvent();
                 var getItAgain = container.Application;
             }
             applicationInstances[0].Verify(a => a.Dispose());
@@ -162,6 +162,23 @@ namespace Cassette
             createCalledSecondTime.ShouldBeTrue();
         }
 
+        [Fact]
+        public void GivenIgnoreFileSystemChange_WhenFileChanges_ThenApplicationIsNotRecycled()
+        {
+            var filename = Path.Combine(rootPath, "ignored.txt");
+            using (var container = new CassetteApplicationContainer<ICassetteApplication>(StubApplicationFactory))
+            {
+                container.IgnoreFileSystemChange(new Regex("ignored"));
+
+                File.WriteAllText(filename, "");
+                var getIt = container.Application;
+                PauseForFileSystemEvent();
+                var getItAgain = container.Application;
+
+                factoryCallCount.ShouldEqual(1);
+            }
+        }
+
         readonly Mock<ICassetteApplication>[] applicationInstances;
         readonly string rootPath;
         int factoryCallCount;
@@ -177,6 +194,12 @@ namespace Cassette
         ICassetteApplication StubApplicationFactory()
         {
             return applicationInstances[factoryCallCount++].Object;
+        }
+
+        void PauseForFileSystemEvent()
+        {
+            // File system events are asynchronously fired on different thread. Hack a brief pause to catch the event!
+            Thread.Sleep(500);
         }
 
         public void Dispose()

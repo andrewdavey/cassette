@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Cassette
 {
@@ -36,6 +39,7 @@ namespace Cassette
         FileSystemWatcher watcher;
         Lazy<T> application;
         bool creationFailed;
+        readonly List<Regex> ignorePaths = new List<Regex>();
 
         public CassetteApplicationContainer(Func<T> createApplication)
         {
@@ -73,7 +77,20 @@ namespace Cassette
 
         void HandleFileSystemChange(object sender, FileSystemEventArgs e)
         {
-            RecycleApplication();
+            if (ShouldRecycleOnFileSystemChange(e.FullPath))
+            {
+                RecycleApplication();
+            }
+        }
+
+        public void IgnoreFileSystemChange(Regex pathRegex)
+        {
+            ignorePaths.Add(pathRegex);
+        }
+
+        bool ShouldRecycleOnFileSystemChange(string path)
+        {
+            return !ignorePaths.Any(regex => regex.IsMatch(path));
         }
 
         public void RecycleApplication()

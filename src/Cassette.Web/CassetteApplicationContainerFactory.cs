@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 using Cassette.Configuration;
+using System.IO;
 
 namespace Cassette.Web
 {
@@ -30,6 +32,18 @@ namespace Cassette.Web
             this.virtualDirectory = virtualDirectory;
             this.isAspNetDebuggingEnabled = isAspNetDebuggingEnabled;
             this.getHttpContext = getHttpContext;
+        }
+
+        public override CassetteApplicationContainer<CassetteApplication> CreateContainer()
+        {
+            var container = base.CreateContainer();
+            container.IgnoreFileSystemChange(
+                new Regex(
+                    "^" + Regex.Escape(Path.Combine(PhysicalApplicationDirectory, "App_Data")),
+                    RegexOptions.IgnoreCase
+                )
+            );
+            return container;
         }
 
         protected override IEnumerable<ICassetteConfiguration> CreateCassetteConfigurations()
