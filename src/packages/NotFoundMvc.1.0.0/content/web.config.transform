@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<configuration>
+    <system.web>
+        <!-- Allow zombie DOS names to be captured by ASP.NET (/con, /com1, /lpt1, /aux, /prt, /nul, etc) -->
+        <httpRuntime relaxedUrlToFileSystemMapping="true"/>
+    </system.web>
+    
+    <system.webServer>
+        <httpErrors errorMode="Custom">
+            <!-- Catch IIS 404 error due to paths that exist but shouldn't be served (e.g. /controllers, /global.asax) or IIS request filtering (e.g. bin, web.config, app_code, app_globalresources, app_localresources, app_webreferences, app_data, app_browsers) -->
+            <remove statusCode="404" subStatusCode="-1" />
+            <error statusCode="404" 
+                   subStatusCode="-1" 
+                   path="/notfound" 
+                   responseMode="ExecuteURL" />
+        </httpErrors>
+    </system.webServer>
+</configuration>
