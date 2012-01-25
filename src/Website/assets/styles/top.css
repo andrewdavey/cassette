@@ -3,7 +3,7 @@
 }
 
 .top {
-    height: 113px;
+    height: 112px;
     max-width: 960px;
     margin: 0 auto;
 }
@@ -75,15 +75,15 @@
 
 .top .links a.active {
     opacity: 1;
-    background-image: url(images/activemarker.png);
+    background-image: url(images/activemarker2.png);
     background-repeat: no-repeat;
     background-position: center bottom;
 }
 
 .top .links a:hover {
      opacity: 1;
-    -moz-transition: opacity 0.6s;
-    -webkit-transition: opacity 0.6s;
+    -moz-transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
 }
 
 .osi {
