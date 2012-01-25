@@ -3,38 +3,41 @@
 }
 
 .top {
-    height: 77px;
+    height: 113px;
     max-width: 960px;
     margin: 0 auto;
-}
-
-.logo {
-    display: block;
-    height: 77px;
-    width: 251px;
-    background-image: url(images/cassette-logo-new.png);
-    background-repeat: no-repeat;
-    background-position: left 16px;
-}
-
-.logo:hover {
-    text-decoration: none;
-}
-
-.logo:visited {
-    color: #EFEFEF;    
 }
 
 .top .wrap {
     position: relative;
 }
 
+.logo {
+    display: block;
+    padding-top: 28px;
+    height: 85px;
+    width: 270px;
+    background-image: url(images/cassette-logo.png);
+    background-repeat: no-repeat;
+    background-position: left top;
+    opacity: 0.9;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity .5s;
+}
+
+.logo:hover {
+    text-decoration: none;
+    opacity: 1;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity .5s;
+}
+
 .top .links {
     position: absolute;
-    right: 0;
-    top: 0px;
+    right: 135px;
+    top: 0;
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     padding: 0;
     margin: 0;
     display: table;
@@ -59,20 +62,48 @@
 
 .top .links a {
     display: block;
-    height: 47px;
-    padding-top: 32px; 
-    color: #B4B4B4;
+    height: 64px;
+    padding-top: 50px;
     text-decoration: none;
+    color: #fff;
+    opacity: 0.7;
     text-transform: uppercase;
     font-weight: bold;
+    -moz-transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
 }
 
-.active {
+.top .links a.active {
+    opacity: 1;
     background-image: url(images/activemarker.png);
     background-repeat: no-repeat;
     background-position: center bottom;
 }
 
 .top .links a:hover {
-    color: #fff;
+     opacity: 1;
+    -moz-transition: opacity 0.6s;
+    -webkit-transition: opacity 0.6s;
+}
+
+.osi {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 108px;
+    width: 68px;
+    background-image: url(images/osi-logo.png);
+    background-repeat: no-repeat;
+    background-position: right 15px;
+    opacity: 0.8;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity .5s;
+}
+
+.osi:hover {
+    text-decoration: none;
+    opacity: 1;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity .5s;
 }
