@@ -89,6 +89,11 @@
     margin-top: 1.8em;
 }
 
+.main table + h2 {
+    margin-top: 1.8em;
+}
+
+
 .main pre + p {
     margin-top: 1.4em;
 }
