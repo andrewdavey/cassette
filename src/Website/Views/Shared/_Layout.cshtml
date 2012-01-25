@@ -21,13 +21,15 @@
                 <a class="logo" href="@Url.RouteUrl("Home")"></a>
                 <ul class="links">
             
+
+            <!--
                     <li id="tweet">
                         <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Open source automagic asset bundling for .NET web apps:" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
                     </li>
                     <li id="g1">
                         <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
                     </li>
-     
+            -->
                     <li>
                         <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
                     </li>
@@ -44,6 +46,7 @@
                         <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
                     </li>
                 </ul>
+                <a class="osi" href="http://www.opensource.org/"></a>
             </div>
         </div>
     </div>
