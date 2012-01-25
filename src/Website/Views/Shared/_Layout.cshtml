@@ -31,13 +31,10 @@
                     </li>
             -->
                     <li>
-                        <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
-                    </li>
-                    <li>
                         <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
                     </li>
                     <li>
-                        <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation", new { path = "" })">Documentation</a>
+                        <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation", new { path = "" })">Docs</a>
                     </li>
                     <li>
                         <a @ActiveClassIf("support") href="@Url.RouteUrl("Support")">Support</a>
@@ -45,8 +42,11 @@
                     <li>
                         <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
                     </li>
+                    <li>
+                        <a @ActiveClassIf("donate") href="@Url.RouteUrl("Donate")">Donate</a>
+                    </li>
                 </ul>
-                <a class="osi" href="http://www.opensource.org/"></a>
+                <a title="MIT Licensed" class="osi" href="@Url.RouteUrl("Licensing")"></a>
             </div>
         </div>
     </div>
