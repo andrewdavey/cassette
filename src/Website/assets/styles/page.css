@@ -9,9 +9,6 @@ body {
     background: url(images/background.jpg) repeat-x top center;
 }
 
-.mainwrap {
-}
-
 .main {
     max-width: 960px;
     margin: 0 auto 1.5em auto;
