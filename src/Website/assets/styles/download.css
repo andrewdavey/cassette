@@ -1,10 +1,19 @@
-﻿.download-page td {
+﻿.download-page {
+    padding-left: 50px;
+}
+
+.download-page td {
     vertical-align: top;
     background-repeat: no-repeat;
 }
 
 .download-page h2 {
     margin-bottom: 1.3em;
+}
+
+.download-page h3 {
+    font-size: 1.1em;
+    margin-bottom: 1.5em;
 }
 
 .nuget-area {
@@ -40,13 +49,15 @@
 /* LICENSING AND VERSIONS */
 
 .secondary-info {
-    padding: 40px;
+    margin: 10px 10px 0 0;
+    padding: 37px 0;
     border-top: solid 1px #b0b0b0;
-    background-image: url(images\license-background.png);
+    background-image: url(images\download-background.png);
     background-repeat: repeat-x;
     background-position: left top;
 }
 
-.versions {
-    padding-top: 15px;
+.versions-area {
+    width: 250px;
+    float: right;
 }

@@ -95,6 +95,10 @@
     <Content Include="assets\styles\images\donate-icon.png" />
     <Content Include="assets\styles\images\download-icon.png" />
     <Content Include="assets\styles\images\features-icon.png" />
+    <Content Include="assets\styles\images\getting-started-icon.png" />
+    <Content Include="assets\styles\images\github-logo.png" />
+    <Content Include="assets\styles\images\license-background.png" />
+    <Content Include="assets\styles\images\nuget-logo.png" />
     <Content Include="assets\styles\images\osi-logo.png" />
     <Content Include="assets\styles\images\page.png" />
     <Content Include="assets\styles\images\support-icon.png" />
