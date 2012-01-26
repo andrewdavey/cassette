@@ -53,20 +53,23 @@
     @RenderBody()
 
     <div class="footer">
-        <a title="MIT Licensed" class="osi" href="@Url.RouteUrl("Licensing")"></a>        
-        <ul>
-             <li>
-                <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
-             </li>
-             <li>
-                <a @ActiveClassIf("resources") href="@Url.RouteUrl("Resources")">Resources</a>
-             </li>
-        </ul>
-        <p>&#169; 2011 <a href="http://www.aboutcode.net" target="_blank">Andrew Davey</a> &#183; Website design by <a href="http://twitter.com/pixelistUK" target="_blank">&#64;pixelistUK</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk" target="_blank">Equin Ltd</a></p>
-        <p>Icons from <a href="http://symb.ly/" target="_blank">Symb.ly</a> and <a href="http://www.uiparade.com/ui-toolkit/" target="_blank">The UI Toolkit</a> 
-        &#183; Patterns from <a href="http://subtlepatterns.com" target="_blank">Subtle Patterns</a></p>    
+        <p class="footer-navigation"><a @ActiveClassIf("resources") href="@Url.RouteUrl("Resources")">Resources</a> | <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a></p>
+        <a title="MIT Licensed" class="osi" href="@Url.RouteUrl("Licensing")"></a>
+        <p>&#169; 2011 <a href="http://www.aboutcode.net" target="_blank">Andrew Davey</a> &#183; Website design by <a href="http://twitter.com/pixelistUK" target="_blank">&#64;pixelistUK</a></p>
+        <p class="credits">Icons from <a href="http://symb.ly/" target="_blank">Symb.ly</a>, <a href="http://vervex.deviantart.com/art/Somicro-27-Social-Media-Icons-257232757" target="_blank">Somicro</a> &#38; <a href="http://www.uiparade.com/ui-toolkit/" target="_blank">The UI Toolkit</a> 
+        &#183; Patterns from <a href="http://subtlepatterns.com" target="_blank">Subtle Patterns</a></p>
+        <div class="connect">
+            <p><em>Connect with us:</em></p>
+            <ul>
+                <li><a target="_blank" class="twitter" href="https://twitter.com/#!/getcassette"></a></li>
+                <li><a target="_blank" class="facebook" href="http://www.facebook.com/getcassette"></a></li>
+                <li><a target="_blank" class="gplus" href="http://plus.google.com/b/113762544776018463237/"></a></li>
+            </ul>
+        </div>
     </div>
+
     @Bundles.RenderScripts("body")
+    
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-25354265-1']);
@@ -77,6 +80,7 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
     </script>
+
 </body>
 </html>
 @helper ActiveClassIf(string section) {

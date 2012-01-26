@@ -21,14 +21,14 @@
     background-repeat: no-repeat;
     background-position: left top;
     opacity: 0.9;
-    -moz-transition: opacity 1s;
+    -moz-transition: opacity .5s;
     -webkit-transition: opacity .5s;
 }
 
 .logo:hover {
     text-decoration: none;
     opacity: 1;
-    -moz-transition: opacity 1s;
+    -moz-transition: opacity .5s;
     -webkit-transition: opacity .5s;
 }
 

@@ -1,40 +1,57 @@
-﻿.footer {
-    width: 960px;
-    margin: 0em auto 2em auto;
-}
+﻿/* COPYRIGHT & CREDIT */
 
-.footer ul {
-    list-style-type: none;
+.footer {
+    width: 880px;
+    margin: 30px auto;
+    position: relative;
 }
 
 .footer p {
-    text-align: center;
     font-size: .9em;
     color: #919191;
     margin-bottom: 0.6em;
+    text-align: center;
+}
+
+p.credits {
+    font-size: 0.8em;
 }
 
 .footer a {
-    color: #737373;
+    color: #686868;
+    text-decoration: none;
 }
 
 .footer a:hover {
     color: #383838;
 }
 
+/* FOOTER NAVIGATION */
+
+p.footer-navigation {
+    margin-bottom: 1.7em;
+    font-size: 1em;
+}
+
+p.footer-navigation a {
+    text-decoration: underline;
+}
+
 /* OSI LOGO */
 
 .osi {
     display: block;
-    float: right;
-    height: 108px;
+    height: 64px;
     width: 68px;
-    background-image: url(images/osi-logo.png);
+    background-image: url(images/osi-logo-small.png);
     background-repeat: no-repeat;
-    background-position: right 15px;
+    background-position: right top;
     opacity: 0.8;
     -moz-transition: opacity 1s;
     -webkit-transition: opacity .5s;
+    position: absolute;
+    top: 35px;
+    right: 0;
 }
 
 .osi:hover {
@@ -42,4 +59,52 @@
     opacity: 1;
     -moz-transition: opacity 1s;
     -webkit-transition: opacity .5s;
+}
+
+/* SOCIAL MEDIA ICONS */
+
+.connect {
+    position: absolute;
+    top: 35px;
+    left: 0;
+    width: 200px;
+}
+
+.connect p {
+    text-align: left;
+}
+
+.footer ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.connect a {
+    display: block;
+    height: 32px;
+    width: 32px;
+    float: left;
+    margin-right: 6px;
+    opacity: 0.8;
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+}
+
+.connect a:hover {
+    opacity: 1;
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+}
+
+.twitter {
+    background-image: url(images\twitter.png);
+}
+
+.facebook {
+    background-image: url(images\facebook.png);
+}
+
+.gplus {
+    background-image: url(images\gplus.png);
 }
