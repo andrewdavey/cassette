@@ -1,13 +1,10 @@
-﻿.download-page {
-    padding-left: 50px;
-}
-
-.download-page td {
+﻿.download-page td {
     vertical-align: top;
     background-repeat: no-repeat;
 }
 
 .download-page h2 {
+    font-size: 1.3em;
     margin-bottom: 1.3em;
 }
 
@@ -38,7 +35,7 @@
 }
 
 .fork {
-    margin-top: 1.6em;
+    margin-top: 1.5em;
 }
 
 /* LICENSING AND VERSIONS */
@@ -53,7 +50,7 @@
 }
 
 .versions-area {
-    width: 250px;
+    width: 248px;
     float: right;
     margin-left: 40px;
 }
