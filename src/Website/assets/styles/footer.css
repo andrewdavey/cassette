@@ -97,6 +97,10 @@ p.footer-navigation a {
     -webkit-transition: opacity .5s;
 }
 
+.googlegroups {
+    background-image: url(images\googlegroups.png);
+}
+
 .twitter {
     background-image: url(images\twitter.png);
 }
