@@ -1,4 +1,6 @@
-﻿html {
+﻿/* @reference "http://fonts.googleapis.com/css?family=Droid+Sans:700|Inconsolata"; */
+
+html {
     background: #f0f0f0 url(images/contentnoise.png) repeat top center;
 }
 

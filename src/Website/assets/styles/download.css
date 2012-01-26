@@ -1,3 +1,52 @@
-﻿.download pre {
-    font-size: 2em;
+﻿.download-page td {
+    vertical-align: top;
+    background-repeat: no-repeat;
+}
+
+.download-page h2 {
+    margin-bottom: 1.3em;
+}
+
+.nuget-area {
+    padding: 10px 15px 20px 0;
+    width: 301px;
+    background-image: url(images\nuget-logo.png);
+    background-position: 148px 9px;
+}
+
+.github-area {
+    padding: 10px 20px 20px 20px;
+    width: 271px;
+    background-image: url(images\github-logo.png);
+    background-position:  135px 2px;
+}
+
+.get-started-area {
+    padding: 10px 0 20px 15px;
+    width: 301px;
+    background-image: url(images\getting-started-icon.png);
+    background-position: 188px 5px;
+}
+
+.download-page p.package {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.fork {
+    margin-top: 1.6em;
+}
+
+/* LICENSING AND VERSIONS */
+
+.secondary-info {
+    padding: 40px;
+    border-top: solid 1px #b0b0b0;
+    background-image: url(images\license-background.png);
+    background-repeat: repeat-x;
+    background-position: left top;
+}
+
+.versions {
+    padding-top: 15px;
 }
