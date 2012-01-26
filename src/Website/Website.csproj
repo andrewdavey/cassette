@@ -91,10 +91,14 @@
     <Content Include="assets\styles\footer.css" />
     <Content Include="assets\styles\images\cassette-logo.png" />
     <Content Include="assets\styles\images\contentnoise.png" />
+    <Content Include="assets\styles\images\docs-icon.png" />
+    <Content Include="assets\styles\images\donate-icon.png" />
+    <Content Include="assets\styles\images\download-icon.png" />
+    <Content Include="assets\styles\images\features-icon.png" />
     <Content Include="assets\styles\images\osi-logo.png" />
     <Content Include="assets\styles\images\page.png" />
+    <Content Include="assets\styles\images\support-icon.png" />
     <Content Include="assets\styles\images\topnoise.png" />
-    <Content Include="assets\styles\images\twittericon.png" />
     <Content Include="assets\styles\images\whitetwittericon.png" />
     <Content Include="assets\styles\licensing.css" />
     <Content Include="assets\styles\module.txt" />

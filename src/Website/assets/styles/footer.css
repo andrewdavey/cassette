@@ -26,6 +26,7 @@
 
 .osi {
     display: block;
+    float: right;
     height: 108px;
     width: 68px;
     background-image: url(images/osi-logo.png);
