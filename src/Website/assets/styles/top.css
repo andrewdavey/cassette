@@ -36,7 +36,7 @@
 
 .top .links {
     position: absolute;
-    right: 0;
+    right: -15px;
     top: 0;
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
     font-size: 13px;
@@ -47,15 +47,15 @@
 
 .top .links li {
     list-style-type: none;
-    display: table-cell;
+    float: left;
     vertical-align: middle;
     padding: 0 15px 0 15px;
 }
 
 .top .links a {
     display: block;
-    height: 64px;
-    padding-top: 50px;
+    height: 114px;
+    line-height: 114px;
     text-decoration: none;
     color: #fff;
     opacity: 0.6;
@@ -63,33 +63,28 @@
     font-weight: bold;
     -moz-transition: opacity 0.5s;
     -webkit-transition: opacity 0.5s;
+    background-repeat: no-repeat;
+    background-position: center 36px;
 }
 
 a#features-link {
     background-image: url(images/features-icon.png);
-    background-repeat: no-repeat;
-    background-position: center 37px;
 }
+
 a#download-link {
     background-image: url(images/download-icon.png);
-    background-repeat: no-repeat;
-    background-position: center 37px;
 }
 
 a#docs-link {
     background-image: url(images/docs-icon.png);
-    background-repeat: no-repeat;
-    background-position: center 37px;
 }
+
 a#support-link {
     background-image: url(images/support-icon.png);
-    background-repeat: no-repeat;
-    background-position: center 37px;
 }
+
 a#donate-link {
     background-image: url(images/donate-icon.png);
-    background-repeat: no-repeat;
-    background-position: center 37px;
 }
 
 /*
