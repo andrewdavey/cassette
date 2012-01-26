@@ -32,9 +32,11 @@
     -webkit-transition: opacity .5s;
 }
 
+/* MAIN NAVIGATION */
+
 .top .links {
     position: absolute;
-    right: 135px;
+    right: 0;
     top: 0;
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
     font-size: 13px;
@@ -45,19 +47,9 @@
 
 .top .links li {
     list-style-type: none;
-    padding: 0;
     display: table-cell;
     vertical-align: middle;
-    padding-left: 25px;
-}
-
-#tweet, #g1 {
-    padding-top: 5px;
-}
-
-#g1 {
-    padding-left: 6px;
-    padding-right: 35px;
+    padding: 0 15px 0 15px;
 }
 
 .top .links a {
@@ -66,44 +58,55 @@
     padding-top: 50px;
     text-decoration: none;
     color: #fff;
-    opacity: 0.7;
+    opacity: 0.6;
     text-transform: uppercase;
     font-weight: bold;
     -moz-transition: opacity 0.5s;
     -webkit-transition: opacity 0.5s;
 }
 
-.top .links a.active {
-    opacity: 1;
+a#features-link {
+    background-image: url(images/features-icon.png);
+    background-repeat: no-repeat;
+    background-position: center 37px;
+}
+a#download-link {
+    background-image: url(images/download-icon.png);
+    background-repeat: no-repeat;
+    background-position: center 37px;
+}
+
+a#docs-link {
+    background-image: url(images/docs-icon.png);
+    background-repeat: no-repeat;
+    background-position: center 37px;
+}
+a#support-link {
+    background-image: url(images/support-icon.png);
+    background-repeat: no-repeat;
+    background-position: center 37px;
+}
+a#donate-link {
+    background-image: url(images/donate-icon.png);
+    background-repeat: no-repeat;
+    background-position: center 37px;
+}
+
+/*
+.top .links li.active {
     background-image: url(images/activemarker2.png);
     background-repeat: no-repeat;
     background-position: center bottom;
 }
+*/
 
 .top .links a:hover {
-     opacity: 1;
+     opacity: 0.9;
     -moz-transition: opacity 0.5s;
     -webkit-transition: opacity 0.5s;
 }
 
-.osi {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 108px;
-    width: 68px;
-    background-image: url(images/osi-logo.png);
-    background-repeat: no-repeat;
-    background-position: right 15px;
-    opacity: 0.8;
-    -moz-transition: opacity 1s;
-    -webkit-transition: opacity .5s;
-}
-
-.osi:hover {
-    text-decoration: none;
+.top .links li.active a {
     opacity: 1;
-    -moz-transition: opacity 1s;
-    -webkit-transition: opacity .5s;
+    color: #fff;
 }

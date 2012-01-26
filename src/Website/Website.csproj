@@ -84,10 +84,8 @@
     <Content Include="assets\styles\documentation.css" />
     <Content Include="assets\styles\download.css" />
     <Content Include="assets\styles\home.css" />
-    <Content Include="assets\styles\images\activemarker.png" />
-    <Content Include="assets\styles\images\background-squares.png" />
+    <Content Include="assets\styles\images\activemarker2.png" />
     <Content Include="assets\styles\images\background.jpg" />
-    <Content Include="assets\styles\images\background.png" />
     <Content Include="assets\styles\images\bullet_toggle_minus.png" />
     <Content Include="assets\styles\images\bullet_toggle_plus.png" />
     <Content Include="assets\styles\footer.css" />
@@ -223,6 +221,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Donate.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Features.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Resources.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
