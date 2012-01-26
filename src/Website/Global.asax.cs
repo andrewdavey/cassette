@@ -15,7 +15,7 @@ namespace Website
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute("Home", "", new { controller = "Home", action = "Index" });
-            routes.MapRoute("Features", "features", new { controller = "Home", action = "Features" });
+            routes.MapRoute("Benefits", "benefits", new { controller = "Home", action = "Benefits" });
             routes.MapRoute("Download", "download", new { controller = "Home", action = "Download" });
             routes.MapRoute("FAQs", "faqs", new { controller = "Home", action = "FAQs" });
             routes.MapRoute("Support", "support", new { controller = "Home", action = "Support" });

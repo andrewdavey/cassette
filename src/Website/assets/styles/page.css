@@ -37,7 +37,7 @@ h2 {
 }
 
 p + h2 {
-    margin-top: 1em;
+    margin-top: 1.6em;
 }
 
 h3 {
@@ -49,7 +49,7 @@ h3 {
 p {
     color: #171717;
     margin: 0 0 0.9em 0;
-    line-height: 1.4em;
+    line-height: 1.5em;
 }
 
 .documentation p + h2, .main ul + h2 {

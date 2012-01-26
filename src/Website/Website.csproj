@@ -77,10 +77,8 @@
     <Content Include="assets\scripts\jquery\jquery.js" />
     <Content Include="assets\scripts\home\tweets.js" />
     <Content Include="assets\scripts\licensing-buy\form.js" />
-    <Content Include="assets\scripts\questions\questions.js" />
     <Content Include="assets\styles\buy.css" />
     <Content Include="assets\styles\code.css" />
-    <Content Include="assets\styles\contact.css" />
     <Content Include="assets\styles\documentation.css" />
     <Content Include="assets\styles\download.css" />
     <Content Include="assets\styles\home.css" />
@@ -96,9 +94,10 @@
     <Content Include="assets\styles\images\download-background.png" />
     <Content Include="assets\styles\images\download-icon.png" />
     <Content Include="assets\styles\images\facebook.png" />
-    <Content Include="assets\styles\images\features-icon.png" />
+    <Content Include="assets\styles\images\benefits-icon.png" />
     <Content Include="assets\styles\images\getting-started-icon.png" />
     <Content Include="assets\styles\images\github-logo.png" />
+    <Content Include="assets\styles\images\googlegroups.png" />
     <Content Include="assets\styles\images\gplus.png" />
     <Content Include="assets\styles\images\nuget-logo.png" />
     <Content Include="assets\styles\images\osi-logo-small.png" />
@@ -234,7 +233,7 @@
     <Content Include="Views\Home\Donate.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\Features.cshtml" />
+    <Content Include="Views\Home\Benefits.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Resources.cshtml" />
