@@ -30,23 +30,22 @@
                         <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
                     </li>
             -->
-                    <li>
-                        <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
+                    <li @ActiveClassIf("features")>
+                        <a id="features-link" href="@Url.RouteUrl("Features")">Features</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation", new { path = "" })">Docs</a>
+                    <li @ActiveClassIf("download")>
+                        <a id="download-link" href="@Url.RouteUrl("Download")">Download</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("support") href="@Url.RouteUrl("Support")">Support</a>
+                    <li @ActiveClassIf("documentation")>
+                        <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "" })">Docs</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
+                    <li @ActiveClassIf("support")>
+                        <a id="support-link" href="@Url.RouteUrl("Support")">Support</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("donate") href="@Url.RouteUrl("Donate")">Donate</a>
+                    <li @ActiveClassIf("donate")>
+                        <a id="donate-link" href="@Url.RouteUrl("Donate")">Donate</a>
                     </li>
                 </ul>
-                <a title="MIT Licensed" class="osi" href="@Url.RouteUrl("Licensing")"></a>
             </div>
         </div>
     </div>
@@ -54,9 +53,18 @@
     @RenderBody()
 
     <div class="footer">
-        <p><a target="_blank" id="twittericon" href="http://twitter.com/getcassette"></a></p>
-        <p>&#169; 2011 <a target="_blank" href="http://www.aboutcode.net">Andrew Davey</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk">Equin Ltd</a></p>
-        <p>Icons from <a href="http://symb.ly/">Symb.ly</a></p>    
+        <a title="MIT Licensed" class="osi" href="@Url.RouteUrl("Licensing")"></a>        
+        <ul>
+             <li>
+                <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
+             </li>
+             <li>
+                <a @ActiveClassIf("resources") href="@Url.RouteUrl("Resources")">Resources</a>
+             </li>
+        </ul>
+        <p>&#169; 2011 <a href="http://www.aboutcode.net" target="_blank">Andrew Davey</a> &#183; Website design by <a href="http://twitter.com/pixelistUK" target="_blank">&#64;pixelistUK</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk" target="_blank">Equin Ltd</a></p>
+        <p>Icons from <a href="http://symb.ly/" target="_blank">Symb.ly</a> and <a href="http://www.uiparade.com/ui-toolkit/" target="_blank">The UI Toolkit</a> 
+        &#183; Patterns from <a href="http://subtlepatterns.com" target="_blank">Subtle Patterns</a></p>    
     </div>
     @Bundles.RenderScripts("body")
     <script type="text/javascript">

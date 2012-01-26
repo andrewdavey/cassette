@@ -15,6 +15,7 @@ namespace Website
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute("Home", "", new { controller = "Home", action = "Index" });
+            routes.MapRoute("Features", "features", new { controller = "Home", action = "Features" });
             routes.MapRoute("Download", "download", new { controller = "Home", action = "Download" });
             routes.MapRoute("FAQs", "faqs", new { controller = "Home", action = "FAQs" });
             routes.MapRoute("Support", "support", new { controller = "Home", action = "Support" });
@@ -22,6 +23,7 @@ namespace Website
             routes.MapRoute("Donate", "donate", new { controller = "Home", action = "Donate" });
             routes.MapRoute("Documentation", "documentation/{*path}", new { controller = "Documentation", action = "Index", path = "" });
             routes.MapRoute("Licensing", "licensing", new { controller = "Home", action = "Licensing" });
+            routes.MapRoute("Resources", "resources", new { controller = "Home", action = "Resources" });
 
             routes.MapRoute(
                 "Default", // Route name

@@ -3,9 +3,13 @@
     margin: 0em auto 2em auto;
 }
 
+.footer ul {
+    list-style-type: none;
+}
+
 .footer p {
     text-align: center;
-    font-size: .8em;
+    font-size: .9em;
     color: #919191;
     margin-bottom: 0.6em;
 }
@@ -18,17 +22,23 @@
     color: #383838;
 }
 
-/* Twitter Icon in Footer */
+/* OSI LOGO */
 
-#twittericon {
+.osi {
     display: block;
-    margin: 0 auto;
-    height: 16px;
-    width: 30px;
-    background-image: url(images/twittericon.png);
-    background-position: 0 0;
+    height: 108px;
+    width: 68px;
+    background-image: url(images/osi-logo.png);
+    background-repeat: no-repeat;
+    background-position: right 15px;
+    opacity: 0.8;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity .5s;
 }
 
-a#twittericon:hover {
-    background-position: 0 -16px;
+.osi:hover {
+    text-decoration: none;
+    opacity: 1;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity .5s;
 }
