@@ -9,7 +9,7 @@ namespace Website.Controllers
             return View();
         }
 
-        public ActionResult Features()
+        public ActionResult Benefits()
         {
             return View();
         }

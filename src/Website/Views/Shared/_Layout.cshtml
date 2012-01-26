@@ -30,8 +30,10 @@
                         <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
                     </li>
             -->
+
+
                     <li @ActiveClassIf("features")>
-                        <a id="features-link" href="@Url.RouteUrl("Features")">Features</a>
+                        <a id="benefits-link" href="@Url.RouteUrl("Benefits")">Benefits</a>
                     </li>
                     <li @ActiveClassIf("download")>
                         <a id="download-link" href="@Url.RouteUrl("Download")">Download</a>
@@ -53,7 +55,7 @@
     @RenderBody()
 
     <div class="footer">
-        <p class="footer-navigation"><a @ActiveClassIf("resources") href="@Url.RouteUrl("Resources")">Resources</a> | <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a></p>
+        <p class="footer-navigation"><!--<a @ActiveClassIf("resources") href="@Url.RouteUrl("Resources")">Resources</a> | --><a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a></p>
         <a title="MIT Licensed" class="osi" href="@Url.RouteUrl("Licensing")"></a>
         <p>&#169; 2011 <a href="http://www.aboutcode.net" target="_blank">Andrew Davey</a> &#183; Website design by <a href="http://twitter.com/pixelistUK" target="_blank">&#64;pixelistUK</a></p>
         <p class="credits">Icons from <a href="http://symb.ly/" target="_blank">Symb.ly</a>, <a href="http://vervex.deviantart.com/art/Somicro-27-Social-Media-Icons-257232757" target="_blank">Somicro</a> &#38; <a href="http://www.uiparade.com/ui-toolkit/" target="_blank">The UI Toolkit</a> 
@@ -63,8 +65,6 @@
             <ul>
                 <li><a title="Chat to us on Google Groups" target="_blank" class="googlegroups" href="http://groups.google.com/group/cassette"></a></li>
                 <li><a title="Follow us on Twitter" target="_blank" class="twitter" href="http://twitter.com/#!/getcassette"></a></li>
-                <li><a title="Like Cassette on Facebook" target="_blank" class="facebook" href="http://www.facebook.com/getcassette"></a></li>
-                <li><a title="Circle Cassette on Google Plus" target="_blank" class="gplus" href="http://plus.google.com/b/113762544776018463237/"></a></li>
             </ul>
         </div>
     </div>
