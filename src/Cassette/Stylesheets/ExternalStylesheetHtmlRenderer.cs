@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Cassette.Configuration;
+using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
@@ -24,11 +25,16 @@ namespace Cassette.Stylesheets
             {
                 if (string.IsNullOrEmpty(bundle.Media))
                 {
-                    return string.Format(HtmlConstants.LinkHtml, bundle.Url);
+                    return string.Format(HtmlConstants.LinkHtml,
+                        bundle.Url,
+                        bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString() );
                 }
                 else
                 {
-                    return string.Format(HtmlConstants.LinkWithMediaHtml, bundle.Url, bundle.Media);
+                    return string.Format(HtmlConstants.LinkWithMediaHtml, 
+                        bundle.Url, 
+                        bundle.Media,
+                        bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString() );
                 }
             }
         }

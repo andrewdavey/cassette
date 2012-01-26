@@ -125,6 +125,7 @@
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="TestableBundle.cs" />
+    <Compile Include="Utilities\DictionaryExtensions.cs" />
     <Compile Include="Web\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="BundleContainer.cs" />

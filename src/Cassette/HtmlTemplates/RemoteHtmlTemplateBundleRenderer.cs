@@ -1,4 +1,5 @@
-﻿
+﻿using Cassette.Utilities;
+
 namespace Cassette.HtmlTemplates
 {
     class RemoteHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
@@ -13,8 +14,9 @@ namespace Cassette.HtmlTemplates
         public string Render(HtmlTemplateBundle bundle)
         {
             return string.Format(
-                "<script src=\"{0}\" type=\"text/javascript\"></script>",
-                urlGenerator.CreateBundleUrl(bundle)
+                "<script src=\"{0}\" type=\"text/javascript\"{1}></script>",
+                urlGenerator.CreateBundleUrl(bundle),
+                bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString()
             );
         }
     }

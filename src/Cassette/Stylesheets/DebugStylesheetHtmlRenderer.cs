@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
@@ -49,7 +50,8 @@ namespace Cassette.Stylesheets
             {
                 return url => string.Format(
                     HtmlConstants.LinkHtml,
-                    url
+                    url,
+                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString()
                 );
             }
             else
@@ -57,7 +59,8 @@ namespace Cassette.Stylesheets
                 return url => string.Format(
                     HtmlConstants.LinkWithMediaHtml,
                     url,
-                    bundle.Media
+                    bundle.Media,
+                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString()
                 );
             }
         }

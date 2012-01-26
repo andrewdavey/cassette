@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -17,7 +18,10 @@ namespace Cassette.Scripts
             var assetScripts = 
                 from asset in bundle.Assets
                 let url = urlGenerator.CreateAssetUrl(asset)
-                select string.Format(HtmlConstants.ScriptHtml, url);
+                select string.Format(
+                    HtmlConstants.ScriptHtml, 
+                    url, 
+                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString());
 
             return string.Join(Environment.NewLine, assetScripts);
         }

@@ -163,6 +163,23 @@ namespace Cassette.Web
             url.ShouldEqual("URL");
         }
 
+        [Fact]
+        public void WhenNoHtmlAttributes_ThenNoHtmlDictionary()
+        {
+            var bundle = new TestableBundle("~/test");
+
+            bundle.HtmlAttributesDictionary.ShouldBeNull();
+        }
+
+        [Fact]
+        public void WhenHtmlAttributes_ThenHtmlDictionary()
+        {
+            var bundle = new TestableBundle("~/test");
+            bundle.HtmlAttributes = new { async = "async" };
+
+            bundle.HtmlAttributesDictionary.ShouldNotBeEmpty();
+        }
+
         class TestableApplication : CassetteApplicationBase
         {
             readonly IReferenceBuilder referenceBuilder;

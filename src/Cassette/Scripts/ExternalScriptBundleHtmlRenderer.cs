@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Cassette.Configuration;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -17,7 +18,9 @@ namespace Cassette.Scripts
 
         public string Render(ExternalScriptBundle bundle)
         {
-            var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml, bundle.Url);
+            var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml,
+                bundle.Url,
+                bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString());
 
             if (settings.IsDebuggingEnabled)
             {
