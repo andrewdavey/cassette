@@ -28,10 +28,10 @@ namespace Cassette.Stylesheets
                 yield return new ParseLessReferences();
                 yield return new CompileLess(new LessCompiler());
             }
-            if (ConvertImageUrlsToDataUris)
-            {
-                yield return new ConvertImageUrlsToDataUris();
-            }
+            //if (ConvertImageUrlsToDataUris)
+            //{
+            //    yield return new ConvertImageUrlsToDataUris();
+            //}
             if (ConvertFontUrlsToDataUris)
             {
                 yield return new ConvertFontUrlsToDataUris();

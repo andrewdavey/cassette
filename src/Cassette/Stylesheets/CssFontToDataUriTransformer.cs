@@ -11,6 +11,8 @@ namespace Cassette.Stylesheets
 {
     class CssFontToDataUriTransformer : IAssetTransformer
     {
+        public Func<string, bool> WhitelistFunc { get; set; }
+        
         static readonly Regex UrlRegex = new Regex(
             @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*/embed/.*?)\.(?<extension>ttf|oft) \<quote> \s* \)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
@@ -24,6 +26,7 @@ namespace Cassette.Stylesheets
                 var matches = UrlRegex.Matches(css)
                                       .Cast<Match>()
                                       .Select(match => new UrlMatch(asset, match))
+                                      .Where(match => WhitelistFunc(match.Url))
                                       .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
 
                 var output = new StringBuilder(css);

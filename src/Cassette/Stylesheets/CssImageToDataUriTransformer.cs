@@ -11,16 +11,18 @@ namespace Cassette.Stylesheets
 {
     class CssImageToDataUriTransformer : IAssetTransformer
     {
+        public Func<string, bool> WhitelistFunc { get; set; }
+        
         static readonly Regex UrlRegex = new Regex(
-            @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*/embed/.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",
+            @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
-
+        
         static readonly Regex BackgroundUrlRegex = new Regex(
-            @"\bbackground .* (?<value>url \s* \( \s* (?<quote>[""']?) (?<path>.*/embed/.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)?) .* ;",
+            @"\bbackground .* (?<value>url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)?) .* ;",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
-
+        
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
             return delegate
@@ -29,8 +31,9 @@ namespace Cassette.Stylesheets
                 var matches = BackgroundUrlRegex.Matches(css)
                                       .Cast<Match>()
                                       .Select(match => new UrlMatch(asset, match))
+                                      .Where(match => WhitelistFunc(match.Url))
                                       .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
-
+                
                 var output = new StringBuilder(css);
                 foreach (var match in matches)
                 {
@@ -41,7 +44,7 @@ namespace Cassette.Stylesheets
                 return output.ToString().AsStream();
             };
         }
-
+        
         class UrlMatch
         {
             public UrlMatch(IAsset asset, Match match)
@@ -57,7 +60,7 @@ namespace Cassette.Stylesheets
                 extension = match.Groups["extension"].Value;
                 file = sourceAsset.SourceFile.Directory.GetFile(url);
             }
-
+            
             readonly IAsset sourceAsset;
             readonly int index;
             readonly int length;
@@ -68,12 +71,12 @@ namespace Cassette.Stylesheets
             readonly string url;
             readonly string extension;
             readonly IFile file;
-
+            
             public string Url
             {
                 get { return url; }
             }
-
+            
             string DataUri
             {
                 get
@@ -84,7 +87,7 @@ namespace Cassette.Stylesheets
                     );
                 }
             }
-
+            
             string ContentType
             {
                 get
@@ -99,7 +102,7 @@ namespace Cassette.Stylesheets
                     }
                 }
             }
-
+            
             string GetBase64EncodedData()
             {
                 using (var fileStream = file.OpenRead())
@@ -113,7 +116,7 @@ namespace Cassette.Stylesheets
                     return reader.ReadToEnd();
                 }
             }
-
+            
             public void ReplaceWithin(StringBuilder output)
             {
                 if (!file.Exists)
@@ -127,6 +130,8 @@ namespace Cassette.Stylesheets
                 {
                     return;
                 }
+                
+                Trace.Source.TraceInformation(string.Format("Embedded image {0}", path));
                 
                 output.Remove(valueIndex, valueLength);
                 output.Insert(valueIndex, DataUri);
