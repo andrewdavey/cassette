@@ -9,7 +9,7 @@
     position: relative;
 }
 
-.logo {
+.logo a {
     display: block;
     height: 85px;
     width: 270px;
@@ -23,7 +23,7 @@
     -webkit-transition: opacity .5s; /* Chrome */
 }
 
-.logo:hover {
+.logo a:hover {
     opacity: 1;
     filter: alpha(opacity=100); /* IE 7, IE8 */
     -moz-transition: opacity .5s; /* Firefox, Safari */
