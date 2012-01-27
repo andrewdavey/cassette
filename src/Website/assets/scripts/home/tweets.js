@@ -1,4 +1,4 @@
-﻿/// <reference path="~/assets/scripts/jquery/jquery.js"/>
+﻿/// <reference path="~/jquery"/>
 $(function () {
     var tweets = $(".tweets");
     var tweetIndex = 0;
