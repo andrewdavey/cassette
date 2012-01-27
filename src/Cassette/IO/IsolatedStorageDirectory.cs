@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Storage = System.IO.IsolatedStorage.IsolatedStorageFile;
 
 namespace Cassette.IO
 {
@@ -11,19 +12,24 @@ namespace Cassette.IO
     /// </remarks>
     public class IsolatedStorageDirectory : IDirectory
     {
-        public IsolatedStorageDirectory(System.IO.IsolatedStorage.IsolatedStorageFile storage)
-            : this(storage, "~/")
+        readonly Func<Storage> getStorage;
+        readonly string basePath;
+
+        public IsolatedStorageDirectory(Storage storage)
+            : this(() => storage, "~/")
         {
         }
 
-        IsolatedStorageDirectory(System.IO.IsolatedStorage.IsolatedStorageFile storage, string basePath)
+        public IsolatedStorageDirectory(Func<Storage> getStorage)
+            : this(getStorage, "~/")
         {
-            this.storage = storage;
+        }
+
+        IsolatedStorageDirectory(Func<Storage> getStorage, string basePath)
+        {
+            this.getStorage = getStorage;
             this.basePath = basePath;
         }
-
-        readonly System.IO.IsolatedStorage.IsolatedStorageFile storage;
-        readonly string basePath;
 
         public string FullPath
         {
@@ -32,7 +38,7 @@ namespace Cassette.IO
 
         public IFile GetFile(string filename)
         {
-            return new IsolatedStorageFile(GetAbsolutePath(filename), storage, this);
+            return new IsolatedStorageFile(GetAbsolutePath(filename), getStorage, this);
         }
 
         string GetAbsolutePath(string path)
@@ -57,8 +63,10 @@ namespace Cassette.IO
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
-            return storage.GetFileNames(searchPattern)
-                          .Select(filename => new IsolatedStorageFile(GetAbsolutePath(filename), storage, this));
+            var storage = getStorage();
+            return storage.GetFileNames(searchPattern).Select(
+                filename => new IsolatedStorageFile(GetAbsolutePath(filename), getStorage, this)
+            );
         }
 
         public IEnumerable<IDirectory> GetDirectories()

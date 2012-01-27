@@ -1,38 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Cassette
 {
-    class CassetteApplicationContainer : ICassetteApplicationContainer
+    /// <summary>
+    /// Provides access to the current Cassette application object.
+    /// </summary>
+    public static class CassetteApplicationContainer
     {
-        public static ICassetteApplicationContainer Instance { get; set; }
+        static Func<ICassetteApplication> _getApplication;
 
-        readonly Func<ICassetteApplication> createApplication;
+        /// <summary>
+        /// Gets the current <see cref="ICassetteApplication"/> used by Cassette.
+        /// </summary>
+        public static ICassetteApplication Application
+        {
+            get { return _getApplication(); }
+        }
+
+        /// <summary>
+        /// Sets the function used to access the current Cassette application object.
+        /// Unit tests can use this method to assign a stub application for testing purposes.
+        /// </summary>
+        public static void SetApplicationAccessor(Func<ICassetteApplication> getApplication)
+        {
+            if (getApplication == null) throw new ArgumentNullException("getApplication");
+            _getApplication = getApplication;
+        }
+    }
+
+    class CassetteApplicationContainer<T> : ICassetteApplicationContainer<T>
+        where T : ICassetteApplication
+    {
+        readonly Func<T> createApplication;
         FileSystemWatcher watcher;
-        Lazy<ICassetteApplication> application;
+        Lazy<T> application;
         bool creationFailed;
+        readonly List<Regex> ignorePaths = new List<Regex>();
 
-        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication)
+        public CassetteApplicationContainer(Func<T> createApplication)
         {
             this.createApplication = createApplication;
-            application = new Lazy<ICassetteApplication>(CreateApplication);
+            application = new Lazy<T>(CreateApplication);
         }
 
-        public CassetteApplicationContainer(Func<ICassetteApplication> createApplication, string rootDirectoryToWatch)
-            : this(createApplication)
-        {
-
-            // In production mode we don't expect the asset files to change
-            // while the application is running. Changes to assets will involve a 
-            // re-deployment and restart of the app pool. So new assets are loaded then.
-
-            // In development mode, asset files will likely change while application is
-            // running. So watch the file system and recycle the application object 
-            // when files are created/changed/deleted/etc.
-            StartWatchingFileSystem(rootDirectoryToWatch);
-        }
-
-        public ICassetteApplication Application
+        public T Application
         {
             get
             {
@@ -40,8 +55,15 @@ namespace Cassette
             }
         }
 
-        void StartWatchingFileSystem(string rootDirectoryToWatch)
+        public void CreateNewApplicationWhenFileSystemChanges(string rootDirectoryToWatch)
         {
+            // In production mode we don't expect the asset files to change
+            // while the application is running. Changes to assets will involve a 
+            // re-deployment and restart of the app pool. So new assets are loaded then.
+
+            // In development mode, asset files will likely change while application is
+            // running. So watch the file system and recycle the application object 
+            // when files are created/changed/deleted/etc.
             watcher = new FileSystemWatcher(rootDirectoryToWatch)
             {
                 IncludeSubdirectories = true,
@@ -55,7 +77,20 @@ namespace Cassette
 
         void HandleFileSystemChange(object sender, FileSystemEventArgs e)
         {
-            RecycleApplication();
+            if (ShouldRecycleOnFileSystemChange(e.FullPath))
+            {
+                RecycleApplication();
+            }
+        }
+
+        public void IgnoreFileSystemChange(Regex pathRegex)
+        {
+            ignorePaths.Add(pathRegex);
+        }
+
+        bool ShouldRecycleOnFileSystemChange(string path)
+        {
+            return !ignorePaths.Any(regex => regex.IsMatch(path));
         }
 
         public void RecycleApplication()
@@ -75,13 +110,8 @@ namespace Cassette
                     application.Value.Dispose();
                 }
                 // Re-create the lazy object. So the application isn't created until it's asked for.
-                application = new Lazy<ICassetteApplication>(CreateApplication);
+                application = new Lazy<T>(CreateApplication);
             }
-        }
-
-        public void ForceApplicationCreation()
-        {
-            var forceCreation = application.Value;
         }
 
         bool IsPendingCreation
@@ -89,7 +119,7 @@ namespace Cassette
             get { return creationFailed == false && application.IsValueCreated == false; }
         }
 
-        ICassetteApplication CreateApplication()
+        T CreateApplication()
         {
             try
             {

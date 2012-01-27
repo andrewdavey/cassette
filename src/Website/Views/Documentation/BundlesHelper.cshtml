@@ -1,4 +1,9 @@
-﻿<h1>Bundles Helper</h1>
+﻿@{
+    ViewBag.Title = "Cassette | Bundles Helper";
+}
+
+
+<h1>Bundles Helper</h1>
 <p>In views, use the <code>Cassette.Views.Bundles</code> helper class to reference bundles and render the required HTML.</p>
 
 <table>
@@ -24,7 +29,7 @@
     </tr>
 </table>
 
-<h2>Ad-hoc URL references</h2>
+<h2>Ad-hoc URL References</h2>
 <p>References to URLs can also be added. Cassette will generate the relevant HTML along with the other bundles.</p>
 <pre><code>@@{
     Bundles.Reference("http://www.example.com/some-resource.js");
@@ -43,5 +48,3 @@ in different parts of the page. For example, some scripts belong in the &lt;head
 <p>Use overloads of the <code>Render*</code> methods to specify the page location being rendered.</p>
 
 <pre><code>@@Bundles.RenderScripts("body")</code></pre>
-
-<p>If the page location parameter is omitted then it assumed to </p>

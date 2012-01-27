@@ -7,3 +7,5 @@ if exist build\bin. (
 )
 
 %msbuild% src\Cassette.Web\Cassette.Web.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\
+
+%msbuild% src\Cassette.Views\Cassette.Views.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\

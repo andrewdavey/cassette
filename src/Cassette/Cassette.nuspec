@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Cassette</id>
-        <version>1.0.1</version>
+        <version>1.1.0-beta</version>
         <authors>Andrew Davey</authors>
         <owners>Andrew Davey</owners>
         <copyright>© 2011 Andrew Davey</copyright>

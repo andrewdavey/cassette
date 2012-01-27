@@ -1,95 +1,75 @@
-﻿/* @reference "http://fonts.googleapis.com/css?family=Droid+Sans:700|Inconsolata"; */
-
-/* Banner */
+﻿/* BANNER */
 
 .banner {
     max-width: 960px;
     margin: 0 auto;
-    min-height: 375px;
+    position: relative;
 }
 
 .banner h1 {
-    font-size: 2.4em;
-    letter-spacing: -1px;
-    margin: .9em 0 .75em 0;
-    padding-top: 10px;
-}
-
-.intro a {
-    font-size: 1em;
+    padding: 0.6em 0 0 0;
 }
 
 .banner p {
     color: #fff;
-    margin: 0 0 1em 0;
-    font-size: 1.3em;
+    font-size: 1.1em;
     text-shadow: 0 1px 0 #01456D;
+    line-height: 1.8em;
 }
 
-/* Fav Tweets */
+.intro {
+    margin-right: 280px;
+}
+
+.banner .share-links  {
+    top: 24px;
+}
+
+.banner .share-links p {
+    font-size: 1em;
+}
+
+.banner .tweet, .banner .g1 {
+    padding-top: 0.3em;
+}
+
+/* FAV TWEETS */
 
 .favtweets {
-    width: 235px;
-    float: right;
-    padding-top: 1.8em;
-    margin-left: 3em;
+    width: 244px;
     height: 350px;
-    position: relative;
+    position: absolute;
+    top: 77px;
+    right: 0;
 }
 
 .tweets {
     position: absolute;
-    top: 70px;
+    top: 0;
+    left: 0;
 }
 
-.favtweets h2 {
-    font-family: Helvetica;
-    color: #fff;
-    padding-left: 1.4em;
-    font-size: 1.2em;
-    margin-bottom: 1.1em;
-}
-
-.favtweets img {
-    margin-right: 0.6em;
-}
-
-.favtweets p.tweet {
-    font-size: 0.9em;
-    line-height: 1.6em;
-    color: #fff;
-    text-shadow: none;
-    margin-bottom: 0.3em;
-}
-
-.favtweets p.tweeter {
+.favtweets p {
     font-size: 0.8em;
-    color: #2A2A2A;
+    line-height: 1.8em;
     text-shadow: none;
-    margin-bottom: 1.5em;
+    margin: 0 0 0.3em 0;
 }
 
-.tweet a {
+p.tweeter {
+    margin-bottom: 1.5em;
+    text-align: right;
+}
+
+.favtweets a {
     color: #fff;
 }
 
-.tweet a:hover {
-    color: #EBEBEB;
-}
-
-.tweeter a {
-    color: #2A2A2A;
-}
-
-.tweeter a:hover {
-    color: #000;
-}
-
-/* Secondary Content */
+/* SECONDARY CONTENT */
 
 .home-main {
     max-width: 960px;
-    margin: 0 auto;
+    margin: 85px auto 0 auto;
 }
 
 .section {
@@ -135,13 +115,13 @@ p.minor {
 }
 
 p.minor a {
-    color: #839FC5;
-}
-
-p.minor a:hover {
     color: #4d688d;
 }
 
 .more {
     padding: 25px 25px 30px 25px;
+}
+
+.last .download-button {
+    font-size: 1.3em;
 }

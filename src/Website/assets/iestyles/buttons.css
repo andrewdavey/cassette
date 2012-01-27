@@ -1,12 +1,7 @@
-﻿
-/* Call to Action Buttons */
-
-.call-to-action {
-    border-radius: 0px;
+﻿.action {
+    border-radius: 0px; /* Fixes appearance of button corners */
 }
 
-/* Action Buttons */
-
-.action {
-    border-radius: 0px;
+a {
+    display: inline-block; /* Fixes issue with opacity on links */
 }

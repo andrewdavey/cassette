@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
@@ -7,14 +7,14 @@ namespace Cassette.Web
 {
     class AssetRequestHandler : IHttpHandler
     {
-        public AssetRequestHandler(RequestContext requestContext, Func<IBundleContainer> getBundleContainer)
+        public AssetRequestHandler(RequestContext requestContext, IEnumerable<Bundle> bundles)
         {
             this.requestContext = requestContext;
-            this.getBundleContainer = getBundleContainer;
+            this.bundles = bundles;
         }
 
         readonly RequestContext requestContext;
-        readonly Func<IBundleContainer> getBundleContainer;
+        readonly IEnumerable<Bundle> bundles;
 
         public bool IsReusable
         {
@@ -29,7 +29,7 @@ namespace Cassette.Web
             var response = requestContext.HttpContext.Response;
             IAsset asset;
             Bundle bundle;
-            if (!getBundleContainer().TryGetAssetByPath(path, out asset, out bundle))
+            if (!bundles.TryGetAssetByPath(path, out asset, out bundle))
             {
                 Trace.Source.TraceInformation("Bundle asset not found with path \"{0}\".", path);
                 NotFound(response);

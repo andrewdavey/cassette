@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Linq;
+using System.Web;
 using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
@@ -6,120 +7,26 @@ using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;
-using System;
 
 namespace Cassette.Web
 {
-    public abstract class CassetteRouting_Tests
+    public abstract class RouteInstaller_Tests
     {
         protected readonly Mock<IUrlModifier> urlModifier = new Mock<IUrlModifier>();
-        internal readonly CassetteRouting routing;
+        internal readonly RouteInstaller routing;
 
-        public CassetteRouting_Tests()
+        public RouteInstaller_Tests()
         {
             urlModifier.Setup(m => m.Modify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
-            routing = new CassetteRouting(urlModifier.Object, Mock.Of<IBundleContainer>);
+            var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
+            container.SetupGet(c => c.Application.Bundles).Returns(Enumerable.Empty<Bundle>());
+            routing = new RouteInstaller(container.Object, "_cassette");
         }
     }
 
-    public class CassetteRouting_CreateBundleUrl_Tests : CassetteRouting_Tests
-    {
-        [Fact]
-        public void UrlModifierModifyIsCalled()
-        {
-            routing.CreateBundleUrl(StubScriptBundle("~/test"));
-            urlModifier.Verify(m => m.Modify("_cassette/scriptbundle/test_010203"));
-        }
-
-        [Fact]
-        public void CreateScriptBundleUrlReturnsUrlWithRoutePrefixAndBundleTypeAndPathAndHash()
-        {
-            var url = routing.CreateBundleUrl(StubScriptBundle("~/test/foo"));
-            url.ShouldEqual("_cassette/scriptbundle/test/foo_010203");
-        }
-
-        [Fact]
-        public void CreateStylesheetBundleUrlReturnsUrlWithRoutePrefixAndBundleTypeAndPathAndHash()
-        {
-            var url = routing.CreateBundleUrl(StubStylesheetBundle("~/test/foo"));
-            url.ShouldEqual("_cassette/stylesheetbundle/test/foo_010203");
-        }
-
-        static ScriptBundle StubScriptBundle(string path)
-        {
-            var bundle = new ScriptBundle(path);
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            bundle.Assets.Add(asset.Object);
-            return bundle;
-        }
-
-        static StylesheetBundle StubStylesheetBundle(string path)
-        {
-            var bundle = new StylesheetBundle(path);
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            bundle.Assets.Add(asset.Object);
-            return bundle;
-        }
-    }
-
-    public class UrlGenerator_CreateAssetUrl_Tests : CassetteRouting_Tests
-    {
-        [Fact]
-        public void UrlModifierModifyIsCalled()
-        {
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
-            asset.SetupGet(a => a.Hash).Returns(new byte[0]);
-
-            routing.CreateAssetUrl(asset.Object);
-
-            urlModifier.Verify(m => m.Modify(It.IsAny<string>()));
-        }
-
-        [Fact]
-        public void CreateAssetUrlReturnsCompileUrl()
-        {
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
-            
-            var url = routing.CreateAssetUrl(asset.Object);
-
-            url.ShouldEqual("_cassette/asset/test/asset.coffee?01020f10");
-        }
-    }
-
-    public class UrlGenerator_CreateImageUrl_Tests : CassetteRouting_Tests
-    {
-        [Fact]
-        public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndPathWithoutTildeAndHashAndExtensionDotConvertedToUnderscore()
-        {
-            var url = routing.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldStartWith("_cassette/file/test_hash_png");
-        }
-
-        [Fact]
-        public void ConvertsToForwardSlashes()
-        {
-            var url = routing.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("_cassette/file/test/foo_hash_png");
-        }
-
-        [Fact]
-        public void ArgumentExceptionThrownWhenFilenameDoesNotStartWithTilde()
-        {
-            Assert.Throws<ArgumentException>(delegate
-            {
-                routing.CreateRawFileUrl("fail.png", "hash");
-            });
-        }
-    }
-
-    public class UrlGenerator_InstallRoutes_Tests : CassetteRouting_Tests
+    public class UrlGenerator_InstallRoutes_Tests : RouteInstaller_Tests
     {
         readonly RouteCollection routes;
         readonly Mock<HttpContextBase> httpContext;

@@ -1,34 +1,110 @@
-﻿.footer {
-    width: 960px;
-    margin: 0em auto 2em auto;
+﻿/* COPYRIGHT & CREDIT */
+
+.footer {
+    width: 880px;
+    margin: 30px auto;
+    position: relative;
 }
 
 .footer p {
+    font-size: 0.9em;
+    color: #7f7f7f;
+    margin-bottom: 1em;
     text-align: center;
-    font-size: .8em;
-    color: #919191;
-    margin-bottom: 0.6em;
+}
+
+p.credits {
+    font-size: 0.8em;
 }
 
 .footer a {
-    color: #737373;
+    color: #222222;
+    text-decoration: none;
 }
 
-.footer a:hover {
-    color: #383838;
+/* FOOTER NAVIGATION */
+
+p.footer-navigation {
+    margin-bottom: 1.6em;
+    font-size: 1em;
 }
 
-/* Twitter Icon in Footer */
+p.footer-navigation a {
+    text-decoration: underline;
+}
 
-#twittericon {
+/* OSI LOGO */
+
+.osi {
+    position: absolute;
+    top: 32px;
+    right: 0;
     display: block;
-    margin: 0 auto;
-    height: 16px;
-    width: 30px;
-    background-image: url(images/twittericon.png);
-    background-position: 0 0;
+    height: 64px;
+    width: 68px;
+    background-image: url(images/osi-logo-small.png);
+    background-repeat: no-repeat;
+    background-position: right top;
+    opacity: 0.8;
+    filter: alpha(opacity=80); /* IE 7, IE8 */
+    -moz-transition: opacity .5s; /* Firefox */
+    -webkit-transition: opacity .5s; /* Chrome, Safari */
 }
 
-a#twittericon:hover {
-    background-position: 0 -16px;
+.osi:hover {
+    -moz-transition: opacity 1s; /* Firefox */
+    -webkit-transition: opacity .5s; /* Chrome, Safari */
+}
+
+/* SOCIAL MEDIA ICONS */
+
+.connect {
+    position: absolute;
+    top: 39px;
+    left: 0;
+    width: 200px;
+}
+
+.footer .connect p {
+    font-size: 0.8em;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+}
+
+.footer ul {
+    list-style-type: none;
+    padding: 0;
+    margin: .4em 0 0 0;
+}
+
+.footer li {
+    padding: 0;
+    margin: 0;
+}
+
+.connect a {
+    display: block;
+    height: 32px;
+    width: 32px;
+    float: left;
+    margin-right: 6px;
+    opacity: 0.8;
+    filter: alpha(opacity=80); /* IE 7, IE8 */
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+}
+
+.connect a:hover {
+    opacity: 1;
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+}
+
+.googlegroups {
+    background-image: url(images/googlegroups.png);
+}
+
+.twitter {
+    background-image: url(images/twitter.png);
 }

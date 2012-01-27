@@ -1,33 +1,47 @@
 ﻿@{
     ViewBag.Title = "Cassette | Download";
-    ViewBag.Description = "Download Cassette using the NuGet package manager or by forking the source code from GitHub";
+    ViewBag.Description = "Download Cassette using the NuGet package manager or by forking the source code from GitHub.";
     ViewBag.Section = "download";    
-    Bundles.Reference("http://gitforked.com/api/1.1/button.js", "body");}
+    Bundles.Reference("http://gitforked.com/api/1.1/button.js");
+}
 
 <div class="main">
+    
     <h1>Download</h1>
-    <div class="content">
-        <div class="donate">
-            <p>Please support Cassette!</p>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="hosted_button_id" value="BHWGCCJFY3BP4">
-                <button type="submit" class="call-to-action">Donate</button>
-            </form>
+    
+    @Html.Partial("_Share")
+
+    <div class="content download-page">
+        
+        <table>
+            <tr>
+                <td class="nuget-area">
+                <h2>Download via</h2>
+                <p>The easiest way to start using Cassette is to install the <strong><code>Cassette.Web</code></strong> NuGet package.</p>                <p>Check out the <a href="http://docs.nuget.org/" target="_blank"> NuGet docs</a> if you need advice on getting started.</p>                </td>
+                <td class="github-area">
+                <h2>Fork from</h2>
+                <p>You can grab the full source code of Cassette from the GitHub repository:</p>                <p><a href="http://github.com/andrewdavey/cassette">http://github.com/andrewdavey/cassette</a></p>
+                <p class="fork"><a href="https://github.com/andrewdavey/cassette" class="gitforked-button gitforked-forks gitforked-watchers">Fork</a></p>
+                </td>
+                <td class="get-started-area">
+                <h2>Getting Started</h2>
+                <p>Cassette should work out of the box, without much configuration.</p>
+                <p>For help on getting set up, read the <a href="@Url.DocumentationUrl("getting-started")">Getting Started</a> guide over in the Cassette docs.</p>
+                </td>
+            </tr>
+        </table>
+        
+        <div class="secondary-info">
+                <div class="versions-area">
+                    <h3>Versions</h3>
+                    <p><strong>Latest stable version:</strong><br />v.1.0.1 (January 08, 2012)</p>
+                    <p><strong>Latest development version:</strong><br />v1.1.0-beta (January 22, 2012)</p>
+                </div>
+                <h3>Licensing</h3>
+                <p>Cassette is free open source software, distributed under the <a href="@Url.RouteUrl("Licensing")">MIT License</a>.</p>
+                <p><strong>Like Cassette? Please consider <a href="@Url.RouteUrl("Donate")">donating some time, money or publicity.</a></strong> As with so many 
+                open source projects, your support is what keeps Cassette going.</p>
         </div>
 
-        <p>Add <code>Cassette.Web</code> to your ASP.NET web application, using <a href="http://nuget.org/">NuGet</a>.</p>
-        <pre>PM&gt; Install-Package Cassette.Web</pre>
-
-        <h2>Source Code</h2>
-        <p>Alternatively, fork the source code directly from the GitHub repository:</p>
-        <p><a href="https://github.com/andrewdavey/cassette" class="gitforked-button gitforked-forks gitforked-watchers">Fork</a></p>
-
-        <h2>Getting Started</h2>
-        <p>Cassette should work out of the box, without much configuration. The documentation has a handy getting started guide.</p>
-        <p><a class="action" href="@Url.DocumentationUrl("getting-started")">Read 'Getting Started' &#187;</a></p>
-
-        <h2>License</h2>
-        <p>Cassette is free, open source software, distributed under the <a href="@Url.RouteUrl("Licensing")">MIT License</a></p>
     </div>
 </div>

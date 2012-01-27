@@ -2,9 +2,10 @@ using System;
 
 namespace Cassette
 {
-    interface ICassetteApplicationContainer : IDisposable
+    interface ICassetteApplicationContainer<out T> : IDisposable
+        where T : ICassetteApplication
     {
-        ICassetteApplication Application { get; }
+        T Application { get; }
         void RecycleApplication();
     }
 }

@@ -126,22 +126,47 @@
         ko.applyBindings(data);
 
         $(function () {
-            $("#tabs").tabs();
+            var defaultTab = "#about";
+            var tabs = $("#tabs");
+            
+            tabs.tabs({
+                select: function (e, ui) {
+                    var url = ui.tab.href;
+                    var hash = url.match(/#.*$/)[0];
+                    window.location = hash;
+                }
+            });
+
+            $(window).bind("hashchange", function () {
+                var hash = window.location.hash;
+                if (hash.length <= 1) {
+                    hash = defaultTab;
+                }
+                var tabLink = $("a[href=" + hash + "]");
+                var index = tabLink.parent().index();
+                var currentIndex = tabs.tabs("option", "selected");
+                if (index !== currentIndex) {
+                    tabs.tabs("select", index);
+                }
+            });
+
+            if (!window.location.hash && window.history && window.history.replaceState) {
+                history.replaceState(null, document.title, defaultTab);
+            }
 
             $("#rebuild-cache").click(function (e) {
                 e.preventDefault();
-                
+
                 var button = $(this);
                 var text = button.text();
                 button.attr("disabled", "disabled").text("Rebuilding...");
-                
+
                 $.post(window.location, { action: "rebuild-cache" }, function () {
                     alert("Bundle cache rebuilt.");
                     button.removeAttr("disabled").text(text);
                 });
             });
         });
-        
     </script>
 </body>
 </html>

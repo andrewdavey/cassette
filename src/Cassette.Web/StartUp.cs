@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -31,63 +30,28 @@ namespace Cassette.Web
     /// </summary>
     public static class StartUp
     {
-        static IEnumerable<ICassetteConfiguration> _configurations;
-        static IsolatedStorageFile _storage;
-        static Stopwatch _startupTimer;
-        static readonly object CreationLock = new object();
-        /// <summary>
-        /// Collects all of Cassette's trace output during start-up.
-        /// </summary>
-        static readonly TraceListener StartupTraceListener = new StringBuilderTraceListener
-        {
-            TraceOutputOptions = TraceOptions.DateTime,
-            Filter = new EventTypeFilter(SourceLevels.All)
-        };
+        static CassetteApplicationContainer<CassetteApplication> _container;
+        static readonly StartUpTraceRecorder StartUpTraceRecorder = new StartUpTraceRecorder();
 
-        /// <summary>
-        /// The function delegate used to create Cassette configuration objects for the application.
-        /// By default this will scan the AppDomain's assemblies for all implementations of <see cref="ICassetteConfiguration"/>.
-        /// Assignment to this property should happen in Application_Start.
-        /// </summary>
-// ReSharper disable MemberCanBePrivate.Global
-        public static Func<IEnumerable<ICassetteConfiguration>> CreateConfigurations { get; set; }
-// ReSharper restore MemberCanBePrivate.Global
-
-        static StartUp()
-        {
-            CreateConfigurations = CreateConfigurationsByScanningAssembliesForType;
-        }
-
-// ReSharper disable UnusedMember.Global
+        // ReSharper disable UnusedMember.Global
         public static void PreApplicationStart()
-// ReSharper restore UnusedMember.Global
         {
-            Trace.Source.Listeners.Add(StartupTraceListener);
-
-            _startupTimer = Stopwatch.StartNew();
+            StartUpTraceRecorder.Start();
             Trace.Source.TraceInformation("Registering CassetteHttpModule.");
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
         }
+        // ReSharper restore UnusedMember.Global
 
+        // ReSharper disable UnusedMember.Global
         // This runs *after* Global.asax Application_Start.
-// ReSharper disable UnusedMember.Global
         public static void PostApplicationStart()
-// ReSharper restore UnusedMember.Global
         {
+            Trace.Source.TraceInformation("PostApplicationStart.");
             try
             {
-                Trace.Source.TraceInformation("PostApplicationStart.");
-
-                _storage = IsolatedStorageFile.GetMachineStoreForAssembly();
-                // TODO: Check if this should be GetMachineStoreForApplication instead
-
-                _configurations = CreateConfigurations();
-
-                var container = CreateCassetteApplicationContainer();
-                CassetteApplicationContainer.Instance = container;
-                container.ForceApplicationCreation();
-
-                Trace.Source.TraceInformation("Cassette startup completed. It took {0} ms.", _startupTimer.ElapsedMilliseconds);
+                InitializeApplicationContainer();
+                InstallRoutes();
+                Trace.Source.TraceInformation("Cassette startup completed. It took {0} ms.", StartUpTraceRecorder.ElapsedMilliseconds);
             }
             catch (Exception ex)
             {
@@ -96,149 +60,99 @@ namespace Cassette.Web
             }
             finally
             {
-                _startupTimer.Stop();
-                Trace.Source.Flush();
-                Trace.Source.Listeners.Remove(StartupTraceListener);
+                StartUpTraceRecorder.Stop();
             }
         }
+        // ReSharper restore UnusedMember.Global
 
-// ReSharper disable UnusedMember.Global
-        public static void ApplicationShutdown()
-// ReSharper restore UnusedMember.Global
+        static void InitializeApplicationContainer()
         {
-            Trace.Source.TraceInformation("Application shutdown - disposing resources.");
-            _storage.Dispose();
-            CassetteApplicationContainer.Instance.Dispose();
+            var factory = CreateApplicationContainerFactory();
+            _container = factory.CreateContainer();
+            CassetteApplicationContainer.SetApplicationAccessor(() => _container.Application);
         }
 
-        static CassetteApplicationContainer CreateCassetteApplicationContainer()
+        static CassetteApplicationContainerFactory CreateApplicationContainerFactory()
         {
-            return GetSystemWebCompilationDebug()
-                       ? new CassetteApplicationContainer(CreateCassetteApplication, HttpRuntime.AppDomainAppPath)
-                       : new CassetteApplicationContainer(CreateCassetteApplication);
-        }
-
-        static internal string TraceOutput
-        {
-            get { return StartupTraceListener.ToString(); }
-        }
-
-        static IEnumerable<ICassetteConfiguration> CreateConfigurationsByScanningAssembliesForType()
-        {
-            Trace.Source.TraceInformation("Creating CassetteConfigurations by scanning assemblies.");
-            // Scan all assemblies for implementations of the interface and create instances.
-            return from assembly in BuildManager.GetReferencedAssemblies().Cast<Assembly>()
-                   from type in GetConfigurationTypes(assembly)
-                   select CreateConfigurationInstance(type);
-        }
-
-        static IEnumerable<Type> GetConfigurationTypes(Assembly assembly)
-        {
-            IEnumerable<Type> types;
-            try
-            {
-                types = assembly.GetTypes();
-            }
-            catch (ReflectionTypeLoadException exception)
-            {
-                // Some types failed to load, often due to a referenced assembly being missing.
-                // This is not usually a problem, so just continue with whatever did load.
-                types = exception.Types.Where(type => type != null);
-            }
-            return types.Where(IsCassetteConfigurationType);
-        } 
-
-        static bool IsCassetteConfigurationType(Type type)
-        {
-            return type.IsPublic
-                   && type.IsClass
-                   && !type.IsAbstract
-                   && typeof(ICassetteConfiguration).IsAssignableFrom(type);
-        }
-
-        static ICassetteConfiguration CreateConfigurationInstance(Type type)
-        {
-            Trace.Source.TraceInformation("Creating {0}.", type.FullName);
-
-            return (ICassetteConfiguration)Activator.CreateInstance(type);
-        }
-
-        static CassetteApplication CreateCassetteApplication()
-        {
-            lock (CreationLock)
-            {
-                var allConfigurations = GetAllConfigurations(GetCassetteConfigurationSection());
-                var cacheVersion = GetConfigurationVersion(allConfigurations, HttpRuntime.AppDomainAppVirtualPath);
-                var settings = new CassetteSettings(cacheVersion);
-                var bundles = new BundleCollection(settings);
-
-                foreach (var configuration in allConfigurations)
-                {
-                    Trace.Source.TraceInformation("Executing configuration {0}",
-                                                  configuration.GetType().AssemblyQualifiedName);
-                    configuration.Configure(bundles, settings);
-                }
-
-                var routing = new CassetteRouting(settings.UrlModifier, () => ((CassetteApplication)CassetteApplicationContainer.Instance.Application).BundleContainer);
-                settings.UrlGenerator = routing;
-
-                Trace.Source.TraceInformation("Creating Cassette application object");
-                Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", settings.IsDebuggingEnabled);
-                Trace.Source.TraceInformation("Cache version: {0}", cacheVersion);
-
-                var application = new CassetteApplication(
-                    bundles,
-                    settings,
-                    routing,
-                    GetCurrentHttpContext
-                );
-
-                application.InstallRoutes(RouteTable.Routes);
-
-                return application;
-            }
-        }
-
-        static List<ICassetteConfiguration> GetAllConfigurations(CassetteConfigurationSection section)
-        {
-            var initialConfiguration = new InitialConfiguration(
-                section,
-                GetSystemWebCompilationDebug(),
+            return new CassetteApplicationContainerFactory(
+                CreateCassetteConfigurationFactory(),
+                GetCassetteConfigurationSection,
                 HttpRuntime.AppDomainAppPath,
                 HttpRuntime.AppDomainAppVirtualPath,
-                _storage
+                IsAspNetDebugging,
+                GetCurrentHttpContext
             );
-
-            var allConfigurations = new List<ICassetteConfiguration> { initialConfiguration };
-            allConfigurations.AddRange(_configurations);
-            return allConfigurations;
-        }
-
-        static CassetteConfigurationSection GetCassetteConfigurationSection()
-        {
-            return (WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection) 
-                   ?? new CassetteConfigurationSection();
-        }
-
-        static bool GetSystemWebCompilationDebug()
-        {
-            var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-            return compilation != null && compilation.Debug;
-        }
-
-        static string GetConfigurationVersion(IEnumerable<ICassetteConfiguration> configurations, string virtualDirectory)
-        {
-            var assemblyVersion = configurations.Select(
-                configuration => new AssemblyName(configuration.GetType().Assembly.FullName).Version.ToString()
-            ).Distinct();
-
-            var parts = assemblyVersion.Concat(new[] { virtualDirectory });
-            return string.Join("|", parts);
         }
 
         static HttpContextBase GetCurrentHttpContext()
         {
             return new HttpContextWrapper(HttpContext.Current);
+        }
+
+        static void InstallRoutes()
+        {
+            var routing = new RouteInstaller(_container, RoutingHelpers.RoutePrefix);
+            routing.InstallRoutes(RouteTable.Routes);
+        }
+
+        // ReSharper disable UnusedMember.Global
+        public static void ApplicationShutdown()
+        {
+            Trace.Source.TraceInformation("Application shutdown - disposing resources.");
+            _container.Dispose();
+            IsolatedStorageContainer.Dispose();
+        }
+        // ReSharper restore UnusedMember.Global
+
+        // ReSharper disable MemberCanBePrivate.Global
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
+        /// <summary>
+        /// Set this optional property to provide a custom function that creates the application's Cassette configuration objects.
+        /// Assignment to this property should happen in Application_Start.
+        /// If not set, Cassette's default assembly scanner will look for configuration types to create.
+        /// </summary>
+        public static Func<IEnumerable<ICassetteConfiguration>> CreateConfigurations { get; set; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
+        // ReSharper restore MemberCanBePrivate.Global
+
+        internal static string TraceOutput
+        {
+            get { return StartUpTraceRecorder.TraceOutput; }
+        }
+
+        static CassetteConfigurationSection GetCassetteConfigurationSection
+        {
+            get
+            {
+                return (WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection)
+                       ?? new CassetteConfigurationSection();
+            }
+        }
+
+        static bool IsAspNetDebugging
+        {
+            get
+            {
+                var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
+                return compilation != null && compilation.Debug;
+            }
+        }
+
+        static ICassetteConfigurationFactory CreateCassetteConfigurationFactory()
+        {
+            if (CreateConfigurations == null)
+            {
+                return new AssemblyScanningCassetteConfigurationFactory(GetApplicationAssemblies());
+            }
+            else
+            {
+                return new DelegateCassetteConfigurationFactory(CreateConfigurations);
+            }
+        }
+
+        static IEnumerable<Assembly> GetApplicationAssemblies()
+        {
+            return BuildManager.GetReferencedAssemblies().Cast<Assembly>();
         }
     }
 }

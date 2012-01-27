@@ -1,4 +1,9 @@
-﻿<h1>Configuration</h1>
+﻿@{
+    ViewBag.Title = "Cassette | Configuration";
+    ViewBag.Description = "How to use Cassette's code-based configuration to manage your asset bundles";
+}
+
+<h1>Configuration</h1>
 <p>Cassette uses code-based configuration to define asset bundles and what processing to apply to them.
 Your web application can contain a public class that implements <code>Cassette.ICassetteConfiguration</code>.</p>
 <p>During application start-up, Cassette will create your configuration class and call the <code>Configure</code> method.</p>

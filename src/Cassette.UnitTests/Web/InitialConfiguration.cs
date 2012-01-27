@@ -23,7 +23,7 @@ namespace Cassette.Web
         public void GivenSectionDebugNullAndGlobalDebugFalse_WhenConfigure_ThenIsDebuggedEnabledIsFalse()
         {
             section.Debug = null;
-            var config = new InitialConfiguration(section, false, "/", "/", storage);
+            var config = new InitialConfiguration(section, false, "/", "/");
             
             config.Configure(new BundleCollection(settings), settings);
 
@@ -34,7 +34,7 @@ namespace Cassette.Web
         public void GivenSectionDebugNullAndGlobalDebugTrue_WhenConfigure_ThenIsDebuggedEnabledIsTrue()
         {
             section.Debug = null;
-            var config = new InitialConfiguration(section, true, "/", "/", storage);
+            var config = new InitialConfiguration(section, true, "/", "/");
 
             config.Configure(new BundleCollection(settings), settings);
 
@@ -45,7 +45,7 @@ namespace Cassette.Web
         public void GivenSectionDebugFalseAndGlobalDebugTrue_WhenConfigure_ThenIsDebuggedEnabledIsFalse()
         {
             section.Debug = false;
-            var config = new InitialConfiguration(section, true, "/", "/", storage);
+            var config = new InitialConfiguration(section, true, "/", "/");
 
             config.Configure(new BundleCollection(settings), settings);
 
@@ -56,7 +56,7 @@ namespace Cassette.Web
         public void GivenSectionDebugTrueAndGlobalDebugFalse_WhenConfigure_ThenIsDebuggedEnabledIsTrue()
         {
             section.Debug = true;
-            var config = new InitialConfiguration(section, true, "/", "/", storage);
+            var config = new InitialConfiguration(section, true, "/", "/");
 
             config.Configure(new BundleCollection(settings), settings);
 

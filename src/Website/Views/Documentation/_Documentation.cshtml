@@ -4,13 +4,17 @@
     ViewBag.Title = "Cassette | Documentation";
     }
     if (string.IsNullOrEmpty(ViewBag.Description)) {
-    ViewBag.Description = "A comprehensive guide to the ins and outs of using Cassette in your projects, with comments via Disqus";
+    ViewBag.Description = "A complete guide to the ins and outs of using Cassette in your projects, with comments via Disqus";
     }
     ViewBag.Section = "documentation";
-    Bundles.Reference("assets/scripts/disqus", "body");
+    Bundles.Reference("assets/scripts/disqus");
 }
 <div class="main">
+    
     <div id="documentationheader">Documentation</div>
+    
+    @Html.Partial("_Share")
+
     <div class="content documentation">
        
         <div class="tree">
@@ -23,7 +27,7 @@
                     <ul>
                         <li>@DocLink("getting-started/assets-and-bundles", "Assets and Bundles")</li>
                         <li>@DocLink("getting-started/mvc", "Using Cassette in MVC")</li>
-                        <li>@DocLink("getting-started/webforms", "Using Cassette in WebForms")</li>
+                        <li>@DocLink("getting-started/webforms", "Using Cassette in Web Forms")</li>
                     </ul>
                 </li>
                 <li>
@@ -31,7 +35,7 @@
                     <ul>
                         <li>@DocLink("configuration/add-directory", "Add Directory")</li>
                         <li>@DocLink("configuration/add-per-sub-directory", "Add Per Sub-Directory")</li>
-                        <li>@DocLink("configuration/bundle-descriptor-file", "Bundle descriptor file")</li>
+                        <li>@DocLink("configuration/bundle-descriptor-file", "Bundle Descriptor File")</li>
                     </ul>
                 </li>
                 <li>
@@ -43,7 +47,7 @@
                 <li>
                     @DocLink("scripts", "Scripts")
                     <ul>
-                        <li>@DocLink("scripts/external", "External")</li>
+                        <li>@DocLink("scripts/external", "External Scripts")</li>
                         <li>@DocLink("scripts/coffeescript", "CoffeeScript")</li>
                     </ul>
                 </li>
@@ -51,7 +55,7 @@
                     @DocLink("stylesheets", "Stylesheets")
                     <ul>
                         <li>@DocLink("stylesheets/less", "LESS")</li>
-                        <li>@DocLink("stylesheets/data-uris", "Data-URIs")</li>
+                        <li>@DocLink("stylesheets/data-uris", "Data URIs")</li>
                     </ul>
                 </li>
                 <li>

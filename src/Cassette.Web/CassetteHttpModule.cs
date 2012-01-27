@@ -5,11 +5,6 @@ namespace Cassette.Web
 {
     public class CassetteHttpModule : IHttpModule
     {
-        CassetteApplication Application
-        {
-            get { return (CassetteApplication)CassetteApplicationContainer.Instance.Application; }
-        }
-
         public void Init(HttpApplication httpApplication)
         {
             httpApplication.PostMapRequestHandler += HttpApplicationPostMapRequestHandler;
@@ -24,6 +19,11 @@ namespace Cassette.Web
         void HttpApplicationPostRequestHandlerExecute(object sender, EventArgs e)
         {
             Application.OnPostRequestHandlerExecute();
+        }
+
+        CassetteApplication Application
+        {
+            get { return (CassetteApplication)CassetteApplicationContainer.Application; }
         }
 
         void IHttpModule.Dispose()

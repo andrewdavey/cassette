@@ -78,8 +78,7 @@ namespace Cassette.Web
 
             return new CassetteApplication(
                 bundles, 
-                settings,
-                new CassetteRouting(new VirtualDirectoryPrepender("/"), Mock.Of<IBundleContainer>), 
+                settings, 
                 () => httpContext.Object
             );
         }

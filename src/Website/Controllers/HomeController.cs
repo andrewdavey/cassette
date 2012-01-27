@@ -9,6 +9,11 @@ namespace Website.Controllers
             return View();
         }
 
+        public ActionResult Benefits()
+        {
+            return View();
+        }
+
         public ActionResult Download()
         {
             return View();
@@ -25,6 +30,16 @@ namespace Website.Controllers
         }
 
         public ActionResult Contact()
+        {
+            return View();
+        }
+
+        public ActionResult Donate()
+        {
+            return View();
+        }
+        
+        public ActionResult Resources()
         {
             return View();
         }

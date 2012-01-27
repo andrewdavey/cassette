@@ -9,10 +9,10 @@ namespace Cassette.Scripts
     {
         static JurassicCoffeeScriptCompiler()
         {
-            scriptEngine = new Lazy<ScriptEngine>(CreateScriptEngineWithCoffeeScriptLoaded);
+            LazyScriptEngine = new Lazy<ScriptEngine>(CreateScriptEngineWithCoffeeScriptLoaded);
         }
 
-        readonly static Lazy<ScriptEngine> scriptEngine;
+        readonly static Lazy<ScriptEngine> LazyScriptEngine;
 
         public string Compile(string coffeeScriptSource, IFile sourceFile)
         {
@@ -43,7 +43,7 @@ namespace Cassette.Scripts
 
         ScriptEngine ScriptEngine
         {
-            get { return scriptEngine.Value; }
+            get { return LazyScriptEngine.Value; }
         }
     }
 }

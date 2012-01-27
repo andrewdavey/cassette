@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
@@ -11,21 +10,21 @@ namespace Cassette.Web
     class BundleRequestHandler<T> : IHttpHandler
         where T : Bundle
     {
-        public BundleRequestHandler(Func<IBundleContainer> getBundleContainer, RequestContext requestContext)
+        readonly ICassetteApplication application;
+        readonly RouteData routeData;
+        readonly HttpResponseBase response;
+        readonly HttpRequestBase request;
+        readonly HttpContextBase httpContext;
+
+        public BundleRequestHandler(ICassetteApplication application, RequestContext requestContext)
         {
-            this.getBundleContainer = getBundleContainer;
+            this.application = application;
             
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
             request = requestContext.HttpContext.Request;
             httpContext = requestContext.HttpContext;
         }
-
-        readonly Func<IBundleContainer> getBundleContainer;
-        readonly RouteData routeData;
-        readonly HttpResponseBase response;
-        readonly HttpRequestBase request;
-        readonly HttpContextBase httpContext;
 
         public void ProcessRequest()
         {
@@ -67,7 +66,7 @@ namespace Cassette.Web
             var path = "~/" + routeData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling bundle request for \"{0}\".", path);
             path = RemoveTrailingHashFromPath(path);
-            return getBundleContainer().FindBundlesContainingPath(path).OfType<T>().FirstOrDefault();
+            return application.FindBundleContainingPath<T>(path);
         }
 
         /// <summary>
