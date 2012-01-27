@@ -16,7 +16,7 @@ namespace Cassette.Scripts
             return string.Format(
                 HtmlConstants.ScriptHtml, 
                 urlGenerator.CreateBundleUrl(bundle),
-                bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString()
+                bundle.HtmlAttributes.CombinedAttributes
             );
         }
     }

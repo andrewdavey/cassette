@@ -16,7 +16,7 @@ namespace Cassette.HtmlTemplates
             return string.Format(
                 "<script src=\"{0}\" type=\"text/javascript\"{1}></script>",
                 urlGenerator.CreateBundleUrl(bundle),
-                bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString()
+                bundle.HtmlAttributes.CombinedAttributes
             );
         }
     }

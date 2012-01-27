@@ -164,20 +164,11 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void WhenNoHtmlAttributes_ThenNoHtmlDictionary()
+        public void WhenNewBundle_ThenEmptyHtmlAttributes()
         {
             var bundle = new TestableBundle("~/test");
 
-            bundle.HtmlAttributesDictionary.ShouldBeNull();
-        }
-
-        [Fact]
-        public void WhenHtmlAttributes_ThenHtmlDictionary()
-        {
-            var bundle = new TestableBundle("~/test");
-            bundle.HtmlAttributes = new { async = "async" };
-
-            bundle.HtmlAttributesDictionary.ShouldNotBeEmpty();
+            bundle.HtmlAttributes.ShouldBeEmpty();
         }
 
         class TestableApplication : CassetteApplicationBase

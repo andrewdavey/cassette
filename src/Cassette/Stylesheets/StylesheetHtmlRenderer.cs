@@ -23,16 +23,20 @@ namespace Cassette.Stylesheets
             }
             if (string.IsNullOrEmpty(bundle.Media))
             {
-                html.AppendFormat(HtmlConstants.LinkHtml,
+                html.AppendFormat(
+                    HtmlConstants.LinkHtml,
                     url,
-                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString() );
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
             }
             else
             {
-                html.AppendFormat(HtmlConstants.LinkWithMediaHtml,
+                html.AppendFormat(
+                    HtmlConstants.LinkWithMediaHtml,
                     url,
                     bundle.Media,
-                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString());
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
             }
             if (hasCondition)
             {

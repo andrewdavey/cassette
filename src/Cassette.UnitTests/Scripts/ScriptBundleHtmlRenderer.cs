@@ -26,7 +26,7 @@ namespace Cassette.Scripts
             var urlGenerator = new Mock<IUrlGenerator>();
             var renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object);
             var bundle = new ScriptBundle("~/test");
-            bundle.HtmlAttributes = new { Async = "async", @class = "isDismissed" };
+            bundle.HtmlAttributes.Add( new { Async = "async", @class = "isDismissed" } );
 
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
                         .Returns("URL");

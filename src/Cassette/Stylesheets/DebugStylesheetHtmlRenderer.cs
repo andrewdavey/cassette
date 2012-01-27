@@ -51,7 +51,7 @@ namespace Cassette.Stylesheets
                 return url => string.Format(
                     HtmlConstants.LinkHtml,
                     url,
-                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString()
+                    bundle.HtmlAttributes.CombinedAttributes
                 );
             }
             else
@@ -60,7 +60,7 @@ namespace Cassette.Stylesheets
                     HtmlConstants.LinkWithMediaHtml,
                     url,
                     bundle.Media,
-                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString()
+                    bundle.HtmlAttributes.CombinedAttributes
                 );
             }
         }

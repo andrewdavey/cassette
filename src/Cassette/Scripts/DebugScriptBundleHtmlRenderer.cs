@@ -21,7 +21,8 @@ namespace Cassette.Scripts
                 select string.Format(
                     HtmlConstants.ScriptHtml, 
                     url, 
-                    bundle.HtmlAttributesDictionary == null ? string.Empty : bundle.HtmlAttributesDictionary.HtmlAttributesString());
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
 
             return string.Join(Environment.NewLine, assetScripts);
         }
