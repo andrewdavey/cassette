@@ -59,19 +59,26 @@ p.last {
 }
 
 a {
-    color: #377302;
+    color: #2b5a01;
     text-decoration: underline;
+    opacity: 0.7;
+    filter: alpha(opacity=1000); /* IE 7, IE8 */
+    -moz-transition: opacity .2s; /* Firefox */
+    -webkit-transition: opacity .2s; /* Chrome, Safari */
 }
 
 a:hover {
-    color: #1d3d01;
+    opacity: 1;
+    filter: alpha(opacity=80); /* IE 7, IE8 */
+    -moz-transition: opacity .2s; /* Firefox */
+    -webkit-transition: opacity .2s; /* Chrome, Safari */
 }
 
 /* SPREAD THE WORD */
 
 .share-links {
     position: absolute;
-    top: 0;
+    top: 15px;
     right: 0;
     color: #fff;
 }
@@ -81,8 +88,14 @@ a:hover {
     padding-left: 10px;
 }
 
+.share-links p {
+    font-size: 1.2em;
+    margin: 0 5px 0 0;
+    text-shadow: 0 1px 0 #01456D;
+}
+
 .tweet, .g1 {
-    padding-top: 5px;
+    padding-top: 3px;
 }
 
 /* Call to Action Buttons */

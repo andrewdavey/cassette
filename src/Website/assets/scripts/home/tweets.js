@@ -9,6 +9,6 @@ $(function () {
             tweetIndex = 0;
         }
         $(tweets[tweetIndex]).fadeIn(2000);
-    }, 5000);
+    }, 7800);
 
 });
