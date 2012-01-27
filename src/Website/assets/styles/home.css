@@ -4,6 +4,7 @@
     max-width: 960px;
     margin: 0 auto;
     min-height: 375px;
+    position: relative;
 }
 
 .banner h1 {
@@ -23,20 +24,25 @@
     text-shadow: 0 1px 0 #01456D;
 }
 
+/* SPREAD THE WORD */
+
+.banner .share-links {
+    top: 22px;
+}
+
 /* FAV TWEETS */
 
 .favtweets {
     width: 235px;
     float: right;
-    padding-top: 1.8em;
+    margin-top: 1.8em;
     margin-left: 3em;
     height: 350px;
-    position: relative;
 }
 
 .tweets {
     position: absolute;
-    top: 70px;
+    top: 75px;
 }
 
 .favtweets h2 {
@@ -60,7 +66,7 @@
 }
 
 .favtweets p.tweeter {
-    font-size: 0.8em;
+    font-size: 0.9em;
     color: #2A2A2A;
     text-shadow: none;
     margin-bottom: 1.5em;

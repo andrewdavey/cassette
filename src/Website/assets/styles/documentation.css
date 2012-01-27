@@ -112,3 +112,11 @@
 #disqus_thread {
     margin-top: 1.8em;
 }
+
+.documentation p + h2, .main ul + h2 {
+    margin-top: 1.5em; 
+}
+
+.documentation p + h3, .ul + h3 {
+    margin: 1.5em 0 .75em 0;
+}

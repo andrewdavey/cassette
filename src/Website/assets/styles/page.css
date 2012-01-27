@@ -12,6 +12,7 @@ body {
 .main {
     max-width: 960px;
     margin: 0 auto 1.5em auto;
+    position: relative;
 }
 
 .content {
@@ -46,18 +47,11 @@ h3 {
     margin: 0px 0px .75em 0px;
 }
 
-p {
+.content p {
     color: #171717;
     margin: 0 0 0.9em 0;
+    font-size: 1em;
     line-height: 1.5em;
-}
-
-.documentation p + h2, .main ul + h2 {
-    margin-top: 1.5em; 
-}
-
-.documentation p + h3, .ul + h3 {
-    margin: 1.5em 0 .75em 0;
 }
 
 p.last {
@@ -73,25 +67,22 @@ a:hover {
     color: #1d3d01;
 }
 
-dl {
-    margin-bottom: 2em;
+/* SPREAD THE WORD */
+
+.share-links {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
 }
 
-dt, dd {
-    line-height: 1.4em;
-    margin-bottom: .75em;
+.share-links div {
+    float: left;
+    padding-left: 10px;
 }
 
-dd {
-    margin-left: 1.4em;
-}
-
-dd + dt {
-    margin-top: 0.5em;
-}
-
-dt a {
-    text-decoration: none;
+.tweet, .g1 {
+    padding-top: 5px;
 }
 
 /* Call to Action Buttons */
