@@ -11,7 +11,7 @@
             <p>Dumping your scripts into a folder is no way to manage your client-side code!</p>
             <p>Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS and HTML templates.</p>
             <p>It's flexible, extensible and optimized for developer happiness.</p>
-            <p class="last"><a class="action" href="@Url.RouteUrl("Download")">Download Now &#187;</a></p>
+            <p><a class="action" href="@Url.RouteUrl("Download")"><span class="download-button">Download</span></a></p>
         </div>
 
         @Html.Partial("_Share")
@@ -53,6 +53,7 @@
 <div class="home-main">
 
     <div class="section">
+
         <div class="file-details">
             <h2>Easy to use</h2>
             <p>Cassette's <code>Bundles</code> helper works in view pages, layouts and partials.</p>
@@ -60,6 +61,7 @@
             <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
             <p class="minor"><a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new { path = "html-templates" })">HTML Templates</a> are also supported</p>
         </div>
+
         <div class="file">
             <pre><code><span class="code-tag">@@{</span>
   <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/app/page.js"</span>);
@@ -74,11 +76,12 @@
   ...
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
-
         </div>
+
     </div>
 
     <div class="section">
+
         <div class="file-details">
             <h2>Debug runtime output</h2>
             <p>When <strong><code>debug="true"</code></strong> in Web.config:</p>
@@ -89,6 +92,7 @@
             </ul>
             <p class="minor">The SHA-1 hash is used. The output here has been shortened to fit on screen.</p>
         </div>
+
         <div class="file">
             <pre><code><span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
@@ -105,9 +109,11 @@
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
         </div>
+
     </div>
 
     <div class="section">
+
         <div class="file-details">
             <h2>Production runtime output</h2>
             <p>With a single change to Web.config, <strong><code>debug="false"</code></strong>, Cassette switches into high performance mode.</p>
@@ -118,6 +124,7 @@
                 <li>Hash included in the URL. So new versions have different URLs.</li>
             </ul>
         </div>
+
         <div class="file">
             <pre><code><span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
@@ -131,9 +138,11 @@
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
         </div>
+
     </div>
 
     <div class="section">
+
         <div class="more">
             <h2>So much more...</h2>
             <p>This introduction has only scratched the surface of what Cassette can do.</p>
@@ -142,18 +151,10 @@
                 <li>LESS files are automatically compiled into CSS.</li>
                 <li>Cassette has an extensible "asset pipeline". Learn how to extend and customize asset processing.</li>
             </ul>
-            <p>
-                <strong>Get Cassette!</strong> It's free, open source software, distributed under the 
-                <a href="@Url.RouteUrl("Licensing")">MIT License</a>.
+            <p><strong>Get Cassette!</strong> It's free, open source software, distributed under the <a href="@Url.RouteUrl("Licensing")">MIT License</a>.
             </p>
-            <p class="last">
-                <a class="action" href="@Url.RouteUrl("Download")">Download Now &#187;</a>
-                ...and please spread the word:
-                <span style="position: relative; top: 5px;">
-                    <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset bundling for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
-                    <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
-                </span>
-            </p>
+            <p class="last"><a class="action" href="@Url.RouteUrl("Download")"><span class="download-button">Download</span></a></p>
         </div>
+
     </div>
 </div>
