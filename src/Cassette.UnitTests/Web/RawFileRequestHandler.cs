@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Cassette.Web
 {
-    class RawFileRequestHandler_Tests
+    public class RawFileRequestHandler_Tests
     {
         [Fact]
         public void WhenRequestFile_ThenResponseETagHeaderIsSHA1OfContents()
@@ -21,7 +21,7 @@ namespace Cassette.Web
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
 
-                http.Get("~/test_hash_png");
+                http.Get("~/test_hash.png");
 
 
                 string expectedETag;
@@ -53,10 +53,29 @@ namespace Cassette.Web
                 }
 
                 http.RequestHeaders["If-None-Match"] = eTag;
-                http.Get("~/test_hash_png");
+                http.Get("~/test_hash.png");
 
                 http.Response.VerifySet(r => r.StatusCode = 304);
             }
         }
+
+        [Fact]
+        public void WhenRequestFileWithDotExtension_ThenRequestIsResolvedSuccessfully()
+        {
+            using (var temp = new TempDirectory())
+            using (var http = new HttpTestHarness())
+            {
+                var filename = Path.Combine(temp, "test.png");
+                var content = new byte[] { 1, 2, 3 };
+                File.WriteAllBytes(filename, content);
+
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c));
+                http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
+
+                http.Get("~/test_hash.png");
+                http.Response.Verify(r => r.WriteFile(filename));
+            }
+        }
+
     }
 }
