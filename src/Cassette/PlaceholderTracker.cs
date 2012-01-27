@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Cassette
 {
@@ -17,12 +17,7 @@ namespace Cassette
 
         public string ReplacePlaceholders(string html)
         {
-            var builder = new StringBuilder(html);
-            foreach (var item in creationFunctions)
-            {
-                builder.Replace(item.Key.ToString(), item.Value());
-            }
-            return builder.ToString();
+            return creationFunctions.Aggregate(html, (current, item) => current.Replace(item.Key.ToString(), item.Value()));
         }
     }
 }
