@@ -87,14 +87,6 @@ a#donate-link {
     background-image: url(images/donate-icon.png);
 }
 
-/*
-.top .links li.active {
-    background-image: url(images/activemarker2.png);
-    background-repeat: no-repeat;
-    background-position: center bottom;
-}
-*/
-
 .top .links a:hover {
      opacity: 0.9;
     -moz-transition: opacity 0.5s;
