@@ -1,6 +1,4 @@
-﻿/* @reference "http://fonts.googleapis.com/css?family=Droid+Sans:700|Inconsolata"; */
-
-/* Banner */
+﻿/* BANNER */
 
 .banner {
     max-width: 960px;
@@ -9,7 +7,6 @@
 }
 
 .banner h1 {
-    font-size: 2.4em;
     letter-spacing: -1px;
     margin: .9em 0 .75em 0;
     padding-top: 10px;
@@ -26,7 +23,7 @@
     text-shadow: 0 1px 0 #01456D;
 }
 
-/* Fav Tweets */
+/* FAV TWEETS */
 
 .favtweets {
     width: 235px;

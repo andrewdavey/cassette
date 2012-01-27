@@ -1,18 +1,18 @@
 ﻿@{
     Bundles.Reference("assets/styles");
     Bundles.Reference("assets/iestyles");
-    Bundles.Reference("http://platform.twitter.com/widgets.js", "body");
-    Bundles.Reference("https://apis.google.com/js/plusone.js", "body");
+    Bundles.Reference("http://platform.twitter.com/widgets.js");
+    Bundles.Reference("https://apis.google.com/js/plusone.js");
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="keywords" content=".net asset management, asp.net, developer tools, web development" />
+    <meta name="keywords" content=".net asset management, asp.net, developer tools, web development, asset bundling, .net software" />
     <meta name="description" content="@ViewBag.Description" />
     <title>@ViewBag.Title</title>
     @Bundles.RenderStylesheets()
-    <meta name="google-site-verification" content="XDRKm8pVfIwYbs7Jbb1kX5riGAhGXFOTHpxfV8VwfYc" />
+    <link href="https://plus.google.com/113762544776018463237/" rel="publisher" />
 </head>
 <body class="@ViewBag.Section">
     <div class="topwrap">
@@ -21,27 +21,31 @@
                 <a class="logo" href="@Url.RouteUrl("Home")"></a>
                 <ul class="links">
             
+
+            <!--
                     <li id="tweet">
-                        <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Automagic asset bundling for .NET web apps" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
+                        <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://getcassette.net/" data-text="Open source automagic asset bundling for .NET web apps:" data-count="none" data-via="getcassette" data-related="andrewdavey">Tweet</a>
                     </li>
                     <li id="g1">
                         <g:plusone size="medium" count="false" href="http://getcassette.net/"></g:plusone>
                     </li>
-     
-                    <li>
-                        <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")">Home</a>
+            -->
+
+
+                    <li @ActiveClassIf("features")>
+                        <a id="benefits-link" href="@Url.RouteUrl("Benefits")">Benefits</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("download") href="@Url.RouteUrl("Download")">Download</a>
+                    <li @ActiveClassIf("download")>
+                        <a id="download-link" href="@Url.RouteUrl("Download")">Download</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("documentation") href="@Url.RouteUrl("Documentation", new { path = "" })">Documentation</a>
+                    <li @ActiveClassIf("documentation")>
+                        <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "" })">Docs</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("support") href="@Url.RouteUrl("Support")">Support</a>
+                    <li @ActiveClassIf("support")>
+                        <a id="support-link" href="@Url.RouteUrl("Support")">Support</a>
                     </li>
-                    <li>
-                        <a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a>
+                    <li @ActiveClassIf("donate")>
+                        <a id="donate-link" href="@Url.RouteUrl("Donate")">Donate</a>
                     </li>
                 </ul>
             </div>
@@ -51,11 +55,22 @@
     @RenderBody()
 
     <div class="footer">
-        <p><a target="_blank" id="twittericon" href="http://twitter.com/getcassette"></a></p>
-        <p>&#169; 2011 <a target="_blank" href="http://www.aboutcode.net">Andrew Davey</a> &#183; Cassette is distributed by <a href="http://www.equin.co.uk">Equin Ltd</a></p>
-        <p>Icons from <a href="http://symb.ly/">Symb.ly</a></p>    
+        <p class="footer-navigation"><!--<a @ActiveClassIf("resources") href="@Url.RouteUrl("Resources")">Resources</a> | --><a @ActiveClassIf("contact") href="@Url.RouteUrl("Contact")">Contact</a></p>
+        <a title="MIT Licensed" class="osi" href="@Url.RouteUrl("Licensing")"></a>
+        <p>&#169; 2012 <a href="http://www.aboutcode.net" target="_blank">Andrew Davey</a> &#183; Website design by <a href="http://twitter.com/pixelistUK" target="_blank">&#64;pixelistUK</a></p>
+        <p class="credits">Icons from <a href="http://symb.ly/" target="_blank">Symb.ly</a>, <a href="http://vervex.deviantart.com/art/Somicro-27-Social-Media-Icons-257232757" target="_blank">Somicro</a> &#38; <a href="http://www.uiparade.com/ui-toolkit/" target="_blank">The UI Toolkit</a> 
+        &#183; Patterns from <a href="http://subtlepatterns.com" target="_blank">Subtle Patterns</a></p>
+        <div class="connect">
+            <p><em>Connect with us:</em></p>
+            <ul>
+                <li><a title="Chat to us on Google Groups" target="_blank" class="googlegroups" href="http://groups.google.com/group/cassette"></a></li>
+                <li><a title="Follow us on Twitter" target="_blank" class="twitter" href="http://twitter.com/#!/getcassette"></a></li>
+            </ul>
+        </div>
     </div>
-    @Bundles.RenderScripts("body")
+
+    @Bundles.RenderScripts()
+    
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-25354265-1']);
@@ -66,6 +81,7 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
     </script>
+
 </body>
 </html>
 @helper ActiveClassIf(string section) {

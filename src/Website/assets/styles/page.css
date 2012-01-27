@@ -1,13 +1,12 @@
-﻿html {
+﻿/* @reference "http://fonts.googleapis.com/css?family=Droid+Sans:700|Inconsolata"; */
+
+html {
     background: #f0f0f0 url(images/contentnoise.png) repeat top center;
 }
 
 body {
     font-family: Calibri, sans-serif;
-    background: url(images/background.gif) repeat-x top center;
-}
-
-.mainwrap {
+    background: url(images/background.jpg) repeat-x top center;
 }
 
 .main {
@@ -17,7 +16,7 @@ body {
 
 .content {
     background-color: #fff;
-    padding: 2em 2.5em;
+    padding: 40px 50px;
     border-radius: 10px;
     min-height: 300px;
     box-shadow: #aaa 0 0 3px;
@@ -33,12 +32,12 @@ h1 {
 h2 {
     font-family: "Droid Sans" , sans-serif;
     color: #03517e;
-    font-size: 1.3em;
+    font-size: 1.2em;
     margin: 0px 0px .75em 0px;
 }
 
 p + h2 {
-    margin-top: 1em;
+    margin-top: 1.6em;
 }
 
 h3 {
@@ -50,7 +49,7 @@ h3 {
 p {
     color: #171717;
     margin: 0 0 0.9em 0;
-    line-height: 1.4em;
+    line-height: 1.5em;
 }
 
 .documentation p + h2, .main ul + h2 {
@@ -74,23 +73,6 @@ a:hover {
     color: #1d3d01;
 }
 
-.helpquestion {
-    color: #171717;
-    padding-left: 20px;
-    font-weight: bold;
-    background-image: url(images/bullet_toggle_plus.png);
-    background-repeat: no-repeat;
-    background-position: left 6px;
-}
-
-.helpquestion.open {
-    background-image: url(images/bullet_toggle_minus.png);    
-}
-
-a.helpquestion:visited {
-    color: #171717;
-}
-
 dl {
     margin-bottom: 2em;
 }
@@ -110,54 +92,6 @@ dd + dt {
 
 dt a {
     text-decoration: none;
-}
-
-/* Forms */
-/*
-form {
-    padding: 30px 35px;
-    background-color: #f2f2f2;
-    position: absolute;    
-    top: 4.7em;
-    left: 2.5em;
-    border: 1px solid #cacaca;
-    margin: 3px 35px 30px 0;    
-}
-
-input, label, textarea {
-    display: block;
-}
-
-input, textarea {
-    margin-bottom: 20px;
-    border: inset 1px #D2D2D2;
-    padding: 6px 4px 6px 7px;
-    font-size: 1em;
-    color: Black;
-    font-family: Calibri, Sans-Serif;
-    width: 370px;
-}
-
-label {
-    margin-bottom: 15px;
-}
-
-select {
-    margin-bottom: 2em;
-    display: block;
-    padding: 3px;
-}
-
-button {
-    margin-bottom: .5em;
-}
-*/
-.buttonsupport {
-    font-size: .8em;
-    margin-bottom: 0;
-    text-align: center;
-    font-weight: normal;
-    color: #5B5B5B;
 }
 
 /* Call to Action Buttons */

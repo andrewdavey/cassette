@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NotFoundMvc">
+      <HintPath>..\packages\NotFoundMvc.1.0.0\lib\net40\NotFoundMvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -74,23 +77,34 @@
     <Content Include="assets\scripts\jquery\jquery.js" />
     <Content Include="assets\scripts\home\tweets.js" />
     <Content Include="assets\scripts\licensing-buy\form.js" />
-    <Content Include="assets\scripts\questions\questions.js" />
     <Content Include="assets\styles\buy.css" />
     <Content Include="assets\styles\code.css" />
-    <Content Include="assets\styles\contact.css" />
     <Content Include="assets\styles\documentation.css" />
     <Content Include="assets\styles\download.css" />
     <Content Include="assets\styles\home.css" />
-    <Content Include="assets\styles\images\activemarker.png" />
-    <Content Include="assets\styles\images\background.gif" />
+    <Content Include="assets\styles\images\activemarker2.png" />
+    <Content Include="assets\styles\images\background.jpg" />
     <Content Include="assets\styles\images\bullet_toggle_minus.png" />
     <Content Include="assets\styles\images\bullet_toggle_plus.png" />
-    <Content Include="assets\styles\images\cassette-logo-new.png" />
     <Content Include="assets\styles\footer.css" />
+    <Content Include="assets\styles\images\cassette-logo.png" />
     <Content Include="assets\styles\images\contentnoise.png" />
+    <Content Include="assets\styles\images\docs-icon.png" />
+    <Content Include="assets\styles\images\donate-icon.png" />
+    <Content Include="assets\styles\images\download-background.png" />
+    <Content Include="assets\styles\images\download-icon.png" />
+    <Content Include="assets\styles\images\facebook.png" />
+    <Content Include="assets\styles\images\benefits-icon.png" />
+    <Content Include="assets\styles\images\getting-started-icon.png" />
+    <Content Include="assets\styles\images\github-logo.png" />
+    <Content Include="assets\styles\images\googlegroups.png" />
+    <Content Include="assets\styles\images\gplus.png" />
+    <Content Include="assets\styles\images\nuget-logo.png" />
+    <Content Include="assets\styles\images\osi-logo-small.png" />
     <Content Include="assets\styles\images\page.png" />
+    <Content Include="assets\styles\images\support-icon.png" />
     <Content Include="assets\styles\images\topnoise.png" />
-    <Content Include="assets\styles\images\twittericon.png" />
+    <Content Include="assets\styles\images\twitter.png" />
     <Content Include="assets\styles\images\whitetwittericon.png" />
     <Content Include="assets\styles\licensing.css" />
     <Content Include="assets\styles\module.txt" />
@@ -208,6 +222,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Support.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\NotFound.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Donate.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Benefits.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Resources.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

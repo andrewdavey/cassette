@@ -3,38 +3,43 @@
 }
 
 .top {
-    height: 77px;
+    height: 112px;
     max-width: 960px;
     margin: 0 auto;
-}
-
-.logo {
-    display: block;
-    height: 77px;
-    width: 218px;
-    background-image: url(images/cassette-logo-new.png);
-    background-repeat: no-repeat;
-    background-position: left 16px;
-}
-
-.logo:hover {
-    text-decoration: none;
-}
-
-.logo:visited {
-    color: #EFEFEF;    
 }
 
 .top .wrap {
     position: relative;
 }
 
+.logo {
+    display: block;
+    padding-top: 28px;
+    height: 85px;
+    width: 270px;
+    background-image: url(images/cassette-logo.png);
+    background-repeat: no-repeat;
+    background-position: left top;
+    opacity: 0.9;
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+}
+
+.logo:hover {
+    text-decoration: none;
+    opacity: 1;
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+}
+
+/* MAIN NAVIGATION */
+
 .top .links {
     position: absolute;
-    right: 0;
-    top: 0px;
+    right: -15px;
+    top: 0;
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     padding: 0;
     margin: 0;
     display: table;
@@ -42,37 +47,61 @@
 
 .top .links li {
     list-style-type: none;
-    padding: 0;
-    display: table-cell;
+    float: left;
     vertical-align: middle;
-    padding-left: 25px;
-}
-
-#tweet, #g1 {
-    padding-top: 5px;
-}
-
-#g1 {
-    padding-left: 6px;
-    padding-right: 35px;
+    padding: 0 15px 0 15px;
 }
 
 .top .links a {
     display: block;
-    height: 47px;
-    padding-top: 32px; 
-    color: #B4B4B4;
+    height: 114px;
+    line-height: 114px;
     text-decoration: none;
+    color: #fff;
+    opacity: 0.6;
     text-transform: uppercase;
     font-weight: bold;
+    -moz-transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+    background-repeat: no-repeat;
+    background-position: center 36px;
 }
 
-.active {
-    background-image: url(images/activemarker.png);
+a#benefits-link {
+    background-image: url(images/benefits-icon.png);
+}
+
+a#download-link {
+    background-image: url(images/download-icon.png);
+}
+
+a#docs-link {
+    background-image: url(images/docs-icon.png);
+}
+
+a#support-link {
+    background-image: url(images/support-icon.png);
+}
+
+a#donate-link {
+    background-image: url(images/donate-icon.png);
+}
+
+/*
+.top .links li.active {
+    background-image: url(images/activemarker2.png);
     background-repeat: no-repeat;
     background-position: center bottom;
 }
+*/
 
 .top .links a:hover {
+     opacity: 0.9;
+    -moz-transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+}
+
+.top .links li.active a {
+    opacity: 1;
     color: #fff;
 }

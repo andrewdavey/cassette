@@ -1,7 +1,14 @@
 ﻿/// <reference path="~/assets/scripts/jquery/jquery.js"/>
 $(function () {
+    var tweets = $(".tweets");
+    var tweetIndex = 0;
     setInterval(function () {
-        $(".tweets:visible").fadeOut(2000);
-        $(".tweets:not(:visible)").fadeIn(2000);
-    }, 7500);
+        $(tweets[tweetIndex]).fadeOut(2000);
+        tweetIndex++;
+        if (tweetIndex === tweets.length) {
+            tweetIndex = 0;
+        }
+        $(tweets[tweetIndex]).fadeIn(2000);
+    }, 5000);
+
 });
