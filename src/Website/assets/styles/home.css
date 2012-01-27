@@ -9,83 +9,57 @@
 
 .banner h1 {
     letter-spacing: -1px;
-    margin: .9em 0 .75em 0;
-    padding-top: 10px;
+    margin: 40px 0 25px 0;
+}
+
+.banner p {
+    color: #fff;
+    font-size: 1.3em;
+    text-shadow: 0 1px 0 #01456D;
+}
+
+.intro {
+    margin-right: 280px;
 }
 
 .intro a {
     font-size: 1em;
 }
 
-.banner p {
-    color: #fff;
-    margin: 0 0 1em 0;
-    font-size: 1.3em;
-    text-shadow: 0 1px 0 #01456D;
-}
-
-/* SPREAD THE WORD */
-
-.banner .share-links {
-    top: 22px;
+.share-links {
+    top: 11px;
 }
 
 /* FAV TWEETS */
 
 .favtweets {
     width: 235px;
-    float: right;
-    margin-top: 1.8em;
-    margin-left: 3em;
     height: 350px;
+    position: absolute;
+    top: 65px;
+    right: 0;
 }
 
 .tweets {
     position: absolute;
-    top: 75px;
+    top: 0;
+    left: 0;
 }
 
-.favtweets h2 {
-    font-family: Helvetica;
-    color: #fff;
-    padding-left: 1.4em;
-    font-size: 1.2em;
-    margin-bottom: 1.1em;
-}
-
-.favtweets img {
-    margin-right: 0.6em;
-}
-
-.favtweets p.tweet {
+.favtweets p {
     font-size: 0.9em;
     line-height: 1.6em;
-    color: #fff;
     text-shadow: none;
-    margin-bottom: 0.3em;
+    margin: 0 0 0.3em 0;
 }
 
-.favtweets p.tweeter {
-    font-size: 0.9em;
-    color: #2A2A2A;
-    text-shadow: none;
+p.tweeter {
     margin-bottom: 1.5em;
+    text-align: right;
 }
 
-.tweet a {
+.favtweets a {
     color: #fff;
-}
-
-.tweet a:hover {
-    color: #EBEBEB;
-}
-
-.tweeter a {
-    color: #2A2A2A;
-}
-
-.tweeter a:hover {
-    color: #000;
 }
 
 /* Secondary Content */

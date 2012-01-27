@@ -52,15 +52,11 @@
     display: block;
     height: 76px;
     padding-top: 36px;
-    opacity: 0.7;
-    filter: alpha(opacity=70); /* IE 7, IE8 */
     -moz-transition: opacity 0.5s; /* Firefox */
     -webkit-transition: opacity 0.5s; /* Chrome, Safari */
 }
 
 .top .links a:hover {
-    opacity: 0.9;
-    filter: alpha(opacity=90); /* IE 7, IE8 */
     -moz-transition: opacity 0.5s;
     -webkit-transition: opacity 0.5s;
 }
