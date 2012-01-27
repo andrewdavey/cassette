@@ -17,7 +17,9 @@
 <body class="@ViewBag.Section">
     <div class="top">
         <div class="top-wrap">
-                <a class="logo" href="@Url.RouteUrl("Home")"></a>
+                <div class="logo">
+                    <a @ActiveClassIf("") href="@Url.RouteUrl("Home")"></a>
+                </div>
                 <ul class="links">
                     <li @ActiveClassIf("features")>
                         <a id="benefits-link" href="@Url.RouteUrl("Benefits")">Benefits</a>
