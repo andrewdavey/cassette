@@ -2,7 +2,7 @@
 
 #documentationheader {
     color: #fff;
-    font-size: 2.1em;
+    font-size: 2em;
     text-shadow: 0 1px 0 #323231;
     margin: .75em 0;
     font-weight: bold;   
@@ -66,17 +66,14 @@
 }
 
 .tree a {
-    color: #494949;
-}
-
-.tree a:hover {
     color: #000000;
 }
 
 .tree a.activedoc {
     font-weight: bold;
     text-decoration: none;
-    color: #000000;    
+    color: #000000;
+    opacity: 1;
 }
 
 .documentation .item {

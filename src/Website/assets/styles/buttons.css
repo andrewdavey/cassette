@@ -1,0 +1,57 @@
+﻿/* GENERAL BUTTON STYLES */
+
+.action {
+    margin-top: .7em;
+    -moz-box-shadow: inset 0px 1px 0px 0px #c6eb93;
+    -webkit-box-shadow: inset 0px 1px 0px 0px #c6eb93;
+    box-shadow: inset 0px 1px 0px 0px #c6eb93;
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #b0dc72), color-stop(1, #7fa647) );
+    background: -moz-linear-gradient( center top, #b0dc72 5%, #7fa647 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b0dc72', endColorstr='#7fa647');
+    background-color: #b0dc72;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    border: 2px solid #5e8426;
+    display: inline-block;
+    color: #fff;
+    font-weight: bold;
+    padding: .6em 1.1em;
+    text-decoration: none;
+    text-shadow: 1px 1px 0px #5e8426;
+    font-size: 1.1em;
+    opacity: 1;
+}
+
+a.action:hover {
+    color: White;
+    text-decoration: none;
+    border: 2px solid #658b2d;
+}
+
+.action:visited {
+    color: #ffffff;
+}
+
+.action:hover {
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #bbe481), color-stop(1, #7fa647) );
+    background: -moz-linear-gradient( center top, #bbe481 5%, #7fa647 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bbe481', endColorstr='#7fa647');
+}
+
+.action:active {
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #7fa647), color-stop(1, #b0dc72) );
+    background: -moz-linear-gradient( center top, #7fa647 5%, #b0dc72 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7fa647', endColorstr='#b0dc72');
+    background-color: #377302;
+}
+
+/* SPECIFIC BUTTON STYLES */
+
+.download-button {
+    font-size: 1.1em;
+    padding-left: 1.9em;
+    background-image: url(images\download-button-icon.png);
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+}

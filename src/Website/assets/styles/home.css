@@ -3,40 +3,43 @@
 .banner {
     max-width: 960px;
     margin: 0 auto;
-    min-height: 375px;
     position: relative;
 }
 
 .banner h1 {
-    letter-spacing: -1px;
-    margin: 40px 0 25px 0;
+    padding: 0.6em 0 0 0;
 }
 
 .banner p {
     color: #fff;
-    font-size: 1.3em;
+    font-size: 1.1em;
     text-shadow: 0 1px 0 #01456D;
+    line-height: 1.8em;
 }
 
 .intro {
     margin-right: 280px;
 }
 
-.intro a {
+.banner .share-links  {
+    top: 24px;
+}
+
+.banner .share-links p {
     font-size: 1em;
 }
 
-.share-links {
-    top: 11px;
+.banner .tweet, .banner .g1 {
+    padding-top: 0.3em;
 }
 
 /* FAV TWEETS */
 
 .favtweets {
-    width: 235px;
+    width: 244px;
     height: 350px;
     position: absolute;
-    top: 65px;
+    top: 77px;
     right: 0;
 }
 
@@ -47,8 +50,8 @@
 }
 
 .favtweets p {
-    font-size: 0.9em;
-    line-height: 1.6em;
+    font-size: 0.8em;
+    line-height: 1.8em;
     text-shadow: none;
     margin: 0 0 0.3em 0;
 }
@@ -62,11 +65,11 @@ p.tweeter {
     color: #fff;
 }
 
-/* Secondary Content */
+/* SECONDARY CONTENT */
 
 .home-main {
     max-width: 960px;
-    margin: 0 auto;
+    margin: 85px auto 0 auto;
 }
 
 .section {
@@ -112,13 +115,13 @@ p.minor {
 }
 
 p.minor a {
-    color: #839FC5;
-}
-
-p.minor a:hover {
     color: #4d688d;
 }
 
 .more {
     padding: 25px 25px 30px 25px;
+}
+
+.last .download-button {
+    font-size: 1.3em;
 }

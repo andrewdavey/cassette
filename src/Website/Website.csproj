@@ -77,6 +77,7 @@
     <Content Include="assets\scripts\jquery\jquery.js" />
     <Content Include="assets\scripts\home\tweets.js" />
     <Content Include="assets\scripts\licensing-buy\form.js" />
+    <Content Include="assets\styles\buttons.css" />
     <Content Include="assets\styles\buy.css" />
     <Content Include="assets\styles\code.css" />
     <Content Include="assets\styles\documentation.css" />
@@ -92,6 +93,7 @@
     <Content Include="assets\styles\images\docs-icon.png" />
     <Content Include="assets\styles\images\donate-icon.png" />
     <Content Include="assets\styles\images\download-background.png" />
+    <Content Include="assets\styles\images\download-button-icon.png" />
     <Content Include="assets\styles\images\download-icon.png" />
     <Content Include="assets\styles\images\benefits-icon.png" />
     <Content Include="assets\styles\images\getting-started-icon.png" />
