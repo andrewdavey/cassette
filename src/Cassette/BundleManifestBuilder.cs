@@ -36,18 +36,22 @@ namespace Cassette
 
         void IBundleVisitor.Visit(IAsset asset)
         {
-            bundleManifest.Assets.Add(new AssetManifest
+            var assetManifest = new AssetManifest
             {
-                Path = asset.SourceFile.FullPath,
-                RawFileReferences = GetRawFileReferences(asset)
-            });
+                Path = asset.SourceFile.FullPath
+            };
+            foreach (var reference in GetRawFileReferences(asset))
+            {
+                assetManifest.RawFileReferences.Add(reference);
+            }
+            bundleManifest.Assets.Add(assetManifest);
         }
 
-        List<string> GetRawFileReferences(IAsset asset)
+        IEnumerable<string> GetRawFileReferences(IAsset asset)
         {
-            return (from r in asset.References
-                    where r.Type == AssetReferenceType.RawFilename
-                    select r.Path).ToList();
+            return from r in asset.References
+                   where r.Type == AssetReferenceType.RawFilename
+                   select r.Path;
         }
     }
 }

@@ -4,8 +4,13 @@ namespace Cassette
 {
     class AssetManifest
     {
+        public AssetManifest()
+        {
+            RawFileReferences = new List<string>();
+        }
+
         public string Path { get; set; }
-        public List<string> RawFileReferences { get; set; }
+        public IList<string> RawFileReferences { get; private set; }
 
         public override bool Equals(object obj)
         {

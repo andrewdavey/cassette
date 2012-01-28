@@ -56,9 +56,11 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssetManifest.cs" />
+    <Compile Include="AssetManifestDeserializer.cs" />
     <Compile Include="BundleFactoryExtensions.cs" />
     <Compile Include="BundleManifest.cs" />
     <Compile Include="BundleManifestBuilder.cs" />
+    <Compile Include="BundleManifestDeserializer.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />
     <Compile Include="BundleProcessing\ICommentParser.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Interop\ScriptTextFlags.cs" />
     <Compile Include="Interop\ScriptThreadState.cs" />
     <Compile Include="Interop\ScriptTypeLibFlags.cs" />
+    <Compile Include="InvalidBundleManifestException.cs" />
     <Compile Include="IO\FileExtensions.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\IFile.cs" />
@@ -232,6 +235,7 @@
     <Compile Include="Utilities\StreamExtensions.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
+    <Compile Include="XElementExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
