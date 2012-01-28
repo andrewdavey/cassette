@@ -90,31 +90,31 @@ namespace Cassette
         [Fact]
         public void ScriptBundleManifestCreatedFromScriptElement()
         {
-            TypeIsCreatedFrom<Scripts.ScriptBundleManifest>("ScriptBundle");
+            TypeIsCreatedFrom<Scripts.ScriptBundleManifest>("<ScriptBundle Path=\"~\" Hash=\"\"/>");
         }
 
         [Fact]
         public void ExternalScriptBundleManifestCreatedFromExternalScriptElement()
         {
-            TypeIsCreatedFrom<Scripts.ExternalScriptBundleManifest>("ExternalScriptBundle");
+            TypeIsCreatedFrom<Scripts.ExternalScriptBundleManifest>("<ExternalScriptBundle Path=\"~\" Hash=\"\" Url=\"http://example.com/\"/>");
         }
 
         [Fact]
         public void StylesheetBundleManifestCreatedFromStylesheetElement()
         {
-            TypeIsCreatedFrom<Stylesheets.StylesheetBundleManifest>("StylesheetBundle");
+            TypeIsCreatedFrom<Stylesheets.StylesheetBundleManifest>("<StylesheetBundle Path=\"~\" Hash=\"\"/>");
         }
 
         [Fact]
         public void ExternalStylesheetBundleManifestCreatedFromExternalStylesheetElement()
         {
-            TypeIsCreatedFrom<Stylesheets.ExternalStylesheetBundleManifest>("ExternalStylesheetBundle");
+            TypeIsCreatedFrom<Stylesheets.ExternalStylesheetBundleManifest>("<ExternalStylesheetBundle Path=\"~\" Hash=\"\" Url=\"http://example.com/\"/>");
         }
 
         [Fact]
         public void HtmlTemplateBundleManifestCreatedFromHtmlTemplateElement()
         {
-            TypeIsCreatedFrom<HtmlTemplates.HtmlTemplateBundleManifest>("HtmlTemplateBundle");
+            TypeIsCreatedFrom<HtmlTemplates.HtmlTemplateBundleManifest>("<HtmlTemplateBundle Path=\"~\" Hash=\"\"/>");
         }
 
         [Fact]
@@ -134,9 +134,9 @@ namespace Cassette
             }
         }
 
-        void TypeIsCreatedFrom<T>(string name)
+        void TypeIsCreatedFrom<T>(string bundleXml)
         {
-            Deserialize("<Bundles><" + name + " Path=\"~\" Hash=\"\"/></Bundles>");
+            Deserialize("<Bundles>" + bundleXml + "</Bundles>");
             manifests[0].ShouldBeType<T>();
         }
     }
