@@ -37,7 +37,7 @@ namespace Cassette.HtmlTemplates
 
         internal override BundleManifest CreateBundleManifest()
         {
-            return new HtmlBundleManifestBuilder().BuildManifest(this);
+            return new HtmlTemplateBundleManifestBuilder().BuildManifest(this);
         }
     }
 }
