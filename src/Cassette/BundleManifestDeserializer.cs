@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -25,6 +26,7 @@ namespace Cassette
         {
             var manifest = CreateBundleManifest(manifestElement);
             manifest.Path = manifestElement.AttributeOrThrow("Path", () => new InvalidBundleManifestException("Bundle manifest element missing \"Path\" attribute."));
+            manifest.Hash = GetHashFromElement(manifestElement);
             manifest.ContentType = manifestElement.AttributeValueOrNull("ContentType");
             manifest.PageLocation = manifestElement.AttributeValueOrNull("PageLocation");
             AddAssets(manifestElement, manifest);
@@ -50,6 +52,13 @@ namespace Cassette
                 default:
                     throw new InvalidBundleManifestException("Unknown bundle type \"" + name + "\" in XML manifest.");
             }
+        }
+
+        byte[] GetHashFromElement(XElement manifestElement)
+        {
+            return ByteArrayExtensions.FromHexString(
+                manifestElement.AttributeOrThrow("Hash", () => new InvalidBundleManifestException("Bundle manifest element missing \"Hash\" attribute."))
+            );
         }
 
         void AddAssets(XElement manifestElement, BundleManifest manifest)

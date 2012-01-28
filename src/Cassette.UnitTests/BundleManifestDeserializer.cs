@@ -8,7 +8,6 @@ namespace Cassette
 {
     public class BundleManifestDeserializer_Tests
     {
-        readonly BundleManifestDeserializer deserializer = new BundleManifestDeserializer();
         List<BundleManifest> manifests;
 
         [Fact]
@@ -21,7 +20,7 @@ namespace Cassette
         [Fact]
         public void XmlWithSingleBundleReturnsSingleManifest()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\" /></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\" /></Bundles>");
             manifests.Count.ShouldEqual(1);
         }
 
@@ -35,49 +34,56 @@ namespace Cassette
         [Fact]
         public void BundleManifestPathIsInitializedFromXmlAttribute()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\"/></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\"/></Bundles>");
             manifests[0].Path.ShouldEqual("~");
+        }
+
+        [Fact]
+        public void BundleManifestHashIsInitializedFromXmlAttribute()
+        {
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"010203\"/></Bundles>");
+            manifests[0].Hash.ShouldEqual(new byte[] { 1, 2, 3 });
         }
 
         [Fact]
         public void BundleManifestContentTypeIsInitializedFromXmlAttribute()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\" ContentType=\"EXPECTED-CONTENT-TYPE\"/></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\" ContentType=\"EXPECTED-CONTENT-TYPE\"/></Bundles>");
             manifests[0].ContentType.ShouldEqual("EXPECTED-CONTENT-TYPE");
         }
 
         [Fact]
         public void BundleManifestContentTypeIsNullWhenXmlAttributeIsMissing()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\"/></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\"/></Bundles>");
             manifests[0].ContentType.ShouldBeNull();
         }
 
         [Fact]
         public void BundleManifestPageLocationIsInitializedFromXmlAttribute()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\" PageLocation=\"LOCATION\"/></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\" PageLocation=\"LOCATION\"/></Bundles>");
             manifests[0].PageLocation.ShouldEqual("LOCATION");
         }
 
         [Fact]
         public void BundleManifestPageLocationIsNullWhenXmlAttributeIsMissing()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\"/></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\"/></Bundles>");
             manifests[0].PageLocation.ShouldBeNull();
         }
 
         [Fact]
         public void AssetManifestCreatedFromAssetsInXml()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\"><Asset Path=\"~/asset/path\"/></ScriptBundle></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\"><Asset Path=\"~/asset/path\"/></ScriptBundle></Bundles>");
             manifests[0].Assets.Count.ShouldEqual(1);
         }
 
         [Fact]
         public void ReferenceCreatedFromXmlChildElement()
         {
-            Deserialize("<Bundles><ScriptBundle Path=\"~\"><Reference Path=\"~/EXPECTED-PATH\"/></ScriptBundle></Bundles>");
+            Deserialize("<Bundles><ScriptBundle Path=\"~\" Hash=\"\"><Reference Path=\"~/EXPECTED-PATH\"/></ScriptBundle></Bundles>");
             manifests[0].References[0].ShouldEqual("~/EXPECTED-PATH");
         }
 
@@ -123,13 +129,14 @@ namespace Cassette
         {
             using (var stream = xml.AsStream())
             {
+                var deserializer = new BundleManifestDeserializer();
                 manifests = deserializer.Deserialize(stream).ToList();
             }
         }
 
         void TypeIsCreatedFrom<T>(string name)
         {
-            Deserialize("<Bundles><" + name + " Path=\"~\"/></Bundles>");
+            Deserialize("<Bundles><" + name + " Path=\"~\" Hash=\"\"/></Bundles>");
             manifests[0].ShouldBeType<T>();
         }
     }
