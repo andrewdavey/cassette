@@ -3,6 +3,7 @@ using System.Linq;
 using Cassette.Utilities;
 using Should;
 using Xunit;
+
 namespace Cassette
 {
     public class BundleManifestDeserializer_Tests
@@ -80,12 +81,56 @@ namespace Cassette
             manifests[0].References[0].ShouldEqual("~/EXPECTED-PATH");
         }
 
+        [Fact]
+        public void ScriptBundleManifestCreatedFromScriptElement()
+        {
+            TypeIsCreatedFrom<Scripts.ScriptBundleManifest>("ScriptBundle");
+        }
+
+        [Fact]
+        public void ExternalScriptBundleManifestCreatedFromExternalScriptElement()
+        {
+            TypeIsCreatedFrom<Scripts.ExternalScriptBundleManifest>("ExternalScriptBundle");
+        }
+
+        [Fact]
+        public void StylesheetBundleManifestCreatedFromStylesheetElement()
+        {
+            TypeIsCreatedFrom<Stylesheets.StylesheetBundleManifest>("StylesheetBundle");
+        }
+
+        [Fact]
+        public void ExternalStylesheetBundleManifestCreatedFromExternalStylesheetElement()
+        {
+            TypeIsCreatedFrom<Stylesheets.ExternalStylesheetBundleManifest>("ExternalStylesheetBundle");
+        }
+
+        [Fact]
+        public void HtmlTemplateBundleManifestCreatedFromHtmlTemplateElement()
+        {
+            TypeIsCreatedFrom<HtmlTemplates.HtmlTemplateBundleManifest>("HtmlTemplateBundle");
+        }
+
+        [Fact]
+        public void DeserializeUnknownBundleTypeThrowsException()
+        {
+            Assert.Throws<InvalidBundleManifestException>(
+                () => Deserialize("<Bundles><UnknownBundle /></Bundles>")
+            );
+        }
+
         void Deserialize(string xml)
         {
             using (var stream = xml.AsStream())
             {
                 manifests = deserializer.Deserialize(stream).ToList();
             }
+        }
+
+        void TypeIsCreatedFrom<T>(string name)
+        {
+            Deserialize("<Bundles><" + name + " Path=\"~\"/></Bundles>");
+            manifests[0].ShouldBeType<T>();
         }
     }
 }

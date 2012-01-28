@@ -89,6 +89,7 @@
     <Compile Include="HtmlTemplates\CompileJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\CompileKnockoutJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\HtmlBundleManifestBuilder.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleManifest.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplatesWithJQueryTmpl.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\ScriptBundleManifest.cs" />
     <Compile Include="Scripts\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
