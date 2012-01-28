@@ -55,7 +55,10 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssetManifest.cs" />
     <Compile Include="BundleFactoryExtensions.cs" />
+    <Compile Include="BundleManifest.cs" />
+    <Compile Include="BundleManifestBuilder.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />
     <Compile Include="BundleProcessing\ICommentParser.cs" />
@@ -83,6 +86,7 @@
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
     <Compile Include="HtmlTemplates\CompileJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\CompileKnockoutJQueryTmpl.cs" />
+    <Compile Include="HtmlTemplates\HtmlBundleManifestBuilder.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="HtmlTemplates\RegisterTemplatesWithJQueryTmpl.cs" />
@@ -141,19 +145,26 @@
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleManifest.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
     <Compile Include="Scripts\IECoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
     <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundleManifest.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\HtmlConstants.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleManifest.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />

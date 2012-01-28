@@ -37,5 +37,10 @@ namespace Cassette.Stylesheets
         {
             return Renderer.Render(this);
         }
+
+        internal override BundleManifest CreateBundleManifest()
+        {
+            return new StylesheetBundleManifestBuilder().BuildManifest(this);
+        }
     }
 }

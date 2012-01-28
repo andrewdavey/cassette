@@ -40,5 +40,10 @@ namespace Cassette.Stylesheets
         {
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
+
+        internal override BundleManifest CreateBundleManifest()
+        {
+            return new ExternalStylesheetBundleManifestBuilder().BuildManifest(this);
+        }
     }
 }

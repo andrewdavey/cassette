@@ -29,6 +29,11 @@ namespace Cassette.Scripts
         {
             return Renderer.Render(this);
         }
+
+        internal override BundleManifest CreateBundleManifest()
+        {
+            return new ScriptBundleManifestBuilder().BuildManifest(this);
+        }
     }
 }
 

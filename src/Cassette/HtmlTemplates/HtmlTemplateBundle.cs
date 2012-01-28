@@ -34,5 +34,10 @@ namespace Cassette.HtmlTemplates
                 .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
             return System.IO.Path.GetFileNameWithoutExtension(path);
         }
+
+        internal override BundleManifest CreateBundleManifest()
+        {
+            return new HtmlBundleManifestBuilder().BuildManifest(this);
+        }
     }
 }

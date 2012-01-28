@@ -126,6 +126,8 @@ namespace Cassette
 
         internal abstract string Render();
 
+        internal abstract BundleManifest CreateBundleManifest();
+
         internal virtual bool ContainsPath(string pathToFind)
         {
             return new BundleContainsPathPredicate().BundleContainsPath(pathToFind, this);

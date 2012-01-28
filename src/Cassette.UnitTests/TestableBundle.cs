@@ -1,5 +1,5 @@
-﻿
-using Cassette.Configuration;
+﻿using Cassette.Configuration;
+
 namespace Cassette
 {
     // Subclass so we can test the non-abstract implementation.
@@ -17,7 +17,7 @@ namespace Cassette
 
         internal override string Render()
         {
-            return (RenderResult);
+            return RenderResult;
         }
 
         internal override void Process(CassetteSettings settings)
@@ -29,6 +29,11 @@ namespace Cassette
         {
             base.Dispose(disposing);
             WasDisposed = true;
+        }
+
+        internal override BundleManifest CreateBundleManifest()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

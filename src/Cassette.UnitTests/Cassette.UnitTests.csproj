@@ -92,13 +92,17 @@
     <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="BundleDescriptorReader.cs" />
     <Compile Include="BundleProcessing\MutablePipeline.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleManifestBuilder.cs" />
+    <Compile Include="Scripts\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Persistence\BundleCache.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleManifestBuilder.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
