@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Configuration;
+using Cassette.IO;
+using Cassette.Scripts;
 
 namespace Cassette
 {
-    class BundleManifest
+    abstract class BundleManifest
     {
-        public BundleManifest()
+        protected BundleManifest()
         {
             Assets = new List<AssetManifest>();
             References = new List<string>();
@@ -35,6 +38,30 @@ namespace Cassette
         public override int GetHashCode()
         {
             return Path.GetHashCode();
+        }
+
+        public Bundle CreateBundle(IFile bundleContentFile)
+        {
+            var bundle = CreateBundleCore();
+            bundle.Hash = Hash;
+            bundle.ContentType = ContentType;
+            bundle.PageLocation = PageLocation;
+            bundle.IsFromCache = true;
+            bundle.Assets.Add(CreateCachedBundleContent(bundleContentFile));
+            bundle.Process(new CassetteSettings(""));
+            return bundle;
+        }
+
+        protected abstract Bundle CreateBundleCore();
+
+        CachedBundleContent CreateCachedBundleContent(IFile bundleContentFile)
+        {
+            return new CachedBundleContent(bundleContentFile, OriginalAssets());
+        }
+
+        IEnumerable<IAsset> OriginalAssets()
+        {
+            return Assets.Select(assetManifest => new AssetFromManifest(assetManifest.Path));
         }
     }
 }

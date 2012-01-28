@@ -1,5 +1,9 @@
-﻿using Should;
+﻿using System.IO;
+using Moq;
+using Should;
 using Xunit;
+using Cassette.Utilities;
+using Cassette.IO;
 
 namespace Cassette.Scripts
 {
@@ -7,6 +11,7 @@ namespace Cassette.Scripts
     {
         readonly ScriptBundleManifest manifest;
         readonly Bundle createdBundle;
+        const string BundleContent = "BUNDLE-CONTENT";
 
         public ScriptBundleManifest_Tests()
         {
@@ -14,14 +19,18 @@ namespace Cassette.Scripts
             {
                 Path = "~",
                 Hash = new byte[] { 1, 2, 3 },
-                ContentType = "EXPECTED-CONTENT-TYPE",
-                PageLocation = "EXPECTED-PAGE-LOCATION",
+                ContentType = "CONTENT-TYPE",
+                PageLocation = "PAGE-LOCATION",
                 Assets =
                     {
-                        new AssetManifest { Path = "~/asset" }
+                        new AssetManifest { Path = "~/asset-a" },
+                        new AssetManifest { Path = "~/asset-b" }
                     }
             };
-            createdBundle = manifest.CreateBundle();
+            var file = new Mock<IFile>();
+            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                .Returns(() => BundleContent.AsStream());
+            createdBundle = manifest.CreateBundle(file.Object);
         }
 
         [Fact]
@@ -55,9 +64,22 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void CreatedBundleContainsAssetPath()
+        public void CreatedBundleContainsAssetPathA()
         {
-            createdBundle.ContainsPath("~/asset").ShouldBeTrue();
+            createdBundle.ContainsPath("~/asset-a").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void CreatedBundleContainsAssetPathB()
+        {
+            createdBundle.ContainsPath("~/asset-b").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void CreatedBundleOpenStreamReturnsBundleContent()
+        {
+            var content = createdBundle.OpenStream().ReadToEnd();
+            content.ShouldEqual(BundleContent);
         }
     }
 }
