@@ -60,21 +60,7 @@ namespace Cassette
         /// <summary>
         /// Gets the hash of the combined assets.
         /// </summary>
-        public byte[] Hash
-        {
-            get
-            {
-                if (assets.Count == 0)
-                {
-                    return new byte[0];
-                }
-                if (assets.Count > 1)
-                {
-                    return new ConcatenatedAsset(assets).Hash;
-                }
-                return assets[0].Hash;
-            }
-        }
+        public byte[] Hash { get; internal set; }
 
         internal IEnumerable<string> References
         {

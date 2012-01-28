@@ -98,6 +98,7 @@
     <Compile Include="BundleProcessing\MutablePipeline.cs" />
     <Compile Include="RuntimeBundleContainerFactory.cs" />
     <Compile Include="Scripts\ExternalScriptBundleManifestBuilder.cs" />
+    <Compile Include="Scripts\ScriptBundleManifest.cs" />
     <Compile Include="Scripts\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Persistence\BundleCache.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />

@@ -12,6 +12,7 @@ namespace Cassette
         }
 
         public string Path { get; set; }
+        public byte[] Hash { get; set; }
         public string ContentType { get; set; }
         public string PageLocation { get; set; }
         public IList<AssetManifest> Assets { get; private set; }
