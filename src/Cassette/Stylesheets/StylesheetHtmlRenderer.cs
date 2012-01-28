@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {

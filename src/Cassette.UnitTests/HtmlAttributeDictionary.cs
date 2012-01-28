@@ -66,15 +66,33 @@ namespace Cassette
         }
 
         [Fact]
-        public void WithBadPropertyName_ThenNameSanitized()
+        public void WithUpperPropertyName_ThenLowerName()
         {
             var target = new HtmlAttributeDictionary();
 
             target.Add(new { ASYNC = "async" });
-            target.Add("A-Sync");
 
             target.Where(k => k.Key == "async").Select(k => k.Key).FirstOrDefault().ShouldEqual("async");
-            target.Where(k => k.Key == "a_sync").Select(k => k.Key).FirstOrDefault().ShouldEqual("a_sync");
+        }
+
+        [Fact]
+        public void AddObject_WithUnderscorePropertyName_ThenDashPropertyName()
+        {
+            var target = new HtmlAttributeDictionary();
+
+            target.Add(new { data_value = "test" });
+
+            target.Where(k => k.Key == "data-value").Select(k => k.Key).FirstOrDefault().ShouldEqual("data-value");
+        }
+
+        [Fact]
+        public void AddNameValuePair_WithUnderscorePropertyName_ThenRemainsUnderscoreName()
+        {
+            var target = new HtmlAttributeDictionary();
+
+            target.Add("data_value", "test");
+
+            target.Where(k => k.Key == "data_value").Select(k => k.Key).FirstOrDefault().ShouldEqual("data_value");
         }
 
         [Fact]

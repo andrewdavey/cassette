@@ -6,18 +6,27 @@ using System.Text;
 
 namespace Cassette
 {
-    /// <summary>
-    /// A collection of AttributeName/AttributeValue pairs.
-    /// </summary>
+    /// <remarks>
+    /// Class that contains a collection of html attribute name/value pairs.
+    /// </remarks>
     public class HtmlAttributeDictionary : IEnumerable<KeyValuePair<string, string>>
     {
         readonly Dictionary<string, string> attributeStorage = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Add an object to the <see cref="HtmlAttributeDictionary"/> using the Property Names as the Attribute Name
-        /// and the Property Values as the Attribute Values.
+        /// Add an object to the <see cref="HtmlAttributeDictionary"/> using the object property names as the attribute name
+        /// and the property values as the attribute Values.
+        /// 
+        /// Underscores in the object property name will be converted to dashes.
         /// </summary>
-        /// <param name="values">The object containing the attributes to add.</param>
+        /// <example>
+        /// <code>
+        /// var attributes = new HtmlAttributeDictionary().Add( new { data_val_requried = "contrived example", @class = "cssx" } );
+        /// </code>
+        /// </example>
+        /// <param name="values">An object that contains the HTML attributes.
+        /// The attributes are retrieved through reflection by examining the properties of the object.
+        /// The object is typically created by using object initializer syntax.</param>
         /// <returns>This dictionary.</returns>
         public HtmlAttributeDictionary Add(object values)
         {
@@ -30,7 +39,10 @@ namespace Cassette
             foreach (PropertyDescriptor property in properties)
             {
                 object propertyValue = property.GetValue(values);
-                this.Add(property.Name, propertyValue);
+
+                var name = property.Name.Replace('_', '-');
+
+                this.Add(name, propertyValue);
             }
 
             return this;
@@ -48,7 +60,7 @@ namespace Cassette
         }
 
         /// <summary>
-        /// Add an attribute name and attribute value to the <see cref="HtmlAttributeDictionary"/>.
+        /// Add an attribute name and value to the <see cref="HtmlAttributeDictionary"/>.
         /// </summary>
         /// <param name="name">The attribute name to add.</param>
         /// <param name="value">The attribute value to add.</param>
@@ -167,7 +179,7 @@ namespace Cassette
         {
             // XHTML requires lowercase attribute names
             // W3C recommends lowercase attribute names in the HTML 4 recommendation.
-            return name.Trim().Replace('-', '_').ToLowerInvariant();
+            return name.Trim().ToLowerInvariant();
         }
 
         private static string SanitizeValue(object value)

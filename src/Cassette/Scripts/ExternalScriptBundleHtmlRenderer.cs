@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Cassette.Configuration;
-using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {

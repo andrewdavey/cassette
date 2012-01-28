@@ -1,5 +1,4 @@
-﻿using Cassette.Utilities;
-
+﻿
 namespace Cassette.Scripts
 {
     class ScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
