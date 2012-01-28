@@ -1,9 +1,10 @@
 ﻿using System.IO;
+using System.Xml.Linq;
+using Cassette.IO;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Utilities;
-using Cassette.IO;
 
 namespace Cassette.Scripts
 {
@@ -80,6 +81,61 @@ namespace Cassette.Scripts
         {
             var content = createdBundle.OpenStream().ReadToEnd();
             content.ShouldEqual(BundleContent);
+        }
+    }
+
+    public class ScriptBundleManifest_InitializeFromXElement_Tests
+    {
+        [Fact]
+        public void UrlAssignedFromAttribute()
+        {
+            var manifest = new ExternalScriptBundleManifest();
+            manifest.InitializeFromXElement(new XElement("ExternalScriptBundleManifest",
+                new XAttribute("Path", "~"),
+                new XAttribute("Hash", ""),
+                new XAttribute("Url", "http://example.com/")
+            ));
+
+            manifest.Url.ShouldEqual("http://example.com/");
+        }
+
+        [Fact]
+        public void GivenUrlAttributeMissingThenExceptionThrown()
+        {
+            var manifest = new ExternalScriptBundleManifest();
+            Assert.Throws<InvalidBundleManifestException>(
+                () => manifest.InitializeFromXElement(new XElement("ExternalScriptBundleManifest",
+                    new XAttribute("Path", "~"),
+                    new XAttribute("Hash", "")
+                ))
+            );
+        }
+
+        [Fact]
+        public void FallbackConditionAssignedFromAttribute()
+        {
+            var manifest = new ExternalScriptBundleManifest();
+            manifest.InitializeFromXElement(new XElement("ExternalScriptBundleManifest",
+                new XAttribute("Path", "~"),
+                new XAttribute("Hash", ""),
+                new XAttribute("Url", "http://example.com/"),
+                new XAttribute("FallbackCondition", "CONDITION")
+            ));
+
+            manifest.FallbackCondition.ShouldEqual("CONDITION");
+        }
+
+        [Fact]
+        public void FallbackConditionIsNullWhenAttributeMissing()
+        {
+            var manifest = new ExternalScriptBundleManifest();
+            manifest.InitializeFromXElement(new XElement("ExternalScriptBundleManifest",
+                new XAttribute("Path", "~"),
+                new XAttribute("Hash", ""),
+                new XAttribute("Url", "http://example.com/")
+            ));
+
+            manifest.FallbackCondition.ShouldBeNull();
         }
     }
 }

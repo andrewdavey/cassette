@@ -1,4 +1,5 @@
-﻿using Cassette.IO;
+﻿using System.Xml.Linq;
+using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
@@ -32,6 +33,48 @@ namespace Cassette.Stylesheets
         public void CreatedBundleUrlEqualsManifestUrl()
         {
             createdBundle.Url.ShouldEqual(manifest.Url);
+        }
+    }
+
+    public class ExternalStylesheetBundleManifest_InitializeFromXElement_Tests
+    {
+        [Fact]
+        public void UrlAssignedFromAttribute()
+        {
+            var manifest = new ExternalStylesheetBundleManifest();
+            manifest.InitializeFromXElement(new XElement("ExternalStylesheetBundle",
+                new XAttribute("Path", "~"),
+                new XAttribute("Hash", ""),
+                new XAttribute("Url", "http://example.com/")
+            ));
+
+            manifest.Url.ShouldEqual("http://example.com/");
+        }
+
+        [Fact]
+        public void GivenUrlAttributeMissingThenExceptionThrown()
+        {
+            var manifest = new ExternalStylesheetBundleManifest();
+            Assert.Throws<InvalidBundleManifestException>(
+                () => manifest.InitializeFromXElement(new XElement("ExternalStylesheetBundle",
+                    new XAttribute("Path", "~"),
+                    new XAttribute("Hash", "")
+                ))
+            );
+        }
+
+        [Fact]
+        public void MediaAssignedFromAttribute()
+        {
+            var manifest = new ExternalStylesheetBundleManifest();
+            manifest.InitializeFromXElement(new XElement("ExternalStylesheetBundle",
+                new XAttribute("Path", "~"),
+                new XAttribute("Hash", ""),
+                new XAttribute("Url", "http://example.com/"),
+                new XAttribute("Media", "expected-media")
+            ));
+
+            manifest.Media.ShouldEqual("expected-media");
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 namespace Cassette.Stylesheets
 {
     class ExternalStylesheetBundleManifest : StylesheetBundleManifest
@@ -10,6 +12,12 @@ namespace Cassette.Stylesheets
             {
                 Media = Media
             };
+        }
+
+        public override void InitializeFromXElement(XElement element)
+        {
+            base.InitializeFromXElement(element);
+            Url = element.AttributeOrThrow("Url", () => new InvalidBundleManifestException("ExternalStylesheetBundle manifest element is missing \"Url\" attribute."));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace Cassette.Stylesheets
+﻿using System.Xml.Linq;
+namespace Cassette.Stylesheets
 {
     class StylesheetBundleManifest : BundleManifest
     {
@@ -10,6 +11,12 @@
             {
                 Media = Media
             };
+        }
+
+        public override void InitializeFromXElement(XElement element)
+        {
+            base.InitializeFromXElement(element);
+            Media = element.AttributeValueOrNull("Media");
         }
     }
 }

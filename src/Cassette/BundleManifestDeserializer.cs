@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -25,12 +24,7 @@ namespace Cassette
         BundleManifest DeserializeBundleManifest(XElement manifestElement)
         {
             var manifest = CreateBundleManifest(manifestElement);
-            manifest.Path = manifestElement.AttributeOrThrow("Path", () => new InvalidBundleManifestException("Bundle manifest element missing \"Path\" attribute."));
-            manifest.Hash = GetHashFromElement(manifestElement);
-            manifest.ContentType = manifestElement.AttributeValueOrNull("ContentType");
-            manifest.PageLocation = manifestElement.AttributeValueOrNull("PageLocation");
-            AddAssets(manifestElement, manifest);
-            AddReferences(manifestElement, manifest);
+            manifest.InitializeFromXElement(manifestElement);
             return manifest;
         }
 
@@ -54,41 +48,6 @@ namespace Cassette
             }
         }
 
-        byte[] GetHashFromElement(XElement manifestElement)
-        {
-            return ByteArrayExtensions.FromHexString(
-                manifestElement.AttributeOrThrow("Hash", () => new InvalidBundleManifestException("Bundle manifest element missing \"Hash\" attribute."))
-            );
-        }
-
-        void AddAssets(XElement manifestElement, BundleManifest manifest)
-        {
-            var assetElements = manifestElement.Elements("Asset");
-            foreach (var assetElement in assetElements)
-            {
-                manifest.Assets.Add(DeserializeAssetManifest(assetElement));
-            }
-        }
-
-        AssetManifest DeserializeAssetManifest(XElement assetElement)
-        {
-            var deserializer = new AssetManifestDeserializer();
-            return deserializer.Deserialize(assetElement);
-        }
-
-        void AddReferences(XElement manifestElement, BundleManifest manifest)
-        {
-            var referenceElements = manifestElement.Elements("Reference");
-            foreach (var referenceElement in referenceElements)
-            {
-                AddReference(manifest, referenceElement);
-            }
-        }
-
-        void AddReference(BundleManifest manifest, XElement referenceElement)
-        {
-            var path = referenceElement.AttributeOrThrow("Path", () => new InvalidBundleManifestException("Reference manifest element missing \"Path\" attribute."));
-            manifest.References.Add(path);
-        }
+        
     }
 }

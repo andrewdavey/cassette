@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts;
+using Cassette.Utilities;
 
 namespace Cassette
 {
-    abstract class BundleManifest
+    internal abstract class BundleManifest
     {
         protected BundleManifest()
         {
@@ -24,10 +26,10 @@ namespace Cassette
         public override bool Equals(object obj)
         {
             var other = obj as BundleManifest;
-            return other != null 
-                && GetType() == other.GetType()
-                && Path.Equals(other.Path)
-                && AssetsEqual(other.Assets);
+            return other != null
+                   && GetType() == other.GetType()
+                   && Path.Equals(other.Path)
+                   && AssetsEqual(other.Assets);
         }
 
         bool AssetsEqual(IEnumerable<AssetManifest> assets)
@@ -62,6 +64,53 @@ namespace Cassette
         IEnumerable<IAsset> OriginalAssets()
         {
             return Assets.Select(assetManifest => new AssetFromManifest(assetManifest.Path));
+        }
+
+        public virtual void InitializeFromXElement(XElement manifestElement)
+        {
+            Path = manifestElement.AttributeOrThrow("Path", () => new InvalidBundleManifestException("Bundle manifest element missing \"Path\" attribute."));
+            Hash = GetHashFromElement(manifestElement);
+            ContentType = manifestElement.AttributeValueOrNull("ContentType");
+            PageLocation = manifestElement.AttributeValueOrNull("PageLocation");
+            AddAssets(manifestElement);
+            AddReferences(manifestElement);
+        }
+
+        byte[] GetHashFromElement(XElement manifestElement)
+        {
+            return ByteArrayExtensions.FromHexString(
+                manifestElement.AttributeOrThrow("Hash", () => new InvalidBundleManifestException("Bundle manifest element missing \"Hash\" attribute."))
+            );
+        }
+
+        void AddAssets(XElement manifestElement)
+        {
+            var assetElements = manifestElement.Elements("Asset");
+            foreach (var assetElement in assetElements)
+            {
+                Assets.Add(DeserializeAssetManifest(assetElement));
+            }
+        }
+
+        AssetManifest DeserializeAssetManifest(XElement assetElement)
+        {
+            var deserializer = new AssetManifestDeserializer();
+            return deserializer.Deserialize(assetElement);
+        }
+
+        void AddReferences(XElement manifestElement)
+        {
+            var referenceElements = manifestElement.Elements("Reference");
+            foreach (var referenceElement in referenceElements)
+            {
+                AddReference(referenceElement);
+            }
+        }
+
+        void AddReference(XElement referenceElement)
+        {
+            var path = referenceElement.AttributeOrThrow("Path", () => new InvalidBundleManifestException("Reference manifest element missing \"Path\" attribute."));
+            References.Add(path);
         }
     }
 }

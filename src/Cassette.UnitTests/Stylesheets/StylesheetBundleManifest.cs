@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Xml.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
 using Moq;
@@ -30,6 +31,34 @@ namespace Cassette.Stylesheets
         public void CreatedBundleMediaEqualsManifestMedia()
         {
             createdBundle.Media.ShouldEqual(manifest.Media);
+        }
+    }
+
+    public class StylesheetBundleManifest_InitializeFromXElement_Tests
+    {
+        [Fact]
+        public void InitializeFromXElementAssignsMediaFromAttribute()
+        {
+            var manifest = new StylesheetBundleManifest();
+            manifest.InitializeFromXElement(new XElement("StylesheetBundle",
+                new XAttribute("Path", "~"),
+                new XAttribute("Hash", ""),
+                new XAttribute("Media", "expected-media")
+            ));
+
+            manifest.Media.ShouldEqual("expected-media");
+        }
+
+        [Fact]
+        public void InitializeFromXElementAssignsMediaNullWhenAttributeMissing()
+        {
+            var manifest = new StylesheetBundleManifest();
+            manifest.InitializeFromXElement(new XElement("StylesheetBundle",
+                new XAttribute("Path", "~"),
+                new XAttribute("Hash", "")
+            ));
+
+            manifest.Media.ShouldBeNull();
         }
     }
 }
