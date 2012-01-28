@@ -6,7 +6,10 @@
 
         protected override Bundle CreateBundleCore()
         {
-            return new StylesheetBundle(Path);
+            return new StylesheetBundle(Path)
+            {
+                Media = Media
+            };
         }
     }
 }

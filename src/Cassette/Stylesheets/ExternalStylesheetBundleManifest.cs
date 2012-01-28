@@ -6,7 +6,10 @@ namespace Cassette.Stylesheets
 
         protected override Bundle CreateBundleCore()
         {
-            return new ExternalStylesheetBundle(Url, Path);
+            return new ExternalStylesheetBundle(Url, Path)
+            {
+                Media = Media
+            };
         }
     }
 }

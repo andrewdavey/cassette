@@ -10,7 +10,7 @@ namespace Cassette.Scripts
     public class ScriptBundleManifest_Tests
     {
         readonly ScriptBundleManifest manifest;
-        readonly Bundle createdBundle;
+        readonly ScriptBundle createdBundle;
         const string BundleContent = "BUNDLE-CONTENT";
 
         public ScriptBundleManifest_Tests()
@@ -30,7 +30,7 @@ namespace Cassette.Scripts
             var file = new Mock<IFile>();
             file.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 .Returns(() => BundleContent.AsStream());
-            createdBundle = manifest.CreateBundle(file.Object);
+            createdBundle = (ScriptBundle)manifest.CreateBundle(file.Object);
         }
 
         [Fact]
