@@ -21,10 +21,17 @@ namespace Cassette
             {
                 Path = bundle.Path,
                 ContentType = bundle.ContentType,
-                PageLocation = bundle.PageLocation,
-                Assets = new List<AssetManifest>(),
-                References = bundle.References.ToList()
+                PageLocation = bundle.PageLocation
             };
+            AddReferencesToBundleManifest(bundle.References);
+        }
+
+        void AddReferencesToBundleManifest(IEnumerable<string> references)
+        {
+            foreach (var reference in references)
+            {
+                bundleManifest.References.Add(reference);
+            }
         }
 
         void IBundleVisitor.Visit(IAsset asset)
