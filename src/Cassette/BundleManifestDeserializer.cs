@@ -47,7 +47,5 @@ namespace Cassette
                     throw new InvalidBundleManifestException("Unknown bundle type \"" + name + "\" in XML manifest.");
             }
         }
-
-        
     }
 }

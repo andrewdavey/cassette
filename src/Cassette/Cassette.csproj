@@ -61,6 +61,7 @@
     <Compile Include="BundleManifest.cs" />
     <Compile Include="BundleManifestBuilder.cs" />
     <Compile Include="BundleManifestDeserializer.cs" />
+    <Compile Include="BundleManifestWriter.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />
     <Compile Include="BundleProcessing\ICommentParser.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundleManifest.cs" />
     <Compile Include="Scripts\ExternalScriptBundleManifestBuilder.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
     <Compile Include="Scripts\IECoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
@@ -168,10 +170,12 @@
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundleManifestBuilder.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundleManifestWriter.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\HtmlConstants.cs" />
     <Compile Include="Stylesheets\StylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\StylesheetBundleManifestBuilder.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleManifestWriter.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />

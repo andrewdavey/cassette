@@ -112,35 +112,5 @@ namespace Cassette
             var path = referenceElement.AttributeOrThrow("Path", () => new InvalidBundleManifestException("Reference manifest element missing \"Path\" attribute."));
             References.Add(path);
         }
-
-        public XElement SerializeToXElement()
-        {
-            return new XElement(
-                ConventionalXElementName,
-                new XAttribute("Path", Path),
-                new XAttribute("Hash", Hash.ToHexString()),
-                new XAttribute("ContentType", ContentType),
-                new XAttribute("PageLocation", PageLocation),
-                Assets.Select(a => a.SerializeToXElement()),
-                References.Select(SerializeReference)
-            );
-        }
-
-        string ConventionalXElementName
-        {
-            get
-            {
-                var name = GetType().Name;
-                return name.Substring(0, name.Length - "Manifest".Length);
-            }
-        }
-
-        XElement SerializeReference(string path)
-        {
-            return new XElement(
-                "Reference",
-                new XAttribute("Path", path)
-            );
-        }
     }
 }

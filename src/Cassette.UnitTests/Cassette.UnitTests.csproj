@@ -65,6 +65,7 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="BundleManifest.cs" />
     <Compile Include="BundleManifestDeserializer.cs" />
+    <Compile Include="BundleManifestWriter.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleManifest.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="RuntimeBundleContainerFactory.cs" />
     <Compile Include="Scripts\ExternalScriptBundleManifest.cs" />
     <Compile Include="Scripts\ExternalScriptBundleManifestBuilder.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\ScriptBundleManifest.cs" />
     <Compile Include="Scripts\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Persistence\BundleCache.cs" />
@@ -110,9 +112,11 @@
     <Compile Include="Stylesheets\CssCommentParser.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundleManifestBuilder.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundleManifestWriter.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\StylesheetBundleManifestBuilder.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleManifestWriter.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
