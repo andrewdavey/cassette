@@ -7,7 +7,7 @@ namespace Cassette.Stylesheets
     public class StylesheetBundleManifestWriter_Tests
     {
         readonly StylesheetBundleManifest manifest;
-        readonly XElement element;
+        XElement element;
 
         public StylesheetBundleManifestWriter_Tests()
         {
@@ -18,16 +18,29 @@ namespace Cassette.Stylesheets
                 Media = "MEDIA"
             };
 
-            var container = new XDocument();
-            var writer = new StylesheetBundleManifestWriter(container);
-            writer.Write(manifest);
-            element = container.Root;
+            WriteToElement();
         }
 
         [Fact]
         public void MediaAttributeEqualsManifestMedia()
         {
             element.Attribute("Media").Value.ShouldEqual(manifest.Media);
+        }
+
+        [Fact]
+        public void GivenMediaIsNullThenElementHasNoMediaAttribute()
+        {
+            manifest.Media = null;
+            WriteToElement();
+            element.Attribute("Media").ShouldBeNull();
+        }
+
+        void WriteToElement()
+        {
+            var container = new XDocument();
+            var writer = new StylesheetBundleManifestWriter(container);
+            writer.Write(manifest);
+            element = container.Root;
         }
     }
 }

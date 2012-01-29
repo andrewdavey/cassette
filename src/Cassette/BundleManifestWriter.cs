@@ -4,7 +4,12 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    class BundleManifestWriter<T> where T : BundleManifest
+    interface IBundleManifestWriter<in T> where T : BundleManifest
+    {
+        void Write(T manifest);
+    }
+
+    class BundleManifestWriter<T> : IBundleManifestWriter<T> where T : BundleManifest
     {
         readonly XContainer container;
 

@@ -65,6 +65,7 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="BundleManifest.cs" />
     <Compile Include="BundleManifestDeserializer.cs" />
+    <Compile Include="BundleManifestSetWriter.cs" />
     <Compile Include="BundleManifestWriter.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleManifest.cs" />

@@ -13,7 +13,10 @@ namespace Cassette.Stylesheets
         protected override XElement CreateElement(T manifest)
         {
             var element = base.CreateElement(manifest);
-            element.Add(new XAttribute("Media", manifest.Media));
+            if (manifest.Media != null)
+            {
+                element.Add(new XAttribute("Media", manifest.Media));
+            }
             return element;
         }
     }
