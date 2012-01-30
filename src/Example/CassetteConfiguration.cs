@@ -12,7 +12,7 @@ namespace Example
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            bundles.Add<StylesheetBundle>("Styles");
+            //bundles.Add<StylesheetBundle>("Styles");
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             bundles.AddUrlWithAlias("http://platform.twitter.com/widgets.js", "twitter", b => b.PageLocation = "body");
             
@@ -22,7 +22,7 @@ namespace Example
             );
             
             bundles.Add<StylesheetBundle>(
-                "styles/embeddables/images",
+                "styles/embeddables",
                 (bundle) => bundle.Processor = new StylesheetPipeline()
                     .EmbedImages(whitelistPath => whitelistPath.Contains("/embed/"))
                     .EmbedFonts(whitelistPath => whitelistPath.Contains("/embed/"))

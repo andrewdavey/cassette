@@ -4,12 +4,7 @@ namespace Example.Controllers
 {
     public class EmbeddablesController : Controller
     {
-        public ActionResult Images()
-        {
-            return View();
-        }
-        
-        public ActionResult Fonts()
+        public ActionResult Index()
         {
             return View();
         }

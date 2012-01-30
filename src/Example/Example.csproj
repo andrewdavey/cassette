@@ -105,8 +105,8 @@
     <None Include="Fonts\embed\droidsans-bold-webfont.woff" />
     <None Include="Styles\color-picker\saved-colors.less" />
     <Content Include="Styles\color-picker\color-picker.css" />
-    <Content Include="Styles\embeddables\images\fonts.css" />
-    <Content Include="Styles\embeddables\images\example.css" />
+    <Content Include="Styles\embeddables\example.css" />
+    <Content Include="Styles\embeddables\fonts.css" />
     <Content Include="Styles\jquery-ui\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Styles\jquery-ui\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Styles\jquery-ui\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -142,9 +142,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Embeddables\Images.cshtml" />
     <Content Include="Views\Templates\Hogan.cshtml" />
-    <Content Include="Views\Embeddables\Fonts.cshtml" />
+    <Content Include="Views\Embeddables\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Index.cshtml" />
