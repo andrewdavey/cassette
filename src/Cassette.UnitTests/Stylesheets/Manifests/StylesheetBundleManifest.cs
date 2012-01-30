@@ -1,8 +1,4 @@
-﻿using System.IO;
-using Cassette.IO;
-using Cassette.Utilities;
-using Moq;
-using Should;
+﻿using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets.Manifests
@@ -20,10 +16,7 @@ namespace Cassette.Stylesheets.Manifests
                 Hash = new byte[0],
                 Media = "MEDIA"
             };
-            var file = new Mock<IFile>();
-            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                .Returns(() => "".AsStream());
-            createdBundle = (StylesheetBundle)manifest.CreateBundle(file.Object);
+            createdBundle = (StylesheetBundle)manifest.CreateBundle();
         }
 
         [Fact]

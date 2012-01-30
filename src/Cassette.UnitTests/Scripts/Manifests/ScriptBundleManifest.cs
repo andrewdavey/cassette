@@ -1,10 +1,8 @@
-﻿using System.IO;
-using Cassette.IO;
-using Cassette.Manifests;
+﻿using Cassette.Manifests;
 using Cassette.Utilities;
-using Moq;
 using Should;
 using Xunit;
+using System.Text;
 
 namespace Cassette.Scripts.Manifests
 {
@@ -26,12 +24,10 @@ namespace Cassette.Scripts.Manifests
                     {
                         new AssetManifest { Path = "~/asset-a" },
                         new AssetManifest { Path = "~/asset-b" }
-                    }
+                    },
+                Content = Encoding.UTF8.GetBytes(BundleContent)
             };
-            var file = new Mock<IFile>();
-            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                .Returns(() => BundleContent.AsStream());
-            createdBundle = (ScriptBundle)manifest.CreateBundle(file.Object);
+            createdBundle = (ScriptBundle)manifest.CreateBundle();
         }
 
         [Fact]

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Xml.Linq;
 using Should;
 using Xunit;
@@ -14,7 +15,7 @@ namespace Cassette.Manifests
         {
             protected override Bundle CreateBundleCore()
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -40,7 +41,8 @@ namespace Cassette.Manifests
                 References =
                     {
                         "~/bundle-reference"
-                    }
+                    },
+                Content = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
             };
 
             WriteToElement();
@@ -104,6 +106,20 @@ namespace Cassette.Manifests
             manifest.PageLocation = null;
             WriteToElement();
             element.Attribute("PageLocation").ShouldBeNull();
+        }
+
+        [Fact]
+        public void ElementHasContentElementWithBase64EncodedContent()
+        {
+            element.Element("Content").Value.ShouldEqual(Convert.ToBase64String(manifest.Content));
+        }
+
+        [Fact]
+        public void GivenContentIsNullThenElementHasNoContentElement()
+        {
+            manifest.Content = null;
+            WriteToElement();
+            element.Elements("Content").ShouldBeEmpty();
         }
     }
 }

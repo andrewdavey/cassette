@@ -10,17 +10,24 @@ namespace Cassette.Manifests
             BundleManifests = new List<BundleManifest>();
         }
 
+        public CassetteManifest(IEnumerable<BundleManifest> bundleManifests)
+        {
+            BundleManifests = bundleManifests.ToList();
+        }
+
         public IList<BundleManifest> BundleManifests { get; private set; }
+        
+        public IEnumerable<Bundle> CreateBundles()
+        {
+            return BundleManifests.Select(m => m.CreateBundle());
+        }
 
-        #pragma warning disable 659
-        // There is no sensible GetHashCode for this object because the BundlesManifests list could mutate.
-
+        #pragma warning disable 659 // There is no sensible GetHashCode for this object because the BundlesManifests list could mutate.
         public override bool Equals(object obj)
         {
             var other = obj as CassetteManifest;
             return other != null && BundleManifests.SequenceEqual(other.BundleManifests);
         }
-
         #pragma warning restore 659
     }
 }

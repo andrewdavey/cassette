@@ -1,6 +1,4 @@
-﻿using Cassette.IO;
-using Cassette.Manifests;
-using Moq;
+﻿using Cassette.Manifests;
 using Should;
 using Xunit;
 
@@ -24,7 +22,7 @@ namespace Cassette.Scripts.Manifests
                         new AssetManifest { Path = "~/asset-b" }
                     }
             };
-            createdBundle = (ExternalScriptBundle)manifest.CreateBundle(Mock.Of<IFile>());
+            createdBundle = (ExternalScriptBundle)manifest.CreateBundle();
         }
 
         [Fact]

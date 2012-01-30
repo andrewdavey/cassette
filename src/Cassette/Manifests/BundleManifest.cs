@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Cassette.Configuration;
-using Cassette.IO;
 
 namespace Cassette.Manifests
 {
@@ -19,27 +17,27 @@ namespace Cassette.Manifests
         public string PageLocation { get; set; }
         public IList<AssetManifest> Assets { get; private set; }
         public IList<string> References { get; private set; }
+        public byte[] Content { get; set; }
 
-        public Bundle CreateBundle(IFile bundleContentFile)
+        public Bundle CreateBundle()
         {
             var bundle = CreateBundleCore();
             bundle.Hash = Hash;
             bundle.ContentType = ContentType;
             bundle.PageLocation = PageLocation;
             bundle.IsFromCache = true;
-            bundle.Assets.Add(CreateCachedBundleContent(bundleContentFile));
-            bundle.Process(new CassetteSettings(""));
+            bundle.Assets.Add(CreateCachedBundleContent());
             return bundle;
         }
 
         protected abstract Bundle CreateBundleCore();
 
-        CachedBundleContent CreateCachedBundleContent(IFile bundleContentFile)
+        CachedBundleContent CreateCachedBundleContent()
         {
-            return new CachedBundleContent(bundleContentFile, OriginalAssets());
+            return new CachedBundleContent(Content, CreateOriginalAssets());
         }
 
-        IEnumerable<IAsset> OriginalAssets()
+        IEnumerable<IAsset> CreateOriginalAssets()
         {
             return Assets.Select(assetManifest => new AssetFromManifest(assetManifest.Path));
         }

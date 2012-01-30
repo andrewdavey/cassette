@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Persistence;
+using Cassette.Manifests;
 
 namespace Cassette.Configuration
 {
@@ -17,23 +18,33 @@ namespace Cassette.Configuration
 
         public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, CassetteSettings settings)
         {
+            throw new NotImplementedException();
+            /*
             // The bundles may get altered, so force the evaluation of the enumerator first.
             var bundlesArray = unprocessedBundles.ToArray();
-
             var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, settings);
+            var allBundles = bundlesArray.Concat(externalBundles).ToArray();
 
-            if (cache.InitializeBundlesFromCacheIfUpToDate(bundlesArray))
+            var currentManifest = new CassetteManifest(allBundles.Select(b => b.CreateBundleManifest()));
+            var cachedManifest = new CassetteManifest();
+
+            if (currentManifest.Equals(cachedManifest) && cachedManifest.IsSatisfiedBy(settings.SourceDirectory))
             {
-                return new BundleContainer(bundlesArray.Concat(externalBundles));
+                var cachedBundles = cachedManifest.CreateBundles();
+                ProcessAllBundles(cachedBundles, settings);
+                return new BundleContainer(cachedBundles);
             }
             else
             {
-                ProcessAllBundles(bundlesArray, settings);
-                var container = new BundleContainer(bundlesArray.Concat(externalBundles));
-                cache.SaveBundleContainer(container);
-                cache.InitializeBundlesFromCacheIfUpToDate(bundlesArray);
-                return container;
+                ProcessAllBundles(allBundles, settings);
+                var fullManifest = new CassetteManifest(allBundles.Select(b => b.CreateBundleManifest()));
+                var writer = new CassetteManifestWriter(manifestFileStream);
+                writer.Write(fullManifest);
+                // TODO: write each bundle content file to cache dir.
+
+                return new BundleContainer(allBundles);
             }
+            */
         }
     }
 }

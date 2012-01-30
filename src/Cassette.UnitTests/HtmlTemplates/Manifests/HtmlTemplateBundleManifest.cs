@@ -1,6 +1,4 @@
-﻿using Cassette.IO;
-using Moq;
-using Should;
+﻿using Should;
 using Xunit;
 
 namespace Cassette.HtmlTemplates.Manifests
@@ -16,7 +14,7 @@ namespace Cassette.HtmlTemplates.Manifests
                 Hash = new byte[0]
             };
 
-            var createdBundle = manifest.CreateBundle(Mock.Of<IFile>());
+            var createdBundle = manifest.CreateBundle();
 
             createdBundle.ShouldBeType<HtmlTemplateBundle>();
         }

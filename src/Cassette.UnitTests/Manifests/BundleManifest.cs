@@ -2,6 +2,7 @@ using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
 using Should;
 using Xunit;
+using System;
 
 namespace Cassette.Manifests
 {
@@ -61,6 +62,51 @@ namespace Cassette.Manifests
                 Assets = { new AssetManifest { Path = "~/asset-path" } }
             };
             manifest1.Equals(manifest2).ShouldBeTrue();
+        }
+    }
+
+    public class BundleManifest_CreateBundle_Tests
+    {
+        readonly TestableBundleManifest manifest;
+
+        public BundleManifest_CreateBundle_Tests()
+        {
+            manifest = new TestableBundleManifest
+            {
+                Path = "~",
+                Hash = new byte[0]
+            };
+        }
+
+        [Fact]
+        public void GivenManifestHasContent_WhenCreateBundle_ThenBundleOpenStreamReturnsTheContent()
+        {
+            manifest.Content = new byte[] { 1, 2, 3 };
+            var bundle = manifest.CreateBundle();
+
+            using (var stream = bundle.OpenStream())
+            {
+                var bytes = new byte[3];
+                stream.Read(bytes, 0, 3);
+                bytes.ShouldEqual(new byte[] { 1, 2, 3 });
+            }
+        }
+
+        [Fact]
+        public void GivenManifestHasNoContent_WhenCreateBundle_ThenBundleOpenStreamThrowsException()
+        {
+            manifest.Content = null;
+            var bundle = manifest.CreateBundle();
+
+            Assert.Throws<InvalidOperationException>(() => bundle.OpenStream());
+        }
+
+        class TestableBundleManifest : BundleManifest
+        {
+            protected override Bundle CreateBundleCore()
+            {
+                return new TestableBundle(Path);
+            }
         }
     }
 }

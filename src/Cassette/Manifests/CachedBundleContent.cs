@@ -7,13 +7,30 @@ namespace Cassette.Manifests
 {
     class CachedBundleContent : IAsset
     {
-        readonly IFile bundleContentFile;
+        readonly byte[] content;
         readonly IEnumerable<IAsset> originalAssets;
 
-        public CachedBundleContent(IFile bundleContentFile, IEnumerable<IAsset> originalAssets)
+        public CachedBundleContent(byte[] content, IEnumerable<IAsset> originalAssets)
         {
-            this.bundleContentFile = bundleContentFile;
+            this.content = content;
             this.originalAssets = originalAssets;
+        }
+
+        public void Accept(IBundleVisitor visitor)
+        {
+            foreach (var originalAsset in originalAssets)
+            {
+                originalAsset.Accept(visitor);
+            }
+        }
+
+        public Stream OpenStream()
+        {
+            if (content == null)
+            {
+                throw new InvalidOperationException("Cannot open stream. Bundle was created from a manifest without any content.");
+            }
+            return new MemoryStream(content);
         }
 
         public byte[] Hash
@@ -23,20 +40,12 @@ namespace Cassette.Manifests
 
         public IFile SourceFile
         {
-            get { return bundleContentFile; }
+            get { throw new NotImplementedException(); }
         }
 
         public IEnumerable<AssetReference> References
         {
             get { throw new NotImplementedException(); }
-        }
-
-        public void Accept(IBundleVisitor visitor)
-        {
-            foreach (var originalAsset in originalAssets)
-            {
-                originalAsset.Accept(visitor);
-            }
         }
 
         public void AddAssetTransformer(IAssetTransformer transformer)
@@ -52,11 +61,6 @@ namespace Cassette.Manifests
         public void AddRawFileReference(string relativeFilename)
         {
             throw new NotImplementedException();
-        }
-
-        public Stream OpenStream()
-        {
-            return bundleContentFile.OpenRead();
         }
     }
 }

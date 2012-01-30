@@ -2,6 +2,8 @@
 using Cassette.Manifests;
 using Should;
 using Xunit;
+using System;
+using System.Text;
 
 namespace Cassette.Scripts.Manifests
 {
@@ -20,7 +22,8 @@ namespace Cassette.Scripts.Manifests
                 new XElement("Asset", new XAttribute("Path", "~/asset-1")),
                 new XElement("Asset", new XAttribute("Path", "~/asset-2")),
                 new XElement("Reference", new XAttribute("Path", "~/reference-1")),
-                new XElement("Reference", new XAttribute("Path", "~/reference-2"))
+                new XElement("Reference", new XAttribute("Path", "~/reference-2")),
+                new XElement("Content", Convert.ToBase64String(Encoding.UTF8.GetBytes("CONTENT")))
             );
             ReadBundleManifest();
         }
@@ -105,6 +108,12 @@ namespace Cassette.Scripts.Manifests
             readManifest.References.Count.ShouldEqual(2);
             readManifest.References[0].ShouldEqual("~/reference-1");
             readManifest.References[1].ShouldEqual("~/reference-2");
+        }
+
+        [Fact]
+        public void ReadManifestContentEqualsBase64DecodedContentElement()
+        {
+            readManifest.Content.ShouldEqual(Encoding.UTF8.GetBytes("CONTENT"));
         }
 
         void ReadBundleManifest()

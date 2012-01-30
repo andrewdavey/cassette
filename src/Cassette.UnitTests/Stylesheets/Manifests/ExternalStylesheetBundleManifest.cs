@@ -1,6 +1,4 @@
-﻿using Cassette.IO;
-using Moq;
-using Should;
+﻿using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets.Manifests
@@ -19,7 +17,7 @@ namespace Cassette.Stylesheets.Manifests
                 Media = "MEDIA",
                 Url = "http://example.com/"
             };
-            createdBundle = (ExternalStylesheetBundle)manifest.CreateBundle(Mock.Of<IFile>());
+            createdBundle = (ExternalStylesheetBundle)manifest.CreateBundle();
         }
 
         [Fact]

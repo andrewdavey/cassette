@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Xml.Linq;
 using Cassette.Utilities;
@@ -29,7 +30,8 @@ namespace Cassette.Manifests
                 HashAttribute(),
                 ContentTypeAttribute(),
                 PageLocationAttribute(),
-                manifest.References.Select(SerializeReference)
+                manifest.References.Select(SerializeReference),
+                ContentElement()
             );
 
             WriteAssetManifestElements(element);
@@ -66,6 +68,13 @@ namespace Cassette.Manifests
         XAttribute PageLocationAttribute()
         {
             return manifest.PageLocation != null ? new XAttribute("PageLocation", manifest.PageLocation) : null;
+        }
+
+        XElement ContentElement()
+        {
+            return manifest.Content == null
+                ? null
+                : new XElement("Content", Convert.ToBase64String(manifest.Content));
         }
 
         void WriteAssetManifestElements(XElement element)

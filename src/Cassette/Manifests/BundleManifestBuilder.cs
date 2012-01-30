@@ -21,7 +21,8 @@ namespace Cassette.Manifests
             {
                 Path = bundle.Path,
                 ContentType = bundle.ContentType,
-                PageLocation = bundle.PageLocation
+                PageLocation = bundle.PageLocation,
+                Content = GetContent(bundle)
             };
             AddReferencesToBundleManifest(bundle.References);
         }
@@ -31,6 +32,17 @@ namespace Cassette.Manifests
             foreach (var reference in references)
             {
                 bundleManifest.References.Add(reference);
+            }
+        }
+
+        byte[] GetContent(Bundle bundle)
+        {
+            if (bundle.Assets.Count == 0) return null;
+            using (var stream = bundle.OpenStream())
+            {
+                var bytes = new byte[stream.Length];
+                stream.Read(bytes, 0, bytes.Length);
+                return bytes;
             }
         }
 

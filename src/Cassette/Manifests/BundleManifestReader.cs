@@ -28,7 +28,8 @@ namespace Cassette.Manifests
                 Path = GetRequiredAttribute("Path"),
                 Hash = GetHashAttribute(),
                 ContentType = GetOptionalAttribute("ContentType"),
-                PageLocation = GetOptionalAttribute("PageLocation")
+                PageLocation = GetOptionalAttribute("PageLocation"),
+                Content = GetContent()
             };
             AddAssets(manifest);
             AddReferences(manifest);
@@ -68,6 +69,14 @@ namespace Cassette.Manifests
         string GetOptionalAttribute(string attributeName)
         {
             return element.AttributeValueOrNull(attributeName);
+        }
+
+        byte[] GetContent()
+        {
+            var contentElement = element.Elements("Content").FirstOrDefault();
+            return contentElement != null
+                ? Convert.FromBase64String(contentElement.Value)
+                : null;
         }
 
         void AddAssets(BundleManifest manifest)
