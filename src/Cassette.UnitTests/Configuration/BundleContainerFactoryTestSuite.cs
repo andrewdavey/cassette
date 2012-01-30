@@ -10,6 +10,10 @@ namespace Cassette.Configuration
 {
     public abstract class BundleContainerFactoryTestSuite
     {
+        protected CassetteSettings settings = new CassetteSettings("")
+        {
+            SourceDirectory = Mock.Of<IDirectory>()
+        };
         internal abstract IBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories);
 
         [Fact]
@@ -20,7 +24,7 @@ namespace Cassette.Configuration
             var bundles = new[] { bundle1, bundle2 };
 
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
-            var container = builder.Create(bundles, CreateSettings());
+            var container = builder.Create(bundles);
 
             container.FindBundlesContainingPath("~/test1").First().ShouldBeSameAs(bundle1);
             container.FindBundlesContainingPath("~/test2").First().ShouldBeSameAs(bundle2);
@@ -30,10 +34,9 @@ namespace Cassette.Configuration
         public void WhenCreateWithBundle_ThenBundleIsProcessed()
         {
             var bundle = new TestableBundle("~/test");
-            var settings = CreateSettings();
 
             var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
-            builder.Create(new[] { bundle }, settings);
+            builder.Create(new[] { bundle });
 
             bundle.WasProcessed.ShouldBeTrue();
         }
@@ -52,7 +55,7 @@ namespace Cassette.Configuration
             factories[typeof(TestableBundle)] = factory.Object;
 
             var builder = CreateFactory(factories);
-            var container = builder.Create(new[] { bundle }, CreateSettings());
+            var container = builder.Create(new[] { bundle });
 
             container.FindBundlesContainingPath("http://external.com/api.js").First().ShouldBeSameAs(externalBundle);
         }
@@ -74,7 +77,7 @@ namespace Cassette.Configuration
             factories[typeof(TestableBundle)] = factory.Object;
 
             var builder = CreateFactory(factories);
-            var container = builder.Create(bundles, CreateSettings());
+            var container = builder.Create(bundles);
 
             container.Bundles.Count().ShouldEqual(3);
         }
@@ -96,8 +99,7 @@ namespace Cassette.Configuration
 
             var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(asset.Object);
-            var settings = CreateSettings();
-            var container = containerFactory.Create(new[] { bundle }, settings);
+            var container = containerFactory.Create(new[] { bundle });
 
             container.FindBundlesContainingPath("http://test.com/").First().ShouldBeSameAs(externalBundle);
         }
@@ -120,8 +122,7 @@ namespace Cassette.Configuration
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
             bundle.Assets.Add(asset.Object);
-            var settings = CreateSettings();
-            var container = containerFactory.Create(new[] { bundle }, settings);
+            var container = containerFactory.Create(new[] { bundle });
 
             container.FindBundlesContainingPath("http://test.com/").First().ShouldBeSameAs(externalBundle);
         }
@@ -143,9 +144,8 @@ namespace Cassette.Configuration
 
             var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(asset.Object);
-            var settings = CreateSettings();
             
-            containerFactory.Create(new[] { bundle }, settings);
+            containerFactory.Create(new[] { bundle });
 
             externalBundle.WasProcessed.ShouldBeTrue();
         }
@@ -164,20 +164,10 @@ namespace Cassette.Configuration
 
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
-            var settings = CreateSettings();
 
-            containerFactory.Create(new[] { bundle }, settings);
+            containerFactory.Create(new[] { bundle });
 
             externalBundle.WasProcessed.ShouldBeTrue();
-        }
-
-        protected CassetteSettings CreateSettings()
-        {
-            var settings = new CassetteSettings("")
-            {
-                SourceDirectory = Mock.Of<IDirectory>()
-            };
-            return settings;
         }
     }
 }

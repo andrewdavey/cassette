@@ -1,50 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cassette.Persistence;
 using Cassette.Manifests;
 
 namespace Cassette.Configuration
 {
     class CachedBundleContainerFactory : BundleContainerFactoryBase
     {
-        readonly IBundleCache cache;
+        readonly ICassetteManifestCache cache;
+        readonly CassetteSettings settings;
+        Bundle[] bundlesArray;
 
-        public CachedBundleContainerFactory(IBundleCache cache, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories)
-            : base(bundleFactories)
+        public CachedBundleContainerFactory(ICassetteManifestCache cache, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, CassetteSettings settings)
+            : base(bundleFactories, settings)
         {
             this.cache = cache;
+            this.settings = settings;
         }
 
-        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, CassetteSettings settings)
+        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles)
         {
-            throw new NotImplementedException();
-            /*
-            // The bundles may get altered, so force the evaluation of the enumerator first.
-            var bundlesArray = unprocessedBundles.ToArray();
-            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, settings);
-            var allBundles = bundlesArray.Concat(externalBundles).ToArray();
+            bundlesArray = unprocessedBundles.ToArray();
+            
+            var currentManifest = CreateCassetteManifest();
+            var cachedManifest = cache.LoadCassetteManifest();
 
-            var currentManifest = new CassetteManifest(allBundles.Select(b => b.CreateBundleManifest()));
-            var cachedManifest = new CassetteManifest();
+            bundlesArray = CreateBundles(cachedManifest, currentManifest);
 
-            if (currentManifest.Equals(cachedManifest) && cachedManifest.IsSatisfiedBy(settings.SourceDirectory))
+            var externalBundles = CreateExternalBundlesUrlReferences(bundlesArray);
+            var allBundles = bundlesArray.Concat(externalBundles);
+            return new BundleContainer(allBundles);
+        }
+
+        Bundle[] CreateBundles(CassetteManifest cachedManifest, CassetteManifest currentManifest)
+        {
+            var canUseCachedBundles = cachedManifest.Equals(currentManifest)
+                                   && cachedManifest.IsUpToDateWithFileSystem(settings.SourceDirectory);
+            if (canUseCachedBundles)
             {
-                var cachedBundles = cachedManifest.CreateBundles();
-                ProcessAllBundles(cachedBundles, settings);
-                return new BundleContainer(cachedBundles);
+                UseCachedBundles(cachedManifest);
             }
             else
             {
-                ProcessAllBundles(allBundles, settings);
-                var fullManifest = new CassetteManifest(allBundles.Select(b => b.CreateBundleManifest()));
-                var writer = new CassetteManifestWriter(manifestFileStream);
-                writer.Write(fullManifest);
-                // TODO: write each bundle content file to cache dir.
-
-                return new BundleContainer(allBundles);
+                CacheAndUseCurrentBundles();
             }
-            */
+            return bundlesArray;
+        }
+
+        void UseCachedBundles(CassetteManifest cachedManifest)
+        {
+            bundlesArray = cachedManifest.CreateBundles().ToArray();
+            ProcessAllBundles(bundlesArray);
+        }
+
+        void CacheAndUseCurrentBundles()
+        {
+            ProcessAllBundles(bundlesArray);
+            var fullManifest = CreateCassetteManifest();
+            cache.SaveCassetteManifest(fullManifest);
+            UseCachedBundles(fullManifest);
+        }
+
+        CassetteManifest CreateCassetteManifest()
+        {
+            var bundleManifests = bundlesArray.Select(bundle => bundle.CreateBundleManifest());
+            return new CassetteManifest(bundleManifests);
         }
     }
 }

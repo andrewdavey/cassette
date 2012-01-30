@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.IO;
 
 namespace Cassette.Manifests
 {
@@ -40,6 +41,11 @@ namespace Cassette.Manifests
         IEnumerable<IAsset> CreateOriginalAssets()
         {
             return Assets.Select(assetManifest => new AssetFromManifest(assetManifest.Path));
+        }
+
+        public bool IsUpToDateWithFileSystem(IDirectory directory)
+        {
+            return false;
         }
 
         public override bool Equals(object obj)

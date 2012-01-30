@@ -109,7 +109,6 @@
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifest.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
-    <Compile Include="Persistence\BundleCache.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />

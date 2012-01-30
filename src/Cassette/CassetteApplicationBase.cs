@@ -59,7 +59,7 @@ namespace Cassette
         IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles)
         {
             var factory = settings.GetBundleContainerFactory();
-            return factory.Create(bundles, settings);
+            return factory.Create(bundles);
         }
 
         protected IPlaceholderTracker CreatePlaceholderTracker()

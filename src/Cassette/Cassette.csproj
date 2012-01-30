@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
+    <Compile Include="Manifests\ICassetteManifestCache.cs" />
     <Compile Include="Manifests\InvalidCassetteManifestException.cs" />
     <Compile Include="Manifests\AssetFromManifest.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
@@ -151,8 +152,6 @@
     <Compile Include="IUrlModifier.cs" />
     <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="NullPlaceholderTracker.cs" />
-    <Compile Include="Persistence\AssetCounter.cs" />
-    <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\AssignScriptRenderer.cs" />
@@ -206,16 +205,13 @@
     <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
     <Compile Include="ICassetteApplication.cs" />
-    <Compile Include="Persistence\IBundleCache.cs" />
     <Compile Include="IO\IsolatedStorageFile.cs" />
-    <Compile Include="Persistence\BundleCache.cs" />
     <Compile Include="BundleContainsPathPredicate.cs" />
     <Compile Include="Stylesheets\MicrosoftStylesheetMinifier.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />
     <Compile Include="AssetReferenceType.cs" />
-    <Compile Include="Persistence\CachedAsset.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
     <Compile Include="IO\FileSystemFile.cs" />

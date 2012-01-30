@@ -4,6 +4,6 @@ namespace Cassette.Configuration
 {
     interface IBundleContainerFactory
     {
-        IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, CassetteSettings settings);
+        IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles);
     }
 }

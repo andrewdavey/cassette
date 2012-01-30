@@ -7,7 +7,7 @@ namespace Cassette.Configuration
     {
         internal override IBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
         {
-            return new BundleContainerFactory(factories);
+            return new BundleContainerFactory(factories, settings);
         }
     }
 }

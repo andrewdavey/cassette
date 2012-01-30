@@ -6,7 +6,7 @@ using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-using Cassette.Persistence;
+using Cassette.Manifests;
 
 namespace Cassette.Configuration
 {
@@ -15,13 +15,13 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
-        readonly Lazy<IBundleCache> bundleCache;
+        readonly Lazy<ICassetteManifestCache> bundleCache;
  
         public CassetteSettings(string cacheVersion)
         {
             DefaultFileSearches = CreateDefaultFileSearches();
             BundleFactories = CreateBundleFactories();
-            bundleCache = new Lazy<IBundleCache>(() => new BundleCache(cacheVersion, this));
+            bundleCache = new Lazy<ICassetteManifestCache>(() => { throw new NotImplementedException(); });
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Cassette.Configuration
             };
         }
 
-        internal IBundleCache BundleCache
+        internal ICassetteManifestCache CassetteManifestCache
         {
             get { return bundleCache.Value; }
         }
@@ -119,11 +119,11 @@ namespace Cassette.Configuration
         {
             if (IsDebuggingEnabled)
             {
-                return new BundleContainerFactory(BundleFactories);
+                return new BundleContainerFactory(BundleFactories, this);
             }
             else
             {
-                return new CachedBundleContainerFactory(BundleCache, BundleFactories);
+                return new CachedBundleContainerFactory(CassetteManifestCache, BundleFactories, this);
             }
         }
     }

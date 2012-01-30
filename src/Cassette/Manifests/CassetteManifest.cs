@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Cassette.IO;
 
 namespace Cassette.Manifests
 {
@@ -20,6 +21,13 @@ namespace Cassette.Manifests
         public IEnumerable<Bundle> CreateBundles()
         {
             return BundleManifests.Select(m => m.CreateBundle());
+        }
+
+        public bool IsUpToDateWithFileSystem(IDirectory directory)
+        {
+            return BundleManifests.All(
+                bundleManifest => bundleManifest.IsUpToDateWithFileSystem(directory)
+            );
         }
 
         #pragma warning disable 659 // There is no sensible GetHashCode for this object because the BundlesManifests list could mutate.

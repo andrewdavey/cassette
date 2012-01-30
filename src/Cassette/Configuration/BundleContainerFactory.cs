@@ -6,20 +6,16 @@ namespace Cassette.Configuration
 {
     class BundleContainerFactory : BundleContainerFactoryBase
     {
-        public BundleContainerFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
-            : base(factories)
+        public BundleContainerFactory(IDictionary<Type, IBundleFactory<Bundle>> factories, CassetteSettings settings)
+            : base(factories, settings)
         {
         }
 
-        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, CassetteSettings settings)
+        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles)
         {
-            // The bundles may get altered, so force the evaluation of the enumerator first.
             var bundlesArray = unprocessedBundles.ToArray();
-
-            ProcessAllBundles(bundlesArray, settings);
-
-            var externalBundles = CreateExternalBundlesFromReferences(bundlesArray, settings);
-
+            ProcessAllBundles(bundlesArray);
+            var externalBundles = CreateExternalBundlesUrlReferences(bundlesArray);
             return new BundleContainer(bundlesArray.Concat(externalBundles));
         }
     }

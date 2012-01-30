@@ -6,16 +6,18 @@ namespace Cassette.Configuration
 {
     abstract class BundleContainerFactoryBase : IBundleContainerFactory
     {
-        protected BundleContainerFactoryBase(IDictionary<Type, IBundleFactory<Bundle>> bundleFactories)
+        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
+        readonly CassetteSettings settings;
+
+        protected BundleContainerFactoryBase(IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, CassetteSettings settings)
         {
             this.bundleFactories = bundleFactories;
+            this.settings = settings;
         }
 
-        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
+        public abstract IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles);
 
-        public abstract IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles, CassetteSettings settings);
-
-        protected void ProcessAllBundles(IEnumerable<Bundle> bundles, CassetteSettings settings)
+        protected void ProcessAllBundles(IEnumerable<Bundle> bundles)
         {
             Trace.Source.TraceInformation("Processing bundles...");
             foreach (var bundle in bundles)
@@ -26,9 +28,9 @@ namespace Cassette.Configuration
             Trace.Source.TraceInformation("Bundle processing completed.");
         }
 
-        protected IEnumerable<Bundle> CreateExternalBundlesFromReferences(IEnumerable<Bundle> bundlesArray, CassetteSettings settings)
+        protected IEnumerable<Bundle> CreateExternalBundlesUrlReferences(IEnumerable<Bundle> bundlesArray)
         {
-            var referencesAlreadyCreated = new HashSet<string>();
+            var referencesAlreadyCreated = new HashSet<string>(); // TODO: use case-insensitive string comparer?
             foreach (var bundle in bundlesArray)
             {
                 foreach (var reference in bundle.References)
@@ -36,7 +38,7 @@ namespace Cassette.Configuration
                     if (reference.IsUrl() == false) continue;
                     if (referencesAlreadyCreated.Contains(reference)) continue;
 
-                    var externalBundle = CreateExternalBundle(reference, bundle, settings);
+                    var externalBundle = CreateExternalBundle(reference, bundle);
                     referencesAlreadyCreated.Add(externalBundle.Path);
                     yield return externalBundle;
                 }
@@ -47,7 +49,7 @@ namespace Cassette.Configuration
                         if (assetReference.Type != AssetReferenceType.Url ||
                             referencesAlreadyCreated.Contains(assetReference.Path)) continue;
 
-                        var externalBundle = CreateExternalBundle(assetReference.Path, bundle, settings);
+                        var externalBundle = CreateExternalBundle(assetReference.Path, bundle);
                         referencesAlreadyCreated.Add(externalBundle.Path);
                         yield return externalBundle;
                     }
@@ -55,7 +57,7 @@ namespace Cassette.Configuration
             }
         }
 
-        Bundle CreateExternalBundle(string reference, Bundle referencer, CassetteSettings settings)
+        Bundle CreateExternalBundle(string reference, Bundle referencer)
         {
             var bundleFactory = GetBundleFactory(referencer.GetType());
             var externalBundle = bundleFactory.CreateExternalBundle(reference);
