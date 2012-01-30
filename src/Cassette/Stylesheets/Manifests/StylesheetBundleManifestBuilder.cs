@@ -1,4 +1,6 @@
-﻿namespace Cassette.Stylesheets.Manifests
+﻿using Cassette.Manifests;
+
+namespace Cassette.Stylesheets.Manifests
 {
     class StylesheetBundleManifestBuilder<TBundle, TManifest> : BundleManifestBuilder<TBundle, TManifest>
         where TBundle : StylesheetBundle

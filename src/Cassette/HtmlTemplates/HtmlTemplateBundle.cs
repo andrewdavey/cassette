@@ -1,6 +1,7 @@
 ﻿using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates.Manifests;
+using Cassette.Manifests;
 
 namespace Cassette.HtmlTemplates
 {

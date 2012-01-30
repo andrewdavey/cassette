@@ -7,7 +7,7 @@ using Cassette.Stylesheets.Manifests;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     public class BundleManifestSetWriter_Tests
     {

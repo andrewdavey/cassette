@@ -1,3 +1,5 @@
+using Cassette.Manifests;
+
 namespace Cassette.Scripts.Manifests
 {
     class ScriptBundleManifest : BundleManifest

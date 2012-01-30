@@ -3,7 +3,7 @@ using System.Linq;
 using Cassette.Configuration;
 using Cassette.IO;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     abstract class BundleManifest
     {

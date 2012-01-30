@@ -2,7 +2,7 @@ using System.Xml.Linq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     public class AssetManifestReader_Tests
     {

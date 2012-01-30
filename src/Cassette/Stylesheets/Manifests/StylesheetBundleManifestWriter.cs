@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using Cassette.Manifests;
 
 namespace Cassette.Stylesheets.Manifests
 {
@@ -10,12 +11,12 @@ namespace Cassette.Stylesheets.Manifests
         {
         }
 
-        protected override XElement CreateElement(T manifest)
+        protected override XElement CreateElement()
         {
-            var element = base.CreateElement(manifest);
-            if (manifest.Media != null)
+            var element = base.CreateElement();
+            if (Manifest.Media != null)
             {
-                element.Add(new XAttribute("Media", manifest.Media));
+                element.Add(new XAttribute("Media", Manifest.Media));
             }
             return element;
         }

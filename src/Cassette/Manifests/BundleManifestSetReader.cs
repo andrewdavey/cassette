@@ -5,7 +5,7 @@ using Cassette.HtmlTemplates.Manifests;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     class BundleManifestSetReader
     {

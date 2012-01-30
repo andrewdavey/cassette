@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Linq;
 
-namespace Cassette
+namespace Cassette.Utilities
 {
     static class XElementExtensions
     {

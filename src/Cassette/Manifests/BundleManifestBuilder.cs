@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     class BundleManifestBuilder<TBundle, TManifest> : IBundleVisitor
         where TBundle : Bundle

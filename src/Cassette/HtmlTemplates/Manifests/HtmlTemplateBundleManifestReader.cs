@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using Cassette.Manifests;
 
 namespace Cassette.HtmlTemplates.Manifests
 {

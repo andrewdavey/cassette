@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     interface IBundleManifestReader<out T> where T : BundleManifest
     {

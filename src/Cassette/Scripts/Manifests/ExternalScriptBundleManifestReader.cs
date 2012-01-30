@@ -1,4 +1,6 @@
 using System.Xml.Linq;
+using Cassette.Manifests;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts.Manifests
 {

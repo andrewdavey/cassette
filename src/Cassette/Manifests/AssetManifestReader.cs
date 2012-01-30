@@ -1,6 +1,7 @@
 using System.Xml.Linq;
+using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     class AssetManifestReader
     {

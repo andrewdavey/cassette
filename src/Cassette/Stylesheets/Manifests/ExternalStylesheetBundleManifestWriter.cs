@@ -9,10 +9,10 @@ namespace Cassette.Stylesheets.Manifests
         {
         }
 
-        protected override XElement CreateElement(ExternalStylesheetBundleManifest manifest)
+        protected override XElement CreateElement()
         {
-            var element = base.CreateElement(manifest);
-            element.Add(new XAttribute("Url", manifest.Url));
+            var element = base.CreateElement();
+            element.Add(new XAttribute("Url", Manifest.Url));
             return element;
         }
     }

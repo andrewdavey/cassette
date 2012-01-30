@@ -1,3 +1,5 @@
+using Cassette.Manifests;
+
 namespace Cassette.HtmlTemplates.Manifests
 {
     class HtmlTemplateBundleManifest : BundleManifest

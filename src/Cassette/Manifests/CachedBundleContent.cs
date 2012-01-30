@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Cassette.IO;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     class CachedBundleContent : IAsset
     {

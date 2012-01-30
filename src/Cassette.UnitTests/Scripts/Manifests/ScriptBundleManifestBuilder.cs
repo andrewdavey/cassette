@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Cassette.Manifests;
 using Moq;
 using Should;
 using Xunit;

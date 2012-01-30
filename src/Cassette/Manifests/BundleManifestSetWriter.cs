@@ -6,7 +6,7 @@ using Cassette.HtmlTemplates.Manifests;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     class BundleManifestSetWriter
     {
@@ -26,8 +26,8 @@ namespace Cassette
             DefineWriter(() => new ExternalStylesheetBundleManifestWriter(bundlesContainer));
             DefineWriter(() => new ExternalScriptBundleManifestWriter(bundlesContainer));
             DefineWriter(() => new StylesheetBundleManifestWriter(bundlesContainer));
-            DefineWriter(() => new BundleManifestWriter<ScriptBundleManifest>(bundlesContainer));
-            DefineWriter(() => new BundleManifestWriter<HtmlTemplateBundleManifest>(bundlesContainer));
+            DefineWriter(() => new ScriptBundleManifestWriter(bundlesContainer));
+            DefineWriter(() => new HtmlTemplateBundleManifestWriter(bundlesContainer));
         }
 
         void DefineWriter<T>(Func<BundleManifestWriter<T>> createWriter) where T : BundleManifest
@@ -35,7 +35,7 @@ namespace Cassette
             writeActions.Add(
                 typeof(T),
                 bundleManifest => createWriter().Write((T)bundleManifest)
-                );
+            );
         }
 
         public void Write(IEnumerable<BundleManifest> bundleManifests)

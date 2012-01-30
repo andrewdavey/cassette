@@ -1,5 +1,6 @@
 ﻿using Cassette.BundleProcessing;
 using Cassette.Configuration;
+using Cassette.Manifests;
 using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets

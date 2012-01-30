@@ -1,20 +1,19 @@
 using System.Xml.Linq;
+using Cassette.Manifests;
 
 namespace Cassette.Scripts.Manifests
 {
     class ExternalScriptBundleManifestWriter : BundleManifestWriter<ExternalScriptBundleManifest>
     {
         XElement element;
-        ExternalScriptBundleManifest manifest;
 
         public ExternalScriptBundleManifestWriter(XContainer container) : base(container)
         {
         }
 
-        protected override XElement CreateElement(ExternalScriptBundleManifest manifest)
+        protected override XElement CreateElement()
         {
-            element = base.CreateElement(manifest);
-            this.manifest = manifest;
+            element = base.CreateElement();
 
             AddUrlAttribute();
             AddFallbackConditionIfNotNull();
@@ -24,14 +23,14 @@ namespace Cassette.Scripts.Manifests
 
         void AddUrlAttribute()
         {
-            element.Add(new XAttribute("Url", manifest.Url));
+            element.Add(new XAttribute("Url", Manifest.Url));
         }
 
         void AddFallbackConditionIfNotNull()
         {
-            if (manifest.FallbackCondition != null)
+            if (Manifest.FallbackCondition != null)
             {
-                element.Add(new XAttribute("FallbackCondition", manifest.FallbackCondition));
+                element.Add(new XAttribute("FallbackCondition", Manifest.FallbackCondition));
             }
         }
     }

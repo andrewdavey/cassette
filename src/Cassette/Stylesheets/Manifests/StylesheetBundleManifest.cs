@@ -1,4 +1,6 @@
-﻿namespace Cassette.Stylesheets.Manifests
+﻿using Cassette.Manifests;
+
+namespace Cassette.Stylesheets.Manifests
 {
     class StylesheetBundleManifest : BundleManifest
     {

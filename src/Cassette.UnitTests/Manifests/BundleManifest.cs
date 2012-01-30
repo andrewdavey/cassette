@@ -3,7 +3,7 @@ using Cassette.Stylesheets.Manifests;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Manifests
 {
     public class BundleManifest_Equals_Tests
     {

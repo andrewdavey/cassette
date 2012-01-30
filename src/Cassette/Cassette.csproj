@@ -55,22 +55,24 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AssetFromManifest.cs" />
-    <Compile Include="AssetManifest.cs" />
-    <Compile Include="AssetManifestReader.cs" />
+    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
+    <Compile Include="Manifests\AssetFromManifest.cs" />
+    <Compile Include="Manifests\AssetManifest.cs" />
+    <Compile Include="Manifests\AssetManifestReader.cs" />
     <Compile Include="BundleFactoryExtensions.cs" />
-    <Compile Include="BundleManifest.cs" />
-    <Compile Include="BundleManifestBuilder.cs" />
-    <Compile Include="BundleManifestReader.cs" />
-    <Compile Include="BundleManifestSetReader.cs" />
-    <Compile Include="BundleManifestSetWriter.cs" />
-    <Compile Include="BundleManifestWriter.cs" />
+    <Compile Include="Manifests\AssetManifestWriter.cs" />
+    <Compile Include="Manifests\BundleManifest.cs" />
+    <Compile Include="Manifests\BundleManifestBuilder.cs" />
+    <Compile Include="Manifests\BundleManifestReader.cs" />
+    <Compile Include="Manifests\BundleManifestSetReader.cs" />
+    <Compile Include="Manifests\BundleManifestSetWriter.cs" />
+    <Compile Include="Manifests\BundleManifestWriter.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />
     <Compile Include="BundleProcessing\ICommentParser.cs" />
     <Compile Include="BundleProcessing\ParseReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
-    <Compile Include="CachedBundleContent.cs" />
+    <Compile Include="Manifests\CachedBundleContent.cs" />
     <Compile Include="CassetteApplicationContainerFactoryBase.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
     <Compile Include="Configuration\ConventionalMinifiedFileFilter.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="Scripts\IECoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
+    <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifest.cs" />
@@ -250,7 +253,7 @@
     <Compile Include="Utilities\StreamExtensions.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
-    <Compile Include="XElementExtensions.cs" />
+    <Compile Include="Utilities\XElementExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -275,6 +278,7 @@
   <ItemGroup>
     <None Include="Resources\jqueryTmplKnockout.js" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
