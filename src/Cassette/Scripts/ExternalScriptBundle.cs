@@ -1,5 +1,7 @@
 ﻿using System;
 using Cassette.Configuration;
+using Cassette.Manifests;
+using Cassette.Scripts.Manifests;
 
 namespace Cassette.Scripts
 {
@@ -56,6 +58,11 @@ namespace Cassette.Scripts
         internal override bool ContainsPath(string pathToFind)
         {
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
+        }
+
+        internal override BundleManifest CreateBundleManifest()
+        {
+            return new ExternalScriptBundleManifestBuilder().BuildManifest(this);
         }
     }
 }
