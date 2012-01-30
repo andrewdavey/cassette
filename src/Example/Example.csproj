@@ -73,7 +73,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\color-picker\ColorListItem.htm" />
-    <Content Include="HtmlTemplates\hogan\hello.htm" />
+    <None Include="HtmlTemplates\hogan\hello.mustache" />
     <Content Include="Scripts\app\Event.js" />
     <Content Include="Scripts\color-picker\helpers.js" />
     <Content Include="Scripts\color-picker\ColorPickerViewModel.js" />
