@@ -65,9 +65,10 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="Manifests\AssetManifestWriter.cs" />
     <Compile Include="Manifests\BundleManifest.cs" />
+    <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
-    <Compile Include="Manifests\BundleManifestSetWriter.cs" />
+    <Compile Include="Manifests\CassetteManifestWriter.cs" />
     <Compile Include="Manifests\BundleManifestWriter.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifest.cs" />

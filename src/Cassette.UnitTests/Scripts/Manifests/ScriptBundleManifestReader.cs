@@ -35,7 +35,7 @@ namespace Cassette.Scripts.Manifests
         public void ThrowsExceptionWhenPathAttributeMissing()
         {
             element.SetAttributeValue("Path", null);
-            ReadBundleManifestThrowsInvalidBundleManifestException();
+            ReadBundleManifestThrowsInvalidCassetteManifestException();
         }
 
         [Fact]
@@ -45,24 +45,24 @@ namespace Cassette.Scripts.Manifests
         }
 
         [Fact]
-        public void GivenNoHashAttributeThenThrowInvalidBundleManifestException()
+        public void GivenNoHashAttributeThenThrowInvalidCassetteManifestException()
         {
             element.SetAttributeValue("Hash", null);
-            ReadBundleManifestThrowsInvalidBundleManifestException();
+            ReadBundleManifestThrowsInvalidCassetteManifestException();
         }
 
         [Fact]
-        public void GivenWrongLengthHashHexStringThenThrowInvalidBundleManifestException()
+        public void GivenWrongLengthHashHexStringThenThrowInvalidCassetteManifestException()
         {
             element.SetAttributeValue("Hash", "012");
-            ReadBundleManifestThrowsInvalidBundleManifestException();
+            ReadBundleManifestThrowsInvalidCassetteManifestException();
         }
 
         [Fact]
-        public void GivenInvalidHashHexStringThenThrowInvalidBundleManifestException()
+        public void GivenInvalidHashHexStringThenThrowInvalidCassetteManifestException()
         {
             element.SetAttributeValue("Hash", "qq");
-            ReadBundleManifestThrowsInvalidBundleManifestException();
+            ReadBundleManifestThrowsInvalidCassetteManifestException();
         }
 
         [Fact]
@@ -113,9 +113,9 @@ namespace Cassette.Scripts.Manifests
             readManifest = reader.Read();
         }
 
-        void ReadBundleManifestThrowsInvalidBundleManifestException()
+        void ReadBundleManifestThrowsInvalidCassetteManifestException()
         {
-            Assert.Throws<InvalidBundleManifestException>(() => ReadBundleManifest());
+            Assert.Throws<InvalidCassetteManifestException>(() => ReadBundleManifest());
         }
     }
 }

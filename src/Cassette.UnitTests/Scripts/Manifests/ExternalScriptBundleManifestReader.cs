@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using Cassette.Manifests;
 using Should;
 using Xunit;
 
@@ -31,7 +32,7 @@ namespace Cassette.Scripts.Manifests
         public void ThrowsExceptionWhenUrlAttributeIsMissing()
         {
             element.SetAttributeValue("Url", null);
-            Assert.Throws<InvalidBundleManifestException>(
+            Assert.Throws<InvalidCassetteManifestException>(
                 () => ReadManifestFromElement()
             );
         }

@@ -22,7 +22,7 @@ namespace Cassette.Scripts.Manifests
         {
             return manifestElement.AttributeValueOrThrow(
                 "Url",
-                () => new InvalidBundleManifestException("ExternalScriptBundle manifest element is missing \"Url\" attribute.")
+                () => new InvalidCassetteManifestException("ExternalScriptBundle manifest element is missing \"Url\" attribute.")
             );
         }
     }

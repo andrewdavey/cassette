@@ -26,7 +26,7 @@ namespace Cassette.Manifests
         {
             return element.AttributeValueOrThrow(
                 "Path",
-                () => new InvalidBundleManifestException("Asset manifest element missing \"Path\" attribute.")
+                () => new InvalidCassetteManifestException("Asset manifest element missing \"Path\" attribute.")
             );
         }
 
@@ -40,7 +40,7 @@ namespace Cassette.Manifests
 
         void AddRawFileReference(AssetManifest assetManifest, XElement rawFileReferenceElement)
         {
-            var path = rawFileReferenceElement.AttributeValueOrThrow("Path", () => new InvalidBundleManifestException("RawFileReference manifest element missing \"Path\" attribute."));
+            var path = rawFileReferenceElement.AttributeValueOrThrow("Path", () => new InvalidCassetteManifestException("RawFileReference manifest element missing \"Path\" attribute."));
             assetManifest.RawFileReferences.Add(path);
         }
     }

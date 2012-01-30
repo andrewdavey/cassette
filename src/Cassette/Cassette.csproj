@@ -56,6 +56,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
+    <Compile Include="Manifests\InvalidCassetteManifestException.cs" />
     <Compile Include="Manifests\AssetFromManifest.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestReader.cs" />
@@ -64,8 +65,8 @@
     <Compile Include="Manifests\BundleManifest.cs" />
     <Compile Include="Manifests\BundleManifestBuilder.cs" />
     <Compile Include="Manifests\BundleManifestReader.cs" />
-    <Compile Include="Manifests\BundleManifestSetReader.cs" />
-    <Compile Include="Manifests\BundleManifestSetWriter.cs" />
+    <Compile Include="Manifests\CassetteManifestReader.cs" />
+    <Compile Include="Manifests\CassetteManifestWriter.cs" />
     <Compile Include="Manifests\BundleManifestWriter.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />
@@ -134,7 +135,6 @@
     <Compile Include="Interop\ScriptTextFlags.cs" />
     <Compile Include="Interop\ScriptThreadState.cs" />
     <Compile Include="Interop\ScriptTypeLibFlags.cs" />
-    <Compile Include="InvalidBundleManifestException.cs" />
     <Compile Include="IO\FileExtensions.cs" />
     <Compile Include="IO\FileSystemDirectory.cs" />
     <Compile Include="IO\IFile.cs" />
@@ -148,6 +148,7 @@
     <Compile Include="BundleProcessing\AddTransformerToAssets.cs" />
     <Compile Include="BundleProcessing\MutablePipeline.cs" />
     <Compile Include="IUrlModifier.cs" />
+    <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="NullPlaceholderTracker.cs" />
     <Compile Include="Persistence\AssetCounter.cs" />
     <Compile Include="Persistence\AssetLastWriteTimeFinder.cs" />

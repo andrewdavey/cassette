@@ -49,11 +49,11 @@ namespace Cassette.Manifests
             }
             catch (ArgumentException ex)
             {
-                throw new InvalidBundleManifestException("Bundle manifest element has invalid Hash attribute.", ex);
+                throw new InvalidCassetteManifestException("Bundle manifest element has invalid Hash attribute.", ex);
             }
             catch (FormatException ex)
             {
-                throw new InvalidBundleManifestException("Bundle manifest element has invalid Hash attribute.", ex);                
+                throw new InvalidCassetteManifestException("Bundle manifest element has invalid Hash attribute.", ex);                
             }
         }
 
@@ -61,7 +61,7 @@ namespace Cassette.Manifests
         {
             return element.AttributeValueOrThrow(
                 attributeName,
-                () => new InvalidBundleManifestException(string.Format("Bundle manifest element missing \"{0}\" attribute.", attributeName))
+                () => new InvalidCassetteManifestException(string.Format("Bundle manifest element missing \"{0}\" attribute.", attributeName))
                 );
         }
 
@@ -99,7 +99,7 @@ namespace Cassette.Manifests
         {
             return referenceElement.AttributeValueOrThrow(
                 "Path",
-                () => new InvalidBundleManifestException("Reference manifest element missing \"Path\" attribute.")
+                () => new InvalidCassetteManifestException("Reference manifest element missing \"Path\" attribute.")
             );
         }
     }

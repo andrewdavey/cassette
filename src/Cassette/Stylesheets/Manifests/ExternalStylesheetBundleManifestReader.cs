@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using Cassette.Manifests;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets.Manifests
@@ -20,8 +21,8 @@ namespace Cassette.Stylesheets.Manifests
         {
             return manifestElement.AttributeValueOrThrow(
                 "Url",
-                () => new InvalidBundleManifestException("ExternalStylesheetBundle manifest element is missing \"Url\" attribute.")
-                );
+                () => new InvalidCassetteManifestException("ExternalStylesheetBundle manifest element is missing \"Url\" attribute.")
+            );
         }
     }
 }

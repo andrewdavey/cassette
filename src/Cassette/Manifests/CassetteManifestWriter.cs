@@ -8,16 +8,16 @@ using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Manifests
 {
-    class BundleManifestSetWriter
+    class CassetteManifestWriter
     {
         readonly Stream outputStream;
         readonly XElement bundlesContainer;
         readonly Dictionary<Type, Action<BundleManifest>> writeActions = new Dictionary<Type, Action<BundleManifest>>();
 
-        public BundleManifestSetWriter(Stream outputStream)
+        public CassetteManifestWriter(Stream outputStream)
         {
             this.outputStream = outputStream;
-            bundlesContainer = new XElement("Bundles");
+            bundlesContainer = new XElement("Cassette");
             DefineWriters();
         }
 
@@ -38,16 +38,21 @@ namespace Cassette.Manifests
             );
         }
 
-        public void Write(IEnumerable<BundleManifest> bundleManifests)
+        public void Write(CassetteManifest manifest)
         {
-            foreach (var bundleManifest in bundleManifests)
-            {
-                Write(bundleManifest);
-            }
+            WriteBundleManifests(manifest);
             WriteToOutputStream();
         }
 
-        void Write(BundleManifest bundleManifest)
+        void WriteBundleManifests(CassetteManifest manifest)
+        {
+            foreach (var bundleManifest in manifest.BundleManifests)
+            {
+                WriteBundleManifest(bundleManifest);
+            }
+        }
+
+        void WriteBundleManifest(BundleManifest bundleManifest)
         {
             var write = GetWriteActionForBundleManifest(bundleManifest);
             write(bundleManifest);
