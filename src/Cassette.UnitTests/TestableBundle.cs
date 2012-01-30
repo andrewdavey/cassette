@@ -34,7 +34,15 @@ namespace Cassette
 
         internal override BundleManifest CreateBundleManifest()
         {
-            throw new System.NotImplementedException();
+            return new BundleManifestBuilder<TestableBundle, TestableBundleManifest>().BuildManifest(this);
+        }
+
+        class TestableBundleManifest : BundleManifest
+        {
+            protected override Bundle CreateBundleCore()
+            {
+                return new TestableBundle(Path) { Hash = Hash };
+            }
         }
     }
 }

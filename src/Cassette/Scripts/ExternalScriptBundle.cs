@@ -5,7 +5,7 @@ using Cassette.Scripts.Manifests;
 
 namespace Cassette.Scripts
 {
-    class ExternalScriptBundle : ScriptBundle
+    class ExternalScriptBundle : ScriptBundle, IExternalBundle
     {
         readonly string url;
         readonly string fallbackCondition;
@@ -63,6 +63,11 @@ namespace Cassette.Scripts
         internal override BundleManifest CreateBundleManifest()
         {
             return new ExternalScriptBundleManifestBuilder().BuildManifest(this);
+        }
+
+        string IExternalBundle.Url
+        {
+            get { return url; }
         }
     }
 }

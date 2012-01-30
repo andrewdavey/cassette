@@ -119,11 +119,11 @@ namespace Cassette.Configuration
         {
             if (IsDebuggingEnabled)
             {
-                return new BundleContainerFactory(BundleFactories, this);
+                return new BundleContainerFactory(this);
             }
             else
             {
-                return new CachedBundleContainerFactory(CassetteManifestCache, BundleFactories, this);
+                return new CachedBundleContainerFactory(CassetteManifestCache, this);
             }
         }
     }

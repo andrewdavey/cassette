@@ -103,6 +103,14 @@ namespace Cassette.Manifests
             Assert.Throws<InvalidOperationException>(() => bundle.OpenStream());
         }
 
+        [Fact]
+        public void GivenManifestWithReferences_WhenCreateBundle_ThenBundleHasTheReferences()
+        {
+            manifest.References.Add("~/reference");
+            var bundle = manifest.CreateBundle();
+            bundle.References.ShouldEqual(new[] { "~/reference" });
+        }
+
         class TestableBundleManifest : BundleManifest
         {
             protected override Bundle CreateBundleCore()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Cassette.IO;
 
 namespace Cassette.Manifests
@@ -13,7 +14,7 @@ namespace Cassette.Manifests
         public CachedBundleContent(byte[] content, IEnumerable<IAsset> originalAssets)
         {
             this.content = content;
-            this.originalAssets = originalAssets;
+            this.originalAssets = originalAssets.ToArray();
         }
 
         public void Accept(IBundleVisitor visitor)

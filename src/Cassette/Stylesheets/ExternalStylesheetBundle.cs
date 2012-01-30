@@ -5,7 +5,7 @@ using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {
-    class ExternalStylesheetBundle : StylesheetBundle
+    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle
     {
         public ExternalStylesheetBundle(string url)
             : base(url)
@@ -46,6 +46,11 @@ namespace Cassette.Stylesheets
         internal override BundleManifest CreateBundleManifest()
         {
             return new ExternalStylesheetBundleManifestBuilder().BuildManifest(this);
+        }
+
+        string IExternalBundle.Url
+        {
+            get { return url; }
         }
     }
 }

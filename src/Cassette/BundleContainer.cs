@@ -127,11 +127,13 @@ namespace Cassette
 
         void ValidateAssetReferences()
         {
-            var notFound = from bundle in bundles
-                           from asset in bundle.Assets
-                           from reference in asset.References
-                           where reference.Type == AssetReferenceType.DifferentBundle
-                              && bundles.Any(m => m.ContainsPath(reference.Path)) == false
+            var collector = new BundleReferenceCollector(AssetReferenceType.DifferentBundle);
+            foreach (var bundle in Bundles)
+            {
+                bundle.Accept(collector);
+            }
+            var notFound = from reference in collector.CollectedAssetReferences
+                           where bundles.Any(m => m.ContainsPath(reference.Path)) == false
                            select CreateAssetReferenceNotFoundMessage(reference);
 
             var message = string.Join(Environment.NewLine, notFound);
@@ -148,15 +150,20 @@ namespace Cassette
                 select new 
                 { 
                     bundle,
-                    references = new HashSet<Bundle>(bundle.Assets.SelectMany(a => a.References)
-                        .Where(r => r.Type == AssetReferenceType.DifferentBundle
-                                 || r.Type == AssetReferenceType.Url)
+                    references = new HashSet<Bundle>(GetNonSameBundleAssetReferences(bundle)
                         .Select(r => r.Path)
                         .Concat(bundle.References)
                         .SelectMany(FindBundlesContainingPath)
                     ) 
                 }
             ).ToDictionary(x => x.bundle, x => x.references);
+        }
+
+        IEnumerable<AssetReference> GetNonSameBundleAssetReferences(Bundle bundle)
+        {
+            var collector = new BundleReferenceCollector(AssetReferenceType.DifferentBundle, AssetReferenceType.Url);
+            bundle.Accept(collector);
+            return collector.CollectedAssetReferences;
         }
 
         string CreateAssetReferenceNotFoundMessage(AssetReference reference)

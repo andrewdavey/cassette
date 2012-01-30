@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Cassette.Configuration
 {
     class BundleContainerFactory : BundleContainerFactoryBase
     {
-        public BundleContainerFactory(IDictionary<Type, IBundleFactory<Bundle>> factories, CassetteSettings settings)
-            : base(factories, settings)
+        public BundleContainerFactory(CassetteSettings settings)
+            : base(settings)
         {
         }
 

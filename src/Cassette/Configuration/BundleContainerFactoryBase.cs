@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
     abstract class BundleContainerFactoryBase : IBundleContainerFactory
     {
-        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
         readonly CassetteSettings settings;
 
-        protected BundleContainerFactoryBase(IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, CassetteSettings settings)
+        protected BundleContainerFactoryBase(CassetteSettings settings)
         {
-            this.bundleFactories = bundleFactories;
             this.settings = settings;
         }
 
@@ -28,39 +27,66 @@ namespace Cassette.Configuration
             Trace.Source.TraceInformation("Bundle processing completed.");
         }
 
-        protected IEnumerable<Bundle> CreateExternalBundlesUrlReferences(IEnumerable<Bundle> bundlesArray)
+        protected IEnumerable<Bundle> CreateExternalBundlesUrlReferences(Bundle[] bundlesArray)
         {
-            var referencesAlreadyCreated = new HashSet<string>(); // TODO: use case-insensitive string comparer?
+            var existingUrls = bundlesArray.OfType<IExternalBundle>().Select(b => b.Url);
+            var generator = new ExternalBundleGenerator(existingUrls, settings);
             foreach (var bundle in bundlesArray)
             {
-                foreach (var reference in bundle.References)
-                {
-                    if (reference.IsUrl() == false) continue;
-                    if (referencesAlreadyCreated.Contains(reference)) continue;
+                bundle.Accept(generator);
+            }
+            return generator.ExternalBundles;
+        }
+    }
 
-                    var externalBundle = CreateExternalBundle(reference, bundle);
-                    referencesAlreadyCreated.Add(externalBundle.Path);
-                    yield return externalBundle;
-                }
-                foreach (var asset in bundle.Assets)
-                {
-                    foreach (var assetReference in asset.References)
-                    {
-                        if (assetReference.Type != AssetReferenceType.Url ||
-                            referencesAlreadyCreated.Contains(assetReference.Path)) continue;
+    class ExternalBundleGenerator : IBundleVisitor
+    {
+        readonly CassetteSettings settings;
+        readonly HashSet<string> existingUrls;
+        readonly List<Bundle> bundles = new List<Bundle>();
+        Bundle currentBundle;
 
-                        var externalBundle = CreateExternalBundle(assetReference.Path, bundle);
-                        referencesAlreadyCreated.Add(externalBundle.Path);
-                        yield return externalBundle;
-                    }
-                }
+        public ExternalBundleGenerator(IEnumerable<string> existingUrls, CassetteSettings settings)
+        {
+            this.settings = settings;
+            this.existingUrls = new HashSet<string>(existingUrls); // TODO: use case-insensitive string comparer?
+        }
+
+        public IEnumerable<Bundle> ExternalBundles
+        {
+            get { return bundles; }
+        }
+
+        public void Visit(Bundle bundle)
+        {
+            currentBundle = bundle;
+
+            foreach (var reference in bundle.References)
+            {
+                if (reference.IsUrl() == false) continue;
+                if (existingUrls.Contains(reference)) continue;
+
+                existingUrls.Add(reference);
+                bundles.Add(CreateExternalBundle(reference, currentBundle));
             }
         }
 
-        Bundle CreateExternalBundle(string reference, Bundle referencer)
+        public void Visit(IAsset asset)
+        {
+            foreach (var assetReference in asset.References)
+            {
+                if (assetReference.Type != AssetReferenceType.Url) continue;
+                if (existingUrls.Contains(assetReference.Path)) continue;
+
+                existingUrls.Add(assetReference.Path);
+                bundles.Add(CreateExternalBundle(assetReference.Path, currentBundle));
+            }
+        }
+
+        Bundle CreateExternalBundle(string url, Bundle referencer)
         {
             var bundleFactory = GetBundleFactory(referencer.GetType());
-            var externalBundle = bundleFactory.CreateExternalBundle(reference);
+            var externalBundle = bundleFactory.CreateExternalBundle(url);
             externalBundle.Process(settings);
             return externalBundle;
         }
@@ -68,7 +94,7 @@ namespace Cassette.Configuration
         IBundleFactory<Bundle> GetBundleFactory(Type bundleType)
         {
             IBundleFactory<Bundle> factory;
-            if (bundleFactories.TryGetValue(bundleType, out factory))
+            if (settings.BundleFactories.TryGetValue(bundleType, out factory))
             {
                 return factory;
             }

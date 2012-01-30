@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
+﻿using Cassette.Manifests;
+using Moq;
 
 namespace Cassette.Configuration
 {
     public class CachedBundleContainerFactory_Tests : BundleContainerFactoryTestSuite
     {
-        [Fact]
-        public void _()
+        readonly Mock<ICassetteManifestCache> cache;
+
+        public CachedBundleContainerFactory_Tests()
         {
-            throw new NotImplementedException("");
+            cache = new Mock<ICassetteManifestCache>();
+            cache.Setup(c => c.LoadCassetteManifest()).Returns(() => new CassetteManifest());
         }
 
-        internal override IBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories)
+        internal override IBundleContainerFactory CreateFactory()
         {
-            throw new NotImplementedException();
+            return new CachedBundleContainerFactory(cache.Object, Settings);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Cassette.Manifests;
 
@@ -11,8 +10,8 @@ namespace Cassette.Configuration
         readonly CassetteSettings settings;
         Bundle[] bundlesArray;
 
-        public CachedBundleContainerFactory(ICassetteManifestCache cache, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, CassetteSettings settings)
-            : base(bundleFactories, settings)
+        public CachedBundleContainerFactory(ICassetteManifestCache cache, CassetteSettings settings)
+            : base(settings)
         {
             this.cache = cache;
             this.settings = settings;

@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Cassette.IO;
+using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
@@ -10,11 +11,11 @@ namespace Cassette.Configuration
 {
     public abstract class BundleContainerFactoryTestSuite
     {
-        protected CassetteSettings settings = new CassetteSettings("")
+        protected readonly CassetteSettings Settings = new CassetteSettings("")
         {
             SourceDirectory = Mock.Of<IDirectory>()
         };
-        internal abstract IBundleContainerFactory CreateFactory(IDictionary<Type, IBundleFactory<Bundle>> factories);
+        internal abstract IBundleContainerFactory CreateFactory();
 
         [Fact]
         public void WhenCreateWithBundles_ThenItReturnsContainerWithBundles()
@@ -23,11 +24,11 @@ namespace Cassette.Configuration
             var bundle2 = new TestableBundle("~/test2");
             var bundles = new[] { bundle1, bundle2 };
 
-            var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
+            var builder = CreateFactory();
             var container = builder.Create(bundles);
 
-            container.FindBundlesContainingPath("~/test1").First().ShouldBeSameAs(bundle1);
-            container.FindBundlesContainingPath("~/test2").First().ShouldBeSameAs(bundle2);
+            container.FindBundlesContainingPath("~/test1").ShouldNotBeEmpty();
+            container.FindBundlesContainingPath("~/test2").ShouldNotBeEmpty();
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace Cassette.Configuration
         {
             var bundle = new TestableBundle("~/test");
 
-            var builder = CreateFactory(new Dictionary<Type, IBundleFactory<Bundle>>());
+            var builder = CreateFactory();
             builder.Create(new[] { bundle });
 
             bundle.WasProcessed.ShouldBeTrue();
@@ -48,13 +49,12 @@ namespace Cassette.Configuration
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://external.com/api.js");
 
-            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://external.com/api.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            factories[typeof(TestableBundle)] = factory.Object;
+            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
 
-            var builder = CreateFactory(factories);
+            var builder = CreateFactory();
             var container = builder.Create(new[] { bundle });
 
             container.FindBundlesContainingPath("http://external.com/api.js").First().ShouldBeSameAs(externalBundle);
@@ -63,20 +63,19 @@ namespace Cassette.Configuration
         [Fact]
         public void WhenExternalModuleReferencedTwice_ThenContainerOnlyHasTheExternalModuleOnce()
         {
-            var externalBundle = new TestableBundle("http://external.com/api.js");
-            var bundle1 = new TestableBundle("~/test1");
+            var externalBundle = new ExternalScriptBundle("http://external.com/api.js");
+            var bundle1 = new ScriptBundle("~/test1");
             bundle1.AddReference("http://external.com/api.js");
-            var bundle2 = new TestableBundle("~/test2");
+            var bundle2 = new ScriptBundle("~/test2");
             bundle2.AddReference("http://external.com/api.js");
             var bundles = new[] { bundle1, bundle2 };
 
-            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://external.com/api.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            factories[typeof(TestableBundle)] = factory.Object;
+            Settings.BundleFactories[typeof(ScriptBundle)] = factory.Object;
 
-            var builder = CreateFactory(factories);
+            var builder = CreateFactory();
             var container = builder.Create(bundles);
 
             container.Bundles.Count().ShouldEqual(3);
@@ -86,16 +85,19 @@ namespace Cassette.Configuration
         public void GivenAssetWithUrlReference_WhenCreate_ThenExternalBundleInContainer()
         {
             var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset");
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.References)
                  .Returns(new[] { new AssetReference("http://test.com/", asset.Object, -1, AssetReferenceType.Url) });
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
 
             var externalBundle = new TestableBundle("http://test.com/");
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
-            factories[typeof(TestableBundle)] = factory.Object;
-            var containerFactory = CreateFactory(factories);
+            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            var containerFactory = CreateFactory();
 
             var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(asset.Object);
@@ -110,14 +112,14 @@ namespace Cassette.Configuration
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.References)
                  .Returns(new[] { new AssetReference("http://test.com/", asset.Object, -1, AssetReferenceType.Url) });
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
 
             var externalBundle = new TestableBundle("http://test.com/");
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
-            factories[typeof(TestableBundle)] = factory.Object;
-            var containerFactory = CreateFactory(factories);
+            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            var containerFactory = CreateFactory();
 
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
@@ -128,43 +130,44 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void GivenAssetWithAdHocUrlReference_WhenCreate_ThenExternalBundleIsCreatedAndProcessed()
-        {
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.References)
-                 .Returns(new[] { new AssetReference("http://test.com/", asset.Object, -1, AssetReferenceType.Url) });
-
-            var externalBundle = new TestableBundle("http://test.com/");
-            var factory = new Mock<IBundleFactory<Bundle>>();
-            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
-                   .Returns(externalBundle);
-            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
-            factories[typeof(TestableBundle)] = factory.Object;
-            var containerFactory = CreateFactory(factories);
-
-            var bundle = new TestableBundle("~/test");
-            bundle.Assets.Add(asset.Object);
-            
-            containerFactory.Create(new[] { bundle });
-
-            externalBundle.WasProcessed.ShouldBeTrue();
-        }
-
-
-        [Fact]
         public void GivenBundleWithAdHocUrlReference_WhenCreate_ThenExternalBundleIsCreatedAndProcessed()
         {
             var externalBundle = new TestableBundle("http://test.com/");
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            var factories = new Dictionary<Type, IBundleFactory<Bundle>>();
-            factories[typeof(TestableBundle)] = factory.Object;
-            var containerFactory = CreateFactory(factories);
+            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            var containerFactory = CreateFactory();
 
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
 
+            containerFactory.Create(new[] { bundle });
+
+            externalBundle.WasProcessed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenAssetWithAdHocUrlReference_WhenCreate_ThenExternalBundleIsCreatedAndProcessed()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset");
+            asset.SetupGet(a => a.References)
+                 .Returns(new[] { new AssetReference("http://test.com/", asset.Object, -1, AssetReferenceType.Url) });
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+
+            var externalBundle = new TestableBundle("http://test.com/");
+            var factory = new Mock<IBundleFactory<Bundle>>();
+            factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+                   .Returns(externalBundle);
+            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            var containerFactory = CreateFactory();
+
+            var bundle = new TestableBundle("~/test");
+            bundle.Assets.Add(asset.Object);
+            
             containerFactory.Create(new[] { bundle });
 
             externalBundle.WasProcessed.ShouldBeTrue();

@@ -29,6 +29,7 @@ namespace Cassette.Manifests
             bundle.PageLocation = PageLocation;
             bundle.IsFromCache = true;
             bundle.Assets.Add(CreateCachedBundleContent());
+            AddReferencesToBundle(bundle);
             return bundle;
         }
 
@@ -42,6 +43,14 @@ namespace Cassette.Manifests
         IEnumerable<IAsset> CreateOriginalAssets()
         {
             return Assets.Select(assetManifest => new AssetFromManifest(assetManifest.Path));
+        }
+
+        void AddReferencesToBundle(Bundle bundle)
+        {
+            foreach (var reference in References)
+            {
+                bundle.AddReference(reference);
+            }
         }
 
         public bool IsUpToDateWithFileSystem(IDirectory directory, DateTime asOfDateTime)

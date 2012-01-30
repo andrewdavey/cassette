@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Cassette.Manifests;
@@ -83,13 +84,20 @@ namespace Cassette.Scripts.Manifests
             manifest.Content.ShouldBeNull();
         }
 
+        [Fact]
+        public void GivenAssetWithDifferentBundleAssetReferenceThenManifestContainsReference()
+        {
+            throw new NotImplementedException();
+        }
+
         IAsset StubAsset()
         {
             var stubAsset = new Mock<IAsset>();
             stubAsset.SetupGet(a => a.SourceFile.FullPath).Returns("~/path/asset");
             stubAsset.SetupGet(a => a.References).Returns(new[]
             {
-                new AssetReference("~/path/asset/file", stubAsset.Object, 0, AssetReferenceType.RawFilename)
+                new AssetReference("~/path/asset/file", stubAsset.Object, 0, AssetReferenceType.RawFilename),
+                new AssetReference("~/different-bundle", stubAsset.Object, 0, AssetReferenceType.DifferentBundle), 
             });
             stubAsset.Setup(a => a.OpenStream()).Returns(() => new MemoryStream(bundleContent));
 

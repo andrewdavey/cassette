@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Cassette.IO;
+using System.Linq;
 
 namespace Cassette.Manifests
 {
@@ -26,7 +27,7 @@ namespace Cassette.Manifests
 
         public IEnumerable<AssetReference> References
         {
-            get { throw new NotImplementedException(); }
+            get { return Enumerable.Empty<AssetReference>(); }
         }
 
         public void Accept(IBundleVisitor visitor)
