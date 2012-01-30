@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Should;
 using Xunit;
 
-namespace Cassette.UI
+namespace Cassette
 {
     public class PlaceholderTracker_Tests
     {
@@ -30,4 +30,3 @@ namespace Cassette.UI
         }
     }
 }
-
