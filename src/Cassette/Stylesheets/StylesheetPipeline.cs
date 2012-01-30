@@ -33,6 +33,7 @@ namespace Cassette.Stylesheets
             }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
+            yield return new AssignHash();
             if (!settings.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();

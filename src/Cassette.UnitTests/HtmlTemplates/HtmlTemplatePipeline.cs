@@ -16,5 +16,16 @@ namespace Cassette.HtmlTemplates
 
             bundle.Renderer.ShouldBeType<InlineHtmlTemplateBundleRenderer>();
         }
+        
+        [Fact]
+        public void WhenProcessBundle_ThenHashIsAssigned()
+        {
+            var pipeline = new HtmlTemplatePipeline();
+            var bundle = new HtmlTemplateBundle("~");
+
+            pipeline.Process(bundle, new CassetteSettings(""));
+
+            bundle.Hash.ShouldNotBeNull();
+        }
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="Manifests\InvalidCassetteManifestException.cs" />
     <Compile Include="Manifests\AssetFromManifest.cs" />

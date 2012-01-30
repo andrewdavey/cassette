@@ -17,6 +17,7 @@ namespace Cassette.HtmlTemplates
             yield return new ParseHtmlTemplateReferences();
             yield return new CompileJQueryTmpl();
             yield return new RegisterTemplatesWithJQueryTmpl(bundle);
+            yield return new AssignHash();
             yield return new ConcatenateAssets();
         }
     }

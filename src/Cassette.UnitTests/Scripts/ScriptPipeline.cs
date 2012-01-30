@@ -69,6 +69,17 @@ namespace Cassette.Scripts
             asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()));
         }
 
+        [Fact]
+        public void WhenProcessBundle_ThenHashIsAssigned()
+        {
+            var pipeline = new ScriptPipeline();
+            var bundle = new ScriptBundle("~");
+
+            pipeline.Process(bundle, new CassetteSettings(""));
+
+            bundle.Hash.ShouldNotBeNull();
+        }
+
         static Mock<IAsset> StubCoffeeScriptAsset()
         {
             var asset = new Mock<IAsset>();

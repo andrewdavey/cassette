@@ -82,6 +82,17 @@ namespace Cassette.Stylesheets
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)), Times.Never());
         }
+
+        [Fact]
+        public void WhenProcessBundle_ThenHashIsAssigned()
+        {
+            var pipeline = new StylesheetPipeline();
+            var bundle = new StylesheetBundle("~");
+
+            pipeline.Process(bundle, new CassetteSettings(""));
+
+            bundle.Hash.ShouldNotBeNull();
+        }
     }
 
     public class StylesheetPipeline_Process_TestBase

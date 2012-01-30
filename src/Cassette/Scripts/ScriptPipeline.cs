@@ -30,6 +30,7 @@ namespace Cassette.Scripts
                 yield return new CompileCoffeeScript(CoffeeScriptCompiler);
             }
             yield return new SortAssetsByDependency();
+            yield return new AssignHash();
             if (!settings.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();
