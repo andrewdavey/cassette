@@ -14,6 +14,7 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/bundle-1");
             var asset = new Mock<IAsset>();
+            AssetAcceptsVisitor(asset);
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("bundle-1\\a.js");
             asset.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentBundle) });
@@ -31,6 +32,7 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~/bundle-1");
             var asset = new Mock<IAsset>();
+            AssetAcceptsVisitor(asset);
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/bundle-1/a.js");
             asset.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentBundle) });
@@ -80,8 +82,7 @@ namespace Cassette
         {
             var expectedBundle = new TestableBundle("~/test");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
-                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+            AssetAcceptsVisitor(asset);
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/test.js");
             expectedBundle.Assets.Add(asset.Object);
             var container = new BundleContainer(new[] {
@@ -102,6 +103,12 @@ namespace Cassette
                 new BundleContainer(new[] {bundle1});
             });
             exception.Message.ShouldEqual("Reference error in bundle descriptor for \"~/bundle1\". Cannot find \"~/bundle2\".");
+        }
+
+        void AssetAcceptsVisitor(Mock<IAsset> asset)
+        {
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
         }
     }
 
