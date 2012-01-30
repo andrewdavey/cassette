@@ -42,7 +42,7 @@ namespace Cassette.Manifests
 
         IEnumerable<IAsset> CreateOriginalAssets()
         {
-            return Assets.Select(assetManifest => new AssetFromManifest(assetManifest.Path));
+            return Assets.Select(assetManifest => new AssetFromManifest(assetManifest));
         }
 
         void AddReferencesToBundle(Bundle bundle)

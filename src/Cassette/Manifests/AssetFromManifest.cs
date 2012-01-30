@@ -8,11 +8,11 @@ namespace Cassette.Manifests
 {
     class AssetFromManifest : IAsset
     {
-        readonly string path;
+        readonly AssetManifest assetManifest;
 
-        public AssetFromManifest(string path)
+        public AssetFromManifest(AssetManifest assetManifest)
         {
-            this.path = path;
+            this.assetManifest = assetManifest;
         }
 
         public byte[] Hash
@@ -22,12 +22,17 @@ namespace Cassette.Manifests
 
         public IFile SourceFile
         {
-            get { return new StubFile(path); }
+            get { return new StubFile(assetManifest.Path); }
         }
 
         public IEnumerable<AssetReference> References
         {
-            get { return Enumerable.Empty<AssetReference>(); }
+            get
+            {
+                return assetManifest.References.Select(
+                    r => new AssetReference(r.Path, this, r.SourceLineNumber, r.Type)
+                );
+            }
         }
 
         public void Accept(IBundleVisitor visitor)
