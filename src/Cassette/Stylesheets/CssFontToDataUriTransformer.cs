@@ -14,7 +14,7 @@ namespace Cassette.Stylesheets
         public Func<string, bool> WhitelistFunc { get; set; }
         
         static readonly Regex UrlRegex = new Regex(
-            @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*/embed/.*?)\.(?<extension>ttf|oft) \<quote> \s* \)",
+            @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*/embed/.*?)\.(?<extension>ttf|otf) \<quote> \s* \)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
