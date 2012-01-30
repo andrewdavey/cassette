@@ -6,7 +6,7 @@ namespace Cassette.Stylesheets
     public class ConvertFontUrlsToDataUris : AddTransformerToAssets
     {
         public ConvertFontUrlsToDataUris(Func<string, bool> whitelistFunc = null)
-            : base(new CssFontToDataUriTransformer(){ WhitelistFunc = whitelistFunc })
+            : base(new CssFontToDataUriTransformer(){ WhitelistFunc = whitelistFunc ?? (whitelistPath => true) })
         {
         }
     }

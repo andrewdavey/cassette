@@ -72,7 +72,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Fonts\droidsans-bold-webfont.svg" />
+    <Content Include="Fonts\droidsans-webfont.svg" />
     <Content Include="Fonts\embed\droidsans-bold-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\color-picker\ColorListItem.htm" />
@@ -97,9 +97,9 @@
     <Content Include="Styles\base\reset.css" />
     <Content Include="Styles\base\typography.css" />
     <Content Include="Styles\base\validation.css" />
-    <None Include="Fonts\droidsans-bold-webfont.eot" />
-    <None Include="Fonts\droidsans-bold-webfont.ttf" />
-    <None Include="Fonts\droidsans-bold-webfont.woff" />
+    <None Include="Fonts\droidsans-webfont.eot" />
+    <None Include="Fonts\droidsans-webfont.ttf" />
+    <None Include="Fonts\droidsans-webfont.woff" />
     <None Include="Fonts\embed\droidsans-bold-webfont.eot" />
     <None Include="Fonts\embed\droidsans-bold-webfont.ttf" />
     <None Include="Fonts\embed\droidsans-bold-webfont.woff" />
