@@ -6,6 +6,8 @@ namespace Cassette.HtmlTemplates
 {
     public class HoganPipeline : MutablePipeline<HtmlTemplateBundle>
     {
+        public string Namespace { get; set; }
+        
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
             yield return new AssignHtmlTemplateRenderer(
@@ -16,7 +18,7 @@ namespace Cassette.HtmlTemplates
 
             yield return new ParseHtmlTemplateReferences();
             yield return new CompileHogan();
-            yield return new RegisterTemplatesWithHogan(bundle);
+            yield return new RegisterTemplatesWithHogan(bundle, Namespace);
             yield return new ConcatenateAssets();
         }
     }

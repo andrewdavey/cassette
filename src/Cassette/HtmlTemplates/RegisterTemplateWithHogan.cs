@@ -8,10 +8,12 @@ namespace Cassette.HtmlTemplates
     class RegisterTemplateWithHogan : IAssetTransformer
     {
         readonly HtmlTemplateBundle bundle;
+        readonly string ns;
 
-        public RegisterTemplateWithHogan(HtmlTemplateBundle bundle)
+        public RegisterTemplateWithHogan(HtmlTemplateBundle bundle, string ns = null)
         {
             this.bundle = bundle;
+            this.ns = ns ?? "JST";
         }
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
@@ -20,7 +22,6 @@ namespace Cassette.HtmlTemplates
             {
                 var id = bundle.GetTemplateId(asset);
                 var compiled = openSourceStream().ReadToEnd();
-                var ns = "JST";
                 var template = ns + "['" + id + "']";
                 var sb = new StringBuilder();
                 
