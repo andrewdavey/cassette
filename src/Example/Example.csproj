@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\ColorController.cs" />
+    <Compile Include="Controllers\TemplatesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -72,6 +73,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\color-picker\ColorListItem.htm" />
+    <Content Include="HtmlTemplates\hogan\hello.htm" />
     <Content Include="Scripts\app\Event.js" />
     <Content Include="Scripts\color-picker\helpers.js" />
     <Content Include="Scripts\color-picker\ColorPickerViewModel.js" />
@@ -129,6 +131,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Templates\Hogan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Fork.cshtml" />
