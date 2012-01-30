@@ -10,17 +10,17 @@ namespace Cassette.Web
 {
     public abstract class UrlGenerator_Tests
     {
-        protected readonly Mock<IUrlModifier> urlModifier = new Mock<IUrlModifier>();
+        protected readonly Mock<IUrlModifier> UrlModifier = new Mock<IUrlModifier>();
         internal readonly UrlGenerator UrlGenerator;
 
-        public UrlGenerator_Tests()
+        protected UrlGenerator_Tests()
         {
-            urlModifier.Setup(m => m.Modify(It.IsAny<string>()))
+            UrlModifier.Setup(m => m.Modify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
             var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
             container.SetupGet(c => c.Application.Bundles).Returns(Enumerable.Empty<Bundle>());
-            UrlGenerator = new UrlGenerator(urlModifier.Object, "_cassette");
+            UrlGenerator = new UrlGenerator(UrlModifier.Object, "_cassette");
         }
     }
 
@@ -30,7 +30,7 @@ namespace Cassette.Web
         public void UrlModifierModifyIsCalled()
         {
             UrlGenerator.CreateBundleUrl(StubScriptBundle("~/test"));
-            urlModifier.Verify(m => m.Modify("_cassette/scriptbundle/test_010203"));
+            UrlModifier.Verify(m => m.Modify("_cassette/scriptbundle/test_010203"));
         }
 
         [Fact]
@@ -49,19 +49,19 @@ namespace Cassette.Web
 
         static ScriptBundle StubScriptBundle(string path)
         {
-            var bundle = new ScriptBundle(path);
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            bundle.Assets.Add(asset.Object);
+            var bundle = new ScriptBundle(path)
+            {
+                Hash = new byte[] { 1, 2, 3 }
+            };
             return bundle;
         }
 
         static StylesheetBundle StubStylesheetBundle(string path)
         {
-            var bundle = new StylesheetBundle(path);
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            bundle.Assets.Add(asset.Object);
+            var bundle = new StylesheetBundle(path)
+            {
+                Hash = new byte[] { 1, 2, 3 }
+            };
             return bundle;
         }
     }
@@ -77,7 +77,7 @@ namespace Cassette.Web
 
             UrlGenerator.CreateAssetUrl(asset.Object);
 
-            urlModifier.Verify(m => m.Modify(It.IsAny<string>()));
+            UrlModifier.Verify(m => m.Modify(It.IsAny<string>()));
         }
 
         [Fact]

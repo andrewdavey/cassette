@@ -64,6 +64,7 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             bundle.Assets.Add(asset.Object);
+            bundle.Hash = new byte[] { 1, 2, 3 };
             application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
                        .Returns(bundle);
         }
@@ -82,7 +83,7 @@ namespace Cassette.Web
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.OpenStream())
                     .Returns(() => "asset-content".AsStream());
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
+            bundle.Hash = new byte[] { 1, 2, 3 };
             bundle.Assets.Add(asset.Object);
             application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
                        .Returns(bundle);
