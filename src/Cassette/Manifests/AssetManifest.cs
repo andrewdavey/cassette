@@ -9,12 +9,12 @@ namespace Cassette.Manifests
     {
         public AssetManifest()
         {
-            RawFileReferences = new List<string>();
+            References = new List<AssetReferenceManifest>();
         }
 
         public string Path { get; set; }
-        public IList<string> RawFileReferences { get; private set; }
-
+        public IList<AssetReferenceManifest> References { get; private set; }
+        
         public override bool Equals(object obj)
         {
             var other = obj as AssetManifest;
@@ -35,8 +35,13 @@ namespace Cassette.Manifests
 
         bool AllRawFileReferencesAreUpToDateWithFileSystem(IDirectory directory, DateTime asOfDateTime)
         {
-            var files = RawFileReferences.Select(directory.GetFile);
+            var files = RawFilenameReferences().Select(r => directory.GetFile(r.Path));
             return files.All(file => FileIsUpToDateWithFileSystem(file, asOfDateTime));
+        }
+
+        IEnumerable<AssetReferenceManifest> RawFilenameReferences()
+        {
+            return References.Where(r => r.Type == AssetReferenceType.RawFilename);
         }
 
         bool FileIsUpToDateWithFileSystem(IFile file, DateTime asOfDateTime)

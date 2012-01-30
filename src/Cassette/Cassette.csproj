@@ -59,6 +59,8 @@
     <Compile Include="BundleReferenceCollector.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />
+    <Compile Include="Manifests\AssetManifestBuilder.cs" />
+    <Compile Include="Manifests\AssetReferenceManifest.cs" />
     <Compile Include="Manifests\ICassetteManifestCache.cs" />
     <Compile Include="Manifests\InvalidCassetteManifestException.cs" />
     <Compile Include="Manifests\AssetFromManifest.cs" />

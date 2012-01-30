@@ -18,10 +18,26 @@ namespace Cassette.Manifests
             assetManifest = new AssetManifest
             {
                 Path = "~/asset",
-                RawFileReferences =
+                References =
                     {
-                        "~/file-1",
-                        "~/file-2"
+                        new AssetReferenceManifest
+                        {
+                            Path = "~/bundle",
+                            Type = AssetReferenceType.DifferentBundle,
+                            SourceLineNumber = 1
+                        },
+                        new AssetReferenceManifest
+                        {
+                            Path = "~/image.png",
+                            Type = AssetReferenceType.RawFilename,
+                            SourceLineNumber = 2
+                        },
+                        new AssetReferenceManifest
+                        {
+                            Path = "http://example.com/",
+                            Type = AssetReferenceType.Url,
+                            SourceLineNumber = 3
+                        }
                     }
             };
             writer.Write(assetManifest);
@@ -41,12 +57,37 @@ namespace Cassette.Manifests
         }
 
         [Fact]
-        public void AssetElementContainsRawFileReferenceElements()
+        public void AssetElementContainsReferenceElements()
         {
-            var elements = assetElement.Elements("RawFileReference").ToArray();
-            elements[0].Attribute("Path").Value.ShouldEqual("~/file-1");
-            elements[1].Attribute("Path").Value.ShouldEqual("~/file-2");
-            elements.Length.ShouldEqual(2);
+            var elements = assetElement.Elements("Reference");
+            elements.Count().ShouldEqual(3);
+        }
+
+        [Fact]
+        public void FirstReferenceElementEqualsFirstReferenceManifest()
+        {
+            var element = assetElement.Elements("Reference").ElementAt(0);
+            element.Attribute("Path").Value.ShouldEqual("~/bundle");
+            element.Attribute("Type").Value.ShouldEqual("DifferentBundle");
+            element.Attribute("SourceLineNumber").Value.ShouldEqual("1");
+        }
+
+        [Fact]
+        public void SecondReferenceElementEqualsSecondReferenceManifest()
+        {
+            var element = assetElement.Elements("Reference").ElementAt(1);
+            element.Attribute("Path").Value.ShouldEqual("~/image.png");
+            element.Attribute("Type").Value.ShouldEqual("RawFilename");
+            element.Attribute("SourceLineNumber").Value.ShouldEqual("2");
+        }
+
+        [Fact]
+        public void ThirdReferenceElementEqualsThirdReferenceManifest()
+        {
+            var element = assetElement.Elements("Reference").ElementAt(2);
+            element.Attribute("Path").Value.ShouldEqual("http://example.com/");
+            element.Attribute("Type").Value.ShouldEqual("Url");
+            element.Attribute("SourceLineNumber").Value.ShouldEqual("3");
         }
     }
 }

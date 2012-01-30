@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
 using Cassette.Manifests;
@@ -66,8 +65,8 @@ namespace Cassette.Scripts.Manifests
         [Fact]
         public void AssetManifestRawFileReferencesEqualsAssetRawFileReferences()
         {
-            var rawFileReference = manifest.Assets[0].RawFileReferences[0];
-            rawFileReference.ShouldEqual(asset.References.First().Path);
+            var rawFileReference = manifest.Assets[0].References[0];
+            rawFileReference.Path.ShouldEqual(asset.References.First().Path);
         }
 
         [Fact]
@@ -84,20 +83,13 @@ namespace Cassette.Scripts.Manifests
             manifest.Content.ShouldBeNull();
         }
 
-        [Fact]
-        public void GivenAssetWithDifferentBundleAssetReferenceThenManifestContainsReference()
-        {
-            throw new NotImplementedException();
-        }
-
         IAsset StubAsset()
         {
             var stubAsset = new Mock<IAsset>();
             stubAsset.SetupGet(a => a.SourceFile.FullPath).Returns("~/path/asset");
             stubAsset.SetupGet(a => a.References).Returns(new[]
             {
-                new AssetReference("~/path/asset/file", stubAsset.Object, 0, AssetReferenceType.RawFilename),
-                new AssetReference("~/different-bundle", stubAsset.Object, 0, AssetReferenceType.DifferentBundle), 
+                new AssetReference("~/path/asset/file", stubAsset.Object, 0, AssetReferenceType.RawFilename)
             });
             stubAsset.Setup(a => a.OpenStream()).Returns(() => new MemoryStream(bundleContent));
 

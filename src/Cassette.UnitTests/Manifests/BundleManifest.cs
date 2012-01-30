@@ -178,7 +178,7 @@ namespace Cassette.Manifests
             manifest.Assets.Add(new AssetManifest
             {
                 Path = "~/asset.css",
-                RawFileReferences = { "~/image.png" }
+                References = { ImageReference() }
             });
             CacheWasCreatedYesterday();
 
@@ -195,7 +195,7 @@ namespace Cassette.Manifests
             manifest.Assets.Add(new AssetManifest
             {
                 Path = "~/asset.css",
-                RawFileReferences = { "~/image.png" }
+                References = { ImageReference() }
             });
 
             ManifestIsNotUpToDateWithFileSystem();
@@ -215,6 +215,15 @@ namespace Cassette.Manifests
         void CacheWasCreatedYesterday()
         {
             cacheWriteTime = yesterday;
+        }
+
+        AssetReferenceManifest ImageReference()
+        {
+            return new AssetReferenceManifest
+            {
+                Path = "~/image.png",
+                Type = AssetReferenceType.RawFilename
+            };
         }
 
         void ManifestIsUpToDateWithFileSystem()

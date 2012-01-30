@@ -19,22 +19,28 @@ namespace Cassette.Manifests
         public void RawFileReferencesEmptyWhenXmlElementHasNoChildren()
         {
             Deserialize("<Asset Path=\"~/asset/path\"/>");
-            assetManifest.RawFileReferences.ShouldBeEmpty();
+            assetManifest.References.ShouldBeEmpty();
         }
 
         [Fact]
         public void RawFileReferenceInitializedFromXmlChildElement()
         {
-            Deserialize("<Asset Path=\"~\"><RawFileReference Path=\"~/EXPECTED-PATH\"/></Asset>");
-            assetManifest.RawFileReferences[0].ShouldEqual("~/EXPECTED-PATH");
+            Deserialize("<Asset Path=\"~\"><Reference Type=\"RawFilename\" Path=\"~/EXPECTED-PATH\" SourceLineNumber=\"1\"/></Asset>");
+            var reference = assetManifest.References[0];
+            reference.Type.ShouldEqual(AssetReferenceType.RawFilename);
+            reference.Path.ShouldEqual("~/EXPECTED-PATH");
+            reference.SourceLineNumber.ShouldEqual(1);
         }
 
         [Fact]
         public void TwoRawFileReferenceInitializedFromXmlChildElements()
         {
-            Deserialize("<Asset Path=\"~\"><RawFileReference Path=\"~/EXPECTED-PATH-1\"/><RawFileReference Path=\"~/EXPECTED-PATH-2\"/></Asset>");
-            assetManifest.RawFileReferences[0].ShouldEqual("~/EXPECTED-PATH-1");
-            assetManifest.RawFileReferences[1].ShouldEqual("~/EXPECTED-PATH-2");
+            Deserialize("<Asset Path=\"~\">" +
+                        "<Reference Type=\"RawFilename\" Path=\"~/EXPECTED-PATH-1\" SourceLineNumber=\"1\"/>" +
+                        "<Reference Type=\"RawFilename\" Path=\"~/EXPECTED-PATH-2\" SourceLineNumber=\"2\"/>" +
+                        "</Asset>");
+            assetManifest.References[0].Path.ShouldEqual("~/EXPECTED-PATH-1");
+            assetManifest.References[1].Path.ShouldEqual("~/EXPECTED-PATH-2");
         }
 
         void Deserialize(string xml)

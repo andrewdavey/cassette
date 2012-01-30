@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cassette.Manifests
 {
@@ -48,22 +47,8 @@ namespace Cassette.Manifests
 
         void IBundleVisitor.Visit(IAsset asset)
         {
-            var assetManifest = new AssetManifest
-            {
-                Path = asset.SourceFile.FullPath
-            };
-            foreach (var reference in GetRawFileReferences(asset))
-            {
-                assetManifest.RawFileReferences.Add(reference);
-            }
+            var assetManifest = new AssetManifestBuilder().BuildManifest(asset);
             bundleManifest.Assets.Add(assetManifest);
-        }
-
-        IEnumerable<string> GetRawFileReferences(IAsset asset)
-        {
-            return from r in asset.References
-                   where r.Type == AssetReferenceType.RawFilename
-                   select r.Path;
         }
     }
 }

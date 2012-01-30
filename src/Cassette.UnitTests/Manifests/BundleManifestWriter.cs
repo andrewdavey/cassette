@@ -32,9 +32,13 @@ namespace Cassette.Manifests
                         new AssetManifest
                         {
                             Path = "~/asset",
-                            RawFileReferences =
+                            References =
                                 {
-                                    "~/raw-file/reference"
+                                    new AssetReferenceManifest
+                                    {
+                                        Path = "~/raw-file/reference",
+                                        Type = AssetReferenceType.RawFilename
+                                    }
                                 }
                         }
                     },
