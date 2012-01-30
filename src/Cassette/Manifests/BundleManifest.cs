@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.IO;
+using System;
 
 namespace Cassette.Manifests
 {
@@ -43,9 +44,9 @@ namespace Cassette.Manifests
             return Assets.Select(assetManifest => new AssetFromManifest(assetManifest.Path));
         }
 
-        public bool IsUpToDateWithFileSystem(IDirectory directory)
+        public bool IsUpToDateWithFileSystem(IDirectory directory, DateTime asOfDateTime)
         {
-            return false;
+            return Assets.All(assetManifest => assetManifest.IsUpToDateWithFileSystem(directory, asOfDateTime));
         }
 
         public override bool Equals(object obj)

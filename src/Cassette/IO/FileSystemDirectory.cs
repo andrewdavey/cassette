@@ -42,7 +42,11 @@ namespace Cassette.IO
                 var subDirectoryPath = Path.GetDirectoryName(filename);
                 var subDirectory = GetDirectory(subDirectoryPath);
                 var path = GetAbsolutePath(filename);
-                return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
+                if (File.Exists(path))
+                {
+                    return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);                    
+                }
+                return new NonExistentFile(filename);
             }
             catch (DirectoryNotFoundException)
             {

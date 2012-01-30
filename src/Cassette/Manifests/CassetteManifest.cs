@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Cassette.IO;
+using System;
 
 namespace Cassette.Manifests
 {
@@ -16,6 +17,8 @@ namespace Cassette.Manifests
             BundleManifests = bundleManifests.ToList();
         }
 
+        public DateTime LastWriteTimeUtc { get; set; }
+
         public IList<BundleManifest> BundleManifests { get; private set; }
         
         public IEnumerable<Bundle> CreateBundles()
@@ -26,7 +29,7 @@ namespace Cassette.Manifests
         public bool IsUpToDateWithFileSystem(IDirectory directory)
         {
             return BundleManifests.All(
-                bundleManifest => bundleManifest.IsUpToDateWithFileSystem(directory)
+                bundleManifest => bundleManifest.IsUpToDateWithFileSystem(directory, LastWriteTimeUtc)
             );
         }
 

@@ -1,8 +1,10 @@
+using System;
+using System.IO;
+using Cassette.IO;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
 using Should;
 using Xunit;
-using System;
 
 namespace Cassette.Manifests
 {
@@ -106,6 +108,127 @@ namespace Cassette.Manifests
             protected override Bundle CreateBundleCore()
             {
                 return new TestableBundle(Path);
+            }
+        }
+    }
+
+    public class BundleManifest_IsUpToDateWithFileSystem_Tests : IDisposable
+    {
+        readonly IDirectory directory;
+        readonly TestableBundleManifest manifest;
+        readonly TempDirectory tempDirectory;
+        readonly DateTime yesterday = DateTime.UtcNow.AddDays(-1);
+        DateTime cacheWriteTime;
+
+        public BundleManifest_IsUpToDateWithFileSystem_Tests()
+        {
+            tempDirectory = new TempDirectory();
+            manifest = new TestableBundleManifest();
+            directory = new FileSystemDirectory(tempDirectory);
+        }
+
+        [Fact]
+        public void EmptyManifestIsUpToDateWithFileSystem()
+        {
+            ManifestIsUpToDateWithFileSystem();
+        }
+
+        [Fact]
+        public void GivenAssetFileExistsAndManifestWrittenLater_ThenManifestIsUpToDateWithFileSystem()
+        {
+            CreateFile("asset.js");
+
+            manifest.Assets.Add(new AssetManifest { Path = "~/asset.js" });
+            cacheWriteTime = DateTime.UtcNow;
+
+            ManifestIsUpToDateWithFileSystem();
+        }
+
+        [Fact]
+        public void GivenAssetFileWrittenAfterManifest_ThenManifestIsNotUpToDateWithFileSystem()
+        {
+            manifest.Assets.Add(new AssetManifest { Path = "~/asset.js" });
+            CacheWasCreatedYesterday();
+
+            CreateFile("asset.js");
+
+            ManifestIsNotUpToDateWithFileSystem();
+        }
+
+        [Fact]
+        public void GivenAssetFileDoesNotExist_ThenManifestIsNotUpToDateWithFileSystem()
+        {
+            manifest.Assets.Add(new AssetManifest { Path = "~/asset.js" });
+            ManifestIsNotUpToDateWithFileSystem();
+        }
+
+        [Fact]
+        public void GivenAssetRawFileReferenceToFileNewerThanManifest_ThenManifestIsNotUpToDateWithFileSystem()
+        {
+            FileWasCreatedYesterday("asset.css");
+            
+            manifest.Assets.Add(new AssetManifest
+            {
+                Path = "~/asset.css",
+                RawFileReferences = { "~/image.png" }
+            });
+            CacheWasCreatedYesterday();
+
+            CreateFile("image.png");
+
+            ManifestIsNotUpToDateWithFileSystem();
+        }
+
+        [Fact]
+        public void GivenAssetRawFileReferenceToFileThatDoesNotExist_ThenManifestIsNotUpToDateWithFileSystem()
+        {
+            CreateFile("asset.css");
+
+            manifest.Assets.Add(new AssetManifest
+            {
+                Path = "~/asset.css",
+                RawFileReferences = { "~/image.png" }
+            });
+
+            ManifestIsNotUpToDateWithFileSystem();
+        }
+
+        void CreateFile(string path)
+        {
+            File.WriteAllText(Path.Combine(tempDirectory, path), "");
+        }
+
+        void FileWasCreatedYesterday(string path)
+        {
+            CreateFile(path);
+            File.SetLastWriteTimeUtc(Path.Combine(tempDirectory, path), yesterday);
+        }
+
+        void CacheWasCreatedYesterday()
+        {
+            cacheWriteTime = yesterday;
+        }
+
+        void ManifestIsUpToDateWithFileSystem()
+        {
+            manifest.IsUpToDateWithFileSystem(directory, cacheWriteTime).ShouldBeTrue();
+        }
+
+        void ManifestIsNotUpToDateWithFileSystem()
+        {
+            manifest.IsUpToDateWithFileSystem(directory, cacheWriteTime).ShouldBeFalse();
+        }
+
+        void IDisposable.Dispose()
+        {
+            tempDirectory.Dispose();
+        }
+
+        class TestableBundleManifest : BundleManifest
+        {
+            protected override Bundle CreateBundleCore()
+            {
+                throw new NotImplementedException();
             }
         }
     }
