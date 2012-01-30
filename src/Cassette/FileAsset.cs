@@ -83,17 +83,22 @@ namespace Cassette
 
         public override void AddRawFileReference(string relativeFilename)
         {
-            var appRelativeFilename = relativeFilename.StartsWith("~")
-                ? relativeFilename 
-                : PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
+            if (relativeFilename.StartsWith("/"))
+            {
+                relativeFilename = "~" + relativeFilename;
+            }
+            else if (!relativeFilename.StartsWith("~"))
+            {
+                relativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
                     SourceFile.Directory.FullPath,
                     relativeFilename
                 ));
-            
-            var alreadyExists = references.Any(r => r.Path.Equals(appRelativeFilename, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var alreadyExists = references.Any(r => r.Path.Equals(relativeFilename, StringComparison.OrdinalIgnoreCase));
             if (alreadyExists) return;
 
-            references.Add(new AssetReference(appRelativeFilename, this, -1, AssetReferenceType.RawFilename));
+            references.Add(new AssetReference(relativeFilename, this, -1, AssetReferenceType.RawFilename));
         }
 
         byte[] HashFileContents()

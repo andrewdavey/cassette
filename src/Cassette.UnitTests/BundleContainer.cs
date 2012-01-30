@@ -55,6 +55,17 @@ namespace Cassette
         }
 
         [Fact]
+        public void FindBundleContainingPathOfBundleWherePathIsMissingRootPrefixReturnsTheBundle()
+        {
+            var expectedBundle = new TestableBundle("~/test");
+            var container = new BundleContainer(new[] {
+                expectedBundle
+            });
+            var actualBundle = container.FindBundlesContainingPath("test").First();
+            actualBundle.ShouldBeSameAs(expectedBundle);
+        }
+
+        [Fact]
         public void FindBundleContainingPathWithWrongPathReturnsNull()
         {
             var container = new BundleContainer(new[] {
