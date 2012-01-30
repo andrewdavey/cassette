@@ -1,5 +1,6 @@
 ﻿using System;
 using Cassette.Configuration;
+using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {

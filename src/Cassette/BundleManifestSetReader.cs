@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-using Cassette.HtmlTemplates;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
+using Cassette.HtmlTemplates.Manifests;
+using Cassette.Scripts.Manifests;
+using Cassette.Stylesheets.Manifests;
 
 namespace Cassette
 {
@@ -30,26 +30,26 @@ namespace Cassette
 
         void AddBundleManifest(XElement element)
         {
-            var manifest = CreateBundleManifest(element);
-            manifest.InitializeFromXElement(element);
+            var reader = CreateBundleManifestReader(element);
+            var manifest = reader.Read();
             manifests.Add(manifest);
         }
 
-        BundleManifest CreateBundleManifest(XElement manifestElement)
+        IBundleManifestReader<BundleManifest> CreateBundleManifestReader(XElement manifestElement)
         {
             var name = manifestElement.Name.LocalName;
             switch (name)
             {
                 case "ScriptBundle":
-                    return new ScriptBundleManifest();
+                    return new ScriptBundleManifestReader(manifestElement);
                 case "StylesheetBundle":
-                    return new StylesheetBundleManifest();
+                    return new StylesheetBundleManifestReader(manifestElement);
                 case "HtmlTemplateBundle":
-                    return new HtmlTemplateBundleManifest();
+                    return new HtmlTemplateBundleManifestReader(manifestElement);
                 case "ExternalScriptBundle":
-                    return new ExternalScriptBundleManifest();
+                    return new ExternalScriptBundleManifestReader(manifestElement);
                 case "ExternalStylesheetBundle":
-                    return new ExternalStylesheetBundleManifest();
+                    return new ExternalStylesheetBundleManifestReader(manifestElement);
                 default:
                     throw new InvalidBundleManifestException("Unknown bundle type \"" + name + "\" in XML manifest.");
             }

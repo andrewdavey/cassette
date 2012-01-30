@@ -7,5 +7,9 @@ namespace Cassette
         public InvalidBundleManifestException(string message) : base(message)
         {   
         }
+
+        public InvalidBundleManifestException(string message, Exception innerException) : base(message, innerException)
+        {   
+        }
     }
 }

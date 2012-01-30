@@ -11,7 +11,7 @@ namespace Cassette
             return attribute == null ? null : attribute.Value;
         }
 
-        public static string AttributeOrThrow(this XElement element, XName attributeName, Func<Exception> exception)
+        public static string AttributeValueOrThrow(this XElement element, XName attributeName, Func<Exception> exception)
         {
             var attribute = element.Attribute(attributeName);
             if (attribute == null)

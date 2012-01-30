@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Cassette.HtmlTemplates;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
+using Cassette.HtmlTemplates.Manifests;
+using Cassette.Scripts.Manifests;
+using Cassette.Stylesheets.Manifests;
 using Should;
 using Xunit;
 

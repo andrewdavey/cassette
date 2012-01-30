@@ -1,3 +1,5 @@
+using Cassette.Scripts.Manifests;
+using Cassette.Stylesheets.Manifests;
 using Should;
 using Xunit;
 
@@ -24,8 +26,8 @@ namespace Cassette
         [Fact]
         public void BundleManifestsOfDifferentTypeAreNotEqual()
         {
-            BundleManifest manifest1 = new Stylesheets.StylesheetBundleManifest { Path = "~/path" };
-            BundleManifest manifest2 = new Scripts.ScriptBundleManifest { Path = "~/path" };
+            BundleManifest manifest1 = new StylesheetBundleManifest { Path = "~/path" };
+            BundleManifest manifest2 = new ScriptBundleManifest { Path = "~/path" };
             manifest1.Equals(manifest2).ShouldBeFalse();
         }
 
