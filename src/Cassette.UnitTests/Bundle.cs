@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -218,40 +216,6 @@ namespace Cassette
 
             asset1.Verify(a => a.Accept(visitor.Object));
             asset2.Verify(a => a.Accept(visitor.Object));
-        }
-
-        [Fact]
-        public void HashIsHashOfSingleAsset()
-        {
-            var bundle = new TestableBundle("~");
-            var asset = new Mock<IAsset>();
-            var hash = new byte[] { 1, 2, 3 };
-            asset.SetupGet(a => a.Hash).Returns(hash);
-            bundle.Assets.Add(asset.Object);
-
-            bundle.Hash.ShouldEqual(hash);
-        }
-
-        [Fact]
-        public void GivenMoreThanOneAsset_HashIsConcatenatedAssetHash()
-        {
-            var bundle = new TestableBundle("~");
-            var asset1 = new Mock<IAsset>();
-            asset1.Setup(a => a.OpenStream()).Returns(() => "a".AsStream());
-            var asset2 = new Mock<IAsset>();
-            asset2.Setup(a => a.OpenStream()).Returns(() => "b".AsStream());
-            bundle.Assets.Add(asset1.Object);
-            bundle.Assets.Add(asset2.Object);
-
-            var expected = SHA1.Create().ComputeHash(("a" + Environment.NewLine + "b").AsStream());
-            bundle.Hash.SequenceEqual(expected).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void GivenNoAssets_ThenHashIsZeroLengthArray()
-        {
-            var bundle = new TestableBundle("~");
-            bundle.Hash.Length.ShouldEqual(0);
         }
 
         [Fact]
