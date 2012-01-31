@@ -68,7 +68,8 @@ namespace Cassette.Web
             var settings = new CassetteSettings("")
             {
                 CacheDirectory = new FileSystemDirectory(cacheDir),
-                SourceDirectory = new FileSystemDirectory(sourceDir)
+                SourceDirectory = new FileSystemDirectory(sourceDir),
+                IsDebuggingEnabled = true
             };
             if (alterSettings != null) alterSettings(settings);
 

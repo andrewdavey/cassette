@@ -68,6 +68,7 @@
     <Compile Include="Manifests\AssetManifestWriter.cs" />
     <Compile Include="Manifests\BundleManifest.cs" />
     <Compile Include="Manifests\CassetteManifest.cs" />
+    <Compile Include="Manifests\CassetteManifestCache.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifestWriter.cs" />

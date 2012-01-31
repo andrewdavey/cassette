@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using System.Xml.Linq;
 using Cassette.HtmlTemplates.Manifests;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
+using Cassette.Utilities;
 
 namespace Cassette.Manifests
 {
@@ -21,14 +23,32 @@ namespace Cassette.Manifests
             cassetteManifest = new CassetteManifest();
 
             var document = XDocument.Load(inputStream);
-            AddBundleManifests(document);
+            var cassetteElement = document.Root;
+
+            cassetteManifest.LastWriteTimeUtc = GetLastWriteTimeUtc(cassetteElement);
+            AddBundleManifests(cassetteElement);
 
             return cassetteManifest;
         }
 
-        void AddBundleManifests(XDocument document)
+        DateTime GetLastWriteTimeUtc(XElement cassetteElement)
         {
-            var bundleManifestElements = document.Root.Elements();
+            var lastWriteTimeUtcString = cassetteElement.AttributeValueOrThrow(
+                "LastWriteTimeUtc",
+                () => new InvalidCassetteManifestException("Cassette manifest element is missing \"LastWriteTimeUtc\" attribute.")
+            );
+
+            DateTime lastWriteTimeUtc;
+            if (DateTime.TryParse(lastWriteTimeUtcString, out lastWriteTimeUtc))
+            {
+                return lastWriteTimeUtc;
+            }
+            throw new InvalidCassetteManifestException("Cassette manifest element has invalid \"LastWriteTimeUtc\" attribute.");
+        }
+
+        void AddBundleManifests(XElement cassetteElement)
+        {
+            var bundleManifestElements = cassetteElement.Elements();
             foreach (var bundleManifestElement in bundleManifestElements)
             {
                 AddBundleManifest(bundleManifestElement);

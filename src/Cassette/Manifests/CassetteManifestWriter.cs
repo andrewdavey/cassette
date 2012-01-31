@@ -40,6 +40,7 @@ namespace Cassette.Manifests
 
         public void Write(CassetteManifest manifest)
         {
+            bundlesContainer.Add(new XAttribute("LastWriteTimeUtc", DateTime.UtcNow.ToString("r")));
             WriteBundleManifests(manifest);
             WriteToOutputStream();
         }

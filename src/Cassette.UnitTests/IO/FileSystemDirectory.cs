@@ -23,13 +23,14 @@ namespace Cassette.IO
         }
 
         [Fact]
-        public void GivenFileDoesNotExist_WhenGetFile_ThenReturnNonExistentFile()
+        public void GivenFileDoesNotExist_WhenGetFile_ThenReturnFileSystemFileThatDoesNotExist()
         {
             using (var path = new TempDirectory())
             {
                 var dir = new FileSystemDirectory(path);
                 var file = dir.GetFile("test.txt");
-                file.ShouldBeType<NonExistentFile>();
+                file.ShouldBeType<FileSystemFile>();
+                file.Exists.ShouldBeFalse();
             }
         }
 
