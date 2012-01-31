@@ -155,7 +155,8 @@ namespace Cassette.Web
 
         IEnumerable<AssetLink> AssetPaths(Bundle bundle, IUrlGenerator urlGenerator)
         {
-            var visitor = new CollectAssetPaths(urlGenerator);
+            var generateUrls = container.Application.Settings.IsDebuggingEnabled;
+            var visitor = generateUrls ? new AssetLinkCreator(urlGenerator) : new AssetLinkCreator();
             bundle.Accept(visitor);
             return visitor.AssetLinks;
         }
@@ -165,15 +166,19 @@ namespace Cassette.Web
             get { return false; }
         }
 
-        class CollectAssetPaths : IBundleVisitor
+        class AssetLinkCreator : IBundleVisitor
         {
             readonly IUrlGenerator urlGenerator;
             readonly List<AssetLink> assetLinks = new List<AssetLink>();
             string bundlePath;
 
-            public CollectAssetPaths(IUrlGenerator urlGenerator)
+            public AssetLinkCreator(IUrlGenerator urlGenerator)
             {
                 this.urlGenerator = urlGenerator;
+            }
+
+            public AssetLinkCreator()
+            {
             }
 
             public List<AssetLink> AssetLinks
@@ -193,7 +198,7 @@ namespace Cassette.Web
                 {
                     path = path.Substring(bundlePath.Length + 1);
                 }
-                var url = urlGenerator.CreateAssetUrl(asset);
+                var url = urlGenerator != null ? urlGenerator.CreateAssetUrl(asset) : null;
                 AssetLinks.Add(new AssetLink { Path = path, Url = url });
             }
         }
