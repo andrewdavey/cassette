@@ -32,15 +32,9 @@ namespace Cassette
             WasDisposed = true;
         }
 
-        internal override BundleManifest CreateBundleManifest()
+        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
         {
-            var builder = new BundleManifestBuilder<TestableBundle, TestableBundleManifest>();
-            return builder.BuildManifest(this);
-        }
-
-        internal override BundleManifest CreateBundleManifestIncludingContent()
-        {
-            var builder = new BundleManifestBuilder<TestableBundle, TestableBundleManifest> { IncludeContent = true };
+            var builder = new BundleManifestBuilder<TestableBundle, TestableBundleManifest> { IncludeContent = includeProcessedBundleContent };
             return builder.BuildManifest(this);
         }
 

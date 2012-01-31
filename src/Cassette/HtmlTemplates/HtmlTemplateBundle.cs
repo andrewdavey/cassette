@@ -37,15 +37,9 @@ namespace Cassette.HtmlTemplates
             return System.IO.Path.GetFileNameWithoutExtension(path);
         }
 
-        internal override BundleManifest CreateBundleManifest()
+        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
         {
-            var builder = new HtmlTemplateBundleManifestBuilder();
-            return builder.BuildManifest(this);
-        }
-
-        internal override BundleManifest CreateBundleManifestIncludingContent()
-        {
-            var builder = new HtmlTemplateBundleManifestBuilder { IncludeContent = true };
+            var builder = new HtmlTemplateBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
             return builder.BuildManifest(this);
         }
     }

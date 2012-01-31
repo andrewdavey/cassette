@@ -43,15 +43,9 @@ namespace Cassette.Stylesheets
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override BundleManifest CreateBundleManifest()
+        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
         {
-            var builder = new ExternalStylesheetBundleManifestBuilder();
-            return builder.BuildManifest(this);
-        }
-
-        internal override BundleManifest CreateBundleManifestIncludingContent()
-        {
-            var builder = new ExternalStylesheetBundleManifestBuilder { IncludeContent = true };
+            var builder = new ExternalStylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
             return builder.BuildManifest(this);
         }
 

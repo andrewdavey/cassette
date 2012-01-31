@@ -60,15 +60,9 @@ namespace Cassette.Scripts
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override BundleManifest CreateBundleManifest()
+        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
         {
-            var builder = new ExternalScriptBundleManifestBuilder();
-            return builder.BuildManifest(this);
-        }
-
-        internal override BundleManifest CreateBundleManifestIncludingContent()
-        {
-            var builder = new ExternalScriptBundleManifestBuilder { IncludeContent = true };
+            var builder = new ExternalScriptBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
             return builder.BuildManifest(this);
         }
 

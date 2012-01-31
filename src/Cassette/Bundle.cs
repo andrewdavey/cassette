@@ -110,9 +110,12 @@ namespace Cassette
 
         internal abstract string Render();
 
-        internal abstract BundleManifest CreateBundleManifest();
+        internal BundleManifest CreateBundleManifest()
+        {
+            return CreateBundleManifest(IsProcessed);
+        }
 
-        internal abstract BundleManifest CreateBundleManifestIncludingContent();
+        internal abstract BundleManifest CreateBundleManifest(bool includeProcessedBundleContent);
 
         internal virtual bool ContainsPath(string pathToFind)
         {

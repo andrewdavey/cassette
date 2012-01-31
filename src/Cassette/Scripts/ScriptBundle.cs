@@ -32,15 +32,9 @@ namespace Cassette.Scripts
             return Renderer.Render(this);
         }
 
-        internal override BundleManifest CreateBundleManifest()
+        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
         {
-            var builder = new ScriptBundleManifestBuilder();
-            return builder.BuildManifest(this);
-        }
-
-        internal override BundleManifest CreateBundleManifestIncludingContent()
-        {
-            var builder = new ScriptBundleManifestBuilder { IncludeContent = true };
+            var builder = new ScriptBundleManifestBuilder { IncludeContent = includeProcessedBundleContent};
             return builder.BuildManifest(this);
         }
     }

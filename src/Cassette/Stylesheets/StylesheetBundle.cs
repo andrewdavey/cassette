@@ -39,15 +39,9 @@ namespace Cassette.Stylesheets
             return Renderer.Render(this);
         }
 
-        internal override BundleManifest CreateBundleManifest()
+        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
         {
-            var builder = new StylesheetBundleManifestBuilder();
-            return builder.BuildManifest(this);
-        }
-
-        internal override BundleManifest CreateBundleManifestIncludingContent()
-        {
-            var builder = new StylesheetBundleManifestBuilder { IncludeContent = true };
+            var builder = new StylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
             return builder.BuildManifest(this);
         }
     }
