@@ -96,17 +96,17 @@ namespace Cassette.Web
     public class UrlGenerator_CreateRawFileUrl_Tests : UrlGenerator_Tests
     {
         [Fact]
-        public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndPathWithoutTildeAndHashAndExtensionDotConvertedToUnderscore()
+        public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndPathWithoutTildeAndHash()
         {
             var url = UrlGenerator.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldStartWith("_cassette/file/test_hash_png");
+            url.ShouldStartWith("_cassette/file/test_hash.png");
         }
 
         [Fact]
         public void ConvertsToForwardSlashes()
         {
             var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("_cassette/file/test/foo_hash_png");
+            url.ShouldEqual("_cassette/file/test/foo_hash.png");
         }
 
         [Fact]

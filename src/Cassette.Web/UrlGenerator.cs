@@ -46,12 +46,15 @@ namespace Cassette.Web
             var name = filename.Substring(0, dotIndex);
             var extension = filename.Substring(dotIndex + 1);
 
-            return urlModifier.Modify(string.Format("{0}/file/{1}_{2}_{3}",
-                                                    routePrefix,
-                                                    ConvertToForwardSlashes(name),
-                                                    hash,
-                                                    extension
-                                          ));
+            return urlModifier.Modify(
+                string.Format(
+                    "{0}/file/{1}_{2}.{3}",
+                    routePrefix,
+                    ConvertToForwardSlashes(name),
+                    hash,
+                    extension
+                )
+            );
         }
 
         string ConvertToForwardSlashes(string path)

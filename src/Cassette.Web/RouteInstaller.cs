@@ -39,48 +39,7 @@ namespace Cassette.Web
             InsertRouteIntoTable(url, handler);
         }
 
-        public string CreateAssetUrl(IAsset asset)
-        {
-            return urlModifier.Modify(string.Format(
-                "{0}/asset/{1}?{2}",
-                RoutePrefix,
-                asset.SourceFile.FullPath.Substring(2),
-                asset.Hash.ToHexString()
-            ));
-        }
-
-        public string CreateRawFileUrl(string filename, string hash)
-        {
-            if (filename.StartsWith("~") == false)
-            {
-                throw new ArgumentException("Image filename must be application relative (starting with '~').");
-            }
-
-            filename = filename.Substring(2); // Remove the "~/"
-            var dotIndex = filename.LastIndexOf('.');
-            var name = filename.Substring(0, dotIndex);
-            var extension = filename.Substring(dotIndex + 1);
-            
-            return urlModifier.Modify(string.Format("{0}/file/{1}_{2}.{3}",
-                RoutePrefix,
-                ConvertToForwardSlashes(name),
-                hash,
-                extension
-            ));
-        }
-
-        static void RemoveExistingCassetteRoutes(RouteCollection routes)
-        {
-            for (int i = routes.Count - 1; i >= 0; i--)
-            {
-                if (routes[i] is CassetteRoute)
-                {
-                    routes.RemoveAt(i);
-                }
-            }
-        }
-
-        void InstallBundleRoute<T>(RouteCollection routes)
+        void InstallBundleRoute<T>()
             where T : Bundle
         {
             var url = GetBundleRouteUrl<T>();
