@@ -21,6 +21,7 @@ namespace Cassette.Manifests
             bundleManifest = new TManifest
             {
                 Path = bundle.Path,
+                Hash = bundle.Hash,
                 ContentType = bundle.ContentType,
                 PageLocation = bundle.PageLocation,
                 Content = GetContent(bundle)
