@@ -20,6 +20,7 @@ namespace Cassette.Configuration
 
         public CassetteSettings(string cacheVersion)
         {
+            Version = cacheVersion;
             DefaultFileSearches = CreateDefaultFileSearches();
             BundleFactories = CreateBundleFactories();
             bundleCache = new Lazy<ICassetteManifestCache>(() => new CassetteManifestCache(CacheDirectory.GetFile("cassette.xml")));
@@ -62,6 +63,8 @@ namespace Cassette.Configuration
         internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
 
         internal bool AllowRemoteDiagnostics { get; set; }
+
+        internal string Version { get; set; }
 
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {

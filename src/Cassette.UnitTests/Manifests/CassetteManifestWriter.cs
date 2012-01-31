@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Cassette.HtmlTemplates.Manifests;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
@@ -7,26 +8,53 @@ using Xunit;
 
 namespace Cassette.Manifests
 {
-    public class BundleManifestSetWriter_Tests
+    public class GivenManifestWrittenToStream_WhenReadStreamIntoNewManifest
     {
-        [Fact]
-        public void CanWriteBundleManifestsToStreamAndReadBackIntoEqualBundleManifests()
+        readonly CassetteManifest originalManifest;
+        readonly CassetteManifest newManifest;
+        readonly DateTime startTime;
+
+        public GivenManifestWrittenToStream_WhenReadStreamIntoNewManifest()
         {
+            startTime = UtcNowToTheSecond();
             using (var stream = new MemoryStream())
             {
-                var originalManifest = CreateOriginalManifest();
+                originalManifest = CreateOriginalManifest();
 
                 WriteManifestToStream(originalManifest, stream);
-                var newManifests = ReadManifestFromStream(stream);
-
-                originalManifest.ShouldEqual(newManifests);
+                newManifest = ReadManifestFromStream(stream);
             }
+        }
+
+        [Fact]
+        public void NewManifestVersionEqualsOriginalManifestVersion()
+        {
+            newManifest.Version.ShouldEqual(originalManifest.Version);            
+        }
+
+        [Fact]
+        public void NewManifestBundleManifestsEqualOriginalBundleManifests()
+        {
+            newManifest.BundleManifests.ShouldEqual(originalManifest.BundleManifests);
+        }
+
+        [Fact]
+        public void NewManifestLastWriteTimeUtcIsJustAfterTestStartTime()
+        {
+            (newManifest.LastWriteTimeUtc >= startTime).ShouldBeTrue();
+        }
+
+        DateTime UtcNowToTheSecond()
+        {
+            var now = DateTime.UtcNow;
+            return new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
         }
 
         CassetteManifest CreateOriginalManifest()
         {
             return new CassetteManifest
             {
+                Version = "VERSION",
                 BundleManifests =
                 {
                     new ScriptBundleManifest { Path = "~/a", Hash = new byte[] { 1 } },

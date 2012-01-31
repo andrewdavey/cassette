@@ -63,7 +63,7 @@ namespace Cassette.Configuration
         CassetteManifest CreateCassetteManifest()
         {
             var bundleManifests = bundlesArray.Select(bundle => bundle.CreateBundleManifest());
-            return new CassetteManifest(bundleManifests);
+            return new CassetteManifest(settings.Version, bundleManifests);
         }
     }
 }

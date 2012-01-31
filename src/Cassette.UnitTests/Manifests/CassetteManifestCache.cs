@@ -51,12 +51,13 @@ namespace Cassette.Manifests
         [Fact]
         public void GivenFileContainsBundleXml_WhenLoadCassetteManifest_ThenManifestIsReadFromXml()
         {
-            var xml = "<?xml version=\"1.0\"?><Cassette LastWriteTimeUtc=\"2012-01-01 00:00\"><ScriptBundle Path=\"~\" Hash=\"\"/></Cassette>";
+            var xml = "<?xml version=\"1.0\"?><Cassette LastWriteTimeUtc=\"2012-01-01 00:00\" Version=\"VERSION\"><ScriptBundle Path=\"~\" Hash=\"\"/></Cassette>";
             GivenFileContains(xml);
 
             var manifest = cache.LoadCassetteManifest();
 
             manifest.LastWriteTimeUtc.ShouldEqual(new DateTime(2012, 1, 1, 0, 0, 0));
+            manifest.Version.ShouldEqual("VERSION");
             manifest.BundleManifests.Count.ShouldEqual(1);
         }
 
@@ -64,6 +65,7 @@ namespace Cassette.Manifests
         public void GivenManifestWithBundle_WhenSaveCassetteManifest_ThenXmlContainsBundleElement()
         {
             var manifest = new CassetteManifest(
+                "",
                 new[] { new ScriptBundleManifest { Path = "~", Hash = new byte[0] } }
             );
             cache.SaveCassetteManifest(manifest);

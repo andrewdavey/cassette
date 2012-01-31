@@ -54,7 +54,7 @@ namespace Cassette.Manifests
         [Fact]
         public void CreateBundlesReturnsOneBundlePerBundleManifest()
         {
-            var manifest = new CassetteManifest(new BundleManifest[]
+            var manifest = new CassetteManifest("", new BundleManifest[]
             {
                 new ScriptBundleManifest { Path = "~/js", Hash = new byte[0] },
                 new StylesheetBundleManifest { Path = "~/css", Hash = new byte[0] }
@@ -65,6 +65,14 @@ namespace Cassette.Manifests
             bundles.Length.ShouldEqual(2);
             bundles[0].ShouldBeType<ScriptBundle>();
             bundles[1].ShouldBeType<StylesheetBundle>();
+        }
+
+        [Fact]
+        public void ManifestsWithDifferentVersionsAreNotEquals()
+        {
+            var manifest1 = new CassetteManifest { Version = "v1" };
+            var manifest2 = new CassetteManifest { Version = "v2" };
+            manifest1.ShouldNotEqual(manifest2);
         }
     }
 }

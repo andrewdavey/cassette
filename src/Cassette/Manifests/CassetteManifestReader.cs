@@ -26,6 +26,7 @@ namespace Cassette.Manifests
             var cassetteElement = document.Root;
 
             cassetteManifest.LastWriteTimeUtc = GetLastWriteTimeUtc(cassetteElement);
+            cassetteManifest.Version = GetVersion(cassetteElement);
             AddBundleManifests(cassetteElement);
 
             return cassetteManifest;
@@ -44,6 +45,14 @@ namespace Cassette.Manifests
                 return lastWriteTimeUtc;
             }
             throw new InvalidCassetteManifestException("Cassette manifest element has invalid \"LastWriteTimeUtc\" attribute.");
+        }
+
+        string GetVersion(XElement cassetteElement)
+        {
+            return cassetteElement.AttributeValueOrThrow(
+                "Version",
+                () => new InvalidCassetteManifestException("Cassette manifest element is missing \"Version\" attribute.")
+            );
         }
 
         void AddBundleManifests(XElement cassetteElement)

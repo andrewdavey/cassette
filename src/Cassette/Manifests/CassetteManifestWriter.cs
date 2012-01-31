@@ -11,23 +11,23 @@ namespace Cassette.Manifests
     class CassetteManifestWriter
     {
         readonly Stream outputStream;
-        readonly XElement bundlesContainer;
+        readonly XElement cassetteElement;
         readonly Dictionary<Type, Action<BundleManifest>> writeActions = new Dictionary<Type, Action<BundleManifest>>();
 
         public CassetteManifestWriter(Stream outputStream)
         {
             this.outputStream = outputStream;
-            bundlesContainer = new XElement("Cassette");
+            cassetteElement = new XElement("Cassette");
             DefineWriters();
         }
 
         void DefineWriters()
         {
-            DefineWriter(() => new ExternalStylesheetBundleManifestWriter(bundlesContainer));
-            DefineWriter(() => new ExternalScriptBundleManifestWriter(bundlesContainer));
-            DefineWriter(() => new StylesheetBundleManifestWriter(bundlesContainer));
-            DefineWriter(() => new ScriptBundleManifestWriter(bundlesContainer));
-            DefineWriter(() => new HtmlTemplateBundleManifestWriter(bundlesContainer));
+            DefineWriter(() => new ExternalStylesheetBundleManifestWriter(cassetteElement));
+            DefineWriter(() => new ExternalScriptBundleManifestWriter(cassetteElement));
+            DefineWriter(() => new StylesheetBundleManifestWriter(cassetteElement));
+            DefineWriter(() => new ScriptBundleManifestWriter(cassetteElement));
+            DefineWriter(() => new HtmlTemplateBundleManifestWriter(cassetteElement));
         }
 
         void DefineWriter<T>(Func<BundleManifestWriter<T>> createWriter) where T : BundleManifest
@@ -40,7 +40,8 @@ namespace Cassette.Manifests
 
         public void Write(CassetteManifest manifest)
         {
-            bundlesContainer.Add(new XAttribute("LastWriteTimeUtc", DateTime.UtcNow.ToString("r")));
+            cassetteElement.Add(new XAttribute("Version", manifest.Version));
+            cassetteElement.Add(new XAttribute("LastWriteTimeUtc", DateTime.UtcNow.ToString("r")));
             WriteBundleManifests(manifest);
             WriteToOutputStream();
         }
@@ -66,7 +67,7 @@ namespace Cassette.Manifests
 
         void WriteToOutputStream()
         {
-            var document = new XDocument(bundlesContainer);
+            var document = new XDocument(cassetteElement);
             document.Save(outputStream);
         }
     }
