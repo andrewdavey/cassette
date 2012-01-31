@@ -18,7 +18,7 @@ namespace Cassette.Scripts.Manifests
 
         public ScriptBundleManifestBuilder_Tests()
         {
-            bundle = new ScriptBundle("~/path") { PageLocation = "body" };
+            bundle = new ScriptBundle("~/path") { PageLocation = "body", Hash = new byte[] { 1, 2, 3 } };
             asset = StubAsset();
             bundle.Assets.Add(asset);
             bundle.AddReference("~/reference/path");
@@ -30,6 +30,12 @@ namespace Cassette.Scripts.Manifests
         public void ManifestPathEqualsBundlePath()
         {
             manifest.Path.ShouldEqual(bundle.Path);
+        }
+
+        [Fact]
+        public void ManifestHashEqualsBundleHash()
+        {
+            manifest.Hash.ShouldEqual(bundle.Hash);
         }
 
         [Fact]
