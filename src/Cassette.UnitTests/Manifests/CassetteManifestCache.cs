@@ -80,7 +80,7 @@ namespace Cassette.Manifests
             var now = DateTime.UtcNow;
             now = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Month, now.Second);
 
-            var manifest = new CassetteManifest();
+            var manifest = new CassetteManifest("", new BundleManifest[0]);
             cache.SaveCassetteManifest(manifest);
 
             var xml = SavedXml();
