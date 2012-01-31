@@ -10,10 +10,10 @@ namespace Cassette.Scripts.Manifests
 {
     public class ScriptBundleManifestBuilder_Tests
     {
-        readonly ScriptBundleManifestBuilder builder = new ScriptBundleManifestBuilder();
+        readonly ScriptBundleManifestBuilder builder = new ScriptBundleManifestBuilder { IncludeContent = true };
         readonly ScriptBundle bundle;
         readonly IAsset asset;
-        readonly BundleManifest manifest;
+        BundleManifest manifest;
         readonly byte[] bundleContent = Encoding.UTF8.GetBytes("bundle-content");
 
         public ScriptBundleManifestBuilder_Tests()
@@ -79,7 +79,15 @@ namespace Cassette.Scripts.Manifests
         public void GivenBundleWithNoAssetsThenManifestContentIsNull()
         {
             bundle.Assets.Clear();
-            var manifest = builder.BuildManifest(bundle);
+            manifest = builder.BuildManifest(bundle);
+            manifest.Content.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenIncludeContentIsFalse_ThenManifestContentIsNull()
+        {
+            builder.IncludeContent = false;
+            manifest = builder.BuildManifest(bundle);
             manifest.Content.ShouldBeNull();
         }
 

@@ -62,7 +62,14 @@ namespace Cassette.Scripts
 
         internal override BundleManifest CreateBundleManifest()
         {
-            return new ExternalScriptBundleManifestBuilder().BuildManifest(this);
+            var builder = new ExternalScriptBundleManifestBuilder();
+            return builder.BuildManifest(this);
+        }
+
+        internal override BundleManifest CreateBundleManifestIncludingContent()
+        {
+            var builder = new ExternalScriptBundleManifestBuilder { IncludeContent = true };
+            return builder.BuildManifest(this);
         }
 
         string IExternalBundle.Url

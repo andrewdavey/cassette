@@ -8,6 +8,8 @@ namespace Cassette.Manifests
     {
         TManifest bundleManifest;
 
+        public bool IncludeContent { get; set; }
+
         public virtual TManifest BuildManifest(TBundle bundle)
         {
             bundle.Accept(this);
@@ -36,7 +38,7 @@ namespace Cassette.Manifests
 
         byte[] GetContent(Bundle bundle)
         {
-            if (bundle.Assets.Count == 0) return null;
+            if (!IncludeContent || bundle.Assets.Count == 0) return null;
             using (var stream = bundle.OpenStream())
             {
                 var bytes = new byte[stream.Length];

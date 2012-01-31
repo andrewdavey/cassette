@@ -42,7 +42,14 @@ namespace Cassette.Stylesheets
 
         internal override BundleManifest CreateBundleManifest()
         {
-            return new StylesheetBundleManifestBuilder().BuildManifest(this);
+            var builder = new StylesheetBundleManifestBuilder();
+            return builder.BuildManifest(this);
+        }
+
+        internal override BundleManifest CreateBundleManifestIncludingContent()
+        {
+            var builder = new StylesheetBundleManifestBuilder { IncludeContent = true };
+            return builder.BuildManifest(this);
         }
     }
 }

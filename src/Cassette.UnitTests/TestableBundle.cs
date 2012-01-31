@@ -34,7 +34,14 @@ namespace Cassette
 
         internal override BundleManifest CreateBundleManifest()
         {
-            return new BundleManifestBuilder<TestableBundle, TestableBundleManifest>().BuildManifest(this);
+            var builder = new BundleManifestBuilder<TestableBundle, TestableBundleManifest>();
+            return builder.BuildManifest(this);
+        }
+
+        internal override BundleManifest CreateBundleManifestIncludingContent()
+        {
+            var builder = new BundleManifestBuilder<TestableBundle, TestableBundleManifest> { IncludeContent = true };
+            return builder.BuildManifest(this);
         }
 
         class TestableBundleManifest : BundleManifest

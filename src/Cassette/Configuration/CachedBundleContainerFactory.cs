@@ -55,14 +55,20 @@ namespace Cassette.Configuration
         void CacheAndUseCurrentBundles()
         {
             ProcessAllBundles(bundlesArray);
-            var fullManifest = CreateCassetteManifest();
-            cache.SaveCassetteManifest(fullManifest);
-            UseCachedBundles(fullManifest);
+            var manifestIncludingContent = CreateCassetteManifestIncludingContent();
+            cache.SaveCassetteManifest(manifestIncludingContent);
+            UseCachedBundles(manifestIncludingContent);
         }
 
         CassetteManifest CreateCassetteManifest()
         {
             var bundleManifests = bundlesArray.Select(bundle => bundle.CreateBundleManifest());
+            return new CassetteManifest(bundleManifests);
+        }
+
+        CassetteManifest CreateCassetteManifestIncludingContent()
+        {
+            var bundleManifests = bundlesArray.Select(bundle => bundle.CreateBundleManifestIncludingContent());
             return new CassetteManifest(bundleManifests);
         }
     }
