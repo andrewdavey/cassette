@@ -44,4 +44,3 @@ namespace Cassette.Stylesheets
         }
     }
 }
-

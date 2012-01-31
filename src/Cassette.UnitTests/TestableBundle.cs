@@ -21,7 +21,7 @@ namespace Cassette
             return RenderResult;
         }
 
-        internal override void Process(CassetteSettings settings)
+        protected override void ProcessCore(CassetteSettings settings)
         {
             WasProcessed = true;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -227,6 +228,7 @@ namespace Cassette
             {
                 asset.Setup(a => a.OpenStream()).Returns(stream);
                 bundle.Assets.Add(asset.Object);
+                bundle.Process(new CassetteSettings(""));
 
                 var actualStream = bundle.OpenStream();
 
@@ -264,6 +266,25 @@ namespace Cassette
 
             asset1.Verify(a => a.Dispose());
             asset2.Verify(a => a.Dispose());
+        }
+
+        [Fact]
+        public void WhenProcess_ThenIsProcessedIsTrue()
+        {
+            var bundle = new TestableBundle("~");
+            bundle.Process(new CassetteSettings(""));
+            bundle.IsProcessed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenBundleIsProcessed_WhenProcess_ThenThrowInvalidOperationException()
+        {
+            var bundle = new TestableBundle("~");
+            bundle.Process(new CassetteSettings(""));
+           
+            Assert.Throws<InvalidOperationException>(
+                () => bundle.Process(new CassetteSettings(""))
+            );
         }
 
         IAsset StubAsset(string filename)

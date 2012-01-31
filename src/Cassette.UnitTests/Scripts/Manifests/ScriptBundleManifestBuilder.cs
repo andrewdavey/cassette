@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
+using Cassette.Configuration;
 using Cassette.Manifests;
 using Moq;
 using Should;
@@ -22,6 +23,7 @@ namespace Cassette.Scripts.Manifests
             asset = StubAsset();
             bundle.Assets.Add(asset);
             bundle.AddReference("~/reference/path");
+            bundle.Process(new CassetteSettings(""));
 
             manifest = builder.BuildManifest(bundle);
         }

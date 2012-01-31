@@ -28,7 +28,10 @@ namespace Cassette.Manifests
             bundle.ContentType = ContentType;
             bundle.PageLocation = PageLocation;
             bundle.IsFromCache = true;
-            bundle.Assets.Add(CreateCachedBundleContent());
+            if (Assets.Count > 0)
+            {
+                bundle.Assets.Add(CreateCachedBundleContent());
+            }
             AddReferencesToBundle(bundle);
             return bundle;
         }

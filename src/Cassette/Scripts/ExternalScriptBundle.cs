@@ -42,10 +42,10 @@ namespace Cassette.Scripts
             get { return fallbackCondition; }
         }
 
-        internal override void Process(CassetteSettings settings)
+        protected override void ProcessCore(CassetteSettings settings)
         {
             // Any fallback assets are processed like a regular ScriptBundle.
-            base.Process(settings);
+            base.ProcessCore(settings);
             // We just need a special renderer instead.
             externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, settings);
         }

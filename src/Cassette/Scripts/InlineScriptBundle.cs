@@ -12,7 +12,7 @@ namespace Cassette.Scripts
             this.scriptContent = scriptContent;
         }
 
-        internal override void Process(CassetteSettings settings)
+        protected override void ProcessCore(CassetteSettings settings)
         {
         }
 

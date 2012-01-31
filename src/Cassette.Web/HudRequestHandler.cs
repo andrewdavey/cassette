@@ -15,6 +15,7 @@ namespace Cassette.Web
     {
         readonly ICassetteApplicationContainer<ICassetteApplication> container;
         readonly RequestContext requestContext;
+        IUrlGenerator urlGenerator;
 
         public HudRequestHandler(ICassetteApplicationContainer<ICassetteApplication> container, RequestContext requestContext)
         {
@@ -46,12 +47,12 @@ namespace Cassette.Web
                 return;
             }
 
-            var htm = Properties.Resources.hud;
+            var html = Properties.Resources.hud;
             var json = CreateJson();
-            htm = htm.Replace("$json$", json);
+            html = html.Replace("$json$", json);
 
             response.ContentType = "text/html";
-            response.Write(htm);
+            response.Write(html);
         }
 
         void ProcessPost()
@@ -71,7 +72,7 @@ namespace Cassette.Web
         string CreateJson()
         {
             var settings = Application.Settings;
-            var urlGenerator = settings.UrlGenerator;
+            urlGenerator = settings.UrlGenerator;
 
             var scripts = Application.Bundles.OfType<ScriptBundle>();
             var stylesheets = Application.Bundles.OfType<StylesheetBundle>();
@@ -79,9 +80,9 @@ namespace Cassette.Web
 
             var data = new
             {
-                Scripts = scripts.Select(b => ScriptData(b, urlGenerator)),
-                Stylesheets = stylesheets.Select(b => StylesheetData(b, urlGenerator)),
-                HtmlTemplates = htmlTemplates.Select(b => HtmlTemplateData(b, urlGenerator)),
+                Scripts = scripts.Select(ScriptData),
+                Stylesheets = stylesheets.Select(StylesheetData),
+                HtmlTemplates = htmlTemplates.Select(HtmlTemplateData),
                 StartupTrace = StartUp.TraceOutput,
                 Cassette = new
                 {
@@ -101,51 +102,62 @@ namespace Cassette.Web
             get { return container.Application; }
         }
 
-        object HtmlTemplateData(HtmlTemplateBundle htmlTemplate, IUrlGenerator urlGenerator)
+        object HtmlTemplateData(HtmlTemplateBundle htmlTemplate)
         {
             return new
             {
                 htmlTemplate.Path,
-                Url = urlGenerator.CreateBundleUrl(htmlTemplate),
-                Assets = AssetPaths(htmlTemplate, urlGenerator),
+                Url = BundleUrl(htmlTemplate),
+                Assets = AssetPaths(htmlTemplate),
                 htmlTemplate.References,
                 Size = BundleSize(htmlTemplate)
             };
         }
 
-        object StylesheetData(StylesheetBundle stylesheet, IUrlGenerator urlGenerator)
+        object StylesheetData(StylesheetBundle stylesheet)
         {
-            var external = stylesheet as ExternalStylesheetBundle;
             return new
             {
                 stylesheet.Path,
-                Url = external == null ? urlGenerator.CreateBundleUrl(stylesheet) : external.Url,
+                Url = BundleUrl(stylesheet),
                 stylesheet.Media,
                 stylesheet.Condition,
-                Assets = AssetPaths(stylesheet, urlGenerator),
+                Assets = AssetPaths(stylesheet),
                 stylesheet.References,
                 Size = BundleSize(stylesheet)
             };
         }
 
-        object ScriptData(ScriptBundle script, IUrlGenerator urlGenerator)
+        object ScriptData(ScriptBundle script)
         {
-            var external = script as ExternalScriptBundle;
             return new
             {
                 script.Path,
-                Url = external == null ? urlGenerator.CreateBundleUrl(script) : external.Url,
-                Assets = AssetPaths(script, urlGenerator),
+                Url = BundleUrl(script),
+                Assets = AssetPaths(script),
                 script.References,
                 Size = BundleSize(script)
             };
         }
 
-        long BundleSize(Bundle script)
+        string BundleUrl(Bundle bundle)
         {
-            if (script.Assets.Count == 1 && script.Assets[0] is BundleProcessing.ConcatenatedAsset)
+            var external = bundle as IExternalBundle;
+            if (external == null)
             {
-                using (var s = script.OpenStream())
+                return bundle.IsProcessed ? urlGenerator.CreateBundleUrl(bundle) : null;
+            }
+            else
+            {
+                return external.Url;
+            }
+        }
+
+        long BundleSize(Bundle bundle)
+        {
+            if (bundle.IsProcessed)
+            {
+                using (var s = bundle.OpenStream())
                 {
                     return s.Length;
                 }
@@ -153,7 +165,7 @@ namespace Cassette.Web
             return -1;
         }
 
-        IEnumerable<AssetLink> AssetPaths(Bundle bundle, IUrlGenerator urlGenerator)
+        IEnumerable<AssetLink> AssetPaths(Bundle bundle)
         {
             var generateUrls = container.Application.Settings.IsDebuggingEnabled;
             var visitor = generateUrls ? new AssetLinkCreator(urlGenerator) : new AssetLinkCreator();

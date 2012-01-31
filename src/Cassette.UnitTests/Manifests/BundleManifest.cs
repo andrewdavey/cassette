@@ -83,6 +83,7 @@ namespace Cassette.Manifests
         [Fact]
         public void GivenManifestHasContent_WhenCreateBundle_ThenBundleOpenStreamReturnsTheContent()
         {
+            manifest.Assets.Add(new AssetManifest { Path = "~/asset" });
             manifest.Content = new byte[] { 1, 2, 3 };
             var bundle = manifest.CreateBundle();
 
@@ -95,12 +96,12 @@ namespace Cassette.Manifests
         }
 
         [Fact]
-        public void GivenManifestHasNoContent_WhenCreateBundle_ThenBundleOpenStreamThrowsException()
+        public void GivenManifestHasNoContent_WhenCreateBundle_ThenBundleOpenStreamReturnsEmpty()
         {
             manifest.Content = null;
             var bundle = manifest.CreateBundle();
 
-            Assert.Throws<InvalidOperationException>(() => bundle.OpenStream());
+            bundle.OpenStream().Length.ShouldEqual(0);
         }
 
         [Fact]

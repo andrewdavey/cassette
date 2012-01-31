@@ -27,9 +27,9 @@ namespace Cassette.Stylesheets
             get { return url; }
         }
 
-        internal override void Process(CassetteSettings settings)
+        protected override void ProcessCore(CassetteSettings settings)
         {
-            base.Process(settings);
+            base.ProcessCore(settings);
             externalHtmlRender = new ExternalStylesheetHtmlRenderer(Renderer, settings);
         }
 

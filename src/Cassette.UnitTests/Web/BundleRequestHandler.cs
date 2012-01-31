@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Web;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -67,6 +68,7 @@ namespace Cassette.Web
             bundle.Hash = new byte[] { 1, 2, 3 };
             application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
                        .Returns(bundle);
+            bundle.Process(new CassetteSettings(""));
         }
 
         void IDisposable.Dispose()
@@ -87,6 +89,7 @@ namespace Cassette.Web
             bundle.Assets.Add(asset.Object);
             application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
                        .Returns(bundle);
+            bundle.Process(new CassetteSettings(""));
 
             var handler = CreateRequestHandler("test_010203");
             handler.ProcessRequest();

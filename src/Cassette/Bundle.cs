@@ -80,8 +80,9 @@ namespace Cassette
         /// <returns>A readable stream.</returns>
         public Stream OpenStream()
         {
-            RequireSingleAsset();
-            return Assets[0].OpenStream();
+            if (!IsProcessed && !IsFromCache) throw new InvalidOperationException("Cannot open stream of bundle content before it has been processed.");
+            if (assets.Count == 0) return Stream.Null;
+            return assets[0].OpenStream();
         }
 
         /// <summary>
@@ -93,23 +94,19 @@ namespace Cassette
             references.Add(ConvertReferenceToAppRelative(bundlePathOrUrl));
         }
 
-        void RequireSingleAsset()
+        internal void Process(CassetteSettings settings)
         {
-            if (assets.Count == 0)
+            if (IsProcessed)
             {
-                throw new InvalidOperationException(
-                    "Invalid operation when bundle has no assets."
-                );
+                throw new InvalidOperationException("Bundle has already been processed.");
             }
-            if (assets.Count > 1)
-            {
-                throw new InvalidOperationException(
-                    "Invalid operation when bundle assets are not concatenated into a single asset."
-                );
-            }
+            ProcessCore(settings);
+            IsProcessed = true;
         }
 
-        internal abstract void Process(CassetteSettings settings);
+        protected abstract void ProcessCore(CassetteSettings settings);
+
+        internal bool IsProcessed { get; private set; }
 
         internal abstract string Render();
 

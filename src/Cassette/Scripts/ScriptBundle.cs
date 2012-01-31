@@ -22,7 +22,7 @@ namespace Cassette.Scripts
 
         public IBundleHtmlRenderer<ScriptBundle> Renderer { get; set; }
 
-        internal override void Process(CassetteSettings settings)
+        protected override void ProcessCore(CassetteSettings settings)
         {
             Processor.Process(this, settings);
         }
