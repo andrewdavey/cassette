@@ -37,6 +37,7 @@ namespace Cassette.Configuration
                                    && cachedManifest.IsUpToDateWithFileSystem(settings.SourceDirectory);
             if (canUseCachedBundles)
             {
+                Trace.Source.TraceInformation("Using cache.");
                 UseCachedBundles(cachedManifest);
             }
             else
@@ -56,6 +57,7 @@ namespace Cassette.Configuration
         {
             ProcessAllBundles(bundlesArray);
             var manifestIncludingContent = CreateCassetteManifest();
+            Trace.Source.TraceInformation("Saving cache.");
             cache.SaveCassetteManifest(manifestIncludingContent);
             UseCachedBundles(manifestIncludingContent);
         }

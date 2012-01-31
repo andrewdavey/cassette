@@ -70,6 +70,7 @@ namespace Cassette.Web
             var factory = CreateApplicationContainerFactory();
             _container = factory.CreateContainer();
             CassetteApplicationContainer.SetApplicationAccessor(() => _container.Application);
+            var forceCreation = _container.Application;
         }
 
         static CassetteApplicationContainerFactory CreateApplicationContainerFactory()
