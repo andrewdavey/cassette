@@ -19,6 +19,13 @@ namespace Cassette.Manifests
         }
 
         [Fact]
+        public void NewCassetteManifestVersionIsEmptyString()
+        {
+            var manifest = new CassetteManifest();
+            manifest.Version.ShouldEqual("");
+        }
+
+        [Fact]
         public void EmptyManifestsAreEqual()
         {
             var manifest1 = new CassetteManifest();

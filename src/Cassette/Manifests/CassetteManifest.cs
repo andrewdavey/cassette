@@ -9,6 +9,7 @@ namespace Cassette.Manifests
     {
         public CassetteManifest()
         {
+            Version = "";
             BundleManifests = new List<BundleManifest>();
         }
 
