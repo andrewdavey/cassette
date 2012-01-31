@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+    Bundles.Reference("scripts/lib");
+    Bundles.Reference("htmltemplates/hogan");
+}
+<!doctype html>
+<html>
+<head>
+    <title>Templating - Hogan</title>
+    @Bundles.RenderScripts()
+    @Bundles.RenderHtmlTemplates()
+    <script>
+        
+        $(function(){
+            
+            $('body').append(templates['hello'].render({
+                name: 'Hogan'
+            }));
+            
+        });
+        
+    </script>
+</head>
+<body></body>
+</html>

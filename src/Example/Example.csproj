@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\ColorController.cs" />
+    <Compile Include="Controllers\TemplatesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -72,6 +73,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\color-picker\ColorListItem.htm" />
+    <None Include="HtmlTemplates\hogan\hello.mustache" />
     <Content Include="Scripts\app\Event.js" />
     <Content Include="Scripts\color-picker\helpers.js" />
     <Content Include="Scripts\color-picker\ColorPickerViewModel.js" />
@@ -80,6 +82,7 @@
     <Content Include="Scripts\color-picker\slider.js" />
     <Content Include="Scripts\jquery\bundle.txt" />
     <Content Include="Scripts\lib\Class.js" />
+    <Content Include="Scripts\lib\hogan.js" />
     <Content Include="Scripts\lib\jquery.tmpl.js" />
     <Content Include="Scripts\lib\knockout.js" />
     <Content Include="Styles\color-picker\images\color_swatch.png" />
@@ -127,9 +130,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Templates\Hogan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Fork.cshtml" />
@@ -151,6 +153,7 @@
       <Name>Cassette</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

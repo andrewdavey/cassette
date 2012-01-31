@@ -121,6 +121,9 @@
   <data name="coffeescript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\coffeescript.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="hogan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hogan.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="jqueryTmplCompiler" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\jqueryTmplCompiler.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
