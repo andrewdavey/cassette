@@ -62,9 +62,9 @@ namespace Cassette.IntegrationTests
         }
 
         [Fact]
-        public void CanGetAsset()
+        public void GivenDebugMode_ThenCanGetAsset()
         {
-            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts"), isDebuggingEnabled: true))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -78,9 +78,9 @@ function asset1() {
         }
 
         [Fact]
-        public void GetCoffeeScriptAssetReturnsItCompiledInToJavaScript()
+        public void GivenDebugMode_ThenGetCoffeeScriptAssetReturnsItCompiledInToJavaScript()
         {
-            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts"), isDebuggingEnabled: true))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -135,14 +135,15 @@ function asset1() {
             }
         }
 
-        CassetteApplication CreateApplication(Action<BundleCollection> configure, string sourceDirectory = "assets")
+        CassetteApplication CreateApplication(Action<BundleCollection> configure, string sourceDirectory = "assets", bool isDebuggingEnabled = false)
         {
             var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
             var settings = new CassetteSettings("")
             {
                 CacheDirectory = new IsolatedStorageDirectory(storage),
                 SourceDirectory = new FileSystemDirectory(Path.GetFullPath(sourceDirectory)),
-                UrlGenerator = new UrlGenerator(new VirtualDirectoryPrepender("/"), "_cassette")
+                UrlGenerator = new UrlGenerator(new VirtualDirectoryPrepender("/"), "_cassette"),
+                IsDebuggingEnabled = isDebuggingEnabled
             };
             var bundles = new BundleCollection(settings);
             configure(bundles);
