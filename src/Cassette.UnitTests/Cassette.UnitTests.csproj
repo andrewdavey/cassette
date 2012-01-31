@@ -105,7 +105,6 @@
     <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="BundleDescriptorReader.cs" />
     <Compile Include="BundleProcessing\MutablePipeline.cs" />
-    <Compile Include="RuntimeBundleContainerFactory.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifest.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestWriter.cs" />

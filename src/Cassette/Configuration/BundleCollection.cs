@@ -101,5 +101,10 @@ namespace Cassette.Configuration
 
             return getFromMatching(matchingBundles);
         }
+
+        internal void Remove(Bundle bundle)
+        {
+            bundles.Remove(bundle);
+        }
     }
 }

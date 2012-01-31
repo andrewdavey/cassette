@@ -10,8 +10,14 @@ namespace Website
         {
             bundles.Add<StylesheetBundle>("assets/styles");
             bundles.Add<StylesheetBundle>("assets/iestyles", b => b.Condition = "IE");
-            bundles.AddUrlWithAlias("//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js", "jquery");
             bundles.AddPerSubDirectory<ScriptBundle>("assets/scripts");
+            bundles.AddUrlWithLocalAssets(
+                "//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js",
+                new LocalAssetSettings
+                {
+                    FallbackCondition = "!window.jQuery",
+                    Path =  "assets/scripts/jquery"
+                });
         }
     }
 }

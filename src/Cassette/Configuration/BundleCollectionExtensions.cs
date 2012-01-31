@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
+using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
@@ -241,6 +242,12 @@ namespace Cassette.Configuration
         public static void AddUrlWithLocalAssets<T>(this BundleCollection bundleCollection, string url, LocalAssetSettings settings, Action<T> customizeBundle = null)
             where T : Bundle
         {
+            var existingBundle = bundleCollection.FirstOrDefault(b => b.ContainsPath(PathUtilities.AppRelative(settings.Path)));
+            if (existingBundle != null)
+            {
+                bundleCollection.Remove(existingBundle);
+            }
+
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var sourceDirectory = bundleCollection.Settings.SourceDirectory;
             var defaultFileSearch = bundleCollection.Settings.DefaultFileSearches[typeof(T)];
