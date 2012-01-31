@@ -96,17 +96,17 @@ namespace Cassette.Web
     public class UrlGenerator_CreateImageUrl_Tests : CassetteRouting_Tests
     {
         [Fact]
-        public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndPathWithoutTildeAndHashAndExtensionDotConvertedToUnderscore()
+        public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndPathWithoutTildeAndHash()
         {
             var url = routing.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldStartWith("_cassette/file/test_hash_png");
+            url.ShouldStartWith("_cassette/file/test_hash.png");
         }
 
         [Fact]
         public void ConvertsToForwardSlashes()
         {
             var url = routing.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("_cassette/file/test/foo_hash_png");
+            url.ShouldEqual("_cassette/file/test/foo_hash.png");
         }
 
         [Fact]
@@ -200,7 +200,7 @@ namespace Cassette.Web
         [Fact]
         public void RawFileUrlIsMappedToRawFileHandler()
         {
-            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/file/test_coffee");
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/file/test.coffee");
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));
