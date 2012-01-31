@@ -62,6 +62,7 @@
     <Compile Include="Asset.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
+    <Compile Include="HtmlAttributeDictionary.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />

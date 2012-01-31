@@ -14,6 +14,7 @@ namespace Cassette
         readonly string path;
         readonly List<IAsset> assets = new List<IAsset>();
         readonly HashSet<string> references = new HashSet<string>();
+        readonly HtmlAttributeDictionary htmlAttributes = new HtmlAttributeDictionary();
 
         protected Bundle(string applicationRelativePath)
         {
@@ -48,6 +49,14 @@ namespace Cassette
         /// Defines where to render this bundle in an HTML page.
         /// </summary>
         public string PageLocation { get; set; }
+
+        /// <summary>
+        /// Attributes to include with the rendered element.
+        /// </summary>
+        public HtmlAttributeDictionary HtmlAttributes
+        {
+            get { return htmlAttributes; }
+        }
 
         /// <summary>
         /// The assets contained in the bundle.

@@ -49,7 +49,8 @@ namespace Cassette.Stylesheets
             {
                 return url => string.Format(
                     HtmlConstants.LinkHtml,
-                    url
+                    url,
+                    bundle.HtmlAttributes.CombinedAttributes
                 );
             }
             else
@@ -57,7 +58,8 @@ namespace Cassette.Stylesheets
                 return url => string.Format(
                     HtmlConstants.LinkWithMediaHtml,
                     url,
-                    bundle.Media
+                    bundle.Media,
+                    bundle.HtmlAttributes.CombinedAttributes
                 );
             }
         }

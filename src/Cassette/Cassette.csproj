@@ -78,6 +78,7 @@
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
+    <Compile Include="HtmlAttributeDictionary.cs" />
     <Compile Include="HtmlTemplates\CompileJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\CompileKnockoutJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
