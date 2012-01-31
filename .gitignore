@@ -6,3 +6,4 @@
 build/
 *.swp
 _ReSharper*
+*.ncrunch*
