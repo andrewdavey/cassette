@@ -11,56 +11,72 @@ namespace Cassette.Stylesheets
 {
     class CssImageToDataUriTransformer : IAssetTransformer
     {
+        public Func<string, bool> WhitelistFunc { get; set; }
+        
         static readonly Regex UrlRegex = new Regex(
             @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
-
+        
+        static readonly Regex BackgroundUrlRegex = new Regex(
+            @"\bbackground .* (?<value>url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)?) .* ;",
+            RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
+        );
+        
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
             return delegate
             {
                 var css = openSourceStream().ReadToEnd();
-                var matches = UrlRegex.Matches(css)
+                var matches = BackgroundUrlRegex.Matches(css)
                                       .Cast<Match>()
                                       .Select(match => new UrlMatch(asset, match))
+                                      .Where(match => WhitelistFunc(match.Url))
                                       .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
-
+                
                 var output = new StringBuilder(css);
                 foreach (var match in matches)
                 {
                     match.ReplaceWithin(output);
-
+                    
                     asset.AddRawFileReference(match.Url);
                 }
                 return output.ToString().AsStream();
             };
         }
-
+        
         class UrlMatch
         {
             public UrlMatch(IAsset asset, Match match)
             {
                 sourceAsset = asset;
-                index = match.Index; 
+                index = match.Index;
                 length = match.Length;
-                url = match.Groups["path"].Value + "." + match.Groups["extension"].Value;
+                property = match.Value;
+                valueIndex = match.Groups["value"].Index;
+                valueLength = match.Groups["value"].Length;
+                path = match.Groups["path"].Value;
+                url = (path.StartsWith("/") ? "~" : "") + path + "." + match.Groups["extension"].Value;
                 extension = match.Groups["extension"].Value;
                 file = sourceAsset.SourceFile.Directory.GetFile(url);
             }
-
+            
             readonly IAsset sourceAsset;
             readonly int index;
             readonly int length;
+            readonly string property;
+            readonly int valueIndex;
+            readonly int valueLength;
+            readonly string path;
             readonly string url;
             readonly string extension;
             readonly IFile file;
-
+            
             public string Url
             {
                 get { return url; }
             }
-
+            
             string DataUri
             {
                 get
@@ -71,7 +87,7 @@ namespace Cassette.Stylesheets
                     );
                 }
             }
-
+            
             string ContentType
             {
                 get
@@ -86,7 +102,7 @@ namespace Cassette.Stylesheets
                     }
                 }
             }
-
+            
             string GetBase64EncodedData()
             {
                 using (var fileStream = file.OpenRead())
@@ -100,13 +116,26 @@ namespace Cassette.Stylesheets
                     return reader.ReadToEnd();
                 }
             }
-
+            
             public void ReplaceWithin(StringBuilder output)
             {
-                if (!file.Exists) return;
+                if (!file.Exists)
+                {
+                    return;
+                }
                 
-                output.Remove(index, length);
-                output.Insert(index, DataUri);
+                // Internet Explorer 8 will not render images larger than 32 kB
+                if (file.Exists
+                    && file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite).Length > 32000)
+                {
+                    return;
+                }
+                
+                Trace.Source.TraceInformation(string.Format("Embedded image {0}", path));
+                
+                output.Remove(valueIndex, valueLength);
+                output.Insert(valueIndex, DataUri);
+                output.Insert(index, property + "\n");
             }
         }
     }

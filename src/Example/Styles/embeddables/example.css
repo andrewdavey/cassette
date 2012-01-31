@@ -1,0 +1,23 @@
+﻿ul {
+    padding: 100px;
+    color: #333;
+    font-size: 24px; line-height: 32px;
+}
+    li {
+        padding-left: 40px; margin-bottom: 20px;
+    }
+    .image-embed {
+        background: url('/images/embed/google-plus-32.png') no-repeat;
+    }
+    .image-wrongdir {
+        background: url('/images/google-plus-32.png') no-repeat;
+    }
+    .image-toobig {
+        background: url('/images/embed/big-chicken.png') no-repeat;
+    }
+    .font-embed {
+        font-family: 'DroidSansBold', serif;
+    }
+    .font-wrongdir {
+        font-family: 'DroidSans', serif;
+    }

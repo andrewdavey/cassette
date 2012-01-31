@@ -15,6 +15,7 @@ namespace Cassette.Stylesheets
         public IAssetTransformer StylesheetMinifier { get; set; }
         public bool CompileLess { get; set; }
         public bool ConvertImageUrlsToDataUris { get; set; }
+        public bool ConvertFontUrlsToDataUris { get; set; }
 
         protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, CassetteSettings settings)
         {
@@ -30,6 +31,10 @@ namespace Cassette.Stylesheets
             if (ConvertImageUrlsToDataUris)
             {
                 yield return new ConvertImageUrlsToDataUris();
+            }
+            if (ConvertFontUrlsToDataUris)
+            {
+                yield return new ConvertFontUrlsToDataUris();
             }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
