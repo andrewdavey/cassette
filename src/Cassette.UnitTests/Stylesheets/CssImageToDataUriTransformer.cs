@@ -44,6 +44,23 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void TransformInsertsImageUrlWithDataUriAfterEachExistingImage()
+        {
+            StubFile("test1.png", new byte[] { 1, 2, 3 });
+            StubFile("test2.png", new byte[] { 1, 2, 3 });
+
+            var css = "p { background-image: url(test1.png); } " +
+                      "a { background-image: url(test2.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+
+            var expectedBase64 = Base64Encode(new byte[] { 1, 2, 3 });
+            getResult().ReadToEnd().ShouldEqual(
+                "p { background-image: url(test1.png);background-image: url(data:image/png;base64," + expectedBase64 + "); } " +
+                "a { background-image: url(test2.png);background-image: url(data:image/png;base64," + expectedBase64 + "); }"
+            );
+        }
+
+        [Fact]
         public void ImageUrlCanHaveSubDirectory()
         {
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/styles/jquery-ui/jquery-ui.css");

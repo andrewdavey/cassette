@@ -24,7 +24,7 @@ namespace Cassette.Stylesheets
         }
 
         static readonly Regex BackgroundUrlRegex = new Regex(
-            @"\bbackground .* (?<value>url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)?) .* ;",
+            @"\bbackground .*? (?<value>url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)?) .*? ;",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
         
