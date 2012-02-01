@@ -17,7 +17,11 @@ namespace Cassette.Scripts
             var assetScripts = 
                 from asset in bundle.Assets
                 let url = urlGenerator.CreateAssetUrl(asset)
-                select string.Format(HtmlConstants.ScriptHtml, url);
+                select string.Format(
+                    HtmlConstants.ScriptHtml, 
+                    url, 
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
 
             return string.Join(Environment.NewLine, assetScripts);
         }

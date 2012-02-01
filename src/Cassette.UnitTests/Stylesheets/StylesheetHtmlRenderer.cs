@@ -11,6 +11,8 @@ namespace Cassette.Stylesheets
         public void GivenBundle_WhenRender_ThenHtmlLinkReturned()
         {
             var bundle = new StylesheetBundle("~/tests");
+            bundle.HtmlAttributes.Add("class", "cssx");
+
             var urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
                 .Returns("URL")
@@ -19,7 +21,7 @@ namespace Cassette.Stylesheets
             var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
             var html = renderer.Render(bundle);
 
-            html.ShouldEqual("<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\"/>");
+            html.ShouldEqual("<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\" class=\"cssx\"/>");
 
             urlGenerator.VerifyAll();
         }

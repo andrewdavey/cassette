@@ -24,11 +24,20 @@ namespace Cassette.Stylesheets
             {
                 if (string.IsNullOrEmpty(bundle.Media))
                 {
-                    return string.Format(HtmlConstants.LinkHtml, bundle.Url);
+                    return string.Format(
+                        HtmlConstants.LinkHtml,
+                        bundle.Url,
+                        bundle.HtmlAttributes.CombinedAttributes
+                    );
                 }
                 else
                 {
-                    return string.Format(HtmlConstants.LinkWithMediaHtml, bundle.Url, bundle.Media);
+                    return string.Format(
+                        HtmlConstants.LinkWithMediaHtml, 
+                        bundle.Url, 
+                        bundle.Media,
+                        bundle.HtmlAttributes.CombinedAttributes
+                    );
                 }
             }
         }

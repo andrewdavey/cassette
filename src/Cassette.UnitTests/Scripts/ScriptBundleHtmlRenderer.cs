@@ -19,6 +19,23 @@ namespace Cassette.Scripts
 
             html.ShouldEqual("<script src=\"URL\" type=\"text/javascript\"></script>");
         }
+
+        [Fact]
+        public void GivenRendererWithUrlGeneratorWithHtmlAttributes_WhenRenderBundle_ThenScriptHtmlIsReturned()
+        {
+            var urlGenerator = new Mock<IUrlGenerator>();
+            var renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object);
+            var bundle = new ScriptBundle("~/test");
+            bundle.HtmlAttributes.Add( new { Async = "async", @class = "isDismissed" } );
+
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
+                        .Returns("URL");
+
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual("<script src=\"URL\" type=\"text/javascript\" async=\"async\" class=\"isDismissed\"></script>");
+        }
+
     }
 }
 

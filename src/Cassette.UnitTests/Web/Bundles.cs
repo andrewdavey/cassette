@@ -163,6 +163,14 @@ namespace Cassette.Web
             url.ShouldEqual("URL");
         }
 
+        [Fact]
+        public void WhenNewBundle_ThenEmptyHtmlAttributes()
+        {
+            var bundle = new TestableBundle("~/test");
+
+            bundle.HtmlAttributes.ShouldBeEmpty();
+        }
+
         class TestableApplication : CassetteApplicationBase
         {
             readonly IReferenceBuilder referenceBuilder;

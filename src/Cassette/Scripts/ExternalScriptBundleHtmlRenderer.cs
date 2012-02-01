@@ -17,7 +17,11 @@ namespace Cassette.Scripts
 
         public string Render(ExternalScriptBundle bundle)
         {
-            var externalScriptHtml = string.Format(HtmlConstants.ScriptHtml, bundle.Url);
+            var externalScriptHtml = string.Format(
+                HtmlConstants.ScriptHtml,
+                bundle.Url,
+                bundle.HtmlAttributes.CombinedAttributes
+            );
 
             if (settings.IsDebuggingEnabled)
             {

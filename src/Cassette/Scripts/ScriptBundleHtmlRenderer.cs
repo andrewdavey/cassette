@@ -14,7 +14,8 @@ namespace Cassette.Scripts
         {
             return string.Format(
                 HtmlConstants.ScriptHtml, 
-                urlGenerator.CreateBundleUrl(bundle)
+                urlGenerator.CreateBundleUrl(bundle),
+                bundle.HtmlAttributes.CombinedAttributes
             );
         }
     }
