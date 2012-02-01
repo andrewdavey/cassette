@@ -72,7 +72,7 @@ namespace Cassette.Manifests
 
         bool AssetsEqual(IEnumerable<AssetManifest> assets)
         {
-            return Assets.SequenceEqual(assets);
+            return Assets.OrderBy(a => a.Path).SequenceEqual(assets.OrderBy(a => a.Path));
         }
 
         public override int GetHashCode()

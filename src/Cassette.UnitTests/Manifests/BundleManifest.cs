@@ -14,7 +14,7 @@ namespace Cassette.Manifests
         {
             protected override Bundle CreateBundleCore()
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -62,6 +62,30 @@ namespace Cassette.Manifests
             {
                 Path = "~/path",
                 Assets = { new AssetManifest { Path = "~/asset-path" } }
+            };
+            manifest1.Equals(manifest2).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void BundleManifestsAreEqualEvenIfAssetsAreInDifferentOrders()
+        {
+            var manifest1 = new TestableBundleManifest
+            {
+                Path = "~/path",
+                Assets =
+                    {
+                        new AssetManifest { Path = "~/A" },
+                        new AssetManifest { Path = "~/B" }
+                    }
+            };
+            var manifest2 = new TestableBundleManifest
+            {
+                Path = "~/path",
+                Assets =
+                    {
+                        new AssetManifest { Path = "~/B" },
+                        new AssetManifest { Path = "~/A" }
+                    }
             };
             manifest1.Equals(manifest2).ShouldBeTrue();
         }
