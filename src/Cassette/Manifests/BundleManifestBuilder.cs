@@ -27,14 +27,7 @@ namespace Cassette.Manifests
                 Content = GetContent(bundle)
             };
             AddReferencesToBundleManifest(bundle.References);
-        }
-
-        void AddReferencesToBundleManifest(IEnumerable<string> references)
-        {
-            foreach (var reference in references)
-            {
-                bundleManifest.References.Add(reference);
-            }
+            AddHtmlAttributesToBundleManifest(bundle.HtmlAttributes);
         }
 
         byte[] GetContent(Bundle bundle)
@@ -45,6 +38,22 @@ namespace Cassette.Manifests
                 var bytes = new byte[stream.Length];
                 stream.Read(bytes, 0, bytes.Length);
                 return bytes;
+            }
+        }
+
+        void AddReferencesToBundleManifest(IEnumerable<string> references)
+        {
+            foreach (var reference in references)
+            {
+                bundleManifest.References.Add(reference);
+            }
+        }
+
+        void AddHtmlAttributesToBundleManifest(IEnumerable<KeyValuePair<string, string>> htmlAttributes)
+        {
+            foreach (var htmlAttribute in htmlAttributes)
+            {
+                bundleManifest.HtmlAttributes.Add(htmlAttribute.Key, htmlAttribute.Value);
             }
         }
 

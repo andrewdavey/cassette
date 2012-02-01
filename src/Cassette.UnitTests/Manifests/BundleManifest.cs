@@ -144,6 +144,26 @@ namespace Cassette.Manifests
             bundle.References.ShouldEqual(new[] { "~/reference" });
         }
 
+        [Fact]
+        public void GivenManifestWithHtmlAttributes_WhenCreateBundle_WhenBundleHasHtmlAttributes()
+        {
+            manifest.HtmlAttributes.Add("attribute", "value");
+
+            var bundle = manifest.CreateBundle();
+
+            bundle.HtmlAttributes["attribute"].ShouldEqual("value");
+        }
+
+        [Fact]
+        public void GivenManifestWithHtmlAttributeWhereValueIsNull_WhenCreateBundle_WhenBundleHasHtmlAttribute()
+        {
+            manifest.HtmlAttributes.Add("attribute", null);
+
+            var bundle = manifest.CreateBundle();
+
+            bundle.HtmlAttributes["attribute"].ShouldBeNull();
+        }
+
         class TestableBundleManifest : BundleManifest
         {
             protected override Bundle CreateBundleCore()

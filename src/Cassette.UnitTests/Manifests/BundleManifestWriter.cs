@@ -46,6 +46,10 @@ namespace Cassette.Manifests
                     {
                         "~/bundle-reference"
                     },
+                HtmlAttributes =
+                    {
+                        { "attribute", "value" }
+                    },
                 Content = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
             };
 
@@ -110,6 +114,26 @@ namespace Cassette.Manifests
             manifest.PageLocation = null;
             WriteToElement();
             element.Attribute("PageLocation").ShouldBeNull();
+        }
+
+        [Fact]
+        public void ElementHasHtmlAttributeElements()
+        {
+            var htmlAttributeElement = element.Element("HtmlAttribute");
+            htmlAttributeElement.Attribute("Name").Value.ShouldEqual("attribute");
+            htmlAttributeElement.Attribute("Value").Value.ShouldEqual("value");
+        }
+
+        [Fact]
+        public void GivenHtmlAttributeWithNullValue_ThenHtmlAttributeElementHasOnlyTheNameAttribute()
+        {
+            manifest.HtmlAttributes.Clear();
+            manifest.HtmlAttributes.Add("attribute", null);
+            WriteToElement();
+
+            var htmlAttributeElement = element.Element("HtmlAttribute");
+            htmlAttributeElement.Attribute("Name").Value.ShouldEqual("attribute");
+            htmlAttributeElement.Attribute("Value").ShouldBeNull();
         }
 
         [Fact]

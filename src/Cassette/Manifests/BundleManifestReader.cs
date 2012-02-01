@@ -33,6 +33,7 @@ namespace Cassette.Manifests
             };
             AddAssets(manifest);
             AddReferences(manifest);
+            AddHtmlAttributes(manifest);
             InitializeBundleManifest(manifest, element);
             return manifest;
         }
@@ -96,6 +97,30 @@ namespace Cassette.Manifests
             {
                 manifest.References.Add(path);
             }
+        }
+
+        void AddHtmlAttributes(BundleManifest manifest)
+        {
+            var attributeElements = element.Elements("HtmlAttribute");
+            foreach (var attributeElement in attributeElements)
+            {
+                AddHtmlAttribute(manifest, attributeElement);
+            }
+        }
+
+        void AddHtmlAttribute(BundleManifest manifest, XElement attributeElement)
+        {
+            var name = GetHtmlAttributeElementNameAttribute(attributeElement);
+            var value = attributeElement.AttributeValueOrNull("Value");
+            manifest.HtmlAttributes.Add(name, value);
+        }
+
+        string GetHtmlAttributeElementNameAttribute(XElement attributeElement)
+        {
+            return attributeElement.AttributeValueOrThrow(
+                "Name",
+                () => new InvalidCassetteManifestException("HtmlAttribute manifest element is missing \"Name\" attribute.")
+            );
         }
 
         IEnumerable<string> GetReferencePaths()

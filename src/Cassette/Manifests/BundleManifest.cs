@@ -11,6 +11,7 @@ namespace Cassette.Manifests
         {
             Assets = new List<AssetManifest>();
             References = new List<string>();
+            HtmlAttributes = new Dictionary<string, string>();
         }
 
         public string Path { get; set; }
@@ -19,6 +20,7 @@ namespace Cassette.Manifests
         public string PageLocation { get; set; }
         public IList<AssetManifest> Assets { get; private set; }
         public IList<string> References { get; private set; }
+        public IDictionary<string, string> HtmlAttributes { get; private set; }
         public byte[] Content { get; set; }
 
         public Bundle CreateBundle()
@@ -33,7 +35,16 @@ namespace Cassette.Manifests
                 bundle.Assets.Add(CreateCachedBundleContent());
             }
             AddReferencesToBundle(bundle);
+            AddHtmlAttributesToBundle(bundle);
             return bundle;
+        }
+
+        void AddHtmlAttributesToBundle(Bundle bundle)
+        {
+            foreach (var htmlAttribute in HtmlAttributes)
+            {
+                bundle.HtmlAttributes.Add(htmlAttribute.Key, htmlAttribute.Value);
+            }
         }
 
         protected abstract Bundle CreateBundleCore();

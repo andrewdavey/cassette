@@ -23,6 +23,16 @@ namespace Cassette.Scripts.Manifests
                 new XElement("Asset", new XAttribute("Path", "~/asset-2")),
                 new XElement("Reference", new XAttribute("Path", "~/reference-1")),
                 new XElement("Reference", new XAttribute("Path", "~/reference-2")),
+                new XElement(
+                    "HtmlAttribute", 
+                    new XAttribute("Name", "attribute1"),
+                    new XAttribute("Value", "value1")
+                ),
+                new XElement(
+                    "HtmlAttribute",
+                    new XAttribute("Name", "attribute2"),
+                    new XAttribute("Value", "value2")
+                ),
                 new XElement("Content", Convert.ToBase64String(Encoding.UTF8.GetBytes("CONTENT")))
             );
             ReadBundleManifest();
@@ -108,6 +118,12 @@ namespace Cassette.Scripts.Manifests
             readManifest.References.Count.ShouldEqual(2);
             readManifest.References[0].ShouldEqual("~/reference-1");
             readManifest.References[1].ShouldEqual("~/reference-2");
+        }
+
+        [Fact]
+        public void ReadManifestHasTwoHtmlAttributes()
+        {
+            readManifest.HtmlAttributes.Count.ShouldEqual(2);
         }
 
         [Fact]

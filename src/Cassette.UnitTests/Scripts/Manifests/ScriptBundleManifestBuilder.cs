@@ -99,6 +99,14 @@ namespace Cassette.Scripts.Manifests
             manifest.Content.ShouldBeNull();
         }
 
+        [Fact]
+        public void GivenBundleWithHtmlAttributes_ThenManifestHasHtmlAttributes()
+        {
+            bundle.HtmlAttributes.Add("attribute", "value");
+            manifest = builder.BuildManifest(bundle);
+            manifest.HtmlAttributes["attribute"].ShouldEqual("value");
+        }
+
         IAsset StubAsset()
         {
             var stubAsset = new Mock<IAsset>();

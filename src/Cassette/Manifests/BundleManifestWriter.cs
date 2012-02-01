@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Cassette.Utilities;
@@ -31,6 +32,7 @@ namespace Cassette.Manifests
                 ContentTypeAttribute(),
                 PageLocationAttribute(),
                 manifest.References.Select(SerializeReference),
+                HtmlAttributeElements(),
                 ContentElement()
             );
 
@@ -68,6 +70,16 @@ namespace Cassette.Manifests
         XAttribute PageLocationAttribute()
         {
             return manifest.PageLocation != null ? new XAttribute("PageLocation", manifest.PageLocation) : null;
+        }
+
+        IEnumerable<XElement> HtmlAttributeElements()
+        {
+            return from attribute in manifest.HtmlAttributes
+                   select new XElement(
+                       "HtmlAttribute",
+                       new XAttribute("Name", attribute.Key),
+                       attribute.Value != null ? new XAttribute("Value", attribute.Value) : null
+                   );
         }
 
         XElement ContentElement()
