@@ -662,4 +662,73 @@ namespace Cassette.Configuration
             return file.Object;
         }
     }
+
+    public class BundleCollection_AddFile_Tests
+    {
+        readonly BundleCollection bundles;
+        readonly CassetteSettings settings;
+        readonly Mock<IDirectory> sourceDirectory;
+        
+        public BundleCollection_AddFile_Tests()
+        {
+            var factory = new Mock<IBundleFactory<TestableBundle>>();
+            factory
+                .Setup(f => f.CreateBundle(It.IsAny<string>(), 
+                    It.IsAny<IEnumerable<IFile>>(), 
+                    It.IsAny<BundleDescriptor>()))
+                .Returns<string, IEnumerable<IFile>, BundleDescriptor>((path, _, __) => new TestableBundle(path));
+
+            sourceDirectory = new Mock<IDirectory>();
+            settings = new CassetteSettings("")
+            {
+                SourceDirectory = sourceDirectory.Object,
+                BundleFactories = { { typeof(TestableBundle), factory.Object } }
+            };
+            bundles = new BundleCollection(settings);
+        }
+
+        [Fact]
+        public void GivenAFileWithDirectoryPaths_WhenAddFile_ThenOneBundleIsAdded()
+        {
+            FilesExist("~/my/direct/path/to/the/file/test.less");
+
+            bundles.AddFile<TestableBundle>("my/direct/path/to/the/file/test.less");
+
+            bundles.Count().ShouldEqual(1);
+            bundles["~/my/direct/path/to/the/file/test.less"].ShouldBeType<TestableBundle>();
+        }
+
+        [Fact]
+        public void GivenAFileWithoutDirectoryPaths_WhenAddFile_ThenOneBundleIsAdded()
+        {
+            FilesExist("~/test.less");
+
+            bundles.AddFile<TestableBundle>("test.less");
+
+            bundles.Count().ShouldEqual(1);
+            bundles["~/test.less"].ShouldBeType<TestableBundle>();
+        }
+
+        [Fact]
+        public void GivenAFileNotFound_WhenAddFile_ThenAnExceptionIsThrown()
+        {
+            Assert.Throws<DirectoryNotFoundException>(
+                 () => bundles.AddFile<TestableBundle>("~/does-not-exist")
+             );
+        }
+
+        void FilesExist(string path)
+        {
+            sourceDirectory
+                .Setup(x => x.GetFile(It.IsAny<string>()))
+                .Returns(StubFile(path));
+        }
+
+        IFile StubFile(string path)
+        {
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath).Returns(path);
+            return file.Object;
+        }
+    }
 }
