@@ -10,8 +10,8 @@ namespace Cassette.Stylesheets
         {   
         }
 
-        public ConvertImageUrlsToDataUris(Func<string, bool> shouldTransformUrl)
-            : base(new CssImageToDataUriTransformer(shouldTransformUrl))
+        public ConvertImageUrlsToDataUris(Func<string, bool> shouldEmbedUrl)
+            : base(new CssImageToDataUriTransformer(shouldEmbedUrl))
         {
         }
     }

@@ -124,6 +124,7 @@
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
+    <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="Scripts\CompileCoffeeScript.cs" />

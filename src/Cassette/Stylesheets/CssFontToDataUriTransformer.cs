@@ -11,7 +11,17 @@ namespace Cassette.Stylesheets
 {
     class CssFontToDataUriTransformer : IAssetTransformer
     {
-        public Func<string, bool> WhitelistFunc { get; set; }
+        readonly Func<string, bool> shouldEmbedUrl;
+
+        public CssFontToDataUriTransformer(Func<string, bool> shouldEmbedUrl)
+        {
+            if (shouldEmbedUrl == null)
+            {
+                throw new ArgumentNullException("shouldEmbedUrl");
+            }
+
+            this.shouldEmbedUrl = shouldEmbedUrl;
+        }
         
         static readonly Regex UrlRegex = new Regex(
             @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>ttf|otf) \<quote> \s* \)",
@@ -26,7 +36,7 @@ namespace Cassette.Stylesheets
                 var matches = UrlRegex.Matches(css)
                                       .Cast<Match>()
                                       .Select(match => new UrlMatch(asset, match))
-                                      .Where(match => WhitelistFunc(match.Url))
+                                      .Where(match => shouldEmbedUrl(match.Url))
                                       .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
 
                 var output = new StringBuilder(css);
@@ -81,14 +91,7 @@ namespace Cassette.Stylesheets
             {
                 get
                 {
-                    if (extension.Equals("jpg", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return "image/jpeg";
-                    }
-                    else
-                    {
-                        return "image/" + extension.ToLowerInvariant();
-                    }
+                    return "font/" + extension.ToLowerInvariant();
                 }
             }
 

@@ -12,14 +12,19 @@ namespace Cassette.BundleProcessing
 
         public void Process(T bundle, CassetteSettings settings)
         {
-            var steps = pipelineModifiers.Aggregate(
-                CreatePipeline(bundle, settings),
-                (pipeline, modify) => modify(pipeline)
-            );
+            var steps = CreateMutatedPipeline(bundle, settings);
             foreach (var step in steps)
             {
                 step.Process(bundle, settings);
             }
+        }
+
+        protected virtual IEnumerable<IBundleProcessor<T>> CreateMutatedPipeline(T bundle, CassetteSettings settings)
+        {
+            return pipelineModifiers.Aggregate(
+                CreatePipeline(bundle, settings),
+                (pipeline, modify) => modify(pipeline)
+            );
         }
 
         public MutablePipeline<T> Prepend(IBundleProcessor<T> step)

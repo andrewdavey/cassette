@@ -11,16 +11,16 @@ namespace Cassette.Stylesheets
 {
     class CssImageToDataUriTransformer : IAssetTransformer
     {
-        readonly Func<string, bool> shouldTransformUrl;
+        readonly Func<string, bool> shouldEmbedUrl;
 
-        public CssImageToDataUriTransformer(Func<string, bool> shouldTransformUrl)
+        public CssImageToDataUriTransformer(Func<string, bool> shouldEmbedUrl)
         {
-            if (shouldTransformUrl == null)
+            if (shouldEmbedUrl == null)
             {
-                throw new ArgumentNullException("shouldTransformUrl");
+                throw new ArgumentNullException("shouldEmbedUrl");
             }
 
-            this.shouldTransformUrl = shouldTransformUrl;
+            this.shouldEmbedUrl = shouldEmbedUrl;
         }
 
         static readonly Regex BackgroundUrlRegex = new Regex(
@@ -37,7 +37,7 @@ namespace Cassette.Stylesheets
                     .Matches(css)
                     .Cast<Match>()
                     .Select(match => new UrlMatch(asset, match))
-                    .Where(match => shouldTransformUrl(match.Url))
+                    .Where(match => shouldEmbedUrl(match.Url))
                     .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
                 
                 var output = new StringBuilder(css);
