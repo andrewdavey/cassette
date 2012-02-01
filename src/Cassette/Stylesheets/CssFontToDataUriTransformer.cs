@@ -1,120 +1,42 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Cassette.IO;
-using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    class CssFontToDataUriTransformer : IAssetTransformer
+    class CssFontToDataUriTransformer : CssUrlToDataUriTransformer
     {
-        readonly Func<string, bool> shouldEmbedUrl;
-
-        public CssFontToDataUriTransformer(Func<string, bool> shouldEmbedUrl)
-        {
-            if (shouldEmbedUrl == null)
-            {
-                throw new ArgumentNullException("shouldEmbedUrl");
-            }
-
-            this.shouldEmbedUrl = shouldEmbedUrl;
-        }
-        
         static readonly Regex UrlRegex = new Regex(
             @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>ttf|otf) \<quote> \s* \)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public CssFontToDataUriTransformer(Func<string, bool> shouldEmbedUrl)
+            : base(shouldEmbedUrl, UrlRegex)
         {
-            return delegate
-            {
-                var css = openSourceStream().ReadToEnd();
-                var matches = UrlRegex.Matches(css)
-                                      .Cast<Match>()
-                                      .Select(match => new UrlMatch(asset, match))
-                                      .Where(match => shouldEmbedUrl(match.Url))
-                                      .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
-
-                var output = new StringBuilder(css);
-                foreach (var match in matches)
-                {
-                    match.ReplaceWithin(output);
-
-                    asset.AddRawFileReference(match.Url);
-                }
-                return output.ToString().AsStream();
-            };
         }
 
-        class UrlMatch
+        protected override CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset)
         {
-            public UrlMatch(IAsset asset, Match match)
+            return new CssFontUrlMatchTransformer(match, asset);
+        }
+
+        class CssFontUrlMatchTransformer : CssUrlMatchTransformer
+        {
+            public CssFontUrlMatchTransformer(Match match, IAsset asset)
+                : base(match, asset)
             {
-                sourceAsset = asset;
-                index = match.Index; 
-                length = match.Length;
-                path = match.Groups["path"].Value;
-                url = (path.StartsWith("/") ? "~" : "") + path + "." + match.Groups["extension"].Value;
-                extension = match.Groups["extension"].Value;
-                file = sourceAsset.SourceFile.Directory.GetFile(url);
             }
 
-            readonly IAsset sourceAsset;
-            readonly int index;
-            readonly int length;
-            readonly string path;
-            readonly string url;
-            readonly string extension;
-            readonly IFile file;
-
-            public string Url
+            protected override string GetContentType(string extension)
             {
-                get { return url; }
+                return "font/" + extension;
             }
 
-            string DataUri
+            public override void Transform(StringBuilder css)
             {
-                get
-                {
-                    return string.Format("url(data:{0};base64,{1})",
-                        ContentType,
-                        GetBase64EncodedData()
-                    );
-                }
-            }
-
-            string ContentType
-            {
-                get
-                {
-                    return "font/" + extension.ToLowerInvariant();
-                }
-            }
-
-            string GetBase64EncodedData()
-            {
-                using (var fileStream = file.OpenRead())
-                using (var temp = new MemoryStream())
-                using (var base64Stream = new CryptoStream(temp, new ToBase64Transform(), CryptoStreamMode.Write))
-                {
-                    fileStream.CopyTo(base64Stream);
-                    base64Stream.Flush();
-                    temp.Position = 0;
-                    var reader = new StreamReader(temp);
-                    return reader.ReadToEnd();
-                }
-            }
-
-            public void ReplaceWithin(StringBuilder output)
-            {
-                if (!file.Exists) return;
-                
-                output.Remove(index, length);
-                output.Insert(index, DataUri);
+                css.Remove(MatchIndex, MatchLength);
+                css.Insert(MatchIndex, "url(" + DataUri + ")");
             }
         }
     }
