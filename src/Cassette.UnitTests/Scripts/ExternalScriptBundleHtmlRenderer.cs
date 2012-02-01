@@ -31,6 +31,19 @@ namespace Cassette.Scripts
         }
 
         [Fact]
+        public void WhenRenderExternalScriptBundleWithHtmlAttributes_ThenHtmlIsScriptElementWithExtraAttributes()
+        {
+            var bundle = new ExternalScriptBundle("http://test.com/");
+            bundle.HtmlAttributes["class"] = "foo";
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
+
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\" class=\"foo\"></script>");
+        }
+
+        [Fact]
         public void WhenRenderExternalScriptBundleWithLocalAssetsAndIsDebugMode_ThenFallbackRendererUsed()
         {
             var bundle = new ExternalScriptBundle("http://test.com/", "test");
