@@ -11,13 +11,18 @@ namespace Cassette.Stylesheets
 {
     class CssImageToDataUriTransformer : IAssetTransformer
     {
-        public Func<string, bool> WhitelistFunc { get; set; }
-        
-        static readonly Regex UrlRegex = new Regex(
-            @"\b url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)",
-            RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
-        );
-        
+        readonly Func<string, bool> shouldTransformUrl;
+
+        public CssImageToDataUriTransformer(Func<string, bool> shouldTransformUrl)
+        {
+            if (shouldTransformUrl == null)
+            {
+                throw new ArgumentNullException("shouldTransformUrl");
+            }
+
+            this.shouldTransformUrl = shouldTransformUrl;
+        }
+
         static readonly Regex BackgroundUrlRegex = new Regex(
             @"\bbackground .* (?<value>url \s* \( \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* \)?) .* ;",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
@@ -28,11 +33,12 @@ namespace Cassette.Stylesheets
             return delegate
             {
                 var css = openSourceStream().ReadToEnd();
-                var matches = BackgroundUrlRegex.Matches(css)
-                                      .Cast<Match>()
-                                      .Select(match => new UrlMatch(asset, match))
-                                      .Where(match => WhitelistFunc(match.Url))
-                                      .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
+                var matches = BackgroundUrlRegex
+                    .Matches(css)
+                    .Cast<Match>()
+                    .Select(match => new UrlMatch(asset, match))
+                    .Where(match => shouldTransformUrl(match.Url))
+                    .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
                 
                 var output = new StringBuilder(css);
                 foreach (var match in matches)
@@ -51,7 +57,6 @@ namespace Cassette.Stylesheets
             {
                 sourceAsset = asset;
                 index = match.Index;
-                length = match.Length;
                 property = match.Value;
                 valueIndex = match.Groups["value"].Index;
                 valueLength = match.Groups["value"].Length;
@@ -63,7 +68,6 @@ namespace Cassette.Stylesheets
             
             readonly IAsset sourceAsset;
             readonly int index;
-            readonly int length;
             readonly string property;
             readonly int valueIndex;
             readonly int valueLength;
@@ -71,7 +75,7 @@ namespace Cassette.Stylesheets
             readonly string url;
             readonly string extension;
             readonly IFile file;
-            
+
             public string Url
             {
                 get { return url; }
@@ -123,19 +127,26 @@ namespace Cassette.Stylesheets
                 {
                     return;
                 }
-                
-                // Internet Explorer 8 will not render images larger than 32 kB
-                if (file.Exists
-                    && file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite).Length > 32000)
+
+                // Internet Explorer 8 will not render images larger than 32768 bytes
+                if (FileIsTooLargeForInternetExplorer8())
                 {
                     return;
                 }
                 
                 Trace.Source.TraceInformation(string.Format("Embedded image {0}", path));
-                
+
                 output.Remove(valueIndex, valueLength);
                 output.Insert(valueIndex, DataUri);
-                output.Insert(index, property + "\n");
+                output.Insert(index, property);
+            }
+
+            bool FileIsTooLargeForInternetExplorer8()
+            {
+                using (var stream = file.OpenRead())
+                {
+                    return stream.Length > 32768;
+                }
             }
         }
     }

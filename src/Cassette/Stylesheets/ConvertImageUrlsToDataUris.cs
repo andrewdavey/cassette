@@ -5,8 +5,13 @@ namespace Cassette.Stylesheets
 {
     public class ConvertImageUrlsToDataUris : AddTransformerToAssets
     {
-        public ConvertImageUrlsToDataUris(Func<string, bool> whitelistFunc = null)
-            : base(new CssImageToDataUriTransformer() { WhitelistFunc = whitelistFunc ?? (whitelistPath => true) })
+        public ConvertImageUrlsToDataUris()
+            : base(new CssImageToDataUriTransformer(anyUrl => true))
+        {   
+        }
+
+        public ConvertImageUrlsToDataUris(Func<string, bool> shouldTransformUrl)
+            : base(new CssImageToDataUriTransformer(shouldTransformUrl))
         {
         }
     }
