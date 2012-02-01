@@ -29,11 +29,14 @@ namespace Cassette
         /// <returns>This dictionary.</returns>
         public HtmlAttributeDictionary Add(object values)
         {
-            if (values == null)
-            {
-                return this;
-            }
+            if (values == null) return this;
 
+            AddForEachPropertyOfObject(values);
+            return this;
+        }
+
+        void AddForEachPropertyOfObject(object values)
+        {
             var properties = TypeDescriptor.GetProperties(values);
             foreach (PropertyDescriptor property in properties)
             {
@@ -41,8 +44,6 @@ namespace Cassette
                 var name = property.Name.Replace('_', '-');
                 Add(name, propertyValue);
             }
-
-            return this;
         }
 
         /// <summary>
@@ -65,8 +66,7 @@ namespace Cassette
         /// <exception cref="ArgumentException">Thrown if name is invalid.</exception>
         public HtmlAttributeDictionary Add(string name, object value)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Name is required.", "name");
+            RequireAttributeName(name);
 
             attributeStorage.Add(SanitizeName(name), SanitizeValue(value));
 
@@ -81,8 +81,7 @@ namespace Cassette
         /// <exception cref="ArgumentException">Thrown if name is invalid.</exception>
         public bool ContainsAttribute(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Name is required.", "name");
+            RequireAttributeName(name);
 
             return attributeStorage.ContainsKey(SanitizeName(name));
         }
@@ -95,8 +94,7 @@ namespace Cassette
         /// <exception cref="ArgumentException">Thrown if name is invalid.</exception>
         public bool Remove(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Name is required.", "name");
+            RequireAttributeName(name);
 
             return attributeStorage.Remove(SanitizeName(name));
         }
@@ -105,12 +103,20 @@ namespace Cassette
         {
             get
             {
+                RequireAttributeName(name);
                 return attributeStorage[SanitizeName(name)];
             }
             set
             {
+                RequireAttributeName(name);
                 attributeStorage[SanitizeName(name)] = SanitizeValue(value);
             }
+        }
+
+        void RequireAttributeName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Attribute name is required.", "name");
         }
 
         /// <summary>

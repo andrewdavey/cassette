@@ -123,4 +123,106 @@ namespace Cassette
 
     }
 
+    public class HtmlAttributeDictionary_ContainsAttribute_Tests
+    {
+        [Fact]
+        public void GivenEmptyDictionary_ThenContainsAttributeIsFalse()
+        {
+            var target = new HtmlAttributeDictionary();
+            target.ContainsAttribute("example").ShouldBeFalse();
+        }
+
+        [Fact]
+        public void GivenAttributeInDictionary_ThenContainsAttributeIsTrue()
+        {
+            var target = new HtmlAttributeDictionary { "example" };
+            target.ContainsAttribute("example").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void WhenAttributeNameIsNull_ThenContainsAttributesThrowsException()
+        {
+            var target = new HtmlAttributeDictionary();
+            Assert.Throws<ArgumentException>(
+                () => target.ContainsAttribute(null)
+            );
+        }
+
+        [Fact]
+        public void WhenAttributeNameIsEmpty_ThenContainsAttributesThrowsException()
+        {
+            var target = new HtmlAttributeDictionary();
+            Assert.Throws<ArgumentException>(
+                () => target.ContainsAttribute("")
+            );
+        }
+    }
+
+    public class HtmlAttributesDictionary_Remove_Tests
+    {
+        [Fact]
+        public void GivenDictionaryWithAttribute_WhenRemoveAttributeByName_ThenReturnTrue()
+        {
+            var target = new HtmlAttributeDictionary { "test" };
+            var removed = target.Remove("test");
+            removed.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenDictionaryWithAttribute_WhenRemoveAttributeWithDifferentName_ThenReturnFalse()
+        {
+            var target = new HtmlAttributeDictionary { "test" };
+            var removed = target.Remove("something-else");
+            removed.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void WhenRemoveAttributeWithNullName_ThenThrowException()
+        {
+            var target = new HtmlAttributeDictionary();
+            Assert.Throws<ArgumentException>(
+                () => target.Remove(null)
+            );
+        }
+
+        [Fact]
+        public void WhenRemoveAttributeWithEmptyName_ThenThrowException()
+        {
+            var target = new HtmlAttributeDictionary();
+            Assert.Throws<ArgumentException>(
+                () => target.Remove("")
+            );
+        }
+    }
+
+    public class HtmlAttributeDictionary_Indexer_Tests
+    {
+        [Fact]
+        public void CanSetAndGetValueByName()
+        {
+            var target = new HtmlAttributeDictionary();
+
+            target["test"] = "value";
+
+            target["test"].ShouldEqual("value");
+        }
+
+        [Fact]
+        public void WhenSetAttributeWithNullName_ThenThrowException()
+        {
+            var target = new HtmlAttributeDictionary();
+            Assert.Throws<ArgumentException>(
+                () => target[null] = "value"
+            );
+        }
+
+        [Fact]
+        public void WhenGetAttributeWithNullName_ThenThrowException()
+        {
+            var target = new HtmlAttributeDictionary();
+            Assert.Throws<ArgumentException>(
+                () => { var _ = target[null]; }
+            );
+        }
+    }
 }
