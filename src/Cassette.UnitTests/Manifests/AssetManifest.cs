@@ -12,5 +12,13 @@ namespace Cassette.Manifests
             var manifest2 = new AssetManifest { Path = "~/path" };
             manifest1.Equals(manifest2).ShouldBeTrue();
         }
+
+        [Fact]
+        public void AssetsManifestsWithSamePathButDifferentlyCasedAreEqual()
+        {
+            var manifest1 = new AssetManifest { Path = "~/PATH" };
+            var manifest2 = new AssetManifest { Path = "~/path" };
+            manifest1.Equals(manifest2).ShouldBeTrue();
+        }
     }
 }

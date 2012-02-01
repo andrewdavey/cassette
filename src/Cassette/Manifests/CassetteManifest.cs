@@ -5,7 +5,10 @@ using Cassette.IO;
 
 namespace Cassette.Manifests
 {
+    // There is no sensible GetHashCode for this object because the BundlesManifests list could mutate.
+#pragma warning disable 659
     class CassetteManifest
+#pragma warning restore 659
     {
         public CassetteManifest()
         {
@@ -37,14 +40,19 @@ namespace Cassette.Manifests
             );
         }
 
-        #pragma warning disable 659 // There is no sensible GetHashCode for this object because the BundlesManifests list could mutate.
+// ReSharper disable CSharpWarnings::CS0659
         public override bool Equals(object obj)
+// ReSharper restore CSharpWarnings::CS0659
         {
             var other = obj as CassetteManifest;
             return other != null 
                 && Version == other.Version 
-                && BundleManifests.SequenceEqual(other.BundleManifests);
+                && BundleManifestsEqual(other);
         }
-        #pragma warning restore 659
+
+        bool BundleManifestsEqual(CassetteManifest other)
+        {
+            return BundleManifests.OrderBy(b => b.Path).SequenceEqual(other.BundleManifests.OrderBy(b => b.Path));
+        }
     }
 }

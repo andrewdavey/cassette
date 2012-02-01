@@ -66,7 +66,7 @@ namespace Cassette.Manifests
             var other = obj as BundleManifest;
             return other != null
                    && GetType() == other.GetType()
-                   && Path.Equals(other.Path)
+                   && Path.Equals(other.Path, StringComparison.OrdinalIgnoreCase)
                    && AssetsEqual(other.Assets);
         }
 

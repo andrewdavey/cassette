@@ -18,7 +18,7 @@ namespace Cassette.Manifests
         public override bool Equals(object obj)
         {
             var other = obj as AssetManifest;
-            return other != null && Path.Equals(other.Path);
+            return other != null && Path.Equals(other.Path, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()

@@ -59,6 +59,28 @@ namespace Cassette.Manifests
         }
 
         [Fact]
+        public void CassetteManifestsAreEqualIfBundleManifestsAreEqualButInDifferentOrder()
+        {
+            var manifest1 = new CassetteManifest
+            {
+                BundleManifests =
+                    {
+                        new ScriptBundleManifest { Path = "~/A", Hash = new byte[0] },
+                        new ScriptBundleManifest { Path = "~/B", Hash = new byte[0] }
+                    }
+            };
+            var manifest2 = new CassetteManifest
+            {
+                BundleManifests =
+                    {
+                        new ScriptBundleManifest { Path = "~/B", Hash = new byte[0] },
+                        new ScriptBundleManifest { Path = "~/A", Hash = new byte[0] }
+                    }
+            };
+            manifest1.ShouldEqual(manifest2);
+        }
+
+        [Fact]
         public void CreateBundlesReturnsOneBundlePerBundleManifest()
         {
             var manifest = new CassetteManifest("", new BundleManifest[]

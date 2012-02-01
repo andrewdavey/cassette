@@ -27,6 +27,14 @@ namespace Cassette.Manifests
         }
 
         [Fact]
+        public void BundleManifestsWithSamePathsButDiffentCasingAreEqual()
+        {
+            var manifest1 = new TestableBundleManifest { Path = "~/PATH" };
+            var manifest2 = new TestableBundleManifest { Path = "~/path" };
+            manifest1.Equals(manifest2).ShouldBeTrue();
+        }
+
+        [Fact]
         public void BundleManifestsOfDifferentTypeAreNotEqual()
         {
             BundleManifest manifest1 = new StylesheetBundleManifest { Path = "~/path" };
