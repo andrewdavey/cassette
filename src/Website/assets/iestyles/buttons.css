@@ -5,3 +5,7 @@
 a {
     display: inline-block; /* Fixes issue with opacity on links */
 }
+
+span.gitforked-bubble a {
+    display: inline; /* Fixes issue with alignment of gitforked button caused by the style above*/
+}
