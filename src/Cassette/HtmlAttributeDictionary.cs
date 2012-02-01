@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using System.Text;
 
 namespace Cassette
 {
     /// <remarks>
-    /// Class that contains a collection of html attribute name/value pairs.
+    /// Contains a collection of html attribute name/value pairs.
     /// </remarks>
     public class HtmlAttributeDictionary : IEnumerable<KeyValuePair<string, string>>
     {
@@ -34,15 +33,13 @@ namespace Cassette
             {
                 return this;
             }
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(values);
 
+            var properties = TypeDescriptor.GetProperties(values);
             foreach (PropertyDescriptor property in properties)
             {
-                object propertyValue = property.GetValue(values);
-
+                var propertyValue = property.GetValue(values);
                 var name = property.Name.Replace('_', '-');
-
-                this.Add(name, propertyValue);
+                Add(name, propertyValue);
             }
 
             return this;
@@ -132,26 +129,34 @@ namespace Cassette
         {
             get
             {
-                // Short-circuit on empty dictionary
                 if (attributeStorage.Count == 0)
                     return string.Empty;
 
-                // Construct attribute Line from dictionary entries
-
-                StringBuilder sb = new StringBuilder(256);
-
-                foreach (KeyValuePair<string, string> attribute in attributeStorage)
-                {
-                    if (attribute.Value == null)
-                        sb.AppendFormat(" {0}", attribute.Key);
-                    else
-                        sb.AppendFormat(" {0}=\"{1}\"", attribute.Key, attribute.Value);
-                }
-                return sb.ToString();
+                return BuildAttributesString();
             }
         }
 
-        #region IEnumerable<KeyValuePair<string, string>> Implementation
+        string BuildAttributesString()
+        {
+            var builder = new StringBuilder(256);
+            foreach (var attribute in attributeStorage)
+            {
+                AppendAttribute(builder, attribute);
+            }
+            return builder.ToString();
+        }
+
+        void AppendAttribute(StringBuilder builder, KeyValuePair<string, string> attribute)
+        {
+            if (attribute.Value == null)
+            {
+                builder.AppendFormat(" {0}", attribute.Key);
+            }
+            else
+            {
+                builder.AppendFormat(" {0}=\"{1}\"", attribute.Key, attribute.Value);
+            }
+        }
 
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="HtmlAttributeDictionary"/>.
@@ -171,28 +176,26 @@ namespace Cassette
             return attributeStorage.GetEnumerator();
         }
 
-        #endregion
-
-        #region Private Helpers
-
-        private static string SanitizeName(string name)
+        string SanitizeName(string name)
         {
             // XHTML requires lowercase attribute names
             // W3C recommends lowercase attribute names in the HTML 4 recommendation.
             return name.Trim().ToLowerInvariant();
         }
 
-        private static string SanitizeValue(object value)
+        string SanitizeValue(object value)
         {
-            if (value == null )
+            if (value == null)
                 return null;
 
             // Values should be supplied already escaped
             // But if a quote makes its way in, be a good citizen and escape it.
-            return value.ToString().Replace("\"", "&quot;");
+            return EscapeDoubleQuotes(value.ToString());
         }
 
-        #endregion
-
+        string EscapeDoubleQuotes(string value)
+        {
+            return value.Replace("\"", "&quot;");
+        }
     }
 }
