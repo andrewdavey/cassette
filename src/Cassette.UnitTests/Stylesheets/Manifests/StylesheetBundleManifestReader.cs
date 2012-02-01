@@ -15,7 +15,8 @@ namespace Cassette.Stylesheets.Manifests
                 "StylesheetBundle",
                 new XAttribute("Path", "~"),
                 new XAttribute("Hash", ""),
-                new XAttribute("Media", "expected-media")
+                new XAttribute("Media", "expected-media"),
+                new XAttribute("Condition", "expected-condition")
             );
             ReadManifestFromElement();
         }
@@ -32,6 +33,20 @@ namespace Cassette.Stylesheets.Manifests
             element.SetAttributeValue("Media", null);
             ReadManifestFromElement();
             readManifest.Media.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ReadManifestConditionEqualsConditionAttribute()
+        {
+            readManifest.Condition.ShouldEqual("expected-condition");
+        }
+
+        [Fact]
+        public void ReadManifestConditionIsNullIfConditionAttributeMissing()
+        {
+            element.SetAttributeValue("Condition", null);
+            ReadManifestFromElement();
+            readManifest.Condition.ShouldBeNull();
         }
 
         void ReadManifestFromElement()

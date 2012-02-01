@@ -13,6 +13,7 @@ namespace Cassette.Stylesheets.Manifests
 
         protected override void InitializeBundleManifest(T manifest, XElement manifestElement)
         {
+            manifest.Condition = manifestElement.AttributeValueOrNull("Condition");
             manifest.Media = manifestElement.AttributeValueOrNull("Media");
         }
     }

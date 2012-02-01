@@ -14,6 +14,10 @@ namespace Cassette.Stylesheets.Manifests
         protected override XElement CreateElement()
         {
             var element = base.CreateElement();
+            if (Manifest.Condition != null)
+            {
+                element.Add(new XAttribute("Condition", Manifest.Condition));
+            }
             if (Manifest.Media != null)
             {
                 element.Add(new XAttribute("Media", Manifest.Media));

@@ -10,6 +10,7 @@ namespace Cassette.Stylesheets.Manifests
         {
             var manifest = base.BuildManifest(bundle);
             manifest.Media = bundle.Media;
+            manifest.Condition = bundle.Condition;
             return manifest;
         }
     }

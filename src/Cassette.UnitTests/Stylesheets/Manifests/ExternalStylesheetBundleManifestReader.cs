@@ -17,7 +17,8 @@ namespace Cassette.Stylesheets.Manifests
                 new XAttribute("Path", "~"),
                 new XAttribute("Hash", ""),
                 new XAttribute("Url", "http://example.com/"),
-                new XAttribute("Media", "MEDIA")
+                new XAttribute("Media", "MEDIA"),
+                new XAttribute("Condition", "CONDITION")
             );
             ReadManifestFromElement();
         }
@@ -41,6 +42,12 @@ namespace Cassette.Stylesheets.Manifests
         public void ReadManifestMediaEqualsMediaAttribute()
         {
             readManifest.Media.ShouldEqual("MEDIA");
+        }
+
+        [Fact]
+        public void ReadManifestConditionEqualsConditionAttribute()
+        {
+            readManifest.Condition.ShouldEqual("CONDITION");
         }
 
         void ReadManifestFromElement()

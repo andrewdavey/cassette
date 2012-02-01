@@ -18,5 +18,19 @@ namespace Cassette.Stylesheets.Manifests
 
             manifest.Media.ShouldEqual(bundle.Media);
         }
+
+        [Fact]
+        public void ManifestConditionEqualsBundleCondition()
+        {
+            var bundle = new StylesheetBundle("~")
+            {
+                Condition = "CONDITION"
+            };
+
+            var builder = new StylesheetBundleManifestBuilder();
+            var manifest = builder.BuildManifest(bundle);
+
+            manifest.Condition.ShouldEqual(bundle.Condition);
+        }
     }
 }

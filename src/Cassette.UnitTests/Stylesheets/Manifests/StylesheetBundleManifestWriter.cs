@@ -15,7 +15,8 @@ namespace Cassette.Stylesheets.Manifests
             {
                 Path = "~",
                 Hash = new byte[0],
-                Media = "MEDIA"
+                Media = "MEDIA",
+                Condition = "CONDITION"
             };
 
             WriteToElement();
@@ -33,6 +34,20 @@ namespace Cassette.Stylesheets.Manifests
             manifest.Media = null;
             WriteToElement();
             element.Attribute("Media").ShouldBeNull();
+        }
+
+        [Fact]
+        public void ConditionAttributeEqualsManifestCondition()
+        {
+            element.Attribute("Condition").Value.ShouldEqual(manifest.Condition);
+        }
+
+        [Fact]
+        public void GivenConditionIsNullThenElementHasNoConditionAttribute()
+        {
+            manifest.Condition = null;
+            WriteToElement();
+            element.Attribute("Condition").ShouldBeNull();
         }
 
         void WriteToElement()
