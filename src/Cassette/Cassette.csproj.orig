@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cassette</RootNamespace>
+    <AssemblyName>Cassette</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxMin, Version=4.37.4345.34101, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.37.4345.34101\lib\net20\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jurassic.2.1.0\lib\net40\Jurassic.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.4.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="BundleProcessing\AssignHash.cs" />
+    <Compile Include="BundleReferenceCollector.cs" />
+    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
+    <Compile Include="IExternalBundle.cs" />
+    <Compile Include="Manifests\AssetManifestBuilder.cs" />
+    <Compile Include="Manifests\AssetReferenceManifest.cs" />
+    <Compile Include="Manifests\CassetteManifestCache.cs" />
+    <Compile Include="Manifests\ICassetteManifestCache.cs" />
+    <Compile Include="Manifests\InvalidCassetteManifestException.cs" />
+    <Compile Include="Manifests\AssetFromManifest.cs" />
+    <Compile Include="Manifests\AssetManifest.cs" />
+    <Compile Include="Manifests\AssetManifestReader.cs" />
+    <Compile Include="BundleFactoryExtensions.cs" />
+    <Compile Include="Manifests\AssetManifestWriter.cs" />
+    <Compile Include="Manifests\BundleManifest.cs" />
+    <Compile Include="Manifests\BundleManifestBuilder.cs" />
+    <Compile Include="Manifests\BundleManifestReader.cs" />
+    <Compile Include="Manifests\CassetteManifestReader.cs" />
+    <Compile Include="Manifests\CassetteManifestWriter.cs" />
+    <Compile Include="Manifests\BundleManifestWriter.cs" />
+    <Compile Include="BundleProcessing\AssignContentType.cs" />
+    <Compile Include="BundleProcessing\Comment.cs" />
+    <Compile Include="BundleProcessing\ICommentParser.cs" />
+    <Compile Include="BundleProcessing\ParseReferences.cs" />
+    <Compile Include="BundleProcessing\ReferenceParser.cs" />
+<<<<<<< HEAD
+    <Compile Include="Manifests\CachedBundleContent.cs" />
+=======
+>>>>>>> Large refactor of the start-up code. Introduces the CassetteApplicationContainerFactory to better encapsulate this task.
+    <Compile Include="CassetteApplicationContainerFactoryBase.cs" />
+    <Compile Include="Configuration\CassetteConfigurationSection.cs" />
+    <Compile Include="Configuration\ConventionalMinifiedFileFilter.cs" />
+    <Compile Include="Configuration\LocalAssetSettings.cs" />
+    <Compile Include="AssemblyScanningCassetteConfigurationFactory.cs" />
+    <Compile Include="FileAsset.cs" />
+    <Compile Include="AssetBase.cs" />
+    <Compile Include="AssetFinder.cs" />
+    <Compile Include="BundleContainerExtensions.cs" />
+    <Compile Include="BundleFactoryBase.cs" />
+    <Compile Include="CassetteApplicationContainer.cs" />
+    <Compile Include="Configuration\FileSearch.cs" />
+    <Compile Include="Configuration\BundleCollection.cs" />
+    <Compile Include="Configuration\BundleCollectionExtensions.cs" />
+    <Compile Include="Configuration\BundleContainerFactory.cs" />
+    <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
+    <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
+    <Compile Include="Configuration\CassetteSettings.cs" />
+    <Compile Include="Configuration\IBundleContainerFactory.cs" />
+    <Compile Include="Configuration\ICassetteConfiguration.cs" />
+    <Compile Include="HtmlTemplates\CompileJQueryTmpl.cs" />
+    <Compile Include="HtmlTemplates\CompileKnockoutJQueryTmpl.cs" />
+    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestBuilder.cs" />
+    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifest.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
+    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestReader.cs" />
+    <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplatesWithJQueryTmpl.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
+    <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
+    <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
+    <Compile Include="HtmlTemplates\KnockoutJQueryTmplCompiler.cs" />
+    <Compile Include="HtmlTemplates\RemoteHtmlTemplateBundleRenderer.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplatePipeline.cs" />
+    <Compile Include="HtmlTemplates\JQueryTmplCompiler.cs" />
+    <Compile Include="HtmlTemplates\JQueryTmplPipeline.cs" />
+    <Compile Include="HtmlTemplates\KnockoutJQueryTmplPipeline.cs" />
+    <Compile Include="Configuration\IFileSearch.cs" />
+    <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptElement.cs" />
+    <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
+    <Compile Include="IBundleHtmlRenderer.cs" />
+    <Compile Include="ICassetteApplicationContainer.cs" />
+    <Compile Include="ICassetteConfigurationFactory.cs" />
+    <Compile Include="Interop\ActiveScriptException.cs" />
+    <Compile Include="Interop\ActiveScriptParseWrapper.cs" />
+    <Compile Include="Interop\ChakraJavaScriptEngine.cs" />
+    <Compile Include="Interop\IActiveScript.cs" />
+    <Compile Include="Interop\IActiveScriptError.cs" />
+    <Compile Include="Interop\IActiveScriptParse32.cs" />
+    <Compile Include="Interop\IActiveScriptParse64.cs" />
+    <Compile Include="Interop\IActiveScriptParseWrapper.cs" />
+    <Compile Include="Interop\IActiveScriptSite.cs" />
+    <Compile Include="Interop\IEJavaScriptEngine.cs" />
+    <Compile Include="Interop\JavaScriptEngine.cs" />
+    <Compile Include="Interop\ScriptInfoFlags.cs" />
+    <Compile Include="Interop\ScriptInterruptFlags.cs" />
+    <Compile Include="Interop\ScriptItemFlags.cs" />
+    <Compile Include="Interop\ScriptState.cs" />
+    <Compile Include="Interop\ScriptTextFlags.cs" />
+    <Compile Include="Interop\ScriptThreadState.cs" />
+    <Compile Include="Interop\ScriptTypeLibFlags.cs" />
+    <Compile Include="IO\FileExtensions.cs" />
+    <Compile Include="IO\FileSystemDirectory.cs" />
+    <Compile Include="IO\IFile.cs" />
+    <Compile Include="IO\IsolatedStorageDirectory.cs" />
+    <Compile Include="IO\NonExistentFile.cs" />
+    <Compile Include="IPlaceholderTracker.cs" />
+    <Compile Include="IReferenceBuilder.cs" />
+    <Compile Include="DisposableLazy.cs" />
+    <Compile Include="IUrlGenerator.cs" />
+    <Compile Include="BundleDescriptor.cs" />
+    <Compile Include="BundleProcessing\AddTransformerToAssets.cs" />
+    <Compile Include="BundleProcessing\MutablePipeline.cs" />
+    <Compile Include="IUrlModifier.cs" />
+    <Compile Include="Manifests\CassetteManifest.cs" />
+    <Compile Include="NullPlaceholderTracker.cs" />
+    <Compile Include="PlaceholderTracker.cs" />
+    <Compile Include="ReferenceBuilder.cs" />
+    <Compile Include="Scripts\AssignScriptRenderer.cs" />
+    <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
+    <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifest.cs" />
+    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestBuilder.cs" />
+    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
+    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestWriter.cs" />
+    <Compile Include="Scripts\HtmlConstants.cs" />
+    <Compile Include="Scripts\IECoffeeScriptCompiler.cs" />
+    <Compile Include="Scripts\JavaScriptCommentParser.cs" />
+    <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
+    <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
+    <Compile Include="Scripts\PageDataScriptBundle.cs" />
+    <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\Manifests\ScriptBundleManifest.cs" />
+    <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
+    <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
+    <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
+    <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
+    <Compile Include="Stylesheets\ConvertFontUrlsToDataUris.cs" />
+    <Compile Include="Stylesheets\CssUrlMatchTransformer.cs" />
+    <Compile Include="Stylesheets\CssUrlToDataUriTransformer.cs" />
+    <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
+    <Compile Include="Stylesheets\CssFontToDataUriTransformer.cs" />
+    <Compile Include="Stylesheets\CssCommentParser.cs" />
+    <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
+    <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifest.cs" />
+    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
+    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
+    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestWriter.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\HtmlConstants.cs" />
+    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifest.cs" />
+    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestBuilder.cs" />
+    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />
+    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
+    <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\StylesheetPipeline.cs" />
+    <Compile Include="ICompiler.cs" />
+    <Compile Include="Scripts\ScriptPipeline.cs" />
+    <Compile Include="BundleDescriptorReader.cs" />
+    <Compile Include="Scripts\ExternalScriptBundle.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundle.cs" />
+    <Compile Include="Stylesheets\CompileLess.cs" />
+    <Compile Include="BundleProcessing\CompileAsset.cs" />
+    <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
+    <Compile Include="Stylesheets\ExpandCssUrls.cs" />
+    <Compile Include="Stylesheets\ParseLessReferences.cs" />
+    <Compile Include="Trace.cs" />
+    <Compile Include="CassetteApplicationBase.cs" />
+    <Compile Include="Scripts\InlineScriptBundle.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
+    <Compile Include="ICassetteApplication.cs" />
+    <Compile Include="IO\IsolatedStorageFile.cs" />
+    <Compile Include="BundleContainsPathPredicate.cs" />
+    <Compile Include="Stylesheets\MicrosoftStylesheetMinifier.cs" />
+    <Compile Include="Stylesheets\ParseCssReferences.cs" />
+    <Compile Include="AssetReference.cs" />
+    <Compile Include="AssetReferenceException.cs" />
+    <Compile Include="AssetReferenceType.cs" />
+    <Compile Include="Scripts\CompileCoffeeScript.cs" />
+    <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
+    <Compile Include="IO\FileSystemFile.cs" />
+    <Compile Include="IAsset.cs" />
+    <Compile Include="IAssetTransformer.cs" />
+    <Compile Include="IBundleVisitor.cs" />
+    <Compile Include="IO\IDirectory.cs" />
+    <Compile Include="IBundleContainer.cs" />
+    <Compile Include="IBundleFactory.cs" />
+    <Compile Include="BundleProcessing\IBundleProcessor.cs" />
+    <Compile Include="BundleProcessing\ConcatenatedAsset.cs" />
+    <Compile Include="Stylesheets\LessCompileException.cs" />
+    <Compile Include="Stylesheets\LessCompiler.cs" />
+    <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
+    <Compile Include="BundleProcessing\MinifyAssets.cs" />
+    <Compile Include="Bundle.cs" />
+    <Compile Include="BundleContainer.cs" />
+    <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
+    <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
+    <Compile Include="Scripts\ScriptBundle.cs" />
+    <Compile Include="Scripts\ScriptBundleFactory.cs" />
+    <Compile Include="BundleProcessing\SortAssetsByDependency.cs" />
+    <Compile Include="Stylesheets\StylesheetBundle.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
+    <Compile Include="Utilities\ByteArrayExtensions.cs" />
+    <Compile Include="Scripts\JurassicCoffeeScriptCompiler.cs" />
+    <Compile Include="Scripts\CoffeeScriptCompileException.cs" />
+    <Compile Include="Utilities\JavaScriptUtilities.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\Graph.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\PathUtilities.cs" />
+    <Compile Include="Utilities\StreamExtensions.cs" />
+    <Compile Include="Utilities\StringExtensions.cs" />
+    <Compile Include="VirtualDirectoryPrepender.cs" />
+    <Compile Include="Utilities\XElementExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Cassette.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Resources\coffeescript.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\less.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\jqueryTmplCompiler.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\jqueryTmplKnockout.js" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
