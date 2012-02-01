@@ -1,0 +1,20 @@
+﻿@{
+    Layout = null;
+    Bundles.Reference("styles/embeddables");
+}
+<!doctype html>
+<html>
+<head>
+    <title>Embeddables - Images</title>
+    @Bundles.RenderStylesheets()
+</head>
+<body>
+    <ul>
+        <li class="image-embed">Embedded background image</li>
+        <li class="image-wrongdir">Normal background image (won't embed, wrong directory)</li>
+        <li class="image-toobig">Normal background image (won't embed, over 32 kB)</li>
+        <li class="font-embed">Embedded font</li>
+        <li class="font-wrongdir">Normal font (won't embed, wrong directory)</li>
+    </ul>
+</body>
+</html>
