@@ -19,11 +19,12 @@ namespace Cassette.HtmlTemplates
             {
                 var template = openSourceStream().ReadToEnd();
                 var scriptElement = String.Format(
-                    "<script id=\"{0}\" type=\"{1}\">{2}</script>",
+                    "<script id=\"{0}\" type=\"{1}\"{2}>{3}</script>",
                     bundle.GetTemplateId(asset),
                     bundle.ContentType,
+                    bundle.HtmlAttributes.CombinedAttributes,
                     template
-                    );
+                );
                 return scriptElement.AsStream();
             };
         }

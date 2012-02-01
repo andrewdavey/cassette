@@ -1,5 +1,4 @@
-﻿
-namespace Cassette.HtmlTemplates
+﻿namespace Cassette.HtmlTemplates
 {
     class RemoteHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
     {

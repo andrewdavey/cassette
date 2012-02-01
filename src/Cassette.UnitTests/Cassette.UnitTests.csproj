@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
+    <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
     <Compile Include="Manifests\AssetManifestReader.cs" />
