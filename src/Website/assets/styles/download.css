@@ -20,6 +20,11 @@
     background-position: 148px 9px;
 }
 
+.nuget-area code {
+    font-size: 1.3em;
+    padding: 0 .2em;
+}
+
 .github-area {
     padding: 10px 20px 20px 20px;
     width: 271px;

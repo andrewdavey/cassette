@@ -72,7 +72,7 @@
     <Compile Include="Views\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\iestyles\buttons.css" />
+    <Content Include="assets\iestyles\iestyles.css" />
     <Content Include="assets\scripts\disqus\disqus.js" />
     <Content Include="assets\scripts\jquery\jquery.js" />
     <Content Include="assets\scripts\home\tweets.js" />
