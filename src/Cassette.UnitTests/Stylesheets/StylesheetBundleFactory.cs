@@ -7,10 +7,16 @@ namespace Cassette.Stylesheets
 {
     public class StylesheetBundleFactory_Tests
     {
+        readonly StylesheetBundleFactory factory;
+
+        public StylesheetBundleFactory_Tests()
+        {
+            factory = new StylesheetBundleFactory();
+        }
+
         [Fact]
         public void CreateBundleReturnsStylesheetBundleWithDirectorySet()
         {
-            var factory = new StylesheetBundleFactory();
             var bundle = factory.CreateBundle(
                 "~/test",
                 Enumerable.Empty<IFile>(),
@@ -22,7 +28,6 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CreateBundleWithUrlCreatesExternalBundle()
         {
-            var factory = new StylesheetBundleFactory();
             var bundle = factory.CreateExternalBundle("http://test.com/test.css");
             bundle.ShouldBeType<ExternalStylesheetBundle>();
         }

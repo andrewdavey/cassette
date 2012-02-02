@@ -58,6 +58,7 @@ namespace Cassette.Configuration
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSearch, Action<T> customizeBundle)
             where T : Bundle
         {
+            applicationRelativePath = PathUtilities.AppRelative(applicationRelativePath);
             Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
 
             T bundle;

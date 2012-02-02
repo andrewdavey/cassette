@@ -96,6 +96,21 @@ namespace Cassette.Configuration
         }
 
         [Fact]
+        public void GivenFilePath_WhenAddFileWithoutPathTildePrefix_ThenBundleFactoryIsCalledWithBundleDescriptorHavingFullFilePathForAsset()
+        {
+            File.WriteAllText(Path.Combine(tempDirectory, "file.js"), "");
+            bundles.Add<TestableBundle>("file.js");
+
+            factory.Verify(f => f.CreateBundle(
+                "~/file.js",
+                It.IsAny<IEnumerable<IFile>>(),
+                It.Is<BundleDescriptor>(
+                    descriptor => descriptor.AssetFilenames.Single().Equals("~/file.js")
+                )
+            ));
+        }
+
+        [Fact]
         public void GivenPathThatDoesNotExist_WhenAddWith_ThenThrowException()
         {
             Assert.Throws<DirectoryNotFoundException>(
