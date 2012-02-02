@@ -109,7 +109,7 @@ namespace Cassette.Configuration
         {
             return new FileSearch
             {
-                Pattern = "*.htm;*.html",
+                Pattern = "*.htm;*.html;*.jst;*.tmpl;*.mustache",
                 SearchOption = SearchOption.AllDirectories
             };
         }

@@ -17,7 +17,10 @@ namespace Example
             
             bundles.AddPerSubDirectory<HtmlTemplateBundle>(
                 "HtmlTemplates",
-                bundle => bundle.Processor = new HtmlTemplatePipeline()
+                bundle => bundle.Processor = new HoganPipeline()
+                {
+                    Namespace = "templates"
+                }
             );
 
             bundles.Add<StylesheetBundle>("Styles", b => b.Processor = new StylesheetPipeline()
