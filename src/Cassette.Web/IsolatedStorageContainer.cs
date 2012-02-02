@@ -8,7 +8,9 @@ namespace Cassette.Web
     /// </summary>
     static class IsolatedStorageContainer
     {
-        static readonly DisposableLazy<IsolatedStorageFile> LazyStorage = new DisposableLazy<IsolatedStorageFile>(CreateIsolatedStorage);
+        // ReSharper disable ConvertClosureToMethodGroup because would cause this problem: http://stackoverflow.com/q/9113791/7011
+        static readonly DisposableLazy<IsolatedStorageFile> LazyStorage = new DisposableLazy<IsolatedStorageFile>(() => CreateIsolatedStorage());
+        // ReSharper restore ConvertClosureToMethodGroup
 
         static IsolatedStorageFile CreateIsolatedStorage()
         {
