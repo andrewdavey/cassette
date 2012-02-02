@@ -63,7 +63,7 @@ namespace Cassette.Configuration
 
             T bundle;
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
-            
+
             var source = bundleCollection.Settings.SourceDirectory;
             if (source.DirectoryExists(applicationRelativePath))
             {
@@ -159,7 +159,7 @@ namespace Cassette.Configuration
         public static void AddPerSubDirectory<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSearch, bool excludeTopLevel = false)
             where T : Bundle
         {
-            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, fileSearch, null, excludeTopLevel);            
+            AddPerSubDirectory<T>(bundleCollection, applicationRelativePath, fileSearch, null, excludeTopLevel);
         }
 
         /// <summary>
@@ -385,6 +385,28 @@ namespace Cassette.Configuration
                 if (customizeBundle != null) customizeBundle(bundle);
                 bundleCollection.Add(bundle);
             }
+        }
+
+
+        public static void AddFile<T>(this BundleCollection bundleCollection, string filePath, Action<T> customizeBundle = null)
+            where T : Bundle
+        {
+            var file = bundleCollection.Settings.SourceDirectory.GetFile(filePath);
+            if (file == null)
+            {
+                throw new DirectoryNotFoundException(string.Format("File or directory not found: \"{0}\"", filePath));
+            }
+
+            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+
+            var bundle = bundleFactory.CreateBundle(
+                file.FullPath,
+                new[] { file },
+                new BundleDescriptor { AssetFilenames = { "*" } }
+                );
+            if (customizeBundle != null) customizeBundle(bundle);
+            bundleCollection.Add(bundle);
+
         }
 
         static void TraceAssetFilePaths<T>(T bundle) where T : Bundle
