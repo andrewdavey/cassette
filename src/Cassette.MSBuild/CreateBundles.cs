@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.Configuration;
-using Cassette.IO;
+using Cassette.Manifests;
 using Cassette.Utilities;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace Cassette
+namespace Cassette.MSBuild
 {
     public class CreateBundles : AppDomainIsolatedTask
     {
@@ -20,69 +20,45 @@ namespace Cassette
         }
 
         /// <summary>
-        /// The source directory of the web application.
-        /// </summary>
-        public string SourceDir { get; set; }
-
-        /// <summary>
         /// The web application assembly filename.
         /// </summary>
         [Required]
         public string Assembly { get; set; }
 
-        /// <summary>
-        /// Bundle files are saved in this directory. This can be relative to <see cref="SourceDir"/> or an absolute path.
-        /// </summary>
         [Required]
-        public string OutputDir { get; set; }
+        public string Output { get; set; }
 
         public override bool Execute()
         {
-            AssignDefaults();
             if (!ValidateProperties()) return false;
 
             var configurations = CreateConfigurations();
-
             var settings = new CassetteSettings("")
             {
-                SourceDirectory = new FileSystemDirectory(SourceDir),
                 UrlGenerator = urlGenerator
             };
-
             var bundles = new BundleCollection(settings);
             foreach (var configuration in configurations)
             {
                 configuration.Configure(bundles, settings);
             }
+            foreach (var bundle in bundles)
+            {
+                bundle.Process(settings);
+            }
 
-            OutputBundles(bundles, settings);
+            var manifest = new CassetteManifest("", bundles.Select(bundle => bundle.CreateBundleManifest(true)));
+            using (var file = File.OpenWrite(Output))
+            {
+                var writer = new CassetteManifestWriter(file);
+                writer.Write(manifest);
+            }
 
             return true;
         }
 
-        void AssignDefaults()
-        {
-            if (string.IsNullOrEmpty(SourceDir))
-            {
-                SourceDir = Environment.CurrentDirectory;
-            }
-
-            if (!Path.IsPathRooted(OutputDir))
-            {
-                OutputDir = Path.Combine(SourceDir, OutputDir);
-            }
-
-            Assembly = Path.Combine(SourceDir, Assembly);
-        }
-
         bool ValidateProperties()
         {
-            if (!Directory.Exists(SourceDir))
-            {
-                Log.LogError("SourceDir not found: {0}", SourceDir);
-                return false;
-            }
-
             if (!File.Exists(Assembly))
             {
                 Log.LogError("Assembly not found: {0}", Assembly);
@@ -95,71 +71,8 @@ namespace Cassette
         IEnumerable<ICassetteConfiguration> CreateConfigurations()
         {
             var assembly = System.Reflection.Assembly.LoadFrom(Assembly);
-            return from type in assembly.GetExportedTypes()
-                   where type.IsClass && 
-                         !type.IsAbstract && 
-                         typeof(ICassetteConfiguration).IsAssignableFrom(type)
-                   select (ICassetteConfiguration)Activator.CreateInstance(type);
-        }
-
-        void OutputBundles(BundleCollection bundles, CassetteSettings settings)
-        {
-            foreach (var bundle in bundles)
-            {
-                OutputBundle(bundle, settings);
-            }
-        }
-
-        void OutputBundle(Bundle bundle, CassetteSettings settings)
-        {
-            Log.LogMessage("{0}: {1}", bundle.GetType().Name, bundle.Path);
-            foreach (var asset in bundle.Assets)
-            {
-                Log.LogMessage("  " + asset.SourceFile.FullPath);
-            }
-
-            bundle.Process(settings);
-
-            OutputBundleContent(bundle);
-            OutputRawFiles(SourceDir, bundle);
-        }
-
-        void OutputBundleContent(Bundle bundle)
-        {
-            var url = urlGenerator.CreateBundleUrl(bundle);
-            var outputFilename = Path.Combine(OutputDir, url);
-            EnsureDirectoryExists(outputFilename);
-            Log.LogMessage("Url: " + url);
-
-            using (var bundleStream = bundle.OpenStream())
-            using (var file = File.OpenWrite(outputFilename))
-            {
-                bundleStream.CopyTo(file);
-                file.Flush();
-            }
-        }
-
-        void OutputRawFiles(string root, Bundle bundle)
-        {
-            var collector = new CollectRawFileReferencePaths();
-            bundle.Accept(collector);
-            foreach (var path in collector.RawFilePaths)
-            {
-                OutputRawFile(root, path);
-            }
-        }
-
-        void OutputRawFile(string root, string path)
-        {
-            var filename = Path.Combine(root, path.TrimStart('~', '/'));
-            using (var fileStream = File.OpenRead(filename))
-            {
-                var hash = fileStream.ComputeSHA1Hash().ToHexString();
-                var url = urlGenerator.CreateRawFileUrl(path, hash);
-                var outputFilename = Path.Combine(OutputDir, url);
-                EnsureDirectoryExists(outputFilename);
-                File.Copy(filename, outputFilename, true);
-            }
+            var scanner = new AssemblyScanningCassetteConfigurationFactory(new[] { assembly });
+            return scanner.CreateCassetteConfigurations();
         }
 
         void EnsureDirectoryExists(string outputFilename)

@@ -8,7 +8,7 @@
     <ProjectGuid>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cassette</RootNamespace>
+    <RootNamespace>Cassette.MSBuild</RootNamespace>
     <AssemblyName>Cassette.MSBuild</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
