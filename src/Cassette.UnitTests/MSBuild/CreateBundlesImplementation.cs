@@ -1,5 +1,6 @@
 ﻿using System;
 using Cassette.Configuration;
+using Cassette.IO;
 using Cassette.Manifests;
 using Moq;
 using Should;
@@ -14,6 +15,7 @@ namespace Cassette.MSBuild
         readonly Mock<ICassetteManifestWriter> writer;
         Bundle bundle;
         CreateBundlesImplementation task;
+        IDirectory sourceDirectory;
 
         public CreateBundlesImplementation_Execute_Tests()
         {
@@ -64,10 +66,27 @@ namespace Cassette.MSBuild
             configuration.SettingsPassedToConfigure.UrlGenerator.ShouldBeSameAs(customUrlGenerator);
         }
 
+        [Fact]
+        public void ItAssignsSettingsUrlModifier()
+        {
+            SetupConfig();
+            task.Execute();
+            configuration.SettingsPassedToConfigure.UrlModifier.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void ItAssignsSettingsSourceDirectory()
+        {
+            SetupConfig();
+            task.Execute();
+            configuration.SettingsPassedToConfigure.SourceDirectory.ShouldBeSameAs(sourceDirectory);
+        }
+
         void SetupConfig(Action<MockConfiguration> customize = null)
         {
             bundle = new TestableBundle("~");
             configuration = new MockConfiguration(bundle);
+            sourceDirectory = Mock.Of<IDirectory>();
 
             if (customize != null) customize(configuration);
 
@@ -78,7 +97,8 @@ namespace Cassette.MSBuild
             
             task = new CreateBundlesImplementation(
                 configurationFactory.Object,
-                writer.Object
+                writer.Object,
+                sourceDirectory
             );
         }
 

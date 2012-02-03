@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Configuration;
+using Cassette.IO;
 using Cassette.Manifests;
 
 namespace Cassette.MSBuild
@@ -12,11 +13,15 @@ namespace Cassette.MSBuild
         readonly BundleCollection bundles;
         readonly IEnumerable<ICassetteConfiguration> configurations;
 
-        public CreateBundlesImplementation(ICassetteConfigurationFactory configurationFactory, ICassetteManifestWriter manifestWriter)
+        public CreateBundlesImplementation(ICassetteConfigurationFactory configurationFactory, ICassetteManifestWriter manifestWriter, IDirectory sourceDirectory)
         {
             this.manifestWriter = manifestWriter;
             configurations = configurationFactory.CreateCassetteConfigurations();
-            settings = new CassetteSettings("");
+            settings = new CassetteSettings("")
+            {
+                SourceDirectory = sourceDirectory,
+                UrlModifier = new VirtualDirectoryPrepender("/")
+            };
             bundles = new BundleCollection(settings);
         }
 

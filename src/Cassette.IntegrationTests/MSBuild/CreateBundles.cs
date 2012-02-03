@@ -1,32 +1,66 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 using Cassette.Configuration;
+using Cassette.IntegrationTests;
+using Cassette.Manifests;
+using Cassette.Stylesheets;
 using Should;
 using Xunit;
 
 namespace Cassette.MSBuild
 {
-    public class CreateBundles_Tests
+    public class GivenConfigurationClassInAssembly_WhenExecute : IDisposable
     {
-        [Fact]
-        public void GivenConfigurationClassInAssembly_WhenExecute_ThenManifestFileSavedToOutput()
+        readonly TempDirectory path;
+        readonly string manifestFilename;
+
+        public GivenConfigurationClassInAssembly_WhenExecute()
         {
-            using (var path = new TempDirectory())
+            path = new TempDirectory();
+
+            var assemblyPath = Path.Combine(path, "Test.dll");
+            Configuration.GenerateAssembly(assemblyPath);
+
+            File.WriteAllText(Path.Combine(path, "test.css"), "p { background-image: url(test.png); }");
+            File.WriteAllText(Path.Combine(path, "test.png"), "");
+
+            using (var container = new AppDomainInstance<CreateBundles>())
             {
-                var assemblyPath = Path.Combine(path, "Test.dll");
-                Configuration.GenerateAssembly(assemblyPath);
+                var task = container.Value;
+                task.Assembly = assemblyPath;
+                manifestFilename = Path.Combine(path, "cassette.xml");
+                task.SourceDir = path;
+                task.Output = manifestFilename;
+                task.Execute();
+            }
+        }
 
-                using (var container = new AppDomainInstance<CreateBundles>())
-                {
-                    var task = container.Value;
-                    task.Assembly = assemblyPath;
-                    task.Output = Path.Combine(path, "cassette.xml");
-                    task.Execute();
-                }
+        [Fact]
+        public void ManifestFileSavedToOutput()
+        {
+            File.Exists(manifestFilename).ShouldBeTrue();
+        }
 
-                File.Exists(Path.Combine(path, "cassette.xml")).ShouldBeTrue();
+        [Fact]
+        public void CssUrlIsRewrittenToBeApplicationRooted()
+        {
+            var bundles = LoadBundlesFromManifestFile();
+            var content = bundles.First().OpenStream().ReadToEnd();
+
+            Regex.IsMatch(content, @"url\(/_cassette/file/test_[a-z0-9]+\.png\)").ShouldBeTrue();
+        }
+
+        IEnumerable<Bundle> LoadBundlesFromManifestFile()
+        {
+            using (var file = File.OpenRead(manifestFilename))
+            {
+                var reader = new CassetteManifestReader(file);
+                return reader.Read().CreateBundles();
             }
         }
 
@@ -53,10 +87,11 @@ namespace Cassette.MSBuild
             }
         }
 
-        class Configuration  : ICassetteConfiguration
+        public class Configuration : ICassetteConfiguration
         {
             public void Configure(BundleCollection bundles, CassetteSettings settings)
             {
+                bundles.Add<StylesheetBundle>("~");
             }
 
             public static void GenerateAssembly(string fullAssemblyPath)
@@ -67,34 +102,26 @@ namespace Cassette.MSBuild
 
                 var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Save);
                 var module = assembly.DefineDynamicModule(assemblyName.Name, filename);
-                GenerateConfigurationClass(module);
+                AddSubClassOfConfiguration(module);
                 assembly.Save(filename);
 
                 File.Copy(filename, fullAssemblyPath);
                 File.Delete(filename);
+
+                var parentAssembly = typeof(Configuration).Assembly.Location;
+                File.Copy(parentAssembly, Path.Combine(Path.GetDirectoryName(fullAssemblyPath), Path.GetFileName(parentAssembly)));
             }
 
-            static void GenerateConfigurationClass(ModuleBuilder module)
+            static void AddSubClassOfConfiguration(ModuleBuilder module)
             {
-                var type = module.DefineType("Configuration", TypeAttributes.Public);
-                type.AddInterfaceImplementation(typeof(ICassetteConfiguration));
-                GenerateConfigureMethod(type);
+                var type = module.DefineType("TestConfiguration", TypeAttributes.Public | TypeAttributes.Class, typeof(Configuration));
                 type.CreateType();
             }
+        }
 
-            static void GenerateConfigureMethod(TypeBuilder type)
-            {
-                const string name = "Configure";
-                var method = type.DefineMethod(
-                    name,
-                    MethodAttributes.Public | MethodAttributes.Virtual,
-                    null,
-                    new[] { typeof(BundleCollection), typeof(CassetteSettings) }
-                );
-                var bytes = typeof(Configuration).GetMethod(name).GetMethodBody().GetILAsByteArray();
-                method.CreateMethodBody(bytes, bytes.Length);
-                type.DefineMethodOverride(method, typeof(ICassetteConfiguration).GetMethod(name));
-            }
+        public void Dispose()
+        {
+            path.Dispose();
         }
     }
 }
