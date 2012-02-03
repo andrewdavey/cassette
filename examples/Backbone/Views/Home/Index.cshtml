@@ -1,0 +1,43 @@
+﻿<!doctype html>
+<html>
+<head>
+    
+    @{
+        Bundles.Reference("styles/todos");
+        Bundles.Reference("scripts/lib");
+        Bundles.Reference("scripts/todos");
+        Bundles.Reference("scripts/todos/templates");
+    }
+    
+    @Bundles.RenderStylesheets()
+    @Bundles.RenderScripts()
+    @Bundles.RenderHtmlTemplates()
+    
+</head>
+<body>
+    
+    <div id="todoapp">
+        <div class="title">
+            <h1>Todos</h1>
+        </div>
+        <div class="content">
+            <div id="create-todo">
+                <input id="new-todo" placeholder="What needs to be done?" type="text" />
+                <span class="ui-tooltip-top" style="display:none;">Press Enter to save this task</span>
+            </div>
+            <div id="todos">
+                <ul id="todo-list"></ul>
+            </div>
+            <div id="todo-stats"></div>
+        </div>
+    </div>
+    
+    <ul id="instructions">
+        <li>Double-click to edit a todo.</li>
+        <li><a href="../../docs/todos.html">View the annotated source.</a></li>
+    </ul>
+    
+    <div id="credits">Created by<br /><a href="http://jgn.me/">J&eacute;r&ocirc;me Gravel-Niquet</a></div>
+    
+</body>
+</html>
