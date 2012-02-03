@@ -171,6 +171,7 @@
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />
+    <Compile Include="Web\CassetteApplicationContainerFactory.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
     <Compile Include="Web\UrlGenerator.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />

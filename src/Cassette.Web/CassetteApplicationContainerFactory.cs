@@ -77,11 +77,11 @@ namespace Cassette.Web
             return string.Join("|", parts);
         }
 
-        protected override CassetteApplication CreateCassetteApplicationCore()
+        protected override CassetteApplication CreateCassetteApplicationCore(IBundleContainer bundleContainer, CassetteSettings settings)
         {
             return new CassetteApplication(
-                Bundles,
-                Settings,
+                bundleContainer,
+                settings,
                 getHttpContext
             );
         }

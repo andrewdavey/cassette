@@ -147,8 +147,13 @@ function asset1() {
             };
             var bundles = new BundleCollection(settings);
             configure(bundles);
+            foreach (var bundle in bundles)
+            {
+                bundle.Process(settings);
+            }
+            var bundleContainer = new BundleContainer(bundles);
             var application = new CassetteApplication(
-                bundles,
+                bundleContainer,
                 settings,
                 () => httpContext.Object
             );
