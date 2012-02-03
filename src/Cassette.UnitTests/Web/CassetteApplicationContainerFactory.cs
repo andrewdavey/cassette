@@ -10,10 +10,41 @@ using Xunit;
 
 namespace Cassette.Web
 {
-    public class CassetteApplicationContainerFactory_Tests
+    public class CassetteApplicationContainerFactory_Test
     {
         [Fact]
-        public void GivenCompileTimeManifestExists_WhenCreateContainer_ThenBundleIsLoadedFromManifest()
+        public void GivenFactoryThatUsesConfiguration_WhenCreateContainer_ThenResultingBundlesAreProcessed()
+        {
+            using (var path = new TempDirectory())
+            {
+                Directory.CreateDirectory(Path.Combine(path, "scripts"));
+
+                var configuration = new StubConfiguration();
+                var factory = new CassetteApplicationContainerFactory(
+                    new DelegateCassetteConfigurationFactory(() => new[] { configuration }),
+                    new CassetteConfigurationSection(),
+                    path,
+                    "/",
+                    false,
+                    Mock.Of<HttpContextBase>
+                );
+
+                var container = factory.CreateContainer();
+                var bundle = container.Application.FindBundleContainingPath<ScriptBundle>("~/scripts");
+                bundle.IsProcessed.ShouldBeTrue();
+            }
+        }
+
+        class StubConfiguration : ICassetteConfiguration
+        {
+            public void Configure(BundleCollection bundles, CassetteSettings settings)
+            {
+                bundles.Add<ScriptBundle>("scripts");
+            }
+        }
+
+        [Fact]
+        public void WhenCreateContainer_ThenBundleIsLoadedFromManifest()
         {
             using (var path = new TempDirectory())
             {

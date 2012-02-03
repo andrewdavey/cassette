@@ -84,12 +84,22 @@ namespace Cassette
                 var settings = new CassetteSettings(cacheVersion);
                 bundles = new BundleCollection(settings);
                 ExecuteCassetteConfiguration(settings);
+                ProcessBundles(settings);
 
                 Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", settings.IsDebuggingEnabled);
                 Trace.Source.TraceInformation("Cache version: {0}", cacheVersion);
                 Trace.Source.TraceInformation("Creating Cassette application object");
+
                 var bundleContainer = new BundleContainer(bundles);
                 return CreateCassetteApplicationCore(bundleContainer, settings);
+            }
+        }
+
+        void ProcessBundles(CassetteSettings settings)
+        {
+            foreach (var bundle in bundles)
+            {
+                bundle.Process(settings);
             }
         }
 
