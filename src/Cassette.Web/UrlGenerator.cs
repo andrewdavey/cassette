@@ -16,22 +16,27 @@ namespace Cassette.Web
 
         public string CreateBundleUrl(Bundle bundle)
         {
-            return urlModifier.Modify(string.Format("{0}/{1}/{2}_{3}",
-                                                    routePrefix,
-                                                    RoutingHelpers.ConventionalBundlePathName(bundle.GetType()),
-                                                    bundle.PathWithoutPrefix,
-                                                    bundle.Hash.ToHexString()
-                                          ));
+            return urlModifier.Modify(
+                string.Format(
+                    "{0}/{1}/{2}_{3}",
+                    routePrefix,
+                    RoutingHelpers.ConventionalBundlePathName(bundle.GetType()),
+                    bundle.PathWithoutPrefix,
+                    bundle.Hash.ToHexString()
+                )
+            );
         }
 
         public string CreateAssetUrl(IAsset asset)
         {
-            return urlModifier.Modify(string.Format(
-                "{0}/asset/{1}?{2}",
-                routePrefix,
-                asset.SourceFile.FullPath.Substring(2),
-                asset.Hash.ToHexString()
-                                          ));
+            return urlModifier.Modify(
+                string.Format(
+                    "{0}/asset/{1}?{2}",
+                    routePrefix,
+                    asset.SourceFile.FullPath.Substring(2),
+                    asset.Hash.ToHexString()
+                )
+            );
         }
 
         public string CreateRawFileUrl(string filename, string hash)
