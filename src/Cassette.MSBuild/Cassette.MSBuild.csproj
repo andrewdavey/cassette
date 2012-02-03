@@ -46,6 +46,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CreateBundles.cs" />
+    <Compile Include="CreateBundlesImplementation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

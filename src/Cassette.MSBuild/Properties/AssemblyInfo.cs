@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // See src\SharedAssemblyInfo.cs for assembly metadata shared by all projects.
@@ -19,3 +20,5 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("2a5409db-4123-45de-8f12-0c5d7666d791")]
+
+[assembly: InternalsVisibleTo("Cassette.UnitTests")]

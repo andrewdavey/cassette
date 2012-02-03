@@ -1,7 +1,7 @@
 using System;
 using Cassette.Utilities;
 
-namespace Cassette.Web
+namespace Cassette
 {
     class UrlGenerator : IUrlGenerator
     {
@@ -17,10 +17,10 @@ namespace Cassette.Web
         public string CreateBundleUrl(Bundle bundle)
         {
             return urlModifier.Modify(
-                string.Format(
+                String.Format(
                     "{0}/{1}/{2}_{3}",
                     routePrefix,
-                    RoutingHelpers.ConventionalBundlePathName(bundle.GetType()),
+                    ConventionalBundlePathName(bundle.GetType()),
                     bundle.PathWithoutPrefix,
                     bundle.Hash.ToHexString()
                 )
@@ -30,7 +30,7 @@ namespace Cassette.Web
         public string CreateAssetUrl(IAsset asset)
         {
             return urlModifier.Modify(
-                string.Format(
+                String.Format(
                     "{0}/asset/{1}?{2}",
                     routePrefix,
                     asset.SourceFile.FullPath.Substring(2),
@@ -52,7 +52,7 @@ namespace Cassette.Web
             var extension = filename.Substring(dotIndex + 1);
 
             return urlModifier.Modify(
-                string.Format(
+                String.Format(
                     "{0}/file/{1}_{2}.{3}",
                     routePrefix,
                     ConvertToForwardSlashes(name),
@@ -60,6 +60,22 @@ namespace Cassette.Web
                     extension
                 )
             );
+        }
+
+        // TODO: move RoutePrefix to settings?
+        public const string RoutePrefix = "_cassette";
+
+        public static string ConventionalBundlePathName(Type bundleType)
+        {
+            // ExternalScriptBundle subclasses ScriptBundle, but we want the name to still be "scripts"
+            // So walk up the inheritance chain until we get to something that directly inherits from Bundle.
+            while (bundleType != null && bundleType.BaseType != typeof(Bundle))
+            {
+                bundleType = bundleType.BaseType;
+            }
+            if (bundleType == null) throw new ArgumentException("Type must be a subclass of Cassette.Bundle.", "bundleType");
+
+            return bundleType.Name.ToLowerInvariant();
         }
 
         string ConvertToForwardSlashes(string path)
