@@ -8,5 +8,14 @@ namespace Cassette.IO
         {
             return file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
+
+        public static byte[] ReadFully(this IFile file)
+        {
+            using (var ms = new MemoryStream())
+            {
+                file.OpenRead().CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
     }
 }

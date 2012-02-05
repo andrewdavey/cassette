@@ -36,12 +36,16 @@ namespace Cassette.Stylesheets
             {
                 yield return new ConvertFontUrlsToDataUris();
             }
+
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
             yield return new AssignHash();
             if (!settings.IsDebuggingEnabled)
             {
                 yield return new ConcatenateAssets();
+
+                yield return new SpriteImages();
+
                 yield return new MinifyAssets(StylesheetMinifier);
             }
         }
