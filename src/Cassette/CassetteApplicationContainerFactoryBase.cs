@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cassette.Configuration;
+using System.IO;
+using Cassette.Manifests;
 
 namespace Cassette
 {
@@ -9,18 +11,34 @@ namespace Cassette
         readonly ICassetteConfigurationFactory cassetteConfigurationFactory;
         readonly object creationLock = new object();
         IEnumerable<ICassetteConfiguration> cassetteConfigurations;
+        BundleCollection bundles;
 
         protected CassetteApplicationContainerFactoryBase(ICassetteConfigurationFactory cassetteConfigurationFactory)
         {
             this.cassetteConfigurationFactory = cassetteConfigurationFactory;
         }
 
-        protected BundleCollection Bundles { get; private set; }
-        protected CassetteSettings Settings { get; private set; }
         protected abstract bool ShouldWatchFileSystem { get; }
+
         protected abstract string PhysicalApplicationDirectory { get; }
 
+        protected abstract string GetConfigurationVersion();
+
+        protected abstract T CreateCassetteApplicationCore(IBundleContainer bundleContainer, CassetteSettings settings);
+
         public virtual CassetteApplicationContainer<T> CreateContainer()
+        {
+            if (File.Exists(CompileTimeManifestFilename))
+            {
+                return CreateContainerFromCompileTimeManifest();
+            }
+            else
+            {
+                return CreateContainerFromConfiguration();
+            }
+        }
+
+        CassetteApplicationContainer<T> CreateContainerFromConfiguration()
         {
             cassetteConfigurations = CreateCassetteConfigurations();
             var container = new CassetteApplicationContainer<T>(CreateApplication);
@@ -29,6 +47,28 @@ namespace Cassette
                 container.CreateNewApplicationWhenFileSystemChanges(PhysicalApplicationDirectory);
             }
             return container;
+        }
+
+        CassetteApplicationContainer<T> CreateContainerFromCompileTimeManifest()
+        {
+            using (var file = File.OpenRead(CompileTimeManifestFilename))
+            {
+                var reader = new CassetteManifestReader(file);
+                var manifest = reader.Read();
+                var settings = new CassetteSettings("");
+                bundles = new BundleCollection(settings);
+                foreach (var bundle in manifest.CreateBundles())
+                {
+                    bundles.Add(bundle);
+                }
+                var bundleContainer = new BundleContainer(bundles);
+                return new CassetteApplicationContainer<T>(() => CreateCassetteApplicationCore(bundleContainer, settings));
+            }
+        }
+
+        string CompileTimeManifestFilename
+        {
+            get { return Path.Combine(PhysicalApplicationDirectory, "App_Data", "cassette.xml"); }
         }
 
         protected virtual IEnumerable<ICassetteConfiguration> CreateCassetteConfigurations()
@@ -41,27 +81,34 @@ namespace Cassette
             lock (creationLock)
             {
                 var cacheVersion = GetConfigurationVersion();
-                Settings = new CassetteSettings(cacheVersion);
-                Bundles = new BundleCollection(Settings);
-                ExecuteCassetteConfiguration();
+                var settings = new CassetteSettings(cacheVersion);
+                bundles = new BundleCollection(settings);
+                ExecuteCassetteConfiguration(settings);
+                ProcessBundles(settings);
 
-                Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", Settings.IsDebuggingEnabled);
+                Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", settings.IsDebuggingEnabled);
                 Trace.Source.TraceInformation("Cache version: {0}", cacheVersion);
                 Trace.Source.TraceInformation("Creating Cassette application object");
-                return CreateCassetteApplicationCore();
+
+                var bundleContainer = new BundleContainer(bundles);
+                return CreateCassetteApplicationCore(bundleContainer, settings);
             }
         }
 
-        protected abstract string GetConfigurationVersion();
+        void ProcessBundles(CassetteSettings settings)
+        {
+            foreach (var bundle in bundles)
+            {
+                bundle.Process(settings);
+            }
+        }
 
-        protected abstract T CreateCassetteApplicationCore();
-
-        void ExecuteCassetteConfiguration()
+        void ExecuteCassetteConfiguration(CassetteSettings settings)
         {
             foreach (var configuration in CassetteConfigurations)
             {
                 Trace.Source.TraceInformation("Executing configuration {0}", configuration.GetType().AssemblyQualifiedName);
-                configuration.Configure(Bundles, Settings);
+                configuration.Configure(bundles, settings);
             }
         }
 

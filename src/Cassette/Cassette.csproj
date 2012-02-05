@@ -68,6 +68,7 @@
     <Compile Include="Manifests\AssetReferenceManifest.cs" />
     <Compile Include="Manifests\CassetteManifestCache.cs" />
     <Compile Include="Manifests\ICassetteManifestCache.cs" />
+    <Compile Include="Manifests\ICassetteManifestWriter.cs" />
     <Compile Include="Manifests\InvalidCassetteManifestException.cs" />
     <Compile Include="Manifests\AssetFromManifest.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
@@ -111,6 +112,11 @@
     <Compile Include="HtmlTemplates\CompileKnockoutJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestBuilder.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifest.cs" />
+    <Compile Include="HtmlTemplates\CompileHogan.cs" />
+    <Compile Include="HtmlTemplates\HoganCompiler.cs" />
+    <Compile Include="HtmlTemplates\HoganPipeline.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplatesWithHogan.cs" />
+    <Compile Include="HtmlTemplates\RegisterTemplateWithHogan.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestReader.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
@@ -267,6 +273,7 @@
     <Compile Include="BundleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
+    <Compile Include="UrlGenerator.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Scripts\JurassicCoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\CoffeeScriptCompileException.cs" />
@@ -306,6 +313,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\jqueryTmplKnockout.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\hogan.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

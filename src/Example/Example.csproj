@@ -76,6 +76,7 @@
     <Content Include="Fonts\embed\droidsans-bold-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\color-picker\ColorListItem.htm" />
+    <Content Include="HtmlTemplates\hogan\hello.mustache" />
     <Content Include="Images\embed\big-chicken.png" />
     <Content Include="Images\embed\google-plus-32.png" />
     <Content Include="Images\google-plus-32.png" />
@@ -87,6 +88,7 @@
     <Content Include="Scripts\color-picker\slider.js" />
     <Content Include="Scripts\jquery\bundle.txt" />
     <Content Include="Scripts\lib\Class.js" />
+    <Content Include="Scripts\lib\hogan.js" />
     <Content Include="Scripts\lib\jquery.tmpl.js" />
     <Content Include="Scripts\lib\knockout.js" />
     <Content Include="Styles\color-picker\images\color_swatch.png" />
@@ -97,13 +99,13 @@
     <Content Include="Styles\base\reset.css" />
     <Content Include="Styles\base\typography.css" />
     <Content Include="Styles\base\validation.css" />
-    <None Include="Fonts\droidsans-webfont.eot" />
-    <None Include="Fonts\droidsans-webfont.ttf" />
-    <None Include="Fonts\droidsans-webfont.woff" />
-    <None Include="Fonts\embed\droidsans-bold-webfont.eot" />
-    <None Include="Fonts\embed\droidsans-bold-webfont.ttf" />
-    <None Include="Fonts\embed\droidsans-bold-webfont.woff" />
-    <None Include="Styles\color-picker\saved-colors.less" />
+    <Content Include="Fonts\droidsans-webfont.eot" />
+    <Content Include="Fonts\droidsans-webfont.ttf" />
+    <Content Include="Fonts\droidsans-webfont.woff" />
+    <Content Include="Fonts\embed\droidsans-bold-webfont.eot" />
+    <Content Include="Fonts\embed\droidsans-bold-webfont.ttf" />
+    <Content Include="Fonts\embed\droidsans-bold-webfont.woff" />
+    <Content Include="Styles\color-picker\saved-colors.less" />
     <Content Include="Styles\color-picker\color-picker.css" />
     <Content Include="Styles\embeddables\example.css" />
     <Content Include="Styles\embeddables\fonts.css" />
@@ -142,11 +144,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Templates\Hogan.cshtml" />
     <Content Include="Views\Embeddables\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Fork.cshtml" />

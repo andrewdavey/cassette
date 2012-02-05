@@ -9,27 +9,15 @@ namespace Cassette.Web
 
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
         {
-            if (eventType == TraceEventType.Information)
-            {
-                WriteLine(eventCache.DateTime.TimeOfDay + " - " + message);
-            }
-            else
-            {
-                base.TraceEvent(eventCache, source, eventType, id, message);
-            }
+            WriteLine(eventCache.DateTime.TimeOfDay + " - " + message);
+            base.TraceEvent(eventCache, source, eventType, id, message);
         }
 
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
         {
             var message = args == null ? format : string.Format(format, args);
-            if (eventType == TraceEventType.Information)
-            {
-                WriteLine(eventCache.DateTime.TimeOfDay + " - " + message);
-            }
-            else
-            {
-                base.TraceEvent(eventCache, source, eventType, id, message);
-            }
+            WriteLine(eventCache.DateTime.TimeOfDay + " - " + message);
+            base.TraceEvent(eventCache, source, eventType, id, message);
         }
 
         public override void Write(string message)

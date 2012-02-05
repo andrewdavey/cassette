@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web;
 using Cassette.Configuration;
 
@@ -7,8 +6,8 @@ namespace Cassette.Web
 {
     class CassetteApplication : CassetteApplicationBase
     {
-        public CassetteApplication(IEnumerable<Bundle> bundles, CassetteSettings settings, Func<HttpContextBase> getCurrentHttpContext)
-            : base(bundles, settings)
+        public CassetteApplication(IBundleContainer bundleContainer, CassetteSettings settings, Func<HttpContextBase> getCurrentHttpContext)
+            : base(bundleContainer, settings)
         {
             this.getCurrentHttpContext = getCurrentHttpContext;
         }

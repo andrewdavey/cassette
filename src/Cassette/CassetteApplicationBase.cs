@@ -7,10 +7,10 @@ namespace Cassette
 {
     abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(IEnumerable<Bundle> bundles, CassetteSettings settings)
+        protected CassetteApplicationBase(IBundleContainer bundleContainer, CassetteSettings settings)
         {
             this.settings = settings;
-            bundleContainer = CreateBundleContainer(bundles);
+            this.bundleContainer = bundleContainer;
         }
 
         readonly CassetteSettings settings;
@@ -54,12 +54,6 @@ namespace Cassette
                 GetPlaceholderTracker(),
                 settings
             );
-        }
-
-        IBundleContainer CreateBundleContainer(IEnumerable<Bundle> bundles)
-        {
-            var factory = settings.GetBundleContainerFactory();
-            return factory.Create(bundles);
         }
 
         protected IPlaceholderTracker CreatePlaceholderTracker()

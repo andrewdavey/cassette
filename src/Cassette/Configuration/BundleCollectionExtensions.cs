@@ -18,7 +18,7 @@ namespace Cassette.Configuration
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath)
             where T : Bundle
         {
-            Add<T>(bundleCollection, applicationRelativePath, null, null);
+            Add<T>(bundleCollection, applicationRelativePath, (IFileSearch)null, null);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Cassette.Configuration
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, Action<T> customizeBundle)
             where T : Bundle
         {
-            Add(bundleCollection, applicationRelativePath, null, customizeBundle);
+            Add(bundleCollection, applicationRelativePath, (IFileSearch)null, customizeBundle);
         }
 
         /// <summary>
@@ -58,6 +58,7 @@ namespace Cassette.Configuration
         public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IFileSearch fileSearch, Action<T> customizeBundle)
             where T : Bundle
         {
+            applicationRelativePath = PathUtilities.AppRelative(applicationRelativePath);
             Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
 
             T bundle;
@@ -90,6 +91,54 @@ namespace Cassette.Configuration
             }
 
             TraceAssetFilePaths(bundle);
+
+            bundleCollection.Add(bundle);
+        }
+
+        /// <summary>
+        /// Adds a new bundle with an explicit list of assets.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to add.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
+        /// <param name="assetFilenames">The filenames of assets to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IEnumerable<string> assetFilenames)
+            where T : Bundle
+        {
+            Add<T>(bundleCollection, applicationRelativePath, assetFilenames, null);
+        }
+
+        /// <summary>
+        /// Adds a new bundle with an explicit list of assets.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to add.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
+        /// <param name="assetFilenames">The filenames of assets to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
+        /// <param name="customizeBundle">An action delegate used to customize the created bundle.</param>
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, IEnumerable<string> assetFilenames, Action<T> customizeBundle)
+            where T : Bundle
+        {
+            var bundleDirectoryExists = bundleCollection.Settings.SourceDirectory.DirectoryExists(applicationRelativePath);
+            var directory = bundleDirectoryExists
+                                ? bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath)
+                                : bundleCollection.Settings.SourceDirectory;
+            var files = assetFilenames.Select(directory.GetFile);
+
+            var factory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+
+            var bundle = factory.CreateBundle(
+                applicationRelativePath,
+                files,
+                new BundleDescriptor { AssetFilenames = { "*" } }
+            );
+            
+            bundle.IsSorted = true;
+
+            if (customizeBundle!=null)
+            {
+                customizeBundle(bundle);
+            }
 
             bundleCollection.Add(bundle);
         }
