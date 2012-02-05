@@ -177,7 +177,7 @@ namespace Cassette.Web
             readonly IBundleContainer bundleContainer;
 
             public TestableApplication(IUrlGenerator urlGenerator, IReferenceBuilder referenceBuilder, IBundleContainer bundleContainer)
-                : base(new Bundle[0], new CassetteSettings("")
+                : base(new BundleContainer(Enumerable.Empty<Bundle>()), new CassetteSettings("")
                 {
                     SourceDirectory = Mock.Of<IDirectory>(),
                     IsDebuggingEnabled = true,

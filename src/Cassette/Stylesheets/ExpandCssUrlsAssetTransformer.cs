@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -40,9 +41,14 @@ namespace Cassette.Stylesheets
                 {
                     var matchedUrlGroup = match.Groups["url"];
                     var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory);
-                    ExpandUrl(builder, matchedUrlGroup, relativeFilename);
-
-                    asset.AddRawFileReference(relativeFilename);
+                    if (ExpandUrl(builder, matchedUrlGroup, relativeFilename))
+                    {
+                        asset.AddRawFileReference(relativeFilename);
+                    }
+                    else
+                    {
+                        Trace.Source.TraceEvent(TraceEventType.Warning, 0, "The file {0}, referenced by {1}, does not exist.", relativeFilename, asset.SourceFile.FullPath);
+                    }
                 }
                 return builder.ToString().AsStream();
             };
@@ -70,21 +76,30 @@ namespace Cassette.Stylesheets
             return CssUrlRegex
                 .Matches(css)
                 .Cast<Match>()
-                .Where(match => AbsoluteUrlRegex.IsMatch(match.Groups["url"].Value) == false)
+                .Where(IsRelativeUrl)
                 .OrderByDescending(match => match.Index)
                 .ToArray();
         }
 
-        void ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
+        bool IsRelativeUrl(Match match)
+        {
+            return !AbsoluteUrlRegex.IsMatch(match.Groups["url"].Value);
+        }
+
+        bool ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
         {
             relativeFilename = RemoveFragment(relativeFilename);
             var file = sourceDirectory.GetFile(relativeFilename.TrimStart('~', '/'));
-            if (!file.Exists) return;
+            if (!file.Exists)
+            {
+                return false;
+            }
 
             var hash = HashFileContents(file);
             var absoluteUrl = urlGenerator.CreateRawFileUrl(relativeFilename, hash);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
+            return true;
         }
 
         string RemoveFragment(string relativeFilename)

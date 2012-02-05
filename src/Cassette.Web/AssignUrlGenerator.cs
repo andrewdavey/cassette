@@ -8,7 +8,7 @@ namespace Cassette.Web
         {
             if (settings.UrlGenerator == null)
             {
-                settings.UrlGenerator = new UrlGenerator(settings.UrlModifier, RoutingHelpers.RoutePrefix);
+                settings.UrlGenerator = new UrlGenerator(settings.UrlModifier, UrlGenerator.RoutePrefix);
             }
         }
     }

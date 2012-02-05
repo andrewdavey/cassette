@@ -31,10 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin, Version=4.37.4345.34101, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AjaxMin.4.37.4345.34101\lib\net20\AjaxMin.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
@@ -45,14 +43,8 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit">
       <HintPath>..\..\tools\xunit.dll</HintPath>
@@ -70,6 +62,7 @@
     <Compile Include="Manifests\BundleManifest.cs" />
     <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="Manifests\CassetteManifestCache.cs" />
+    <Compile Include="MSBuild\CreateBundlesImplementation.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifestWriter.cs" />
@@ -171,6 +164,7 @@
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />
+    <Compile Include="Web\CassetteApplicationContainerFactory.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
     <Compile Include="Web\UrlGenerator.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
@@ -189,6 +183,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cassette.MSBuild\Cassette.MSBuild.csproj">
+      <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
+      <Name>Cassette.MSBuild</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
       <Name>Cassette.Views</Name>

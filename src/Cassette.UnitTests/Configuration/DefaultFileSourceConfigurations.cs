@@ -61,9 +61,9 @@ namespace Cassette.Configuration
     public class FileSourceConfiguration_HtmlTemplateBundle_Tests : FileSourceConfiguration_Tests<HtmlTemplates.HtmlTemplateBundle>
     {
         [Fact]
-        public void FilePatternIsHtmAndHtml()
+        public void FilePatternIsHtmHtmlJstTmplMustache()
         {
-            FileSource.Pattern.ShouldEqual("*.htm;*.html");
+            FileSource.Pattern.ShouldEqual("*.htm;*.html;*.jst;*.tmpl;*.mustache");
         }
 
         [Fact]

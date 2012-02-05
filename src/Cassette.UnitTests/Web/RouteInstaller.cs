@@ -107,7 +107,7 @@ namespace Cassette.Web
         [Fact]
         public void RawFileUrlIsMappedToRawFileHandler()
         {
-            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/file/test.coffee");
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/file/test_coffee");
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));

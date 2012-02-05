@@ -8,7 +8,7 @@ using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Manifests
 {
-    class CassetteManifestWriter
+    class CassetteManifestWriter : ICassetteManifestWriter
     {
         readonly Stream outputStream;
         readonly XElement cassetteElement;

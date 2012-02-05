@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using Cassette.IO;
 using Cassette.Utilities;
+using Cassette.Web;
 using Moq;
 using Should;
 using Xunit;
@@ -57,15 +59,44 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssUrlFileIsNotFound_WhenTransform_ThenUrlIsNotExpanded()
         {
+            var output = TransformCssWhereUrlDoesNotExist();
+
+            output.ShouldEqual("p { background-image: url(test.png); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenRawFileReferenceIsNotAddedToAsset()
+        {
+            TransformCssWhereUrlDoesNotExist();
+
+            asset.Verify(a => a.AddRawFileReference(It.IsAny<string>()), Times.Never());
+        }
+
+        [Fact]
+        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenWarningWrittenToTrace()
+        {
+            var listener = new StringBuilderTraceListener
+            {
+                Filter = new EventTypeFilter(SourceLevels.All)
+            };
+            Trace.Source.Switch.Level = SourceLevels.All;
+            Trace.Source.Listeners.Add(listener);
+
+            TransformCssWhereUrlDoesNotExist();
+
+            Trace.Source.Flush();
+            listener.ToString().ShouldContain("The file ~/styles/test.png, referenced by ~/styles/asset.css, does not exist.");
+        }
+
+        string TransformCssWhereUrlDoesNotExist()
+        {
             var imageFile = StubImageFile();
             imageFile.SetupGet(f => f.Exists).Returns(false);
             SetupDirectoryGetFile(imageFile.Object);
 
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
-
-            output.ShouldEqual("p { background-image: url(test.png); }");
+            return getResult().ReadToEnd();
         }
 
         [Fact]

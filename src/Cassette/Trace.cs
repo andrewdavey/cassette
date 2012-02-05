@@ -7,4 +7,3 @@ namespace Cassette
         public static readonly TraceSource Source = new TraceSource("Cassette");
     }
 }
-

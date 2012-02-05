@@ -92,7 +92,7 @@ namespace Cassette.Web
 
         static void InstallRoutes()
         {
-            var routing = new RouteInstaller(_container, RoutingHelpers.RoutePrefix);
+            var routing = new RouteInstaller(_container, UrlGenerator.RoutePrefix);
             routing.InstallRoutes(RouteTable.Routes);
         }
 

@@ -55,7 +55,7 @@ namespace Cassette.Web
             return string.Format(
                 "{0}/{1}/{{*path}}",
                 routePrefix,
-                RoutingHelpers.ConventionalBundlePathName(typeof(T))
+                UrlGenerator.ConventionalBundlePathName(typeof(T))
             );
         }
 

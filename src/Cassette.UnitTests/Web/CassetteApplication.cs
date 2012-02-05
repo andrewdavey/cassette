@@ -78,7 +78,7 @@ namespace Cassette.Web
                 : createBundles(settings);
 
             return new CassetteApplication(
-                bundles, 
+                new BundleContainer(bundles), 
                 settings, 
                 () => httpContext.Object
             );
