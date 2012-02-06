@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
+using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -87,14 +88,26 @@ namespace Cassette.Web
                 Cassette = new
                 {
                     Version = new AssemblyName(typeof(ICassetteApplication).Assembly.FullName).Version.ToString(),
-                    CacheDirectory = settings.CacheDirectory.FullPath + " (" + settings.CacheDirectory.GetType().FullName + ")",
-                    SourceDirectory = settings.SourceDirectory.FullPath + " (" + settings.SourceDirectory.GetType().FullName + ")",
+                    CacheDirectory = GetCacheDirectory(settings),
+                    SourceDirectory = GetSourceDirectory(settings),
                     settings.IsHtmlRewritingEnabled,
                     settings.IsDebuggingEnabled
                 }
             };
             var json = new JavaScriptSerializer().Serialize(data);
             return json;
+        }
+
+        static string GetSourceDirectory(CassetteSettings settings)
+        {
+            if (settings.SourceDirectory == null) return "(none)";
+            return settings.SourceDirectory.FullPath + " (" + settings.SourceDirectory.GetType().FullName + ")";
+        }
+
+        static string GetCacheDirectory(CassetteSettings settings)
+        {
+            if (settings.CacheDirectory == null) return "(none)";
+            return settings.CacheDirectory.FullPath + " (" + settings.CacheDirectory.GetType().FullName + ")";
         }
 
         ICassetteApplication Application

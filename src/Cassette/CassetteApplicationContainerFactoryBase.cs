@@ -11,15 +11,17 @@ namespace Cassette
         readonly ICassetteConfigurationFactory cassetteConfigurationFactory;
         readonly CassetteConfigurationSection configurationSection;
         readonly string physicalDirectory;
+        readonly string virtualDirectory;
         readonly object creationLock = new object();
         IEnumerable<ICassetteConfiguration> cassetteConfigurations;
         BundleCollection bundles;
 
-        protected CassetteApplicationContainerFactoryBase(ICassetteConfigurationFactory cassetteConfigurationFactory, CassetteConfigurationSection configurationSection, string physicalDirectory)
+        protected CassetteApplicationContainerFactoryBase(ICassetteConfigurationFactory cassetteConfigurationFactory, CassetteConfigurationSection configurationSection, string physicalDirectory, string virtualDirectory)
         {
             this.cassetteConfigurationFactory = cassetteConfigurationFactory;
             this.configurationSection = configurationSection;
             this.physicalDirectory = physicalDirectory;
+            this.virtualDirectory = virtualDirectory;
         }
 
         protected abstract bool ShouldWatchFileSystem { get; }
@@ -59,10 +61,17 @@ namespace Cassette
             {
                 var reader = new CassetteManifestReader(file);
                 var manifest = reader.Read();
-                var settings = new CassetteSettings("");
+                var settings = new CassetteSettings("")
+                {
+                    UrlGenerator = new UrlGenerator(
+                        new VirtualDirectoryPrepender(virtualDirectory),
+                        UrlGenerator.RoutePrefix
+                    )
+                };
                 bundles = new BundleCollection(settings);
                 foreach (var bundle in manifest.CreateBundles())
                 {
+                    bundle.Process(settings);
                     bundles.Add(bundle);
                 }
                 var bundleContainer = new BundleContainer(bundles);

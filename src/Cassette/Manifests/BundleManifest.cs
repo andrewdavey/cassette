@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Configuration;
 using Cassette.IO;
 using System;
 

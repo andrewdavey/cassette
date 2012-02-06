@@ -25,7 +25,7 @@ namespace Cassette.Web
             bool isAspNetDebuggingEnabled,
             Func<HttpContextBase> getHttpContext
             )
-            : base(cassetteConfigurationFactory, configurationSection, physicalDirectory)
+            : base(cassetteConfigurationFactory, configurationSection, physicalDirectory, virtualDirectory)
         {
             this.configurationSection = configurationSection;
             this.physicalDirectory = physicalDirectory;
