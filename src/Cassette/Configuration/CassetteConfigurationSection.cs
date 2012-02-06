@@ -31,5 +31,12 @@ namespace Cassette.Configuration
             get { return (bool?)this["watchFileSystem"]; }
             set { this["watchFileSystem"] = value; }
         }
+
+        [ConfigurationProperty("precompiledManifest", DefaultValue = null)]
+        public string PrecompiledManifest
+        {
+            get { return (string)this["precompiledManifest"]; }
+            set { this["precompiledManifest"] = value; }
+        }
     }
 }
