@@ -13,7 +13,7 @@ namespace Backbone
                 "styles/todos",
                 (bundle) => bundle.Processor = new StylesheetPipeline()
                     .EmbedImages()
-                    //.EmbedFonts()
+                    .EmbedFonts()
             );
             bundles.Add<ScriptBundle>(
                 "scripts/lib"

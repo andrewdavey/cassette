@@ -1,4 +1,6 @@
-﻿// @reference ../lib
+﻿// @reference templates
+// @reference ../lib
+// @reference ~/styles/todos
 
 $(function(){
   
