@@ -103,8 +103,12 @@ p.footer-navigation a {
 
 .googlegroups {
     background-image: url(images/googlegroups.png);
+    background-repeat: no-repeat;
+    width: 32px;
 }
 
 .twitter {
     background-image: url(images/twitter.png);
+    background-repeat: no-repeat;
+    width: 32px;
 }

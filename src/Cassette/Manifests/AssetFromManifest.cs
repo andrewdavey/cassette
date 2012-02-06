@@ -89,6 +89,11 @@ namespace Cassette.Manifests
                 get { return fullPath; }
             }
 
+            public string FullSystemPath
+            {
+                get { throw new NotImplementedException(); }
+            }
+
             public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
             {
                 throw new NotImplementedException();
@@ -98,6 +103,7 @@ namespace Cassette.Manifests
             {
                 throw new NotImplementedException();
             }
+
         }
     }
 }

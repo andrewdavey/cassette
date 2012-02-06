@@ -18,6 +18,7 @@
     width: 301px;
     background-image: url(images/nuget-logo.png);
     background-position: 148px 9px;
+    width: 98px;    
 }
 
 .nuget-area code {
@@ -30,6 +31,7 @@
     width: 271px;
     background-image: url(images/github-logo.png);
     background-position:  135px 2px;
+    background-repeat: no-repeat;
 }
 
 .get-started-area {
@@ -37,6 +39,7 @@
     width: 301px;
     background-image: url(images/getting-started-icon.png);
     background-position: 188px 5px;
+    width: 27px;
 }
 
 .fork {

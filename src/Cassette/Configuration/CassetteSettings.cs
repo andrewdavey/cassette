@@ -24,6 +24,11 @@ namespace Cassette.Configuration
             DefaultFileSearches = CreateDefaultFileSearches();
             BundleFactories = CreateBundleFactories();
             bundleCache = new Lazy<ICassetteManifestCache>(() => new CassetteManifestCache(CacheDirectory.GetFile("cassette.xml")));
+            SpriteSizeLimit = 50000;
+            SpriteColorLimit = 5000;
+            ImageQuantizationEnabled = true;
+            OptiPngPath = string.Format("{0}\\OptiPng.exe", AppDomain.CurrentDomain.RelativeSearchPath);
+            ImageOptimizationCompressionLevel = 5;
         }
 
         /// <summary>
@@ -49,6 +54,11 @@ namespace Cassette.Configuration
         public IDirectory CacheDirectory { get; set; }
 
         /// <summary>
+        /// The directory used to store sprites.
+        /// </summary>
+        public IDirectory SpriteDirectory { get; set; }
+
+        /// <summary>
         /// The <see cref="IUrlModifier"/> used to convert application relative URLs into absolute URLs.
         /// </summary>
         public IUrlModifier UrlModifier { get; set; }
@@ -57,6 +67,31 @@ namespace Cassette.Configuration
         /// Gets if the bundles were built at compile-time. Configurations should not add bundles to the <see cref="BundleCollection"/> when this is true.
         /// </summary>
         public bool BundlesArePreBuilt { get; internal set; }
+
+        /// <summary>
+        /// The maximum size of a sprite
+        /// </summary>
+        public int SpriteSizeLimit { get; set; }
+        
+        /// <summary>
+        /// Maximum ammount of different colours per sprite
+        /// </summary>
+        public int SpriteColorLimit { get; set; }
+
+        /// <summary>
+        /// When enabled will use the nQuant color quantizer.
+        /// </summary>
+        public bool ImageQuantizationEnabled { get; set; }
+
+        /// <summary>
+        /// The ammount of compression OptiPng should use.
+        /// </summary>
+        public int ImageOptimizationCompressionLevel { get; set; }
+
+        /// <summary>
+        /// Path to the OptiPng executable defaults to bin folder.
+        /// </summary>
+        public string OptiPngPath { get; set; }
 
         /// <summary>
         /// The default <see cref="IFileSearch"/> object for each type of <see cref="Bundle"/>, used to find asset files to include.

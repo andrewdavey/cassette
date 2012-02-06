@@ -13,8 +13,11 @@ namespace Cassette.IO
         {
             using (var ms = new MemoryStream())
             {
-                file.OpenRead().CopyTo(ms);
-                return ms.ToArray();
+                using (var stream = file.OpenRead())
+                {
+                    stream.CopyTo(ms);
+                    return ms.ToArray();
+                }
             }
         }
     }

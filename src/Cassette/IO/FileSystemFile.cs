@@ -27,6 +27,11 @@ namespace Cassette.IO
             get { return PathUtilities.CombineWithForwardSlashes(directory.FullPath, name); }
         }
 
+        public string FullSystemPath
+        {
+            get { return systemAbsoluteFilename; }
+        }
+
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
             return File.Open(systemAbsoluteFilename, mode, access, fileShare);

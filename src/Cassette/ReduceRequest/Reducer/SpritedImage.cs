@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Cassette.Stylesheets;
 
 namespace Cassette.ReduceRequest.Reducer
 {
@@ -17,7 +18,7 @@ namespace Cassette.ReduceRequest.Reducer
         public int AverageColor { get; set; }
         public int Position { get; set; }
         public string Url { get; set; }
-        public SpriteManager.ImageMetadata Metadata { get; set; }
+        public ImageMetadata Metadata { get; set; }
         public BackgroundImageClass CssClass { get; set; }
 
         public string Render()

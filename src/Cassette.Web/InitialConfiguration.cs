@@ -25,6 +25,10 @@ namespace Cassette.Web
             settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
             settings.SourceDirectory = new FileSystemDirectory(sourceDirectory);
             settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
+
+            //TODO: Decide if this is the right place to put sprites
+            settings.SpriteDirectory = new FileSystemDirectory(sourceDirectory + "Sprites\\");
+
             settings.UrlModifier = new VirtualDirectoryPrepender(virtualDirectory);
         }
     }

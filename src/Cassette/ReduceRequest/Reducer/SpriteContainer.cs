@@ -6,56 +6,30 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Hosting;
 using Cassette.Configuration;
-using Cassette.IO;
 
 namespace Cassette.ReduceRequest.Reducer
 {
-    public class SpriteContainer : ISpriteContainer
+    public class SpriteContainer : IEnumerable
     {
-        readonly CassetteSettings cassetteSettings;
-        
         readonly IList<SpritedImage> spritedImages = new List<SpritedImage>();
         readonly Dictionary<string, byte[]> images = new Dictionary<string, byte[]>();
         readonly HashSet<int> uniqueColors = new HashSet<int>();
 
-        public SpriteContainer(CassetteSettings cassetteSettings)
-        {
-            this.cassetteSettings = cassetteSettings;
-        }
-
-        public void AddImage (SpritedImage image)
+        public void AddImage(SpritedImage image)
         {
             spritedImages.Add(image);
         }
 
-        private byte[] GetFile(string path)
-        {
-            var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+\.(?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
-            var extension = match.Groups["extension"].Value;
-            var filename = match.Groups["filename"].Value + "." + extension;
-            //var fullPath = HostingEnvironment. server.MapPath("~/" + filename);
-
-            // TODO: Remove epic hack
-            filename = filename.Replace(@"/_cassette/file", "");
-
-            var fullPath = HostingEnvironment.MapPath("~/" + filename);
-
-            return cassetteSettings.SourceDirectory.GetFile(fullPath).ReadFully();
-        }
-
-        public SpritedImage AddImage(BackgroundImageClass image)
+        public SpritedImage AddImage(BackgroundImageClass image, Func<byte[]> file)
         {
             byte[] imageBytes = null;
             if (images.ContainsKey(image.ImageUrl) && image.IsSprite)
                 imageBytes = images[image.ImageUrl];
             else
             {
-
-                imageBytes = GetFile(image.ImageUrl);
+                imageBytes = file();
                 if (image.IsSprite)
                     images.Add(image.ImageUrl, imageBytes);
             }

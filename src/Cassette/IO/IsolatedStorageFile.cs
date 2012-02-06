@@ -34,6 +34,11 @@ namespace Cassette.IO
             get { return filename; }
         }
 
+        public string FullSystemPath
+        {
+            get { return systemFilename; }
+        }
+
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
             return Storage.OpenFile(systemFilename, mode, access, fileShare);

@@ -12,8 +12,7 @@
     <AssemblyName>Cassette</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,11 +44,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="nQuant.Core">
+      <HintPath>..\packages\nQuant.0.9.8\Lib\net40\nQuant.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -63,7 +64,9 @@
     <Compile Include="BundleReferenceCollector.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />
-    <Compile Include="ImageSpriteTransformer.cs" />
+    <Compile Include="Stylesheets\OptimizeImages.cs" />
+    <Compile Include="Stylesheets\OptimizeImageTransformer.cs" />
+    <Compile Include="Stylesheets\SpriteReferenceTransformer.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
     <Compile Include="Manifests\AssetReferenceManifest.cs" />
     <Compile Include="Manifests\CassetteManifestCache.cs" />
@@ -174,13 +177,10 @@
     <Compile Include="ReduceRequest\Reducer\CssSelectorAnalyzer.cs" />
     <Compile Include="ReduceRequest\Reducer\ICssImageTransformer.cs" />
     <Compile Include="ReduceRequest\Reducer\ICssSelectorAnalyzer.cs" />
-    <Compile Include="ReduceRequest\Reducer\ISpriteContainer.cs" />
-    <Compile Include="ReduceRequest\Reducer\ISpriteManager.cs" />
     <Compile Include="ReduceRequest\Reducer\Position.cs" />
     <Compile Include="ReduceRequest\Reducer\SelectorComparer.cs" />
     <Compile Include="ReduceRequest\Reducer\SpriteContainer.cs" />
     <Compile Include="ReduceRequest\Reducer\SpritedImage.cs" />
-    <Compile Include="ReduceRequest\Reducer\SpriteManager.cs" />
     <Compile Include="ReduceRequest\Reducer\SpriteWriter.cs" />
     <Compile Include="ReduceRequest\Utilities\PngOptimizer.cs" />
     <Compile Include="ReduceRequest\Utilities\RegexCache.cs" />
@@ -208,6 +208,7 @@
     <Compile Include="Stylesheets\ConvertFontUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\CssUrlMatchTransformer.cs" />
     <Compile Include="Stylesheets\CssUrlToDataUriTransformer.cs" />
+    <Compile Include="ReduceRequest\Reducer\ImageMetadata.cs" />
     <Compile Include="Stylesheets\SpriteImages.cs" />
     <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
     <Compile Include="Stylesheets\CssFontToDataUriTransformer.cs" />
