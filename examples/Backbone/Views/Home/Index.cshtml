@@ -2,12 +2,7 @@
 <html>
 <head>
     
-    @{
-        Bundles.Reference("styles/todos");
-        Bundles.Reference("scripts/lib");
-        Bundles.Reference("scripts/todos");
-        Bundles.Reference("scripts/todos/templates");
-    }
+    @{ Bundles.Reference("scripts/todos"); }
     
     @Bundles.RenderStylesheets()
     @Bundles.RenderScripts()
