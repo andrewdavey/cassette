@@ -118,7 +118,11 @@ namespace Cassette.Stylesheets
 
             try
             {
-                spritedImage = spriteContainer.AddImage(image, file.ReadFully);
+                var result = spriteContainer.AddImage(image, file);
+                if (result == null)
+                    return;
+
+                spritedImage = result;
                 spritedImage.Metadata = imageKey;
             }
             catch (Exception ex)
