@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 using Cassette.Configuration;
+using Cassette.IO;
 
 namespace Cassette.ReduceRequest.Reducer
 {
@@ -22,14 +23,34 @@ namespace Cassette.ReduceRequest.Reducer
             spritedImages.Add(image);
         }
 
-        public SpritedImage AddImage(BackgroundImageClass image, Func<byte[]> file)
+        public SpritedImage AddImage(BackgroundImageClass image, IFile file)
         {
             byte[] imageBytes = null;
             if (images.ContainsKey(image.ImageUrl) && image.IsSprite)
                 imageBytes = images[image.ImageUrl];
             else
             {
-                imageBytes = file();
+                using (var ms = new MemoryStream())
+                {
+                    using (var stream = file.OpenRead())
+                    {
+                        var extension = Path.GetExtension(file.FullPath);
+                        if (extension == ".gif")
+                        {
+                            // Check if it is a animated gif and ignore it
+                            using (var imageInfo = Image.FromStream(stream))
+                            {
+                                var numberOfFrames = imageInfo.GetFrameCount(new FrameDimension(imageInfo.FrameDimensionsList[0]));
+                                if (numberOfFrames > 1)
+                                    return null;
+                            }
+                        }
+                        
+                        stream.CopyTo(ms);
+                        imageBytes = ms.ToArray();
+                    }
+                }
+
                 if (image.IsSprite)
                     images.Add(image.ImageUrl, imageBytes);
             }
