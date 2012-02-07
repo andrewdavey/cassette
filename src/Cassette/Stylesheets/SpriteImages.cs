@@ -40,19 +40,25 @@ namespace Cassette.Stylesheets
                 {
                     string relativeFilename = GetImageFilename(image.ImageUrl, currentDirectory);
 
-                    AddToSpriteList(image, settings.SourceDirectory, relativeFilename);
+                    var file = settings.SourceDirectory.GetFile(relativeFilename);
+                    if (!file.Exists)
+                        continue;
 
-                    if (spriteContainer.Size >= settings.SpriteSizeLimit ||
-                        spriteContainer.Colors >= settings.SpriteColorLimit)
+                    AddToSpriteList(image, file);
+
+                    if (spriteContainer.Size >= settings.SpriteSizeLimit || spriteContainer.Colors >= settings.SpriteColorLimit)
                         Flush(settings);
                 }
 
-                if (extractImageUrls.Any())
+                if (spriteContainer.Size > 0)
                     asset.AddAssetTransformer(new SpriteReferenceTransformer(spriteList.Select(x => x.Value)));
             }
 
-            Flush(settings);
-            spriteList.ToList().ForEach(x => x.Value.Image.Dispose());
+            if (spriteContainer.Size > 0)
+            {
+                Flush(settings);
+                spriteList.ToList().ForEach(x => x.Value.Image.Dispose());
+            }
         }
 
         #endregion
@@ -83,7 +89,7 @@ namespace Cassette.Stylesheets
         /// <summary>
         /// Add's images for spriting
         /// </summary>
-        void AddToSpriteList(BackgroundImageClass image, IDirectory sourceDirectory, string relativeFilename)
+        void AddToSpriteList(BackgroundImageClass image, IFile file)
         {
             var imageKey = new ImageMetadata(image);
 
@@ -112,7 +118,7 @@ namespace Cassette.Stylesheets
 
             try
             {
-                spritedImage = spriteContainer.AddImage(image, () => sourceDirectory.GetFile(relativeFilename).ReadFully());
+                spritedImage = spriteContainer.AddImage(image, file.ReadFully);
                 spritedImage.Metadata = imageKey;
             }
             catch (Exception ex)
@@ -147,7 +153,6 @@ namespace Cassette.Stylesheets
                     // Optipng
                     if (cassetteSettings.ImageQuantizationEnabled)
                         bytes = optimizeImageTransformer.QuantizeImage(bytes);
-
                     
                     bytes = optimizeImageTransformer.OptimizePng(bytes);
 
