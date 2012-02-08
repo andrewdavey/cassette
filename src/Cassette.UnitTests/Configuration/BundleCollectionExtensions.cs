@@ -220,6 +220,16 @@ namespace Cassette.Configuration
         }
 
         [Fact]
+        public void GivenEmptyDirectory_WhenAddPerSubDirectory_ThenDirectoryIsIgnored()
+        {
+            CreateDirectory("test");
+
+            bundles.AddPerSubDirectory<TestableBundle>("~");
+
+            bundles.ShouldBeEmpty();
+        }
+
+        [Fact]
         public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectory_ThenBundleAlsoCreatedForTopLevel()
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
