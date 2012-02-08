@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
+using Iesi.Collections.Generic;
 
 namespace Cassette
 {
@@ -24,7 +25,7 @@ namespace Cassette
 
         void AddAssets(Bundle bundle, IFile[] allFiles, IEnumerable<string> descriptorFilenames)
         {
-            var remainingFiles = new HashSet<IFile>(allFiles);
+            var remainingFiles = new HashedSet<IFile>(allFiles);
             var filesByPath = allFiles.ToDictionary(f => f.FullPath, StringComparer.OrdinalIgnoreCase);
 
             foreach (var filename in descriptorFilenames)
@@ -73,7 +74,7 @@ namespace Cassette
             }
         }
 
-        void AddAllSubDirectoryAssetsToBundle(Bundle bundle, string path, HashSet<IFile> remainingFiles)
+        void AddAllSubDirectoryAssetsToBundle(Bundle bundle, string path, HashedSet<IFile> remainingFiles)
         {
             path = PathUtilities.AppRelative(PathUtilities.NormalizePath(path));
             var filesInSubDirectory = remainingFiles

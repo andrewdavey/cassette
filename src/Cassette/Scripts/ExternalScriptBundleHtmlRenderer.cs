@@ -65,8 +65,8 @@ namespace Cassette.Scripts
             
             return string.Join(
                 Environment.NewLine,
-                from script in scripts
-                select "document.write(unescape('" + Escape(script) + "'));"
+                (from script in scripts
+                select "document.write(unescape('" + Escape(script) + "'));").ToArray()
             );
         }
 

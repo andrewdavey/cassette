@@ -22,6 +22,28 @@ namespace Cassette.Utilities
                 return reader.ReadToEnd();
             }
         }
+
+        public static long CopyTo(this Stream source, Stream target)
+        {
+            const int bufSize = 0x1000;
+
+            byte[] buf = new byte[bufSize];
+
+            long totalBytes = 0;
+
+            int bytesRead = 0;
+
+            while ((bytesRead = source.Read(buf, 0, bufSize)) > 0)
+            {
+
+                target.Write(buf, 0, bytesRead);
+
+                totalBytes += bytesRead;
+
+            }
+
+            return totalBytes;
+        }
     }
 }
 

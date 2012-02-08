@@ -55,7 +55,7 @@ namespace Cassette.Manifests
         AssetReferenceType ParseAssetReferenceType(string typeString)
         {
             AssetReferenceType type;
-            if (Enum.TryParse(typeString, out type))
+            if (Enum<AssetReferenceType>.TryParse(typeString, out type))
             {
                 return type;
             }

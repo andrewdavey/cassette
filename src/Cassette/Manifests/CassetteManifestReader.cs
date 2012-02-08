@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Xml;
 using System.Xml.Linq;
 using Cassette.HtmlTemplates.Manifests;
 using Cassette.Scripts.Manifests;
@@ -22,7 +23,8 @@ namespace Cassette.Manifests
         {
             cassetteManifest = new CassetteManifest();
 
-            var document = XDocument.Load(inputStream);
+            var reader = XmlReader.Create(inputStream);
+            var document = XDocument.Load(reader);
             var cassetteElement = document.Root;
 
             cassetteManifest.LastWriteTimeUtc = GetLastWriteTimeUtc(cassetteElement);

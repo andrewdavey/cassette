@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cassette.Utilities;
 using Cassette.Configuration;
+using Iesi.Collections.Generic;
 
 namespace Cassette
 {
@@ -21,7 +22,7 @@ namespace Cassette
         readonly IPlaceholderTracker placeholderTracker;
         readonly CassetteSettings settings;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
-        readonly HashSet<string> renderedLocations = new HashSet<string>();
+        readonly HashedSet<string> renderedLocations = new HashedSet<string>();
         readonly Dictionary<Bundle, string> bundlePageLocations = new Dictionary<Bundle, string>();
  
         public void Reference<T>(string path, string location = null)
@@ -163,7 +164,7 @@ namespace Cassette
             return string.Join(Environment.NewLine,
                 GetBundles(location).OfType<T>().Select(
                     bundle => bundle.Render()
-                )
+                ).ToArray()
             );
         }
 

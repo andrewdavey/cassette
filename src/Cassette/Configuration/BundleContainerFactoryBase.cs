@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Utilities;
+using Iesi.Collections.Generic;
 
 namespace Cassette.Configuration
 {
@@ -42,14 +43,14 @@ namespace Cassette.Configuration
     class ExternalBundleGenerator : IBundleVisitor
     {
         readonly CassetteSettings settings;
-        readonly HashSet<string> existingUrls;
+        readonly HashedSet<string> existingUrls;
         readonly List<Bundle> bundles = new List<Bundle>();
         Bundle currentBundle;
 
         public ExternalBundleGenerator(IEnumerable<string> existingUrls, CassetteSettings settings)
         {
             this.settings = settings;
-            this.existingUrls = new HashSet<string>(existingUrls); // TODO: use case-insensitive string comparer?
+            this.existingUrls = new HashedSet<string>(new List<string>(existingUrls)); // TODO: use case-insensitive string comparer?
         }
 
         public IEnumerable<Bundle> ExternalBundles

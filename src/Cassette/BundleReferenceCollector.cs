@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
+using Iesi.Collections.Generic;
 
 namespace Cassette
 {
     class BundleReferenceCollector : IBundleVisitor
     {
-        readonly HashSet<AssetReferenceType> validTypes;
+        readonly HashedSet<AssetReferenceType> validTypes;
 
         public BundleReferenceCollector(params AssetReferenceType[] typesToCollect)
         {
             CollectedAssetReferences = new List<AssetReference>();
-            validTypes = new HashSet<AssetReferenceType>(typesToCollect);
+            validTypes = new HashedSet<AssetReferenceType>(typesToCollect);
         }
 
         public List<AssetReference> CollectedAssetReferences { get; private set; }

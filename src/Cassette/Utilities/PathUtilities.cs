@@ -9,7 +9,7 @@ namespace Cassette.Utilities
     {
         public static string CombineWithForwardSlashes(params string[] paths)
         {
-            return Path.Combine(paths).Replace('\\', '/');
+            return paths.Aggregate((a, b) => Path.Combine(a, b)).Replace('\\', '/');
         }
 
         public static string NormalizePath(string path)
@@ -38,11 +38,11 @@ namespace Cassette.Utilities
             }
             if (isNetworkSharePath)
             {
-                return @"\\" + string.Join(@"\", stack.Reverse());
+                return @"\\" + string.Join(@"\", stack.Reverse().ToArray());
             }
             else
             {
-                return string.Join("/", stack.Reverse());
+                return string.Join("/", stack.Reverse().ToArray());
             }
         }
 

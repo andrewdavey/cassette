@@ -23,7 +23,7 @@ namespace Cassette.Scripts
                     bundle.HtmlAttributes.CombinedAttributes
                 );
 
-            return string.Join(Environment.NewLine, assetScripts);
+            return string.Join(Environment.NewLine, assetScripts.ToArray());
         }
     }
 }

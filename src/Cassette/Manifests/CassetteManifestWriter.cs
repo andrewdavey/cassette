@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 using System.Xml.Linq;
 using Cassette.HtmlTemplates.Manifests;
 using Cassette.Scripts.Manifests;
@@ -68,7 +69,8 @@ namespace Cassette.Manifests
         void WriteToOutputStream()
         {
             var document = new XDocument(cassetteElement);
-            document.Save(outputStream);
+            var writer = XmlWriter.Create(outputStream);
+            document.Save(writer);
         }
     }
 }

@@ -30,5 +30,10 @@ namespace Cassette.Utilities
                 || s.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
                 || s.StartsWith("//");
         }
+
+        public static bool IsNullOrWhiteSpace(this string s)
+        {
+            return String.IsNullOrEmpty(s) || s.Trim().Length == 0;
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace Cassette.Stylesheets
             }
             html.Append(string.Join(
                 Environment.NewLine,
-                assetUrls.Select(createLink)
+                assetUrls.Select(createLink).ToArray()
             ));
             if (hasCondition)
             {

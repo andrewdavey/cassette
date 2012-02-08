@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -115,7 +116,7 @@ namespace Cassette
 
         void RequireAttributeName(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (name.IsNullOrWhiteSpace())
                 throw new ArgumentException("Attribute name is required.", "name");
         }
 

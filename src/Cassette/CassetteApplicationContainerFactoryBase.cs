@@ -68,7 +68,7 @@ namespace Cassette
 
         string CompileTimeManifestFilename
         {
-            get { return Path.Combine(PhysicalApplicationDirectory, "App_Data", "cassette.xml"); }
+            get { return Path.Combine(Path.Combine(PhysicalApplicationDirectory, "App_Data"), "cassette.xml"); }
         }
 
         protected virtual IEnumerable<ICassetteConfiguration> CreateCassetteConfigurations()

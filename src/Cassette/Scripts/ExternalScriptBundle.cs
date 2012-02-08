@@ -2,6 +2,7 @@
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Scripts.Manifests;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -29,7 +30,7 @@ namespace Cassette.Scripts
         static void ValidateUrl(string url)
         {
             if (url == null) throw new ArgumentNullException("url");
-            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
+            if (url.IsNullOrWhiteSpace()) throw new ArgumentException("URL is required.", "url");
         }
 
         internal string Url
