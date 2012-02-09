@@ -45,7 +45,8 @@ namespace Cassette.ReduceRequest.Reducer
                                     return null;
                             }
                         }
-                        
+
+                        stream.Position = 0;
                         stream.CopyTo(ms);
                         imageBytes = ms.ToArray();
                     }
