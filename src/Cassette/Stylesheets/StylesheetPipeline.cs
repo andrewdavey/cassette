@@ -36,8 +36,10 @@ namespace Cassette.Stylesheets
             {
                 yield return new ConvertFontUrlsToDataUris();
             }
-
-            yield return new SpriteImages();
+            if (!settings.IsDebuggingEnabled)
+            {
+                yield return new SpriteImages();
+            }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();
             yield return new AssignHash();
