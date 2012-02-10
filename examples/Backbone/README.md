@@ -156,7 +156,8 @@ initialize: function () {
 
 render: function () {
     
-    this.template.render(this.model.toJSON());
+    this.$el
+        .html(this.template.render(this.model.toJSON()));
     
     return this;
 }
@@ -164,7 +165,7 @@ render: function () {
 
 ## Managing Dependencies
 
-At this point, we've created four bundle definitions.
+At this point, we've created [four bundle definitions](https://github.com/christophercliff/cassette/blob/backbone/examples/Backbone/CassetteConfiguration.cs#L10).
 
 - `styles/todos`
 - `scripts/lib`
