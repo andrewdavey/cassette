@@ -11,7 +11,7 @@ namespace Backbone
         {
             bundles.Add<StylesheetBundle>(
                 "styles/todos",
-                (bundle) => bundle.Processor = new StylesheetPipeline()
+                bundle => bundle.Processor = new StylesheetPipeline()
                     .EmbedImages()
                     .EmbedFonts()
             );
@@ -23,7 +23,7 @@ namespace Backbone
             );
             bundles.Add<HtmlTemplateBundle>(
                 "scripts/todos/templates",
-                (bundle) => bundle.Processor = new HoganPipeline(){
+                bundle => bundle.Processor = new HoganPipeline {
                     Namespace = "JST"
                 }
             );

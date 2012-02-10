@@ -27,7 +27,7 @@ to get them to a usable state. These steps typically look something like this:
 // Wait for DOM ready.
 $(function(){
     // Select the template and compile.
-    var myTemplate = _.($('#my-template').html());
+    var myTemplate = _.template($('#my-template').html());
     // Do stuff.
 });
 ```

@@ -6,12 +6,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3B085B18-6715-46EC-B28D-C5C96119A291}</ProjectGuid>
+    <ProjectGuid>{63C09CF7-9FF2-492F-BA42-2677FD557DCD}</ProjectGuid>
     <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Backbone</RootNamespace>
-    <AssemblyName>Backbone</AssemblyName>
+    <RootNamespace>Precompiled</RootNamespace>
+    <AssemblyName>Precompiled</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
@@ -34,14 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.4.1.10331.0\lib\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -70,21 +67,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Fonts\droidsans-bold-webfont.svg" />
-    <Content Include="Fonts\droidsans-webfont.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Images\background.png" />
-    <Content Include="Images\destroy.png" />
-    <Content Include="Scripts\lib\backbone.js" />
-    <Content Include="Scripts\lib\bundle.txt" />
-    <Content Include="Scripts\lib\hogan.js" />
-    <Content Include="Scripts\lib\underscore.js" />
-    <Content Include="Scripts\lib\json2.js" />
-    <Content Include="Scripts\lib\backbone.localstorage.js" />
-    <Content Include="Scripts\lib\jquery.js" />
-    <Content Include="Scripts\todos\app.js" />
-    <Content Include="Styles\todos\app.css" />
-    <Content Include="Styles\todos\fonts.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\home.index.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -92,27 +77,19 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Fonts\droidsans-bold-webfont.eot" />
-    <Content Include="Fonts\droidsans-bold-webfont.ttf" />
-    <Content Include="Fonts\droidsans-bold-webfont.woff" />
-    <Content Include="Fonts\droidsans-webfont.eot" />
-    <Content Include="Fonts\droidsans-webfont.ttf" />
-    <Content Include="Fonts\droidsans-webfont.woff" />
-    <None Include="README.md" />
-    <Content Include="Scripts\todos\templates\stats.mustache" />
-    <Content Include="Scripts\todos\templates\item.mustache" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\src\Cassette.MSBuild\Cassette.MSBuild.csproj">
+      <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
+      <Name>Cassette.MSBuild</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
       <Name>Cassette.Views</Name>
@@ -137,13 +114,17 @@
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
+  <UsingTask TaskName="CreateBundles" AssemblyFile="..\..\src\Cassette.MSBuild\bin\$(Configuration)\Cassette.MSBuild.dll" />
+  <Target Name="CreateBundles" AfterTargets="AfterBuild">
+    <CreateBundles Assembly="$(OutputPath)Precompiled.dll" Output="App_Data\cassette.xml" />
+  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>20791</DevelopmentServerPort>
+          <DevelopmentServerPort>49567</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
