@@ -1,0 +1,29 @@
+﻿.donate-page td {
+    vertical-align: top;
+    background-repeat: no-repeat;
+}
+
+.donate-page h2 {
+    font-size: 1.3em;
+    margin-bottom: 1.3em;
+}
+
+.donate-page h3 {
+    font-size: 1.1em;
+    margin-bottom: 1.5em;
+}
+
+.time-area {
+    padding: 10px 15px 20px 0;
+    width: 301px;
+}
+
+.money-area {
+    padding: 10px 20px 20px 20px;
+    width: 271px;
+}
+
+.publicity-area {
+    padding: 10px 0 20px 15px;
+    width: 301px;
+}
