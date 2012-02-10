@@ -16,7 +16,7 @@
     display: inline-block;
     color: #fff;
     font-weight: bold;
-    padding: .6em 1.1em;
+    padding: .6em 1em;
     text-decoration: none;
     text-shadow: 1px 1px 0px #5e8426;
     font-size: 1.1em;
@@ -54,4 +54,11 @@ a.action:hover {
     background-image: url(images\download-button-icon.png);
     background-repeat: no-repeat;
     background-position: 0px 0px;
+}
+
+.donate-button {
+    padding-left: 1.7em;
+    background-image: url(images\heart-icon.png);
+    background-repeat: no-repeat;
+    background-position: 0px 2px;
 }

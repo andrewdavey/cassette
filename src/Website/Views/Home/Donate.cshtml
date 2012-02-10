@@ -6,17 +6,86 @@
 
 <div class="main">
 
-    <h1>Donate</h1>
+    <h1>Contribute</h1>
 
     @Html.Partial("_Share")
 
-    <div class="content">
-        <p><em>Under development... please check back soon or make a monetary donation below!</em></p>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="hosted_button_id" value="BHWGCCJFY3BP4">
-                <button type="submit" class="action">Donate</button>
-            </form>
+    <div class="content contribute-page">
+           
+            <script type="text/javascript">
+            /* <![CDATA[ */
+                (function() {
+                    var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+                    s.type = 'text/javascript';
+                    s.async = true;
+                    s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+                    t.parentNode.insertBefore(s, t);
+                })();
+            /* ]]> */</script>
+
+            <div class="thank-you">
+
+                <img src="/assets/styles/images/andrew-davey.jpg" alt="BDFL till I get killed or you find someone better"/>
+
+                <p>&#8220;Thank you for taking the time to visit this page. As an open source project, Cassette relies on community contributions to keep growing and 
+                moving forward. Without you, Cassette wouldn’t be where it is today. Whether you choose to contribute or not, I really appreciate you even 
+                considering it.</p>
+
+                <p>&#8220;A <em>massive</em> thank you to everyone who has contributed so far. Whether you’ve coded a feature, published a blog post, made a 
+                donation or told a friend - <strong>you guys are awesome</strong> and you’re the reason I'm doing this!&#8221;</p>
+
+                <p>&#8211; &nbsp;Andrew Davey <span>(BDFL&#8230; till I get killed or you find someone better)</span></p>
+
+            </div>
+
+            <table>
+                <tr>
+                    
+                    <td class="time-area">
+
+                        <h2>Give Time</h2>
+
+                        <p>Want to work on a feature, fix a bug, or improve the code? Awesome!</p>
+
+                        <p>You can grab the source code of Cassette from the <a target="_blank" href="http://github.com/andrewdavey/cassette">GitHub repository</a>.</p>
+                    
+                    </td>
+                    
+                    <td class="money-area">
+                        
+                        <h2>Give Money</h2>
+
+                        <p>Help fund Cassette's development, or buy me a coffee. I'll love you forever.</p>
+
+                            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                                <input type="hidden" name="cmd" value="_s-xclick">
+                                <input type="hidden" name="hosted_button_id" value="BHWGCCJFY3BP4">
+                                <button type="submit" class="action"><span class="donate-button">Donate</span></button>
+                                <span class="donations-number">6</span>
+                            </form>
+                        
+                        <p class="clear-left">Or if micropayments are your thing, you can Flattr Cassette below.</p>
+
+                        <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://getcassette.net"></a>
+                        <noscript><a href="http://flattr.com/thing/495130/Cassette" target="_blank">
+                        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript>
+                    
+                    </td>
+
+                    <td class="publicity-area">
+
+                        <h2>Give Publicity</h2>
+
+                        <p>Write a blog post, send a tweet, tell a friend&#8230; tell the world!</p>
+
+                    </td>
+
+                </tr>
+            </table>
+
+
     </div>
+
+
 
 </div>
