@@ -1,14 +1,14 @@
-﻿.donate-page td {
+﻿.contribute-page td {
     vertical-align: top;
     background-repeat: no-repeat;
 }
 
-.donate-page h2 {
+.contribute-page h2 {
     font-size: 1.3em;
     margin-bottom: 1.3em;
 }
 
-.donate-page h3 {
+.contribute-page h3 {
     font-size: 1.1em;
     margin-bottom: 1.5em;
 }
