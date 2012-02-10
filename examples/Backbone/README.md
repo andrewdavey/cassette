@@ -2,19 +2,56 @@
 
 # Managing Backbone.js applications with Cassette.
 
-This post will explain how to manage a Backbone.js application using [Cassette](http://getcassette.net), an asset bundling library for .NET. We'll 
-use the popular [Todos](http://documentcloud.github.com/backbone/examples/todos/index.html) application 
-by [Jérôme Gravel-Niquet](http://jgn.me/) as a starting point for our example, and I'll demonstrate how to leverage Cassette for 
-dependency management, combination and minification of assets, font embedding, image embedding, and compilation of JavaScript templates.
+This post will explain how to manage a single-page Backbone.js application using [Cassette](http://getcassette.net), an asset bundling library for .NET.
+We'll use the popular [Todos](http://documentcloud.github.com/backbone/examples/todos/index.html) application 
+by [Jérôme Gravel-Niquet](http://jgn.me/) as a starting point for our example. The [source code](https://github.com/christophercliff/cassette/tree/backbone/examples/Backbone) is available on Github, along with this
+tutorial.
 
-Our example application will make use of several open source projects. I recommend you gain a basic understanding of these before you
-begin this tutorial:
+We'll address the following problems in this tutorial:
+
+### Minimize HTTP requests and file size
+
+This one is probably a no-brainer at this point, but excessive HTTP requests and unnecessary bytes make your app slower.
+Cassette will combine and minify our JavaScript and CSS files.
+
+### [FOUC](http://en.wikipedia.org/wiki/Flash_of_unstyled_content) Looks Bad
+
+This effect is especailly offensive with web fonts. We'll use Cassette to encode these assets and include them in our CSS.
+
+### DOM Access and Template Compilation Are Expensive
+
+If we were to include our JavaScript templates inline as HTML, we would need to query the DOM and compile the templates on the client in order
+to get them to a usable state. These steps typically look something like this:
+
+```
+// Wait for DOM ready.
+$(function(){
+    // Select the template and compile.
+    var myTemplate = _.($('#my-template').html());
+    // Do stuff.
+});
+```
+
+Using Cassette, we are able to perform these steps on the server prior to page load. This approach allows us to organize our templates
+as individual files, and has the added benefit of template content being served as JavaScript that can be cached by the browser.
+
+### Dependency Management
+
+Large applications may have many dependent JavaScript modules and CSS components. We'll use cassette to automate dependency management, and
+organize our assets into bundles for sensible caching.
+
+## Background Info
+
+Our example application will make use of several open source projects. This tutorial will be more useful if you have a basic understanding
+of the following:
 
 - [Backbone.js](cumentcloud.github.com/backbone/), [Underscore.js](http://documentcloud.github.com/underscore/) - JavaScript application framework and utilities
 - [jQuery](http://jquery.com/) - DOM manipulation and Ajax library
 - [Hogan.js](http://twitter.github.com/hogan.js/) - Compilation and rendering of [Mustache](http://mustache.github.com/mustache.5.html) templates
 
 ## Setup
+
+Our filesystem will look like this:
 
 ```
 |-- Fonts
@@ -68,8 +105,9 @@ bundles.Add<StylesheetBundle>(
 ```
 
 In this bundle, we've specified that all the stylesheets in `styles/todos` should be included. Additionally, we would like Cassette to
-embed both fonts and images as Data URIs. The methods `EmbedImages` and `EmbedFonts` accept an optional anonymous function that allows you to specify
-which images should be embedded. Here, we've told Cassette to only embed assets located in a `/embed/` directory.
+embed both fonts and images as Data URIs. The methods `EmbedImages` and `EmbedFonts` accept an optional anonymous function that allows you
+to specify which images should be embedded. Some images are not suitable for embedding (e.g. large images)--here, we've told Cassette
+to only embed assets located in a `/embed/` directory.
 
 ### JavaScript
 
@@ -100,23 +138,40 @@ bundles.Add<HtmlTemplateBundle>(
 );
 ```
 
-This bundle will locate all the template files located in `scripts/todos/template`.
- using Cassette's `HoganPipeline`. This pipeline will find Mustache templates located in the `scripts/todos/template` 
- directory, compile them with Hogan.js and serve them as a single cacheable JavaScript file. Each template will be 
- compiled into a JavaScript function and added to a globally accessible object we've named `JST`. All we need to do to 
- render a template on the client is call `JST['view-name'].render(data)`, where "view-name" corresponds to the filename
- of the template.
+We've told Cassette to process template files using the `HoganPipeline`. This pipeline will find Mustache templates located in the
+`scripts/todos/template` directory. The templates are compiled to JavaScript on the server using Hogan.js, then combined and served 
+as a single file.
+
+The `HoganPipeline` attaches each template to a global object that we can access from our Backbone views. We've specified the name of this
+global object to be `JST`. A common pattern for using the `HoganPipeline` with Backbone views might look something like this:
+
+```
+className: 'myView',
+
+initialize: function () {
+    
+    this.template = JST[this.className];
+    
+}
+
+render: function () {
+    
+    this.template.render(this.model.toJSON());
+    
+    return this;
+}
+```
 
 ## Managing Dependencies
 
-At this point, we've crated four bundle definitions.
+At this point, we've created four bundle definitions.
 
 - `styles/todos`
 - `scripts/lib`
 - `scripts/todos`
 - `scripts/todos/templates`
 
-We could reference each of these in our view, but instead we'll use Cassette to define the dependencies for our application.
+We could reference each of these in our view, but instead we'll use Cassette to handle the dependencies for our application.
 
 ### File-level dependencies
 
@@ -149,7 +204,8 @@ hogan.js
 
 ## The View
 
-Our application will be rendered from a single Razor view.
+We'll use a Razor view to render our application. Because we've already specified our dependencies, we only need to include a Bundle
+reference for the JavaScript application, `scripts/todos`. Cassette will include the dependent bundles automatically.
 
 ```html
 <head>
@@ -166,6 +222,8 @@ Our application will be rendered from a single Razor view.
 ```
 
 ## The Rendered View
+
+When our page is loaded in a production environment, each bundle will be loaded rendered as a `link` or `script` tag.
 
 ```html
 <head>
