@@ -46,7 +46,7 @@
     padding: 0 0 0 40px;
 }
 
-li.last {
+li#last {
     padding: 0 0 0 35px;
 }
 

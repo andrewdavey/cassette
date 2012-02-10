@@ -1,16 +1,42 @@
-﻿.contribute-page td {
+﻿/* THANK YOU MESSAGE */
+
+.thank-you {
+    padding-top: 5px;
+}
+
+.thank-you img {
+    float: left;
+    margin-right: 30px;
+    padding-top: 1px;
+}
+
+.thank-you p {
+    line-height: 1.7em;
+}
+
+.thank-you span {
+    padding-left: 5px;
+    font-size: 0.9em;
+}
+
+/* DONATE AREAS */
+
+.contribute-page table {
+    margin-top: 25px;
+}
+
+.contribute-page td {
     vertical-align: top;
-    background-repeat: no-repeat;
 }
 
 .contribute-page h2 {
     font-size: 1.3em;
-    margin-bottom: 1.3em;
+    margin-bottom: 1em;
 }
 
 .contribute-page h3 {
     font-size: 1.1em;
-    margin-bottom: 1.5em;
+    margin-bottom: 1.4em;
 }
 
 .time-area {
@@ -21,6 +47,32 @@
 .money-area {
     padding: 10px 20px 20px 20px;
     width: 271px;
+}
+
+.contribute-page form {
+    position: relative;
+    background-image: url(images\donate-count.png);
+    background-repeat: no-repeat;
+    background-position: right 12px;    
+    float: left;
+    padding-right: 78px;
+    padding-bottom: 25px;
+}
+
+.donations-number {
+    position: absolute;
+    top: 24px;
+    right: 29px;
+    font-size: 1.2em;
+    color: #696969;
+}
+
+.clear-left {
+    clear: left;
+}
+
+.FlattrButton {
+    margin-top: 10px;
 }
 
 .publicity-area {
