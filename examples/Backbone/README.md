@@ -23,7 +23,7 @@ This effect is especailly offensive with web fonts. We'll use Cassette to encode
 If we were to include our JavaScript templates inline as HTML, we would need to query the DOM and compile the templates on the client in order
 to get them to a usable state. These steps typically look something like this:
 
-```
+```js
 // Wait for DOM ready.
 $(function(){
     // Select the template and compile.
@@ -145,7 +145,7 @@ as a single file.
 The `HoganPipeline` attaches each template to a global object that we can access from our Backbone views. We've specified the name of this
 global object to be `JST`. A common pattern for using the `HoganPipeline` with Backbone views might look something like this:
 
-```
+```js
 className: 'myView',
 
 initialize: function () {
