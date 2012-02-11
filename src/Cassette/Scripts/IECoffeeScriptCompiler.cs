@@ -37,6 +37,7 @@ namespace Cassette.Scripts
         static IEJavaScriptEngine CreateEngine()
         {
             var engine = new IEJavaScriptEngine();
+            engine.Init();
             engine.LoadLibrary(Properties.Resources.coffeescript);
             engine.LoadLibrary("function compile(c) { return CoffeeScript.compile(c); }");
             return engine;
