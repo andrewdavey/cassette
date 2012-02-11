@@ -21,6 +21,9 @@ namespace Cassette
                 .Returns(directory.Object);
             directory.Setup(d => d.GetDirectory(It.IsAny<string>()))
                      .Returns(directory.Object);
+
+            directory.Setup(d => d.GetFile(It.IsAny<string>()))
+                     .Returns(new NonExistentFile(""));
         }
 
         readonly Mock<IFile> file;
@@ -42,7 +45,7 @@ namespace Cassette
             {
                 compiler.Compile("#unclosed_rule {", file.Object);
             });
-            exception.Message.ShouldEqual("Less compile error in test.less:\r\nMissing closing `}`");
+            exception.Message.ShouldStartWith("Missing closing '}' on line 1 in file 'test.less':");
         }
 
         [Fact]
@@ -54,7 +57,7 @@ namespace Cassette
             {
                 compiler.Compile(less, file.Object);
             });
-            exception.Message.ShouldEqual("Less compile error in test.less:\r\nvariable @baseline is undefined");
+            exception.Message.ShouldStartWith("variable @baseline is undefined on line 2 in file 'test.less':");
         }
 
         [Fact]
@@ -65,41 +68,33 @@ namespace Cassette
             {
                 compiler.Compile("#fail { - }", file.Object);
             });
-            exception.Message.ShouldEqual("Less compile error in test.less:\r\nSyntax Error on line 1");
+            exception.Message.ShouldStartWith("Expected '}' on line 1 in file 'test.less':");
         }
 
         [Fact]
         public void Can_Compile_LESS_that_imports_another_LESS_file()
         {
-            var otherFile = new Mock<IFile>();
-            directory.Setup(d => d.GetFile("lib.less"))
-                     .Returns(otherFile.Object);
-            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                     .Returns(() => "@color: #ffffff;".AsStream());
+            StubFile("lib.less", "@color: white;");
 
             var compiler = new LessCompiler();
             var css = compiler.Compile(
                 "@import \"lib\";\nbody{ color: @color }",
                 file.Object
             );
-            css.ShouldEqual("body {\n  color: #ffffff;\n}\n");
+            css.ShouldEqual("body {\n  color: white;\n}\n");
         }
 
         [Fact]
         public void Can_Compile_LESS_that_imports_another_LESS_file_from_different_directory()
         {
-            var otherFile = new Mock<IFile>();
-            directory.Setup(d => d.GetFile("../bundle-b/lib.less"))
-                     .Returns(otherFile.Object);
-            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                .Returns(() => "@color: #ffffff;".AsStream());
+            StubFile("../bundle-b/lib.less", "@color: red;");
 
             var compiler = new LessCompiler();
             var css = compiler.Compile(
                 "@import \"../bundle-b/lib.less\";\nbody{ color: @color }",
                 file.Object
             );
-            css.ShouldEqual("body {\n  color: #ffffff;\n}\n");
+            css.ShouldEqual("body {\n  color: red;\n}\n");
         }
 
         [Fact]
@@ -121,7 +116,7 @@ namespace Cassette
                 );
                 File.WriteAllText(
                     Path.Combine(bundleB.FullName, "_lib.less"),
-                    "@import \"../_base.less\";\n@color: #ffffff; p { height: @size; }"
+                    "@import \"../_base.less\";\n@color: red; p { height: @size; }"
                 );
 
                 var compiler = new LessCompiler();
@@ -129,7 +124,7 @@ namespace Cassette
                     "@import \"../bundle-b/_lib.less\";\nbody{ color: @color }",
                     file.Object
                 );
-                css.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: #ffffff;\n}\n");
+                css.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: red;\n}\n");
             }
             finally
             {
@@ -149,7 +144,7 @@ namespace Cassette
                 root.CreateSubdirectory("bundle-b");
 
                 var compiler = new LessCompiler();
-                var exception = Assert.Throws<FileNotFoundException>(delegate
+                var exception = Assert.Throws<LessCompileException>(delegate
                 {
                     compiler.Compile(
                         "@import \"../bundle-b/_MISSING.less\";\nbody{ color: @color }",
@@ -168,11 +163,7 @@ namespace Cassette
         [Fact]
         public void Using_mixin_from_imported_css_file_throws_exception()
         {
-            var otherFile = new Mock<IFile>();
-            directory.Setup(d => d.GetFile("lib.css"))
-                     .Returns(otherFile.Object);
-            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                     .Returns(() => ".mixin { color: red; }".AsStream());
+            StubFile("lib.css", ".mixin { color: red; }");
 
             var compiler = new LessCompiler();
             Assert.Throws<LessCompileException>(delegate
@@ -187,11 +178,7 @@ namespace Cassette
         [Fact]
         public void Import_less_file_that_uses_outer_variable()
         {
-            var otherFile = new Mock<IFile>();
-            directory.Setup(d => d.GetFile("Framework.less"))
-                     .Returns(otherFile.Object);
-            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                     .Returns(() => ".object { padding: @objectpadding; }".AsStream());
+            StubFile("Framework.less", ".object { padding: @objectpadding; }");
 
             var compiler = new LessCompiler();
             var result = compiler.Compile(
@@ -199,6 +186,25 @@ namespace Cassette
                 file.Object
             );
             result.ShouldEqual(".object {\n  padding: 20px;\n}\n");
+        }
+
+        [Fact]
+        public void Variable_defined_by_nested_import_is_replaced_in_CSS_output()
+        {
+            var directory = new FileSystemDirectory(Path.GetFullPath(@"..\..\assets\less"));
+            var file = directory.GetFile("Main.less");
+            var compiler = new LessCompiler();
+            var css = compiler.Compile(file.OpenRead().ReadToEnd(), file);
+            css.ShouldContain("color: #404040;");
+        }
+
+        void StubFile(string path, string content)
+        {
+            var otherFile = new Mock<IFile>();
+            directory.Setup(d => d.GetFile(path)).Returns(otherFile.Object);
+            otherFile.SetupGet(f => f.Exists).Returns(true);
+            otherFile.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                     .Returns(() => content.AsStream());
         }
     }
 }
