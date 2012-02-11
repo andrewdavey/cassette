@@ -111,9 +111,15 @@
     <Content Include="assets\scripts\bundle-c\asset.coffee">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="assets\less\Main.less" />
-    <None Include="assets\less\_DefaultIncludes.less" />
-    <None Include="assets\less\_Variables.less" />
+    <Content Include="assets\less\Main.less">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\less\_DefaultIncludes.less">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\less\_Variables.less">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

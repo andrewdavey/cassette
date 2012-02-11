@@ -191,7 +191,7 @@ namespace Cassette
         [Fact]
         public void Variable_defined_by_nested_import_is_replaced_in_CSS_output()
         {
-            var directory = new FileSystemDirectory(Path.GetFullPath(@"..\..\assets\less"));
+            var directory = new FileSystemDirectory(Path.GetFullPath(@"assets\less"));
             var file = directory.GetFile("Main.less");
             var compiler = new LessCompiler();
             var css = compiler.Compile(file.OpenRead().ReadToEnd(), file);
