@@ -21,7 +21,7 @@ namespace Cassette.Interop
 
         const int TYPE_E_ELEMENTNOTFOUND = unchecked((int)0x8002802BL);
 
-        public void Init()
+        public void Initialize()
         {
             try
             {
