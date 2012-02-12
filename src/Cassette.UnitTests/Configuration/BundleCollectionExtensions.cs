@@ -184,10 +184,13 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void GivenTwoSubDirectories_WhenAddPerSubDirectory_ThenTwoBundlesAreAdded()
+        public void GivenTwoSubDirectoriesWithFiles_WhenAddPerSubDirectory_ThenTwoBundlesAreAdded()
         {
             CreateDirectory("bundle-a");
             CreateDirectory("bundle-b");
+
+            defaultAssetSource.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(() => new[] { StubFile() });
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
 
