@@ -84,7 +84,7 @@ namespace Cassette.Manifests
             cache.SaveCassetteManifest(manifest);
 
             var xml = SavedXml();
-            var lastWriteTimeUtc = DateTime.Parse(xml.Root.Attribute("LastWriteTimeUtc").Value);
+            var lastWriteTimeUtc = DateTime.Parse(xml.Root.Attribute("LastWriteTimeUtc").Value).ToUniversalTime();
             (lastWriteTimeUtc >= now).ShouldBeTrue();
         }
 
