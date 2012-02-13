@@ -22,7 +22,7 @@ namespace Cassette.MSBuild
 
         public override bool Execute()
         {
-            using (var outputStream = File.OpenWrite(Output))
+            using (var outputStream = File.Open(Output, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 var task = CreateTaskImplementation(outputStream);
                 task.Execute();
