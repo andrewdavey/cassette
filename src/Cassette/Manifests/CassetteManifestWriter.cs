@@ -70,8 +70,10 @@ namespace Cassette.Manifests
         {
             var document = new XDocument(cassetteElement);
 #if NET35
-            var writer = XmlWriter.Create(outputStream);
-            document.Save(writer);
+            using (var writer = XmlWriter.Create(outputStream))
+            {
+                document.Save(writer);
+            }
 #endif
 #if NET40
             document.Save(outputStream);
