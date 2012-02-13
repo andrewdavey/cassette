@@ -364,9 +364,8 @@ namespace Cassette.Configuration
             )).Returns(new ExternalScriptBundle(url));
 
             bool called = false;
-            Action<ScriptBundle> customizeBundle = b => called = true;
 
-            bundles.AddUrl(url, customizeBundle);
+            bundles.AddUrl(url, b => called = true);
 
             called.ShouldBeTrue();
         }
@@ -656,9 +655,8 @@ namespace Cassette.Configuration
             FilesExist(sourceDirectory.Object, "~/file-a.js", "~/file-b.js");
 
             var customizeCalled = 0;
-            Action<TestableBundle> customize = b => customizeCalled++;
 
-            bundles.AddPerIndividualFile("~", customizeBundle: customize);
+            bundles.AddPerIndividualFile<TestableBundle>("~", customizeBundle: b => customizeCalled++);
 
             customizeCalled.ShouldEqual(2);
         }

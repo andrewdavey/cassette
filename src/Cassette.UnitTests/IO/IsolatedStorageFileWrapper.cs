@@ -59,7 +59,13 @@ namespace Cassette.IO
         public void GetLastWriteTimeUtcReturnsFileWriteTime()
         {
             var file = new IsolatedStorageFile("~/exists.js", storage, directory);
-            file.LastWriteTimeUtc.ShouldEqual(storage.GetLastWriteTime("exists.js").UtcDateTime);            
+
+            // FX35 workaround: range of accepted values
+            var low = storage.GetLastWriteTime("exists.js").UtcDateTime;
+            var high = low.AddMilliseconds(500); // threshold, 500ms
+
+            file.LastWriteTimeUtc.ShouldBeInRange(low, high);
+            // FX40 file.LastWriteTimeUtc.ShouldEqual(low);
         }
 
         [Fact]

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Iesi.Collections;
 using Should;
 using Xunit;
 
@@ -176,6 +178,14 @@ namespace Cassette.Utilities
             var graph = new Graph<int>(new[] { 1, 2, 3, 4, 5,6 }, i => edges[i]);
 
             graph.FindCycles().ShouldBeEmpty();
+        }
+    }
+
+    internal static class SetExtensions
+    {
+        public static bool SetEquals<T>(this Iesi.Collections.Generic.ISet<T> set, IEnumerable<T> otherSet)
+        {
+            return set.ContainsAll(new Collection<T>(new List<T>(otherSet)));
         }
     }
 }
