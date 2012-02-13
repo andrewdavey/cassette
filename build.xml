@@ -5,18 +5,20 @@
 
     <PropertyGroup>
         <Configuration>Release</Configuration>
+        <Framework>v4.0</Framework>
     </PropertyGroup>
 
     <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
 
     <Target Name="Build">
         <ItemGroup>
-            <ProjectToBuild Include="src\Cassette.Web\Cassette.Web.csproj"/>
-            <ProjectToBuild Include="src\Cassette.Views\Cassette.Views.csproj"/>
-            <ProjectToBuild Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
-            <ProjectToBuild Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
+            <CoreProject Include="src\Cassette.Web\Cassette.Web.csproj"/>
+            <CoreProject Include="src\Cassette.Views\Cassette.Views.csproj"/>
+            <TestProject Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <TestProject Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
-        <MSBuild Projects="@(ProjectToBuild)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+        <MSBuild Projects="@(CoreProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration);TargetFrameworkVersion=$(Framework)"/>
+        <MSBuild Projects="@(TestProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
     </Target>
 
     <Target Name="Test" DependsOnTargets="Build">
@@ -31,10 +33,10 @@
             <ProjectToNugetPack Include="src\Cassette.Web\Cassette.Web.csproj"/>
         </ItemGroup>
         <PropertyGroup>
-            <OutputDir>build\nuget\</OutputDir>
+            <OutputDir>build\nuget\$(Framework)</OutputDir>
         </PropertyGroup>
         <MakeDir Directories="$(OutputDir)"/>
-        <Exec Command="nuget pack -Build %(ProjectToNugetPack.Identity) -Symbols -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration)"/>
+        <Exec Command="nuget pack %(ProjectToNugetPack.Identity) -Symbols -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration);TargetFrameworkVersion=$(Framework)"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
