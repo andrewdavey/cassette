@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Cassette | Add File";
+    ViewBag.Description = "How to create a bundle from a single file.";
+}
+
+<h1>Add File</h1>
+
+<p>A bundle can be added using a single file, for example, a .less with additional <span class="code-type">&#64;import</span> statements. Each file set can then be a Cassette bundle.</p>
+
+<p>Here's an example structure:</p>
+
+<pre>Content/
+- Libraries/
+  - primary.less
+  - reset.less
+  - variables.less
+</pre>
+
+<p>Inside of <code>primary.less</code> could exist an <span class="code-type">&#64;import</span> structure:</p>
+
+<pre><code><span class="tag">&#64;import</span> "reset.less";
+<span class="tag">&#64;import</span> "variables.less";</code></pre>
+
+<p>By explicitly specifying a file, Cassette only loads that file and the assets specified by that file.</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        bundles.Add&lt;<span class="code-type">StylesheetBundle</span>&gt;(<span class="string">"Content/Libraries/primary.less"</span>);
+    }
+}</code></pre>

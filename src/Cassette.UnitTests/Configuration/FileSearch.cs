@@ -125,6 +125,17 @@ namespace Cassette.Configuration
             files.ShouldBeEmpty();
         }
 
+        [Fact]
+        public void GivenHtmAndHtmlFilePattern_WhenFindFiles_ThenHtmlFileFoundOnlyOnce()
+        {
+            CreateFile("test.html");
+
+            var search = new FileSearch { Pattern = "*.htm;*.html" };
+
+            var files = search.FindFiles(directory);
+            files.Count().ShouldEqual(1);
+        }
+
         public void Dispose()
         {
             temp.Dispose();

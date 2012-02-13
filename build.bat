@@ -1,15 +1,7 @@
 set msbuild=%windir%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
 
-if exist build\bin. (
-	del /S /Q build\bin\*
+if "%1" == "" (
+	%msbuild% build.xml
 ) else (
-	mkdir build\bin
+	%msbuild% build.xml /target:%1
 )
-
-%msbuild% src\Cassette.UnitTests\Cassette.UnitTests.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\
-
-%msbuild% src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\
-
-%msbuild% src\Cassette.Web\Cassette.Web.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\
-
-%msbuild% src\Cassette.Views\Cassette.Views.csproj /p:Configuration=Release /p:OutDir=..\..\build\bin\

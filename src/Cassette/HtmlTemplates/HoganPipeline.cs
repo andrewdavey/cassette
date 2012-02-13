@@ -6,7 +6,11 @@ namespace Cassette.HtmlTemplates
 {
     public class HoganPipeline : MutablePipeline<HtmlTemplateBundle>
     {
-        public string Namespace { get; set; }
+        /// <summary>
+        /// The name of the JavaScript variable to store compiled templates in.
+        /// For example, the default is "JST", so a template will be registered as <code>JST['my-template'] = ...;</code>.
+        /// </summary>
+        public string JavaScriptVariableName { get; set; }
         
         protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
@@ -18,7 +22,7 @@ namespace Cassette.HtmlTemplates
 
             yield return new ParseHtmlTemplateReferences();
             yield return new CompileHogan();
-            yield return new RegisterTemplatesWithHogan(bundle, Namespace);
+            yield return new RegisterTemplatesWithHogan(bundle, JavaScriptVariableName);
             yield return new AssignHash();
             yield return new ConcatenateAssets();
         }

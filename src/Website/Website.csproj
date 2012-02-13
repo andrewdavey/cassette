@@ -81,9 +81,11 @@
     <Content Include="assets\styles\buy.css" />
     <Content Include="assets\styles\code.css" />
     <Content Include="assets\styles\documentation.css" />
+    <Content Include="assets\styles\contribute.css" />
     <Content Include="assets\styles\download.css" />
     <Content Include="assets\styles\home.css" />
     <Content Include="assets\styles\images\activemarker2.png" />
+    <Content Include="assets\styles\images\andrew-davey.jpg" />
     <Content Include="assets\styles\images\background.jpg" />
     <Content Include="assets\styles\images\bullet_toggle_minus.png" />
     <Content Include="assets\styles\images\bullet_toggle_plus.png" />
@@ -91,7 +93,8 @@
     <Content Include="assets\styles\images\cassette-logo.png" />
     <Content Include="assets\styles\images\contentnoise.png" />
     <Content Include="assets\styles\images\docs-icon.png" />
-    <Content Include="assets\styles\images\donate-icon.png" />
+    <Content Include="assets\styles\images\contribute-icon.png" />
+    <Content Include="assets\styles\images\donate-count.png" />
     <Content Include="assets\styles\images\download-background.png" />
     <Content Include="assets\styles\images\download-button-icon.png" />
     <Content Include="assets\styles\images\download-icon.png" />
@@ -99,6 +102,7 @@
     <Content Include="assets\styles\images\getting-started-icon.png" />
     <Content Include="assets\styles\images\github-logo.png" />
     <Content Include="assets\styles\images\googlegroups.png" />
+    <Content Include="assets\styles\images\heart-icon.png" />
     <Content Include="assets\styles\images\nuget-logo.png" />
     <Content Include="assets\styles\images\osi-logo-small.png" />
     <Content Include="assets\styles\images\page.png" />
@@ -241,6 +245,9 @@
   <ItemGroup>
     <Content Include="Views\Shared\_Share.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Configuration_AddFile.cshtml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -260,7 +267,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49964</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:49964/</IISUrl>
+          <IISUrl>http://localhost:49965/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

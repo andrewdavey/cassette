@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+    Bundles.Reference("Content");
+    Bundles.Reference("Scripts");
+}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Precompiled Cassette Sample</title>
+        @Bundles.RenderStylesheets()
+        @Bundles.RenderScripts()
+    </head>
+    <body>
+        <h1>Compile-time bundling example</h1>
+        <p>This web application is using Cassette's MSBuild task to build the asset bundles at compile time.</p>
+        <p>Take a look at the Precompiled.csproj file, it contains the following addition:</p>
+        <pre>&lt;UsingTask TaskName="CreateBundles" AssemblyFile="..\..\src\Cassette.MSBuild\bin\$(Configuration)\Cassette.MSBuild.dll" /&gt;
+&lt;Target Name="CreateBundles" AfterTargets="AfterBuild"&gt;
+    &lt;CreateBundles Assembly="$(OutputPath)Precompiled.dll" Output="App_Data\cassette.xml" /&gt;
+&lt;/Target&gt;</pre>
+        
+        <p>
+            After the web application project is built, the <code>CreateBundles</code> task is run. 
+            This executes the <code>CassetteConfiguration</code> and generates all the application's bundles.
+            The output of this is saved to a file in App_Data.
+        </p>
+
+        <p>Then in the Web.config file, there is this:</p>
+        <pre>&lt;configuration&gt;
+    &lt;configSections&gt;
+        &lt;section name="cassette" type="Cassette.Configuration.CassetteConfigurationSection"/&gt;
+    &lt;/configSections&gt;
+    &lt;cassette precompiledManifest="App_Data/cassette.xml"/&gt;
+    ...
+&lt;/configuration&gt;</pre>
+
+        <p>When the web application starts, Cassette will load the pre-compiled bundles
+        from the file in App_Data. This removes just about all of Cassette's start-up overhead.</p>
+    </body>
+</html>

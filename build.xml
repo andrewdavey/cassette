@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    
+    <UsingTask AssemblyFile="tools\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
+
+    <PropertyGroup>
+        <Configuration>Release</Configuration>
+    </PropertyGroup>
+
+    <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
+
+    <Target Name="Build">
+        <ItemGroup>
+            <ProjectToBuild Include="src\Cassette.Web\Cassette.Web.csproj"/>
+            <ProjectToBuild Include="src\Cassette.Views\Cassette.Views.csproj"/>
+            <ProjectToBuild Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <ProjectToBuild Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
+        </ItemGroup>
+        <MSBuild Projects="@(ProjectToBuild)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+    </Target>
+
+    <Target Name="Test" DependsOnTargets="Build">
+        <xunit Assembly="src\Cassette.UnitTests\bin\$(Configuration)\Cassette.UnitTests.dll" ShadowCopy="false" />
+        <xunit Assembly="src\Cassette.IntegrationTests\bin\$(Configuration)\Cassette.IntegrationTests.dll" ShadowCopy="false" />
+    </Target>
+
+    <Target Name="NugetPack" DependsOnTargets="Build">
+        <ItemGroup>
+            <ProjectToNugetPack Include="src\Cassette\Cassette.csproj"/>
+            <ProjectToNugetPack Include="src\Cassette.Views\Cassette.Views.csproj"/>
+            <ProjectToNugetPack Include="src\Cassette.Web\Cassette.Web.csproj"/>
+        </ItemGroup>
+        <PropertyGroup>
+            <OutputDir>build\nuget\</OutputDir>
+        </PropertyGroup>
+        <MakeDir Directories="$(OutputDir)"/>
+        <Exec Command="nuget pack -Build %(ProjectToNugetPack.Identity) -Symbols -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration)"/>
+    </Target>
+
+    <Target Name="NugetPush" DependsOnTargets="NugetPack">
+        <ItemGroup>
+            <Packages Include="build\nuget\*.nupkg" Exclude="build\nuget\*.symbols.nupkg"/>
+        </ItemGroup>
+        <Exec Command="nuget push %(Packages.Identity)" />
+    </Target>
+    
+</Project>
