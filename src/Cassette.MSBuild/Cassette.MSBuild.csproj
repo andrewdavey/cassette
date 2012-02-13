@@ -56,10 +56,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="example.xml">
+    <None Include="Cassette.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </Content>
+    </None>
+    <None Include="uninstall.ps1" />
+    <None Include="install.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Cassette.MSBuild.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
