@@ -13,6 +13,7 @@
         <ItemGroup>
             <ProjectToBuild Include="src\Cassette.Web\Cassette.Web.csproj"/>
             <ProjectToBuild Include="src\Cassette.Views\Cassette.Views.csproj"/>
+            <ProjectToBuild Include="src\Cassette.MSBuild\Cassette.MSBuild.csproj"/>
             <ProjectToBuild Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
             <ProjectToBuild Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
@@ -35,6 +36,8 @@
         </PropertyGroup>
         <MakeDir Directories="$(OutputDir)"/>
         <Exec Command="nuget pack -Build %(ProjectToNugetPack.Identity) -Symbols -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration)"/>
+        <!-- The Cassette.MSBuild package is slightly different (no symbols needed and NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
+        <Exec Command="nuget pack -Build src\Cassette.MSBuild\Cassette.MSBuild.csproj -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
