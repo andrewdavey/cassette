@@ -36,8 +36,8 @@
         </PropertyGroup>
         <MakeDir Directories="$(OutputDir)"/>
         <Exec Command="nuget pack -Build %(ProjectToNugetPack.Identity) -Symbols -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration)"/>
-        <!-- The Cassette.MSBuild package is slightly different (no symbols needed and NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
-        <Exec Command="nuget pack -Build src\Cassette.MSBuild\Cassette.MSBuild.csproj -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
+        <!-- The Cassette.MSBuild package is slightly different (-Tool, no symbols and -NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
+        <Exec Command="nuget pack -Build src\Cassette.MSBuild\Cassette.MSBuild.csproj -Tool -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
