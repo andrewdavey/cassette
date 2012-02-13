@@ -81,16 +81,13 @@ namespace Cassette
 
         FileStream OpenManifestFile()
         {
-<<<<<<< HEAD
-            get { return Path.Combine(Path.Combine(PhysicalApplicationDirectory, "App_Data"), "cassette.xml"); }
-=======
+
             var filename = Path.Combine(physicalDirectory, configurationSection.PrecompiledManifest);
             if (!File.Exists(filename))
             {
                 throw new FileNotFoundException("Cannot find the file \"{0}\" specified by precompiledManifest in the <cassette> configuration section.", filename);
             }
             return File.OpenRead(filename);
->>>>>>> master
         }
 
         protected virtual IEnumerable<ICassetteConfiguration> CreateCassetteConfigurations()
