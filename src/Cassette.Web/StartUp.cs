@@ -8,6 +8,8 @@ using System.Web.Compilation;
 using System.Web.Configuration;
 using System.Web.Routing;
 using Cassette.Configuration;
+#if NET40
+
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 [assembly: WebActivator.PreApplicationStartMethod(
@@ -22,6 +24,7 @@ using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     typeof(Cassette.Web.StartUp),
     "ApplicationShutdown"
 )]
+#endif
 
 namespace Cassette.Web
 {
@@ -38,7 +41,10 @@ namespace Cassette.Web
         {
             StartUpTraceRecorder.Start();
             Trace.Source.TraceInformation("Registering CassetteHttpModule.");
+#if NET40
+
             DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
+#endif
         }
         // ReSharper restore UnusedMember.Global
 
