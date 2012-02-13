@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Cassette.Utilities;
 using Cassette.Configuration;
+#if NET35
 using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette
 {

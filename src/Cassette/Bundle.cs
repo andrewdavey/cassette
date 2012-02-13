@@ -6,7 +6,9 @@ using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Utilities;
+#if NET35
 using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette
 {

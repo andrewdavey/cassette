@@ -13,7 +13,9 @@ namespace Cassette.IO
         readonly Func<Storage> getStorage;
         readonly IsolatedStorageDirectory directory;
         readonly string systemFilename;
+#if NET35
         const string IndexFilename = "index.cassette";
+#endif
 
         public IsolatedStorageFile(string filename, Storage storage, IsolatedStorageDirectory directory)
             : this(filename, () => storage, directory)
@@ -26,9 +28,10 @@ namespace Cassette.IO
             this.getStorage = getStorage;
             this.directory = directory;
             systemFilename = filename.Substring(2); // Skip the "~/" prefix.
-
+#if NET35
             // Build index for this file, if it doesn't already exist
             WriteLastWriteTimeUtc();
+#endif
         }
 
         public IDirectory Directory
@@ -43,20 +46,29 @@ namespace Cassette.IO
 
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
-            // FX35: Use index file to store write times
+#if NET35
+            // Use index file to store write times
             if (access == FileAccess.Write)
             {
                 WriteLastWriteTimeUtc();
             }
-
             return new IsolatedStorageFileStream(systemFilename, mode, access, fileShare, Storage);
+#endif
+#if NET40
+            return Storage.OpenFile(systemFilename, mode, access, fileShare);
+#endif
         }
 
         public bool Exists
         {
             get
             {
+#if NET35
                 return Storage.GetFileNames(systemFilename).Length > 0;
+#endif
+#if NET40
+                return Storage.FileExists(systemFilename);
+#endif
             }
         }
 
@@ -64,18 +76,21 @@ namespace Cassette.IO
         {
             get
             {
-                // FX35
+#if NET35
                 return ReadLastWriteTimeUtc();
-
-                // FX40: return Storage.GetLastWriteTime(systemFilename).UtcDateTime;
+#endif
+#if NET40
+                return Storage.GetLastWriteTime(systemFilename).UtcDateTime;
+#endif
             }
         }
 
         public void Delete()
         {
-            // FX35: Remove from index
+#if NET35
+            // Remove from index
             RemoveFromIndex();
-
+#endif
             Storage.DeleteFile(systemFilename);
         }
 
@@ -84,8 +99,7 @@ namespace Cassette.IO
             get { return getStorage(); }
         }
 
-        #region FX35 Helpers
-
+#if NET35
         private DateTime ReadLastWriteTimeUtc()
         {
             long writeTime;
@@ -185,6 +199,6 @@ namespace Cassette.IO
             }
         }
 
-        #endregion
+#endif
     }
 }

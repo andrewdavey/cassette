@@ -23,6 +23,7 @@ namespace Cassette.Utilities
             }
         }
 
+#if NET35
         public static long CopyTo(this Stream source, Stream target)
         {
             const int bufSize = 0x1000;
@@ -44,6 +45,7 @@ namespace Cassette.Utilities
 
             return totalBytes;
         }
+#endif
     }
 }
 
