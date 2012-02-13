@@ -10,7 +10,7 @@ namespace Cassette.HtmlTemplates
         {
             return string.Join(
                 Environment.NewLine,
-                bundle.Assets.Select(asset => asset.OpenStream().ReadToEnd()) as string[]
+                bundle.Assets.Select(asset => asset.OpenStream().ReadToEnd()).ToArray()
             );
         }
     }
