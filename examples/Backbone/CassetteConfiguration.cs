@@ -24,7 +24,7 @@ namespace Backbone
             bundles.Add<HtmlTemplateBundle>(
                 "scripts/todos/templates",
                 bundle => bundle.Processor = new HoganPipeline {
-                    Namespace = "JST"
+                    JavaScriptVariableName = "JST"
                 }
             );
         }
