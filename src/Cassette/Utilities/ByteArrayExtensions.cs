@@ -8,7 +8,7 @@ namespace Cassette.Utilities
     {
         public static string ToHexString(this IEnumerable<byte> bytes)
         {
-            return string.Concat(bytes.Select(b => b.ToString("x2")));
+            return string.Concat(bytes.Select(b => b.ToString("x2")).ToArray());
         }
 
         public static byte[] FromHexString(string hex)
