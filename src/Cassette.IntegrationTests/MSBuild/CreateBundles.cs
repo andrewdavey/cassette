@@ -18,9 +18,11 @@ namespace Cassette.MSBuild
     {
         readonly TempDirectory path;
         readonly string manifestFilename;
+        readonly string originalDirectory;
 
         public GivenConfigurationClassInAssembly_WhenExecute()
         {
+            originalDirectory = Environment.CurrentDirectory;
             path = new TempDirectory();
 
             var assemblyPath = Path.Combine(path, "Test.dll");
@@ -32,9 +34,9 @@ namespace Cassette.MSBuild
             using (var container = new AppDomainInstance<CreateBundles>())
             {
                 var task = container.Value;
-                task.Assembly = assemblyPath;
+                task.Assemblies = new[] { assemblyPath };
                 manifestFilename = Path.Combine(path, "cassette.xml");
-                task.SourceDir = path;
+                Environment.CurrentDirectory = path;
                 task.Output = manifestFilename;
                 task.Execute();
             }
@@ -121,6 +123,7 @@ namespace Cassette.MSBuild
 
         public void Dispose()
         {
+            Environment.CurrentDirectory = originalDirectory;
             path.Dispose();
         }
     }

@@ -7,6 +7,6 @@
     <UsingTask AssemblyFile="..\packages\Cassette.MSBuild.1.1.0-beta2\tools\Cassette.MSBuild.dll" TaskName="CreateBundles"/>
     <Target Name="Bundle" AfterTargets="Build">
         <MakeDir Directories="App_Data"/>
-        <CreateBundles Assembly="$(OutputPath)$(AssemblyName).dll" Output="App_Data\cassette.xml"/>
+        <CreateBundles Assemblies="$(OutputPath)$(AssemblyName).dll" Output="App_Data\cassette.xml"/>
     </Target>
 </Project>
