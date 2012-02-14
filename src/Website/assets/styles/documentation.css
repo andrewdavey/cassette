@@ -29,7 +29,7 @@
 
 .documentation .tree {
     display: table-cell;
-    padding: 2.3em 1.7em;
+    padding: 2.5em 1.7em;
     width: 210px;
     border-right: 1px solid #ccc;
     vertical-align: top;
@@ -78,7 +78,7 @@
 
 .documentation .item {
     display: table-cell;
-    padding: 2.1em 2.3em;
+    padding: 1.8em 2.3em;
     vertical-align: top;
 }
 
@@ -115,4 +115,42 @@
 
 .documentation p + h3, .ul + h3 {
     margin: 1.5em 0 .75em 0;
+}
+
+/* TUTORIALS */
+
+ul.tutorials {
+    padding-left: 0;
+}
+
+ul.tutorials li {
+    list-style-type: none;
+    font-size: 1em;
+    padding: 0;
+}
+
+ul.tutorials img {
+    float: left;
+    border: 1px solid #D0D0D0;
+    padding: 1px;
+    vertical-align: middle;
+    background-color: white;
+    margin: 1px 5px 0 0;
+}
+
+h2.title {
+    font-size: 1.1em;
+    margin-bottom: 0.3em;
+}
+
+p.author {
+    margin: 0;
+    padding: 0;
+    font-size: 0.8em;
+}
+
+p.author a {    
+    padding-right: .1em; /* Stops last letter being partially hidden because of opacity settings */
+    color: #000;
+    text-decoration: none;
 }

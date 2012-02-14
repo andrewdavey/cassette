@@ -1,50 +1,17 @@
 ﻿@{
-    ViewBag.Title = "Cassette | Asset References";
-    ViewBag.Description = "How to declare asset references when using Cassette.";
+    ViewBag.Title = "Cassette | Tutorials";
+    ViewBag.Description = "A set of tutorials to help you get started using Cassette in your .net web apps";
 }
 
 
-<h1>Asset References</h1>
+<h1>Tutorials</h1>
 
-<p>Some assets must be included in a page before others. For example, your code may use jQuery, so the jQuery
-script must be included first.</p>
-<p>Cassette will sort all assets based on references they declare.</p>
-<p>In any asset file, declare references to other assets or bundle paths in comments. This is the basic reference syntax.</p>
-<pre><code>@@reference &lt;path-1&gt; &lt;path-2&gt; &lt;path-3&gt; ...</code></pre>
-<p>A reference path is relative to the current file. Start path with <code>~/</code> to be application relative.</p>
-<p>References also work between bundle types. A script can reference a stylesheet. So then adding the script to the page
-automatically adds the stylesheet as well.</p>
+<p>Keep an eye out here for new tutorials... more coming soon!</p>
 
-<h2>JavaScript</h2>
-<pre><code><span class="comment">// @@reference other.js
-// @@reference ../lib/jquery.js another.js "quotes-also-work.js"
-// @@reference ~/lib/backbone.js</span></code></pre>
-
-<p>JavaScript allow supports Visual Studio XML reference comments.</p>
-
-<pre><code><span class="comment">/// &lt;reference path="other.js" /&gt;</span></code></pre>
-
-<h2>CSS</h2>
-<pre><code><span class="comment">/*
-@@reference reset.css
-*/</span></code></pre>
-
-<h2>HTML Templates</h2>
-<pre><code><span class="comment">&lt;!--
-@@reference ~/styles/product.css
---&gt;</span></code></pre>
-
-<h2>CoffeeScript</h2>
-<pre><code><span class="comment"># @@reference ../jquery.js</span></code></pre>
-
-<p>or</p>
-
-<pre><code><span class="comment">###
-@@reference ../jquery.js
-@@reference other.coffee
-###</span></code></pre>
-
-<h2>LESS</h2>
-<pre><code><span class="comment">// @@reference other.less</span></code></pre>
-<p>or</p>
-<pre><code><span class="comment">/* @@reference another.css */</span></code></pre>
+<ul class="tutorials">
+    <li>
+        <h2 class="title"><a target="_blank" href="https://github.com/andrewdavey/cassette/blob/master/examples/Backbone/README.md">Managing Backbone.js applications with Cassette</a></h2>
+        <a target="_blank" href="http://github.com/christophercliff"><img height="16" src="https://secure.gravatar.com/avatar/9920985dff487c70cac02a5385754f2c?s=140&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" alt="Christopher Cliff"/></a>
+        <p class="author"><a target="_blank" href="http://github.com/christophercliff">Christopher Cliff</a></p>
+    </li>
+</ul>
