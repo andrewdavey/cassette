@@ -249,7 +249,9 @@
     <Content Include="Views\Documentation\Configuration_AddFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Documentation\HtmlTemplates_Hogan.cshtml" />
+    <Content Include="Views\Documentation\HtmlTemplates_MustacheHoganJS.cshtml">
+      <SubType>Code</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
