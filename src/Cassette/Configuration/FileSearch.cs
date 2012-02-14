@@ -34,7 +34,8 @@ namespace Cassette.Configuration
                 from file in directory.GetFiles(pattern, SearchOption)
                 where IsAssetFile(file)
                 select file;
-            
+
+            files = files.Distinct(new FilePathComparer());
             return RemoveMinifiedFilesWhereNonMinExist(files);
         }
 

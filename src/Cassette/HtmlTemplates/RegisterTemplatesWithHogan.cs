@@ -4,8 +4,8 @@ namespace Cassette.HtmlTemplates
 {
     public class RegisterTemplatesWithHogan : AddTransformerToAssets
     {
-        public RegisterTemplatesWithHogan(HtmlTemplateBundle bundle, string ns = null)
-            : base(new RegisterTemplateWithHogan(bundle, ns))
+        public RegisterTemplatesWithHogan(HtmlTemplateBundle bundle, string javaScriptVariableName)
+            : base(new RegisterTemplateWithHogan(bundle, javaScriptVariableName))
         {
         }
     }

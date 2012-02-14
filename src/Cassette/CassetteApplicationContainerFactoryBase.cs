@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Cassette.Configuration;
 using System.IO;
+using Cassette.Configuration;
 using Cassette.Manifests;
 
 namespace Cassette
@@ -9,13 +9,19 @@ namespace Cassette
         where T : ICassetteApplication
     {
         readonly ICassetteConfigurationFactory cassetteConfigurationFactory;
+        readonly CassetteConfigurationSection configurationSection;
+        readonly string physicalDirectory;
+        readonly string virtualDirectory;
         readonly object creationLock = new object();
         IEnumerable<ICassetteConfiguration> cassetteConfigurations;
         BundleCollection bundles;
 
-        protected CassetteApplicationContainerFactoryBase(ICassetteConfigurationFactory cassetteConfigurationFactory)
+        protected CassetteApplicationContainerFactoryBase(ICassetteConfigurationFactory cassetteConfigurationFactory, CassetteConfigurationSection configurationSection, string physicalDirectory, string virtualDirectory)
         {
             this.cassetteConfigurationFactory = cassetteConfigurationFactory;
+            this.configurationSection = configurationSection;
+            this.physicalDirectory = physicalDirectory;
+            this.virtualDirectory = virtualDirectory;
         }
 
         protected abstract bool ShouldWatchFileSystem { get; }
@@ -28,13 +34,13 @@ namespace Cassette
 
         public virtual CassetteApplicationContainer<T> CreateContainer()
         {
-            if (File.Exists(CompileTimeManifestFilename))
+            if (string.IsNullOrEmpty(configurationSection.PrecompiledManifest))
             {
-                return CreateContainerFromCompileTimeManifest();
+                return CreateContainerFromConfiguration();
             }
             else
             {
-                return CreateContainerFromConfiguration();
+                return CreateContainerFromCompileTimeManifest();
             }
         }
 
@@ -51,14 +57,21 @@ namespace Cassette
 
         CassetteApplicationContainer<T> CreateContainerFromCompileTimeManifest()
         {
-            using (var file = File.OpenRead(CompileTimeManifestFilename))
+            using (var file = OpenManifestFile())
             {
                 var reader = new CassetteManifestReader(file);
                 var manifest = reader.Read();
-                var settings = new CassetteSettings("");
+                var settings = new CassetteSettings("")
+                {
+                    UrlGenerator = new UrlGenerator(
+                        new VirtualDirectoryPrepender(virtualDirectory),
+                        UrlGenerator.RoutePrefix
+                    )
+                };
                 bundles = new BundleCollection(settings);
                 foreach (var bundle in manifest.CreateBundles())
                 {
+                    bundle.Process(settings);
                     bundles.Add(bundle);
                 }
                 var bundleContainer = new BundleContainer(bundles);
@@ -66,9 +79,14 @@ namespace Cassette
             }
         }
 
-        string CompileTimeManifestFilename
+        FileStream OpenManifestFile()
         {
-            get { return Path.Combine(PhysicalApplicationDirectory, "App_Data", "cassette.xml"); }
+            var filename = Path.Combine(physicalDirectory, configurationSection.PrecompiledManifest);
+            if (!File.Exists(filename))
+            {
+                throw new FileNotFoundException("Cannot find the file \"{0}\" specified by precompiledManifest in the <cassette> configuration section.", filename);
+            }
+            return File.OpenRead(filename);
         }
 
         protected virtual IEnumerable<ICassetteConfiguration> CreateCassetteConfigurations()

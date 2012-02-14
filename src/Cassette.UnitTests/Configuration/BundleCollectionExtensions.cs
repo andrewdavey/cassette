@@ -184,10 +184,13 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void GivenTwoSubDirectories_WhenAddPerSubDirectory_ThenTwoBundlesAreAdded()
+        public void GivenTwoSubDirectoriesWithFiles_WhenAddPerSubDirectory_ThenTwoBundlesAreAdded()
         {
             CreateDirectory("bundle-a");
             CreateDirectory("bundle-b");
+
+            defaultAssetSource.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(() => new[] { StubFile() });
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
 
@@ -228,6 +231,16 @@ namespace Cassette.Configuration
         {
             CreateDirectory("test");
             File.SetAttributes(Path.Combine(tempDirectory, "test"), FileAttributes.Directory | FileAttributes.Hidden);
+
+            bundles.AddPerSubDirectory<TestableBundle>("~");
+
+            bundles.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void GivenEmptyDirectory_WhenAddPerSubDirectory_ThenDirectoryIsIgnored()
+        {
+            CreateDirectory("test");
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
 

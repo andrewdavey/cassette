@@ -164,6 +164,14 @@ namespace Cassette.Manifests
             bundle.HtmlAttributes["attribute"].ShouldBeNull();
         }
 
+        [Fact]
+        public void WhenCreateBundle_WhenBundleIsNotProcessed()
+        {
+            var bundle = manifest.CreateBundle();
+            
+            bundle.IsProcessed.ShouldBeFalse();
+        }
+
         class TestableBundleManifest : BundleManifest
         {
             protected override Bundle CreateBundleCore()

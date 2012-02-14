@@ -54,11 +54,6 @@ namespace Cassette.Configuration
         public IUrlModifier UrlModifier { get; set; }
 
         /// <summary>
-        /// Gets if the bundles were built at compile-time. Configurations should not add bundles to the <see cref="BundleCollection"/> when this is true.
-        /// </summary>
-        public bool BundlesArePreBuilt { get; internal set; }
-
-        /// <summary>
         /// The default <see cref="IFileSearch"/> object for each type of <see cref="Bundle"/>, used to find asset files to include.
         /// </summary>
         public IDictionary<Type, IFileSearch> DefaultFileSearches { get; private set; }

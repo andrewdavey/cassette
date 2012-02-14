@@ -12,6 +12,13 @@ namespace Cassette.Web
 {
     public class CassetteApplicationContainerFactory_Test
     {
+        readonly CassetteConfigurationSection configurationSection;
+
+        public CassetteApplicationContainerFactory_Test()
+        {
+            configurationSection = new CassetteConfigurationSection();            
+        }
+
         [Fact]
         public void GivenFactoryThatUsesConfiguration_WhenCreateContainer_ThenResultingBundlesAreProcessed()
         {
@@ -61,7 +68,6 @@ namespace Cassette.Web
         {
             var bundle = StubBundle();
             var bundleManifest = bundle.CreateBundleManifest(true);
-            
             var cassetteManifest = new CassetteManifest("", new[] { bundleManifest });
 
             var manifestFilename = Path.Combine(rootDirectory, "App_Data", "cassette.xml");
@@ -71,6 +77,8 @@ namespace Cassette.Web
                 var writer = new CassetteManifestWriter(outputStream);
                 writer.Write(cassetteManifest);
             }
+
+            configurationSection.PrecompiledManifest = "App_Data/cassette.xml";
         }
 
         ScriptBundle StubBundle()
@@ -85,7 +93,7 @@ namespace Cassette.Web
         {
             return new CassetteApplicationContainerFactory(
                 new DelegateCassetteConfigurationFactory(Enumerable.Empty<ICassetteConfiguration>),
-                new CassetteConfigurationSection(),
+                configurationSection,
                 path,
                 "/",
                 false,

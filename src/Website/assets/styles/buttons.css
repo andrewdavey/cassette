@@ -51,14 +51,14 @@ a.action:hover {
 .download-button {
     font-size: 1.1em;
     padding-left: 1.9em;
-    background-image: url(images\download-button-icon.png);
+    background-image: url(images/download-button-icon.png);
     background-repeat: no-repeat;
     background-position: 0px 0px;
 }
 
 .donate-button {
     padding-left: 1.7em;
-    background-image: url(images\heart-icon.png);
+    background-image: url(images/heart-icon.png);
     background-repeat: no-repeat;
     background-position: 0px 2px;
 }
