@@ -9,15 +9,13 @@
 }
 
 .documentation h1 {
-    font-family: "Droid Sans" , sans-serif;
     color: #03517e;
-    font-size: 1.3em;
+    font-size: 1.4em;
     margin: 0px 0px .75em 0px;
     text-shadow: none;
 }
 
 .documentation h2 {
-    font-family: "Droid Sans" , sans-serif;
     font-size: 1em;
     margin: 0px 0px .75em 0px;
     color: #171717;
@@ -27,13 +25,12 @@
     display: table;
     width: 100%;
     padding: 0;
-    background-color: #fafafa;
 }
 
 .documentation .tree {
     display: table-cell;
-    padding: 1.7em 1.6em;
-    width: 220px;
+    padding: 1.7em;
+    width: 210px;
     border-right: 1px solid #ccc;
     vertical-align: top;
     background-color: #f0f0f0;
@@ -89,7 +86,6 @@
 .main table + h2 {
     margin-top: 1.8em;
 }
-
 
 .main pre + p {
     margin-top: 1.4em;
