@@ -29,7 +29,7 @@
 
 .documentation .tree {
     display: table-cell;
-    padding: 1.7em;
+    padding: 2.3em 1.7em;
     width: 210px;
     border-right: 1px solid #ccc;
     vertical-align: top;
@@ -38,28 +38,32 @@
     font-size: 11pt;
 }
 
-.tree h3 {
-    font-size: 1.3em;
-}
-
 .tree ul {
     padding: 0;
     margin: 0;
 }
 
 .tree li {
+    margin: 0;
     display: block;
     list-style-type: none;
     background-image: url(images/page.png);
     background-repeat: no-repeat;
     background-position: left 0;
-    padding: 0 0 7px 20px;
+    padding: 0 0 20px 20px;
     line-height: 16px;
-    margin: 5px 0;
 }
 
-.tree li > ul {
-    margin-top: 12px;
+.tree ul ul {
+    margin-top: 14px;
+}
+
+.tree ul ul li {
+    padding: 0 0 12px 20px;
+}
+
+.tree ul ul li.last-child {
+    padding: 0 0 2px 20px;
 }
 
 .tree a {
@@ -69,13 +73,12 @@
 .tree a.activedoc {
     font-weight: bold;
     text-decoration: none;
-    color: #000000;
     opacity: 1;
 }
 
 .documentation .item {
     display: table-cell;
-    padding: 1.7em 2.3em;
+    padding: 2.1em 2.3em;
     vertical-align: top;
 }
 
