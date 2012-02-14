@@ -26,17 +26,17 @@
 }
 
 .banner .share-links p {
-    font-size: 1em;
+    font-size: 1.1em;
 }
 
 .banner .tweet, .banner .g1 {
-    padding-top: 0.3em;
+    padding-top: 0.4em;
 }
 
 /* FAV TWEETS */
 
 .favtweets {
-    width: 244px;
+    width: 246px;
     height: 350px;
     position: absolute;
     top: 77px;
