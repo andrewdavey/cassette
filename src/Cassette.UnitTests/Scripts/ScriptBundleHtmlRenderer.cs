@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using Should;
 using Xunit;
 
@@ -36,6 +37,23 @@ namespace Cassette.Scripts
             html.ShouldEqual("<script src=\"URL\" type=\"text/javascript\" async=\"async\" class=\"isDismissed\"></script>");
         }
 
+        [Fact]
+        public void GivenScriptBundleWithCondition_WhenRender_ThenHtmlConditionalCommentWrapsLink()
+        {
+            var urlGenerator = new Mock<IUrlGenerator>();
+            var renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object);
+            var bundle = new ScriptBundle("~/test") {Condition = "CONDITION"};
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
+                        .Returns("URL");
+
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if CONDITION]>" + Environment.NewLine +
+                "<script src=\"URL\" type=\"text/javascript\"></script>" + Environment.NewLine +
+                "<![endif]-->"
+            );
+        }
     }
 }
 

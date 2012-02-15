@@ -107,6 +107,16 @@ namespace Cassette.Scripts.Manifests
             manifest.HtmlAttributes["attribute"].ShouldEqual("value");
         }
 
+        [Fact]
+        public void ManifestConditionEqualsBundleCondition()
+        {
+            var bndle = new ScriptBundle("~") { Condition = "CONDITION" };
+            var bldr = new ScriptBundleManifestBuilder();
+            var mnifst = bldr.BuildManifest(bndle);
+
+            mnifst.Condition.ShouldEqual(bndle.Condition);
+        }
+
         IAsset StubAsset()
         {
             var stubAsset = new Mock<IAsset>();

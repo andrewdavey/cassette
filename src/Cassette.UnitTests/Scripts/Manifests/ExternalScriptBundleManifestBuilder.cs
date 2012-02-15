@@ -26,5 +26,16 @@ namespace Cassette.Scripts.Manifests
 
             manifest.FallbackCondition.ShouldEqual(bundle.FallbackCondition);
         }
+
+        [Fact]
+        public void ManifestConditionEqualsBundleCondition()
+        {
+            var bundle = new ExternalScriptBundle("http://example.com/") { Condition = "CONDITION" };
+
+            var builder = new ExternalScriptBundleManifestBuilder();
+            var manifest = builder.BuildManifest(bundle);
+
+            manifest.Condition.ShouldEqual(bundle.Condition);
+        }
     }
 }
