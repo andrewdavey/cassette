@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="CassetteApplication.cs" />
     <Compile Include="Compilation\CoffeeScriptCompiler.cs" />
-    <Compile Include="Compilation\LessCompiler.cs" />
     <Compile Include="IsolatedStorageFileSystem.cs" />
     <Compile Include="MSBuild\CreateBundles.cs" />
     <Compile Include="StreamExtensions.cs" />
@@ -109,15 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\scripts\bundle-c\asset.coffee">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\less\Main.less">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\less\_DefaultIncludes.less">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\less\_Variables.less">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />

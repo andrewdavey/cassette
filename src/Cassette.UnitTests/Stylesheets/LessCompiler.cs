@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
 using Cassette.IO;
-using Cassette.Stylesheets;
 using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Stylesheets
 {
     public class LessCompiler_Compile
     {
@@ -191,11 +190,19 @@ namespace Cassette
         [Fact]
         public void Variable_defined_by_nested_import_is_replaced_in_CSS_output()
         {
-            var directory = new FileSystemDirectory(Path.GetFullPath(@"assets\less"));
-            var file = directory.GetFile("Main.less");
-            var compiler = new LessCompiler();
-            var css = compiler.Compile(file.OpenRead().ReadToEnd(), file);
-            css.ShouldContain("color: #404040;");
+            using (var path = new TempDirectory())
+            {
+                File.WriteAllText(Path.Combine(path, "main.less"), "@import 'first.less';\np { color: @c }");
+                File.WriteAllText(Path.Combine(path, "first.less"), "@import 'second.less';");
+                File.WriteAllText(Path.Combine(path, "second.less"), "@c: red;");
+                var directory = new FileSystemDirectory(path);
+                var file = directory.GetFile("main.less");
+                var compiler = new LessCompiler();
+
+                var css = compiler.Compile(file.OpenRead().ReadToEnd(), file);
+
+                css.ShouldContain("color: red;");
+            }
         }
 
         void StubFile(string path, string content)
