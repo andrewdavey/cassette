@@ -47,7 +47,7 @@ namespace Cassette.Manifests
         DateTime UtcNowToTheSecond()
         {
             var now = DateTime.UtcNow;
-            return new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+            return new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second, DateTimeKind.Utc);
         }
 
         CassetteManifest CreateOriginalManifest()
