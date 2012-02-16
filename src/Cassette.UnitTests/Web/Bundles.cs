@@ -47,15 +47,27 @@ namespace Cassette.Web
         [Fact]
         public void AddInlineScriptAddsReferenceToInlineScriptBundle()
         {
+            Bundle bundle = null;
+            referenceBuilder.Setup(b => b.Reference(It.IsAny<Bundle>(), "location"))
+                            .Callback<Bundle, string>((b, s) => bundle = b);
+
             Bundles.AddInlineScript("content", "location");
-            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is InlineScriptBundle), "location"));
+
+            bundle.ShouldBeType<InlineScriptBundle>();
+            bundle.Render().ShouldContain("content");
         }
 
         [Fact]
         public void AddInlineScriptWithLambdaAddsReferenceToInlineScriptBundle()
         {
-            Bundles.AddInlineScript((Func<object, object>)((a) => { return "content"; }), "location");
-            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is InlineScriptBundle), "location"));
+            Bundle bundle = null;
+            referenceBuilder.Setup(b => b.Reference(It.IsAny<Bundle>(), "location"))
+                            .Callback<Bundle, string>((b, s) => bundle = b);
+
+            Bundles.AddInlineScript(_ => "content", "location");
+
+            bundle.ShouldBeType<InlineScriptBundle>();
+            bundle.Render().ShouldContain("content");
         }
 
         [Fact]
