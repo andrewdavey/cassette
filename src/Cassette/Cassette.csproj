@@ -58,6 +58,7 @@
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleReferenceCollector.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
+    <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
     <Compile Include="ICassetteApplicationContainer.cs" />
-    <Compile Include="ICassetteConfigurationFactory.cs" />
     <Compile Include="Interop\ActiveScriptException.cs" />
     <Compile Include="Interop\ActiveScriptParseWrapper.cs" />
     <Compile Include="Interop\ChakraJavaScriptEngine.cs" />
