@@ -39,9 +39,9 @@ namespace Cassette.Views
         /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
         /// <code lang="CS">
         /// @{
-        ///   Bundles.AddInlineScript(@<text>
+        ///   Bundles.AddInlineScript(@&lt;text&gt;
         ///     var foo = "Hello World";
-        ///     alert( foo );</text>);
+        ///     alert( foo );&lt;/text&gt;);
         /// }
         /// </code>
         public static void AddInlineScript(Func<object, object> scriptContent, string pageLocation = null)
