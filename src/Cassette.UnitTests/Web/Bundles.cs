@@ -52,6 +52,13 @@ namespace Cassette.Web
         }
 
         [Fact]
+        public void AddInlineScriptWithLambdaAddsReferenceToInlineScriptBundle()
+        {
+            Bundles.AddInlineScript((Func<object, object>)((a) => { return "content"; }), "location");
+            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is InlineScriptBundle), "location"));
+        }
+
+        [Fact]
         public void AddPageDataWithDataObjectAddsReferenceToPageDataScriptBundle()
         {
             Bundles.AddPageData("content", new { data = 1 }, "location");
