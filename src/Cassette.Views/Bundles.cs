@@ -33,6 +33,23 @@ namespace Cassette.Views
         }
 
         /// <summary>
+        /// Adds a page reference to an inline JavaScript block.
+        /// </summary>
+        /// <param name="scriptContent">The Razor template for the Javascript code.</param>
+        /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
+        /// <code lang="CS">
+        /// @{
+        ///   Bundles.AddInlineScript(@<text>
+        ///     var foo = "Hello World";
+        ///     alert( foo );</text>);
+        /// }
+        /// </code>
+        public static void AddInlineScript(Func<object, object> scriptContent, string pageLocation = null)
+        {
+            AddInlineScript(scriptContent(null).ToString(), pageLocation);
+        }
+
+        /// <summary>
         /// Add a page reference to a script that initializes a global JavaScript variable with the given data.
         /// </summary>
         /// <param name="globalVariable">The name of the global JavaScript variable to assign.</param>
