@@ -110,6 +110,7 @@
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
+    <Compile Include="Stylesheets\LessCompiler.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
@@ -147,7 +148,6 @@
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="TestableBundle.cs" />
     <Compile Include="Views\Bundles.cs" />
-    <Compile Include="Web\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="BundleContainer.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />

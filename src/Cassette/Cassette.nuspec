@@ -16,5 +16,13 @@
             <dependency id="Jurassic" version="2.1" />
             <dependency id="Newtonsoft.Json" version="4.0" />
         </dependencies>
+        <references>
+            <reference file="Pandora.dll"/>
+            <reference file="Microsoft.Practices.ServiceLocation.dll"/>
+        </references>
     </metadata>
+    <files>
+        <file src="bin\Release\Pandora.dll" target="lib"/>
+        <file src="bin\Release\Microsoft.Practices.ServiceLocation.dll" target="lib"/>
+    </files>
 </package>

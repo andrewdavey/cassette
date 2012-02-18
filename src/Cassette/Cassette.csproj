@@ -40,9 +40,9 @@
       <HintPath>..\packages\Jurassic.2.1.0\lib\net40\Jurassic.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.0.4.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.4.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -58,6 +58,7 @@
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleReferenceCollector.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
+    <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
     <Compile Include="ICassetteApplicationContainer.cs" />
-    <Compile Include="ICassetteConfigurationFactory.cs" />
     <Compile Include="Interop\ActiveScriptException.cs" />
     <Compile Include="Interop\ActiveScriptParseWrapper.cs" />
     <Compile Include="Interop\ChakraJavaScriptEngine.cs" />
@@ -287,9 +287,6 @@
     <None Include="Resources\coffeescript.js" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\less.js" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\jqueryTmplCompiler.js" />
   </ItemGroup>
   <ItemGroup>
@@ -297,6 +294,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\hogan.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
+      <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
+      <Name>dotless.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

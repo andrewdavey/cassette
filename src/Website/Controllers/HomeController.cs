@@ -86,6 +86,9 @@ namespace Website.Controllers
     {
         public string avatar_url { get; set; }
         public string login { get; set; }
-        public string url { get; set; }
+        public string url
+        {
+            get { return "https://github.com/" + login; }
+        }
     }
 }
