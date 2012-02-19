@@ -136,11 +136,20 @@ namespace Cassette.Views
             return Application.Settings.UrlGenerator.CreateBundleUrl(bundle);
         }
 
+        /// <summary>
+        /// Gets the bundles that have been referenced during the current request.
+        /// </summary>
+        /// <param name="pageLocation">Optional. The page location of bundles to return.</param>
         public static IEnumerable<Bundle> GetReferencedBundles(string pageLocation = null)
         {
             return ReferenceBuilder.GetBundles(pageLocation);
         }
 
+        /// <summary>
+        /// Get the URLs for bundles that have been referenced during the current request.
+        /// </summary>
+        /// <typeparam name="T">The type of bundles.</typeparam>
+        /// <param name="pageLocation">Optional. The page location of bundles to return.</param>
         public static IEnumerable<string> GetReferencedBundleUrls<T>(string pageLocation = null)
             where T : Bundle
         {
