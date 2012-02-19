@@ -64,6 +64,9 @@
   <ItemGroup>
     <Content Include="Scripts\jasmine\runner.js" />
     <Content Include="Scripts\jasmine\MIT.LICENSE" />
+    <None Include="Cassette.Web.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
