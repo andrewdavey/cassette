@@ -274,19 +274,18 @@ namespace Cassette.Configuration
             foreach (var directory in directories)
             {
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
-                var allFiles = fileSearch.FindFiles(directory);
-                if (allFiles.Any())
-                {
-                    var descriptorFile = TryGetDescriptorFile(directory);
-                    var descriptor = descriptorFile.Exists
-                                         ? new BundleDescriptorReader(descriptorFile).Read()
-                                         : new BundleDescriptor { AssetFilenames = { "*" } };
+                var allFiles = fileSearch.FindFiles(directory).ToArray();
+                if (!allFiles.Any()) continue;
 
-                    var bundle = bundleFactory.CreateBundle(directory.FullPath, allFiles, descriptor);
-                    if (customizeBundle != null) customizeBundle(bundle);
-                    TraceAssetFilePaths(bundle);
-                    bundleCollection.Add(bundle);
-                }
+                var descriptorFile = TryGetDescriptorFile(directory);
+                var descriptor = descriptorFile.Exists
+                                     ? new BundleDescriptorReader(descriptorFile).Read()
+                                     : new BundleDescriptor { AssetFilenames = { "*" } };
+
+                var bundle = bundleFactory.CreateBundle(directory.FullPath, allFiles, descriptor);
+                if (customizeBundle != null) customizeBundle(bundle);
+                TraceAssetFilePaths(bundle);
+                bundleCollection.Add(bundle);
             }
         }
 
