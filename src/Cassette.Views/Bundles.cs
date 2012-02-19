@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
@@ -135,6 +136,29 @@ namespace Cassette.Views
             return Application.Settings.UrlGenerator.CreateBundleUrl(bundle);
         }
 
+        public static IEnumerable<Bundle> GetReferencedBundles(string pageLocation = null)
+        {
+            return ReferenceBuilder.GetBundles(pageLocation);
+        }
+
+        public static IEnumerable<string> GetReferencedBundleUrls<T>(string pageLocation = null)
+            where T : Bundle
+        {
+            var bundles = ReferenceBuilder.GetBundles(pageLocation).OfType<T>();
+
+            if (Application.Settings.IsDebuggingEnabled)
+            {
+                return bundles
+                    .SelectMany(GetAllAssets)
+                    .Select(Application.Settings.UrlGenerator.CreateAssetUrl);
+            }
+            else
+            {
+                return bundles
+                    .Select(Application.Settings.UrlGenerator.CreateBundleUrl);
+            }
+        }
+
         static IHtmlString Render<T>(string location) where T : Bundle
         {
             return new HtmlString(ReferenceBuilder.Render<T>(location));
@@ -153,9 +177,30 @@ namespace Cassette.Views
             get { return CassetteApplicationContainer.Application; }
         }
 
-        public static IEnumerable<Bundle> GetReferencedBundles(string location = null)
+        static IEnumerable<IAsset> GetAllAssets(Bundle bundle)
         {
-            return ReferenceBuilder.GetBundles(location);
+            var collector = new AssetCollector();
+            bundle.Accept(collector);
+            return collector.Assets;
+        }
+
+        class AssetCollector : IBundleVisitor
+        {
+            public AssetCollector()
+            {
+                Assets = new List<IAsset>();
+            }
+
+            public List<IAsset> Assets { get; private set; }
+
+            public void Visit(Bundle bundle)
+            {
+            }
+
+            public void Visit(IAsset asset)
+            {
+                Assets.Add(asset);
+            }
         }
     }
 }
