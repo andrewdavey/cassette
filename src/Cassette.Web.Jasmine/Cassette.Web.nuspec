@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Cassette.Web.Jasmine</id>
+        <version>$version$</version>
+        <authors>Andrew Davey</authors>
+        <owners>Andrew Davey</owners>
+        <copyright>© 2011 Andrew Davey</copyright>
+        <licenseUrl>http://getcassette.net/licensing</licenseUrl>
+        <projectUrl>http://getcassette.net/</projectUrl>
+        <description>Jasmine specification runner support for Cassette.</description>
+        <tags>jasmine testing bdd web javascript</tags>
+        <iconUrl>http://getcassette.net/nuget-icon.png</iconUrl>
+        <dependencies>
+            <dependency id="Cassette" version="$version$" />
+            <dependency id="Cassette.Views" version="$version$" />
+            <dependency id="Cassette.Web" version="$version$" />
+        </dependencies>
+    </metadata>
+</package>
