@@ -234,6 +234,7 @@ namespace Cassette.Views
 
             urls.ShouldEqual(new[] { "/url" });
         }
+
         [Fact]
         public void GivenDebugModeAndReferencedBundleWithAssets_WhenGetReferencedBundleUrls_ThenReturnEachAssetUrlInArray()
         {

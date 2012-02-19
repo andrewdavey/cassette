@@ -22,7 +22,7 @@ namespace Cassette.Stylesheets
         readonly string url;
         ExternalStylesheetHtmlRenderer externalHtmlRender;
 
-        internal string Url
+        internal override string Url
         {
             get { return url; }
         }

@@ -170,7 +170,7 @@
     <Compile Include="Web\AssetRequestHandler.cs" />
     <Compile Include="Web\CassetteApplicationContainerFactory.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
-    <Compile Include="Web\UrlGenerator.cs" />
+    <Compile Include="UrlGenerator.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
     <Compile Include="Web\InitialConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
