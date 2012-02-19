@@ -27,7 +27,7 @@ namespace Cassette.Interop
                 engine.LoadLibrary(Properties.Resources.coffeescript);
                 engine.LoadLibrary("function compile(code) { return CoffeeScript.compile(code); }");
                 var js = engine.CallFunction<string>("compile", "x = 1");
-                js.ShouldEqual("(function() {\n  var x;\n  x = 1;\n}).call(this);\n");
+                js.ShouldEqual("(function() {\n  var x;\n\n  x = 1;\n\n}).call(this);\n");
             }
         }
 
@@ -53,21 +53,6 @@ namespace Cassette.Interop
                 Assert.Throws<ActiveScriptException>(
                     () => engine.CallFunction<object>("fail")
                 );
-            }
-        }
-
-        [Fact]
-        public void GivenCoffeeScriptCompilerLoaded_WhenCompileInvalidCoffeeScript_ThenExceptionThrown()
-        {
-            using (var engine = new IEJavaScriptEngine())
-            {
-                engine.Initialize();
-                engine.LoadLibrary(Properties.Resources.coffeescript);
-                engine.LoadLibrary("function compile(code) { return CoffeeScript.compile(code); }");
-                var exception = Assert.Throws<ActiveScriptException>(
-                    () => engine.CallFunction<string>("compile", "x = [1..")
-                );
-                exception.Message.ShouldEqual("unclosed [ on line 1");
             }
         }
 

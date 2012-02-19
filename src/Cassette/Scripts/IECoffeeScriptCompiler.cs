@@ -85,7 +85,13 @@ namespace Cassette.Scripts
                 var engine = new IEJavaScriptEngine();
                 engine.Initialize();
                 engine.LoadLibrary(Properties.Resources.coffeescript);
-                engine.LoadLibrary("function compile(c) { return CoffeeScript.compile(c); }");
+                engine.LoadLibrary(@"function compile(c) {
+    try {
+        return { output: CoffeeScript.compile(c), error: '' };
+    } catch (e) {
+        return { error: e.message };
+    }
+}");
                 return engine;
             }
         }
@@ -127,7 +133,15 @@ namespace Cassette.Scripts
             {
                 try
                 {
-                    result = engine.CallFunction<string>("compile", source);
+                    var compileResult = engine.CallFunction<dynamic>("compile", source);
+                    if (compileResult.error != "")
+                    {
+                        throw new Exception(compileResult.error);
+                    }
+                    else
+                    {
+                        result = compileResult.output;
+                    }
                 }
                 catch (Exception ex)
                 {
