@@ -21,8 +21,8 @@
     </Target>
 
     <Target Name="Test" DependsOnTargets="Build">
-        <xunit Assembly="src\Cassette.UnitTests\bin\$(Configuration)\Cassette.UnitTests.dll" ShadowCopy="false" />
-        <xunit Assembly="src\Cassette.IntegrationTests\bin\$(Configuration)\Cassette.IntegrationTests.dll" ShadowCopy="false" />
+        <xunit Assembly="src\Cassette.UnitTests\bin\$(Configuration)\Cassette.UnitTests.dll" />
+        <xunit Assembly="src\Cassette.IntegrationTests\bin\$(Configuration)\Cassette.IntegrationTests.dll" />
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">
