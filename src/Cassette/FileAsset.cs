@@ -15,7 +15,7 @@ namespace Cassette
             this.parentBundle = parentBundle;
             this.sourceFile = sourceFile;
 
-            hash = new Lazy<byte[]>(HashFileContents); // Avoid file IO until the hash is actually needed.
+            hash = new Lazy<byte[]>(ComputeHash); // Avoid file IO until the hash is actually needed.
         }
 
         readonly Bundle parentBundle;
@@ -61,7 +61,7 @@ namespace Cassette
                     appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
                         subDirectory,
                         assetRelativePath
-                    );
+                        );
                 }
                 appRelativeFilename = PathUtilities.NormalizePath(appRelativeFilename);
                 AddBundleReference(appRelativeFilename, lineNumber);
@@ -71,8 +71,8 @@ namespace Cassette
         void AddBundleReference(string appRelativeFilename, int lineNumber)
         {
             var type = parentBundle.ContainsPath(appRelativeFilename)
-                ? AssetReferenceType.SameBundle
-                : AssetReferenceType.DifferentBundle;
+                           ? AssetReferenceType.SameBundle
+                           : AssetReferenceType.DifferentBundle;
             references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
         }
 
@@ -92,7 +92,7 @@ namespace Cassette
                 relativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
                     SourceFile.Directory.FullPath,
                     relativeFilename
-                ));
+                                                                   ));
             }
 
             var alreadyExists = references.Any(r => r.Path.Equals(relativeFilename, StringComparison.OrdinalIgnoreCase));
@@ -101,12 +101,12 @@ namespace Cassette
             references.Add(new AssetReference(relativeFilename, this, -1, AssetReferenceType.RawFilename));
         }
 
-        byte[] HashFileContents()
+        byte[] ComputeHash()
         {
             using (var sha1 = SHA1.Create())
-            using (var fileStream = sourceFile.OpenRead())
+            using (var stream = OpenStream())
             {
-                return sha1.ComputeHash(fileStream);
+                return sha1.ComputeHash(stream);
             }
         }
 
@@ -121,4 +121,3 @@ namespace Cassette
         }
     }
 }
-
