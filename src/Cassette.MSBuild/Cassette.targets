@@ -4,7 +4,7 @@
     So after a build, the Cassette bundles will be created and a cache file written to App_Data\cassette.xml.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">    
-    <UsingTask AssemblyFile="..\packages\Cassette.MSBuild.1.1.0-beta2\tools\Cassette.MSBuild.dll" TaskName="CreateBundles"/>
+    <UsingTask AssemblyFile="..\packages\Cassette.MSBuild.1.1.0-beta3\tools\Cassette.MSBuild.dll" TaskName="CreateBundles"/>
     <Target Name="Bundle" AfterTargets="Build">
         <MakeDir Directories="App_Data"/>
         <CreateBundles Assemblies="$(OutputPath)$(AssemblyName).dll" Output="App_Data\cassette.xml"/>
