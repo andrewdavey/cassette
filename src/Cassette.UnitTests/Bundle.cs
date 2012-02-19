@@ -287,6 +287,14 @@ namespace Cassette
             );
         }
 
+        [Fact]
+        public void GivenNewBundle_ThenEmptyHtmlAttributes()
+        {
+            var bundle = new TestableBundle("~/test");
+
+            bundle.HtmlAttributes.ShouldBeEmpty();
+        }
+
         IAsset StubAsset(string filename)
         {
             var asset = new Mock<IAsset>();
