@@ -152,5 +152,10 @@ namespace Cassette.Views
         {
             get { return CassetteApplicationContainer.Application; }
         }
+
+        public static IEnumerable<Bundle> GetReferencedBundles(string location = null)
+        {
+            return ReferenceBuilder.GetBundles(location);
+        }
     }
 }

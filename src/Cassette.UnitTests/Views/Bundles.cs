@@ -182,6 +182,28 @@ namespace Cassette.Views
         }
 
         [Fact]
+        public void WhenGetReferencedBundles_ThenReturnReferenceBuilderReferencedBundles()
+        {
+            var bundles = new Bundle[0];
+            referenceBuilder
+                .Setup(b => b.GetBundles(null))
+                .Returns(bundles);
+
+            Bundles.GetReferencedBundles().ShouldBeSameAs(bundles);
+        }
+
+        [Fact]
+        public void WhenGetReferencedBundlesByLocation_ThenReturnReferenceBuilderReferencedBundlesWithLocation()
+        {
+            var bundles = new Bundle[0];
+            referenceBuilder
+                .Setup(b => b.GetBundles("body"))
+                .Returns(bundles);
+
+            Bundles.GetReferencedBundles("body").ShouldBeSameAs(bundles);
+        }
+
+        [Fact]
         public void WhenNewBundle_ThenEmptyHtmlAttributes()
         {
             var bundle = new TestableBundle("~/test");
