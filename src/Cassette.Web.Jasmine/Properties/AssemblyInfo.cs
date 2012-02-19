@@ -1,17 +1,10 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-// See src\SharedAssemblyInfo.cs for assembly metadata shared by all projects.
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Cassette.Web")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyTitle("Cassette.Web.Jasmine")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -19,8 +12,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1038439c-5eae-4483-9051-adca689d2532")]
-
-[assembly: InternalsVisibleTo("Cassette.Web.Jasmine")]
-[assembly: InternalsVisibleTo("Cassette.UnitTests")]
-[assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
+[assembly: Guid("97b9a2d2-cd71-4cb6-af7c-aec0a14c4da0")]
