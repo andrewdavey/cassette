@@ -38,6 +38,17 @@ namespace Cassette
         }
 
         [Fact]
+        public void GivenBundleUrlIsExternal_ThenCreateBundleUrlDoesNotPrefixIt()
+        {
+            var bundle = new Mock<Bundle>("~");
+            bundle.SetupGet(b => b.Url).Returns("http://example.org/");
+
+            var url = UrlGenerator.CreateBundleUrl(bundle.Object);
+
+            url.ShouldEqual("http://example.org/");
+        }
+
+        [Fact]
         public void UrlModifierModifyIsCalled()
         {
             UrlGenerator.CreateBundleUrl(StubScriptBundle("~/test"));

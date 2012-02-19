@@ -16,7 +16,10 @@ namespace Cassette
 
         public string CreateBundleUrl(Bundle bundle)
         {
-            var url = routePrefix + "/" + bundle.Url;
+            var url = bundle.Url;
+            if (url.IsUrl()) return url;
+
+            url = routePrefix + "/" + url;
             return urlModifier.Modify(url);
         }
 
