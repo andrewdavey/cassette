@@ -18,9 +18,12 @@ namespace Cassette.Scripts
 
         internal override string Render()
         {
-            return "<script type=\"text/javascript\">" + Environment.NewLine + 
-                   scriptContent + Environment.NewLine + 
-                   "</script>";
+            return string.Format(
+                HtmlConstants.InlineScriptHtml,
+                HtmlAttributes.CombinedAttributes,
+                Environment.NewLine,
+                scriptContent
+            );
         }
     }
 }
