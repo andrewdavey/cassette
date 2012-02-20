@@ -78,6 +78,10 @@ a:hover {
     -webkit-transition: opacity .2s; /* Chrome, Safari */
 }
 
+p.fork {
+    margin: 1.5em 0;
+}
+
 /* SPREAD THE WORD */
 
 .share-links {

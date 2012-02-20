@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Cassette | Add File(s)";
+    ViewBag.Description = "How to create a bundle from a single file or multiple, disjointed files.";
+}
+
+<h1>Add File</h1>
+
+<p>A bundle can be added using a single file, for example, a .less with additional <span class="code-type">&#64;import</span> statements. Each file set can then be a Cassette bundle.</p>
+
+<p>Here's an example structure:</p>
+
+<pre>Content/
+- Libraries/
+  - primary.less
+  - reset.less
+  - variables.less
+</pre>
+
+<p>Inside of <code>primary.less</code> could exist an <span class="code-type">&#64;import</span> structure:</p>
+
+<pre><code><span class="tag">&#64;import</span> "reset.less";
+<span class="tag">&#64;import</span> "variables.less";</code></pre>
+
+<p>By explicitly specifying a file, Cassette only loads that file and the assets specified by that file.</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        bundles.Add&lt;<span class="code-type">StylesheetBundle</span>&gt;(<span class="string">"Content/Libraries/primary.less"</span>);
+    }
+}</code></pre>
+
+<h2>Multiple Files</h2>
+
+<p>A bundle can also be created from multiple, disjointed files, such as several single files in multiple directories.</p>
+
+<p>Again, an example structure:</p>
+
+<pre>Content/
+- Libraries/
+  - primary.less
+  - reset.less
+  - variables.less
+- InHouse/
+  - site.less
+</pre>
+
+<p>The <code>Add&lt;T&gt;</code> method contains an overload accepting an <code>IEnumerable&lt;string&gt;</code> of file names:</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        var files = new [] { 
+			<span class="string">"Content/Libraries/primary.less"</span>, 
+			<span class="string">"Content/InHouse/site.less"</span>
+	};
+        bundles.Add&lt;<span class="code-type">StylesheetBundle</span>&gt;(<span class="string">"styles"</span>, files);
+    }
+}</code></pre>
+
+<p>In this example, <code class="string">"styles"</code> becomes the referenced bundle alias for both of these files.</p>
+
+<pre><code><span class="code-type">Bundles</span>.Reference(<span class="string">"styles"</span>);</code></pre>

@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.IO;
-using System;
 
 namespace Cassette.Manifests
 {

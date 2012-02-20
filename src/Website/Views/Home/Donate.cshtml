@@ -1,22 +1,101 @@
 ﻿@{
-    ViewBag.Title = "Cassette | Donate";
+    ViewBag.Title = "Cassette | Contribute";
     ViewBag.Section = "donate";
-    ViewBag.Description = "Donate some time, money or publicity and help support Cassette. Cassette is free, open source software created and maintained by volunteers.";
+    ViewBag.Description = "Cassette has an awesome community of contributors. If you like Cassette, we'd love you to get involved!";
+    Bundles.Reference("http://gitforked.com/api/1.1/button.js");
 }
 
 <div class="main">
 
-    <h1>Donate</h1>
+    <h1>Contribute</h1>
 
     @Html.Partial("_Share")
 
-    <div class="content">
-        <p><em>Under development... please check back soon or make a monetary donation below!</em></p>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="hosted_button_id" value="BHWGCCJFY3BP4">
-                <button type="submit" class="action">Donate</button>
-            </form>
+    <div class="content contribute-page">
+           
+            <script type="text/javascript">
+            /* <![CDATA[ */
+                (function() {
+                    var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+                    s.type = 'text/javascript';
+                    s.async = true;
+                    s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+                    t.parentNode.insertBefore(s, t);
+                })();
+            /* ]]> */</script>
+
+            <div class="thank-you">
+
+                <img height="159" src="/assets/styles/images/andrew-davey.jpg" alt="BDFL till I get killed or you find someone better"/>
+
+                <p>&#8220;Thank you for taking the time to visit this page. As an open source project, Cassette relies on community contributions to keep growing and 
+                    moving forward. Without you, Cassette wouldn’t be where it is today. 
+                    The fact you've even considered contributing is amazing!</p>
+
+                <p>&#8220;A massive thank you to everyone who has contributed so far. Whether you’ve coded a feature, published a blog post, made a 
+                donation or told a friend - <strong>you guys are awesome</strong> and you’re the reason I'm doing this!&#8221;</p>
+
+                <p>&#8211; &nbsp;Andrew Davey (BDFL&#8230; till I get killed or you find someone better)</p>
+
+            </div>
+
+            <table>
+                <tr>
+                    
+                    <td class="time-area">
+                        <h2>Give Time</h2>
+                        <p>Want to work on a feature, fix a bug, tweak the docs or improve the code? <a target="_blank" href="http://github.com/andrewdavey/cassette">Grab the source code</a>.</p>
+                        <p class="fork"><a href="https://github.com/andrewdavey/cassette" class="gitforked-button gitforked-forks gitforked-watchers">Fork</a></p>
+                        <p><strong>Awesome GitHub contributors:</strong></p>
+                        <ul class="contributors">
+                            @foreach (var contributor in ViewBag.Contributors)
+                            {
+                                <li><a target="_blank" href="@contributor.url"><img height="32" width="32" src="@contributor.avatar_url" alt="@contributor.login" title="@contributor.login"/></a></li>
+                            }
+                        </ul>
+                    </td>
+                    
+                    <td class="money-area">
+                        <h2>Give Money</h2>
+                        <p>Help fund Cassette's development, buy me a coffee, or Flattr Cassette. I'll love you forever.</p>
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                            <input type="hidden" name="cmd" value="_s-xclick" />
+                            <input type="hidden" name="hosted_button_id" value="BHWGCCJFY3BP4" />
+                            <button type="submit" class="action"><span class="donate-button">Donate</span></button>
+                            <span class="donations-number">4</span>
+                        </form>
+                        
+                        <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://getcassette.net"></a>
+                        <noscript><a href="http://flattr.com/thing/495130/Cassette" target="_blank">
+                        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript>
+                        <div class="sponsor">
+                            <h3>Sponsor Cassette</h3>
+                            <p>If your company fancies donating $100 or more to sponsor Cassette, we'll gratefully list you as a sponsor.</p>
+                        </div>
+                    </td>
+
+                    <td class="publicity-area">
+                        <h2>Give Publicity</h2>
+                        <p>Write a blog post, send a tweet, tell a friend&#8230; tell the world!</p>
+                        <p><strong>Some posts we've spotted in the wild (thanks guys):</strong></p>
+                        <ul class="bloggers">
+                            <li><a target="_blank" href="http://kamranicus.com/Blog/Posts/27/using-cassette-for-semi-complicated-scenarios-upda#disqus_thread">
+                            Using Cassette for semi-complicated scenarios</a></li>
+                            <li><a target="_blank" href="http://www.arroyocode.com/asset-and-bundling-management-in-asp-net-mvc-3">
+                            Asset and Bundling Management in ASP.NET MVC 3</a></li>
+                            <li><a target="_blank" href="http://tomphilip.me/index.php/cassette-the-javascript-css-minifying-combining-compressing-tool-for-asp-net/">
+                            Cassette. The JavaScript CSS Minifying Combining Compressing Tool for ASP.NET</a></li>
+                            <li><a target="_blank" href="http://eric.polerecky.com/cassette-asset-bundling-for-net-web-apps/">
+                            Cassette: Asset bundling for .NET web apps</a></li>
+                        </ul>
+                    </td>
+
+                </tr>
+            </table>
+
+
     </div>
+
+
 
 </div>

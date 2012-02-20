@@ -1,162 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using Cassette.IO;
 using Cassette.Utilities;
-using Jurassic;
-using Jurassic.Library;
+using dotless.Core;
+using dotless.Core.Importers;
+using dotless.Core.Input;
+using dotless.Core.Loggers;
+using dotless.Core.Parser;
 
 namespace Cassette.Stylesheets
 {
     public class LessCompiler : ICompiler
     {
-        static readonly Lazy<ScriptEngine> LazyEngine = new Lazy<ScriptEngine>(CreateScriptEngine);
-        readonly Stack<IFile> currentFiles = new Stack<IFile>();
-
-        static ScriptEngine CreateScriptEngine()
+        public string Compile(string source, IFile sourceFile)
         {
-            var engine = new ScriptEngine();
-            const string stubWindowLocationForCompiler = "window = { location: { href: '/', protocol: 'http:', host: 'localhost' } };";
-            engine.Execute(stubWindowLocationForCompiler);
-            engine.Execute(Properties.Resources.less);
-            return engine;
-        }
-
-        static ScriptEngine ScriptEngine
-        {
-            get { return LazyEngine.Value; }
-        }
-
-        void Xhr(ObjectInstance href, ObjectInstance type, FunctionInstance callback, FunctionInstance errorCallback)
-        {
-            var filename = href.ToString();
-            var referencingFile = currentFiles.Peek();
-            try
+            var parser = new Parser
             {
-                var file = referencingFile.Directory.GetFile(filename);
-                var content = file.OpenRead().ReadToEnd();
-                callback.Call(Null.Value, content, DateTime.MinValue);
+                Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory))
+            };
+            var errorLogger = new ErrorLogger();
+            var engine = new LessEngine(parser, errorLogger, false);
+            
+            var css = engine.TransformToCss(source, sourceFile.FullPath);
+
+            if (errorLogger.HasErrors)
+            {
+                throw new LessCompileException(errorLogger.ErrorMessage);
             }
-            catch (FileNotFoundException ex)
+            else
             {
-                throw FileNotFoundExceptionWithSourceFilename(referencingFile, ex);
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                throw DirectoryNotFoundExceptionWithSourceFilename(referencingFile, ex);
+                return css;
             }
         }
 
-        public string Compile(string lessSource, IFile sourceFile)
+        class ErrorLogger : ILogger
         {
-            Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
-            lock (ScriptEngine)
-            {
-                currentFiles.Clear();
-                ScriptEngine.SetGlobalFunction("xhr", new Action<ObjectInstance, ObjectInstance, FunctionInstance, FunctionInstance>(Xhr));
+            readonly List<string> errors;
 
-                var result = CompileImpl(lessSource, sourceFile);
-                if (result.Css != null)
-                {
-                    Trace.Source.TraceInformation("Compiled {0}", sourceFile.FullPath);
-                    return result.Css;
-                }
-                else
-                {
-                    var message = string.Format(
-                        "Less compile error in {0}:\r\n{1}", 
-                        sourceFile.FullPath, 
-                        result.ErrorMessage
-                    );
-                    Trace.Source.TraceEvent(TraceEventType.Critical, 0, message);
-                    throw new LessCompileException(message);
-                }
+            public ErrorLogger()
+            {
+                errors = new List<string>();
+            }
+
+            public bool HasErrors
+            {
+                get { return errors.Count > 0; }
+            }
+
+            public string ErrorMessage
+            {
+                get { return string.Join(Environment.NewLine, errors).Trim(); }
+            }
+
+            public void Error(string message)
+            {
+                errors.Add(message);
+            }
+
+            public void Log(LogLevel level, string message)
+            {
+            }
+
+            public void Info(string message)
+            {
+            }
+
+            public void Debug(string message)
+            {
+            }
+
+            public void Warn(string message)
+            {
             }
         }
 
-        CompileResult CompileImpl(string lessSource, IFile file)
+        class CassetteLessFileReader : IFileReader
         {
-            currentFiles.Push(file);
+            readonly IDirectory directory;
 
-            var parser = (ObjectInstance)ScriptEngine.Evaluate("(new window.less.Parser)");
-            var callback = new CompileResult(ScriptEngine);
-            try
+            public CassetteLessFileReader(IDirectory directory)
             {
-                parser.CallMemberFunction("parse", lessSource, callback);
-            }
-            catch (JavaScriptException ex)
-            {
-                var message = ((ObjectInstance)ex.ErrorObject).GetPropertyValue("message").ToString();
-                throw new LessCompileException(
-                    string.Format(
-                        "Less compile error in {0}:\r\n{1}",
-                        file.FullPath,
-                        message
-                    )
-                );
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new LessCompileException(
-                    string.Format("Less compile error in {0}.", file.FullPath),
-                    ex
-                );
+                this.directory = directory;
             }
 
-            currentFiles.Pop();
-            return callback;
-        }
-
-        FileNotFoundException FileNotFoundExceptionWithSourceFilename(IFile file, FileNotFoundException ex)
-        {
-            return new FileNotFoundException(
-                string.Format(
-                    "{0}{1}Referenced by an @import in '{2}'.",
-                    ex.Message,
-                    Environment.NewLine,
-                    file.FullPath
-                ),
-                ex
-            );
-        }
-
-        DirectoryNotFoundException DirectoryNotFoundExceptionWithSourceFilename(IFile file, DirectoryNotFoundException ex)
-        {
-            return new DirectoryNotFoundException(
-                string.Format(
-                    "{0}{1}Referenced by an @import in '{2}'.",
-                    ex.Message,
-                    Environment.NewLine,
-                    file.FullPath
-                ),
-                ex
-            );
-        }
-
-        class CompileResult : FunctionInstance
-        {
-            public CompileResult(ScriptEngine engine)
-                : base(engine.Function.InstancePrototype)
+            public string GetFileContents(string fileName)
             {
+                return directory.GetFile(fileName).OpenRead().ReadToEnd();
             }
 
-            public string Css { get; private set; }
-            public string ErrorMessage { get; private set; }
-
-            public override object CallLateBound(object thisObject, params object[] argumentValues)
+            public bool DoesFileExist(string fileName)
             {
-                var error = argumentValues[0];
-                if (error == Null.Value)
-                {
-                    var tree = (ObjectInstance)argumentValues[1];
-                    Css = tree.CallMemberFunction("toCSS").ToString();
-                }
-                else
-                {
-                    ErrorMessage = ((ObjectInstance)error).GetPropertyValue("message").ToString();
-                }
-                return Undefined.Value;
+                return directory.GetFile(fileName).Exists;
             }
         }
     }

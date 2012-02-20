@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <section name="cassette" type="Cassette.Configuration.CassetteConfigurationSection, Cassette" />
+    </configSections>
+    <cassette precompiledManifest="App_Data\cassette.xml"/>
+</configuration>

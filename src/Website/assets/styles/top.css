@@ -37,15 +37,13 @@
     right: 0;
     top: 0;
     list-style-type: none;
-    font-family: "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
-    font-size: 9pt;
     padding: 0;
     margin: 0;
 }
 
 .links li {
     float: left;
-    padding: 0 0 0 30px;
+    padding: 0 0 0 40px;
 }
 
 .links a {

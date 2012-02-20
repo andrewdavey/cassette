@@ -7,19 +7,6 @@ namespace Cassette.Web
     {
         readonly StringBuilder builder = new StringBuilder();
 
-        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
-        {
-            WriteLine(eventCache.DateTime.TimeOfDay + " - " + message);
-            base.TraceEvent(eventCache, source, eventType, id, message);
-        }
-
-        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
-        {
-            var message = args == null ? format : string.Format(format, args);
-            WriteLine(eventCache.DateTime.TimeOfDay + " - " + message);
-            base.TraceEvent(eventCache, source, eventType, id, message);
-        }
-
         public override void Write(string message)
         {
             builder.Append(message);

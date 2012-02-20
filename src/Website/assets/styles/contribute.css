@@ -1,0 +1,134 @@
+﻿/* THANK YOU MESSAGE */
+
+.thank-you {
+    padding: 5px 0 0 0;
+    font-size: 0.9em;
+}
+
+.thank-you img {
+    float: left;
+    margin-right: 30px;
+}
+
+.thank-you p {
+    line-height: 1.7em;
+}
+
+/* GIVE AREAS */
+
+.contribute-page table {
+    margin-top: 30px;
+}
+
+.contribute-page td {
+    vertical-align: top;
+    padding-bottom: 0;
+}
+
+.contribute-page h2 {
+    font-size: 1.3em;
+    margin-bottom: 1em;
+}
+
+.contribute-page h3 {
+    font-size: 1.1em;
+    margin-bottom: 1.4em;
+}
+
+/* GIVE TIME AREA */
+
+.time-area {
+    padding: 10px 15px 20px 0;
+    width: 301px;
+}
+
+.contributors {
+    list-style-type: none;
+    padding: 5px 0;
+    font-size: 0.8em;
+}
+
+.contributors li {
+    margin: 0 0 .5em 0;
+    float: left;
+}
+
+.contributors img {
+    border: 1px solid #D0D0D0;
+    padding: 1px;
+    vertical-align: middle;
+    background-color: white;
+    margin: 0 15px 15px 0;
+}
+
+.contributors a {
+    opacity: 0.9;
+    filter: alpha(opacity=90); /* IE 7, IE8 */
+    -moz-transition: opacity .2s; /* Firefox */
+    -webkit-transition: opacity .2s; /* Chrome, Safari */
+}
+
+.contributors a:hover {
+    opacity: 1;
+    filter: alpha(opacity=100); /* IE 7, IE8 */
+    -moz-transition: opacity .2s; /* Firefox */
+    -webkit-transition: opacity .2s; /* Chrome, Safari */
+}
+
+/* GIVE MONEY AREA */
+
+.money-area {
+    padding: 10px 20px 20px 20px;
+    width: 271px;
+}
+
+.contribute-page form {
+    position: relative;
+    background-image: url(images\donate-count.png);
+    background-repeat: no-repeat;
+    background-position: right 12px;    
+    float: left;
+    padding-right: 78px;
+    padding-bottom: 25px;
+}
+
+.donations-number {
+    position: absolute;
+    top: 24px;
+    right: 29px;
+    font-size: 1.2em;
+    color: #696969;
+}
+
+.clear-left {
+    clear: left;
+}
+
+.FlattrButton {
+    margin-top: 10px;
+}
+
+.sponsor {
+    margin: 30px 0 0 0;
+}
+
+.sponsor h3 {
+    margin-bottom: 1em;
+}
+
+/* GIVE PUBLICITY AREA */
+
+.publicity-area {
+    padding: 10px 0 20px 15px;
+    width: 310px;
+}
+
+.bloggers {
+    list-style-type: none;
+    padding: 0;
+    font-size: 0.9em;
+}
+
+.bloggers a {
+    font-weight: bold;
+}

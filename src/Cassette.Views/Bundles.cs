@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
@@ -30,6 +31,23 @@ namespace Cassette.Views
         public static void AddInlineScript(string scriptContent, string pageLocation = null)
         {
             ReferenceBuilder.Reference(new InlineScriptBundle(scriptContent), pageLocation);
+        }
+
+        /// <summary>
+        /// Adds a page reference to an inline JavaScript block.
+        /// </summary>
+        /// <param name="scriptContent">The Razor template for the Javascript code.</param>
+        /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
+        /// <code lang="CS">
+        /// @{
+        ///   Bundles.AddInlineScript(@&lt;text&gt;
+        ///     var foo = "Hello World";
+        ///     alert( foo );&lt;/text&gt;);
+        /// }
+        /// </code>
+        public static void AddInlineScript(Func<object, object> scriptContent, string pageLocation = null)
+        {
+            AddInlineScript(scriptContent(null).ToString(), pageLocation);
         }
 
         /// <summary>
@@ -118,6 +136,38 @@ namespace Cassette.Views
             return Application.Settings.UrlGenerator.CreateBundleUrl(bundle);
         }
 
+        /// <summary>
+        /// Gets the bundles that have been referenced during the current request.
+        /// </summary>
+        /// <param name="pageLocation">Optional. The page location of bundles to return.</param>
+        public static IEnumerable<Bundle> GetReferencedBundles(string pageLocation = null)
+        {
+            return ReferenceBuilder.GetBundles(pageLocation);
+        }
+
+        /// <summary>
+        /// Get the URLs for bundles that have been referenced during the current request.
+        /// </summary>
+        /// <typeparam name="T">The type of bundles.</typeparam>
+        /// <param name="pageLocation">Optional. The page location of bundles to return.</param>
+        public static IEnumerable<string> GetReferencedBundleUrls<T>(string pageLocation = null)
+            where T : Bundle
+        {
+            var bundles = ReferenceBuilder.GetBundles(pageLocation).OfType<T>();
+
+            if (Application.Settings.IsDebuggingEnabled)
+            {
+                return bundles
+                    .SelectMany(GetAllAssets)
+                    .Select(Application.Settings.UrlGenerator.CreateAssetUrl);
+            }
+            else
+            {
+                return bundles
+                    .Select(Application.Settings.UrlGenerator.CreateBundleUrl);
+            }
+        }
+
         static IHtmlString Render<T>(string location) where T : Bundle
         {
             return new HtmlString(ReferenceBuilder.Render<T>(location));
@@ -134,6 +184,32 @@ namespace Cassette.Views
         static ICassetteApplication Application
         {
             get { return CassetteApplicationContainer.Application; }
+        }
+
+        static IEnumerable<IAsset> GetAllAssets(Bundle bundle)
+        {
+            var collector = new AssetCollector();
+            bundle.Accept(collector);
+            return collector.Assets;
+        }
+
+        class AssetCollector : IBundleVisitor
+        {
+            public AssetCollector()
+            {
+                Assets = new List<IAsset>();
+            }
+
+            public List<IAsset> Assets { get; private set; }
+
+            public void Visit(Bundle bundle)
+            {
+            }
+
+            public void Visit(IAsset asset)
+            {
+                Assets.Add(asset);
+            }
         }
     }
 }

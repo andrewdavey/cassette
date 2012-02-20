@@ -184,10 +184,13 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void GivenTwoSubDirectories_WhenAddPerSubDirectory_ThenTwoBundlesAreAdded()
+        public void GivenTwoSubDirectoriesWithFiles_WhenAddPerSubDirectory_ThenTwoBundlesAreAdded()
         {
             CreateDirectory("bundle-a");
             CreateDirectory("bundle-b");
+
+            defaultAssetSource.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(() => new[] { StubFile() });
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
 
@@ -228,6 +231,16 @@ namespace Cassette.Configuration
         {
             CreateDirectory("test");
             File.SetAttributes(Path.Combine(tempDirectory, "test"), FileAttributes.Directory | FileAttributes.Hidden);
+
+            bundles.AddPerSubDirectory<TestableBundle>("~");
+
+            bundles.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void GivenEmptyDirectory_WhenAddPerSubDirectory_ThenDirectoryIsIgnored()
+        {
+            CreateDirectory("test");
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
 
@@ -694,6 +707,25 @@ namespace Cassette.Configuration
                 bundles.Add<ScriptBundle>("~/path", new[] { "~/file1.js" });
 
                 bundles["~/path"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file1.js");
+            }
+        }
+
+        [Fact]
+        public void AddWithExplicitFilesAsParamsArrayCreatesBundleWithAsset()
+        {
+            using (var temp = new TempDirectory())
+            {
+                File.WriteAllText(Path.Combine(temp, "file1.js"), "");
+                File.WriteAllText(Path.Combine(temp, "file2.js"), "");
+
+                var settings = new CassetteSettings("");
+                var bundles = new BundleCollection(settings);
+                settings.SourceDirectory = new FileSystemDirectory(temp);
+
+                bundles.Add<ScriptBundle>("~/path", "~/file1.js", "~/file2.js");
+
+                bundles["~/path"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file1.js");
+                bundles["~/path"].Assets[1].SourceFile.FullPath.ShouldEqual("~/file2.js");
             }
         }
 

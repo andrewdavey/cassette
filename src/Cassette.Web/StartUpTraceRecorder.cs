@@ -51,7 +51,6 @@ namespace Cassette.Web
         {
             return new StringBuilderTraceListener
             {
-                TraceOutputOptions = TraceOptions.DateTime,
                 Filter = new EventTypeFilter(SourceLevels.All)
             };
         }

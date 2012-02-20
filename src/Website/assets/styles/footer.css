@@ -25,12 +25,13 @@ p.credits {
 /* FOOTER NAVIGATION */
 
 p.footer-navigation {
-    margin-bottom: 1.6em;
+    margin-bottom: 1.9em;
     font-size: 1em;
 }
 
 p.footer-navigation a {
     text-decoration: underline;
+    padding: 0 .8em;
 }
 
 /* OSI LOGO */

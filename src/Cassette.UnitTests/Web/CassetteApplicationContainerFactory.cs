@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Web;
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Scripts;
+using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;
@@ -12,6 +14,13 @@ namespace Cassette.Web
 {
     public class CassetteApplicationContainerFactory_Test
     {
+        readonly CassetteConfigurationSection configurationSection;
+
+        public CassetteApplicationContainerFactory_Test()
+        {
+            configurationSection = new CassetteConfigurationSection();            
+        }
+
         [Fact]
         public void GivenFactoryThatUsesConfiguration_WhenCreateContainer_ThenResultingBundlesAreProcessed()
         {
@@ -19,7 +28,7 @@ namespace Cassette.Web
             {
                 Directory.CreateDirectory(Path.Combine(path, "scripts"));
 
-                var configuration = new StubConfiguration();
+                var configuration = new StubConfiguration(bundles => bundles.Add<ScriptBundle>("scripts"));
                 var factory = new CassetteApplicationContainerFactory(
                     new DelegateCassetteConfigurationFactory(() => new[] { configuration }),
                     new CassetteConfigurationSection(),
@@ -35,11 +44,44 @@ namespace Cassette.Web
             }
         }
 
+        [Fact]
+        public void GivenStylesheetWithExternalReference_WhenCreateContainer_ThenExternalBundleAddedToBundleCollection()
+        {
+            using (var path = new TempDirectory())
+            {
+                Directory.CreateDirectory(Path.Combine(path, "styles"));
+                File.WriteAllText(Path.Combine(path, "styles", "asset.css"), "/* @reference http://example.com */");
+
+                var configuration = new StubConfiguration(bundles => bundles.Add<StylesheetBundle>("styles"));
+                var factory = new CassetteApplicationContainerFactory(
+                    new DelegateCassetteConfigurationFactory(() => new[] { configuration }),
+                    new CassetteConfigurationSection(),
+                    path,
+                    "/",
+                    false,
+                    Mock.Of<HttpContextBase>
+                );
+
+                var container = factory.CreateContainer();
+
+                container.Application.Bundles.Any(
+                    b => b is ExternalStylesheetBundle && b.Path == "http://example.com"
+                ).ShouldBeTrue();
+            }
+        }
+
         class StubConfiguration : ICassetteConfiguration
         {
+            readonly Action<BundleCollection> configure;
+
+            public StubConfiguration(Action<BundleCollection> configure)
+            {
+                this.configure = configure;
+            }
+
             public void Configure(BundleCollection bundles, CassetteSettings settings)
             {
-                bundles.Add<ScriptBundle>("scripts");
+                configure(bundles);
             }
         }
 
@@ -61,7 +103,6 @@ namespace Cassette.Web
         {
             var bundle = StubBundle();
             var bundleManifest = bundle.CreateBundleManifest(true);
-            
             var cassetteManifest = new CassetteManifest("", new[] { bundleManifest });
 
             var manifestFilename = Path.Combine(rootDirectory, "App_Data", "cassette.xml");
@@ -71,6 +112,8 @@ namespace Cassette.Web
                 var writer = new CassetteManifestWriter(outputStream);
                 writer.Write(cassetteManifest);
             }
+
+            configurationSection.PrecompiledManifest = "App_Data/cassette.xml";
         }
 
         ScriptBundle StubBundle()
@@ -85,7 +128,7 @@ namespace Cassette.Web
         {
             return new CassetteApplicationContainerFactory(
                 new DelegateCassetteConfigurationFactory(Enumerable.Empty<ICassetteConfiguration>),
-                new CassetteConfigurationSection(),
+                configurationSection,
                 path,
                 "/",
                 false,

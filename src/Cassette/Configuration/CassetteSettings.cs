@@ -64,11 +64,6 @@ namespace Cassette.Configuration
         public IUrlModifier UrlModifier { get; set; }
 
         /// <summary>
-        /// Gets if the bundles were built at compile-time. Configurations should not add bundles to the <see cref="BundleCollection"/> when this is true.
-        /// </summary>
-        public bool BundlesArePreBuilt { get; internal set; }
-
-        /// <summary>
         /// The maximum size of a sprite
         /// </summary>
         public int SpriteSizeLimit { get; set; }

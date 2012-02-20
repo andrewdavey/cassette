@@ -4,11 +4,12 @@
 
 <h1>Data URIs</h1>
 <p>Warning: This feature is still experimental!</p>
-<p>Cassette can convert CSS images into data-URIs. Enable this feature with the following configuration.</p>
+<p>Cassette can convert CSS images (under 32kB) and fonts (TTF or OTF) into data-URIs. Enable this feature with the following configuration.</p>
 <pre><code>bundles.Add&lt;StylesheetBundle&gt;(
     "styles",
     b => b.Processor = new StylesheetPipeline
-    {
-        ConvertImageUrlsToDataUris = true
-    }
+        .EmbedImages(path => path.Contains("/embed/"))
+        .EmbedFonts(path => path.Contains("/embed/"))
 );</code></pre>
+<p>EmbedImages and EmbedFonts both accept an optional expression to tell Cassette which file paths to include. By default, Cassette
+will attempt to embed all images and fonts.</p>

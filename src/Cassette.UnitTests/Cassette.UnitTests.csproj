@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AjaxMin, Version=4.46.4422.26284, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.46.4422.26284\lib\net20\AjaxMin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
@@ -110,6 +114,7 @@
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
+    <Compile Include="Stylesheets\LessCompiler.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
@@ -147,7 +152,6 @@
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="TestableBundle.cs" />
     <Compile Include="Views\Bundles.cs" />
-    <Compile Include="Web\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="BundleContainer.cs" />
     <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
@@ -166,7 +170,7 @@
     <Compile Include="Web\AssetRequestHandler.cs" />
     <Compile Include="Web\CassetteApplicationContainerFactory.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
-    <Compile Include="Web\UrlGenerator.cs" />
+    <Compile Include="UrlGenerator.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
     <Compile Include="Web\InitialConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
