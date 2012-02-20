@@ -709,6 +709,25 @@ namespace Cassette.Configuration
         }
 
         [Fact]
+        public void AddWithExplicitFilesAsParamsArrayCreatesBundleWithAsset()
+        {
+            using (var temp = new TempDirectory())
+            {
+                File.WriteAllText(Path.Combine(temp, "file1.js"), "");
+                File.WriteAllText(Path.Combine(temp, "file2.js"), "");
+
+                var settings = new CassetteSettings("");
+                var bundles = new BundleCollection(settings);
+                settings.SourceDirectory = new FileSystemDirectory(temp);
+
+                bundles.Add<ScriptBundle>("~/path", "~/file1.js", "~/file2.js");
+
+                bundles["~/path"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file1.js");
+                bundles["~/path"].Assets[1].SourceFile.FullPath.ShouldEqual("~/file2.js");
+            }
+        }
+
+        [Fact]
         public void AddWithTwoExplicitFileCreatesBundleWithTwoAssets()
         {
             using (var temp = new TempDirectory())

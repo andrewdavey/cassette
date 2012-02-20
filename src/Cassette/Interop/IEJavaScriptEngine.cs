@@ -13,15 +13,15 @@ namespace Cassette.Interop
     class IEJavaScriptEngine : IActiveScriptSite, IDisposable
     {
         IActiveScript engine;
-        readonly ActiveScriptParseWrapper parser;
-        readonly Type dispatchType;
+        ActiveScriptParseWrapper parser;
+        Type dispatchType;
         object dispatch;
         ActiveScriptException lastScriptException;
         readonly Dictionary<string, object> globals = new Dictionary<string, object>();
 
         const int TYPE_E_ELEMENTNOTFOUND = unchecked((int)0x8002802BL);
 
-        public IEJavaScriptEngine()
+        public void Initialize()
         {
             try
             {
@@ -41,9 +41,7 @@ namespace Cassette.Interop
 
             parser.InitNew();
             engine.SetScriptSite(this);
-
-            engine.GetScriptDispatch(null, out dispatch);
-            dispatchType = dispatch.GetType();
+            engine.SetScriptState(ScriptState.Started);
         }
 
         public void LoadLibrary(string code)
@@ -57,6 +55,10 @@ namespace Cassette.Interop
                 ThrowAndResetIfScriptException();
                 throw;
             }
+
+            ComRelease(ref dispatch);
+            engine.GetScriptDispatch(null, out dispatch);
+            dispatchType = dispatch.GetType();
         }
 
         void ThrowAndResetIfScriptException()

@@ -33,7 +33,7 @@ namespace Cassette.Scripts
             if (url.IsNullOrWhiteSpace()) throw new ArgumentException("URL is required.", "url");
         }
 
-        internal string Url
+        internal override string Url
         {
             get { return url; }
         }

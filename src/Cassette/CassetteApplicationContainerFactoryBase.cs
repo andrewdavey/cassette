@@ -57,7 +57,10 @@ namespace Cassette
 
         CassetteApplicationContainer<T> CreateContainerFromCompileTimeManifest()
         {
-            using (var file = OpenManifestFile())
+            var filename = Path.Combine(physicalDirectory, configurationSection.PrecompiledManifest);
+            Trace.Source.TraceInformation("Initializing bundles from compile-time manifest: {0}", filename);
+
+            using (var file = OpenManifestFile(filename))
             {
                 var reader = new CassetteManifestReader(file);
                 var manifest = reader.Read();
@@ -79,10 +82,8 @@ namespace Cassette
             }
         }
 
-        FileStream OpenManifestFile()
+        FileStream OpenManifestFile(string filename)
         {
-
-            var filename = Path.Combine(physicalDirectory, configurationSection.PrecompiledManifest);
             if (!File.Exists(filename))
             {
                 throw new FileNotFoundException("Cannot find the file \"{0}\" specified by precompiledManifest in the <cassette> configuration section.", filename);
@@ -103,22 +104,13 @@ namespace Cassette
                 var settings = new CassetteSettings(cacheVersion);
                 bundles = new BundleCollection(settings);
                 ExecuteCassetteConfiguration(settings);
-                ProcessBundles(settings);
+                var bundleContainer = settings.GetBundleContainerFactory().Create(bundles);
 
                 Trace.Source.TraceInformation("IsDebuggingEnabled: {0}", settings.IsDebuggingEnabled);
                 Trace.Source.TraceInformation("Cache version: {0}", cacheVersion);
                 Trace.Source.TraceInformation("Creating Cassette application object");
 
-                var bundleContainer = new BundleContainer(bundles);
                 return CreateCassetteApplicationCore(bundleContainer, settings);
-            }
-        }
-
-        void ProcessBundles(CassetteSettings settings)
-        {
-            foreach (var bundle in bundles)
-            {
-                bundle.Process(settings);
             }
         }
 

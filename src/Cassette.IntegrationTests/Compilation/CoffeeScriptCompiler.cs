@@ -25,7 +25,7 @@ namespace Cassette
             var source = "x = 1";
             var compiler = new T();
             var javaScript = compiler.Compile(source, Mock.Of<IFile>());
-            javaScript.ShouldEqual("(function() {\n  var x;\n  x = 1;\n}).call(this);\n");
+            javaScript.ShouldEqual("(function() {\n  var x;\n\n  x = 1;\n\n}).call(this);\n");
         }
 
         [Fact]
@@ -40,6 +40,7 @@ namespace Cassette
             {
                 compiler.Compile(source, file.Object);
             });
+            exception.Message.ShouldContain("Parse error on line 1: Unexpected ''' in test.coffee");
             exception.SourcePath.ShouldEqual("test.coffee");
         }
     }

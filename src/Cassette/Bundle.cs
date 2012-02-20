@@ -39,11 +39,6 @@ namespace Cassette
             get { return path; }
         }
 
-        internal string PathWithoutPrefix
-        {
-            get { return path.TrimStart('~', '/'); }
-        }
-
         /// <summary>
         /// The value sent in the HTTP Content-Type header.
         /// </summary>
@@ -74,6 +69,16 @@ namespace Cassette
         /// Gets the hash of the combined assets.
         /// </summary>
         public byte[] Hash { get; internal set; }
+
+        internal virtual string Url
+        {
+            get
+            {
+                var type = GetType().Name.ToLowerInvariant();
+                var pathWithoutPrefix = path.TrimStart('~', '/');
+                return type + "/" + pathWithoutPrefix + "_" + Hash.ToHexString();
+            }
+        }
 
         internal IEnumerable<string> References
         {

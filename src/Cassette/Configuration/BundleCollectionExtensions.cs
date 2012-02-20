@@ -108,6 +108,20 @@ namespace Cassette.Configuration
             Add<T>(bundleCollection, applicationRelativePath, assetFilenames, null);
         }
 
+
+        /// <summary>
+        /// Adds a new bundle with an explicit list of assets.
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to add.</typeparam>
+        /// <param name="bundleCollection">The bundle collection to add to.</param>
+        /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
+        /// <param name="assetFilenames">The filenames of assets to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
+        public static void Add<T>(this BundleCollection bundleCollection, string applicationRelativePath, params string[] assetFilenames)
+            where T : Bundle
+        {
+            Add<T>(bundleCollection, applicationRelativePath, assetFilenames, null);
+        }
+
         /// <summary>
         /// Adds a new bundle with an explicit list of assets.
         /// </summary>
@@ -260,19 +274,18 @@ namespace Cassette.Configuration
             foreach (var directory in directories)
             {
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
-                var allFiles = fileSearch.FindFiles(directory);
-                if (allFiles.Any())
-                {
-                    var descriptorFile = TryGetDescriptorFile(directory);
-                    var descriptor = descriptorFile.Exists
-                                         ? new BundleDescriptorReader(descriptorFile).Read()
-                                         : new BundleDescriptor { AssetFilenames = { "*" } };
+                var allFiles = fileSearch.FindFiles(directory).ToArray();
+                if (!allFiles.Any()) continue;
 
-                    var bundle = bundleFactory.CreateBundle(directory.FullPath, allFiles, descriptor);
-                    if (customizeBundle != null) customizeBundle(bundle);
-                    TraceAssetFilePaths(bundle);
-                    bundleCollection.Add(bundle);
-                }
+                var descriptorFile = TryGetDescriptorFile(directory);
+                var descriptor = descriptorFile.Exists
+                                     ? new BundleDescriptorReader(descriptorFile).Read()
+                                     : new BundleDescriptor { AssetFilenames = { "*" } };
+
+                var bundle = bundleFactory.CreateBundle(directory.FullPath, allFiles, descriptor);
+                if (customizeBundle != null) customizeBundle(bundle);
+                TraceAssetFilePaths(bundle);
+                bundleCollection.Add(bundle);
             }
         }
 

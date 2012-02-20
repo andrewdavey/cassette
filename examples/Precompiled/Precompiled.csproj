@@ -116,7 +116,7 @@
   </Target>
   <UsingTask TaskName="CreateBundles" AssemblyFile="..\..\src\Cassette.MSBuild\bin\$(Configuration)\Cassette.MSBuild.dll" />
   <Target Name="CreateBundles" AfterTargets="AfterBuild">
-    <CreateBundles Assembly="$(OutputPath)Precompiled.dll" Output="App_Data\cassette.xml" />
+    <CreateBundles Assemblies="$(OutputPath)Precompiled.dll" Output="App_Data\cassette.xml" />
   </Target>
   <ProjectExtensions>
     <VisualStudio>

@@ -1,28 +1,32 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Cassette.IO;
 using Cassette.Manifests;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using System;
 
 namespace Cassette.MSBuild
 {
     public class CreateBundles : AppDomainIsolatedTask
     {
         /// <summary>
-        /// The web application assembly filename.
+        /// File names of assemblies containing Cassette configuration classes.
         /// </summary>
         [Required]
-        public string Assembly { get; set; }
+        public string[] Assemblies { get; set; }
 
-        public string SourceDir { get; set; }
-
+        /// <summary>
+        /// File name to save the Cassette manifest as.
+        /// </summary>
         [Required]
         public string Output { get; set; }
 
         public override bool Execute()
         {
-            using (var outputStream = File.OpenWrite(Output))
+            using (var outputStream = OpenOutputFile())
             {
                 var task = CreateTaskImplementation(outputStream);
                 task.Execute();
@@ -30,16 +34,34 @@ namespace Cassette.MSBuild
             return true;
         }
 
+        FileStream OpenOutputFile()
+        {
+            return File.Open(Output, FileMode.Create, FileAccess.Write, FileShare.None);
+        }
+
         CreateBundlesImplementation CreateTaskImplementation(Stream outputStream)
         {
-            var assembly = System.Reflection.Assembly.LoadFrom(Assembly);
-            var configurationFactory = new AssemblyScanningCassetteConfigurationFactory(new[] { assembly });
+            var configurationFactory = CreateConfigurationFactory();
             var writer = new CassetteManifestWriter(outputStream);
             return new CreateBundlesImplementation(
                 configurationFactory,
                 writer,
-                new FileSystemDirectory(SourceDir ?? Environment.CurrentDirectory)
+                new FileSystemDirectory(Environment.CurrentDirectory)
             );
+        }
+
+        AssemblyScanningCassetteConfigurationFactory CreateConfigurationFactory()
+        {
+            var assemblies = LoadAssemblies();
+            return new AssemblyScanningCassetteConfigurationFactory(assemblies);
+        }
+
+        IEnumerable<Assembly> LoadAssemblies()
+        {
+            return (
+                from assembly in Assemblies
+                select Assembly.LoadFrom(assembly)
+            ).ToArray();
         }
     }
 }

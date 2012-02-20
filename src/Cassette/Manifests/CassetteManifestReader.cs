@@ -48,7 +48,7 @@ namespace Cassette.Manifests
             DateTime lastWriteTimeUtc;
             if (DateTime.TryParse(lastWriteTimeUtcString, out lastWriteTimeUtc))
             {
-                return lastWriteTimeUtc;
+                return lastWriteTimeUtc.ToUniversalTime();
             }
             throw new InvalidCassetteManifestException("Cassette manifest element has invalid \"LastWriteTimeUtc\" attribute.");
         }

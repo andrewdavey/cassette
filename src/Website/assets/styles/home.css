@@ -26,20 +26,20 @@
 }
 
 .banner .share-links p {
-    font-size: 1em;
+    font-size: 1.1em;
 }
 
 .banner .tweet, .banner .g1 {
-    padding-top: 0.3em;
+    padding-top: 0.4em;
 }
 
 /* FAV TWEETS */
 
 .favtweets {
-    width: 244px;
+    width: 246px;
     height: 350px;
     position: absolute;
-    top: 77px;
+    top: 75px;
     right: 0;
 }
 
@@ -77,9 +77,9 @@ p.tweeter {
     margin-bottom: 1.8em;
     display: table;
     border: 1px solid #ccc;
-    border-radius: 3px;
     width: 100%;
     background-color: #fafafa;
+    border-radius: 10px;
 }
 
 .file-details {
@@ -99,6 +99,7 @@ p.tweeter {
     display: table-cell;
     vertical-align: top;
     padding: 30px 10px 20px 20px;
+    border-radius: 0px 10px 10px 0;
 }
 
 .section ul {
