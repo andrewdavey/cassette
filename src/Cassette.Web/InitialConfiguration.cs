@@ -1,4 +1,5 @@
-﻿using Cassette.Configuration;
+﻿using System.IO;
+using Cassette.Configuration;
 using Cassette.IO;
 
 namespace Cassette.Web
@@ -27,7 +28,9 @@ namespace Cassette.Web
             settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
 
             //TODO: Decide if this is the right place to put sprites
-            settings.SpriteDirectory = new FileSystemDirectory(sourceDirectory + "Sprites\\");
+
+            var spriteDirectory = Path.Combine(sourceDirectory, "Sprites");
+            settings.SpriteDirectory = new FileSystemDirectory(spriteDirectory);
 
             settings.UrlModifier = new VirtualDirectoryPrepender(virtualDirectory);
         }

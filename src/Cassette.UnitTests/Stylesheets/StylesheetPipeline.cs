@@ -2,6 +2,7 @@
 using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.Configuration;
+using Cassette.IO;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -27,7 +28,9 @@ namespace Cassette.Stylesheets
         public void GivenCompileLessIsTrue_WhenProcessBundle_ThenLessAssetHasCompileAssetTransformAdded()
         {
             var asset = new Mock<IAsset>();
+            var sourceDirectory = new Mock<IDirectory>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.SetupGet(x => x.SourceFile.Directory).Returns(sourceDirectory.Object);
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
@@ -42,7 +45,9 @@ namespace Cassette.Stylesheets
         public void GivenCompileLessIsFalse_WhenProcessBundle_ThenLessAssetHasNoCompileAssetTransformAdded()
         {
             var asset = new Mock<IAsset>();
+            var sourceDirectory = new Mock<IDirectory>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.SetupGet(x => x.SourceFile.Directory).Returns(sourceDirectory.Object);
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
@@ -57,7 +62,9 @@ namespace Cassette.Stylesheets
         public void GivenConvertImageUrlsToDataUrisIsTrue_WhenProcessBundle_ThenLessAssetHasDataUriTransformAdded()
         {
             var asset = new Mock<IAsset>();
+            var sourceDirectory = new Mock<IDirectory>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.SetupGet(x => x.SourceFile.Directory).Returns(sourceDirectory.Object);
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
@@ -72,7 +79,9 @@ namespace Cassette.Stylesheets
         public void GivenConvertImageUrlsToDataUrisIsFalse_WhenProcessBundle_ThenLessAssetHasNoDataUriTransformAdded()
         {
             var asset = new Mock<IAsset>();
+            var sourceDirectory = new Mock<IDirectory>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.less");
+            asset.SetupGet(x => x.SourceFile.Directory).Returns(sourceDirectory.Object);
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
@@ -110,10 +119,14 @@ namespace Cassette.Stylesheets
                   .Returns("~/asset1.css");
             asset1.Setup(a => a.OpenStream())
                   .Returns(() => "/* @reference \"asset2.css\"; */".AsStream());
+            asset1.Setup(x => x.SourceFile.Directory).Returns(new Mock<IDirectory>().Object);
+
             asset2.SetupGet(a => a.SourceFile.FullPath)
                   .Returns("~/asset2.css");
             asset2.Setup(a => a.OpenStream())
                   .Returns(() => "p { color: White; }".AsStream());
+            asset2.Setup(x => x.SourceFile.Directory).Returns(new Mock<IDirectory>().Object);
+
             asset1.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/asset2.css", asset1.Object, -1, AssetReferenceType.SameBundle) });
         }
@@ -185,7 +198,9 @@ namespace Cassette.Stylesheets
         public StylesheetPipelineWhereLessCompilerTrue()
         {
             asset = new Mock<IAsset>();
+            var sourceDirectory = new Mock<IDirectory>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("asset.less");
+            asset.SetupGet(a => a.SourceFile.Directory).Returns(sourceDirectory.Object);
             asset.Setup(a => a.OpenStream()).Returns(() => "// @reference 'other.less';".AsStream());
             bundle.Assets.Add(asset.Object);
             pipeline = new StylesheetPipeline();

@@ -13,7 +13,8 @@ namespace Cassette.Configuration
     {
         protected readonly CassetteSettings Settings = new CassetteSettings("")
         {
-            SourceDirectory = Mock.Of<IDirectory>()
+            SourceDirectory = Mock.Of<IDirectory>(),
+            SpriteDirectory = Mock.Of<IDirectory>()
         };
         internal abstract IBundleContainerFactory CreateFactory();
 

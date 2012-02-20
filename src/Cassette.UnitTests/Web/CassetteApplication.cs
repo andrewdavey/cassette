@@ -69,6 +69,7 @@ namespace Cassette.Web
             {
                 CacheDirectory = new FileSystemDirectory(cacheDir),
                 SourceDirectory = new FileSystemDirectory(sourceDir),
+                SpriteDirectory = new FileSystemDirectory(sourceDir + "Sprites\\"),
                 IsDebuggingEnabled = true
             };
             if (alterSettings != null) alterSettings(settings);
