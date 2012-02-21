@@ -122,7 +122,7 @@ namespace Cassette.Web
         {
             const string url = RoutePrefix + "/file/{*path}";
             var handler = new DelegateRouteHandler(
-                requestContext => new RawFileRequestHandler(requestContext)
+                requestContext => new RawFileRequestHandler(requestContext, getBundleContainer)
             );
             Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
             // Insert Cassette's routes at the start of the table, 
