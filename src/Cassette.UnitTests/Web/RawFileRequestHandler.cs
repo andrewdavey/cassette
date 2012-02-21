@@ -1,12 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using Moq;
 using Xunit;
 
 namespace Cassette.Web
 {
     public class RawFileRequestHandler_Tests
     {
+        readonly IEnumerable<Bundle> bundles;
+
+        public RawFileRequestHandler_Tests()
+        {
+            var bundle = new TestableBundle("~");
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+            asset.SetupGet(a => a.References).Returns(new[]
+            {
+                new AssetReference("~/test.png", asset.Object, -1, AssetReferenceType.RawFilename)
+            });
+            bundle.Assets.Add(asset.Object);
+            bundles = new[] { bundle };
+        }
+
         [Fact]
         public void WhenRequestFile_ThenResponseETagHeaderIsSHA1OfContents()
         {
@@ -16,8 +34,8 @@ namespace Cassette.Web
                 var filename = Path.Combine(temp, "test.png");
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
-                
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c));
+
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
 
@@ -43,7 +61,7 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c));
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
                 string eTag;
@@ -69,7 +87,7 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c));
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
                 http.Get("~/test_hash.png");
@@ -77,5 +95,25 @@ namespace Cassette.Web
             }
         }
 
+
+        [Fact]
+        public void WhenRequestFileThatIsNoReferencedByAsset_ThenDoNotReturnFile()
+        {
+            using (var temp = new TempDirectory())
+            using (var http = new HttpTestHarness())
+            {
+                var filename = Path.Combine(temp, "protected.png");
+                var content = new byte[] { 1, 2, 3 };
+                File.WriteAllBytes(filename, content);
+
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
+                http.Server.Setup(s => s.MapPath("~/protected.png")).Returns(filename);
+
+                http.Get("~/protected_hash.png");
+
+                http.Response.Verify(r => r.WriteFile(It.IsAny<string>()), Times.Never());
+                http.Response.VerifySet(r => r.StatusCode = 404);
+            }
+        }
     }
 }
