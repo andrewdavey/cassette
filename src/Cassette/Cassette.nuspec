@@ -24,6 +24,6 @@
         </references>
     </metadata>
     <files>
-        <file src="bin\Release\Pandora.dll" target="lib\net40-Client"/>
+        <file src="bin\Release\Pandora.dll" target="lib"/>
     </files>
 </package>

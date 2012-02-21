@@ -108,7 +108,9 @@ namespace Cassette.Web
             Trace.Source.TraceInformation("Application shutdown - disposing resources.");
             _container.Dispose();
             IsolatedStorageContainer.Dispose();
+#if NET40
             Scripts.IECoffeeScriptCompiler.SingleThreadedWorker.Singleton.Stop();
+#endif
         }
         // ReSharper restore UnusedMember.Global
 
