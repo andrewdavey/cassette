@@ -103,7 +103,7 @@ namespace Cassette.Web
             if (contentType != null)
             {
                 Trace.Source.TraceEvent(
-                    TraceEventType.Error,
+                    TraceEventType.Information,
                     0,
                     "Sending file \"{0}\" with content type {1}.",
                     fullPath,
