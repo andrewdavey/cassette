@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Cassette | Using Cassette in .NET 3.5";
+    ViewBag.Description = "How to get started with using Cassette using .NET Framework 3.5.";
+}
+
+<h1>Using Cassette in .NET 3.5</h1>
+
+<p>There are some extra steps you will need to take in order to get Cassette running with a .NET 3.5 project.</p>
+
+<h2>Starting and shutting down Cassette</h2>
+
+<p>Since .NET 3.5 does not support Web Activator, you will need to manually start and stop Cassette in your <strong>Global.asax</strong>:</p>
+
+<pre><code><span class="keyword">public class</span> <span class="code-type">MvcApplication</span> : <span class="code-type">HttpApplication</span>
+{
+    ...
+
+    <span class="keyword">protected void</span> Application_Start()
+    {
+        <span class="comment">// Start up Cassette</span>
+        Cassette.Web.<span class="code-type">StartUp</span>.PreApplicationStart();
+
+        ...
+
+        <span class="comment">// Occurs last</span>
+        Cassette.Web.<span class="code-type">StartUp</span>.PostApplicationStart();
+    }
+
+    <span class="keyword">protected void</span> Application_End()
+    {
+        <span class="comment">// Handle shutdown</span>
+        Cassette.Web.<span class="code-type">StartUp</span>.ApplicationShutdown();
+    }
+}
+</code></pre>
+
+<h2>Register CassetteHttpModule</h2>
+
+<p>You will also need to register the <code>CassetteHttpModule</code> in your <strong>web.config</strong> file (if the Nuget package hasn't already):</p>
+
+<pre><code><span class="open-tag">&lt;</span><span class="tag">system.web</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">httpModules</span><span class="close-tag">&gt;</span>
+    ...
+    <span class="open-tag">&lt;</span><span class="tag">add</span> <span class="attribute">name</span><span class="attribute-value">="CassetteHttpModule"</span>
+      <span class="attribute">type</span><span class="attribute-value">="Cassette.Web.CassetteHttpModule, Cassette.Web"</span>/<span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span>/<span class="tag">httpModules</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span>/<span class="tag">system.web</span><span class="close-tag">&gt;</span>
+
+  ...
+
+<span class="open-tag">&lt;</span><span class="tag">system.webServer</span><span class="close-tag">&gt;</span>
+  ...
+
+  <span class="open-tag">&lt;</span><span class="tag">modules</span> <span class="attribute">runAllManagedModulesForAllRequests</span><span class="attribute-value">="true"</span><span class="close-tag">&gt;</span>
+    ...
+    <span class="open-tag">&lt;</span><span class="tag">add</span> <span class="attribute">name</span><span class="attribute-value">="CassetteHttpModule"</span>
+      <span class="attribute">type</span><span class="attribute-value">="Cassette.Web.CassetteHttpModule, Cassette.Web"</span>/<span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span>/<span class="tag">modules</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span>/<span class="tag">system.webServer</span><span class="close-tag">&gt;</span>
+</code></pre>
+
+<h2>MVC and Web Forms</h2>
+
+<p>You can follow the same instructions for getting started with MVC or Web Forms. Here is an example using MVC 2's ASPX syntax (in a <code>Site.master</code> page):</p>
+
+<pre><code><span class="code-tag">&lt;%@@</span> <span class="tag">Master</span> <span class="attribute">Language</span><span class="attribute-value">="C#"</span> <span class="attribute">Inherits</span><span class="attribute-value">="System.Web.Mvc.ViewMasterPage"</span> <span class="code-tag">%&gt;</span>
+<span class="code-tag">&lt;%</span>
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/lib/jquery.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/app/home.js"</span>);
+<span class="code-tag">%&gt;</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+    <span class="code-tag">&lt;%</span>= <span class="code-type">Bundles</span>.RenderStylesheets() <span class="code-tag">%&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+    ...
+    <span class="code-tag">&lt;%</span>= <span class="code-type">Bundles</span>.RenderScripts() <span class="code-tag">%&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+</code></pre>
