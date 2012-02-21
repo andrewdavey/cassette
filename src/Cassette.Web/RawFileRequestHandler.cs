@@ -11,8 +11,11 @@ namespace Cassette.Web
 {
     class RawFileRequestHandler : IHttpHandler
     {
-        public RawFileRequestHandler(RequestContext requestContext)
+        readonly IEnumerable<Bundle> bundles;
+
+        public RawFileRequestHandler(RequestContext requestContext, IEnumerable<Bundle> bundles)
         {
+            this.bundles = bundles;
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
             request = requestContext.HttpContext.Request;
@@ -54,17 +57,28 @@ namespace Cassette.Web
             }
 
             var extension = match.Groups["extension"].Value;
-            var filename = match.Groups["filename"].Value + "." + extension;
-            var fullPath = server.MapPath("~/" + filename);
-            if (File.Exists(fullPath))
+            var filename = "~/" + match.Groups["filename"].Value + "." + extension;
+            var fullPath = server.MapPath(filename);
+            if (File.Exists(fullPath) && AllowGet(filename))
             {
                 SendFile(fullPath, extension);
             }
             else
             {
-                Trace.Source.TraceEvent(TraceEventType.Error, 0, "File not found \"{0}\".", fullPath);
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, "File not found \"{0}\".", filename);
                 response.StatusCode = 404;
             }
+        }
+
+        bool AllowGet(string filename)
+        {
+            var rawFileReferenceFinder = new RawFileReferenceFinder(filename);
+            foreach (var bundle in bundles)
+            {
+                bundle.Accept(rawFileReferenceFinder);
+                if (rawFileReferenceFinder.IsRawFileReferenceFound) return true;
+            }
+            return false;
         }
 
         void NotFound(string path)
