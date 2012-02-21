@@ -1,0 +1,17 @@
+﻿/*
+@reference "reset.css";
+*/
+
+body {
+    font-size: 75%;
+    font-family: Verdana, Tahoma, Arial, "Helvetica Neue", Helvetica, Sans-Serif;
+}
+
+h1 {
+    margin-bottom: 1em;
+}
+
+p {
+    margin-bottom: 1em;
+    line-height: 1.4em;
+}

@@ -1,0 +1,35 @@
+﻿<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+<% Bundles.Reference("Styles"); %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+    
+    <%= Bundles.RenderStylesheets() %>
+    <%= Bundles.RenderScripts() %>
+</head>
+
+<body>
+    <h1>Example Web App</h1>
+
+    <div class="about">
+        <p>This simple web application uses <a href="http://jquery.com/">jQuery</a>, <a href="http://jqueryui.com">jQuery UI</a>, <a href="http://knockoutjs.com/">Knockout</a> and some other JavaScript libraries.</p>
+        <p>The dependencies between these libraries and the application's own JavaScript is handled by <a href="http://aboutcode.net/cassette">Cassette</a>.</p>
+        <p>As a result, the code is easy to maintain and debug, but also very efficient in production.
+        Try toggling debug mode in Web.config and then view the page source to see the different output.</p>
+    </div>
+    
+    <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+    
+    <div id="footer">
+    <%= Html.Partial("_Fork") %>
+    <%= Html.Partial("_Tweet") %>
+    </div>
+
+    <%-- Some scripts progressively enhance the page and are non-essential, 
+       so we can delay loading them until the end of the page. --%>
+    <%= Bundles.RenderScripts("body") %>
+    <%= Bundles.RenderHtmlTemplates() %>
+</body>
+</html>

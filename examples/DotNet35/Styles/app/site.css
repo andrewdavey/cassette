@@ -1,0 +1,20 @@
+/*
+@reference "../base/reset.css";
+@reference "../base/typography.css";
+*/
+
+body {
+    color: #232323;
+    background-color: #fff;
+    padding: 40px;
+}
+
+.about {
+    width: 40em;
+    margin-bottom: 2em;
+}
+
+#footer {
+    padding-top: 40px;
+    clear: left;
+}

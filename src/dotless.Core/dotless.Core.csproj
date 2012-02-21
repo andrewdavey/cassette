@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>dotless.Core</RootNamespace>
     <AssemblyName>Cassette.dotless.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\dotless-open-source.snk</AssemblyOriginatorKeyFile>
