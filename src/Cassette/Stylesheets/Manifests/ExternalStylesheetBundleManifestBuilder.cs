@@ -6,6 +6,7 @@ namespace Cassette.Stylesheets.Manifests
         {
             var manifest = base.BuildManifest(bundle);
             manifest.Url = bundle.Url;
+            manifest.Condition = bundle.Condition;
             return manifest;
         }
     }

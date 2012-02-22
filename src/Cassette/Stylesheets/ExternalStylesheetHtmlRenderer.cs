@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
@@ -20,26 +21,41 @@ namespace Cassette.Stylesheets
             {
                 return fallbackRenderer.Render(bundle);
             }
+
+            var html = new StringBuilder();
+
+            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
+            if (hasCondition)
+            {
+                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
+                html.AppendLine();
+            }
+            
+            if (string.IsNullOrEmpty(bundle.Media))
+            {
+                html.AppendFormat(
+                    HtmlConstants.LinkHtml, 
+                    bundle.Url, 
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
+            }
             else
             {
-                if (string.IsNullOrEmpty(bundle.Media))
-                {
-                    return string.Format(
-                        HtmlConstants.LinkHtml,
-                        bundle.Url,
-                        bundle.HtmlAttributes.CombinedAttributes
-                    );
-                }
-                else
-                {
-                    return string.Format(
-                        HtmlConstants.LinkWithMediaHtml, 
-                        bundle.Url, 
-                        bundle.Media,
-                        bundle.HtmlAttributes.CombinedAttributes
-                    );
-                }
+                html.AppendFormat(
+                    HtmlConstants.LinkWithMediaHtml,
+                    bundle.Url,
+                    bundle.Media,
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
             }
+            
+            if (hasCondition)
+            {
+                html.AppendLine();
+                html.Append(HtmlConstants.ConditionalCommentEnd);
+            }
+
+            return html.ToString();
         }
     }
 }
