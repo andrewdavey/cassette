@@ -21,9 +21,16 @@
             <reference file="Pandora.dll"/>
             <reference file="Cassette.dll"/>
             <reference file="Cassette.dotless.Core.dll"/>
+            <reference file="Iesi.Collections.dll" />
         </references>
     </metadata>
     <files>
-        <file src="bin\Release\Pandora.dll" target="lib"/>
+      <file src="..\..\build\bin\lib40-client\Cassette.dll" target="lib\net40-client" />
+      <file src="..\..\build\bin\lib40-client\Cassette.dotless.Core.dll" target="lib\net40-client" />
+      <file src="..\..\build\bin\lib35-client\Cassette.dll" target="lib\net35-client" />
+      <file src="..\..\build\bin\lib35-client\Cassette.dotless.Core.dll" target="lib\net35-client" />
+      <file src="..\..\build\bin\lib35-client\Iesi.Collections.dll" target="lib\net35-client" />
+      <file src="bin\Release\Pandora.dll" target="lib\net40-client"/>
+      <file src="bin\Release\Pandora.dll" target="lib\net35-client"/>
     </files>
 </package>

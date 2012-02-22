@@ -13,6 +13,7 @@
         <iconUrl>http://getcassette.net/nuget-icon.png</iconUrl>
     </metadata>
     <files>
+        <file src="bin\Release\Cassette.MSBuild.dll" target="lib\net40" />
         <file src="bin\Release\AjaxMin.dll" target="Tools"/>
         <file src="bin\Release\Cassette.dll" target="Tools"/>
         <file src="bin\Release\Jurassic.dll" target="Tools"/>

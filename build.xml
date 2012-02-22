@@ -1,25 +1,53 @@
 <?xml version="1.0"?>
-<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    
+<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">    
     <UsingTask AssemblyFile="tools\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
+    <UsingTask TaskName="GetAssemblyInformationalVersion" 
+        TaskFactory="CodeTaskFactory" 
+        AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+        <ParameterGroup>
+            <Assembly ParameterType="System.String" Required="true" />
+            <Version ParameterType="System.String" Output="true" />
+        </ParameterGroup>
+        <Task>
+            <Code Type="Fragment" Language="cs">
+              var version = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"C:\Development\Contrib\cassette\build\bin\lib40-Client\Cassette.dll");
 
+              Version = version.ProductVersion;
+            </Code>
+        </Task>
+    </UsingTask>
     <PropertyGroup>
         <Configuration>Release</Configuration>
-        <Framework>v4.0</Framework>
     </PropertyGroup>
 
     <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
 
     <Target Name="Build">
         <ItemGroup>
-            <CoreProject Include="src\Cassette.Web\Cassette.Web.csproj"/>
-            <CoreProject Include="src\Cassette.Views\Cassette.Views.csproj"/>
-	    <CoreProject Include="src\Cassette.MSBuild\Cassette.MSBuild.csproj"/>
-            <TestProject Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
-            <TestProject Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
+            <ClientProfile Include="src\Cassette\Cassette.csproj"/>
+            <FullProfile Include="src\Cassette.Web\Cassette.Web.csproj"/>
+            <FullProfile Include="src\Cassette.Views\Cassette.Views.csproj"/>
+	        <NormalProject Include="src\Cassette.MSBuild\Cassette.MSBuild.csproj"/>
+            <NormalProject Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <NormalProject Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
-        <MSBuild Projects="@(CoreProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration);TargetFrameworkVersion=$(Framework)"/>
-        <MSBuild Projects="@(TestProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
+        <PropertyGroup>
+            <OutputPath>..\..\build\bin</OutputPath>
+        </PropertyGroup>
+
+        <MSBuild Projects="@(ClientProfile)" 
+            Targets="Clean;Build"
+            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v4.0;OutputPath=$(OutputPath)\lib40-Client"/>
+        <MSBuild Projects="@(FullProfile)" 
+            Targets="Clean;Build"
+            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v4.0;OutputPath=$(OutputPath)\lib40"/>
+        <MSBuild Projects="@(ClientProfile)" 
+            Targets="Clean;Build"
+            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v3.5;OutputPath=$(OutputPath)\lib35-Client"/>
+        <MSBuild Projects="@(FullProfile)" 
+            Targets="Clean;Build"
+            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v3.5;OutputPath=$(OutputPath)\lib35"/>
+        <MSBuild Projects="@(NormalProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
     </Target>
 
     <Target Name="Test" DependsOnTargets="Build">
@@ -29,17 +57,21 @@
 
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
-            <ProjectToNugetPack Include="src\Cassette\Cassette.csproj"/>
-            <ProjectToNugetPack Include="src\Cassette.Views\Cassette.Views.csproj"/>
-            <ProjectToNugetPack Include="src\Cassette.Web\Cassette.Web.csproj"/>
+            <Nuspec Include="src\Cassette\Cassette.nuspec"/>
+            <Nuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
+            <Nuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
         </ItemGroup>
         <PropertyGroup>
-            <OutputDir>build\nuget\$(Framework)</OutputDir>
+            <OutputDir>build\nuget</OutputDir>
         </PropertyGroup>
+        <GetAssemblyInformationalVersion Assembly="build\bin\lib40-client\Cassette.dll">
+            <Output PropertyName="Version" TaskParameter="Version" />
+        </GetAssemblyInformationalVersion>
+        <Message Text="Building Nuget packages for v$(Version)" />
         <MakeDir Directories="$(OutputDir)"/>
-        <Exec Command="nuget pack %(ProjectToNugetPack.Identity) -Symbols -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration);TargetFrameworkVersion=$(Framework)"/>
+        <Exec Command="nuget pack %(Nuspec.Identity) -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
         <!-- The Cassette.MSBuild package is slightly different (-Tool, no symbols and -NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
-        <Exec Command="nuget pack -Build src\Cassette.MSBuild\Cassette.MSBuild.csproj -Tool -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
+        <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">

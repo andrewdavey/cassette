@@ -17,6 +17,8 @@
     </metadata>
 
     <files>
+        <file src="..\..\build\bin\lib40\Cassette.Views.dll" target="lib\net40" />        
+        <file src="..\..\build\bin\lib35\Cassette.Views.dll" target="lib\net35" />        
         <file src="Web.config.transform" target="content\Views"/>
     </files>
 </package>

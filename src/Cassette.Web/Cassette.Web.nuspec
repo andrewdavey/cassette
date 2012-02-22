@@ -18,6 +18,8 @@
     </metadata>
     
     <files>
-        <file src="CassetteConfiguration.cs.pp" target="content"/>
+      <file src="..\..\build\bin\lib40\Cassette.Web.dll" target="lib\net40" />
+      <file src="..\..\build\bin\lib35\Cassette.Web.dll" target="lib\net35" />
+      <file src="CassetteConfiguration.cs.pp" target="content"/>
     </files>
 </package>
