@@ -12,17 +12,18 @@
         <tags>web javascript coffeescript css html templates asp.net</tags>
         <iconUrl>http://getcassette.net/nuget-icon.png</iconUrl>
         <dependencies>
-            <dependency id="AjaxMin" version="4.37" />
+            <dependency id="AjaxMin" version="4.46" />
             <dependency id="Jurassic" version="2.1" />
             <dependency id="Newtonsoft.Json" version="4.0" />
+            <dependency id="CommonServiceLocator" version="1.0"/>
         </dependencies>
         <references>
             <reference file="Pandora.dll"/>
-            <reference file="Microsoft.Practices.ServiceLocation.dll"/>
+            <reference file="Cassette.dll"/>
+            <reference file="Cassette.dotless.Core.dll"/>
         </references>
     </metadata>
     <files>
-        <file src="bin\Release\Pandora.dll" target="lib"/>
-        <file src="bin\Release\Microsoft.Practices.ServiceLocation.dll" target="lib"/>
+        <file src="bin\Release\Pandora.dll" target="lib\net40-Client"/>
     </files>
 </package>

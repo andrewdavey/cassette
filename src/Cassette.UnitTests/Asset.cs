@@ -62,16 +62,19 @@ namespace Cassette
         }
 
         [Fact]
-        public void Hash_IsSHA1OfTheFileContent()
+        public void Hash_IsSHA1OfTheTransformedAssetContent()
         {
-            byte[] expectedHash;
-            using (var sha1 = SHA1.Create())
-            using (var fileStream = "asset content".AsStream())
-            {
-                expectedHash = sha1.ComputeHash(fileStream);
-            }
+            var transformer = new Mock<IAssetTransformer>();
+            transformer
+                .Setup(t => t.Transform(It.IsAny<Func<Stream>>(), asset))
+                .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
+            asset.AddAssetTransformer(transformer.Object);
 
-            asset.Hash.SequenceEqual(expectedHash).ShouldBeTrue();
+            using (var sha1 = SHA1.Create())
+            {
+                var expected = sha1.ComputeHash(new byte[] { 1, 2, 3 });
+                asset.Hash.ShouldEqual(expected);
+            }
         }
 
         [Fact]

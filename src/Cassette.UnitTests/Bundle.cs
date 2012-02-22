@@ -237,21 +237,6 @@ namespace Cassette
         }
 
         [Fact]
-        public void PathWithoutPrefixRemovesTildeSlashFromStart()
-        {
-            var bundle = new TestableBundle("~/test");
-            bundle.PathWithoutPrefix.ShouldEqual("test");
-        }
-
-
-        [Fact]
-        public void GivenPathIsRoot_ThenPathWithoutPrefixReturnsEmptyString()
-        {
-            var bundle = new TestableBundle("~");
-            bundle.PathWithoutPrefix.ShouldEqual("");
-        }
-
-        [Fact]
         public void DisposeDisposesAllDisposableAssets()
         {
             var bundle = new TestableBundle("~");
@@ -285,6 +270,24 @@ namespace Cassette
             Assert.Throws<InvalidOperationException>(
                 () => bundle.Process(new CassetteSettings(""))
             );
+        }
+
+        [Fact]
+        public void GivenNewBundle_ThenEmptyHtmlAttributes()
+        {
+            var bundle = new TestableBundle("~/test");
+
+            bundle.HtmlAttributes.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void UrlIsBundleTypePathAndHash()
+        {
+            var bundle = new TestableBundle("~/path")
+            {
+                Hash = new byte[] { 1, 2, 3 }
+            };
+            bundle.Url.ShouldEqual("testablebundle/path_010203");
         }
 
         IAsset StubAsset(string filename)

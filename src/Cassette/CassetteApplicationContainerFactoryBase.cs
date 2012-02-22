@@ -57,7 +57,10 @@ namespace Cassette
 
         CassetteApplicationContainer<T> CreateContainerFromCompileTimeManifest()
         {
-            using (var file = OpenManifestFile())
+            var filename = Path.Combine(physicalDirectory, configurationSection.PrecompiledManifest);
+            Trace.Source.TraceInformation("Initializing bundles from compile-time manifest: {0}", filename);
+
+            using (var file = OpenManifestFile(filename))
             {
                 var reader = new CassetteManifestReader(file);
                 var manifest = reader.Read();
@@ -79,9 +82,8 @@ namespace Cassette
             }
         }
 
-        FileStream OpenManifestFile()
+        FileStream OpenManifestFile(string filename)
         {
-            var filename = Path.Combine(physicalDirectory, configurationSection.PrecompiledManifest);
             if (!File.Exists(filename))
             {
                 throw new FileNotFoundException("Cannot find the file \"{0}\" specified by precompiledManifest in the <cassette> configuration section.", filename);

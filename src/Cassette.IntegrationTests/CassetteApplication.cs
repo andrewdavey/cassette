@@ -87,7 +87,9 @@ function asset1() {
                     http.Get("~/_cassette/asset/scripts/bundle-c/asset.coffee?123");
                     http.ResponseOutputStream.ReadToEnd().ShouldEqual(@"(function() {
   var x;
+
   x = 1;
+
 }).call(this);
 ".Replace("\r\n", "\n"));
                 }

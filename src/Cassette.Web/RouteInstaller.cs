@@ -1,4 +1,5 @@
-﻿using System.Web.Routing;
+﻿using System;
+using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -52,11 +53,24 @@ namespace Cassette.Web
 
         string GetBundleRouteUrl<T>()
         {
-            return string.Format(
+            return String.Format(
                 "{0}/{1}/{{*path}}",
                 routePrefix,
-                UrlGenerator.ConventionalBundlePathName(typeof(T))
+                ConventionalBundlePathName(typeof(T))
             );
+        }
+
+        string ConventionalBundlePathName(Type bundleType)
+        {
+            // ExternalScriptBundle subclasses ScriptBundle, but we want the name to still be "scripts"
+            // So walk up the inheritance chain until we get to something that directly inherits from Bundle.
+            while (bundleType != null && bundleType.BaseType != typeof(Bundle))
+            {
+                bundleType = bundleType.BaseType;
+            }
+            if (bundleType == null) throw new ArgumentException("Type must be a subclass of Cassette.Bundle.", "bundleType");
+
+            return bundleType.Name.ToLowerInvariant();
         }
 
         void InstallAssetCompileRoute()
@@ -77,7 +91,7 @@ namespace Cassette.Web
         {
             var url = routePrefix + "/file/{*path}";
             var handler = new DelegateRouteHandler(
-                requestContext => new RawFileRequestHandler(requestContext)
+                requestContext => new RawFileRequestHandler(requestContext, container.Application.Bundles)
             );
             Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
             InsertRouteIntoTable(url, handler);

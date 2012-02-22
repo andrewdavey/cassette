@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 
 namespace Cassette
 {
@@ -23,5 +24,7 @@ namespace Cassette
         /// <param name="location">Optional. The page location that is being rendered.</param>
         /// <returns>The HTML elements that include into the page all the referenced bundles and their dependencies</returns>
         string Render<T>(string location) where T : Bundle;
+
+        IEnumerable<Bundle> GetBundles(string location);
     }
 }

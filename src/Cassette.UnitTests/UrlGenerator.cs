@@ -6,7 +6,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.Web
+namespace Cassette
 {
     public abstract class UrlGenerator_Tests
     {
@@ -26,6 +26,28 @@ namespace Cassette.Web
 
     public class UrlGenerator_CreateBundleUrl_Tests : UrlGenerator_Tests
     {
+        [Fact]
+        public void CreateBundleUrlCallsBundleUrlProperty()
+        {
+            var bundle = new Mock<Bundle>("~");
+            bundle.SetupGet(b => b.Url).Returns("url");
+
+            var url = UrlGenerator.CreateBundleUrl(bundle.Object);
+
+            url.ShouldEqual("_cassette/url");
+        }
+
+        [Fact]
+        public void GivenBundleUrlIsExternal_ThenCreateBundleUrlDoesNotPrefixIt()
+        {
+            var bundle = new Mock<Bundle>("~");
+            bundle.SetupGet(b => b.Url).Returns("http://example.org/");
+
+            var url = UrlGenerator.CreateBundleUrl(bundle.Object);
+
+            url.ShouldEqual("http://example.org/");
+        }
+
         [Fact]
         public void UrlModifierModifyIsCalled()
         {

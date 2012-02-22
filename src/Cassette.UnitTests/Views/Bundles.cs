@@ -182,11 +182,86 @@ namespace Cassette.Views
         }
 
         [Fact]
-        public void WhenNewBundle_ThenEmptyHtmlAttributes()
+        public void WhenGetReferencedBundles_ThenReturnReferenceBuilderReferencedBundles()
         {
-            var bundle = new TestableBundle("~/test");
+            var bundles = new Bundle[0];
+            referenceBuilder
+                .Setup(b => b.GetBundles(null))
+                .Returns(bundles);
 
-            bundle.HtmlAttributes.ShouldBeEmpty();
+            Bundles.GetReferencedBundles().ShouldBeSameAs(bundles);
+        }
+
+        [Fact]
+        public void WhenGetReferencedBundlesByLocation_ThenReturnReferenceBuilderReferencedBundlesWithLocation()
+        {
+            var bundles = new Bundle[0];
+            referenceBuilder
+                .Setup(b => b.GetBundles("body"))
+                .Returns(bundles);
+
+            Bundles.GetReferencedBundles("body").ShouldBeSameAs(bundles);
+        }
+
+        [Fact]
+        public void GivenNotDebugModeAndReferencedBundle_WhenGetReferencedBundleUrls_ThenReturnUrlInArray()
+        {
+            application.Settings.IsDebuggingEnabled = false;
+            referenceBuilder
+                .Setup(b => b.GetBundles(null))
+                .Returns(new[] { new TestableBundle("~") });
+            urlGenerator
+                .Setup(g => g.CreateBundleUrl(It.IsAny<Bundle>()))
+                .Returns("/url");
+
+            var urls = Bundles.GetReferencedBundleUrls<TestableBundle>();
+
+            urls.ShouldEqual(new[] { "/url" });
+        }
+
+        [Fact]
+        public void GivenNotDebugModeAndReferencedBundle_WhenGetReferencedBundleUrlsWithLocation_ThenReturnUrlInArray()
+        {
+            application.Settings.IsDebuggingEnabled = false;
+            referenceBuilder
+                .Setup(b => b.GetBundles("body"))
+                .Returns(new[] { new TestableBundle("~") });
+            urlGenerator
+                .Setup(g => g.CreateBundleUrl(It.IsAny<Bundle>()))
+                .Returns("/url");
+
+            var urls = Bundles.GetReferencedBundleUrls<TestableBundle>("body");
+
+            urls.ShouldEqual(new[] { "/url" });
+        }
+
+        [Fact]
+        public void GivenDebugModeAndReferencedBundleWithAssets_WhenGetReferencedBundleUrls_ThenReturnEachAssetUrlInArray()
+        {
+            application.Settings.IsDebuggingEnabled = true;
+            var bundle = new TestableBundle("~");
+            bundle.Assets.Add(StubAsset());
+            bundle.Assets.Add(StubAsset());
+
+            referenceBuilder
+                .Setup(b => b.GetBundles(null))
+                .Returns(new[] { bundle });
+            var urls = new Queue<string>(new[] { "/asset1", "/asset2" });
+            urlGenerator
+                .Setup(g => g.CreateAssetUrl(It.IsAny<IAsset>()))
+                .Returns(urls.Dequeue);
+
+            var returnedUrls = Bundles.GetReferencedBundleUrls<TestableBundle>();
+
+            returnedUrls.ShouldEqual(new[] { "/asset1", "/asset2" });
+        }
+
+        IAsset StubAsset()
+        {
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+            return asset.Object;
         }
 
         class TestableApplication : CassetteApplicationBase
