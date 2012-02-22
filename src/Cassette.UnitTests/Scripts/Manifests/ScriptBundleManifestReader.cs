@@ -9,7 +9,7 @@ namespace Cassette.Scripts.Manifests
 {
     public class ScriptBundleManifestReader_Tests
     {
-        BundleManifest readManifest;
+        ScriptBundleManifest readManifest;
         readonly XElement element;
 
         public ScriptBundleManifestReader_Tests()
@@ -17,6 +17,7 @@ namespace Cassette.Scripts.Manifests
             element = new XElement("ScriptBundle",
                 new XAttribute("Path", "~"),
                 new XAttribute("Hash", "010203"),
+                new XAttribute("Condition", "expected-condition"),
                 new XAttribute("ContentType", "CONTENT-TYPE"),
                 new XAttribute("PageLocation", "PAGE-LOCATION"),
                 new XElement("Asset", new XAttribute("Path", "~/asset-1")),
@@ -76,6 +77,19 @@ namespace Cassette.Scripts.Manifests
         {
             element.SetAttributeValue("Hash", "qq");
             ReadBundleManifestThrowsInvalidCassetteManifestException();
+        }
+
+        [Fact]
+        public void ManifestConditionEqualsConditionAttribute()
+        {
+            readManifest.Condition.ShouldEqual("expected-condition");
+        }
+
+        public void ManifestConditionIsNulIfConditionAttributeMissing()
+        {
+            element.SetAttributeValue("Condition", null);
+            ReadBundleManifest();
+            readManifest.Condition.ShouldBeNull();
         }
 
         [Fact]

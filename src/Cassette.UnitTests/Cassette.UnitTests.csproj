@@ -107,6 +107,7 @@
     <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
+    <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter_Tests.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
