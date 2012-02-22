@@ -15,6 +15,7 @@ namespace Cassette.Scripts.Manifests
         {
             base.InitializeBundleManifest(manifest, manifestElement);
             manifest.Url = GetUrlAttribute(manifestElement);
+            manifest.Condition = manifestElement.AttributeValueOrNull("Condition");
             manifest.FallbackCondition = manifestElement.AttributeValueOrNull("FallbackCondition");
         }
 

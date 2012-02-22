@@ -16,9 +16,18 @@ namespace Cassette.Scripts.Manifests
             element = base.CreateElement();
 
             AddUrlAttribute();
+            AddConditionIfNotNull();
             AddFallbackConditionIfNotNull();
 
             return element;
+        }
+
+        void AddConditionIfNotNull()
+        {
+            if (Manifest.Condition != null)
+            {
+                element.Add(new XAttribute("Condition", Manifest.Condition));
+            }
         }
 
         void AddUrlAttribute()

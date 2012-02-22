@@ -31,6 +31,21 @@ namespace Cassette.Scripts
         }
 
         [Fact]
+        public void WhenRenderExternalScriptBundleWithCondition_ThenHtmlIsScriptElementWithConditional()
+        {
+            var bundle = new ExternalScriptBundle("http://test.com/") {Condition = "CONDITION"};
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
+
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if CONDITION]>" + Environment.NewLine +
+                "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
+                "<![endif]-->");
+        }
+
+        [Fact]
         public void WhenRenderExternalScriptBundleWithHtmlAttributes_ThenHtmlIsScriptElementWithExtraAttributes()
         {
             var bundle = new ExternalScriptBundle("http://test.com/");
