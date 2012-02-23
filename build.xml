@@ -48,9 +48,12 @@
 
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
-            <Nuspec Include="src\Cassette\Cassette.nuspec"/>
-            <Nuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
-            <Nuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
+            <MainNuspec Include="src\Cassette\Cassette.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
+            <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
+            <MainNuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Web\Cassette.Web.symbols.nuspec"/>
         </ItemGroup>
         <PropertyGroup>
             <OutputDir>build\nuget</OutputDir>
@@ -60,7 +63,8 @@
         </GetAssemblyInformationalVersion>
         <Message Text="Building Nuget packages for v$(Version)" />
         <MakeDir Directories="$(OutputDir)"/>
-        <Exec Command="nuget pack %(Nuspec.Identity) -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
+        <Exec Command="nuget pack %(MainNuspec.Identity) -Version $(Version) -OutputDirectory $(OutputDir)"/>
+        <Exec Command="nuget pack %(SymbolsNuspec.Identity) -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
         <!-- The Cassette.MSBuild package is slightly different (-Tool, no symbols and -NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
         <!-- TODO: This is packaged as a 4.0 package, as it includes the 4.0 DLLs of its dependencies in the Tools folder.
                    If it is an issue for 3.5-based projects, can maybe figure out a clean way to package tools for 3.5 and 4.0.
