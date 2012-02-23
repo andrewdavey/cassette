@@ -1,4 +1,5 @@
-﻿using Cassette.Configuration;
+﻿using System;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -28,6 +29,20 @@ namespace Cassette.Stylesheets
             var html = renderer.Render(bundle);
 
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>");
+        }
+
+        [Fact]
+        public void GivenApplicationInProdctionAndBundleHasCondition_WhenRender_ThenLinkElementReturnedWrappedWithCondition()
+        {
+            settings.IsDebuggingEnabled = false;
+            bundle.Condition = "CONDITION";
+
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if CONDITION]>" + Environment.NewLine +
+                "<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>" + Environment.NewLine +
+                "<![endif]-->");
         }
 
         [Fact]
