@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">    
-    <UsingTask AssemblyFile="tools\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
     <UsingTask TaskName="GetAssemblyInformationalVersion" 
         TaskFactory="CodeTaskFactory" 
         AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
