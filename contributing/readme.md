@@ -1,67 +1,20 @@
-# Contributing
+# Contributing #
 
 Thanks for showing interesting in contributing to Cassette! We welcome any additions, but please make sure you read the below notes to avoid any headaches.
 
-## Building
+## Building ##
 
 We use VS 2010 to build, which means you must be using MSBuild 4.0.
 
-## Resharper
+## Resharper ##
 
 It's recommended to use ReSharper but not required; you can learn more about getting XUnit support in R# here: http://xunitcontrib.codeplex.com/wikipage?title=ReSharperSupport&referringTitle=Home
 
-## .NET 3.5 Notes
+## .NET 3.5 ##
 
-There are some things to know about how Cassette makes itself backwards compatible with .NET 3.5. We've tried to make shims as invisible as possible, but unfortunately this isn't Javascript so we had to make a few sacrifices.
+Read about how Cassette [supports .NET 3.5](fx35.md).
 
-### Use Debug-FX35 or Release-FX35 configurations
-
-To easily switch between framework targeting, we use two extra solution configurations: _Debug-FX35_ and _Release-FX35_.
-
-### "string".IsNullOrWhiteSpace()
-
-Instead of `String.IsNullOrWhiteSpace(string)` use `"string".IsNullOrWhiteSpace()` extension method (Cassette.Utilities).
-
-### PathUtilities.Combine
-
-When combining an array or more than 2 paths, use `PathUtilities.Combine` instead.
-
-### String.Join gotcha
-
-In .NET 3.5, `String.Join` does not accept `IEnumerable` as a valid array. You must use `.ToArray()` on any enumerables.
-
-### HashedSet<T>
-
-.NET 3.5 does not support the `ISet<T>` interface for `HashSet<T>`, so we utilize Iesi.Collections to provide that support. Please use the custom class, `HashedSet<T>` which provides native HashSet functionality for .NET 4 and uses Iesi for 3.5.
-
-### Upgrading Nuget packages / csproj Gotchas
-
-Cassette does conditional includes of Nuget references in all `csproj` files. Make sure you take a look at the projects affected by any new upgrade and afterwards, add back the condition in order to not break .NET 3.5 projects.
-
-### Conditional References
-
-If a project file requires a .NET 3.5- or .NET 4.0-specific assembly, use conditional a `<reference>` in the `csproj` file. For example:
-
-```xml
-<!-- For a single assembly: -->
-<reference Condition="'$(TargetFrameworkVersion)' == 'v3.5'" ...>
-    <SpecificVersion>false</SpecificVersion> <!-- Important! -->
-    <HintPath>...</HintPath>
-</reference>
-
-<!-- For multi-targeted assemblies: -->
-<reference ...>
-    <SpecificVersion>false</SpecificVersion> <!-- Important! -->
-    <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">...</HintPath>
-    <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">...</HintPath>
-</reference>
-```
-
-### _Do_ run build.bat often
-
-When making changes, to double-check you didn't break .NET 3.5 compatibility, run `build.bat` often, or at least before committing any changes.
-
-## Nuget Packaging
+## Nuget Packaging ##
 
 We use `nuspec` files to manage Nuget packing. Make sure the `.nuspec` and `.symbols.nuspec` files stay in-sync. They all should be pointing to the Cassette build directory (`build/bin/<framework>`).
 
