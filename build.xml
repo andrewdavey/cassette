@@ -47,12 +47,18 @@
         <MSBuild Projects="@(FullProfile)" 
             Targets="Clean;Build"
             Properties="Configuration=$(Configuration);TargetFrameworkVersion=v3.5;OutputPath=$(OutputPath)\lib35"/>
-        <MSBuild Projects="@(NormalProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
+
+        <!-- .NET 4-only; might be good to build once then copy to lib40/lib35 dirs? -->
+        <MSBuild Projects="@(NormalProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)\lib35"/>
+        <MSBuild Projects="@(NormalProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)\lib40"/>
     </Target>
 
     <Target Name="Test" DependsOnTargets="Build">
-        <xunit Assembly="src\Cassette.UnitTests\bin\$(Configuration)\Cassette.UnitTests.dll" />
-        <xunit Assembly="src\Cassette.IntegrationTests\bin\$(Configuration)\Cassette.IntegrationTests.dll" />
+        <!-- Run tests against 4.0 and 3.5 assemblies -->
+        <xunit Assembly="build\bin\lib40\Cassette.UnitTests.dll" />
+        <xunit Assembly="build\bin\lib40\Cassette.IntegrationTests.dll" />
+        <xunit Assembly="build\bin\lib35\Cassette.UnitTests.dll" />
+        <xunit Assembly="build\bin\lib35\Cassette.IntegrationTests.dll" />
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">
