@@ -62,9 +62,7 @@ namespace Cassette.IO
         public void GetLastWriteTimeUtcReturnsFileWriteTime()
         {
             var file = new IsolatedStorageFile("~/exists.js", storage, directory);
-            var low = storage.GetLastWriteTime("exists.js").UtcDateTime;
-
-            file.LastWriteTimeUtc.ShouldEqual(low);
+            file.LastWriteTimeUtc.ShouldEqual(storage.GetLastWriteTime("exists.js").UtcDateTime);  
         }
 #endif
         [Fact]

@@ -54,7 +54,7 @@ namespace Cassette.Utilities
 
         public static IsolatedStorageFileStream OpenFile(this IsolatedStorageFile storage, string path, FileMode mode, FileAccess access)
         {
-            return new IsolatedStorageFileStream(path, FileMode.Create, FileAccess.ReadWrite, storage);
+            return new IsolatedStorageFileStream(path, mode, access, storage);
         }
 
         public static bool FileExists(this IsolatedStorageFile storage, string fileName)

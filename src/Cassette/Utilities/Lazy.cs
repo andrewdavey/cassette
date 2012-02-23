@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Cassette
 {
+#if NET35
     /// <summary>
     /// Provides support for lazy initialization.
     /// </summary>
@@ -74,5 +75,5 @@ namespace Cassette
             return Value.ToString();
         }
     }
-
+#endif
 }
