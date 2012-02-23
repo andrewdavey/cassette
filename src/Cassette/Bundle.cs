@@ -146,7 +146,7 @@ namespace Cassette
             return assetFinder.FoundAsset;
         }
 
-        internal void Accept(IBundleVisitor visitor)
+        public void Accept(IBundleVisitor visitor)
         {
             visitor.Visit(this);
             foreach (var asset in assets)
