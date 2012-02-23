@@ -33,7 +33,7 @@ Check out the [docs](http://getcassette.net/documentation/getting-started) on th
 
 ## Contributing ##
 
-Checkout the [contributing](contributing.md) doc for more information.
+Checkout the `contributing` folder in the repository for more information.
 
 ## Support and Discussion ##
 
