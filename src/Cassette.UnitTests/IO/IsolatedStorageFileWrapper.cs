@@ -57,19 +57,16 @@ namespace Cassette.IO
 
         // According to andrew, LastWriteTime is actually never really called in
         // code, so we should be able to safely ignore it (for FX35)
-        //[Fact]
-        //public void GetLastWriteTimeUtcReturnsFileWriteTime()
-        //{
-        //    var file = new IsolatedStorageFile("~/exists.js", storage, directory);
+#if NET40
+        [Fact]
+        public void GetLastWriteTimeUtcReturnsFileWriteTime()
+        {
+            var file = new IsolatedStorageFile("~/exists.js", storage, directory);
+            var low = storage.GetLastWriteTime("exists.js").UtcDateTime;
 
-        //    // FX35 workaround: range of accepted values
-        //    var low = storage.GetLastWriteTime("exists.js").UtcDateTime;
-        //    var high = low.AddMilliseconds(500); // threshold, 500ms
-
-        //    file.LastWriteTimeUtc.ShouldBeInRange(low, high);
-        //    // FX40 file.LastWriteTimeUtc.ShouldEqual(low);
-        //}
-
+            file.LastWriteTimeUtc.ShouldEqual(low);
+        }
+#endif
         [Fact]
         public void OpenStreamReturnsFileStream()
         {
