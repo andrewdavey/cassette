@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+#if NET35
 using Iesi.Collections;
+#endif
 using Should;
 using Xunit;
 
@@ -181,6 +183,7 @@ namespace Cassette.Utilities
         }
     }
 
+#if NET35
     internal static class SetExtensions
     {
         public static bool SetEquals<T>(this Iesi.Collections.Generic.ISet<T> set, IEnumerable<T> otherSet)
@@ -188,4 +191,5 @@ namespace Cassette.Utilities
             return set.ContainsAll(new Collection<T>(new List<T>(otherSet)));
         }
     }
+#endif
 }

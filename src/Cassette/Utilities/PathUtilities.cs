@@ -7,6 +7,16 @@ namespace Cassette.Utilities
 {
     static class PathUtilities
     {
+        public static string Combine(params string[] paths)
+        {
+#if NET40
+            return Path.Combine(paths);
+#endif
+#if NET35
+            return paths.Aggregate((p1, p2) => Path.Combine(p1, p2));
+#endif
+        }
+    
         public static string CombineWithForwardSlashes(params string[] paths)
         {
             return paths.Aggregate((a, b) => Path.Combine(a, b)).Replace('\\', '/');

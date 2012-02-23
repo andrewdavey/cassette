@@ -10,7 +10,7 @@
         </ParameterGroup>
         <Task>
             <Code Type="Fragment" Language="cs">
-              var version = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"C:\Development\Contrib\cassette\build\bin\lib40-Client\Cassette.dll");
+              var version = System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly);
 
               Version = version.ProductVersion;
             </Code>
@@ -24,41 +24,27 @@
 
     <Target Name="Build">
         <ItemGroup>
-            <ClientProfile Include="src\Cassette\Cassette.csproj"/>
-            <FullProfile Include="src\Cassette.Web\Cassette.Web.csproj"/>
-            <FullProfile Include="src\Cassette.Views\Cassette.Views.csproj"/>
-	        <NormalProject Include="src\Cassette.MSBuild\Cassette.MSBuild.csproj"/>
-            <NormalProject Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
-            <NormalProject Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
+            <Tests Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
         <PropertyGroup>
             <OutputPath>..\..\build\bin</OutputPath>
         </PropertyGroup>
 
-        <MSBuild Projects="@(ClientProfile)" 
-            Targets="Clean;Build"
-            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v4.0;OutputPath=$(OutputPath)\lib40-Client"/>
-        <MSBuild Projects="@(FullProfile)" 
-            Targets="Clean;Build"
-            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v4.0;OutputPath=$(OutputPath)\lib40"/>
-        <MSBuild Projects="@(ClientProfile)" 
-            Targets="Clean;Build"
-            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v3.5;OutputPath=$(OutputPath)\lib35-Client"/>
-        <MSBuild Projects="@(FullProfile)" 
-            Targets="Clean;Build"
+        <!-- Only need to build test projects as dependent projects will be automatically built. -->
+        <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
             Properties="Configuration=$(Configuration);TargetFrameworkVersion=v3.5;OutputPath=$(OutputPath)\lib35"/>
+        <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
+            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v4.0;OutputPath=$(OutputPath)\lib40"/>
 
-        <!-- .NET 4-only; might be good to build once then copy to lib40/lib35 dirs? -->
-        <MSBuild Projects="@(NormalProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)\lib35"/>
-        <MSBuild Projects="@(NormalProject)" Targets="Clean;Build" Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)\lib40"/>
     </Target>
 
     <Target Name="Test" DependsOnTargets="Build">
-        <!-- Run tests against 4.0 and 3.5 assemblies -->
-        <xunit Assembly="build\bin\lib40\Cassette.UnitTests.dll" />
-        <xunit Assembly="build\bin\lib40\Cassette.IntegrationTests.dll" />
-        <xunit Assembly="build\bin\lib35\Cassette.UnitTests.dll" />
-        <xunit Assembly="build\bin\lib35\Cassette.IntegrationTests.dll" />
+        <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
+        <Exec Command="tools\xunit.console.clr4.x86.exe build\bin\lib40\Cassette.UnitTests.dll" />
+        <Exec Command="tools\xunit.console.clr4.x86.exe build\bin\lib40\Cassette.IntegrationTests.dll" />
+        <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.UnitTests.dll" />
+        <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.IntegrationTests.dll" />
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">
@@ -70,13 +56,16 @@
         <PropertyGroup>
             <OutputDir>build\nuget</OutputDir>
         </PropertyGroup>
-        <GetAssemblyInformationalVersion Assembly="build\bin\lib40-client\Cassette.dll">
+        <GetAssemblyInformationalVersion Assembly="build\bin\lib40\Cassette.dll">
             <Output PropertyName="Version" TaskParameter="Version" />
         </GetAssemblyInformationalVersion>
         <Message Text="Building Nuget packages for v$(Version)" />
         <MakeDir Directories="$(OutputDir)"/>
         <Exec Command="nuget pack %(Nuspec.Identity) -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
         <!-- The Cassette.MSBuild package is slightly different (-Tool, no symbols and -NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
+        <!-- TODO: This is packaged as a 4.0 package, as it includes the 4.0 DLLs of its dependencies in the Tools folder.
+                   If it is an issue for 3.5-based projects, can maybe figure out a clean way to package tools for 3.5 and 4.0.
+                   See: src\Cassette.MSBuild\Cassette.MSBuild.nuspec -->
         <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
     </Target>
 

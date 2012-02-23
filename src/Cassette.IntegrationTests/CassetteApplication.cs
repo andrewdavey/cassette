@@ -23,7 +23,7 @@ namespace Cassette.IntegrationTests
         {
             RemoveExistingCache();
 
-            storage = IsolatedStorageFile.GetMachineStoreForDomain();
+            storage = IsolatedStorageFile.GetMachineStoreForAssembly();
             routes = new RouteCollection();
             httpContext = new Mock<HttpContextBase>();
             httpContextItems = new Dictionary<string, object>();
@@ -166,7 +166,7 @@ function asset1() {
 
         void RemoveExistingCache()
         {
-            using (var storage = IsolatedStorageFile.GetMachineStoreForDomain())
+            using (var storage = IsolatedStorageFile.GetMachineStoreForAssembly())
             {
                 storage.Remove();
             }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.IsolatedStorage;
 using System.Security.Cryptography;
 
 namespace Cassette.Utilities
@@ -45,7 +46,23 @@ namespace Cassette.Utilities
 
             return totalBytes;
         }
+
+        public static IsolatedStorageFileStream CreateFile(this IsolatedStorageFile storage, string path)
+        {
+            return new IsolatedStorageFileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, storage);
+        }
+
+        public static IsolatedStorageFileStream OpenFile(this IsolatedStorageFile storage, string path, FileMode mode, FileAccess access)
+        {
+            return new IsolatedStorageFileStream(path, FileMode.Create, FileAccess.ReadWrite, storage);
+        }
+
+        public static bool FileExists(this IsolatedStorageFile storage, string fileName)
+        {
+            return storage.GetFileNames(fileName).Length > 0;
+        }
 #endif
+
     }
 }
 

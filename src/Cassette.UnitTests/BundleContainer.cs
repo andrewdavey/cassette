@@ -157,7 +157,7 @@ namespace Cassette
         {
             var externalBundle1 = new ExternalScriptBundle("http://test.com/test1.js");
             var externalBundle2 = new ExternalScriptBundle("http://test.com/test2.js");
-            var container = new BundleContainer(Enumerable.Empty<ScriptBundle>());
+            var container = new BundleContainer(Enumerable.Empty<Bundle>());
             var results = container.IncludeReferencesAndSortBundles(new[] { externalBundle1, externalBundle2 });
             results.SequenceEqual(new[] { externalBundle1, externalBundle2 }).ShouldBeTrue();
         }

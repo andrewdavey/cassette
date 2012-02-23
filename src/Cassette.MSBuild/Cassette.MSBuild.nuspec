@@ -13,11 +13,11 @@
         <iconUrl>http://getcassette.net/nuget-icon.png</iconUrl>
     </metadata>
     <files>
-        <file src="bin\Release\Cassette.MSBuild.dll" target="lib\net40" />
-        <file src="bin\Release\AjaxMin.dll" target="Tools"/>
-        <file src="bin\Release\Cassette.dll" target="Tools"/>
-        <file src="bin\Release\Jurassic.dll" target="Tools"/>
-        <file src="bin\Release\Newtonsoft.Json.dll" target="Tools"/>
+        <file src="..\..\build\bin\lib40\Cassette.MSBuild.dll" target="lib\net40" />
+        <file src="..\..\build\bin\lib40\AjaxMin.dll" target="Tools"/>
+        <file src="..\..\build\bin\lib40\Cassette.dll" target="Tools"/>
+        <file src="..\..\build\bin\lib40\Jurassic.dll" target="Tools"/>
+        <file src="..\..\build\bin\lib40\Newtonsoft.Json.dll" target="Tools"/>
         <file src="install.ps1" target="Tools"/>
         <file src="uninstall.ps1" target="Tools"/>
         <file src="Cassette.targets" target="Content"/>

@@ -6,6 +6,7 @@ using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -50,7 +51,7 @@ namespace Cassette.Web
             using (var path = new TempDirectory())
             {
                 Directory.CreateDirectory(Path.Combine(path, "styles"));
-                File.WriteAllText(Path.Combine(path, "styles", "asset.css"), "/* @reference http://example.com */");
+                File.WriteAllText(PathUtilities.Combine(path, "styles", "asset.css"), "/* @reference http://example.com */");
 
                 var configuration = new StubConfiguration(bundles => bundles.Add<StylesheetBundle>("styles"));
                 var factory = new CassetteApplicationContainerFactory(
@@ -105,7 +106,7 @@ namespace Cassette.Web
             var bundleManifest = bundle.CreateBundleManifest(true);
             var cassetteManifest = new CassetteManifest("", new[] { bundleManifest });
 
-            var manifestFilename = Path.Combine(rootDirectory, "App_Data", "cassette.xml");
+            var manifestFilename = PathUtilities.Combine(rootDirectory, "App_Data", "cassette.xml");
             Directory.CreateDirectory(Path.Combine(rootDirectory, "App_Data"));
             using (var outputStream = File.Open(manifestFilename, FileMode.Create, FileAccess.Write))
             {

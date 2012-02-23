@@ -13,17 +13,18 @@ namespace Cassette.Web
         {
             RequestContext actualContext = null;
             var stubHandler = Mock.Of<IHttpHandler>();
-            var stubContext = Mock.Of<RequestContext>();
+            var stubHttp = new Mock<HttpContextBase>();
+            var stubContext = new Mock<RequestContext>(stubHttp.Object, new RouteData());
 
             var routeHandler = new DelegateRouteHandler(context => {
                 actualContext = context;
                 return stubHandler;
             });
 
-            var actualHttpHandler = routeHandler.GetHttpHandler(stubContext);
+            var actualHttpHandler = routeHandler.GetHttpHandler(stubContext.Object);
 
             actualHttpHandler.ShouldBeSameAs(stubHandler);
-            actualContext.ShouldBeSameAs(stubContext);
+            actualContext.ShouldBeSameAs(stubContext.Object);
         }
     }
 }

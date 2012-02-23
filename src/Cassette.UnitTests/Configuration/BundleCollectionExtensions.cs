@@ -5,6 +5,7 @@ using System.Linq;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -252,7 +253,7 @@ namespace Cassette.Configuration
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
-            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
             defaultAssetSource
                 .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
@@ -279,7 +280,7 @@ namespace Cassette.Configuration
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
-            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
             defaultAssetSource
                 .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
@@ -301,7 +302,7 @@ namespace Cassette.Configuration
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
-            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
             defaultAssetSource
                 .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile() });
@@ -786,7 +787,7 @@ namespace Cassette.Configuration
             using (var temp = new TempDirectory())
             {
                 Directory.CreateDirectory(Path.Combine(temp, "bundle"));
-                File.WriteAllText(Path.Combine(temp, "bundle", "file1.js"), "");
+                File.WriteAllText(PathUtilities.Combine(temp, "bundle", "file1.js"), "");
 
                 var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);

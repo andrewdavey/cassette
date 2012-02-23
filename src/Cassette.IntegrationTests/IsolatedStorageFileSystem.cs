@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Cassette.IO;
+using Cassette.Utilities;
 using Should;
 using Xunit;
 using IsolatedStorageFile = System.IO.IsolatedStorage.IsolatedStorageFile;
