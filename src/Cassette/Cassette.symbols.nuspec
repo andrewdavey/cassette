@@ -34,8 +34,8 @@
       <file src="..\..\build\bin\lib35\Cassette.dotless.Core.dll" target="lib\net35-client" />
       <file src="..\..\build\bin\lib35\Cassette.dotless.Core.pdb" target="lib\net35-client" />
       <file src="..\..\build\bin\lib35\Iesi.Collections.dll" target="lib\net35-client" />
-      <file src="bin\Release\Pandora.dll" target="lib\net40-client"/>
-      <file src="bin\Release\Pandora.dll" target="lib\net35-client"/>
+      <file src="..\..\build\bin\lib40\Pandora.dll" target="lib\net40-client"/>
+      <file src="..\..\build\bin\lib35\Pandora.dll" target="lib\net35-client"/>
       <file src="**\*.cs" target="src" />
     </files>
 </package>

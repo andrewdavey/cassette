@@ -17,6 +17,7 @@
     </UsingTask>
     <PropertyGroup>
         <Configuration>Release</Configuration>
+        <FX35Suffix>-FX35</FX35Suffix>
     </PropertyGroup>
 
     <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
@@ -32,9 +33,9 @@
 
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
-            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v3.5;OutputPath=$(OutputPath)\lib35"/>
+            Properties="Configuration=$(Configuration)$(FX35Suffix);OutputPath=$(OutputPath)\lib35"/>
         <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
-            Properties="Configuration=$(Configuration);TargetFrameworkVersion=v4.0;OutputPath=$(OutputPath)\lib40"/>
+            Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)\lib40"/>
 
     </Target>
 
