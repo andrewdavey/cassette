@@ -12,7 +12,7 @@ It's recommended to use ReSharper but not required; you can learn more about get
 
 ## .NET 3.5 ##
 
-Read about how Cassette [supports .NET 3.5](fx35.md).
+Read about how Cassette [supports .NET 3.5](contributing/fx35.md).
 
 ## Nuget Packaging ##
 
