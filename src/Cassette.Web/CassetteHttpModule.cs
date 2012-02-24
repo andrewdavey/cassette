@@ -54,7 +54,7 @@ namespace Cassette.Web
 
                 StartUp.ApplicationShutdown();
             }
-        }
 #endif
+        }
     }
 }
