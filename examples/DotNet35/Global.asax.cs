@@ -35,21 +35,9 @@ namespace DotNet35
 
         protected void Application_Start()
         {
-            // Start up Cassette
-            Cassette.Web.StartUp.PreApplicationStart();
-
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
-
-            // Occurs last
-            Cassette.Web.StartUp.PostApplicationStart();
-        }
-
-        protected void Application_End()
-        {
-            // Handle shutdown
-            Cassette.Web.StartUp.ApplicationShutdown();
         }
     }
 }
