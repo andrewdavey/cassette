@@ -27,15 +27,9 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
-		Debug-FX35|Any CPU = Debug-FX35|Any CPU
-		Debug-FX35|Mixed Platforms = Debug-FX35|Mixed Platforms
-		Debug-FX35|x86 = Debug-FX35|x86
 		Release|Any CPU = Release|Any CPU
 		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
-		Release-FX35|Any CPU = Release-FX35|Any CPU
-		Release-FX35|Mixed Platforms = Release-FX35|Mixed Platforms
-		Release-FX35|x86 = Release-FX35|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

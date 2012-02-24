@@ -21,9 +21,7 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug-FX35|Any CPU = Debug-FX35|Any CPU
 		Release|Any CPU = Release|Any CPU
-		Release-FX35|Any CPU = Release-FX35|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}.Debug|Any CPU.ActiveCfg = Debug-FX35|Any CPU
