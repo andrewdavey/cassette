@@ -90,7 +90,6 @@ namespace Cassette
         /// <returns>A readable stream.</returns>
         public Stream OpenStream()
         {
-            if (!IsProcessed) throw new InvalidOperationException("Cannot open stream of bundle content before it has been processed.");
             if (assets.Count == 0) return Stream.Null;
             return assets[0].OpenStream();
         }

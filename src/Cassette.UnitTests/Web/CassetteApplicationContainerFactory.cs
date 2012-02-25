@@ -22,29 +22,6 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void GivenFactoryThatUsesConfiguration_WhenCreateContainer_ThenResultingBundlesAreProcessed()
-        {
-            using (var path = new TempDirectory())
-            {
-                Directory.CreateDirectory(Path.Combine(path, "scripts"));
-
-                var configuration = new StubConfiguration(bundles => bundles.Add<ScriptBundle>("scripts"));
-                var factory = new CassetteApplicationContainerFactory(
-                    new DelegateCassetteConfigurationFactory(() => new[] { configuration }),
-                    new CassetteConfigurationSection(),
-                    path,
-                    "/",
-                    false,
-                    Mock.Of<HttpContextBase>
-                );
-
-                var container = factory.CreateContainer();
-                var bundle = container.Application.FindBundleContainingPath<ScriptBundle>("~/scripts");
-                bundle.IsProcessed.ShouldBeTrue();
-            }
-        }
-
-        [Fact]
         public void GivenStylesheetWithExternalReference_WhenCreateContainer_ThenExternalBundleAddedToBundleCollection()
         {
             using (var path = new TempDirectory())

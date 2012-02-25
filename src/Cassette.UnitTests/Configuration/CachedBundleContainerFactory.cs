@@ -41,8 +41,6 @@ namespace Cassette.Configuration
 
             var bundle = container.Bundles.Single();
             bundle.Hash.ShouldEqual(new byte[] { 1, 2, 3 });
-            bundle.IsFromCache.ShouldBeTrue();
-            bundle.IsProcessed.ShouldBeTrue();
         }
 
         internal override IBundleContainerFactory CreateFactory()

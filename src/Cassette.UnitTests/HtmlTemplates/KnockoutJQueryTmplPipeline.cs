@@ -27,16 +27,5 @@ namespace Cassette.HtmlTemplates
 
             bundle.Hash.ShouldNotBeNull();
         }
-
-        [Fact]
-        public void GivenBundleIsFromCache_WhenProcessBundle_ThenRendererStillAssigned()
-        {
-            var pipeline = new KnockoutJQueryTmplPipeline();
-            var bundle = new HtmlTemplateBundle("~") { IsFromCache = true };
-
-            pipeline.Process(bundle, new CassetteSettings(""));
-
-            bundle.Renderer.ShouldNotBeNull();
-        }
     }
 }

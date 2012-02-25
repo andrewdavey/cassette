@@ -56,12 +56,6 @@ namespace Cassette.Scripts.Manifests
         }
 
         [Fact]
-        public void CreatedBundleIsFromCache()
-        {
-            createdBundle.IsFromCache.ShouldBeTrue();
-        }
-
-        [Fact]
         public void CreatedBundleContainsAssetPathA()
         {
             createdBundle.ContainsPath("~/asset-a").ShouldBeTrue();
