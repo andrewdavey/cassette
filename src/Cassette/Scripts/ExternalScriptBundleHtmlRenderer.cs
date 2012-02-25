@@ -5,7 +5,7 @@ using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
-    class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ExternalScriptBundle>
+    class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
     {
         readonly IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer;
         readonly CassetteSettings settings;
@@ -16,7 +16,7 @@ namespace Cassette.Scripts
             this.settings = settings;
         }
 
-        public string Render(ExternalScriptBundle bundle)
+        public string Render(ScriptBundle bundle)
         {
             if (settings.IsDebuggingEnabled)
             {
@@ -38,7 +38,7 @@ namespace Cassette.Scripts
                     HtmlConstants.ScriptHtmlWithFallback,
                     bundle.Url,
                     bundle.HtmlAttributes.CombinedAttributes,
-                    bundle.FallbackCondition,
+                    ((ExternalScriptBundle)bundle).FallbackCondition,
                     CreateFallbackScripts(bundle),
                     Environment.NewLine
                 );
