@@ -4,7 +4,7 @@ using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    class ExternalStylesheetHtmlRenderer : IBundleHtmlRenderer<ExternalStylesheetBundle>
+    class ExternalStylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
         readonly IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer;
         readonly CassetteSettings settings;
@@ -15,7 +15,7 @@ namespace Cassette.Stylesheets
             this.settings = settings;
         }
 
-        public string Render(ExternalStylesheetBundle bundle)
+        public string Render(StylesheetBundle bundle)
         {
             if (settings.IsDebuggingEnabled && bundle.Assets.Any())
             {

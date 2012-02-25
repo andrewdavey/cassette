@@ -20,7 +20,6 @@ namespace Cassette.Stylesheets
         }
 
         readonly string url;
-        ExternalStylesheetHtmlRenderer externalHtmlRender;
 
         internal override string Url
         {
@@ -30,12 +29,7 @@ namespace Cassette.Stylesheets
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            externalHtmlRender = new ExternalStylesheetHtmlRenderer(Renderer, settings);
-        }
-
-        internal override string Render()
-        {
-            return externalHtmlRender.Render(this);
+            Renderer = new ExternalStylesheetHtmlRenderer(Renderer, settings);
         }
 
         internal override bool ContainsPath(string pathToFind)
