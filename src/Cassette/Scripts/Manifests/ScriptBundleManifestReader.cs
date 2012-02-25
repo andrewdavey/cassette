@@ -17,18 +17,11 @@ namespace Cassette.Scripts.Manifests
         }
     }
 
-    class ScriptBundleManifestReader : BundleManifestReader<ScriptBundleManifest>
+    class ScriptBundleManifestReader : ScriptBundleManifestReader<ScriptBundleManifest>
     {
         public ScriptBundleManifestReader(XElement element) 
             : base(element)
         {
-        }
-
-        protected override void InitializeBundleManifest(ScriptBundleManifest manifest, XElement manifestElement)
-        {
-            base.InitializeBundleManifest(manifest, manifestElement);
-
-            manifest.Condition = manifestElement.AttributeValueOrNull("Condition");
         }
     }
 }

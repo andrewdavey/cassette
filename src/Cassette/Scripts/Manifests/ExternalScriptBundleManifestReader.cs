@@ -4,7 +4,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts.Manifests
 {
-    class ExternalScriptBundleManifestReader : BundleManifestReader<ExternalScriptBundleManifest>
+    class ExternalScriptBundleManifestReader : ScriptBundleManifestReader<ExternalScriptBundleManifest>
     {
         public ExternalScriptBundleManifestReader(XElement element)
             : base(element)
@@ -15,7 +15,6 @@ namespace Cassette.Scripts.Manifests
         {
             base.InitializeBundleManifest(manifest, manifestElement);
             manifest.Url = GetUrlAttribute(manifestElement);
-            manifest.Condition = manifestElement.AttributeValueOrNull("Condition");
             manifest.FallbackCondition = manifestElement.AttributeValueOrNull("FallbackCondition");
         }
 

@@ -6,6 +6,8 @@ namespace Cassette.Scripts.Manifests
     class ScriptBundleManifestWriter<T> : BundleManifestWriter<T>
         where T : ScriptBundleManifest
     {
+        XElement element;
+
         protected ScriptBundleManifestWriter(XContainer container)
             : base(container)
         {
@@ -13,33 +15,27 @@ namespace Cassette.Scripts.Manifests
 
         protected override XElement CreateElement()
         {
-            var element = base.CreateElement();
+            element = base.CreateElement();
+            AddConditionIfNotNull();
+
+            return element;
+        }
+
+        void AddConditionIfNotNull()
+        {
             if (Manifest.Condition != null)
             {
                 element.Add(new XAttribute("Condition", Manifest.Condition));
             }
-
-            return element;
         }
+
     }
 
-    class ScriptBundleManifestWriter : BundleManifestWriter<ScriptBundleManifest>
+    class ScriptBundleManifestWriter : ScriptBundleManifestWriter<ScriptBundleManifest>
     {
         public ScriptBundleManifestWriter(XContainer container) 
             : base(container)
         {
-        }
-
-        protected override XElement CreateElement()
-        {
-            var element = base.CreateElement();
-
-            if (Manifest.Condition != null)
-            {
-                element.Add(new XAttribute("Condition", Manifest.Condition));
-            }
-
-            return element;
         }
     }
 }
