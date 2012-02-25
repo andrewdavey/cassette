@@ -16,7 +16,7 @@ namespace Cassette.Manifests
             var builder = new TestableBundleManifestBuilder();
             var manifest = builder.BuildManifest(bundle);
 
-            manifest.Html.ShouldEqual("EXPECTED-HTML");
+            manifest.Html().ShouldEqual("EXPECTED-HTML");
         }
 
         class TestableBundleManifestBuilder : BundleManifestBuilder<TestableBundle, TestableBundleManifest>

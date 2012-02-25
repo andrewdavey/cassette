@@ -153,7 +153,7 @@ namespace Cassette.Manifests
         [Fact]
         public void ElementHasHtmlElementWithBundleManifestHtml()
         {
-            manifest.Html = "EXPECTED-HTML";
+            manifest.Html = () => "EXPECTED-HTML";
             WriteToElement();
             element.Element("Html").Value.ShouldEqual("EXPECTED-HTML");
         }

@@ -15,7 +15,7 @@ namespace Cassette.Stylesheets.Manifests
                 Path = "~",
                 Hash = new byte[0],
                 Media = "MEDIA",
-                Html = "EXPECTED-HTML"
+                Html = () => "EXPECTED-HTML"
             };
             createdBundle = (StylesheetBundle)manifest.CreateBundle();
         }

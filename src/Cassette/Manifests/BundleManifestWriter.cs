@@ -92,7 +92,9 @@ namespace Cassette.Manifests
 
         XElement HtmlElement()
         {
-            return new XElement("Html", manifest.Html);
+            return (manifest.Html == null)
+                ? null
+                : new XElement("Html", manifest.Html());
         }
 
         void WriteAssetManifestElements(XElement element)

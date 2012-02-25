@@ -16,7 +16,7 @@ namespace Cassette.Stylesheets.Manifests
                 Hash = new byte[] { },
                 Media = "MEDIA",
                 Url = "http://example.com/",
-                Html = "EXPECTED-HTML"
+                Html = () => "EXPECTED-HTML"
             };
             createdBundle = (ExternalStylesheetBundle)manifest.CreateBundle();
         }
@@ -36,7 +36,7 @@ namespace Cassette.Stylesheets.Manifests
         [Fact]
         public void WhenCreateBundle_ThenRendererIsConstantHtml()
         {
-            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<ExternalStylesheetBundle>>();
+            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<StylesheetBundle>>();
             createdBundle.Render().ShouldEqual("EXPECTED-HTML");
         }
     }

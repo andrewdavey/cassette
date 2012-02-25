@@ -22,7 +22,7 @@ namespace Cassette.Manifests
         public IList<string> References { get; private set; }
         public IDictionary<string, string> HtmlAttributes { get; private set; }
         public byte[] Content { get; set; }
-        public string Html { get; set; }
+        public Func<string> Html { get; set; }
 
         public Bundle CreateBundle()
         {

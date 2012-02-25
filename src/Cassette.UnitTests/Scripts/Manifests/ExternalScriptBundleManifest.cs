@@ -1,4 +1,6 @@
-﻿using Cassette.Manifests;
+﻿using Cassette.Configuration;
+using Cassette.Manifests;
+using Moq;
 using Should;
 using Xunit;
 
@@ -16,7 +18,7 @@ namespace Cassette.Scripts.Manifests
                 Path = "~",
                 Hash = new byte[0],
                 Url = "http://example.com/",
-                Html = "EXPECTED-HTML",
+                Html = () => "EXPECTED-HTML",
                 Assets =
                     {
                         new AssetManifest { Path = "~/asset-a" },
@@ -37,11 +39,11 @@ namespace Cassette.Scripts.Manifests
         {
             createdBundle.Url.ShouldEqual(manifest.Url);
         }
+
         [Fact]
         public void WhenCreateBundle_ThenRendererIsConstantHtml()
         {
-            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<ExternalScriptBundle>>();
-            createdBundle.Render().ShouldEqual("EXPECTED-HTML");
+            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<ScriptBundle>>();
         }
     }
 }

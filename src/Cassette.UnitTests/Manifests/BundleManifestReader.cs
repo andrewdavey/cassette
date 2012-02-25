@@ -24,13 +24,13 @@ namespace Cassette.Manifests
         public void GivenXmlHasHtmlElement_ThenReadManifestHtmlEqualsElementContent()
         {
             manifestElement.Add(new XElement("Html", "EXPECTED-HTML"));
-            reader.Read().Html.ShouldEqual("EXPECTED-HTML");
+            reader.Read().Html().ShouldEqual("EXPECTED-HTML");
         }
 
         [Fact]
         public void GivenXmlHasNoHtmlElement_ThenReadManifestHtmlIsEmptyString()
         {
-            reader.Read().Html.ShouldEqual("");
+            reader.Read().Html().ShouldEqual("");
         }
 
         class TestableBundleManifestReader : BundleManifestReader<TestableBundleManifest>

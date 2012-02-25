@@ -14,7 +14,7 @@ namespace Cassette.HtmlTemplates.Manifests
             {
                 Path = "~",
                 Hash = new byte[0],
-                Html = "EXPECTED-HTML"
+                Html = () => "EXPECTED-HTML"
             };
             createdBundle = (HtmlTemplateBundle)manifest.CreateBundle();
         }

@@ -26,7 +26,7 @@ namespace Cassette.Scripts.Manifests
                         new AssetManifest { Path = "~/asset-b" }
                     },
                 Content = Encoding.UTF8.GetBytes(BundleContent),
-                Html = "EXPECTED-HTML"
+                Html = () => "EXPECTED-HTML"
             };
             createdBundle = (ScriptBundle)manifest.CreateBundle();
         }

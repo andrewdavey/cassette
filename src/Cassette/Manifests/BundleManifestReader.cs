@@ -30,7 +30,7 @@ namespace Cassette.Manifests
                 ContentType = GetOptionalAttribute("ContentType"),
                 PageLocation = GetOptionalAttribute("PageLocation"),
                 Content = GetContent(),
-                Html = GetHtml()
+                Html = GetHtml
             };
             AddAssets(manifest);
             AddReferences(manifest);

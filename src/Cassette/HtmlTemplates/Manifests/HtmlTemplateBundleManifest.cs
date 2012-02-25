@@ -8,7 +8,7 @@ namespace Cassette.HtmlTemplates.Manifests
         {
             return new HtmlTemplateBundle(Path)
             {
-                Renderer = new ConstantHtmlRenderer<HtmlTemplateBundle>(Html)
+                Renderer = new ConstantHtmlRenderer<HtmlTemplateBundle>(Html())
             };
         }
     }

@@ -7,7 +7,10 @@ namespace Cassette.Scripts.Manifests
 
         protected override Bundle CreateBundleCore()
         {
-            return new ExternalScriptBundle(Url, Path, FallbackCondition);
+            return new ExternalScriptBundle(Url, Path, FallbackCondition)
+            {
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>(Html())
+            };
         }
     }
 }
