@@ -15,7 +15,8 @@ namespace Cassette.Stylesheets.Manifests
                 Path = "~",
                 Hash = new byte[] { },
                 Media = "MEDIA",
-                Url = "http://example.com/"
+                Url = "http://example.com/",
+                Html = "EXPECTED-HTML"
             };
             createdBundle = (ExternalStylesheetBundle)manifest.CreateBundle();
         }
@@ -30,6 +31,13 @@ namespace Cassette.Stylesheets.Manifests
         public void CreatedBundleUrlEqualsManifestUrl()
         {
             createdBundle.Url.ShouldEqual(manifest.Url);
+        }
+
+        [Fact]
+        public void WhenCreateBundle_ThenRendererIsConstantHtml()
+        {
+            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<ExternalStylesheetBundle>>();
+            createdBundle.Render().ShouldEqual("EXPECTED-HTML");
         }
     }
 }

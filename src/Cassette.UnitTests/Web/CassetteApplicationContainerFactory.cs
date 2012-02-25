@@ -121,6 +121,7 @@ namespace Cassette.Web
             var bundle = new ScriptBundle("~");
             bundle.Assets.Add(StubAsset("~/test.js"));
             bundle.Process(new CassetteSettings(""));
+            bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
             return bundle;
         }
 

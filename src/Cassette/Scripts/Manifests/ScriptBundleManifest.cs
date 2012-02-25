@@ -10,7 +10,8 @@ namespace Cassette.Scripts.Manifests
         {
             return new ScriptBundle(Path)
             {
-                Condition = Condition
+                Condition = Condition,
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>(Html)
             };
         }
     }

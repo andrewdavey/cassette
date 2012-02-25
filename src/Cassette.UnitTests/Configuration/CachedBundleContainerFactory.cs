@@ -31,7 +31,8 @@ namespace Cassette.Configuration
             cache.Setup(c => c.LoadCassetteManifest()).Returns(cachedManifest);
 
             var factory = CreateFactory();
-            var container = factory.Create(new[] { new ScriptBundle("~") });
+            var scriptBundle = new ScriptBundle("~") { Renderer = new ConstantHtmlRenderer<ScriptBundle>("") };
+            var container = factory.Create(new[] { scriptBundle });
 
             var bundle = container.Bundles.Single();
             bundle.Hash.ShouldEqual(new byte[] { 1, 2, 3 });

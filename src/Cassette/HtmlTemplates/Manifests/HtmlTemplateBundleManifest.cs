@@ -6,7 +6,10 @@ namespace Cassette.HtmlTemplates.Manifests
     {
         protected override Bundle CreateBundleCore()
         {
-            return new HtmlTemplateBundle(Path);
+            return new HtmlTemplateBundle(Path)
+            {
+                Renderer = new ConstantHtmlRenderer<HtmlTemplateBundle>(Html)
+            };
         }
     }
 }

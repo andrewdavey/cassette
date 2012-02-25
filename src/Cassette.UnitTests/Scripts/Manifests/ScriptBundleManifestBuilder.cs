@@ -11,19 +11,24 @@ namespace Cassette.Scripts.Manifests
 {
     public class ScriptBundleManifestBuilder_Tests
     {
-        readonly ScriptBundleManifestBuilder builder = new ScriptBundleManifestBuilder { IncludeContent = true };
-        readonly ScriptBundle bundle;
+        ScriptBundleManifestBuilder builder = new ScriptBundleManifestBuilder { IncludeContent = true };
+        ScriptBundle bundle;
         readonly IAsset asset;
         BundleManifest manifest;
         readonly byte[] bundleContent = Encoding.UTF8.GetBytes("bundle-content");
 
         public ScriptBundleManifestBuilder_Tests()
         {
-            bundle = new ScriptBundle("~/path") { PageLocation = "body", Hash = new byte[] { 1, 2, 3 } };
+            bundle = new ScriptBundle("~/path")
+            {
+                PageLocation = "body",
+                Hash = new byte[] { 1, 2, 3 }
+            };
             asset = StubAsset();
             bundle.Assets.Add(asset);
             bundle.AddReference("~/reference/path");
             bundle.Process(new CassetteSettings(""));
+            bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
 
             manifest = builder.BuildManifest(bundle);
         }
@@ -110,11 +115,15 @@ namespace Cassette.Scripts.Manifests
         [Fact]
         public void ManifestConditionEqualsBundleCondition()
         {
-            var bndle = new ScriptBundle("~") { Condition = "CONDITION" };
-            var bldr = new ScriptBundleManifestBuilder();
-            var mnifst = bldr.BuildManifest(bndle);
+            bundle = new ScriptBundle("~")
+            {
+                Condition = "CONDITION",
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>("")
+            };
+            builder = new ScriptBundleManifestBuilder();
+            var scriptBundleManifest = builder.BuildManifest(bundle);
 
-            mnifst.Condition.ShouldEqual(bndle.Condition);
+            scriptBundleManifest.Condition.ShouldEqual(bundle.Condition);
         }
 
         IAsset StubAsset()

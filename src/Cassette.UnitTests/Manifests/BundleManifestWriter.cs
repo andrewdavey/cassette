@@ -149,5 +149,13 @@ namespace Cassette.Manifests
             WriteToElement();
             element.Elements("Content").ShouldBeEmpty();
         }
+
+        [Fact]
+        public void ElementHasHtmlElementWithBundleManifestHtml()
+        {
+            manifest.Html = "EXPECTED-HTML";
+            WriteToElement();
+            element.Element("Html").Value.ShouldEqual("EXPECTED-HTML");
+        }
     }
 }

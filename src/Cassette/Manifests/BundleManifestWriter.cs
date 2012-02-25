@@ -33,7 +33,8 @@ namespace Cassette.Manifests
                 PageLocationAttribute(),
                 manifest.References.Select(SerializeReference),
                 HtmlAttributeElements(),
-                ContentElement()
+                ContentElement(),
+                HtmlElement()
             );
 
             WriteAssetManifestElements(element);
@@ -87,6 +88,11 @@ namespace Cassette.Manifests
             return manifest.Content == null
                 ? null
                 : new XElement("Content", Convert.ToBase64String(manifest.Content));
+        }
+
+        XElement HtmlElement()
+        {
+            return new XElement("Html", manifest.Html);
         }
 
         void WriteAssetManifestElements(XElement element)

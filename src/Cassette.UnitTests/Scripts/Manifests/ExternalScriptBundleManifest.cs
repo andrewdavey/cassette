@@ -16,6 +16,7 @@ namespace Cassette.Scripts.Manifests
                 Path = "~",
                 Hash = new byte[0],
                 Url = "http://example.com/",
+                Html = "EXPECTED-HTML",
                 Assets =
                     {
                         new AssetManifest { Path = "~/asset-a" },
@@ -35,6 +36,12 @@ namespace Cassette.Scripts.Manifests
         public void CreatedBundleUrlEqualsManifestUrl()
         {
             createdBundle.Url.ShouldEqual(manifest.Url);
+        }
+        [Fact]
+        public void WhenCreateBundle_ThenRendererIsConstantHtml()
+        {
+            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<ExternalScriptBundle>>();
+            createdBundle.Render().ShouldEqual("EXPECTED-HTML");
         }
     }
 }

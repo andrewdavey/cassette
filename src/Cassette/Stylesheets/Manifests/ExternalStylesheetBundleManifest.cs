@@ -8,7 +8,8 @@ namespace Cassette.Stylesheets.Manifests
         {
             return new ExternalStylesheetBundle(Url, Path)
             {
-                Media = Media
+                Media = Media,
+                Renderer = new ConstantHtmlRenderer<StylesheetBundle>(Html)
             };
         }
     }
