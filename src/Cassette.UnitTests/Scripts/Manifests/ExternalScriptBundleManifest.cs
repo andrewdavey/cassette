@@ -1,6 +1,4 @@
-﻿using Cassette.Configuration;
-using Cassette.Manifests;
-using Moq;
+﻿using Cassette.Manifests;
 using Should;
 using Xunit;
 

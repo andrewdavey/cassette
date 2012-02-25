@@ -25,7 +25,12 @@ namespace Cassette.Configuration
                 "",
                 new[]
                 {
-                    new ScriptBundleManifest { Path = "~", Hash = new byte[] { 1, 2, 3 } }
+                    new ScriptBundleManifest
+                    {
+                        Path = "~",
+                        Hash = new byte[] { 1, 2, 3 },
+                        Html = () => ""
+                    }
                 }
             );
             cache.Setup(c => c.LoadCassetteManifest()).Returns(cachedManifest);

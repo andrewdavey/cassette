@@ -37,7 +37,6 @@ namespace Cassette.Stylesheets.Manifests
         public void WhenCreateBundle_ThenRendererIsConstantHtml()
         {
             createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<StylesheetBundle>>();
-            createdBundle.Render().ShouldEqual("EXPECTED-HTML");
         }
     }
 }
