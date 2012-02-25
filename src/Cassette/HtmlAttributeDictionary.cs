@@ -20,7 +20,7 @@ namespace Cassette
         /// </summary>
         /// <example>
         /// <code>
-        /// var attributes = new HtmlAttributeDictionary().Add( new { data_val_requried = "contrived example", @class = "cssx" } );
+        /// var attributes = new HtmlAttributeDictionary().Add( new { data_val_required = "contrived example", @class = "cssx" } );
         /// </code>
         /// </example>
         /// <param name="values">An object that contains the HTML attributes.
