@@ -30,7 +30,6 @@ namespace Cassette.Manifests
             bundle.Hash = Hash;
             bundle.ContentType = ContentType;
             bundle.PageLocation = PageLocation;
-            bundle.IsFromCache = true;
             if (Assets.Count > 0)
             {
                 bundle.Assets.Add(CreateCachedBundleContent());
