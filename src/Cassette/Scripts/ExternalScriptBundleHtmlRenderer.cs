@@ -18,7 +18,7 @@ namespace Cassette.Scripts
 
         public string Render(ScriptBundle bundle)
         {
-            if (settings.IsDebuggingEnabled)
+            if (settings.IsDebuggingEnabled && bundle.Assets.Any())
             {
                 return fallbackScriptRenderer.Render(bundle);
             }

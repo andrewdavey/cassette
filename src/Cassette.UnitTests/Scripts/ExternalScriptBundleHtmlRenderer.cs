@@ -133,5 +133,18 @@ namespace Cassette.Scripts
 
             html.ShouldEqual("<script></script>");
         }
+
+        [Fact]
+        public void WhenRenderExternalScriptBundleWithNoLocalAssetsAndIsDebugMode_ThenNormalScriptElementIsReturned()
+        {
+            var bundle = new ExternalScriptBundle("http://test.com/", "test");
+            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
+            settings.IsDebuggingEnabled = true;
+
+            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\"></script>");
+        }
     }
 }
