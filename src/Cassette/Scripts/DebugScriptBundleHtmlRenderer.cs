@@ -29,7 +29,7 @@ namespace Cassette.Scripts
 
             html.Append(string.Join(
                 Environment.NewLine,
-                assetUrls.Select(createLink)
+                assetUrls.Select(createLink).ToArray()
             ));
 
             if (hasCondition)

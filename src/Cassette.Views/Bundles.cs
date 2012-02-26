@@ -41,7 +41,16 @@ namespace Cassette.Views
         /// <param name="scriptContent">The JavaScript code.</param>
         public static void AddInlineScript(string scriptContent)
         {
-            AddInlineScript(scriptContent, null);
+            AddInlineScript(scriptContent, null, null);
+        }
+
+        /// <summary>
+        /// Adds a page reference to an inline JavaScript block.
+        /// </summary>
+        /// <param name="scriptContent">The JavaScript code.</param>
+        /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
+        public static void AddInlineScript(string scriptContent, string pageLocation) {
+            AddInlineScript(scriptContent, pageLocation, null);
         }
 
         /// <summary>
@@ -50,7 +59,7 @@ namespace Cassette.Views
         /// <param name="scriptContent">The JavaScript code.</param>
         /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
         /// <param name="customizeBundle">The optional delegate used to customize the created bundle before adding it to the collection.</param>
-        public static void AddInlineScript(string scriptContent, string pageLocation = null, Action<ScriptBundle> customizeBundle = null)
+        public static void AddInlineScript(string scriptContent, string pageLocation, Action<ScriptBundle> customizeBundle)
         {
             var bundle = new InlineScriptBundle(scriptContent);
 
@@ -70,7 +79,23 @@ namespace Cassette.Views
         /// </code>
         public static void AddInlineScript(Func<object, object> scriptContent)
         {
-            AddInlineScript(scriptContent, null);
+            AddInlineScript(scriptContent, null, null);
+        }
+
+        /// <summary>
+        /// Adds a page reference to an inline JavaScript block.
+        /// </summary>
+        /// <param name="scriptContent">The Razor template for the Javascript code.</param>     
+        /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>   
+        /// <code lang="CS">
+        /// @{
+        ///   Bundles.AddInlineScript(@&lt;text&gt;
+        ///     var foo = "Hello World";
+        ///     alert( foo );&lt;/text&gt;);
+        /// }
+        /// </code>
+        public static void AddInlineScript(Func<object, object> scriptContent, string pageLocation) {
+            AddInlineScript(scriptContent, pageLocation, null);
         }
 
         /// <summary>
@@ -86,7 +111,7 @@ namespace Cassette.Views
         ///     alert( foo );&lt;/text&gt;);
         /// }
         /// </code>
-        public static void AddInlineScript(Func<object, object> scriptContent, string pageLocation = null, Action<ScriptBundle> customizeBundle = null)
+        public static void AddInlineScript(Func<object, object> scriptContent, string pageLocation, Action<ScriptBundle> customizeBundle)
         {
             AddInlineScript(scriptContent(null).ToString(), pageLocation, customizeBundle);
         }
@@ -98,7 +123,17 @@ namespace Cassette.Views
         /// <param name="data">The data object, serialized into JSON.</param>        
         public static void AddPageData(string globalVariable, object data)
         {
-            AddPageData(globalVariable, data, null);
+            AddPageData(globalVariable, data, null, null);
+        }
+
+        /// <summary>
+        /// Add a page reference to a script that initializes a global JavaScript variable with the given data.
+        /// </summary>
+        /// <param name="globalVariable">The name of the global JavaScript variable to assign.</param>
+        /// <param name="data">The data object, serialized into JSON.</param>        
+        /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
+        public static void AddPageData(string globalVariable, object data, string pageLocation) {
+            AddPageData(globalVariable, data, pageLocation, null);
         }
 
         /// <summary>
@@ -108,7 +143,7 @@ namespace Cassette.Views
         /// <param name="data">The data object, serialized into JSON.</param>
         /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
         /// <param name="customizeBundle">The optional delegate used to customize the created bundle before adding it to the collection.</param>
-        public static void AddPageData(string globalVariable, object data, string pageLocation = null, Action<ScriptBundle> customizeBundle = null)
+        public static void AddPageData(string globalVariable, object data, string pageLocation, Action<ScriptBundle> customizeBundle)
         {
             AddScriptBundle(new PageDataScriptBundle(globalVariable, data), pageLocation, customizeBundle);
         }
@@ -120,7 +155,17 @@ namespace Cassette.Views
         /// <param name="data">The dictionary of data, serialized into JSON.</param>        
         public static void AddPageData(string globalVariable, IEnumerable<KeyValuePair<string, object>> data)
         {
-            AddPageData(globalVariable, data, null);
+            AddPageData(globalVariable, data, null, null);
+        }
+
+        /// <summary>
+        /// Add a page reference to a script that initializes a global JavaScript variable with the given data.
+        /// </summary>
+        /// <param name="globalVariable">The name of the global JavaScript variable to assign.</param>
+        /// <param name="data">The dictionary of data, serialized into JSON.</param>        
+        /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
+        public static void AddPageData(string globalVariable, IEnumerable<KeyValuePair<string, object>> data, string pageLocation) {
+            AddPageData(globalVariable, data, pageLocation, null);
         }
 
         /// <summary>
@@ -130,7 +175,7 @@ namespace Cassette.Views
         /// <param name="data">The dictionary of data, serialized into JSON.</param>
         /// <param name="pageLocation">The optional page location of the script. This controls where it will be rendered.</param>
         /// <param name="customizeBundle">The optional delegate used to customize the created bundle before adding it to the collection.</param>
-        public static void AddPageData(string globalVariable, IEnumerable<KeyValuePair<string, object>> data, string pageLocation = null, Action<ScriptBundle> customizeBundle = null)
+        public static void AddPageData(string globalVariable, IEnumerable<KeyValuePair<string, object>> data, string pageLocation, Action<ScriptBundle> customizeBundle)
         {
             AddScriptBundle(new PageDataScriptBundle(globalVariable, data), pageLocation, customizeBundle);
         }
