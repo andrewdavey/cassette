@@ -8,4 +8,4 @@ build/
 _ReSharper*
 App_Bundles/
 *.ncrunch*
-*.nuspec
+src/**/*.nuspec
