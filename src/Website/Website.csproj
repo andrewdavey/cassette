@@ -80,9 +80,7 @@
     <Content Include="assets\scripts\disqus\disqus.js" />
     <Content Include="assets\scripts\jquery\jquery.js" />
     <Content Include="assets\scripts\home\tweets.js" />
-    <Content Include="assets\scripts\licensing-buy\form.js" />
     <Content Include="assets\styles\buttons.css" />
-    <Content Include="assets\styles\buy.css" />
     <Content Include="assets\styles\code.css" />
     <Content Include="assets\styles\documentation.css" />
     <Content Include="assets\styles\contribute.css" />
@@ -115,7 +113,7 @@
     <Content Include="assets\styles\images\twitter.png" />
     <Content Include="assets\styles\images\whitetwittericon.png" />
     <Content Include="assets\styles\licensing.css" />
-    <Content Include="assets\styles\module.txt" />
+    <Content Include="assets\styles\bundle.txt" />
     <Content Include="assets\styles\normalize.css" />
     <Content Include="assets\styles\page.css" />
     <Content Include="assets\styles\top.css" />
@@ -259,6 +257,9 @@
     <Content Include="Views\Documentation\HtmlTemplates_MustacheHoganJS.cshtml">
       <SubType>Code</SubType>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\Tutorials_TwitterBootstrap.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Documentation\GettingStarted_Fx35.cshtml" />

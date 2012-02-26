@@ -52,25 +52,36 @@ namespace Cassette.Stylesheets
                 get { return string.Join(Environment.NewLine, errors.ToArray()).Trim(); }
             }
 
+            public void Log(LogLevel level, string message)
+            {
+                switch (level)
+                {
+                    case LogLevel.Info: Info(message); break;
+                    case LogLevel.Debug: Debug(message); break;
+                    case LogLevel.Warn: Warn(message); break;
+                    case LogLevel.Error: Error(message); break;
+                }
+            }
+
             public void Error(string message)
             {
                 errors.Add(message);
-            }
-
-            public void Log(LogLevel level, string message)
-            {
+                Trace.Source.TraceInformation(message);
             }
 
             public void Info(string message)
             {
+                Trace.Source.TraceInformation(message);
             }
 
             public void Debug(string message)
             {
+                Trace.Source.TraceInformation(message);
             }
 
             public void Warn(string message)
             {
+                Trace.Source.TraceInformation(message);
             }
         }
 

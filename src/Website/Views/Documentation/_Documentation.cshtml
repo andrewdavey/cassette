@@ -1,10 +1,12 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    if (string.IsNullOrEmpty(ViewBag.Title)) {
-    ViewBag.Title = "Cassette | Documentation";
+    if (string.IsNullOrEmpty(ViewBag.Title))
+    {
+        ViewBag.Title = "Cassette | Documentation";
     }
-    if (string.IsNullOrEmpty(ViewBag.Description)) {
-    ViewBag.Description = "A complete guide to the ins and outs of using Cassette in your projects, with comments via Disqus";
+    if (string.IsNullOrEmpty(ViewBag.Description))
+    {
+        ViewBag.Description = "A complete guide to the ins and outs of using Cassette in your projects, with comments via Disqus";
     }
     ViewBag.Section = "documentation";
     Bundles.Reference("assets/scripts/disqus");
@@ -33,6 +35,9 @@
                 </li>
                 <li>
                     @DocLink("Tutorials", "Tutorials")
+                    <ul>
+                        <li class="last-child">@DocLink("tutorials/twitter-bootstrap", "Twitter Bootstrap")</li>
+                    </ul>
                 </li>
                 <li>
                     @DocLink("configuration", "Configuration")
@@ -84,12 +89,12 @@
 </div>
 @helper DocLink(string path, string text)
     {
-    if (Request.Url.AbsolutePath.EndsWith("documentation/" + path))
-    {
+        if (Request.Url.AbsolutePath.EndsWith("documentation/" + path))
+        {
     <a class="activedoc" href=@Url.DocumentationUrl(path)>@text</a>
-    }
-    else
-    {
+        }
+        else
+        {
     <a href=@Url.DocumentationUrl(path)>@text</a>
-    }
+        }
 }

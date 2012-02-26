@@ -18,6 +18,12 @@ namespace Cassette.Scripts
         {
         }
 
+        /// <summary>
+        /// The Internet Explorer specific condition used control if the script should be loaded using an HTML conditional comment.
+        /// For example, <example>"lt IE 9"</example>.
+        /// </summary>
+        public string Condition { get; set; }
+
         public IBundleProcessor<ScriptBundle> Processor { get; set; }
 
         public IBundleHtmlRenderer<ScriptBundle> Renderer { get; set; }

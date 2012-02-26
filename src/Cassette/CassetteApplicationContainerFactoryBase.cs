@@ -74,7 +74,6 @@ namespace Cassette
                 bundles = new BundleCollection(settings);
                 foreach (var bundle in manifest.CreateBundles())
                 {
-                    bundle.Process(settings);
                     bundles.Add(bundle);
                 }
                 var bundleContainer = new BundleContainer(bundles);

@@ -81,6 +81,7 @@
 @helper ActiveClassIf(string section) {
     if (ViewBag.Section == section)
     {
-        @:class="active"
+        // HACK: Not using Razor's <text> syntax because it results in extra unwanted whitespace!
+        @Html.Raw("class=\"active\"")
     }
 }

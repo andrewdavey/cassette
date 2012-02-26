@@ -20,6 +20,7 @@ namespace Cassette.Stylesheets
             {
                 html.AppendLine("<!--[if " + bundle.Condition + "]>");
             }
+
             if (string.IsNullOrEmpty(bundle.Media))
             {
                 html.AppendFormat(
@@ -37,11 +38,13 @@ namespace Cassette.Stylesheets
                     bundle.HtmlAttributes.CombinedAttributes
                 );
             }
+
             if (hasCondition)
             {
                 html.AppendLine();
                 html.Append("<![endif]-->");
             }
+
             return html.ToString();
         }
     }

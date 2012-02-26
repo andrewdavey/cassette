@@ -29,7 +29,8 @@ namespace Cassette.Manifests
                 Hash = GetHashAttribute(),
                 ContentType = GetOptionalAttribute("ContentType"),
                 PageLocation = GetOptionalAttribute("PageLocation"),
-                Content = GetContent()
+                Content = GetContent(),
+                Html = GetHtml
             };
             AddAssets(manifest);
             AddReferences(manifest);
@@ -78,6 +79,14 @@ namespace Cassette.Manifests
             return contentElement != null
                 ? Convert.FromBase64String(contentElement.Value)
                 : null;
+        }
+
+        string GetHtml()
+        {
+            var htmlElement = element.Elements("Html").FirstOrDefault();
+            return htmlElement != null
+                ? htmlElement.Value
+                : "";
         }
 
         void AddAssets(BundleManifest manifest)

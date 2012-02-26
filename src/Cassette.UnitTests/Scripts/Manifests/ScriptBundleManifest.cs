@@ -1,8 +1,8 @@
-﻿using Cassette.Manifests;
+﻿using System.Text;
+using Cassette.Manifests;
 using Cassette.Utilities;
 using Should;
 using Xunit;
-using System.Text;
 
 namespace Cassette.Scripts.Manifests
 {
@@ -25,7 +25,8 @@ namespace Cassette.Scripts.Manifests
                         new AssetManifest { Path = "~/asset-a" },
                         new AssetManifest { Path = "~/asset-b" }
                     },
-                Content = Encoding.UTF8.GetBytes(BundleContent)
+                Content = Encoding.UTF8.GetBytes(BundleContent),
+                Html = () => "EXPECTED-HTML"
             };
             createdBundle = (ScriptBundle)manifest.CreateBundle();
         }
@@ -55,12 +56,6 @@ namespace Cassette.Scripts.Manifests
         }
 
         [Fact]
-        public void CreatedBundleIsFromCache()
-        {
-            createdBundle.IsFromCache.ShouldBeTrue();
-        }
-
-        [Fact]
         public void CreatedBundleContainsAssetPathA()
         {
             createdBundle.ContainsPath("~/asset-a").ShouldBeTrue();
@@ -77,6 +72,13 @@ namespace Cassette.Scripts.Manifests
         {
             var content = createdBundle.OpenStream().ReadToEnd();
             content.ShouldEqual(BundleContent);
+        }
+
+        [Fact]
+        public void WhenCreateBundle_ThenRendererIsConstantHtml()
+        {
+            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<ScriptBundle>>();
+            createdBundle.Render().ShouldEqual("EXPECTED-HTML");
         }
     }
 }

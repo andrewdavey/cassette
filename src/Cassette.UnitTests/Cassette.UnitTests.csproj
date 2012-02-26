@@ -92,8 +92,10 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="Manifests\AssetManifestWriter.cs" />
     <Compile Include="Manifests\BundleManifest.cs" />
+    <Compile Include="Manifests\BundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="Manifests\CassetteManifestCache.cs" />
+    <Compile Include="Manifests\BundleManifestBuilder.cs" />
     <Compile Include="MSBuild\CreateBundlesImplementation.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
+    <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />

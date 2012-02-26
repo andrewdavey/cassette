@@ -10,7 +10,6 @@ namespace Cassette.Scripts
     {
         readonly string url;
         readonly string fallbackCondition;
-        ExternalScriptBundleHtmlRenderer externalRenderer;
 
         public ExternalScriptBundle(string url)
             : base(url)
@@ -45,15 +44,8 @@ namespace Cassette.Scripts
 
         protected override void ProcessCore(CassetteSettings settings)
         {
-            // Any fallback assets are processed like a regular ScriptBundle.
             base.ProcessCore(settings);
-            // We just need a special renderer instead.
-            externalRenderer = new ExternalScriptBundleHtmlRenderer(Renderer, settings);
-        }
-
-        internal override string Render()
-        {
-            return externalRenderer.Render(this);
+            Renderer = new ExternalScriptBundleHtmlRenderer(Renderer, settings);
         }
 
         internal override bool ContainsPath(string pathToFind)

@@ -84,6 +84,7 @@
     <Compile Include="BundleReferenceCollector.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
     <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
+    <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />

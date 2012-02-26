@@ -70,6 +70,21 @@ namespace Cassette.Views
         }
 
         [Fact]
+        public void AddInlineScriptWithCustomizeAction_ThenCustomizeActionCalledWithTheBundle()
+        {
+            Bundle bundle = null;
+            Bundle customizedBundle = null;
+            Action<ScriptBundle> action = b => customizedBundle = b;
+
+            referenceBuilder.Setup(b => b.Reference(It.IsAny<Bundle>(), "location"))
+                            .Callback<Bundle, string>((b, s) => bundle = b);
+
+            Bundles.AddInlineScript("content", "location", action);
+
+            customizedBundle.ShouldNotBeNull().ShouldBeSameAs(bundle);
+        }
+
+        [Fact]
         public void AddPageDataWithDataObjectAddsReferenceToPageDataScriptBundle()
         {
             Bundles.AddPageData("content", new { data = 1 }, "location");
@@ -81,6 +96,21 @@ namespace Cassette.Views
         {
             Bundles.AddPageData("content", new Dictionary<string, object>(), "location");
             referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is PageDataScriptBundle), "location"));
+        }
+
+        [Fact]
+        public void AddPageDataWithCustomizeAction_ThenCustomizeActionCalledWithTheBundle()
+        {
+            Bundle bundle = null;
+            Bundle customizedBundle = null;
+            Action<ScriptBundle> action = b => customizedBundle = b;
+
+            referenceBuilder.Setup(b => b.Reference(It.IsAny<Bundle>(), "location"))
+                            .Callback<Bundle, string>((b, s) => bundle = b);
+
+            Bundles.AddPageData("content", new { data = 1 }, "location", action);
+
+            customizedBundle.ShouldNotBeNull().ShouldBeSameAs(bundle);
         }
 
         [Fact]
