@@ -1,9 +1,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- This task takes in a Nutrans file and transforms a source, following any inheritance chain -->
-  <!-- EXAMPLE:
-  <TransformNuspec 
-    Source="Cassette.Web.symbols.nutrans" 
-    Destination="Cassette.Web.symbols.nuspec" />
+  <!-- This task takes in a XDT transform file and transforms it, following any inheritance chain.
+       There should be at least one base transform for this to work; otherwise just use Microsoft's
+       regular TransformXml task.
+
+       See: https://gist.github.com/1918022 -->
+  <!-- EXAMPLE USAGE:
+  <TransformXmlHierarchy 
+    Source="some-source.xml" 
+    Destination="transformed.xml" />
   -->
   <UsingTask
     TaskName="TransformXmlHierarchy"
