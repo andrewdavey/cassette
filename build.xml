@@ -1,20 +1,6 @@
 <?xml version="1.0"?>
 <Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">    
-    <UsingTask TaskName="GetAssemblyInformationalVersion" 
-        TaskFactory="CodeTaskFactory" 
-        AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
-        <ParameterGroup>
-            <Assembly ParameterType="System.String" Required="true" />
-            <Version ParameterType="System.String" Output="true" />
-        </ParameterGroup>
-        <Task>
-            <Code Type="Fragment" Language="cs">
-              var version = System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly);
-
-              Version = version.ProductVersion;
-            </Code>
-        </Task>
-    </UsingTask>
+    <Import Project="Cassette.targets" />
     <PropertyGroup>
         <Configuration>Release</Configuration>
         <FX35Suffix>-FX35</FX35Suffix>
@@ -46,31 +32,43 @@
         <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.UnitTests.dll" />
         <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.IntegrationTests.dll" />
     </Target>
-
+    
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
             <MainNuspec Include="src\Cassette\Cassette.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
             <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
             <MainNuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Web\Cassette.Web.symbols.nuspec"/>
-        </ItemGroup>
+            <Transforms Include="src\**\*.nutrans" />
+        </ItemGroup>        
         <PropertyGroup>
             <OutputDir>build\nuget</OutputDir>
         </PropertyGroup>
+
+        <!-- Get shared assembly version -->
         <GetAssemblyInformationalVersion Assembly="build\bin\lib40\Cassette.dll">
             <Output PropertyName="Version" TaskParameter="Version" />
         </GetAssemblyInformationalVersion>
+
         <Message Text="Building Nuget packages for v$(Version)" />
+
+        <!-- Transform Nuspecs -->
+        <TransformXmlHierarchy
+            Source="%(Transforms.Identity)"
+            Destination="src\%(Transforms.RecursiveDir)%(Transforms.Filename).nuspec"
+            TaskDirectory="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\" />
+
         <MakeDir Directories="$(OutputDir)"/>
         <Exec Command="nuget pack %(MainNuspec.Identity) -Version $(Version) -OutputDirectory $(OutputDir)"/>
         <Exec Command="nuget pack %(SymbolsNuspec.Identity) -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
+
         <!-- The Cassette.MSBuild package is slightly different (-Tool, no symbols and -NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
         <!-- TODO: This is packaged as a 4.0 package, as it includes the 4.0 DLLs of its dependencies in the Tools folder.
                    If it is an issue for 3.5-based projects, can maybe figure out a clean way to package tools for 3.5 and 4.0.
                    See: src\Cassette.MSBuild\Cassette.MSBuild.nuspec -->
-        <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
+        <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -NoPackageAnalysis"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">

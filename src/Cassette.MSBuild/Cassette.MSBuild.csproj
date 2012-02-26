@@ -82,7 +82,7 @@
     <None Include="Web.config.transform" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Cassette.MSBuild.nuspec">
+    <None Include="Cassette.MSBuild.nutrans">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

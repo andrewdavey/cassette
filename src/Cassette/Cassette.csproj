@@ -60,7 +60,7 @@
     </Reference>
     <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jurassic.2.1.1\lib\Jurassic.dll</HintPath>
-    </Reference>    
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -308,10 +308,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Cassette.nuspec">
+    <None Include="Cassette.nutrans">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Cassette.symbols.nuspec" />
+    <None Include="Cassette.symbols.nutrans" />
     <None Include="packages.config" />
     <None Include="Resources\coffeescript.js" />
   </ItemGroup>

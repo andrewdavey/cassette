@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <system.web>
+    <pages>
+      <namespaces>
+        <add namespace="Cassette.Views" />
+      </namespaces>
+    </pages>
+    <httpModules>
+      <add name="CassetteHttpModule" type="Cassette.Web.CassetteHttpModule, Cassette.Web" />
+    </httpModules>
+  </system.web>
+  <system.webServer>
+    <modules>
+      <add name="CassetteHttpModule" type="Cassette.Web.CassetteHttpModule, Cassette.Web" />
+    </modules>
+  </system.webServer>
+</configuration>

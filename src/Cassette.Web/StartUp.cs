@@ -8,30 +8,13 @@ using System.Web.Compilation;
 using System.Web.Configuration;
 using System.Web.Routing;
 using Cassette.Configuration;
-#if NET40
-
-using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
-[assembly: WebActivator.PreApplicationStartMethod(
-    typeof(Cassette.Web.StartUp),
-    "PreApplicationStart"
-)]
-[assembly: WebActivator.PostApplicationStartMethod(
-    typeof(Cassette.Web.StartUp), 
-    "PostApplicationStart"
-)]
-[assembly: WebActivator.ApplicationShutdownMethod(
-    typeof(Cassette.Web.StartUp),
-    "ApplicationShutdown"
-)]
-#endif
 
 namespace Cassette.Web
 {
     /// <summary>
     /// Controls the lifetime of the Cassette infrastructure by handling application startup and shutdown.
     /// </summary>
-    public static class StartUp
+    internal static class StartUp
     {
         static CassetteApplicationContainer<CassetteApplication> _container;
         static readonly StartUpTraceRecorder StartUpTraceRecorder = new StartUpTraceRecorder();
@@ -41,10 +24,6 @@ namespace Cassette.Web
         {
             StartUpTraceRecorder.Start();
             Trace.Source.TraceInformation("Registering CassetteHttpModule.");
-#if NET40
-
-            DynamicModuleUtility.RegisterModule(typeof(CassetteHttpModule));
-#endif
         }
         // ReSharper restore UnusedMember.Global
 
