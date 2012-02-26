@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Cassette | Twitter Bootstrap";
+    ViewBag.Description = "How to use Twitter Bootstrap with Cassette.";
+}
+
+<h1>Twitter Bootstrap</h1>
+
+<p>
+    Cassette won't be able to compile the LESS files provided with 
+    <a href="http://twitter.github.com/bootstrap/" target="_blank" title="Twitter Bootstrap Project Page">Twitter Bootstrap</a> 
+    by default. This is because <code>bootstrap.less</code> uses a set of <span class="code-type">&#64;import</span> statements
+    to build up the final LESS file; where Cassette will attempt to compile each file in the directory.
+</p>
+
+<p>
+    In this tutorial we will assume that you have set up your project structure as follows:
+</p>
+
+<pre>Content/
+- Styles/
+  - accordion.less
+  - ...
+  - bootstrap.less
+  - ...
+</pre>
+
+<h1>Using a bundle.txt File</h1>
+
+<p>
+    You can inform Cassette that you only want to compile a certain set of files by adding a 
+    <a href="@Url.DocumentationUrl("configuration/bundle-descriptor-file")" title="Bundle Descriptor File"><code>bundle.txt</code> file</a> 
+    into the <code>Styles</code> folder, and include exactly one line in the file:
+</p>
+
+<pre>bootstrap.less</pre>
+
+<p>You will also need to enter in any custom LESS files (on separate lines) that do no appear in main <code>bootstrap.less</code> file.</p>
+
+<h1>Using Configuration</h1>
+
+<p>
+    You can also use the <code>CassetteConfiguration.cs</code> class to inform Cassette that it should not compile all the files in the directory.
+    Simply add a new line to <code>Configure</code> method as such:
+</p>
+
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        <span class="comment">// Ensure that Cassette doesn't compile all the</span>
+        <span class="comment">// .less files in ~/Content/Styles.</span>
+        bundles.Add&lt;<span class="code-type">StylesheetBundle</span>&gt;(<span class="string">"Content/Styles/bootstrap.less"</span>);
+    }
+}</code></pre>
+
+<p>
+    This piece of code will also need to be maintained so that it stays in sync with any additional LESS files you have, that do not appear in
+    the <code>bootstrap.less</code> file.
+</p>
+
+<h1>Concerns</h1>
+
+<p>
+    Due to the fact that the Twitter Bootstrap LESS files cannot stand alone make sure that you do not <code>Reference</code> any Twitter Bootstrap LESS files
+    in your views or pages apart from <code>bootstrap.less.</code>
+</p>
