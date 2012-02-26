@@ -77,5 +77,15 @@ namespace Cassette.Stylesheets
 
             fallbackRenderer.Verify(r => r.Render(bundle));
         }
+
+        [Fact]
+        public void GivenApplicationInDebugMode_WhenRenderBundleWithNoLocalAssets_ThenNormalLinkElementIsReturned()
+        {
+            settings.IsDebuggingEnabled = true;
+
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>");
+        }
     }
 }
