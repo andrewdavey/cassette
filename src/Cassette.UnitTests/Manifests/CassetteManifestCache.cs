@@ -62,6 +62,30 @@ namespace Cassette.Manifests
         }
 
         [Fact]
+        public void GivenInvalidManifest_WhenLoadCassetteManifest_ThenReturnAnEmptyManifest()
+        {
+            var xml = "<?xml version=\"1.0\"?><Cassette LastWriteTimeUtc=\"2012-01-01 00:00 GMT\" Version=\"VERSION\">" +
+                      "<ScriptBundle Path_INVALID_=\"~\" Hash=\"\"/>" +
+                      "</Cassette>";
+            GivenFileContains(xml);
+
+            var manifest = cache.LoadCassetteManifest();
+
+            manifest.BundleManifests.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void GivenCorruptXmlManifest_WhenLoadCassetteManifest_ThenReturnAnEmptyManifest()
+        {
+            var xml = "<?xml version=\"1.0\"?><Cassette";
+            GivenFileContains(xml);
+
+            var manifest = cache.LoadCassetteManifest();
+
+            manifest.BundleManifests.ShouldBeEmpty();
+        }
+
+        [Fact]
         public void GivenManifestWithBundle_WhenSaveCassetteManifest_ThenXmlContainsBundleElement()
         {
             var manifest = new CassetteManifest(

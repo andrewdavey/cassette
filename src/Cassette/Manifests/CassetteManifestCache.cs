@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.IO;
+using System.Xml;
 using Cassette.IO;
 
 namespace Cassette.Manifests
@@ -14,13 +16,30 @@ namespace Cassette.Manifests
 
         public CassetteManifest LoadCassetteManifest()
         {
-            if (file.Exists)
+            try
             {
-                using (var fileStream = file.OpenRead())
+                if (file.Exists)
                 {
-                    var reader = new CassetteManifestReader(fileStream);
-                    return reader.Read();
+                    using (var fileStream = file.OpenRead())
+                    {
+                        var reader = new CassetteManifestReader(fileStream);
+                        return reader.Read();
+                    }
                 }
+            }
+            catch(InvalidCassetteManifestException ex)
+            {
+                // Swallow this exception, due to some kind of incorrect/missing data in the manifest.
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, ex.Message);
+                // A new empty manifest will be returned.
+                // Cassette should then write a new manifest based on the current bundles.
+            }
+            catch (XmlException ex)
+            {
+                // Swallow this exception, probably due to corrupt XML.
+                Trace.Source.TraceEvent(TraceEventType.Error, 0, ex.Message);
+                // A new empty manifest will be returned.
+                // Cassette should then write a new manifest based on the current bundles.
             }
             return new CassetteManifest();
         }
