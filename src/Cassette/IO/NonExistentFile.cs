@@ -40,6 +40,15 @@ namespace Cassette.IO
             get { return filename; }
         }
 
+        public string FullSystemPath
+        {
+            get
+            {
+                ThrowFileNotFoundException();
+                return null;
+            }
+        }
+
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
         {
             ThrowFileNotFoundException();
@@ -49,6 +58,12 @@ namespace Cassette.IO
         public void Delete()
         {
             ThrowFileNotFoundException();
+        }
+
+        public string GetSystemAbsoluteFilename()
+        {
+            ThrowFileNotFoundException();
+            return null;
         }
 
         void ThrowFileNotFoundException()

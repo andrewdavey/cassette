@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Cassette.Manifests;
 
@@ -54,6 +55,12 @@ namespace Cassette.Configuration
 
         void CacheAndUseCurrentBundles()
         {
+            //TODO: It will be nice for the bundle processors to be able register things like this to an dispose event so we don't have to have this logic here
+            foreach (var sprite in settings.SpriteDirectory.GetFiles("*.png", SearchOption.TopDirectoryOnly))
+            {
+                sprite.Delete();
+            }
+
             ProcessAllBundles(bundlesArray);
             var manifestIncludingContent = CreateCassetteManifest();
             Trace.Source.TraceInformation("Saving cache.");

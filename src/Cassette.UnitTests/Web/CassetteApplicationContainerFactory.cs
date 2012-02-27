@@ -27,6 +27,7 @@ namespace Cassette.Web
             using (var path = new TempDirectory())
             {
                 Directory.CreateDirectory(Path.Combine(path, "styles"));
+                Directory.CreateDirectory(Path.Combine(path, "sprites"));
                 File.WriteAllText(Path.Combine(path, "styles", "asset.css"), "/* @reference http://example.com */");
 
                 var configuration = new StubConfiguration(bundles => bundles.Add<StylesheetBundle>("styles"));

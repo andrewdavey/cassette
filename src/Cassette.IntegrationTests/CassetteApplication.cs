@@ -144,6 +144,7 @@ function asset1() {
             {
                 CacheDirectory = new IsolatedStorageDirectory(storage),
                 SourceDirectory = new FileSystemDirectory(Path.GetFullPath(sourceDirectory)),
+                SpriteDirectory = new FileSystemDirectory(Path.GetFullPath(sourceDirectory) + "Sprites\\"),
                 UrlGenerator = new UrlGenerator(new VirtualDirectoryPrepender("/"), "_cassette"),
                 IsDebuggingEnabled = isDebuggingEnabled
             };

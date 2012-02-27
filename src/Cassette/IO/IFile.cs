@@ -24,6 +24,12 @@ namespace Cassette.IO
         /// Gets the full application relative path of the file.
         /// </summary>
         string FullPath { get; }
+
+        /// <summary>
+        /// Gets the full path to the file
+        /// </summary>
+        /// <returns></returns>
+        string FullSystemPath { get; }
      
         /// <summary>
         /// Opens a stream to the file.
