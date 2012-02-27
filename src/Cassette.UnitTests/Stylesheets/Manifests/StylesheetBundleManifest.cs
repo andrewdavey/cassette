@@ -14,7 +14,8 @@ namespace Cassette.Stylesheets.Manifests
             {
                 Path = "~",
                 Hash = new byte[0],
-                Media = "MEDIA"
+                Media = "MEDIA",
+                Html = () => "EXPECTED-HTML"
             };
             createdBundle = (StylesheetBundle)manifest.CreateBundle();
         }
@@ -23,6 +24,13 @@ namespace Cassette.Stylesheets.Manifests
         public void CreatedBundleMediaEqualsManifestMedia()
         {
             createdBundle.Media.ShouldEqual(manifest.Media);
+        }
+
+        [Fact]
+        public void WhenCreateBundle_ThenRendererIsConstantHtml()
+        {
+            createdBundle.Renderer.ShouldBeType<ConstantHtmlRenderer<StylesheetBundle>>();
+            createdBundle.Render().ShouldEqual("EXPECTED-HTML");
         }
     }
 }

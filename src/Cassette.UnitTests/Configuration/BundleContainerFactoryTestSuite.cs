@@ -66,8 +66,10 @@ namespace Cassette.Configuration
         {
             var externalBundle = new ExternalScriptBundle("http://external.com/api.js");
             var bundle1 = new ScriptBundle("~/test1");
+            bundle1.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
             bundle1.AddReference("http://external.com/api.js");
             var bundle2 = new ScriptBundle("~/test2");
+            bundle2.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
             bundle2.AddReference("http://external.com/api.js");
             var bundles = new[] { bundle1, bundle2 };
 

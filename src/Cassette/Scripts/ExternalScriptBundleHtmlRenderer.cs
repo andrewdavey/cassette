@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
-    class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ExternalScriptBundle>
+    class ExternalScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
     {
         readonly IBundleHtmlRenderer<ScriptBundle> fallbackScriptRenderer;
         readonly CassetteSettings settings;
@@ -15,51 +16,58 @@ namespace Cassette.Scripts
             this.settings = settings;
         }
 
-        public string Render(ExternalScriptBundle bundle)
+        public string Render(ScriptBundle bundle)
         {
-            var externalScriptHtml = string.Format(
-                HtmlConstants.ScriptHtml,
-                bundle.Url,
-                bundle.HtmlAttributes.CombinedAttributes
-            );
-
-            if (settings.IsDebuggingEnabled)
+            if (settings.IsDebuggingEnabled && bundle.Assets.Any())
             {
-                if (bundle.Assets.Any())
-                {
-                    return fallbackScriptRenderer.Render(bundle);                    
-                }
-                else
-                {
-                    return externalScriptHtml;
-                }
+                return fallbackScriptRenderer.Render(bundle);
+            }
+
+            var html = new StringBuilder();
+
+            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
+            if (hasCondition)
+            {
+                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
+                html.AppendLine();
+            }
+
+            if (bundle.Assets.Any())
+            {
+                html.AppendFormat(
+                    HtmlConstants.ScriptHtmlWithFallback,
+                    bundle.Url,
+                    bundle.HtmlAttributes.CombinedAttributes,
+                    ((ExternalScriptBundle)bundle).FallbackCondition,
+                    CreateFallbackScripts(bundle),
+                    Environment.NewLine
+                );
             }
             else
             {
-                if (bundle.Assets.Any())
-                {
-                    return string.Format(
-                        "{1}{0}<script type=\"text/javascript\">{0}if({2}){{{0}{3}{0}}}{0}</script>",
-                        Environment.NewLine,
-                        externalScriptHtml,
-                        bundle.FallbackCondition,
-                        CreateFallbackScripts(bundle)
-                    );
-                }
-                else
-                {
-                    return externalScriptHtml;                    
-                }
+                html.AppendFormat(
+                    HtmlConstants.ScriptHtml,
+                    bundle.Url,
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
             }
+
+            if (hasCondition)
+            {
+                html.AppendLine();
+                html.Append(HtmlConstants.ConditionalCommentEnd);
+            }
+
+            return html.ToString();
         }
 
-        string CreateFallbackScripts(ExternalScriptBundle bundle)
+        string CreateFallbackScripts(ScriptBundle bundle)
         {
             var scripts = fallbackScriptRenderer.Render(bundle);
             return ConvertToDocumentWriteCalls(scripts);
         }
 
-        string ConvertToDocumentWriteCalls(string scriptElements)
+        static string ConvertToDocumentWriteCalls(string scriptElements)
         {
             var scripts = scriptElements.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             
@@ -70,10 +78,9 @@ namespace Cassette.Scripts
             );
         }
 
-        string Escape(string script)
+        static string Escape(string script)
         {
             return script.Replace("<", "%3C").Replace(">", "%3E");
         }
     }
 }
-

@@ -24,7 +24,8 @@ namespace Cassette.Manifests
                 Hash = bundle.Hash,
                 ContentType = bundle.ContentType,
                 PageLocation = bundle.PageLocation,
-                Content = GetContent(bundle)
+                Content = GetContent(bundle),
+                Html = bundle.Render
             };
             AddReferencesToBundleManifest(bundle.References);
             AddHtmlAttributesToBundleManifest(bundle.HtmlAttributes);

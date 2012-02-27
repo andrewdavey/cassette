@@ -82,10 +82,6 @@ namespace Cassette
             get { return references; }
         }
 
-        // When bundle loaded from cache we don't need to do most of the asset processing.
-        // However some steps, like assigning the renderer still need to happen.
-        internal bool IsFromCache { get; set; }
-
         internal bool IsSorted { get; set; }
 
         /// <summary>
@@ -94,7 +90,6 @@ namespace Cassette
         /// <returns>A readable stream.</returns>
         public Stream OpenStream()
         {
-            if (!IsProcessed && !IsFromCache) throw new InvalidOperationException("Cannot open stream of bundle content before it has been processed.");
             if (assets.Count == 0) return Stream.Null;
             return assets[0].OpenStream();
         }
@@ -143,7 +138,7 @@ namespace Cassette
             return assetFinder.FoundAsset;
         }
 
-        internal void Accept(IBundleVisitor visitor)
+        public void Accept(IBundleVisitor visitor)
         {
             visitor.Visit(this);
             foreach (var asset in assets)

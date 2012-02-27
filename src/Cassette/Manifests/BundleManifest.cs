@@ -22,6 +22,7 @@ namespace Cassette.Manifests
         public IList<string> References { get; private set; }
         public IDictionary<string, string> HtmlAttributes { get; private set; }
         public byte[] Content { get; set; }
+        public Func<string> Html { get; set; }
 
         public Bundle CreateBundle()
         {
@@ -29,7 +30,6 @@ namespace Cassette.Manifests
             bundle.Hash = Hash;
             bundle.ContentType = ContentType;
             bundle.PageLocation = PageLocation;
-            bundle.IsFromCache = true;
             if (Assets.Count > 0)
             {
                 bundle.Assets.Add(CreateCachedBundleContent());

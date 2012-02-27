@@ -51,7 +51,6 @@ namespace Cassette.Configuration
         void UseCachedBundles(CassetteManifest cachedManifest)
         {
             bundlesArray = cachedManifest.CreateBundles().ToArray();
-            ProcessAllBundles(bundlesArray);
         }
 
         void CacheAndUseCurrentBundles()

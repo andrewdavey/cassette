@@ -1,5 +1,4 @@
-﻿
-namespace Cassette
+﻿namespace Cassette
 {
     /// <summary>
     /// Creates the HTML required to reference a bundle in a page.

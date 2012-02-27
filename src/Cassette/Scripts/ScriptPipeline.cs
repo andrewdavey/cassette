@@ -21,8 +21,6 @@ namespace Cassette.Scripts
         protected override IEnumerable<IBundleProcessor<ScriptBundle>> CreatePipeline(ScriptBundle bundle, CassetteSettings settings)
         {
             yield return new AssignScriptRenderer();
-            if (bundle.IsFromCache) yield break;
-
             yield return new ParseJavaScriptReferences();
             if (CompileCoffeeScript)
             {

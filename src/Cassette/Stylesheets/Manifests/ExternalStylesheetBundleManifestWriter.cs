@@ -13,6 +13,7 @@ namespace Cassette.Stylesheets.Manifests
         {
             var element = base.CreateElement();
             element.Add(new XAttribute("Url", Manifest.Url));
+
             return element;
         }
     }

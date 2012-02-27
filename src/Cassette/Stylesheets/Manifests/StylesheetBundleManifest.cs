@@ -12,7 +12,8 @@ namespace Cassette.Stylesheets.Manifests
             return new StylesheetBundle(Path)
             {
                 Condition = Condition,
-                Media = Media
+                Media = Media,
+                Renderer = new ConstantHtmlRenderer<StylesheetBundle>(Html())
             };
         }
     }

@@ -168,6 +168,7 @@ namespace Cassette.Stylesheets
             using (var base64Stream = new CryptoStream(output, new ToBase64Transform(), CryptoStreamMode.Write))
             {
                 input.CopyTo(base64Stream);
+                base64Stream.FlushFinalBlock();
                 base64Stream.Flush();
                 output.Position = 0;
                 var reader = new StreamReader(output);

@@ -12,8 +12,6 @@ namespace Cassette.HtmlTemplates
                 new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)
             );
             yield return new AssignContentType("text/javascript");
-            if (bundle.IsFromCache) yield break;
-
             yield return new ParseHtmlTemplateReferences();
             yield return new CompileJQueryTmpl();
             yield return new RegisterTemplatesWithJQueryTmpl(bundle);

@@ -1,9 +1,8 @@
 using System.Xml.Linq;
-using Cassette.Manifests;
 
 namespace Cassette.Scripts.Manifests
 {
-    class ExternalScriptBundleManifestWriter : BundleManifestWriter<ExternalScriptBundleManifest>
+    class ExternalScriptBundleManifestWriter : ScriptBundleManifestWriter<ExternalScriptBundleManifest>
     {
         XElement element;
 

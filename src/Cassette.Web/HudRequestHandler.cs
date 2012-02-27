@@ -147,6 +147,7 @@ namespace Cassette.Web
             {
                 script.Path,
                 Url = BundleUrl(script),
+                script.Condition,
                 Assets = AssetPaths(script),
                 script.References,
                 Size = BundleSize(script)

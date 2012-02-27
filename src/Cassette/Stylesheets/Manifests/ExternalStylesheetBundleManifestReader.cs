@@ -15,6 +15,7 @@ namespace Cassette.Stylesheets.Manifests
         {
             base.InitializeBundleManifest(manifest, manifestElement);
             manifest.Url = GetUrlAttribute(manifestElement);
+            manifest.Condition = manifestElement.AttributeValueOrNull("Condition");
         }
 
         string GetUrlAttribute(XElement manifestElement)

@@ -4,7 +4,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts.Manifests
 {
-    class ExternalScriptBundleManifestReader : BundleManifestReader<ExternalScriptBundleManifest>
+    class ExternalScriptBundleManifestReader : ScriptBundleManifestReader<ExternalScriptBundleManifest>
     {
         public ExternalScriptBundleManifestReader(XElement element)
             : base(element)

@@ -85,8 +85,8 @@ namespace Cassette.Manifests
         {
             var manifest = new CassetteManifest("", new BundleManifest[]
             {
-                new ScriptBundleManifest { Path = "~/js", Hash = new byte[0] },
-                new StylesheetBundleManifest { Path = "~/css", Hash = new byte[0] }
+                new ScriptBundleManifest { Path = "~/js", Hash = new byte[0], Html = () => "" },
+                new StylesheetBundleManifest { Path = "~/css", Hash = new byte[0], Html = () => "" }
             });
 
             var bundles = manifest.CreateBundles().ToArray();
