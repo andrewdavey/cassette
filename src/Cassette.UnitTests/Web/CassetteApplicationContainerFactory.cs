@@ -22,7 +22,6 @@ namespace Cassette.Web
         }
 
         [Fact]
-                Directory.CreateDirectory(Path.Combine(path, "sprites"));
         public void GivenStylesheetWithExternalReference_WhenCreateContainer_ThenExternalBundleAddedToBundleCollection()
         {
             using (var path = new TempDirectory())
