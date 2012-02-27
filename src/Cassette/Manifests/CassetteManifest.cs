@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.IO;
+using Cassette.Configuration;
 
 namespace Cassette.Manifests
 {
@@ -28,11 +29,6 @@ namespace Cassette.Manifests
 
         public IList<BundleManifest> BundleManifests { get; private set; }
 
-        public IEnumerable<Bundle> CreateBundles()
-        {
-            return BundleManifests.Select(m => m.CreateBundle());
-        }
-
         public bool IsUpToDateWithFileSystem(IDirectory directory)
         {
             return BundleManifests.All(
@@ -53,6 +49,17 @@ namespace Cassette.Manifests
         bool BundleManifestsEqual(CassetteManifest other)
         {
             return BundleManifests.OrderBy(b => b.Path).SequenceEqual(other.BundleManifests.OrderBy(b => b.Path));
+        }
+
+        public BundleCollection CreateBundleCollection(CassetteSettings settings)
+        {
+            var bundles = CreateBundles();
+            return new BundleCollection(settings, bundles);
+        }
+
+        IEnumerable<Bundle> CreateBundles()
+        {
+            return BundleManifests.Select(m => m.CreateBundle());
         }
     }
 }

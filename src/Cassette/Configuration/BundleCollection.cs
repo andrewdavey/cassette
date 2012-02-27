@@ -12,11 +12,17 @@ namespace Cassette.Configuration
     public class BundleCollection : IEnumerable<Bundle>
     {
         readonly CassetteSettings settings;
-        readonly List<Bundle> bundles = new List<Bundle>(); 
-        
+        readonly List<Bundle> bundles = new List<Bundle>();
+
         public BundleCollection(CassetteSettings settings)
         {
             this.settings = settings;
+        }
+
+        internal BundleCollection(CassetteSettings settings, IEnumerable<Bundle> bundles)
+            : this(settings)
+        {
+            this.bundles.AddRange(bundles);
         }
 
         internal CassetteSettings Settings

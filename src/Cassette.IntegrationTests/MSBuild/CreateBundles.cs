@@ -62,7 +62,7 @@ namespace Cassette.MSBuild
             using (var file = File.OpenRead(manifestFilename))
             {
                 var reader = new CassetteManifestReader(file);
-                return reader.Read().CreateBundles();
+                return reader.Read().CreateBundleCollection(new CassetteSettings(""));
             }
         }
 

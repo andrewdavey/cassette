@@ -59,6 +59,8 @@
     </Compile>
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleReferenceCollector.cs" />
+    <Compile Include="Configuration\CompileTimeManifestBundleContainerFactory.cs" />
+    <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
     <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />

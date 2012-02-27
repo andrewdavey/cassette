@@ -1,69 +1,67 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Cassette.Manifests;
 
 namespace Cassette.Configuration
 {
     class CachedBundleContainerFactory : BundleContainerFactoryBase
     {
+        readonly BundleCollection runtimeGeneratedBundles;
         readonly ICassetteManifestCache cache;
         readonly CassetteSettings settings;
-        Bundle[] bundlesArray;
 
-        public CachedBundleContainerFactory(ICassetteManifestCache cache, CassetteSettings settings)
+        public CachedBundleContainerFactory(BundleCollection runtimeGeneratedBundles, ICassetteManifestCache cache, CassetteSettings settings)
             : base(settings)
         {
+            this.runtimeGeneratedBundles = runtimeGeneratedBundles;
             this.cache = cache;
             this.settings = settings;
         }
 
-        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles)
+        public override IBundleContainer CreateBundleContainer()
         {
-            bundlesArray = unprocessedBundles.ToArray();
-            
-            var currentManifest = CreateCassetteManifest();
+            var currentManifest = CreateCassetteManifestFromRuntimeGeneratedBundles();
             var cachedManifest = cache.LoadCassetteManifest();
 
-            bundlesArray = CreateBundles(cachedManifest, currentManifest);
+            var bundles = CreateBundles(cachedManifest, currentManifest);
+            var externalBundles = CreateExternalBundlesUrlReferences(bundles);
+            var allBundles = bundles.Concat(externalBundles);
 
-            var externalBundles = CreateExternalBundlesUrlReferences(bundlesArray);
-            var allBundles = bundlesArray.Concat(externalBundles);
             return new BundleContainer(allBundles);
         }
 
-        Bundle[] CreateBundles(CassetteManifest cachedManifest, CassetteManifest currentManifest)
+        BundleCollection CreateBundles(CassetteManifest cachedManifest, CassetteManifest currentManifest)
         {
-            var canUseCachedBundles = cachedManifest.Equals(currentManifest)
-                                   && cachedManifest.IsUpToDateWithFileSystem(settings.SourceDirectory);
-            if (canUseCachedBundles)
+            if (CanUseCachedBundles(cachedManifest, currentManifest))
             {
                 Trace.Source.TraceInformation("Using cache.");
-                UseCachedBundles(cachedManifest);
+                return cachedManifest.CreateBundleCollection(settings);
             }
             else
             {
-                CacheAndUseCurrentBundles();
+                return ProcessAndCacheAndGetRuntimeGeneratedBundles();
             }
-            return bundlesArray;
         }
 
-        void UseCachedBundles(CassetteManifest cachedManifest)
+        bool CanUseCachedBundles(CassetteManifest cachedManifest, CassetteManifest currentManifest)
         {
-            bundlesArray = cachedManifest.CreateBundles().ToArray();
+            return cachedManifest.Equals(currentManifest) &&
+                   cachedManifest.IsUpToDateWithFileSystem(settings.SourceDirectory);
         }
 
-        void CacheAndUseCurrentBundles()
+        BundleCollection ProcessAndCacheAndGetRuntimeGeneratedBundles()
         {
-            ProcessAllBundles(bundlesArray);
-            var manifestIncludingContent = CreateCassetteManifest();
+            ProcessAllBundles(runtimeGeneratedBundles);
+
+            var manifest = CreateCassetteManifestFromRuntimeGeneratedBundles();
+
             Trace.Source.TraceInformation("Saving cache.");
-            cache.SaveCassetteManifest(manifestIncludingContent);
-            UseCachedBundles(manifestIncludingContent);
+            cache.SaveCassetteManifest(manifest);
+            return manifest.CreateBundleCollection(settings);
         }
 
-        CassetteManifest CreateCassetteManifest()
+        CassetteManifest CreateCassetteManifestFromRuntimeGeneratedBundles()
         {
-            var bundleManifests = bundlesArray.Select(bundle => bundle.CreateBundleManifest());
+            var bundleManifests = runtimeGeneratedBundles.Select(bundle => bundle.CreateBundleManifest());
             return new CassetteManifest(settings.Version, bundleManifests);
         }
     }

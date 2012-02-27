@@ -120,16 +120,28 @@ namespace Cassette.Configuration
             set { customCassetteManifestCache = value; }
         }
 
-        internal IBundleContainerFactory GetBundleContainerFactory()
+        internal IBundleContainerFactory GetBundleContainerFactory(IEnumerable<ICassetteConfiguration> cassetteConfigurations)
         {
+            var bundles = ExecuteCassetteConfiguration(cassetteConfigurations);
             if (IsDebuggingEnabled)
             {
-                return new BundleContainerFactory(this);
+                return new BundleContainerFactory(bundles, this);
             }
             else
             {
-                return new CachedBundleContainerFactory(CassetteManifestCache, this);
+                return new CachedBundleContainerFactory(bundles, CassetteManifestCache, this);
             }
+        }
+
+        BundleCollection ExecuteCassetteConfiguration(IEnumerable<ICassetteConfiguration> cassetteConfigurations)
+        {
+            var bundles = new BundleCollection(this);
+            foreach (var configuration in cassetteConfigurations)
+            {
+                Trace.Source.TraceInformation("Executing configuration {0}", configuration.GetType().AssemblyQualifiedName);
+                configuration.Configure(bundles, this);
+            }
+            return bundles;
         }
     }
 }
