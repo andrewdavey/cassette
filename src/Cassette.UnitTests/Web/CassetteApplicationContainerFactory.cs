@@ -90,6 +90,68 @@ namespace Cassette.Web
             }
         }
 
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigRewriteHtmlIsTrue_WhenCreateContainer_ThenSettingsIsHtmlRewritingEnabledEqualsTrue()
+        {
+            configurationSection.RewriteHtml = true;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+                
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.IsHtmlRewritingEnabled.ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigRewriteHtmlIsFalse_WhenCreateContainer_ThenSettingsIsHtmlRewritingEnabledEqualsFalse()
+        {
+            configurationSection.RewriteHtml = false;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.IsHtmlRewritingEnabled.ShouldBeFalse();
+            }
+        }
+
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigAllowRemoteDiagnosticsIsTrue_WhenCreateContainer_ThenSettingsAllowRemoteDiagnosticsEqualsTrue()
+        {
+            configurationSection.AllowRemoteDiagnostics = true;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.AllowRemoteDiagnostics.ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigAllowRemoteDiagnosticsIsTrue_WhenCreateContainer_ThenSettingsAllowRemoteDiagnosticsEqualsFalse()
+        {
+            configurationSection.AllowRemoteDiagnostics = false;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.AllowRemoteDiagnostics.ShouldBeFalse();
+            }
+        }
+
+
+
         void CompileTimeManifestWithBundleExists(string rootDirectory)
         {
             var bundle = StubBundle();

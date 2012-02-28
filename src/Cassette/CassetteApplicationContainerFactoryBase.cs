@@ -98,7 +98,9 @@ namespace Cassette
                 UrlGenerator = new UrlGenerator(
                     new VirtualDirectoryPrepender(virtualDirectory),
                     UrlGenerator.RoutePrefix
-                )
+                ),
+                IsHtmlRewritingEnabled = configurationSection.RewriteHtml,
+                AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics
             };
         }
 
