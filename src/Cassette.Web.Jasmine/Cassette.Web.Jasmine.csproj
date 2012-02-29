@@ -59,6 +59,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ResourceAsset.cs" />
+    <Compile Include="ResourceFile.cs" />
     <Compile Include="StartUp.cs" />
   </ItemGroup>
   <ItemGroup>

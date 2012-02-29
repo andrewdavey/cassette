@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Cassette.IO;
 
-namespace Cassette
+namespace Cassette.Web.Jasmine
 {
     /// <summary>
     /// Stub implementation of IFile for use by ResourceAsset.

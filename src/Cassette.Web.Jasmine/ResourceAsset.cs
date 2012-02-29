@@ -4,7 +4,7 @@ using System.Reflection;
 using Cassette.IO;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.Web.Jasmine
 {
     /// <summary>
     /// Partial implementation of IAsset that reads from an assembly resource stream.
