@@ -69,18 +69,11 @@
     <Content Include="Scripts\app\Player.js" />
     <Content Include="Scripts\app\readme.txt" />
     <Content Include="Scripts\app\Song.js" />
-    <Content Include="Scripts\jasmine\jasmine-html.js" />
-    <Content Include="Scripts\jasmine\jasmine.css" />
-    <Content Include="Scripts\jasmine\jasmine.js" />
-    <Content Include="Scripts\jasmine\runner.js" />
     <Content Include="Scripts\specs\PlayerSpec.js" />
     <Content Include="Scripts\specs\readme.txt" />
     <Content Include="Scripts\specs\SpecHelper.js" />
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\jasmine\MIT.LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cassette.Views\Cassette.Views.csproj">

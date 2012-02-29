@@ -8,8 +8,13 @@ namespace Cassette.Web.Jasmine
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            bundles.Add<ScriptBundle>("scripts/jasmine");
-            bundles.Add<StylesheetBundle>("scripts/jasmine");
+            var script = new ScriptBundle("cassette.web.jasmine");
+            script.Assets.Add(new ResourceAsset("Cassette.Web.Jasmine.jasmine.js", GetType().Assembly));
+            bundles.Add(script);
+
+            var css = new StylesheetBundle("cassette.web.jasmine");
+            css.Assets.Add(new ResourceAsset("Cassette.Web.Jasmine.jasmine.css", GetType().Assembly));
+            bundles.Add(css);
         }
     }
 }

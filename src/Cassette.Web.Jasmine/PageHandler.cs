@@ -30,7 +30,7 @@ namespace Cassette.Web.Jasmine
 
         void ReferencePageBundles()
         {
-            Bundles.Reference("~/scripts/jasmine");
+            Bundles.Reference("~/cassette.web.jasmine");
             var spec = routeData.GetRequiredString("specbundle");
             Bundles.Reference(spec);
         }

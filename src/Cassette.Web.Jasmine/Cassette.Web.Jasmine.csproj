@@ -62,9 +62,10 @@
     <Compile Include="StartUp.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\jasmine\runner.js" />
-    <Content Include="Scripts\jasmine\MIT.LICENSE" />
-    <None Include="Cassette.Web.nuspec">
+    <EmbeddedResource Include="jasmine.css" />
+    <EmbeddedResource Include="jasmine.js" />
+    <Content Include="jasmine-license.txt" />
+    <None Include="Cassette.Web.Jasmine.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
@@ -84,9 +85,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\jasmine\jasmine-html.js" />
-    <Content Include="Scripts\jasmine\jasmine.css" />
-    <Content Include="Scripts\jasmine\jasmine.js" />
     <None Include="runner.htm" />
   </ItemGroup>
   <ItemGroup>

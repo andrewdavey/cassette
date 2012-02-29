@@ -1,5 +1,4 @@
 /// <reference path="SpecHelper.js" />
-/// <reference path="../jasmine/jasmine.js" />
 /// <reference path="../app/Player.js" />
 /// <reference path="../app/Song.js" />
 

@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
 [assembly: InternalsVisibleTo("Cassette.MSBuild")]
+[assembly: InternalsVisibleTo("Cassette.Web.Jasmine")]
 [assembly: InternalsVisibleTo("Cassette.Nancy")]
 
 // To allow mocking of internal types, using Moq, the following is required.
