@@ -24,13 +24,6 @@ namespace Cassette.Stylesheets
 
             var html = new StringBuilder();
 
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
-                html.AppendLine();
-            }
-            
             if (string.IsNullOrEmpty(bundle.Media))
             {
                 html.AppendFormat(
@@ -48,14 +41,15 @@ namespace Cassette.Stylesheets
                     bundle.HtmlAttributes.CombinedAttributes
                 );
             }
-            
-            if (hasCondition)
-            {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
-            }
 
-            return html.ToString();
+            if (bundle.HasCondition)
+            {
+                return bundle.ConditionalRenderer.RenderCondition(bundle.Condition, html.ToString());
+            }
+            else
+            {
+                return html.ToString();
+            }
         }
     }
 }

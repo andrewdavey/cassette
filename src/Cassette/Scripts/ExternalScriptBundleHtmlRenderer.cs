@@ -24,14 +24,7 @@ namespace Cassette.Scripts
             }
 
             var html = new StringBuilder();
-
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
-                html.AppendLine();
-            }
-
+            
             if (bundle.Assets.Any())
             {
                 html.AppendFormat(
@@ -52,13 +45,14 @@ namespace Cassette.Scripts
                 );
             }
 
-            if (hasCondition)
+            if (bundle.HasCondition)
             {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
+                return bundle.ConditionalRenderer.RenderCondition(bundle.Condition, html.ToString());
             }
-
-            return html.ToString();
+            else
+            {
+                return html.ToString();
+            }
         }
 
         string CreateFallbackScripts(ScriptBundle bundle)

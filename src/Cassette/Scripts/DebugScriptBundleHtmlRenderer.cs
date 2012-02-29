@@ -19,26 +19,20 @@ namespace Cassette.Scripts
             var assetUrls = GetAssetUrls(bundle);
             var createLink = GetCreateScriptFunc(bundle);
             var html = new StringBuilder();
-
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
-                html.AppendLine();
-            }
-
+                        
             html.Append(string.Join(
                 Environment.NewLine,
                 assetUrls.Select(createLink)
             ));
 
-            if (hasCondition)
+            if (bundle.HasCondition)
             {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
+                return bundle.ConditionalRenderer.RenderCondition(bundle.Condition, html.ToString());
             }
-
-            return html.ToString();
+            else
+            {
+                return html.ToString();
+            }
         }
 
         IEnumerable<string> GetAssetUrls(ScriptBundle bundle)

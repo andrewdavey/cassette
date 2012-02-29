@@ -15,11 +15,6 @@ namespace Cassette.Stylesheets
         {
             var url = urlGenerator.CreateBundleUrl(bundle);
             var html = new StringBuilder();
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
-            {
-                html.AppendLine("<!--[if " + bundle.Condition + "]>");
-            }
 
             if (string.IsNullOrEmpty(bundle.Media))
             {
@@ -39,13 +34,14 @@ namespace Cassette.Stylesheets
                 );
             }
 
-            if (hasCondition)
+            if (bundle.HasCondition)
             {
-                html.AppendLine();
-                html.Append("<![endif]-->");
+                return bundle.ConditionalRenderer.RenderCondition(bundle.Condition, html.ToString());
             }
-
-            return html.ToString();
+            else
+            {
+                return html.ToString();
+            }
         }
     }
 }

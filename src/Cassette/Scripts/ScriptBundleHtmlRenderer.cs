@@ -16,27 +16,22 @@ namespace Cassette.Scripts
         {
             var url = urlGenerator.CreateBundleUrl(bundle);
             var html = new StringBuilder();
-
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
-                html.AppendLine();
-            }
-
+            
             html.AppendFormat(
                 HtmlConstants.ScriptHtml,
                 url,
                 bundle.HtmlAttributes.CombinedAttributes
             );
 
-            if (hasCondition)
+            if (bundle.HasCondition)
             {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
+                return bundle.ConditionalRenderer.RenderCondition(bundle.Condition, html.ToString());
+            }
+            else
+            {
+                return html.ToString();
             }
 
-            return html.ToString();
         }
     }
 }
