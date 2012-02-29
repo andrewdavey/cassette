@@ -64,7 +64,7 @@
   <ItemGroup>
     <EmbeddedResource Include="jasmine.css" />
     <EmbeddedResource Include="jasmine.js" />
-    <Content Include="jasmine-license.txt" />
+    <None Include="jasmine-license.txt" />
     <None Include="Cassette.Web.Jasmine.nuspec">
       <SubType>Designer</SubType>
     </None>
