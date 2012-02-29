@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using Cassette.IO;
-using Cassette.Utilities;
 
 namespace Cassette.Web.Jasmine
 {
@@ -26,7 +26,10 @@ namespace Cassette.Web.Jasmine
             {
                 using (var stream = OpenStream())
                 {
-                    return stream.ComputeSHA1Hash();
+                    using (var sha1 = SHA1.Create())
+                    {
+                        return sha1.ComputeHash(stream);
+                    }
                 }
             }
         }
