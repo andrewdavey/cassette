@@ -101,7 +101,7 @@ namespace Cassette.Stylesheets
             var html = renderer.Render(bundle);
 
             html.ShouldEqual(
-                "<!--[if " + bundle.Condition + "]>-->" + Environment.NewLine +
+                "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
                 "<link href=\"asset1\" type=\"text/css\" rel=\"stylesheet\"/>" +
                 Environment.NewLine +
                 "<link href=\"asset2\" type=\"text/css\" rel=\"stylesheet\"/>" + Environment.NewLine +

@@ -67,7 +67,7 @@ namespace Cassette.Scripts
             var html = renderer.Render(bundle);
 
             html.ShouldEqual(
-                "<!--[if " + bundle.Condition + "]>-->" + Environment.NewLine +
+                "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
                 "<script src=\"URL\" type=\"text/javascript\"></script>" + Environment.NewLine +
                 "<!-- <![endif]-->"
             );

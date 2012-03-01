@@ -54,7 +54,7 @@ namespace Cassette.Stylesheets
             var html = renderer.Render(bundle);
 
             html.ShouldEqual(
-                "<!--[if " + bundle.Condition + "]>-->" + Environment.NewLine +
+                "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
                 "<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>" + Environment.NewLine +
                 "<!-- <![endif]-->");
         }

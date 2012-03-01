@@ -19,7 +19,7 @@ namespace Cassette
             html.AppendFormat(HtmlConstants.ConditionalCommentStart, condition);
             if (notIECondition)
             {
-                html.Append("-->");
+                html.Append("<!-->");
             }
             html.AppendLine();
 
