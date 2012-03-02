@@ -248,6 +248,36 @@ namespace Cassette.Configuration
         }
 
         [Fact]
+        public void GivenDirectoryWithExternalBundleDescriptorButNoAssets_WhenAddPerSubDirectory_ThenBundleCreatedForDirectory()
+        {
+            CreateDirectory("test");
+            File.WriteAllText(
+                Path.Combine(tempDirectory, "test", "bundle.txt"), 
+                "[external]" + Environment.NewLine + "url=http://example.org/"
+            );
+            bundles.AddPerSubDirectory<TestableBundle>("~");
+            bundles.Count().ShouldEqual(1);
+        }
+
+        [Fact]
+        public void GivenTopLevelDirectoryWithExternalBundleDescriptorButNoAssets_WhenAddPerSubDirectory_ThenBundleCreatedForDirectory()
+        {
+            var bundle = new Mock<TestableBundle>("~");
+            bundle.As<IExternalBundle>();
+            factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+                   .Returns<string, IEnumerable<IFile>, BundleDescriptor>(
+                       (path, files, d) => createdBundle = bundle.Object
+                   );
+
+            File.WriteAllText(
+                Path.Combine(tempDirectory, "bundle.txt"),
+                "[external]" + Environment.NewLine + "url=http://example.org/"
+            );
+            bundles.AddPerSubDirectory<TestableBundle>("~");
+            bundles.Count().ShouldEqual(1);
+        }
+
+        [Fact]
         public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectory_ThenBundleAlsoCreatedForTopLevel()
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
