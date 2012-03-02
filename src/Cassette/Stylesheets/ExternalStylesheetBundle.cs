@@ -7,7 +7,7 @@ using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {
-    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle
+    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
     {
         readonly string url;
         bool isDebuggingEnabled;
@@ -27,7 +27,9 @@ namespace Cassette.Stylesheets
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
+            FallbackRenderer = Renderer;
             isDebuggingEnabled = settings.IsDebuggingEnabled;
+            Renderer = this;
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -46,11 +48,13 @@ namespace Cassette.Stylesheets
             get { return url; }
         }
 
-        internal override string Render()
+        internal IBundleHtmlRenderer<StylesheetBundle> FallbackRenderer { get; set; } 
+
+        public string Render(StylesheetBundle unusedParameter)
         {
             if (isDebuggingEnabled && Assets.Any())
             {
-                return base.Render();
+                return FallbackRenderer.Render(this);
             }
 
             var html = new StringBuilder();

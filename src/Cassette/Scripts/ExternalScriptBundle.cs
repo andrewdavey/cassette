@@ -7,7 +7,7 @@ using Cassette.Scripts.Manifests;
 
 namespace Cassette.Scripts
 {
-    class ExternalScriptBundle : ScriptBundle, IExternalBundle
+    class ExternalScriptBundle : ScriptBundle, IExternalBundle, IBundleHtmlRenderer<ScriptBundle>
     {
         readonly string url;
         readonly string fallbackCondition;
@@ -39,10 +39,14 @@ namespace Cassette.Scripts
             get { return fallbackCondition; }
         }
 
+        internal IBundleHtmlRenderer<ScriptBundle> FallbackRenderer { get; set; } 
+
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
+            FallbackRenderer = Renderer;
             isDebuggingEnabled = settings.IsDebuggingEnabled;
+            Renderer = this;
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -61,11 +65,11 @@ namespace Cassette.Scripts
             get { return url; }
         }
 
-        internal override string Render()
+        public string Render(ScriptBundle unusedParameter)
         {
             if (isDebuggingEnabled && Assets.Any())
             {
-                return base.Render();
+                return FallbackRenderer.Render(this);
             }
 
             var html = new StringBuilder();
@@ -124,7 +128,7 @@ namespace Cassette.Scripts
 
         string CreateFallbackScripts()
         {
-            var scripts = base.Render();
+            var scripts = FallbackRenderer.Render(this);
             return ConvertToDocumentWriteCalls(scripts);
         }
 

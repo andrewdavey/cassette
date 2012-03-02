@@ -132,7 +132,7 @@ namespace Cassette.Scripts
         string Render(ExternalScriptBundle bundle)
         {
             bundle.Process(settings);
-            bundle.Renderer = fallbackRenderer.Object;
+            bundle.FallbackRenderer = fallbackRenderer.Object;
             return bundle.Render();
         }
 

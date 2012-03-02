@@ -23,7 +23,7 @@ namespace Cassette.Stylesheets
         string Render()
         {
             bundle.Process(settings);
-            bundle.Renderer = fallbackRenderer.Object;
+            bundle.FallbackRenderer = fallbackRenderer.Object;
             return bundle.Render();
         }
 
