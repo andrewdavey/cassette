@@ -20,7 +20,6 @@
         <references>
             <reference file="Pandora.dll"/>
             <reference file="Cassette.dll"/>
-            <reference file="Cassette.dotless.Core.dll"/>
         </references>
     </metadata>
     <files>
