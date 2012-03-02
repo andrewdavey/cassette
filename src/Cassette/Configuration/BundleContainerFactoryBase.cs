@@ -27,7 +27,7 @@ namespace Cassette.Configuration
 
         protected IEnumerable<Bundle> CreateExternalBundlesUrlReferences(BundleCollection bundles)
         {
-            var existingUrls = bundles.OfType<IExternalBundle>().Select(b => b.Url);
+            var existingUrls = bundles.OfType<IExternalBundle>().Select(b => b.ExternalUrl);
             var generator = new ExternalBundleGenerator(existingUrls, settings);
             foreach (var bundle in bundles)
             {

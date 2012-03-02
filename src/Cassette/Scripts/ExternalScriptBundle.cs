@@ -61,11 +61,6 @@ namespace Cassette.Scripts
             get { return url; }
         }
 
-        string IExternalBundle.Url
-        {
-            get { return url; }
-        }
-
         internal override string Render()
         {
             if (settings.IsDebuggingEnabled && Assets.Any())
