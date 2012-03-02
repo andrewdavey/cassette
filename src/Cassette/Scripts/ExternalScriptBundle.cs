@@ -87,20 +87,18 @@ namespace Cassette.Scripts
 
         void RenderConditionalCommentStart(StringBuilder html, bool hasCondition)
         {
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
-                html.AppendLine();
-            }
+            if (!hasCondition) return;
+
+            html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
+            html.AppendLine();
         }
 
         void RenderConditionalCommentEnd(StringBuilder html, bool hasCondition)
         {
-            if (hasCondition)
-            {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
-            }
+            if (!hasCondition) return;
+
+            html.AppendLine();
+            html.Append(HtmlConstants.ConditionalCommentEnd);
         }
 
         void RenderScriptHtml(StringBuilder html)
