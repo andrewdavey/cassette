@@ -67,7 +67,7 @@ namespace Cassette
         /// </summary>
         public byte[] Hash { get; internal set; }
 
-        internal virtual string Url
+        internal string Url
         {
             get
             {
