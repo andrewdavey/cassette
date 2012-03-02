@@ -135,7 +135,7 @@
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundle.cs" />
-    <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\ExternalScriptBundle.Render.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
