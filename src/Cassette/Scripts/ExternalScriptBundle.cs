@@ -11,7 +11,7 @@ namespace Cassette.Scripts
     {
         readonly string url;
         readonly string fallbackCondition;
-        CassetteSettings settings;
+        bool isDebuggingEnabled;
 
         public ExternalScriptBundle(string url)
             : base(url)
@@ -42,7 +42,7 @@ namespace Cassette.Scripts
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            this.settings = settings;
+            isDebuggingEnabled = settings.IsDebuggingEnabled;
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -63,7 +63,7 @@ namespace Cassette.Scripts
 
         internal override string Render()
         {
-            if (settings.IsDebuggingEnabled && Assets.Any())
+            if (isDebuggingEnabled && Assets.Any())
             {
                 return base.Render();
             }

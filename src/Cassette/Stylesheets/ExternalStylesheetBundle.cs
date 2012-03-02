@@ -9,6 +9,9 @@ namespace Cassette.Stylesheets
 {
     class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle
     {
+        readonly string url;
+        bool isDebuggingEnabled;
+
         public ExternalStylesheetBundle(string url)
             : base(url)
         {
@@ -21,13 +24,10 @@ namespace Cassette.Stylesheets
             this.url = url;
         }
 
-        readonly string url;
-        CassetteSettings settings;
-
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            this.settings = settings;
+            isDebuggingEnabled = settings.IsDebuggingEnabled;
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -48,7 +48,7 @@ namespace Cassette.Stylesheets
 
         internal override string Render()
         {
-            if (settings.IsDebuggingEnabled && Assets.Any())
+            if (isDebuggingEnabled && Assets.Any())
             {
                 return base.Render();
             }
