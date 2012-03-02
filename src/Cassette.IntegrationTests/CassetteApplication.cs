@@ -137,6 +137,31 @@ function asset1() {
             }
         }
 
+        [Fact]
+        public void WhenRenderingExternalScriptBundleWithFallback_ThenHtmlIsExternalScriptAndConditionalScriptBlock()
+        {
+            Action<BundleCollection> config = bundles =>
+            {
+                bundles.Add<ScriptBundle>("~/scripts/bundle-d");
+            };
+
+            using (var app = CreateApplication(config))
+            {
+                app.OnPostMapRequestHandler();
+                var builder = app.GetReferenceBuilder();
+
+                builder.Reference("~/scripts/bundle-d");
+                var html = builder.Render<ScriptBundle>(null);
+
+                html.ShouldEqual(@"<script src=""http://example.com/"" type=""text/javascript""></script>
+<script type=""text/javascript"">
+if(!window.example){
+document.write(unescape('%3Cscript src=""/_cassette/scriptbundle/scripts/bundle-d_324630d9a339e77b9687f404596df7952257b3f2"" type=""text/javascript""%3E%3C/script%3E'));
+}
+</script>");
+            }
+        }
+
         CassetteApplication CreateApplication(Action<BundleCollection> configure, string sourceDirectory = "assets", bool isDebuggingEnabled = false)
         {
             var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
