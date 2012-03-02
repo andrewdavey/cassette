@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Cassette.Configuration;
 using Moq;
 using Should;
@@ -6,28 +7,31 @@ using Xunit;
 
 namespace Cassette.Stylesheets
 {
-    public class ExternalStylesheetHtmlRenderer_Tests
+    public class ExternalStylesheetBundleRender_Tests
     {
         readonly CassetteSettings settings;
         readonly Mock<IBundleHtmlRenderer<StylesheetBundle>> fallbackRenderer;
-        readonly ExternalStylesheetHtmlRenderer renderer;
         readonly ExternalStylesheetBundle bundle;
 
-        public ExternalStylesheetHtmlRenderer_Tests()
+        public ExternalStylesheetBundleRender_Tests()
         {
             settings = new CassetteSettings("");
             fallbackRenderer = new Mock<IBundleHtmlRenderer<StylesheetBundle>>(); 
-            renderer = new ExternalStylesheetHtmlRenderer(fallbackRenderer.Object, settings);
             bundle = new ExternalStylesheetBundle("http://test.com/");
+        }
+
+        string Render()
+        {
+            bundle.Process(settings);
+            bundle.Renderer = fallbackRenderer.Object;
+            return bundle.Render();
         }
 
         [Fact]
         public void GivenApplicationInProduction_WhenRender_ThenLinkElementReturnedWithBundleUrlAsHref()
         {
             settings.IsDebuggingEnabled = false;
-            
-            var html = renderer.Render(bundle);
-
+            var html = Render();
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>");
         }
 
@@ -37,7 +41,7 @@ namespace Cassette.Stylesheets
             settings.IsDebuggingEnabled = false;
             bundle.Condition = "CONDITION";
 
-            var html = renderer.Render(bundle);
+            var html = Render();
 
             html.ShouldEqual(
                 "<!--[if CONDITION]>" + Environment.NewLine +
@@ -51,7 +55,7 @@ namespace Cassette.Stylesheets
             settings.IsDebuggingEnabled = false;
             bundle.HtmlAttributes["class"] = "foo";
 
-            var html = renderer.Render(bundle);
+            var html = Render();
 
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\" class=\"foo\"/>");
         }
@@ -62,7 +66,7 @@ namespace Cassette.Stylesheets
             settings.IsDebuggingEnabled = false;
             bundle.Media = "print";
 
-            var html = renderer.Render(bundle);
+            var html = Render();
 
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\" media=\"print\"/>");
         }
@@ -71,9 +75,9 @@ namespace Cassette.Stylesheets
         public void GivenApplicationInDebugMode_WhenRenderBundleWithAssets_ThenFallbackRendererIsUsed()
         {
             settings.IsDebuggingEnabled = true;
-            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(StubAsset());
 
-            renderer.Render(bundle);
+            Render();
 
             fallbackRenderer.Verify(r => r.Render(bundle));
         }
@@ -83,9 +87,17 @@ namespace Cassette.Stylesheets
         {
             settings.IsDebuggingEnabled = true;
 
-            var html = renderer.Render(bundle);
+            var html = Render();
 
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>");
+        }
+
+        IAsset StubAsset()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.js");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            return asset.Object;
         }
     }
 }

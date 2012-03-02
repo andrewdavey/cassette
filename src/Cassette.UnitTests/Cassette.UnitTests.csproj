@@ -122,7 +122,7 @@
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestWriter.cs" />
-    <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundle.Render.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />

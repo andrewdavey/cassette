@@ -56,6 +56,11 @@ namespace Cassette.Scripts
             return builder.BuildManifest(this);
         }
 
+        public string ExternalUrl
+        {
+            get { return url; }
+        }
+
         string IExternalBundle.Url
         {
             get { return url; }
