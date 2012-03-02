@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Scripts.Manifests;
@@ -9,6 +11,7 @@ namespace Cassette.Scripts
     {
         readonly string url;
         readonly string fallbackCondition;
+        CassetteSettings settings;
 
         public ExternalScriptBundle(string url)
             : base(url)
@@ -31,11 +34,6 @@ namespace Cassette.Scripts
             if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
         }
 
-        internal override string Url
-        {
-            get { return url; }
-        }
-
         internal string FallbackCondition
         {
             get { return fallbackCondition; }
@@ -44,7 +42,7 @@ namespace Cassette.Scripts
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            Renderer = new ExternalScriptBundleHtmlRenderer(Renderer, settings);
+            this.settings = settings;
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -61,6 +59,91 @@ namespace Cassette.Scripts
         string IExternalBundle.Url
         {
             get { return url; }
+        }
+
+        internal override string Render()
+        {
+            if (settings.IsDebuggingEnabled && Assets.Any())
+            {
+                return base.Render();
+            }
+
+            var html = new StringBuilder();
+
+            var hasCondition = !string.IsNullOrEmpty(Condition);
+            RenderConditionalCommentStart(html, hasCondition);
+            if (Assets.Any())
+            {
+                RenderScriptHtmlWithFallback(html);
+            }
+            else
+            {
+                RenderScriptHtml(html);
+            }
+            RenderConditionalCommentEnd(html, hasCondition);
+
+            return html.ToString();
+        }
+
+        void RenderConditionalCommentStart(StringBuilder html, bool hasCondition)
+        {
+            if (hasCondition)
+            {
+                html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
+                html.AppendLine();
+            }
+        }
+
+        void RenderConditionalCommentEnd(StringBuilder html, bool hasCondition)
+        {
+            if (hasCondition)
+            {
+                html.AppendLine();
+                html.Append(HtmlConstants.ConditionalCommentEnd);
+            }
+        }
+
+        void RenderScriptHtml(StringBuilder html)
+        {
+            html.AppendFormat(
+                HtmlConstants.ScriptHtml,
+                url,
+                HtmlAttributes.CombinedAttributes
+                );
+        }
+
+        void RenderScriptHtmlWithFallback(StringBuilder html)
+        {
+            html.AppendFormat(
+                HtmlConstants.ScriptHtmlWithFallback,
+                url,
+                HtmlAttributes.CombinedAttributes,
+                FallbackCondition,
+                CreateFallbackScripts(),
+                Environment.NewLine
+                );
+        }
+
+        string CreateFallbackScripts()
+        {
+            var scripts = base.Render();
+            return ConvertToDocumentWriteCalls(scripts);
+        }
+
+        static string ConvertToDocumentWriteCalls(string scriptElements)
+        {
+            var scripts = scriptElements.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            return string.Join(
+                Environment.NewLine,
+                from script in scripts
+                select "document.write(unescape('" + Escape(script) + "'));"
+            );
+        }
+
+        static string Escape(string script)
+        {
+            return script.Replace("<", "%3C").Replace(">", "%3E");
         }
     }
 }

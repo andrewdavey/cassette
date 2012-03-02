@@ -175,7 +175,6 @@
     <Compile Include="Scripts\AssignScriptRenderer.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
-    <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifest.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />

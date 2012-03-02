@@ -419,7 +419,7 @@ namespace Cassette.Configuration
         {
             bundles.AddUrlWithAlias<ScriptBundle>("http://cdn.com/jquery.js", "jquery");
 
-            bundles.Get<ExternalScriptBundle>("jquery").Url.ShouldEqual("http://cdn.com/jquery.js");
+            bundles.Get<ExternalScriptBundle>("jquery").Path.ShouldEqual("~/jquery");
         }
 
         [Fact]

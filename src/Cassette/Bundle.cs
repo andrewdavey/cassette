@@ -71,11 +71,12 @@ namespace Cassette
         {
             get
             {
-                var type = GetType().Name.ToLowerInvariant();
                 var pathWithoutPrefix = path.TrimStart('~', '/');
-                return type + "/" + pathWithoutPrefix + "_" + Hash.ToHexString();
+                return UrlBundleTypeArgument + "/" + pathWithoutPrefix + "_" + Hash.ToHexString();
             }
         }
+
+        protected abstract string UrlBundleTypeArgument { get; }
 
         internal IEnumerable<string> References
         {
