@@ -5,7 +5,7 @@ namespace Cassette.Scripts.Manifests
         public override ExternalScriptBundleManifest BuildManifest(ExternalScriptBundle bundle)
         {
             var manifest = base.BuildManifest(bundle);
-            manifest.Url = bundle.Url;
+            manifest.Url = bundle.ExternalUrl;
             manifest.FallbackCondition = bundle.FallbackCondition;
             manifest.Condition = bundle.Condition;
             return manifest;
