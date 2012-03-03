@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Cassette.Configuration;
 using Moq;
 using Should;
@@ -57,7 +56,7 @@ namespace Cassette.Scripts
         public void WhenRenderExternalScriptBundleWithLocalAssetsAndIsDebugMode_ThenFallbackRendererUsed()
         {
             var bundle = new ExternalScriptBundle("http://test.com/", "test");
-            bundle.Assets.Add(StubAsset());
+            bundle.Assets.Add(new StubAsset());
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns("FALLBACK");
             settings.IsDebuggingEnabled = true;
@@ -71,7 +70,7 @@ namespace Cassette.Scripts
         public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlContainsFallbackScript()
         {
             var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
-            bundle.Assets.Add(StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns("FALLBACK");
@@ -92,7 +91,7 @@ namespace Cassette.Scripts
         public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlEscapesFallbackScriptTags()
         {
             var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
-            bundle.Assets.Add(StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns("<script></script>");
@@ -108,7 +107,7 @@ namespace Cassette.Scripts
             settings.IsDebuggingEnabled = true;
 
             var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION");
-            bundle.Assets.Add(StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns("<script></script>");
@@ -134,14 +133,6 @@ namespace Cassette.Scripts
             bundle.Process(settings);
             bundle.FallbackRenderer = fallbackRenderer.Object;
             return bundle.Render();
-        }
-
-        IAsset StubAsset()
-        {
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.js");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            return asset.Object;
         }
     }
 }

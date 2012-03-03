@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Cassette.Configuration;
 using Moq;
 using Should;
@@ -75,7 +74,7 @@ namespace Cassette.Stylesheets
         public void GivenApplicationInDebugMode_WhenRenderBundleWithAssets_ThenFallbackRendererIsUsed()
         {
             settings.IsDebuggingEnabled = true;
-            bundle.Assets.Add(StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             Render();
 
@@ -90,14 +89,6 @@ namespace Cassette.Stylesheets
             var html = Render();
 
             html.ShouldEqual("<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>");
-        }
-
-        IAsset StubAsset()
-        {
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.js");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            return asset.Object;
         }
     }
 }

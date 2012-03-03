@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using Cassette.Configuration;
 using Cassette.Manifests;
-using Moq;
 using Should;
 using Xunit;
 
@@ -24,7 +23,14 @@ namespace Cassette.Scripts.Manifests
                 PageLocation = "body",
                 Hash = new byte[] { 1, 2, 3 }
             };
-            asset = StubAsset();
+            asset = new StubAsset
+            {
+                CreateStream = () => new MemoryStream(bundleContent),
+                References =
+                    {
+                        new AssetReference("~/path/asset/file", asset, 0, AssetReferenceType.RawFilename)
+                    }
+            };
             bundle.Assets.Add(asset);
             bundle.AddReference("~/reference/path");
             bundle.Process(new CassetteSettings(""));
@@ -124,22 +130,6 @@ namespace Cassette.Scripts.Manifests
             var scriptBundleManifest = builder.BuildManifest(bundle);
 
             scriptBundleManifest.Condition.ShouldEqual(bundle.Condition);
-        }
-
-        IAsset StubAsset()
-        {
-            var stubAsset = new Mock<IAsset>();
-            stubAsset.SetupGet(a => a.SourceFile.FullPath).Returns("~/path/asset");
-            stubAsset.SetupGet(a => a.References).Returns(new[]
-            {
-                new AssetReference("~/path/asset/file", stubAsset.Object, 0, AssetReferenceType.RawFilename)
-            });
-            stubAsset.Setup(a => a.OpenStream()).Returns(() => new MemoryStream(bundleContent));
-
-            stubAsset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
-                     .Callback<IBundleVisitor>(v => v.Visit(stubAsset.Object));
-
-            return stubAsset.Object;
         }
     }
 }

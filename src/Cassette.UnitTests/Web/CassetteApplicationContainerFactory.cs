@@ -172,7 +172,9 @@ namespace Cassette.Web
         ScriptBundle StubBundle()
         {
             var bundle = new ScriptBundle("~");
-            bundle.Assets.Add(StubAsset("~/test.js"));
+            var asset = new StubAsset(fullPath: "~/test.js");
+            asset.References.Add(new AssetReference("http://example.org/", asset, 1, AssetReferenceType.Url));
+            bundle.Assets.Add(asset);
             bundle.Process(new CassetteSettings(""));
             bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
             return bundle;
@@ -190,7 +192,7 @@ namespace Cassette.Web
             );
         }
 
-        IAsset StubAsset(string filename)
+        IAsset StubAssetX(string filename)
         {
             var asset = new Mock<IAsset>();
             asset
