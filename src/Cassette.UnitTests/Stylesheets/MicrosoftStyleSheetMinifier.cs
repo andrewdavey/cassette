@@ -1,5 +1,4 @@
 ﻿using Cassette.Utilities;
-using Moq;
 using Should;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace Cassette.Stylesheets
         public void TransformMinifiesCss()
         {
             var minifier = new MicrosoftStylesheetMinifier();
-            var getResult = minifier.Transform(() => "p { color: White; }".AsStream(), Mock.Of<IAsset>());
+            var getResult = minifier.Transform(() => "p { color: White; }".AsStream(), new StubAsset());
             using (var result = getResult())
             {
                 result.ReadToEnd().ShouldEqual("p{color:#fff}");

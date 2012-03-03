@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.Scripts;
-using Moq;
 using Should;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace Cassette
     public class ReferenceParser_Test
     {
         readonly ReferenceParser parser = new ReferenceParser(new JavaScriptCommentParser());
-        readonly IAsset asset = Mock.Of<IAsset>();
+        readonly IAsset asset = new StubAsset();
 
         [Fact]
         public void CanParseSimpleReference()

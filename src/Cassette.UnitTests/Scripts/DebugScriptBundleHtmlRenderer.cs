@@ -12,8 +12,8 @@ namespace Cassette.Scripts
         public void GivenBundleWithTwoAssets_WhenRenderBundle_ThenScriptsElementReturnedForEachAsset()
         {
             var bundle = new ScriptBundle("~/test");
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(new StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
@@ -35,8 +35,8 @@ namespace Cassette.Scripts
         public void GivenScriptCondition_WhenRender_ThenConditionalCommentWrapsScripts()
         {
             var bundle = new ScriptBundle("~/test") {Condition = "CONDITION"};
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(new StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
