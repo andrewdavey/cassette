@@ -9,7 +9,7 @@ namespace Cassette.BundleProcessing
             this.assetTransformer = assetTransformer;
         }
 
-        readonly IAssetTransformer assetTransformer;
+        protected readonly IAssetTransformer assetTransformer;
 
         public void Process(Bundle bundle, CassetteSettings settings)
         {
