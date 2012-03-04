@@ -310,6 +310,8 @@
     <Compile Include="NullPlaceholderTracker.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="ReferenceBuilder.cs" />
+    <Compile Include="Stylesheets\CassettePlatformAdaptationLayer.cs" />
+    <Compile Include="Stylesheets\SassCompiler.cs" />
     <Compile Include="Scripts\AssignScriptRenderer.cs" />
     <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
