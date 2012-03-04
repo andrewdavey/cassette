@@ -47,4 +47,3 @@ namespace Cassette.BundleProcessing
         internal abstract ICommentParser CreateCommentParser();
     }
 }
-
