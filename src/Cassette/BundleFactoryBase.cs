@@ -17,6 +17,10 @@ namespace Cassette
             AddAssets(bundle, filesArray, bundleDescriptor.AssetFilenames);
             AddReferences(bundle, bundleDescriptor.References);
             SetIsSortedIfExplicitFilenames(bundle, bundleDescriptor.AssetFilenames);
+            if (bundleDescriptor.IsFromFile)
+            {
+                bundle.IsFromDescriptorFile = true;
+            }
             return bundle;
         }
 

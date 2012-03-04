@@ -117,6 +117,7 @@ namespace Cassette
         protected abstract void ProcessCore(CassetteSettings settings);
 
         internal bool IsProcessed { get; private set; }
+        internal bool IsFromDescriptorFile { get; set; }
 
         internal abstract string Render();
 

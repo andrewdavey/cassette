@@ -36,5 +36,22 @@ namespace Cassette.Scripts
         {
             new ScriptBundleFactory().CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
         }
+
+        [Fact]
+        public void GivenDescriptorIsFromFile_WhenCreateBundle_ThenBundleIsFromDescriptorFileEqualsTrue()
+        {
+            var factory = new ScriptBundleFactory();
+            var descriptor = new BundleDescriptor
+            {
+                IsFromFile = true,
+                AssetFilenames = { "*" }
+            };
+            var bundle = factory.CreateBundle(
+                "~",
+                Enumerable.Empty<IFile>(),
+                descriptor
+            );
+            bundle.IsFromDescriptorFile.ShouldBeTrue();
+        }
     }
 }
