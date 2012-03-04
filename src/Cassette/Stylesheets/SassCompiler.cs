@@ -35,15 +35,13 @@ namespace Cassette.Stylesheets
                 rootDirectory = sourceFile.Directory;
                 Initialize();
 
-                var compilerOptions = GetCompilerOptions(sourceFile);
-
                 StartRecordingOpenedFiles();
                 dependentFileList.Add(sourceFile.FullPath);
 
-                string result;
                 try
                 {
-                    result = (string)sassCompiler.compile(source, compilerOptions);
+                    var compilerOptions = GetCompilerOptions(sourceFile);
+                    return (string)sassCompiler.compile(source, compilerOptions);
                 }
                 catch (Exception e)
                 {
@@ -61,7 +59,6 @@ namespace Cassette.Stylesheets
                 {
                     StopRecordingOpenedFiles();
                 }
-                return result;
             }
         }
 
