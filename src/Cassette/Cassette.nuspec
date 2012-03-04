@@ -15,7 +15,10 @@
             <dependency id="AjaxMin" version="4.46" />
             <dependency id="Jurassic" version="2.1" />
             <dependency id="Newtonsoft.Json" version="4.0" />
-            <dependency id="CommonServiceLocator" version="1.0"/>
+            <dependency id="CommonServiceLocator" version="1.0" />
+            <dependency id="IronRuby" version="1.1" />
+            <dependency id="SassAndCoffee.Core" version="2.0" />
+            <dependency id="SassAndCoffee.Ruby" version="2.0" />
         </dependencies>
         <references>
             <reference file="Pandora.dll"/>
