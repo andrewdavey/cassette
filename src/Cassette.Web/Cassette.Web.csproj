@@ -83,6 +83,7 @@
     <Compile Include="RawFileRequestHandler.cs" />
     <Compile Include="StartUp.cs" />
     <None Include="packages.config" />
+    <None Include="Web.config.transform" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">

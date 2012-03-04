@@ -7,7 +7,4 @@
             </namespaces>
         </pages>
     </system.web.webPages.razor>
-    <system.webServer>
-        <modules runAllManagedModulesForAllRequests="true"/>
-    </system.webServer>
 </configuration>
