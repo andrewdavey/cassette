@@ -20,6 +20,8 @@ namespace Cassette.Stylesheets
             this.getDirectory = getDirectory;
         }
 
+        public Action<string> OnOpenInputFileStream = delegate {};
+
         public override bool FileExists(string path)
         {
             if (IsRelativePath(path))
@@ -36,6 +38,7 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
                 return getDirectory().GetFile(path.Substring(2)).OpenRead();
             }
             else
@@ -48,6 +51,7 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
                 return getDirectory().GetFile(path.Substring(2)).Open(mode, access, share);
             }
             else
@@ -60,6 +64,7 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
                 return getDirectory().GetFile(path.Substring(2)).Open(mode, access, share);
             }
             else

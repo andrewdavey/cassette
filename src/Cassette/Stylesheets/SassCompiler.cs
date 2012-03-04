@@ -19,18 +19,17 @@ namespace Cassette.Stylesheets
     {
         ScriptEngine engine;
         ScriptScope scope;
-        PlatformAdaptationLayer pal;
+        CassettePlatformAdaptationLayer pal;
         dynamic sassCompiler;
         dynamic sassOption;
         dynamic scssOption;
         bool initialized;
         readonly object _lock = new object();
         IDirectory rootDirectory;
+        List<string> dependentFileList;
 
         public string Compile(string source, IFile sourceFile)
         {
-            var dependentFileList = new List<string>();
-
             lock (_lock)
             {
                 rootDirectory = sourceFile.Directory;
@@ -38,25 +37,8 @@ namespace Cassette.Stylesheets
 
                 var compilerOptions = GetCompilerOptions(sourceFile);
 
-                // Removed this because "current directory" doesn't exist for Cassette' file system abstraction yet.
-                // The CassettePlatformAdaptationLayer handles this for us instead.
-                //var directoryPath = pathInfo.DirectoryName;
-                //if (!directoryPath.Contains("\'"))
-                //{
-                //    var statement = String.Format("Dir.chdir '{0}'", directoryPath);
-                //    _engine.Execute(statement, _scope);
-                //}
-
-                // TODO: Reintroduce this once the Cassette PAL supports OnOpenInputFileStream.
-                //if (dependentFileList != null)
-                //{
-                //    dependentFileList.Add(sourceFile.FullPath);
-                //    _pal.OnOpenInputFileStream = (accessedFile) =>
-                //    {
-                //        if (!accessedFile.Contains(".sass-cache"))
-                //            dependentFileList.Add(accessedFile);
-                //    };
-                //}
+                StartRecordingOpenedFiles();
+                dependentFileList.Add(sourceFile.FullPath);
 
                 string result;
                 try
@@ -77,11 +59,32 @@ namespace Cassette.Stylesheets
                 }
                 finally
                 {
-                    // TODO: Reintroduce this once the Cassette PAL supports OnOpenInputFileStream.
-                    //_pal.OnOpenInputFileStream = null;
+                    StopRecordingOpenedFiles();
                 }
                 return result;
             }
+        }
+
+        void StartRecordingOpenedFiles()
+        {
+            dependentFileList = new List<string>();
+            pal.OnOpenInputFileStream = accessedFile =>
+            {
+                if (!accessedFile.Contains(".sass-cache"))
+                {
+                    dependentFileList.Add(accessedFile);
+                }
+            };
+        }
+
+        void StopRecordingOpenedFiles()
+        {
+            pal.OnOpenInputFileStream = null;
+        }
+
+        public IEnumerable<string> ReferencedFiles
+        {
+            get { return dependentFileList; }
         }
 
         dynamic GetCompilerOptions(IFile sourceFile)
