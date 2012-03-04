@@ -31,6 +31,7 @@ namespace Cassette.Stylesheets
             }
             if (CompileSass)
             {
+                yield return new ParseSassReferences();
                 yield return new CompileSass(new SassCompiler());
             }
             if (ConvertImageUrlsToDataUris)

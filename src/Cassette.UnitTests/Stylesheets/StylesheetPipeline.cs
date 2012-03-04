@@ -249,4 +249,37 @@ namespace Cassette.Stylesheets
             )));
         }
     }
+
+    public class StylesheetPipelineWhereSassCompilerTrue : StylesheetPipeline_Process_TestBase
+    {
+        public StylesheetPipelineWhereSassCompilerTrue()
+        {
+            asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("asset.scss");
+            asset.Setup(a => a.OpenStream()).Returns(() => "// @reference 'other.scss';".AsStream());
+            bundle.Assets.Add(asset.Object);
+            pipeline = new StylesheetPipeline();
+            pipeline.CompileSass = true;
+        }
+
+        readonly Mock<IAsset> asset;
+        readonly StylesheetPipeline pipeline;
+
+        [Fact]
+        public void ReferenceInSassAssetIsParsed()
+        {
+            pipeline.Process(bundle, settings);
+            asset.Verify(a => a.AddReference("other.scss", 1));
+        }
+
+        [Fact]
+        public void SassAssetIsCompiled()
+        {
+            pipeline.Process(bundle, settings);
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(
+                t => t is CompileAsset
+            )));
+        }
+    }
 }
