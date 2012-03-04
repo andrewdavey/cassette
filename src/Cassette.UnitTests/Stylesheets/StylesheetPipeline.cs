@@ -17,6 +17,13 @@ namespace Cassette.Stylesheets
             new StylesheetPipeline().CompileLess.ShouldBeTrue();
         }
 
+
+        [Fact]
+        public void CompileSassDefaultsToTrue()
+        {
+            new StylesheetPipeline().CompileSass.ShouldBeTrue();
+        }
+
         [Fact]
         public void StylesheetMinifierDefaultsToMicrosoft()
         {
@@ -48,6 +55,36 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var pipeline = new StylesheetPipeline { CompileLess = false };
+            pipeline.Process(bundle, new CassetteSettings(""));
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
+        }
+
+        [Fact]
+        public void GivenCompileSassIsTrue_WhenProcessBundle_ThenSassAssetHasCompileAssetTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.sass");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { CompileSass = true };
+            pipeline.Process(bundle, new CassetteSettings(""));
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
+        }
+
+        [Fact]
+        public void GivenCompileSassIsFalse_WhenProcessBundle_ThenSassAssetHasNoCompileAssetTransformAdded()
+        {
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/file.sass");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            var bundle = new StylesheetBundle("~");
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline { CompileSass = false };
             pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
