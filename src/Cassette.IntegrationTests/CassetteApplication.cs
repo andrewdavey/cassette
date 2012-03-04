@@ -62,6 +62,32 @@ namespace Cassette.IntegrationTests
         }
 
         [Fact]
+        public void CanGetStylesheetBundleA()
+        {
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/stylesheetbundle/styles/bundle-a");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("a{color:red}p{border:1px solid red}body{color:#abc}");
+                }
+            }
+        }
+
+        [Fact]
+        public void CanGetStylesheetBundleB()
+        {
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/stylesheetbundle/styles/bundle-b");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("body{color:blue}");
+                }
+            }
+        }
+
+        [Fact]
         public void GivenDebugMode_ThenCanGetAsset()
         {
             using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts"), isDebuggingEnabled: true))
