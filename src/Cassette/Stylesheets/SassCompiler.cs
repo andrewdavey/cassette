@@ -79,7 +79,8 @@ namespace Cassette.Stylesheets
             pal.OnOpenInputFileStream = null;
         }
 
-        public IEnumerable<string> ReferencedFiles
+        // TODO: Refactor the Compile interface to return imported file paths as well as the compiled output.
+        internal IEnumerable<string> ReferencedFiles
         {
             get { return dependentFileList; }
         }
