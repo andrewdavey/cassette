@@ -104,7 +104,7 @@
     <Compile Include="Configuration\BundleCollection.AddExplicitFiles.cs" />
     <Compile Include="Configuration\BundleContainerFactoryTestSuite.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
-    <Compile Include="Configuration\DefaultFileSourceConfigurations.cs" />
+    <Compile Include="Configuration\DefaultFileSearches.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
     <Compile Include="Configuration\FileSearch.cs" />

@@ -100,7 +100,7 @@ namespace Cassette.Configuration
         {
             return new FileSearch
             {
-                Pattern = "*.css;*.less",
+                Pattern = "*.css;*.less;*.scss;*.sass",
                 SearchOption = SearchOption.AllDirectories
             };
         }
