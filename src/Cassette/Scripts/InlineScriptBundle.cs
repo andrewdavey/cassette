@@ -30,7 +30,7 @@ namespace Cassette.Scripts
 
             if (HasCondition)
             {
-                return ConditionalRenderer.RenderCondition(Condition, html.ToString());
+                return new ConditionalRenderer().RenderCondition(Condition, html.ToString());
             }
             else
             {

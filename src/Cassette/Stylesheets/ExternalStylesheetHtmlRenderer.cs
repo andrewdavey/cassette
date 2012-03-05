@@ -44,7 +44,7 @@ namespace Cassette.Stylesheets
 
             if (bundle.HasCondition)
             {
-                return bundle.ConditionalRenderer.RenderCondition(bundle.Condition, html.ToString());
+                return new ConditionalRenderer().RenderCondition(bundle.Condition, html.ToString());
             }
             else
             {

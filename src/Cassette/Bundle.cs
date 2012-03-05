@@ -114,8 +114,6 @@ namespace Cassette
             IsProcessed = true;
         }
 
-        internal ConditionalRenderer ConditionalRenderer { get { return conditionalRenderer; } }
-
         protected abstract void ProcessCore(CassetteSettings settings);
 
         internal bool IsProcessed { get; private set; }

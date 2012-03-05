@@ -26,7 +26,7 @@ namespace Cassette.Stylesheets
         /// </summary>
         public string Condition { get; set; }
 
-        public bool HasCondition
+        internal bool HasCondition
         {
             get { return !String.IsNullOrEmpty(Condition); }
         }

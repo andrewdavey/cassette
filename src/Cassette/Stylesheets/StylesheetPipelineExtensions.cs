@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
@@ -14,6 +15,7 @@ namespace Cassette.Stylesheets
             if (type == ImageEmbedType.Mhtml)
             {
                 // TODO: MHTML support
+                pipeline.InsertBefore<ExpandCssUrls>(new AssignContentType("message/rfc822"));
             }
             else
             {
