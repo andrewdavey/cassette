@@ -56,7 +56,7 @@ namespace Cassette.Configuration
                                    )).Returns(new ExternalScriptBundle(url));
 
             bool called = false;
-            Action<ScriptBundle> customizeBundle = b => called = true;
+            Action<Bundle> customizeBundle = b => called = true;
 
             bundles.AddUrl(url, customizeBundle);
 

@@ -152,7 +152,7 @@ namespace Cassette
             return !bundles.Any(m => m.ContainsPath(path));
         }
 
-        Dictionary<Bundle, HashSet<Bundle>> BuildBundleImmediateReferenceDictionary()
+        Dictionary<Bundle, HashedSet<Bundle>> BuildBundleImmediateReferenceDictionary()
         {
             return (
                 from bundle in bundles

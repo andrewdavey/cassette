@@ -66,8 +66,11 @@
   <ItemGroup>
     <EmbeddedResource Include="jasmine.css" />
     <EmbeddedResource Include="jasmine.js" />
+    <None Include="Cassette.Web.Jasmine.symbols.nutrans">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="jasmine-license.txt" />
-    <None Include="Cassette.Web.Jasmine.nuspec">
+    <None Include="Cassette.Web.Jasmine.nutrans">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />

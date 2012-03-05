@@ -431,7 +431,7 @@ namespace Cassette.Configuration
         /// <param name="directoryPath">The path to the directory to search. If null or empty the application source directory is used.</param>
         /// <param name="fileSearch">The <see cref="IFileSearch"/> used to find files. If null the application default file search for the bundle type is used.</param>
         /// <param name="customizeBundle">An optional action delegate called for each bundle.</param>
-        public static void AddPerIndividualFile<T>(this BundleCollection bundleCollection, string directoryPath = null, IFileSearch fileSearch = null, Action<Bundle> customizeBundle = null)
+        public static void AddPerIndividualFile<T>(this BundleCollection bundleCollection, string directoryPath = null, IFileSearch fileSearch = null, Action<T> customizeBundle = null)
             where T : Bundle
         {
             var directory = string.IsNullOrEmpty(directoryPath)
