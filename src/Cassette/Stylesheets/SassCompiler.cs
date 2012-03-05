@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NET40
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -151,3 +153,4 @@ namespace Cassette.Stylesheets
         }
     }
 }
+#endif

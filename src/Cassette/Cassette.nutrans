@@ -12,17 +12,30 @@
     <references xdt:Transform="Insert">
       <reference file="Pandora.dll"/>
       <reference file="Cassette.dll"/>
-      <reference file="Cassette.dotless.Core.dll"/>
       <reference file="Iesi.Collections.dll" />
+      <reference file="IronRuby.dll" />
+      <reference file="IronRuby.Libraries.dll" />
+      <reference file="IronRuby.Libraries.Yaml.dll" />
+      <reference file="Microsoft.Dynamic.dll" />
+      <reference file="Microsoft.Scripting.dll" />
+      <reference file="Microsoft.Scripting.Metadata.dll" />
+      <reference file="SassAndCoffee.Core.dll" />
+      <reference file="SassAndCoffee.Ruby.dll" />
     </references>
   </metadata>
   <files xdt:Transform="Insert">
     <file src="..\..\build\bin\lib40\Cassette.dll" target="lib\net40-client" />
-    <file src="..\..\build\bin\lib40\Cassette.dotless.Core.dll" target="lib\net40-client" />
     <file src="..\..\build\bin\lib35\Cassette.dll" target="lib\net35-client" />
-    <file src="..\..\build\bin\lib35\Cassette.dotless.Core.dll" target="lib\net35-client" />
     <file src="..\..\build\bin\lib35\Iesi.Collections.dll" target="lib\net35-client" />
     <file src="..\..\build\bin\lib40\Pandora.dll" target="lib\net40-client"/>
     <file src="..\..\build\bin\lib35\Pandora.dll" target="lib\net35-client"/>
+    <file src="..\..\build\bin\lib40\IronRuby.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\IronRuby.Libraries.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\IronRuby.Libraries.Yaml.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\Microsoft.Dynamic.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\Microsoft.Scripting.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\Microsoft.Scripting.Metadata.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\SassAndCoffee.Core.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\SassAndCoffee.Ruby.dll" target="lib\net40-client"/>
   </files>
 </package>

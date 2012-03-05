@@ -23,8 +23,6 @@ namespace Cassette.Web
 
             routeData.Values.Add("path", "test/asset.js");
 
-#if NET35
-
             var httpContext = new Mock<HttpContextBase>();
             httpContext.SetupGet(r => r.Response)
                           .Returns(response.Object);
@@ -33,25 +31,14 @@ namespace Cassette.Web
             httpContext.SetupGet(r => r.Items)
                           .Returns(new Dictionary<string, object>());
 
-            var requestContext = new Mock<RequestContext>(httpContext.Object, routeData);
-#endif
-#if NET40
-            var requestContext = new Mock<RequestContext>();
-            requestContext.SetupGet(r => r.RouteData)
-                .Returns(routeData);
+            var requestContext = new RequestContext(httpContext.Object, routeData);
 
-            requestContext.SetupGet(r => r.HttpContext.Response)
-                .Returns(response.Object);
-            requestContext.SetupGet(r => r.HttpContext.Request)
-                .Returns(request.Object);
-            requestContext.SetupGet(r => r.HttpContext.Items)
-                .Returns(new Dictionary<string, object>());
-#endif
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
             response.SetupGet(r => r.Cache).Returns(cache.Object);
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
+
             bundles = new List<Bundle>();
-            handler = new AssetRequestHandler(requestContext.Object, bundles);
+            handler = new AssetRequestHandler(requestContext, bundles);
         }
 
         readonly AssetRequestHandler handler;

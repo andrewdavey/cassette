@@ -69,11 +69,17 @@ namespace Cassette.IntegrationTests
                 using (var http = new HttpTestHarness(routes))
                 {
                     http.Get("~/_cassette/stylesheetbundle/styles/bundle-a");
+#if NET35
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("color: red;a{color:$color}p{border:1px solid red}body{color:#abc}");
+#endif
+#if NET40
                     http.ResponseOutputStream.ReadToEnd().ShouldEqual("a{color:red}p{border:1px solid red}body{color:#abc}");
+#endif
                 }
             }
         }
 
+#if NET40
         [Fact]
         public void CanGetStylesheetBundleB()
         {
@@ -86,7 +92,7 @@ namespace Cassette.IntegrationTests
                 }
             }
         }
-
+#endif
         [Fact]
         public void GivenDebugMode_ThenCanGetAsset()
         {

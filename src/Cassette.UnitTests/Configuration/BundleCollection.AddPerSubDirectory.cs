@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -105,7 +106,7 @@ namespace Cassette.Configuration
         {
             CreateDirectory("test");
             File.WriteAllText(
-                Path.Combine(tempDirectory, "test", "bundle.txt"), 
+                PathUtilities.Combine(tempDirectory, "test", "bundle.txt"), 
                 "[external]" + Environment.NewLine + "url=http://example.org/"
                 );
             bundles.AddPerSubDirectory<TestableBundle>("~");
@@ -135,7 +136,7 @@ namespace Cassette.Configuration
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
-            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
             defaultAssetSource
                 .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
@@ -162,7 +163,7 @@ namespace Cassette.Configuration
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
-            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
             defaultAssetSource
                 .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
@@ -184,7 +185,7 @@ namespace Cassette.Configuration
         {
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
-            File.WriteAllText(Path.Combine(tempDirectory, "test", "file-b.js"), "");
+            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
             defaultAssetSource
                 .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile() });

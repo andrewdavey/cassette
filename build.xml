@@ -38,11 +38,11 @@
             <MainNuspec Include="src\Cassette\Cassette.nuspec"/>
             <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
             <MainNuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
-	    <MainNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.nuspec"/>
+	        <MainNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.nuspec"/>
             <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Web\Cassette.Web.symbols.nuspec"/>
-	    <SymbolsNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.symbols.nuspec"/>
+	        <SymbolsNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.symbols.nuspec"/>
             <Transforms Include="src\**\*.nutrans" />
         </ItemGroup>        
         <PropertyGroup>

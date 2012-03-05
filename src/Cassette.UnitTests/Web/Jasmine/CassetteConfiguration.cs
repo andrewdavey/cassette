@@ -4,6 +4,7 @@ using Cassette.Stylesheets;
 using Should;
 using Xunit;
 
+#if NET40
 namespace Cassette.Web.Jasmine
 {
     public class CassetteConfiguration_WhenConfigure
@@ -32,3 +33,4 @@ namespace Cassette.Web.Jasmine
         }
     }
 }
+#endif
