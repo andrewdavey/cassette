@@ -135,9 +135,10 @@ namespace Cassette
             {
                 bundle.Accept(collector);
             }
-            var notFound = from reference in collector.CollectedAssetReferences
-                           where bundles.Any(m => m.ContainsPath(reference.Path)) == false
-                           select CreateAssetReferenceNotFoundMessage(reference);
+            var notFound = from reference in collector.CollectedReferences
+                           where !reference.SourceBundle.IsFromDescriptorFile
+                              && NoBundlesContainPath(reference.AssetReference.Path)
+                           select CreateAssetReferenceNotFoundMessage(reference.AssetReference);
 
             var message = string.Join(Environment.NewLine, notFound.ToArray());
             if (message.Length > 0)
@@ -146,7 +147,12 @@ namespace Cassette
             }
         }
 
-        Dictionary<Bundle, HashedSet<Bundle>> BuildBundleImmediateReferenceDictionary()
+        bool NoBundlesContainPath(string path)
+        {
+            return !bundles.Any(m => m.ContainsPath(path));
+        }
+
+        Dictionary<Bundle, HashSet<Bundle>> BuildBundleImmediateReferenceDictionary()
         {
             return (
                 from bundle in bundles
@@ -166,7 +172,7 @@ namespace Cassette
         {
             var collector = new BundleReferenceCollector(AssetReferenceType.DifferentBundle, AssetReferenceType.Url);
             bundle.Accept(collector);
-            return collector.CollectedAssetReferences;
+            return collector.CollectedReferences.Select(r => r.AssetReference);
         }
 
         string CreateAssetReferenceNotFoundMessage(AssetReference reference)

@@ -31,7 +31,7 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void GivenBundleHasOneAssetThenBundleHashIsSHA1OfAssetContent()
         {
-            var asset = StubAsset("content");
+            var asset = new StubAsset(content: "content");
             bundle.Assets.Add(asset);
 
             ProcessBundleWithAssignHash();
@@ -42,23 +42,14 @@ namespace Cassette.BundleProcessing
         [Fact]
         public void GivenBundleHasOneAssetThatContainsTwoAssetsThenBundleHashIsSHA1OfTheTwoChildAssets()
         {
-            var childAsset1 = StubAsset("asset-1");
-            var childAsset2 = StubAsset("asset-2");
+            var childAsset1 = new StubAsset(content: "asset-1");
+            var childAsset2 = new StubAsset(content: "asset-2");
             var combinedAsset = CombinedAsset(childAsset1, childAsset2);
             bundle.Assets.Add(combinedAsset);
 
             ProcessBundleWithAssignHash();
 
             AssertHashIsSha1Of("asset-1asset-2");
-        }
-
-        IAsset StubAsset(string content)
-        {
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.OpenStream()).Returns(() => content.AsStream());
-            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
-                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            return asset.Object;
         }
 
         IAsset CombinedAsset(IAsset childAsset1, IAsset childAsset2)

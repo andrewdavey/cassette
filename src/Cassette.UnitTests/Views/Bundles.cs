@@ -270,8 +270,8 @@ namespace Cassette.Views
         {
             application.Settings.IsDebuggingEnabled = true;
             var bundle = new TestableBundle("~");
-            bundle.Assets.Add(StubAsset());
-            bundle.Assets.Add(StubAsset());
+            bundle.Assets.Add(new StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             referenceBuilder
                 .Setup(b => b.GetBundles(null))
@@ -284,14 +284,6 @@ namespace Cassette.Views
             var returnedUrls = Bundles.GetReferencedBundleUrls<TestableBundle>();
 
             returnedUrls.ShouldEqual(new[] { "/asset1", "/asset2" });
-        }
-
-        IAsset StubAsset()
-        {
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
-                .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            return asset.Object;
         }
 
         class TestableApplication : CassetteApplicationBase

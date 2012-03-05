@@ -12,8 +12,8 @@ namespace Cassette.Stylesheets
         public void GivenBundleWithAssets_WhenRender_ThenLinkForEachAssetIsReturned()
         {
             var bundle = new StylesheetBundle("~/test");
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(new StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
@@ -37,8 +37,8 @@ namespace Cassette.Stylesheets
             {
                 Media = "MEDIA"
             };
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(new StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });
@@ -62,8 +62,8 @@ namespace Cassette.Stylesheets
             {
                 Condition = "CONDITION"
             };
-            bundle.Assets.Add(Mock.Of<IAsset>());
-            bundle.Assets.Add(Mock.Of<IAsset>());
+            bundle.Assets.Add(new StubAsset());
+            bundle.Assets.Add(new StubAsset());
 
             var urlGenerator = new Mock<IUrlGenerator>();
             var assetUrls = new Queue<string>(new[] { "asset1", "asset2" });

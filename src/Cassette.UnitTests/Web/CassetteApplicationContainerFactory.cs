@@ -64,7 +64,7 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void WhenCreateContainer_ThenBundleIsLoadedFromManifest()
+        public void GivenCompileTimeManifest_WhenCreateContainer_ThenBundleIsLoadedFromManifest()
         {
             using (var path = new TempDirectory())
             {
@@ -76,6 +76,82 @@ namespace Cassette.Web
                 container.Application.FindBundleContainingPath<ScriptBundle>("~/test.js").ShouldNotBeNull();
             }
         }
+
+        [Fact]
+        public void GivenCompileTimeManifest_WhenCreateContainer_ThenAdHocExternalReferenceIsConvertedToExternalBundle()
+        {
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.FindBundleContainingPath<ScriptBundle>("http://example.org/").ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigRewriteHtmlIsTrue_WhenCreateContainer_ThenSettingsIsHtmlRewritingEnabledEqualsTrue()
+        {
+            configurationSection.RewriteHtml = true;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+                
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.IsHtmlRewritingEnabled.ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigRewriteHtmlIsFalse_WhenCreateContainer_ThenSettingsIsHtmlRewritingEnabledEqualsFalse()
+        {
+            configurationSection.RewriteHtml = false;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.IsHtmlRewritingEnabled.ShouldBeFalse();
+            }
+        }
+
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigAllowRemoteDiagnosticsIsTrue_WhenCreateContainer_ThenSettingsAllowRemoteDiagnosticsEqualsTrue()
+        {
+            configurationSection.AllowRemoteDiagnostics = true;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.AllowRemoteDiagnostics.ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public void GivenCompileTimeManifestAndConfigAllowRemoteDiagnosticsIsTrue_WhenCreateContainer_ThenSettingsAllowRemoteDiagnosticsEqualsFalse()
+        {
+            configurationSection.AllowRemoteDiagnostics = false;
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
+
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.AllowRemoteDiagnostics.ShouldBeFalse();
+            }
+        }
+
+
 
         void CompileTimeManifestWithBundleExists(string rootDirectory)
         {
@@ -97,7 +173,9 @@ namespace Cassette.Web
         ScriptBundle StubBundle()
         {
             var bundle = new ScriptBundle("~");
-            bundle.Assets.Add(StubAsset("~/test.js"));
+            var asset = new StubAsset(fullPath: "~/test.js");
+            asset.References.Add(new AssetReference("http://example.org/", asset, 1, AssetReferenceType.Url));
+            bundle.Assets.Add(asset);
             bundle.Process(new CassetteSettings(""));
             bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
             return bundle;
@@ -115,12 +193,28 @@ namespace Cassette.Web
             );
         }
 
-        IAsset StubAsset(string filename)
+        IAsset StubAssetX(string filename)
         {
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            asset.Setup(a => a.SourceFile.FullPath).Returns(filename);
-            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>())).Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+            asset
+                .Setup(a => a.OpenStream())
+                .Returns(Stream.Null);
+
+            asset
+                .Setup(a => a.SourceFile.FullPath)
+                .Returns(filename);
+
+            asset
+                .Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+
+            asset
+                .SetupGet(a => a.References)
+                .Returns(new[]
+                {
+                    new AssetReference("http://example.org/", asset.Object, 1, AssetReferenceType.Url)
+                });
+
             return asset.Object;
         }
     }

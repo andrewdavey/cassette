@@ -1,0 +1,1 @@
+﻿Copied from https://github.com/pivotal/jasmine/tree/master/lib/jasmine-core/example/src under the MIT License

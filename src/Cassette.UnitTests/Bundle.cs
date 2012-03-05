@@ -128,7 +128,7 @@ namespace Cassette
         public void ContainsRelativePathToAsset_ReturnsTrue()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = StubAsset("~/test/asset.js");
+            var asset = new StubAsset("~/test/asset.js");
             bundle.Assets.Add(asset);
 
             bundle.ContainsPath("asset.js").ShouldBeTrue();
@@ -138,7 +138,7 @@ namespace Cassette
         public void FindAssetByPathReturnsAssetWithMatchingFilename()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = StubAsset("~/test/asset.js");
+            var asset = new StubAsset("~/test/asset.js");
             bundle.Assets.Add(asset);
 
             bundle.FindAssetByPath("~/test/asset.js").ShouldBeSameAs(asset);
@@ -156,7 +156,7 @@ namespace Cassette
         public void GivenAssetInSubDirectory_WhenFindAssetByPathWithBackSlashes_ThenAssetWithMatchingFilenameIsReturned()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = StubAsset("~/test/sub/asset.js");
+            var asset = new StubAsset("~/test/sub/asset.js");
             bundle.Assets.Add(asset);
 
             bundle.FindAssetByPath("~\\test\\sub\\asset.js").ShouldBeSameAs(asset);
@@ -166,7 +166,7 @@ namespace Cassette
         public void GivenAssetInSubDirectory_WhenFindAssetByPath_ThenAssetWithMatchingFilenameIsReturned()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = StubAsset("~/test/sub/asset.js");
+            var asset = new StubAsset("~/test/sub/asset.js");
             bundle.Assets.Add(asset);
 
             bundle.FindAssetByPath("~/test/sub/asset.js").ShouldBeSameAs(asset);
@@ -176,8 +176,8 @@ namespace Cassette
         public void GivenConcatenatedAsset_WhenFindAssetByPath_ThenSourceAssetsAreSearched()
         {
             var bundle = new TestableBundle("~/test");
-            var asset1 = StubAsset("~/test/asset1.js");
-            var asset2 = StubAsset("~/test/asset2.js");
+            var asset1 = new StubAsset("~/test/asset1.js");
+            var asset2 = new StubAsset("~/test/asset2.js");
 
             // Simulate concatenated asset. We only need the Accept method to visit each child.
             var concatenatedAsset = new Mock<IAsset>();
@@ -288,15 +288,6 @@ namespace Cassette
                 Hash = new byte[] { 1, 2, 3 }
             };
             bundle.Url.ShouldEqual("testablebundle/path_010203");
-        }
-
-        IAsset StubAsset(string filename)
-        {
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
-                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns(filename);
-            return asset.Object;
         }
     }
 

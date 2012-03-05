@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Cassette.Configuration
 {
     class BundleContainerFactory : BundleContainerFactoryBase
     {
-        public BundleContainerFactory(CassetteSettings settings)
+        readonly BundleCollection bundles;
+
+        public BundleContainerFactory(BundleCollection bundles, CassetteSettings settings)
             : base(settings)
         {
+            this.bundles = bundles;
         }
 
-        public override IBundleContainer Create(IEnumerable<Bundle> unprocessedBundles)
+        public override IBundleContainer CreateBundleContainer()
         {
-            var bundlesArray = unprocessedBundles.ToArray();
-            ProcessAllBundles(bundlesArray);
-            var externalBundles = CreateExternalBundlesUrlReferences(bundlesArray);
-            return new BundleContainer(bundlesArray.Concat(externalBundles));
+            ProcessAllBundles(bundles);
+            var externalBundles = CreateExternalBundlesUrlReferences(bundles);
+            return new BundleContainer(bundles.Concat(externalBundles));
         }
     }
 }

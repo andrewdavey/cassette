@@ -2,6 +2,6 @@
 {
     interface IExternalBundle
     {
-        string Url { get; }
+        string ExternalUrl { get; }
     }
 }

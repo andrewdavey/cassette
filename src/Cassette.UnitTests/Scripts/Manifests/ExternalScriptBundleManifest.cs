@@ -35,7 +35,7 @@ namespace Cassette.Scripts.Manifests
         [Fact]
         public void CreatedBundleUrlEqualsManifestUrl()
         {
-            createdBundle.Url.ShouldEqual(manifest.Url);
+            ((IExternalBundle)createdBundle).ExternalUrl.ShouldEqual(manifest.Url);
         }
 
         [Fact]

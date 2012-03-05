@@ -9,31 +9,48 @@ namespace Cassette
     class BundleReferenceCollector : IBundleVisitor
     {
         readonly HashedSet<AssetReferenceType> validTypes;
+		Bundle currentBundle;
 
         public BundleReferenceCollector(params AssetReferenceType[] typesToCollect)
         {
-            CollectedAssetReferences = new List<AssetReference>();
+            CollectedReferences = new List<CollectedReference>();
             validTypes = new HashedSet<AssetReferenceType>(typesToCollect);
         }
 
-        public List<AssetReference> CollectedAssetReferences { get; private set; }
+        public List<CollectedReference> CollectedReferences { get; private set; }
 
         public void Visit(Bundle bundle)
         {
+            currentBundle = bundle;
         }
 
         public void Visit(IAsset asset)
         {
-            var assetReferencesToDifferentBundle = asset.References.Where(ShouldCollectReference);
-            foreach (var reference in assetReferencesToDifferentBundle)
+            var assetReferencesToCollect = asset.References.Where(ShouldCollectReference);
+            foreach (var reference in assetReferencesToCollect)
             {
-                CollectedAssetReferences.Add(reference);
+                CollectReference(reference);
             }
+        }
+
+        void CollectReference(AssetReference reference)
+        {
+            CollectedReferences.Add(new CollectedReference
+            {
+                SourceBundle = currentBundle,
+                AssetReference = reference
+            });
         }
 
         bool ShouldCollectReference(AssetReference reference)
         {
             return validTypes.Contains(reference.Type);
+        }
+
+        public class CollectedReference
+        {
+            public Bundle SourceBundle;
+            public AssetReference AssetReference;
         }
     }
 }

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Cassette.Scripts.Manifests
 {
-    class ExternalScriptBundleManifestBuilder_Tests
+    public class ExternalScriptBundleManifestBuilder_Tests
     {
         [Fact]
         public void ManifestUrlEqualsBundleUrl()
@@ -13,7 +13,7 @@ namespace Cassette.Scripts.Manifests
 
             var manifest = builder.BuildManifest(bundle);
 
-            manifest.Url.ShouldEqual(bundle.Url);
+            manifest.Url.ShouldEqual(bundle.ExternalUrl);
         }
 
         [Fact]

@@ -1,10 +1,10 @@
 ﻿using System;
+using System.IO;
 using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
-using System.IO;
 
 namespace Cassette.Scripts
 {
@@ -13,10 +13,10 @@ namespace Cassette.Scripts
         const string Url = "http://test.com/asset.js";
 
         [Fact]
-        public void WhenCreateWithUrl_ThenUrlPropertyIsAssigned()
+        public void WhenCreateWithUrl_ThenExternalUrlPropertyIsAssigned()
         {
             var bundle = new ExternalScriptBundle(Url);
-            bundle.Url.ShouldEqual(Url);
+            bundle.ExternalUrl.ShouldEqual(Url);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Cassette.Scripts
         public void WhenCreateWithUrlAndPath_ThenUrlIsAssigned()
         {
             var bundle = new ExternalScriptBundle(Url, "~/test");
-            bundle.Url.ShouldEqual(Url);
+            bundle.ExternalUrl.ShouldEqual(Url);
         }
 
         [Fact]

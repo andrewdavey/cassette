@@ -30,44 +30,6 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void RenderUsesRenderer()
-        {
-            var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
-            var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings("")
-            {
-                UrlGenerator = urlGenerator.Object
-            };
-            bundle.Process(settings);
-
-            var html = bundle.Render();
-
-            html.ShouldContain(bundle.Url);
-        }
-
-        [Fact]
-        public void GivenMediaNotEmpty_RenderReturnsHtmlLinkElementWithMediaAttribute()
-        {
-            var bundle = new ExternalStylesheetBundle("http://test.com/asset.css")
-            {
-                Media = "print"
-            };
-            var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings("")
-            {
-                UrlGenerator = urlGenerator.Object
-            };
-            bundle.Process(settings);
-
-            var html = bundle.Render();
-
-            html.ShouldContain(bundle.Url);
-            html.ShouldContain("media=\"print\"");
-        }
-
-        [Fact]
         public void ProcessCallsProcessor()
         {
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");

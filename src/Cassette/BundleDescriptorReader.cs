@@ -42,11 +42,14 @@ namespace Cassette
                     ProcessLine(line);
                 }
             }
-            var descriptor = new BundleDescriptor();
+            var descriptor = new BundleDescriptor
+            {
+                ExternalUrl = externalUrl,
+                FallbackCondition = fallbackCondition,
+                IsFromFile = true
+            };
             descriptor.AssetFilenames.AddRange(assetFilenames);
             descriptor.References.AddRange(references);
-            descriptor.ExternalUrl = externalUrl;
-            descriptor.FallbackCondition = fallbackCondition;
             return descriptor;
         }
 

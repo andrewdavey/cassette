@@ -209,6 +209,14 @@ namespace Cassette
             exception.Message.ShouldContain("fail");
         }
 
+        [Fact]
+        public void WhenRead_ThenReturnedDescriptorIsFromFileEqualsTrue()
+        {
+            var reader = GetReader("*");
+            var descriptor = reader.Read();
+            descriptor.IsFromFile.ShouldBeTrue();
+        }
+
         public void Dispose()
         {
             tempDirectory.Dispose();
