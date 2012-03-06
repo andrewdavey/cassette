@@ -71,6 +71,24 @@
                    If it is an issue for 3.5-based projects, can maybe figure out a clean way to package tools for 3.5 and 4.0.
                    See: src\Cassette.MSBuild\Cassette.MSBuild.nuspec -->
         <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -NoPackageAnalysis"/>
+
+        <!-- TODO: Until we can multi-target within Nuget easily, we are packaging Fx35 as a zip file for release -->
+        <ItemGroup>
+            <Binary Include="build\bin\lib35\Cassette.dll" />
+            <Binary Include="build\bin\lib35\Cassette.Views.dll" />
+            <Binary Include="build\bin\lib35\Cassette.Web.dll" />
+            <Binary Include="build\bin\lib35\Iesi.Collections.dll" />
+            <Binary Include="build\bin\lib35\Pandora.dll" />
+            <Content Include="src\Cassette.Web\CassetteConfiguration.cs.pp" />
+            <Content Include="src\Cassette.Web\web.config.transform" />
+            <Content Include="src\Cassette.Views\web.config.mvc2.transform" />
+            <Root Include="license.txt" />
+            <Root Include="readme_fx35.md" />
+        </ItemGroup>
+
+        <Copy SourceFiles="%(Binary.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\lib35" />
+        <Copy SourceFiles="%(Content.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\content" />
+        <Copy SourceFiles="%(Root.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)" />
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
