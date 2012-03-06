@@ -73,6 +73,7 @@
   <ItemGroup>
     <None Include="Cassette.Views.nutrans" />
     <None Include="Cassette.Views.symbols.nutrans" />
+    <None Include="Web.config.mvc2.transform" />
     <None Include="Web.config.transform" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
