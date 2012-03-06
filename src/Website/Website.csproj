@@ -80,6 +80,7 @@
     <Content Include="assets\scripts\disqus\disqus.js" />
     <Content Include="assets\scripts\jquery\jquery.js" />
     <Content Include="assets\scripts\home\tweets.js" />
+    <Content Include="assets\vsdoc\something-vsdoc.js" />
     <Content Include="assets\styles\buttons.css" />
     <Content Include="assets\styles\code.css" />
     <Content Include="assets\styles\documentation.css" />

@@ -20,8 +20,12 @@ namespace Cassette.Scripts
         protected override IEnumerable<string> ParsePaths(string comment, IAsset sourceAsset, int lineNumber)
         {
             var simplePaths = base.ParsePaths(comment, sourceAsset, lineNumber);
-            var xmlCommentPaths = ParseXmlDocCommentPaths(comment);
-            return simplePaths.Concat(xmlCommentPaths);
+			if (!comment.EndsWith("-ignore"))
+			{
+				var xmlCommentPaths = ParseXmlDocCommentPaths(comment);
+				return simplePaths.Concat(xmlCommentPaths);
+			}
+			return simplePaths;
         }
 
         static IEnumerable<string> ParseXmlDocCommentPaths(string comment)
