@@ -47,8 +47,7 @@ namespace Cassette.Scripts
             var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "(gt IE 9)|!(IE)" };
             var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
 
-            var renderer = new ExternalScriptBundleHtmlRenderer(fallbackRenderer.Object, settings);
-            var html = renderer.Render(bundle);
+            var html = bundle.Render(bundle);
 
             html.ShouldEqual(
                 "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +

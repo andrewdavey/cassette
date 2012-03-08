@@ -54,7 +54,7 @@ namespace Cassette.Stylesheets
             settings.IsDebuggingEnabled = false;
             bundle.Condition = "(gt IE 9)|!(IE)";
 
-            var html = renderer.Render(bundle);
+            var html = bundle.Render(bundle);
 
             html.ShouldEqual(
                 "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
