@@ -1,6 +1,4 @@
 ﻿using System;
-using Cassette.Utilities;
-using Moq;
 using Should;
 using Xunit;
 
@@ -27,7 +25,7 @@ namespace Cassette.HtmlTemplates
         public void GivenHtmlTemplateBundleWithOneAsset_WhenRender_ThenReturnsAssetsOpenStreamResult()
         {
             var bundle = new HtmlTemplateBundle("~");
-            bundle.Assets.Add(StubAsset("content"));
+            bundle.Assets.Add(new StubAsset(content: "content"));
 
             var html = render.Render(bundle);
             html.ShouldEqual("content");
@@ -37,18 +35,11 @@ namespace Cassette.HtmlTemplates
         public void GivenHtmlTemplateBundleWithTwoAssets_WhenRender_ThenReturnsEachAssetsOpenStreamResultSeparatedByNewLine()
         {
             var bundle = new HtmlTemplateBundle("~");
-            bundle.Assets.Add(StubAsset("content1"));
-            bundle.Assets.Add(StubAsset("content2"));
+            bundle.Assets.Add(new StubAsset(content: "content1"));
+            bundle.Assets.Add(new StubAsset(content: "content2"));
 
             var html = render.Render(bundle);
             html.ShouldEqual("content1" + Environment.NewLine + "content2");
-        }
-
-        IAsset StubAsset(string content)
-        {
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.OpenStream()).Returns(content.AsStream());
-            return asset.Object;
         }
     }
 }

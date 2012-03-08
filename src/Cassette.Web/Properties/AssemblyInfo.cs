@@ -21,5 +21,6 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("1038439c-5eae-4483-9051-adca689d2532")]
 
+[assembly: InternalsVisibleTo("Cassette.Web.Jasmine")]
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.IntegrationTests")]

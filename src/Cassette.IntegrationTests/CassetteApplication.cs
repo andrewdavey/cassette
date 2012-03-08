@@ -75,6 +75,32 @@ namespace Cassette.IntegrationTests
         }
 
         [Fact]
+        public void CanGetStylesheetBundleA()
+        {
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/stylesheetbundle/styles/bundle-a");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("a{color:red}p{border:1px solid red}body{color:#abc}");
+                }
+            }
+        }
+
+        [Fact]
+        public void CanGetStylesheetBundleB()
+        {
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
+            {
+                using (var http = new HttpTestHarness(routes))
+                {
+                    http.Get("~/_cassette/stylesheetbundle/styles/bundle-b");
+                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("body{color:blue}");
+                }
+            }
+        }
+
+        [Fact]
         public void GivenDebugMode_ThenCanGetAsset()
         {
             using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts"), isDebuggingEnabled: true))
@@ -147,6 +173,31 @@ function asset1() {
 
                 stylesheetHtml.ShouldContain("<link");
                 scriptHtml.ShouldContain("<script");
+            }
+        }
+
+        [Fact]
+        public void WhenRenderingExternalScriptBundleWithFallback_ThenHtmlIsExternalScriptAndConditionalScriptBlock()
+        {
+            Action<BundleCollection> config = bundles =>
+            {
+                bundles.Add<ScriptBundle>("~/scripts/bundle-d");
+            };
+
+            using (var app = CreateApplication(config))
+            {
+                app.OnPostMapRequestHandler();
+                var builder = app.GetReferenceBuilder();
+
+                builder.Reference("~/scripts/bundle-d");
+                var html = builder.Render<ScriptBundle>(null);
+
+                html.ShouldEqual(@"<script src=""http://example.com/"" type=""text/javascript""></script>
+<script type=""text/javascript"">
+if(!window.example){
+document.write(unescape('%3Cscript src=""/_cassette/scriptbundle/scripts/bundle-d_324630d9a339e77b9687f404596df7952257b3f2"" type=""text/javascript""%3E%3C/script%3E'));
+}
+</script>");
             }
         }
 

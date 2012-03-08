@@ -262,9 +262,9 @@ namespace Cassette.Configuration
                 var topLevelFiles = fileSearch.FindFiles(parentDirectory)
                                               .Where(f => f.Directory == parentDirectory)
                                               .ToArray();
-                if (topLevelFiles.Any())
+                var directoryBundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, topLevelFiles, parentDirectory);
+                if (topLevelFiles.Any() || directoryBundle is IExternalBundle)
                 {
-                    var directoryBundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, topLevelFiles, parentDirectory);
                     if (customizeBundle != null) customizeBundle(directoryBundle);
                     bundleCollection.Add(directoryBundle);
                 }
@@ -275,12 +275,13 @@ namespace Cassette.Configuration
             {
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
                 var allFiles = fileSearch.FindFiles(directory).ToArray();
-                if (!allFiles.Any()) continue;
 
                 var descriptorFile = TryGetDescriptorFile(directory);
                 var descriptor = descriptorFile.Exists
                                      ? new BundleDescriptorReader(descriptorFile).Read()
                                      : new BundleDescriptor { AssetFilenames = { "*" } };
+
+                if (!allFiles.Any() && descriptor.ExternalUrl == null) continue;
 
                 var bundle = bundleFactory.CreateBundle(directory.FullPath, allFiles, descriptor);
                 if (customizeBundle != null) customizeBundle(bundle);

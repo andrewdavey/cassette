@@ -13,8 +13,9 @@ namespace Cassette.Stylesheets.Manifests
             
             var manifest = builder.BuildManifest(bundle);
 
-            manifest.Url.ShouldEqual(bundle.Url);
+            manifest.Url.ShouldEqual(bundle.ExternalUrl);
         }
+
         [Fact]
         public void ManifestMediaEqualsBundleMedia()
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using Moq;
 using Should;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace Cassette
         [Fact]
         public void ConstructorAssignsProperties()
         {
-            var asset = Mock.Of<IAsset>();
+            var asset = new StubAsset();
             var reference = new AssetReference("~/path", asset, 1, AssetReferenceType.DifferentBundle);
 
             reference.Path.ShouldEqual("~/path");

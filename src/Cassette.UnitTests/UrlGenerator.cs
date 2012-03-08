@@ -29,23 +29,11 @@ namespace Cassette
         [Fact]
         public void CreateBundleUrlCallsBundleUrlProperty()
         {
-            var bundle = new Mock<Bundle>("~");
-            bundle.SetupGet(b => b.Url).Returns("url");
+            var bundle = new TestableBundle("~") { Hash = new byte[] {} };
 
-            var url = UrlGenerator.CreateBundleUrl(bundle.Object);
+            var url = UrlGenerator.CreateBundleUrl(bundle);
 
-            url.ShouldEqual("_cassette/url");
-        }
-
-        [Fact]
-        public void GivenBundleUrlIsExternal_ThenCreateBundleUrlDoesNotPrefixIt()
-        {
-            var bundle = new Mock<Bundle>("~");
-            bundle.SetupGet(b => b.Url).Returns("http://example.org/");
-
-            var url = UrlGenerator.CreateBundleUrl(bundle.Object);
-
-            url.ShouldEqual("http://example.org/");
+            url.ShouldEqual("_cassette/testablebundle/_");
         }
 
         [Fact]

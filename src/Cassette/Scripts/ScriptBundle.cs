@@ -49,5 +49,10 @@ namespace Cassette.Scripts
             var builder = new ScriptBundleManifestBuilder { IncludeContent = includeProcessedBundleContent};
             return builder.BuildManifest(this);
         }
+
+        protected override string UrlBundleTypeArgument
+        {
+            get { return "scriptbundle"; }
+        }
     }
 }

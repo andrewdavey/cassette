@@ -10,10 +10,12 @@ namespace Cassette.Stylesheets
         {
             StylesheetMinifier = new MicrosoftStylesheetMinifier();
             CompileLess = true;
+            CompileSass = true;
         }
 
         public IAssetTransformer StylesheetMinifier { get; set; }
         public bool CompileLess { get; set; }
+        public bool CompileSass { get; set; }
         // TODO: Obselete this property in next version
         // Use the EmbedImages extension method instead.
         public bool ConvertImageUrlsToDataUris { get; set; }
@@ -26,6 +28,11 @@ namespace Cassette.Stylesheets
             {
                 yield return new ParseLessReferences();
                 yield return new CompileLess(new LessCompiler());
+            }
+            if (CompileSass)
+            {
+                yield return new ParseSassReferences();
+                yield return new CompileSass(new SassCompiler());
             }
             if (ConvertImageUrlsToDataUris)
             {

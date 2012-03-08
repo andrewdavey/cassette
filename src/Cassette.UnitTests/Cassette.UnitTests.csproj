@@ -35,8 +35,26 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AjaxMin.4.46.4422.26284\lib\net20\AjaxMin.dll</HintPath>
     </Reference>
+    <Reference Include="IronRuby, Version=1.1.3.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronRuby.1.1.3\Lib\IronRuby.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby.Libraries">
+      <HintPath>..\packages\IronRuby.1.1.3\Lib\IronRuby.Libraries.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby.Libraries.Yaml">
+      <HintPath>..\packages\IronRuby.1.1.3\Lib\IronRuby.Libraries.Yaml.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronRuby.1.1.3\Lib\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronRuby.1.1.3\Lib\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronRuby.1.1.3\Lib\Microsoft.Scripting.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
@@ -57,6 +75,10 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
+    <Compile Include="Configuration\BundleCollection.Add.cs" />
+    <Compile Include="Configuration\BundleCollection.AddPerSubDirectory.cs" />
+    <Compile Include="Configuration\BundleCollection.AddUrl.cs" />
+    <Compile Include="Configuration\BundleCollection.AddPerIndividualFile.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -79,10 +101,10 @@
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
-    <Compile Include="Configuration\BundleCollectionExtensions.cs" />
+    <Compile Include="Configuration\BundleCollection.AddExplicitFiles.cs" />
     <Compile Include="Configuration\BundleContainerFactoryTestSuite.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
-    <Compile Include="Configuration\DefaultFileSourceConfigurations.cs" />
+    <Compile Include="Configuration\DefaultFileSearches.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
@@ -115,18 +137,21 @@
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
+    <Compile Include="StubAsset.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
+    <Compile Include="Stylesheets\CompileSass.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
     <Compile Include="Stylesheets\LessCompiler.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestWriter.cs" />
-    <Compile Include="Stylesheets\ExternalStylesheetHtmlRenderer.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundle.Render.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
+    <Compile Include="Stylesheets\SassCompiler.cs" />
     <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
@@ -135,7 +160,7 @@
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ExternalScriptBundle.cs" />
-    <Compile Include="Scripts\ExternalScriptBundleHtmlRenderer.cs" />
+    <Compile Include="Scripts\ExternalScriptBundle.Render.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
@@ -176,6 +201,7 @@
     <Compile Include="UrlGenerator.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
     <Compile Include="Web\InitialConfiguration.cs" />
+    <Compile Include="Web\Jasmine\CassetteConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
@@ -197,6 +223,10 @@
     <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
       <Name>Cassette.Views</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette.Web.Jasmine\Cassette.Web.Jasmine.csproj">
+      <Project>{EF2E2EF3-5A8F-402D-99FD-C8C60C178F63}</Project>
+      <Name>Cassette.Web.Jasmine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette.Web\Cassette.Web.csproj">
       <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>

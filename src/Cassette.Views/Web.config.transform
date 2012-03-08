@@ -6,5 +6,5 @@
                 <add namespace="Cassette.Views"/>
             </namespaces>
         </pages>
-    </system.web.webPages.razor>    
+    </system.web.webPages.razor>
 </configuration>

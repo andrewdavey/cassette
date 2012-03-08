@@ -5,7 +5,7 @@ namespace Cassette.Stylesheets.Manifests
         public override ExternalStylesheetBundleManifest BuildManifest(ExternalStylesheetBundle bundle)
         {
             var manifest = base.BuildManifest(bundle);
-            manifest.Url = bundle.Url;
+            manifest.Url = bundle.ExternalUrl;
             manifest.Condition = bundle.Condition;
             return manifest;
         }

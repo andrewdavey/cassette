@@ -1,0 +1,6 @@
+﻿[external]
+url=http://example.com/
+fallbackCondition=!window.example
+
+[assets]
+*

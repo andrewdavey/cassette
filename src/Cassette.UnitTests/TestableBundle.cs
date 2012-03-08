@@ -38,6 +38,11 @@ namespace Cassette
             return builder.BuildManifest(this);
         }
 
+        protected override string UrlBundleTypeArgument
+        {
+            get { return "testablebundle"; }
+        }
+
         class TestableBundleManifest : BundleManifest
         {
             protected override Bundle CreateBundleCore()

@@ -163,7 +163,7 @@ namespace Cassette.Web
             }
             else
             {
-                return external.Url;
+                return external.ExternalUrl;
             }
         }
 

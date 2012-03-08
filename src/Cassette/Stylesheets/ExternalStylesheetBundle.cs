@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {
-    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle
+    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
     {
+        readonly string url;
+        bool isDebuggingEnabled;
+
         public ExternalStylesheetBundle(string url)
             : base(url)
         {
@@ -19,17 +24,12 @@ namespace Cassette.Stylesheets
             this.url = url;
         }
 
-        readonly string url;
-
-        internal override string Url
-        {
-            get { return url; }
-        }
-
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            Renderer = new ExternalStylesheetHtmlRenderer(Renderer, settings);
+            FallbackRenderer = Renderer;
+            isDebuggingEnabled = settings.IsDebuggingEnabled;
+            Renderer = this;
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -43,9 +43,70 @@ namespace Cassette.Stylesheets
             return builder.BuildManifest(this);
         }
 
-        string IExternalBundle.Url
+        public string ExternalUrl
         {
             get { return url; }
+        }
+
+        internal IBundleHtmlRenderer<StylesheetBundle> FallbackRenderer { get; set; } 
+
+        public string Render(StylesheetBundle unusedParameter)
+        {
+            if (isDebuggingEnabled && Assets.Any())
+            {
+                return FallbackRenderer.Render(this);
+            }
+
+            var html = new StringBuilder();
+
+            var hasCondition = !string.IsNullOrEmpty(Condition);
+            RenderConditionalCommentStart(html, hasCondition);
+            if (string.IsNullOrEmpty(Media))
+            {
+                RenderLink(html);
+            }
+            else
+            {
+                RenderLinkWithMedia(html);
+            }
+            RenderConditionalCommentEnd(html, hasCondition);
+
+            return html.ToString();
+        }
+
+        void RenderLink(StringBuilder html)
+        {
+            html.AppendFormat(
+                HtmlConstants.LinkHtml,
+                url,
+                HtmlAttributes.CombinedAttributes
+                );
+        }
+
+        void RenderLinkWithMedia(StringBuilder html)
+        {
+            html.AppendFormat(
+                HtmlConstants.LinkWithMediaHtml,
+                url,
+                Media,
+                HtmlAttributes.CombinedAttributes
+                );
+        }
+
+        void RenderConditionalCommentStart(StringBuilder html, bool hasCondition)
+        {
+            if (!hasCondition) return;
+
+            html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
+            html.AppendLine();
+        }
+
+        void RenderConditionalCommentEnd(StringBuilder html, bool hasCondition)
+        {
+            if (!hasCondition) return;
+
+            html.AppendLine();
+            html.Append(HtmlConstants.ConditionalCommentEnd);
         }
     }
 }

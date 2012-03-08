@@ -14,6 +14,7 @@
             <ProjectToBuild Include="src\Cassette.Web\Cassette.Web.csproj"/>
             <ProjectToBuild Include="src\Cassette.Views\Cassette.Views.csproj"/>
             <ProjectToBuild Include="src\Cassette.MSBuild\Cassette.MSBuild.csproj"/>
+            <ProjectToBuild Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.csproj"/>
             <ProjectToBuild Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
             <ProjectToBuild Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
@@ -30,6 +31,7 @@
             <ProjectToNugetPack Include="src\Cassette\Cassette.csproj"/>
             <ProjectToNugetPack Include="src\Cassette.Views\Cassette.Views.csproj"/>
             <ProjectToNugetPack Include="src\Cassette.Web\Cassette.Web.csproj"/>
+            <ProjectToNugetPack Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.csproj"/>
         </ItemGroup>
         <PropertyGroup>
             <OutputDir>build\nuget\</OutputDir>

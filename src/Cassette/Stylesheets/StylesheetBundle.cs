@@ -50,5 +50,10 @@ namespace Cassette.Stylesheets
             var builder = new StylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
             return builder.BuildManifest(this);
         }
+
+        protected override string UrlBundleTypeArgument
+        {
+            get { return "stylesheetbundle"; }
+        }
     }
 }

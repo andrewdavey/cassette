@@ -68,15 +68,16 @@ namespace Cassette
         /// </summary>
         public byte[] Hash { get; internal set; }
 
-        internal virtual string Url
+        internal string Url
         {
             get
             {
-                var type = GetType().Name.ToLowerInvariant();
                 var pathWithoutPrefix = path.TrimStart('~', '/');
-                return type + "/" + pathWithoutPrefix + "_" + Hash.ToHexString();
+                return UrlBundleTypeArgument + "/" + pathWithoutPrefix + "_" + Hash.ToHexString();
             }
         }
+
+        protected abstract string UrlBundleTypeArgument { get; }
 
         internal IEnumerable<string> References
         {
@@ -117,6 +118,7 @@ namespace Cassette
         protected abstract void ProcessCore(CassetteSettings settings);
 
         internal bool IsProcessed { get; private set; }
+        internal bool IsFromDescriptorFile { get; set; }
 
         internal abstract string Render();
 

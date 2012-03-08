@@ -42,5 +42,10 @@ namespace Cassette.HtmlTemplates
             var builder = new HtmlTemplateBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
             return builder.BuildManifest(this);
         }
+
+        protected override string UrlBundleTypeArgument
+        {
+            get { return "htmltemplatebundle"; }
+        }
     }
 }

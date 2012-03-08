@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jasmine Example</title>
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+            .container {
+                max-width: 940px;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Jasmine Example</h1>
+            <p>
+                This example web application has <a href="http://pivotal.github.com/jasmine/">Jasmine</a> JavaScript specifications
+                defined in the Cassette bundle <code>~/Scripts/specs</code>
+            </p>
+            <p>
+                Cassette provides a Jasmine runner at the following URL:
+            </p>
+            <p>
+                <a href="@Url.Content("~/_cassette/jasmine/scripts/specs")">@Url.Content("~/_cassette/jasmine/scripts/specs")</a>                
+            </p>
+            <p>
+                You can have more than one specification bundle. Use the following URL convention to access the runner:
+            </p>
+            <pre>/_cassette/jasmine/<strong>{path-of-spec-bundle}</strong></pre>
+            
+            <h2>Adding Jasmine to your application</h2>
+            <p>To add Jasmine support to your web application, install the nuget package:</p>
+            <pre>PM&gt; Install-Package Cassette.Web.Jasmine</pre>
+        </div>
+    </body>
+</html>

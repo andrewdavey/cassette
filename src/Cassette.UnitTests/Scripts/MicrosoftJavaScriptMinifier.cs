@@ -1,7 +1,6 @@
 ﻿using Cassette.Utilities;
-using Moq;
-using Xunit;
 using Should;
+using Xunit;
 
 namespace Cassette.Scripts
 {
@@ -11,7 +10,7 @@ namespace Cassette.Scripts
         public void TransformMinifiesJavaScript()
         {
             var minifier = new MicrosoftJavaScriptMinifier();
-            var getResult = minifier.Transform(() => "function () { }".AsStream(), Mock.Of<IAsset>());
+            var getResult = minifier.Transform(() => "function () { }".AsStream(), new StubAsset());
             getResult().ReadToEnd().ShouldEqual("function(){}");
         }
     }
