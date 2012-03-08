@@ -49,6 +49,21 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void GivenApplicationInProdctionAndBundleHasNotIECondition_WhenRender_ThenLinkElementReturnedWrappedWithConditionButLeaveLinkVisibleToAllBrowsers()
+        {
+            settings.IsDebuggingEnabled = false;
+            bundle.Condition = "(gt IE 9)|!(IE)";
+
+            var html = bundle.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
+                "<link href=\"http://test.com/\" type=\"text/css\" rel=\"stylesheet\"/>" + Environment.NewLine +
+                "<!-- <![endif]-->");
+        }
+
+
+        [Fact]
         public void GivenApplicationInProductionAndBundleHasHtmlAttribute_WhenRender_ThenLinkElementReturnedWithExtraAttributes()
         {
             settings.IsDebuggingEnabled = false;

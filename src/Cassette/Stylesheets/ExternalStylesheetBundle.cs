@@ -59,8 +59,6 @@ namespace Cassette.Stylesheets
 
             var html = new StringBuilder();
 
-            var hasCondition = !string.IsNullOrEmpty(Condition);
-            RenderConditionalCommentStart(html, hasCondition);
             if (string.IsNullOrEmpty(Media))
             {
                 RenderLink(html);
@@ -69,9 +67,15 @@ namespace Cassette.Stylesheets
             {
                 RenderLinkWithMedia(html);
             }
-            RenderConditionalCommentEnd(html, hasCondition);
-
-            return html.ToString();
+        
+            if (HasCondition)
+            {
+                return new ConditionalRenderer().RenderCondition(Condition, html.ToString());
+            }
+            else
+            {
+                return html.ToString();
+            }
         }
 
         void RenderLink(StringBuilder html)

@@ -21,13 +21,6 @@ namespace Cassette.Scripts
         {
             var html = new StringBuilder();
 
-            var hasCondition = !string.IsNullOrEmpty(Condition);
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
-                html.AppendLine();
-            }
-
             html.Append(string.Format(
                 HtmlConstants.InlineScriptHtml,
                 HtmlAttributes.CombinedAttributes,
@@ -35,13 +28,14 @@ namespace Cassette.Scripts
                 scriptContent
             ));
 
-            if (hasCondition)
+            if (HasCondition)
             {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
+                return new ConditionalRenderer().RenderCondition(Condition, html.ToString());
             }
-
-            return html.ToString();
+            else
+            {
+                return html.ToString();
+            }
         }
     }
 }

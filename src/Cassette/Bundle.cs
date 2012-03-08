@@ -16,6 +16,7 @@ namespace Cassette
         readonly List<IAsset> assets = new List<IAsset>();
         readonly HashSet<string> references = new HashSet<string>();
         readonly HtmlAttributeDictionary htmlAttributes = new HtmlAttributeDictionary();
+        readonly ConditionalRenderer conditionalRenderer = new ConditionalRenderer();
 
         protected Bundle(string applicationRelativePath)
         {

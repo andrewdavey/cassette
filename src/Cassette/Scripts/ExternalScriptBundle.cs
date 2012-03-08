@@ -74,8 +74,6 @@ namespace Cassette.Scripts
 
             var html = new StringBuilder();
 
-            var hasCondition = !string.IsNullOrEmpty(Condition);
-            RenderConditionalCommentStart(html, hasCondition);
             if (Assets.Any())
             {
                 RenderScriptHtmlWithFallback(html);
@@ -84,9 +82,15 @@ namespace Cassette.Scripts
             {
                 RenderScriptHtml(html);
             }
-            RenderConditionalCommentEnd(html, hasCondition);
 
-            return html.ToString();
+            if (HasCondition)
+            {
+                return new ConditionalRenderer().RenderCondition(Condition, html.ToString());
+            }
+            else
+            {
+                return html.ToString();
+            }
         }
 
         void RenderConditionalCommentStart(StringBuilder html, bool hasCondition)

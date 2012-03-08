@@ -20,22 +20,19 @@ namespace Cassette.Stylesheets
             var createLink = GetCreateLinkFunc(bundle);
             var html = new StringBuilder();
 
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
-                html.AppendLine();
-            }
             html.Append(string.Join(
                 Environment.NewLine,
                 assetUrls.Select(createLink)
             ));
-            if (hasCondition)
+            
+            if (bundle.HasCondition)
             {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
+                return new ConditionalRenderer().RenderCondition(bundle.Condition, html.ToString());
             }
-            return html.ToString();
+            else
+            {
+                return html.ToString();
+            }
         }
 
         IEnumerable<string> GetAssetUrls(StylesheetBundle bundle)

@@ -47,5 +47,21 @@ namespace Cassette.Scripts
                 "<![endif]-->"
             );
         }
+
+        [Fact]
+        public void GivenInlineScriptBundleWithNotIECondition_WhenRender_ThenScriptElementHasConditionalCommentButLeavesScriptVisibleToAllBrowsers()
+        {
+            var bundle = new InlineScriptBundle("var x = 1;");
+            bundle.Condition = "(gt IE 9)| !IE";
+
+            var html = bundle.Render();
+            html.ShouldEqual(
+                "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
+                "<script type=\"text/javascript\">" + Environment.NewLine +
+                "var x = 1;" + Environment.NewLine +
+                "</script>" + Environment.NewLine +
+                "<!-- <![endif]-->"
+            );
+        }
     }
 }

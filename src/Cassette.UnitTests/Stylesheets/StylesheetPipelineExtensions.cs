@@ -21,6 +21,7 @@ namespace Cassette.Stylesheets
         {
             pipeline.EmbedImages();
             AssertPipelineContains<ConvertImageUrlsToDataUris>();
+            AssertImageEmbedFormat(ImageEmbedType.DataUriForIE8);
         }
 
         [Fact]
@@ -28,6 +29,23 @@ namespace Cassette.Stylesheets
         {
             pipeline.EmbedImages(url => true);
             AssertPipelineContains<ConvertImageUrlsToDataUris>();
+            AssertImageEmbedFormat(ImageEmbedType.DataUriForIE8);
+        }
+
+        [Fact]
+        public void WhenEmbedImagesWithoutIE8Support_ThenPipelineContainsConvertImageUrlsToDataUris()
+        {
+            pipeline.EmbedImages(ImageEmbedType.DataUri);
+            AssertPipelineContains<ConvertImageUrlsToDataUris>();
+            AssertImageEmbedFormat(ImageEmbedType.DataUri);
+        }
+
+        [Fact]
+        public void WhenEmbedImagesWithoutIE8SupportWithUrlPredicate_ThenPipelineContainsConvertImageUrlsToDataUris()
+        {
+            pipeline.EmbedImages(url => true, ImageEmbedType.DataUri);
+            AssertPipelineContains<ConvertImageUrlsToDataUris>();
+            AssertImageEmbedFormat(ImageEmbedType.DataUri);
         }
 
         [Fact]
@@ -51,6 +69,17 @@ namespace Cassette.Stylesheets
             pipeline.Process(bundle, new CassetteSettings(""));
 
             pipeline.CreatedPipeline.OfType<T>().ShouldNotBeEmpty();
+        }
+
+        private void AssertImageEmbedFormat(ImageEmbedType imageEmbedType)
+        {
+            var converter = pipeline.CreatedPipeline.OfType<ConvertImageUrlsToDataUris>().Single();
+
+            if (imageEmbedType == ImageEmbedType.DataUri)
+                Assert.False(converter.UseIE8Truncation);
+
+            if (imageEmbedType == ImageEmbedType.DataUriForIE8)
+                Assert.True(converter.UseIE8Truncation);
         }
 
         class TestableStylesheetPipeline : StylesheetPipeline

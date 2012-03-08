@@ -2,6 +2,7 @@
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Stylesheets.Manifests;
+using System;
 
 namespace Cassette.Stylesheets
 {
@@ -24,6 +25,11 @@ namespace Cassette.Stylesheets
         /// For example, <example>"lt IE 9"</example>.
         /// </summary>
         public string Condition { get; set; }
+
+        internal bool HasCondition
+        {
+            get { return !String.IsNullOrEmpty(Condition); }
+        }
 
         public IBundleProcessor<StylesheetBundle> Processor { get; set; }
 

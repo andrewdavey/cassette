@@ -1,26 +1,34 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    class StylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
+    class ExternalStylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
-        public StylesheetHtmlRenderer(IUrlGenerator urlGenerator)
-        {
-            this.urlGenerator = urlGenerator;
-        }
+        readonly IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer;
+        readonly CassetteSettings settings;
 
-        readonly IUrlGenerator urlGenerator;
+        public ExternalStylesheetHtmlRenderer(IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer, CassetteSettings settings)
+        {
+            this.fallbackRenderer = fallbackRenderer;
+            this.settings = settings;
+        }
 
         public string Render(StylesheetBundle bundle)
         {
-            var url = urlGenerator.CreateBundleUrl(bundle);
+            if (settings.IsDebuggingEnabled && bundle.Assets.Any())
+            {
+                return fallbackRenderer.Render(bundle);
+            }
+
             var html = new StringBuilder();
 
             if (string.IsNullOrEmpty(bundle.Media))
             {
                 html.AppendFormat(
-                    HtmlConstants.LinkHtml,
-                    url,
+                    HtmlConstants.LinkHtml, 
+                    bundle.Url, 
                     bundle.HtmlAttributes.CombinedAttributes
                 );
             }
@@ -28,7 +36,7 @@ namespace Cassette.Stylesheets
             {
                 html.AppendFormat(
                     HtmlConstants.LinkWithMediaHtml,
-                    url,
+                    bundle.Url,
                     bundle.Media,
                     bundle.HtmlAttributes.CombinedAttributes
                 );
