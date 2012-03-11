@@ -1,43 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using Cassette.Scripts;
 
 namespace Cassette
 {
-    public class ConditionalRenderer
+    /// <summary>
+    /// Renders conditional comments as described by http://www.quirksmode.org/css/condcom.html
+    /// </summary>
+    class ConditionalRenderer
     {
+        StringBuilder html;
+        bool isNotIECondition;
+
         public string RenderCondition(string condition, string content)
         {
-            var html = new StringBuilder();
-            
-            // Check if the condition contains !IE.  Ignore any brackets or spaces
-            bool notIECondition = condition.Replace(" ", "").Replace("(", "").Contains("!IE");
+            html = new StringBuilder();            
+            isNotIECondition = ConditionContainsNotIE(condition);
 
-            // Append the start of the conditional, including a comment closer if !IE
+            StartComment(condition);
+            ContentWrappedInLineBreaks(content);
+            EndComment();
+
+            return html.ToString();
+        }
+
+        void StartComment(string condition)
+        {
             html.AppendFormat(HtmlConstants.ConditionalCommentStart, condition);
-            if (notIECondition)
+            if (isNotIECondition)
             {
                 html.Append("<!-->");
             }
-            html.AppendLine();
+        }
 
-            // Append the content
+        void ContentWrappedInLineBreaks(string content)
+        {
+            html.AppendLine();
             html.Append(content);
-
-            // Append the end of the conditional, starting with a comment opener if !IE
             html.AppendLine();
+        }
 
-            if (notIECondition)
+        void EndComment()
+        {
+            if (isNotIECondition)
             {
                 html.Append("<!-- ");
             }
-
             html.Append(HtmlConstants.ConditionalCommentEnd);
+        }
 
-            // Return the finished conditional
-            return html.ToString();
+        /// <summary>
+        /// Check if the condition contains '!IE". Ignores any brackets or spaces.
+        /// </summary>
+        bool ConditionContainsNotIE(string condition)
+        {
+            return condition
+                .Replace(" ", "")
+                .Replace("(", "")
+                .Contains("!IE");
         }
     }
 }
