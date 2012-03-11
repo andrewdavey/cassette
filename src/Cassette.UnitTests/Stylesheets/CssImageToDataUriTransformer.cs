@@ -131,7 +131,7 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenFileIsLargerThan32768bytes_WhenTransform_ThenUrlIsNotTransformedIntoDataUri()
+        public void GivenFileIsLargerThan32768bytesAndIE8SupportEnabled_WhenTransform_ThenUrlIsNotTransformedIntoDataUri()
         {
             // IE 8 doesn't work with data-uris larger than 32768 bytes.
             StubFile("test.png", new byte[32768 + 1]);

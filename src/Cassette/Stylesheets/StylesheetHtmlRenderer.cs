@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Cassette.Stylesheets
+﻿namespace Cassette.Stylesheets
 {
     class StylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
@@ -14,38 +12,27 @@ namespace Cassette.Stylesheets
         public string Render(StylesheetBundle bundle)
         {
             var url = urlGenerator.CreateBundleUrl(bundle);
-            var html = new StringBuilder();
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
+            var conditionalRenderer = new ConditionalRenderer();
+            return conditionalRenderer.Render(bundle.Condition, html =>
             {
-                html.AppendLine("<!--[if " + bundle.Condition + "]>");
-            }
-
-            if (string.IsNullOrEmpty(bundle.Media))
-            {
-                html.AppendFormat(
-                    HtmlConstants.LinkHtml,
-                    url,
-                    bundle.HtmlAttributes.CombinedAttributes
-                );
-            }
-            else
-            {
-                html.AppendFormat(
-                    HtmlConstants.LinkWithMediaHtml,
-                    url,
-                    bundle.Media,
-                    bundle.HtmlAttributes.CombinedAttributes
-                );
-            }
-
-            if (hasCondition)
-            {
-                html.AppendLine();
-                html.Append("<![endif]-->");
-            }
-
-            return html.ToString();
+                if (string.IsNullOrEmpty(bundle.Media))
+                {
+                    html.AppendFormat(
+                        HtmlConstants.LinkHtml,
+                        url,
+                        bundle.HtmlAttributes.CombinedAttributes
+                        );
+                }
+                else
+                {
+                    html.AppendFormat(
+                        HtmlConstants.LinkWithMediaHtml,
+                        url,
+                        bundle.Media,
+                        bundle.HtmlAttributes.CombinedAttributes
+                        );
+                }
+            });
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Cassette.Stylesheets
             pipeline.EmbedImages(url => true);
             AssertPipelineContains<ConvertImageUrlsToDataUris>();
         }
-
+        
         [Fact]
         public void WhenEmbedFonts_ThenPipelineContainsConvertFontUrlsToDataUris()
         {

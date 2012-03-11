@@ -72,37 +72,18 @@ namespace Cassette.Scripts
                 return FallbackRenderer.Render(this);
             }
 
-            var html = new StringBuilder();
-
-            var hasCondition = !string.IsNullOrEmpty(Condition);
-            RenderConditionalCommentStart(html, hasCondition);
-            if (Assets.Any())
+            var conditionalRenderer = new ConditionalRenderer();
+            return conditionalRenderer.Render( Condition, html =>
             {
-                RenderScriptHtmlWithFallback(html);
-            }
-            else
-            {
-                RenderScriptHtml(html);
-            }
-            RenderConditionalCommentEnd(html, hasCondition);
-
-            return html.ToString();
-        }
-
-        void RenderConditionalCommentStart(StringBuilder html, bool hasCondition)
-        {
-            if (!hasCondition) return;
-
-            html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
-            html.AppendLine();
-        }
-
-        void RenderConditionalCommentEnd(StringBuilder html, bool hasCondition)
-        {
-            if (!hasCondition) return;
-
-            html.AppendLine();
-            html.Append(HtmlConstants.ConditionalCommentEnd);
+                if (Assets.Any())
+                {
+                    RenderScriptHtmlWithFallback(html);
+                }
+                else
+                {
+                    RenderScriptHtml(html);
+                }
+            });
         }
 
         void RenderScriptHtml(StringBuilder html)

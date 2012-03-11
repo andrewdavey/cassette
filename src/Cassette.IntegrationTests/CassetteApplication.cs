@@ -255,6 +255,7 @@ document.write(unescape('%3Cscript src=""/_cassette/scriptbundle/scripts/bundle-
             Response.Setup(r => r.ApplyAppPathModifier(It.IsAny<string>())).Returns<string>(r => r);
             Response.SetupGet(r => r.OutputStream).Returns(ResponseOutputStream);
             Response.SetupGet(r => r.Cache).Returns(ResponseCache.Object);
+            Response.SetupProperty(r => r.ContentType);
         }
 
         RouteCollection routes;

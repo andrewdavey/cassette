@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
+    <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="Configuration\BundleCollection.Add.cs" />
     <Compile Include="Configuration\BundleCollection.AddPerSubDirectory.cs" />
     <Compile Include="Configuration\BundleCollection.AddUrl.cs" />

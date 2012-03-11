@@ -57,21 +57,19 @@ namespace Cassette.Stylesheets
                 return FallbackRenderer.Render(this);
             }
 
-            var html = new StringBuilder();
+            var conditionalRenderer = new ConditionalRenderer();
 
-            var hasCondition = !string.IsNullOrEmpty(Condition);
-            RenderConditionalCommentStart(html, hasCondition);
-            if (string.IsNullOrEmpty(Media))
+            return conditionalRenderer.Render(Condition, html =>
             {
-                RenderLink(html);
-            }
-            else
-            {
-                RenderLinkWithMedia(html);
-            }
-            RenderConditionalCommentEnd(html, hasCondition);
-
-            return html.ToString();
+                if (string.IsNullOrEmpty(Media))
+                {
+                    RenderLink(html);
+                }
+                else
+                {
+                    RenderLinkWithMedia(html);
+                }
+            });
         }
 
         void RenderLink(StringBuilder html)
@@ -91,22 +89,6 @@ namespace Cassette.Stylesheets
                 Media,
                 HtmlAttributes.CombinedAttributes
                 );
-        }
-
-        void RenderConditionalCommentStart(StringBuilder html, bool hasCondition)
-        {
-            if (!hasCondition) return;
-
-            html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
-            html.AppendLine();
-        }
-
-        void RenderConditionalCommentEnd(StringBuilder html, bool hasCondition)
-        {
-            if (!hasCondition) return;
-
-            html.AppendLine();
-            html.Append(HtmlConstants.ConditionalCommentEnd);
         }
     }
 }
