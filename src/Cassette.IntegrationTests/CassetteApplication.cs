@@ -36,19 +36,6 @@ namespace Cassette.IntegrationTests
         readonly Dictionary<string, object> httpContextItems;
 
         [Fact]
-        public void MhtmlStylesheetHasCorrectContentType()
-        {
-            using (CreateApplication(bundles => bundles.Add<StylesheetBundle>("Styles", b => b.Processor = new StylesheetPipeline().EmbedImages(ImageEmbedType.Mhtml))))
-            {
-                using (var http = new HttpTestHarness(routes))
-                {
-                    http.Get("~/_cassette/stylesheetbundle/styles");
-                    Assert.Equal<string>(http.Response.Object.ContentType,"message/rfc822");
-                }
-            }
-        }
-
-        [Fact]
         public void CanGetScriptBundleA()
         {
             using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts")))

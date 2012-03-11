@@ -5,22 +5,14 @@ namespace Cassette.Stylesheets
 {
     public class ConvertImageUrlsToDataUris : AddTransformerToAssets
     {
-        public ConvertImageUrlsToDataUris(bool supportIE8)
-            : base(new CssImageToDataUriTransformer(anyUrl => true, supportIE8))
+        public ConvertImageUrlsToDataUris()
+            : base(new CssImageToDataUriTransformer(anyUrl => true))
         {   
         }
 
-        public ConvertImageUrlsToDataUris(Func<string, bool> shouldEmbedUrl, bool supportIE8)
-            : base(new CssImageToDataUriTransformer(shouldEmbedUrl, supportIE8))
+        public ConvertImageUrlsToDataUris(Func<string, bool> shouldEmbedUrl)
+            : base(new CssImageToDataUriTransformer(shouldEmbedUrl))
         {
-        }
-
-        public bool UseIE8Truncation
-        {
-            get
-            {
-                return ((CssImageToDataUriTransformer)assetTransformer).SupportIE8;
-            }
         }
     }
 }

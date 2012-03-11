@@ -1,27 +1,17 @@
 ﻿using System;
-using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
     public static class StylesheetPipelineExtensions
     {
-        public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline, ImageEmbedType type = ImageEmbedType.DataUriForIE8)
+        public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline)
         {
-            return pipeline.EmbedImages(url => true, type);
+            return pipeline.EmbedImages(url => true);
         }
 
-        public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline, Func<string, bool> shouldEmbedUrl, ImageEmbedType type = ImageEmbedType.DataUriForIE8)
+        public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline, Func<string, bool> shouldEmbedUrl)
         {
-            if (type == ImageEmbedType.Mhtml)
-            {
-                // TODO: MHTML support
-                pipeline.InsertBefore<ExpandCssUrls>(new AssignContentType("message/rfc822"));
-            }
-            else
-            {
-                bool ie8Support = (type == ImageEmbedType.DataUriForIE8);
-                pipeline.InsertBefore<ExpandCssUrls>(new ConvertImageUrlsToDataUris(shouldEmbedUrl, ie8Support));
-            }
+            pipeline.InsertBefore<ExpandCssUrls>(new ConvertImageUrlsToDataUris(shouldEmbedUrl));
             return pipeline;
         }
 

@@ -12,17 +12,14 @@ namespace Cassette.Stylesheets
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
-        public CssImageToDataUriTransformer(Func<string, bool> shouldEmbedUrl, bool supportIE8)
+        public CssImageToDataUriTransformer(Func<string, bool> shouldEmbedUrl)
             : base(shouldEmbedUrl, BackgroundUrlRegex)
         {
-            SupportIE8 = supportIE8;
         }
-
-        public bool SupportIE8 { get; set; }
 
         protected override CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset)
         {
-            return new CssBackgroundImageUrlMatchTransformer(match, asset, SupportIE8);
+            return new CssBackgroundImageUrlMatchTransformer(match, asset);
         }
 
         class CssBackgroundImageUrlMatchTransformer : CssUrlMatchTransformer
@@ -30,15 +27,13 @@ namespace Cassette.Stylesheets
             readonly string fullProperty;
             readonly string start;
             readonly string end;
-            readonly bool useIE8SizeRestrictions;
 
-            public CssBackgroundImageUrlMatchTransformer(Match match, IAsset asset, bool supportIE8)
+            public CssBackgroundImageUrlMatchTransformer(Match match, IAsset asset)
                 : base(match, asset)
             {
                 fullProperty = match.Value;
                 start = match.Groups["start"].Value;
                 end = match.Groups["end"].Value;
-                useIE8SizeRestrictions = supportIE8;
             }
             
             protected override string GetContentType(string extension)
@@ -58,7 +53,8 @@ namespace Cassette.Stylesheets
                 get
                 {
                     // If we are restricting to IE8 size (32kb) enforce that, otherwise embed all sizes
-                    return base.CanTransform && (!useIE8SizeRestrictions || (useIE8SizeRestrictions && !FileIsTooLargeForInternetExplorer8()));
+                    return base.CanTransform 
+                        && !FileIsTooLargeForInternetExplorer8();
                 }
             }
 

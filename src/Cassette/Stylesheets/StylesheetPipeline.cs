@@ -36,7 +36,7 @@ namespace Cassette.Stylesheets
             }
             if (ConvertImageUrlsToDataUris)
             {
-                yield return new ConvertImageUrlsToDataUris(true); // Default is to support IE8
+                yield return new ConvertImageUrlsToDataUris();
             }
             yield return new ExpandCssUrls();
             yield return new SortAssetsByDependency();

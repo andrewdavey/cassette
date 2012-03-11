@@ -12,7 +12,7 @@ namespace Cassette.Stylesheets
     {
         public CssImageToDataUriTransformer_Tests()
         {
-            transformer = new CssImageToDataUriTransformer(url => true, true);
+            transformer = new CssImageToDataUriTransformer(url => true);
 
             directory = new Mock<IDirectory>();
             asset = new Mock<IAsset>();
@@ -118,7 +118,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenPredicateToTestImagePathReturnsFalse_WhenTransform_ThenImageIsNotTransformedToDataUri()
         {
-            transformer = new CssImageToDataUriTransformer(path => false, true);
+            transformer = new CssImageToDataUriTransformer(path => false);
 
             StubFile("test.png", new byte[] { 1, 2, 3 });
 
@@ -127,21 +127,6 @@ namespace Cassette.Stylesheets
 
             getResult().ReadToEnd().ShouldEqual(
                 "p { background-image: url(test.png); }"
-            );
-        }
-
-        [Fact]
-        public void GivenFileIsLargerThan32768bytesAndIE8SupportDisabled_WhenTransform_ThenUrlIsTransformedIntoDataUri()
-        {
-            var t = new CssImageToDataUriTransformer(path => true, false);
-            StubFile("test.png", new byte[32768 + 1]);
-
-            var css = "p { background-image: url(test.png); }";
-            var getResult = t.Transform(css.AsStream, asset.Object);
-
-            var expectedBase64 = Base64Encode(new byte[32768 + 1]);
-            getResult().ReadToEnd().ShouldEqual(
-                "p { background-image: url(test.png);background-image: url(data:image/png;base64," + expectedBase64 + "); }"
             );
         }
 
