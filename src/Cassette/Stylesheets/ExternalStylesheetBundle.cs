@@ -96,21 +96,5 @@ namespace Cassette.Stylesheets
                 HtmlAttributes.CombinedAttributes
                 );
         }
-
-        void RenderConditionalCommentStart(StringBuilder html, bool hasCondition)
-        {
-            if (!hasCondition) return;
-
-            html.AppendFormat(HtmlConstants.ConditionalCommentStart, Condition);
-            html.AppendLine();
-        }
-
-        void RenderConditionalCommentEnd(StringBuilder html, bool hasCondition)
-        {
-            if (!hasCondition) return;
-
-            html.AppendLine();
-            html.Append(HtmlConstants.ConditionalCommentEnd);
-        }
     }
 }
