@@ -9,7 +9,9 @@ namespace Cassette
     class ConditionalRenderer
     {
         StringBuilder html;
+// ReSharper disable InconsistentNaming
         bool isNotIECondition;
+// ReSharper restore InconsistentNaming
 
         public string RenderCondition(string condition, string content)
         {
@@ -51,7 +53,9 @@ namespace Cassette
         /// <summary>
         /// Check if the condition contains '!IE". Ignores any brackets or spaces.
         /// </summary>
-        bool ConditionContainsNotIE(string condition)
+// ReSharper disable InconsistentNaming
+        static bool ConditionContainsNotIE(string condition)
+// ReSharper restore InconsistentNaming
         {
             return condition
                 .Replace(" ", "")
