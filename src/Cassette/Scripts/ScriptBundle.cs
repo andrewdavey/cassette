@@ -2,7 +2,6 @@
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Scripts.Manifests;
-using System;
 
 namespace Cassette.Scripts
 {
@@ -24,11 +23,6 @@ namespace Cassette.Scripts
         /// For example, <example>"lt IE 9"</example>.
         /// </summary>
         public string Condition { get; set; }
-
-        internal bool HasCondition
-        {
-            get { return !String.IsNullOrEmpty(Condition); }
-        }
 
         public IBundleProcessor<ScriptBundle> Processor { get; set; }
 

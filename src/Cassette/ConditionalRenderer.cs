@@ -1,10 +1,11 @@
-﻿using System.Text;
-using Cassette.Scripts;
+﻿using System;
+using System.Text;
 
 namespace Cassette
 {
     /// <summary>
-    /// Renders conditional comments as described by http://www.quirksmode.org/css/condcom.html
+    /// Renders conditional comments as described by http://www.quirksmode.org/css/condcom.html,
+    /// except for a slight change in the "!IE" case for IE9 compatibility.
     /// </summary>
     class ConditionalRenderer
     {
@@ -13,31 +14,44 @@ namespace Cassette
         bool isNotIECondition;
 // ReSharper restore InconsistentNaming
 
-        public string RenderCondition(string condition, string content)
+        const string ConditionalCommentStart = "<!--[if {0}]>";
+        const string ConditionalCommentEnd = "<![endif]-->";
+
+        public string Render(string condition, Action<StringBuilder> appendContent)
         {
-            html = new StringBuilder();            
-            isNotIECondition = ConditionContainsNotIE(condition);
-
-            StartComment(condition);
-            ContentWrappedInLineBreaks(content);
-            EndComment();
-
+            html = new StringBuilder();
+            if (string.IsNullOrEmpty(condition))
+            {
+                appendContent(html);
+            }
+            else
+            {
+                WrapConditionalCommentAroundContent(condition, appendContent);
+            }
             return html.ToString();
+        }
+
+        void WrapConditionalCommentAroundContent(string condition, Action<StringBuilder> appendContent)
+        {
+            isNotIECondition = ConditionContainsNotIE(condition);
+            StartComment(condition);
+            ContentWrappedInLineBreaks(appendContent);
+            EndComment();
         }
 
         void StartComment(string condition)
         {
-            html.AppendFormat(HtmlConstants.ConditionalCommentStart, condition);
+            html.AppendFormat(ConditionalCommentStart, condition);
             if (isNotIECondition)
             {
                 html.Append("<!-->");
             }
         }
 
-        void ContentWrappedInLineBreaks(string content)
+        void ContentWrappedInLineBreaks(Action<StringBuilder> appendContent)
         {
             html.AppendLine();
-            html.Append(content);
+            appendContent(html);
             html.AppendLine();
         }
 
@@ -47,7 +61,7 @@ namespace Cassette
             {
                 html.Append("<!-- ");
             }
-            html.Append(HtmlConstants.ConditionalCommentEnd);
+            html.Append(ConditionalCommentEnd);
         }
 
         /// <summary>

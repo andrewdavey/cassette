@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Cassette.Scripts
 {
@@ -18,21 +17,16 @@ namespace Cassette.Scripts
         {
             var assetUrls = GetAssetUrls(bundle);
             var createLink = GetCreateScriptFunc(bundle);
-            var html = new StringBuilder();
-                        
-            html.Append(string.Join(
+            var content = string.Join(
                 Environment.NewLine,
                 assetUrls.Select(createLink)
-            ));
+            );
 
-            if (bundle.HasCondition)
-            {
-                return new ConditionalRenderer().RenderCondition(bundle.Condition, html.ToString());
-            }
-            else
-            {
-                return html.ToString();
-            }
+            var conditionalRenderer = new ConditionalRenderer();
+            return conditionalRenderer.Render(
+                bundle.Condition,
+                html => html.Append(content)
+            );
         }
 
         IEnumerable<string> GetAssetUrls(ScriptBundle bundle)

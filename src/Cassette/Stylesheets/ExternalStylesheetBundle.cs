@@ -57,25 +57,19 @@ namespace Cassette.Stylesheets
                 return FallbackRenderer.Render(this);
             }
 
-            var html = new StringBuilder();
+            var conditionalRenderer = new ConditionalRenderer();
 
-            if (string.IsNullOrEmpty(Media))
+            return conditionalRenderer.Render(Condition, html =>
             {
-                RenderLink(html);
-            }
-            else
-            {
-                RenderLinkWithMedia(html);
-            }
-        
-            if (HasCondition)
-            {
-                return new ConditionalRenderer().RenderCondition(Condition, html.ToString());
-            }
-            else
-            {
-                return html.ToString();
-            }
+                if (string.IsNullOrEmpty(Media))
+                {
+                    RenderLink(html);
+                }
+                else
+                {
+                    RenderLinkWithMedia(html);
+                }
+            });
         }
 
         void RenderLink(StringBuilder html)

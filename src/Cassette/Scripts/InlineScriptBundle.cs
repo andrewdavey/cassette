@@ -1,6 +1,5 @@
 ﻿using System;
 using Cassette.Configuration;
-using System.Text;
 
 namespace Cassette.Scripts
 {
@@ -19,23 +18,15 @@ namespace Cassette.Scripts
 
         internal override string Render()
         {
-            var html = new StringBuilder();
-
-            html.Append(string.Format(
+            var content = string.Format(
                 HtmlConstants.InlineScriptHtml,
                 HtmlAttributes.CombinedAttributes,
                 Environment.NewLine,
                 scriptContent
-            ));
+            );
 
-            if (HasCondition)
-            {
-                return new ConditionalRenderer().RenderCondition(Condition, html.ToString());
-            }
-            else
-            {
-                return html.ToString();
-            }
+            var conditionalRenderer = new ConditionalRenderer();
+            return conditionalRenderer.Render(Condition, html => html.Append(content));
         }
     }
 }

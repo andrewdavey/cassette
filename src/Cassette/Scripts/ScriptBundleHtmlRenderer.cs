@@ -1,7 +1,4 @@
-﻿
-using System.Text;
-
-namespace Cassette.Scripts
+﻿namespace Cassette.Scripts
 {
     class ScriptBundleHtmlRenderer : IBundleHtmlRenderer<ScriptBundle>
     {
@@ -15,23 +12,14 @@ namespace Cassette.Scripts
         public string Render(ScriptBundle bundle)
         {
             var url = urlGenerator.CreateBundleUrl(bundle);
-            var html = new StringBuilder();
-            
-            html.AppendFormat(
+            var content = string.Format(
                 HtmlConstants.ScriptHtml,
                 url,
                 bundle.HtmlAttributes.CombinedAttributes
             );
 
-            if (bundle.HasCondition)
-            {
-                return new ConditionalRenderer().RenderCondition(bundle.Condition, html.ToString());
-            }
-            else
-            {
-                return html.ToString();
-            }
-
+            var conditionalRenderer = new ConditionalRenderer();
+            return conditionalRenderer.Render(bundle.Condition, html => html.Append(content));
         }
     }
 }
