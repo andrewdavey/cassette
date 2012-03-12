@@ -52,7 +52,8 @@ namespace Cassette.Stylesheets
             {
                 get
                 {
-                    return base.CanTransform
+                    // If we are restricting to IE8 size (32kb) enforce that, otherwise embed all sizes
+                    return base.CanTransform 
                         && !FileIsTooLargeForInternetExplorer8();
                 }
             }

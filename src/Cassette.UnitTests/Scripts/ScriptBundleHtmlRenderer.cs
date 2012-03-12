@@ -54,6 +54,24 @@ namespace Cassette.Scripts
                 "<![endif]-->"
             );
         }
+
+        [Fact]
+        public void GivenScriptBundleWithNotIECondition_WhenRender_ThenHtmlConditionalCommentWrapsLinkButLeavesScriptVisibleToAllBrowsers()
+        {
+            var urlGenerator = new Mock<IUrlGenerator>();
+            var renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object);
+            var bundle = new ScriptBundle("~/test") { Condition = "(gt IE 9)| !IE" };
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle))
+                        .Returns("URL");
+
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
+                "<script src=\"URL\" type=\"text/javascript\"></script>" + Environment.NewLine +
+                "<!-- <![endif]-->"
+            );
+        }
     }
 }
 

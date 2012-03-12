@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Cassette.Stylesheets
 {
@@ -18,24 +17,13 @@ namespace Cassette.Stylesheets
         {
             var assetUrls = GetAssetUrls(bundle);
             var createLink = GetCreateLinkFunc(bundle);
-            var html = new StringBuilder();
-
-            var hasCondition = !string.IsNullOrEmpty(bundle.Condition);
-            if (hasCondition)
-            {
-                html.AppendFormat(HtmlConstants.ConditionalCommentStart, bundle.Condition);
-                html.AppendLine();
-            }
-            html.Append(string.Join(
+            var content = string.Join(
                 Environment.NewLine,
                 assetUrls.Select(createLink).ToArray()
-            ));
-            if (hasCondition)
-            {
-                html.AppendLine();
-                html.Append(HtmlConstants.ConditionalCommentEnd);
-            }
-            return html.ToString();
+            );
+
+            var conditionalRenderer = new ConditionalRenderer();
+            return conditionalRenderer.Render(bundle.Condition, html => html.Append(content));
         }
 
         IEnumerable<string> GetAssetUrls(StylesheetBundle bundle)

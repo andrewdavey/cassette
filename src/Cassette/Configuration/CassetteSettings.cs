@@ -15,15 +15,16 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
-        readonly Lazy<ICassetteManifestCache> bundleCache;
-        ICassetteManifestCache customCassetteManifestCache;
+        readonly Lazy<ICassetteManifestCache> cassetteManifestCache;
 
         public CassetteSettings(string cacheVersion)
         {
             Version = cacheVersion;
             DefaultFileSearches = CreateDefaultFileSearches();
             BundleFactories = CreateBundleFactories();
-            bundleCache = new Lazy<ICassetteManifestCache>(() => new CassetteManifestCache(CacheDirectory.GetFile("cassette.xml")));
+            cassetteManifestCache = new Lazy<ICassetteManifestCache>(
+                () => new CassetteManifestCache(CacheDirectory.GetFile("cassette.xml"))
+            );
         }
 
         /// <summary>
@@ -116,8 +117,7 @@ namespace Cassette.Configuration
 
         internal ICassetteManifestCache CassetteManifestCache
         {
-            get { return customCassetteManifestCache ?? bundleCache.Value; }
-            set { customCassetteManifestCache = value; }
+            get { return cassetteManifestCache.Value; }
         }
 
         internal IBundleContainerFactory GetBundleContainerFactory(IEnumerable<ICassetteConfiguration> cassetteConfigurations)

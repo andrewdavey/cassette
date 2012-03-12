@@ -62,5 +62,25 @@ namespace Cassette.Stylesheets
                 "<![endif]-->"
             );
         }
+
+        [Fact]
+        public void GivenStylesheetBundleWithNotIECondition_WhenRender_ThenHtmlConditionalCommentWrapsLinkButLeavesStylesheetVisibleToAllBrowsers()
+        {
+            var bundle = new StylesheetBundle("~/test")
+            {
+                Condition = "(gt IE 9)| !IE"
+            };
+            var urlGenerator = new Mock<IUrlGenerator>();
+            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("URL");
+
+            var renderer = new StylesheetHtmlRenderer(urlGenerator.Object);
+            var html = renderer.Render(bundle);
+
+            html.ShouldEqual(
+                "<!--[if "+ bundle.Condition + "]><!-->" + Environment.NewLine +
+                "<link href=\"URL\" type=\"text/css\" rel=\"stylesheet\"/>" + Environment.NewLine +
+                "<!-- <![endif]-->"
+            );
+        }
     }
 }

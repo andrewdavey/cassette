@@ -6,8 +6,7 @@ namespace Cassette.Stylesheets
     {
         public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline)
         {
-            pipeline.InsertBefore<ExpandCssUrls>(new ConvertImageUrlsToDataUris());
-            return pipeline;
+            return pipeline.EmbedImages(url => true);
         }
 
         public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline, Func<string, bool> shouldEmbedUrl)
