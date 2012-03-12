@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.IO;
+using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
@@ -47,7 +48,7 @@ namespace Cassette.Configuration
 
         IEnumerable<string> GetFilePatterns()
         {
-            return string.IsNullOrWhiteSpace(Pattern)
+            return Pattern.IsNullOrWhiteSpace()
                        ? new[] { "*" }
                        : Pattern.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
         }

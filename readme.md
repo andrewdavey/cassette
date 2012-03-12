@@ -31,6 +31,10 @@ Cassette does all this [and more](http://getcassette.net/benefits)!
 
 Check out the [docs](http://getcassette.net/documentation/getting-started) on the website for help getting started.
 
+## Contributing ##
+
+Checkout the `contributing` folder in the repository for more information.
+
 ## Support and Discussion ##
 
 [Join the Discussion Group](http://groups.google.com/group/cassette) to ask questions and learn about new features.

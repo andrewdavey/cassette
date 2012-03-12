@@ -4,6 +4,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Cassette.IO;
 using Cassette.Utilities;
+#if NET35
+using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette
 {
@@ -22,7 +25,7 @@ namespace Cassette
             
         readonly IFile sourceFile;
         readonly List<string> assetFilenames = new List<string>();
-        readonly HashSet<string> references = new HashSet<string>(); 
+        readonly HashedSet<string> references = new HashedSet<string>(); 
         readonly Dictionary<string, Action<string>> sectionLineParsers;
         string currentSection = "assets";
         string externalUrl;
@@ -53,7 +56,7 @@ namespace Cassette
         void ProcessLine(string line)
         {
             line = line.Trim();
-            if (string.IsNullOrWhiteSpace(line)) return;
+            if (line.IsNullOrWhiteSpace()) return;
             if (IsComment(line)) return;
             line = RemoveTrailingComment(line);
             if (DetermineSection(line)) return;

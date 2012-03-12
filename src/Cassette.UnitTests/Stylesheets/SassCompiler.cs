@@ -6,6 +6,7 @@ using Should;
 using Xunit;
 using Cassette.Utilities;
 
+#if NET40
 namespace Cassette.Stylesheets
 {
     public class SassCompiler_Tests
@@ -85,3 +86,4 @@ namespace Cassette.Stylesheets
         }
     }
 }
+#endif

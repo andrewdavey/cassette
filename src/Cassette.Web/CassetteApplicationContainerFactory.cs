@@ -74,7 +74,7 @@ namespace Cassette.Web
                 .Select(name => new AssemblyName(name).Version.ToString());
 
             var parts = assemblyVersion.Concat(new[] { virtualDirectory });
-            return string.Join("|", parts);
+            return string.Join("|", parts.ToArray());
         }
 
         protected override CassetteApplication CreateCassetteApplicationCore(IBundleContainer bundleContainer, CassetteSettings settings)

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+#if NET35
+using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette.Configuration
 {

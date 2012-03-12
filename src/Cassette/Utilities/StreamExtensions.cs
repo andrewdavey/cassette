@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.IsolatedStorage;
 using System.Security.Cryptography;
 
 namespace Cassette.Utilities
@@ -22,6 +23,46 @@ namespace Cassette.Utilities
                 return reader.ReadToEnd();
             }
         }
+
+#if NET35
+        public static long CopyTo(this Stream source, Stream target)
+        {
+            const int bufSize = 0x1000;
+
+            byte[] buf = new byte[bufSize];
+
+            long totalBytes = 0;
+
+            int bytesRead = 0;
+
+            while ((bytesRead = source.Read(buf, 0, bufSize)) > 0)
+            {
+
+                target.Write(buf, 0, bytesRead);
+
+                totalBytes += bytesRead;
+
+            }
+
+            return totalBytes;
+        }
+
+        public static IsolatedStorageFileStream CreateFile(this IsolatedStorageFile storage, string path)
+        {
+            return new IsolatedStorageFileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, storage);
+        }
+
+        public static IsolatedStorageFileStream OpenFile(this IsolatedStorageFile storage, string path, FileMode mode, FileAccess access)
+        {
+            return new IsolatedStorageFileStream(path, mode, access, storage);
+        }
+
+        public static bool FileExists(this IsolatedStorageFile storage, string fileName)
+        {
+            return storage.GetFileNames(fileName).Length > 0;
+        }
+#endif
+
     }
 }
 

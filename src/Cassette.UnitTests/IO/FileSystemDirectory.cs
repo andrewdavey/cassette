@@ -144,7 +144,7 @@ namespace Cassette.IO
             using (var path = new TempDirectory())
             {
                 Directory.CreateDirectory(Path.Combine(path, "test"));
-                File.WriteAllText(Path.Combine(path, "test", "asset.js"), "");
+                File.WriteAllText(PathUtilities.Combine(path, "test", "asset.js"), "");
 
                 var dir = new FileSystemDirectory(path);
                 var filePaths = dir.GetFiles("*.js", SearchOption.AllDirectories).ToArray();
@@ -158,7 +158,7 @@ namespace Cassette.IO
             using (var path = new TempDirectory())
             {
                 Directory.CreateDirectory(Path.Combine(path, "test"));
-                File.WriteAllText(Path.Combine(path, "test", "asset.js"), "");
+                File.WriteAllText(PathUtilities.Combine(path, "test", "asset.js"), "");
 
                 var testDir = new FileSystemDirectory(path).GetDirectory("test");
                 var filePaths = testDir.GetFiles("*.js", SearchOption.AllDirectories).ToArray();

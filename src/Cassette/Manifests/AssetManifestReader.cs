@@ -55,10 +55,18 @@ namespace Cassette.Manifests
         AssetReferenceType ParseAssetReferenceType(string typeString)
         {
             AssetReferenceType type;
-            if (Enum.TryParse(typeString, out type))
+#if NET35
+            if (Enum<AssetReferenceType>.TryParse(typeString, out type))
             {
                 return type;
             }
+#endif
+
+#if NET40
+            if (Enum.TryParse(typeString, out type)) {
+                return type;
+            }
+#endif
             throw new InvalidCassetteManifestException(string.Format("Invalid asset reference type \"{0}\".", typeString));
         }
 

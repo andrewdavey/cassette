@@ -1,0 +1,120 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This task takes in a XDT transform file and transforms it, following any inheritance chain.
+       There should be at least one base transform for this to work; otherwise just use Microsoft's
+       regular TransformXml task.
+
+       See: https://gist.github.com/1918022 -->
+  <!-- EXAMPLE USAGE:
+  <TransformXmlHierarchy 
+    Source="some-source.xml" 
+    Destination="transformed.xml" />
+  -->
+  <UsingTask
+    TaskName="TransformXmlHierarchy"
+    TaskFactory="CodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+    <ParameterGroup>
+      <Source Required="true" />
+      <Destination Required="true" />
+      <TaskDirectory Required="true" />
+    </ParameterGroup>
+    <Task>      
+      <Reference Include="System.Xml" />
+      <Reference Include="Microsoft.CSharp" />
+      <Using Namespace="System"/>
+      <Using Namespace="System.Linq"/>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Xml"/>
+      <Using Namespace="System.Reflection" />
+      <Code Type="Fragment" Language="cs">
+<![CDATA[
+var taskPath = Path.Combine(TaskDirectory, "Microsoft.Web.Publishing.Tasks.dll");
+if (!File.Exists(taskPath))
+    throw new Exception("Could not load publishing tasks assembly");
+
+Assembly taskAssembly = Assembly.UnsafeLoadFrom(taskPath);
+
+Func<XmlDocument, string, XmlDocument> transformer = (source, transform) => 
+{
+  dynamic transformation = taskAssembly.CreateInstance(
+    "Microsoft.Web.Publishing.Tasks.XmlTransformation", true, BindingFlags.CreateInstance, 
+    null, new object[] { transform }, null, null);
+  
+  if (transformation == null)
+      throw new Exception("Could not create instance of XmlTransformation");
+
+  transformation.Apply(source);
+
+  return source;
+};
+
+Func<XmlDocument, string> getParent = (source) => 
+{
+  if (source == null) return null;
+
+  // Build dependency list
+  var nsmgr = new XmlNamespaceManager(source.NameTable);
+  nsmgr.AddNamespace("x", source.DocumentElement.NamespaceURI);
+
+  var attr = source.SelectSingleNode("x:package", nsmgr).Attributes["inherits"];
+
+  return attr == null ? null : attr.Value;
+};
+
+var rootDoc = new XmlDocument();
+var sources = new List<string>();
+var basePath = Path.GetDirectoryName(Source);
+var parent = Path.GetFileName(Source);
+
+if (basePath == null) {
+    throw new Exception("Could not find base directory of path " + Source);
+}
+
+do {
+    sources.Add(parent);
+
+    rootDoc.Load(Path.Combine(basePath, parent));
+
+    parent = getParent(rootDoc);
+    
+    if (parent != null) {
+        rootDoc.Load(Path.Combine(basePath, parent));
+    }
+} while (parent != null);
+
+// Reverse chain
+sources.Reverse();
+
+var transformedDoc = sources.Skip(1).Aggregate(rootDoc, 
+    (document, transform) => String.IsNullOrEmpty(transform) 
+        ? document 
+        : transformer(document, Path.Combine(basePath, transform)),
+    (document) => document);
+
+Log.LogMessage(MessageImportance.Normal, "Transformed " + Destination);
+
+transformedDoc.Save(Destination);
+]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  <UsingTask TaskName="GetAssemblyInformationalVersion" 
+        TaskFactory="CodeTaskFactory" 
+        AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+        <ParameterGroup>
+            <Assembly ParameterType="System.String" Required="true" />
+            <Version ParameterType="System.String" Output="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System"/>
+            <Using Namespace="System.Diagnostics"/>
+            <Code Type="Fragment" Language="cs">
+<![CDATA[
+var version = FileVersionInfo.GetVersionInfo(Assembly);
+
+Version = version.ProductVersion;
+]]>
+            </Code>
+        </Task>
+    </UsingTask>
+</Project>

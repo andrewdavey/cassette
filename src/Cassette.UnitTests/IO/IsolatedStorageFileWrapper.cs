@@ -14,7 +14,7 @@ namespace Cassette.IO
         public IsolatedStorageFileWrapper_Tests()
         {
             storage = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly();
-            directory = new IsolatedStorageDirectory(storage);
+            directory = new IsolatedStorageDirectory(storage);            
             using (var stream = storage.CreateFile("exists.js"))
             {
                 "content".AsStream().CopyTo(stream);
@@ -55,13 +55,16 @@ namespace Cassette.IO
             file.Directory.ShouldBeSameAs(directory);
         }
 
+        // According to andrew, LastWriteTime is actually never really called in
+        // code, so we should be able to safely ignore it (for FX35)
+#if NET40
         [Fact]
         public void GetLastWriteTimeUtcReturnsFileWriteTime()
         {
             var file = new IsolatedStorageFile("~/exists.js", storage, directory);
-            file.LastWriteTimeUtc.ShouldEqual(storage.GetLastWriteTime("exists.js").UtcDateTime);            
+            file.LastWriteTimeUtc.ShouldEqual(storage.GetLastWriteTime("exists.js").UtcDateTime);  
         }
-
+#endif
         [Fact]
         public void OpenStreamReturnsFileStream()
         {

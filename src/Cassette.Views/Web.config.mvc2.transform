@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- This goes in ~/Views/ for MVC2 web applications -->
+<configuration>
+    <system.web>
+        <pages>
+            <namespaces>
+                <add namespace="Cassette.Views" />
+            </namespaces>
+        </pages>
+    </system.web>
+</configuration>

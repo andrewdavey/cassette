@@ -14,30 +14,31 @@ namespace Cassette.Web
     public class AssetRequestHandler_Tests
     {
         public AssetRequestHandler_Tests()
-        {
-            var requestContext = new Mock<RequestContext>();
-            var routeData = new RouteData();
+        {            
+            var routeData = new RouteData();            
             request = new Mock<HttpRequestBase>();
             response = new Mock<HttpResponseBase>();
             cache = new Mock<HttpCachePolicyBase>();
             requestHeaders = new NameValueCollection();
 
             routeData.Values.Add("path", "test/asset.js");
-            requestContext.SetupGet(r => r.RouteData)
-                          .Returns(routeData);
 
-            requestContext.SetupGet(r => r.HttpContext.Response)
+            var httpContext = new Mock<HttpContextBase>();
+            httpContext.SetupGet(r => r.Response)
                           .Returns(response.Object);
-            requestContext.SetupGet(r => r.HttpContext.Request)
+            httpContext.SetupGet(r => r.Request)
                           .Returns(request.Object);
-            requestContext.SetupGet(r => r.HttpContext.Items)
+            httpContext.SetupGet(r => r.Items)
                           .Returns(new Dictionary<string, object>());
+
+            var requestContext = new RequestContext(httpContext.Object, routeData);
 
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
             response.SetupGet(r => r.Cache).Returns(cache.Object);
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
+
             bundles = new List<Bundle>();
-            handler = new AssetRequestHandler(requestContext.Object, bundles);
+            handler = new AssetRequestHandler(requestContext, bundles);
         }
 
         readonly AssetRequestHandler handler;

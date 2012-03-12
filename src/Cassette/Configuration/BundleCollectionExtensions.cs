@@ -306,7 +306,7 @@ namespace Cassette.Configuration
             }
         }
 
-        public static void AddUrlWithLocalAssets<T>(this BundleCollection bundleCollection, string url, LocalAssetSettings settings, Action<T> customizeBundle = null)
+        public static void AddUrlWithLocalAssets<T>(this BundleCollection bundleCollection, string url, LocalAssetSettings settings, Action<Bundle> customizeBundle = null)
             where T : Bundle
         {
             var existingBundle = bundleCollection.FirstOrDefault(b => b.ContainsPath(PathUtilities.AppRelative(settings.Path)));
@@ -369,7 +369,7 @@ namespace Cassette.Configuration
             }
         }
 
-        public static void AddUrlWithAlias<T>(this BundleCollection bundleCollection, string url, string alias, Action<T> customizeBundle = null)
+        public static void AddUrlWithAlias<T>(this BundleCollection bundleCollection, string url, string alias, Action<Bundle> customizeBundle = null)
             where T : Bundle
         {
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
@@ -390,7 +390,7 @@ namespace Cassette.Configuration
         /// <param name="url">The URL to reference.</param>
         /// <param name="customizeBundle">A delegate that is called for each created bundle to allow customization.</param>
         /// <returns>A object used to further configure the bundle.</returns>
-        public static void AddUrl<T>(this BundleCollection bundleCollection, string url, Action<T> customizeBundle = null)
+        public static void AddUrl<T>(this BundleCollection bundleCollection, string url, Action<Bundle> customizeBundle = null)
             where T : Bundle
         {
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];

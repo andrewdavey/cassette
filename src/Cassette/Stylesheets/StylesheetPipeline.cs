@@ -29,11 +29,13 @@ namespace Cassette.Stylesheets
                 yield return new ParseLessReferences();
                 yield return new CompileLess(new LessCompiler());
             }
+#if NET40
             if (CompileSass)
             {
                 yield return new ParseSassReferences();
                 yield return new CompileSass(new SassCompiler());
             }
+#endif
             if (ConvertImageUrlsToDataUris)
             {
                 yield return new ConvertImageUrlsToDataUris();

@@ -49,7 +49,7 @@ namespace Cassette.Stylesheets
 
             public string ErrorMessage
             {
-                get { return string.Join(Environment.NewLine, errors).Trim(); }
+                get { return string.Join(Environment.NewLine, errors.ToArray()).Trim(); }
             }
 
             public void Log(LogLevel level, string message)

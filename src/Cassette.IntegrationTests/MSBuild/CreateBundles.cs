@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Security;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using Cassette.Configuration;
 using Cassette.IntegrationTests;
@@ -72,10 +74,32 @@ namespace Cassette.MSBuild
             readonly AppDomain domain;
             readonly T value;
 
+            /// <summary>
+            /// Creates a new AppDomain instance that is sandboxed with full trust permissions
+            /// See: http://blogs.msdn.com/b/shawnfa/archive/2006/05/01/587654.aspx
+            /// </summary>
             public AppDomainInstance()
             {
-                domain = AppDomain.CreateDomain("temp");
-                value = (T)domain.CreateInstanceFromAndUnwrap(Path.GetFileName(typeof(T).Assembly.Location), typeof(T).FullName);
+                // Create a new Sandboxed App Domain
+                var pset = new PermissionSet(PermissionState.Unrestricted);
+
+                // Full trust execution
+                pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
+
+                // Set base to current directory
+                var setup = new AppDomainSetup
+                {
+                    ApplicationBase = Path.GetDirectoryName(typeof(T).Assembly.Location)
+                };
+
+                // Sandbox app domain constructor
+                domain = AppDomain.CreateDomain("temp", AppDomain.CurrentDomain.Evidence, setup, pset);
+
+                // This will not demand a FileIOPermission and is a safe way to load an assembly
+                // from an app domain
+                value =
+                    (T)Activator.CreateInstanceFrom(domain, Path.GetFileName(typeof(T).Assembly.Location),
+                                                 typeof(T).FullName).Unwrap();
             }
 
             public T Value

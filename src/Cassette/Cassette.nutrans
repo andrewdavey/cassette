@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package inherits="../Cassette.Shared.nuspec" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <metadata>
+    <id xdt:Transform="Insert">Cassette</id>
+    <description xdt:Transform="Insert">Important: This is just the core library for Cassette. You probably want to install the Cassette.Web package for ASP.NET support.</description>
+    <dependencies xdt:Transform="Insert">
+      <dependency id="AjaxMin" version="4.46" />
+      <dependency id="Jurassic" version="2.1" />
+      <dependency id="Newtonsoft.Json" version="4.0" />
+      <dependency id="CommonServiceLocator" version="1.0"/>
+      <dependency id="IronRuby" version="1.1.3" />
+      <dependency id="SassAndCoffee.Core" version="2.0.2" />
+      <dependency id="SassAndCoffee.Ruby" version="2.0.2" />
+    </dependencies>
+    <references xdt:Transform="Insert">
+      <reference file="Pandora.dll"/>
+      <reference file="Cassette.dll"/>
+    </references>
+  </metadata>
+  <files xdt:Transform="Insert">
+    <file src="..\..\build\bin\lib40\Cassette.dll" target="lib\net40-client" />
+    <file src="..\..\build\bin\lib40\Pandora.dll" target="lib\net40-client"/>
+  </files>
+</package>

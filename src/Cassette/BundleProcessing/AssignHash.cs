@@ -1,6 +1,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using Cassette.Configuration;
+using Cassette.Utilities;
 
 namespace Cassette.BundleProcessing
 {

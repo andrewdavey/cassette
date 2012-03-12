@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Cassette.IO;
+using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {

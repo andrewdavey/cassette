@@ -60,6 +60,7 @@ namespace Cassette.Stylesheets
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
         }
 
+#if NET40
         [Fact]
         public void GivenCompileSassIsTrue_WhenProcessBundle_ThenSassAssetHasCompileAssetTransformAdded()
         {
@@ -89,6 +90,8 @@ namespace Cassette.Stylesheets
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
         }
+
+#endif
 
         [Fact]
         public void GivenConvertImageUrlsToDataUrisIsTrue_WhenProcessBundle_ThenLessAssetHasDataUriTransformAdded()
@@ -250,6 +253,7 @@ namespace Cassette.Stylesheets
         }
     }
 
+#if NET40
     public class StylesheetPipelineWhereSassCompilerTrue : StylesheetPipeline_Process_TestBase
     {
         public StylesheetPipelineWhereSassCompilerTrue()
@@ -282,4 +286,5 @@ namespace Cassette.Stylesheets
             )));
         }
     }
+#endif
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.IO;
+using Cassette.Utilities;
 using Should;
 using Xunit;
 
@@ -148,7 +149,7 @@ namespace Cassette.Configuration
 
         void CreateFile(params string[] paths)
         {
-            var filename = Path.Combine(temp, Path.Combine(paths));
+            var filename = Path.Combine(temp, PathUtilities.Combine(paths));
             File.WriteAllText(filename, "");
         }
     }
@@ -250,7 +251,7 @@ namespace Cassette.Configuration
 
         void CreateFile(params string[] paths)
         {
-            var filename = Path.Combine(temp, Path.Combine(paths));
+            var filename = Path.Combine(temp, PathUtilities.Combine(paths));
             File.WriteAllText(filename, "");
         }
 

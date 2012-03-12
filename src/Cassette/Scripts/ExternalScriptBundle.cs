@@ -4,6 +4,7 @@ using System.Text;
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Scripts.Manifests;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -31,7 +32,7 @@ namespace Cassette.Scripts
         static void ValidateUrl(string url)
         {
             if (url == null) throw new ArgumentNullException("url");
-            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("URL is required.", "url");
+            if (url.IsNullOrWhiteSpace()) throw new ArgumentException("URL is required.", "url");
         }
 
         internal string FallbackCondition
@@ -119,8 +120,8 @@ namespace Cassette.Scripts
 
             return string.Join(
                 Environment.NewLine,
-                from script in scripts
-                select "document.write(unescape('" + Escape(script) + "'));"
+                (from script in scripts
+                select "document.write(unescape('" + Escape(script) + "'));").ToArray()
             );
         }
 

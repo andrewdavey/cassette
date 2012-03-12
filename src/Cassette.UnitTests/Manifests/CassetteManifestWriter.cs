@@ -41,7 +41,7 @@ namespace Cassette.Manifests
         [Fact]
         public void NewManifestLastWriteTimeUtcIsJustAfterTestStartTime()
         {
-            (newManifest.LastWriteTimeUtc >= startTime).ShouldBeTrue();
+            (newManifest.LastWriteTimeUtc.ToUniversalTime() >= startTime).ShouldBeTrue();
         }
 
         DateTime UtcNowToTheSecond()

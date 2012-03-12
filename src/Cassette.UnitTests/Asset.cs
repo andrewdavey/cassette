@@ -127,7 +127,7 @@ namespace Cassette
         public void AddReferenceToSiblingFilenameInSubDirectory_ExpandsFilenameToAbsolutePath()
         {
             root.CreateSubdirectory("bundle\\sub");
-            File.WriteAllText(Path.Combine(root.FullName, "bundle", "sub", "another.js"), "");
+            File.WriteAllText(PathUtilities.Combine(root.FullName, "bundle", "sub", "another.js"), "");
             var another = new FileAsset(StubFile(fullPath: "~/bundle/sub/another.js"), bundle);
             bundle.Assets.Add(another);
 

@@ -19,7 +19,7 @@ namespace Cassette.Stylesheets
             var createLink = GetCreateLinkFunc(bundle);
             var content = string.Join(
                 Environment.NewLine,
-                assetUrls.Select(createLink)
+                assetUrls.Select(createLink).ToArray()
             );
 
             var conditionalRenderer = new ConditionalRenderer();

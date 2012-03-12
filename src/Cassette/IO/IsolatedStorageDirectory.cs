@@ -66,7 +66,7 @@ namespace Cassette.IO
             var storage = getStorage();
             return storage.GetFileNames(searchPattern).Select(
                 filename => new IsolatedStorageFile(GetAbsolutePath(filename), getStorage, this)
-            );
+                       ).Cast<IFile>();
         }
 
         public IEnumerable<IDirectory> GetDirectories()

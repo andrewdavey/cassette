@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if NET35
+using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette.Utilities
 {
@@ -13,8 +16,8 @@ namespace Cassette.Utilities
             public bool Visited;
             public int Index;
             public int LowLink;
-            public readonly ISet<Node> Incoming = new HashSet<Node>();
-            public readonly ISet<Node> Outgoing = new HashSet<Node>();
+            public readonly ISet<Node> Incoming = new HashedSet<Node>();
+            public readonly ISet<Node> Outgoing = new HashedSet<Node>();
         }
 
         readonly Node[] nodes;
@@ -68,7 +71,7 @@ namespace Cassette.Utilities
 
             var index = 0;
             var stack = new Stack<Node>();
-            var cycles = new HashSet<ISet<T>>();
+            var cycles = new HashedSet<ISet<T>>();
 
             foreach (var node in nodes)
             {
@@ -108,7 +111,7 @@ namespace Cassette.Utilities
 
             if (node.LowLink == node.Index)
             {
-                var cycle = new HashSet<T>();
+                var cycle = new HashedSet<T>();
                 Node w;
                 do
                 {

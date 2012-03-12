@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Utilities;
+#if NET35
+using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette
 {
@@ -17,7 +20,7 @@ namespace Cassette
         }
 
         readonly Bundle[] bundles;
-        readonly Dictionary<Bundle, HashSet<Bundle>> bundleImmediateReferences;
+        readonly Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
 
         public IEnumerable<Bundle> Bundles
         {
@@ -28,7 +31,7 @@ namespace Cassette
         {
             var bundlesArray = bundlesToSort.ToArray();
             var references = GetBundleReferencesWithImplicitOrderingIncluded(bundlesArray);
-            var all = new HashSet<Bundle>();
+            var all = new HashedSet<Bundle>();
             foreach (var bundle in bundlesArray)
             {
                 AddBundlesReferencedBy(bundle, all);   
@@ -37,7 +40,7 @@ namespace Cassette
             var cycles = graph.FindCycles().ToArray();
             if (cycles.Length > 0)
             {
-                var details = string.Join(Environment.NewLine, cycles.Select(cycle => "[" + string.Join(", ", cycle.Select(m => m.Path)) + "]"));
+                var details = string.Join(Environment.NewLine, cycles.Select(cycle => "[" + string.Join(", ", cycle.Select(m => m.Path).ToArray()) + "]").ToArray());
                 throw new InvalidOperationException(
                     "Cycles detected in bundle dependency graph:" + Environment.NewLine +
                     details
@@ -46,43 +49,43 @@ namespace Cassette
             return graph.TopologicalSort();
         }
 
-        Graph<Bundle> BuildBundleGraph(IDictionary<Bundle, HashSet<Bundle>> references, IEnumerable<Bundle> all)
+        Graph<Bundle> BuildBundleGraph(IDictionary<Bundle, HashedSet<Bundle>> references, IEnumerable<Bundle> all)
         {
             return new Graph<Bundle>(
                 all,
                 bundle =>
                 {
-                    HashSet<Bundle> set;
+                    HashedSet<Bundle> set;
                     if (references.TryGetValue(bundle, out set)) return set;
                     return Enumerable.Empty<Bundle>();
                 }
             );
         }
 
-        Dictionary<Bundle, HashSet<Bundle>> GetBundleReferencesWithImplicitOrderingIncluded(IEnumerable<Bundle> initialBundles)
+        Dictionary<Bundle, HashedSet<Bundle>> GetBundleReferencesWithImplicitOrderingIncluded(IEnumerable<Bundle> initialBundles)
         {
             var roots = initialBundles.Where(m =>
             {
-                HashSet<Bundle> set;
+                HashedSet<Bundle> set;
                 if (bundleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
                 return true;
             }).ToList();
 
             // Clone the original references dictionary, so we can add the extra
             // implicit references based on array order.
-            var references = new Dictionary<Bundle, HashSet<Bundle>>();
+            var references = new Dictionary<Bundle, HashedSet<Bundle>>();
             foreach (var reference in bundleImmediateReferences)
             {
-                references[reference.Key] = new HashSet<Bundle>(reference.Value);
+                references[reference.Key] = new HashedSet<Bundle>(reference.Value);
             }
             for (int i = 1; i < roots.Count; i++)
             {
                 var bundle = roots[i];
                 var previous = roots[i - 1];
-                HashSet<Bundle> set;
+                HashedSet<Bundle> set;
                 if (!references.TryGetValue(bundle, out set))
                 {
-                    references[bundle] = set = new HashSet<Bundle>();
+                    references[bundle] = set = new HashedSet<Bundle>();
                 }
                 set.Add(previous);
             }
@@ -94,7 +97,7 @@ namespace Cassette
             if (all.Contains(bundle)) return;
             all.Add(bundle);
 
-            HashSet<Bundle> referencedBundles;
+            HashedSet<Bundle> referencedBundles;
             if (!bundleImmediateReferences.TryGetValue(bundle, out referencedBundles)) return;
             foreach (var referencedBundle in referencedBundles)
             {
@@ -118,7 +121,7 @@ namespace Cassette
                                bundle.Path,
                                reference
                            );
-            var message = string.Join(Environment.NewLine, notFound);
+            var message = string.Join(Environment.NewLine, notFound.ToArray());
             if (message.Length > 0)
             {
                 throw new AssetReferenceException(message);
@@ -137,7 +140,7 @@ namespace Cassette
                               && NoBundlesContainPath(reference.AssetReference.Path)
                            select CreateAssetReferenceNotFoundMessage(reference.AssetReference);
 
-            var message = string.Join(Environment.NewLine, notFound);
+            var message = string.Join(Environment.NewLine, notFound.ToArray());
             if (message.Length > 0)
             {
                 throw new AssetReferenceException(message);
@@ -149,17 +152,17 @@ namespace Cassette
             return !bundles.Any(m => m.ContainsPath(path));
         }
 
-        Dictionary<Bundle, HashSet<Bundle>> BuildBundleImmediateReferenceDictionary()
+        Dictionary<Bundle, HashedSet<Bundle>> BuildBundleImmediateReferenceDictionary()
         {
             return (
                 from bundle in bundles
                 select new 
                 { 
                     bundle,
-                    references = new HashSet<Bundle>(GetNonSameBundleAssetReferences(bundle)
+                    references = new HashedSet<Bundle>(GetNonSameBundleAssetReferences(bundle)
                         .Select(r => r.Path)
                         .Concat(bundle.References)
-                        .SelectMany(FindBundlesContainingPath)
+                        .SelectMany(FindBundlesContainingPath).ToList()
                     ) 
                 }
             ).ToDictionary(x => x.bundle, x => x.references);

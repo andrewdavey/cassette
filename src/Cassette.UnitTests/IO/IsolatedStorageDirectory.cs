@@ -3,6 +3,7 @@ using System.Linq;
 using Should;
 using Xunit;
 using System.IO;
+using Cassette.Utilities;
 
 namespace Cassette.IO
 {
@@ -13,7 +14,7 @@ namespace Cassette.IO
         public IsolatedStorageDirectory_Tests()
         {
             storage = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly();
-            foreach (var filename in storage.GetFileNames())
+            foreach (var filename in storage.GetFileNames("*"))
             {
                 storage.DeleteFile(filename);
             }

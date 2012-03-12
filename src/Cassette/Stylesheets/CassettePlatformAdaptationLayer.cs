@@ -1,3 +1,4 @@
+#if NET40
 using System;
 using System.IO;
 using Cassette.IO;
@@ -79,3 +80,4 @@ namespace Cassette.Stylesheets
         }
     }
 }
+#endif

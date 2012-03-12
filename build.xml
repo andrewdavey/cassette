@@ -1,45 +1,94 @@
 <?xml version="1.0"?>
-<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    
-    <UsingTask AssemblyFile="tools\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
-
+<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">    
+    <Import Project="Cassette.targets" />
     <PropertyGroup>
         <Configuration>Release</Configuration>
+        <FX35Suffix>-FX35</FX35Suffix>
     </PropertyGroup>
 
     <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
 
     <Target Name="Build">
         <ItemGroup>
-            <ProjectToBuild Include="src\Cassette.Web\Cassette.Web.csproj"/>
-            <ProjectToBuild Include="src\Cassette.Views\Cassette.Views.csproj"/>
-            <ProjectToBuild Include="src\Cassette.MSBuild\Cassette.MSBuild.csproj"/>
-            <ProjectToBuild Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.csproj"/>
-            <ProjectToBuild Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
-            <ProjectToBuild Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
+            <Tests Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
-        <MSBuild Projects="@(ProjectToBuild)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+        <PropertyGroup>
+            <OutputPath>..\..\build\bin</OutputPath>
+        </PropertyGroup>
+
+        <!-- Only need to build test projects as dependent projects will be automatically built. -->
+        <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
+            Properties="Configuration=$(Configuration)$(FX35Suffix);OutputPath=$(OutputPath)\lib35"/>
+        <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
+            Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)\lib40"/>
+
     </Target>
 
     <Target Name="Test" DependsOnTargets="Build">
-        <xunit Assembly="src\Cassette.UnitTests\bin\$(Configuration)\Cassette.UnitTests.dll" />
-        <xunit Assembly="src\Cassette.IntegrationTests\bin\$(Configuration)\Cassette.IntegrationTests.dll" />
+        <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
+        <Exec Command="tools\xunit.console.clr4.x86.exe build\bin\lib40\Cassette.UnitTests.dll" />
+        <Exec Command="tools\xunit.console.clr4.x86.exe build\bin\lib40\Cassette.IntegrationTests.dll" />
+        <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.UnitTests.dll" />
+        <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.IntegrationTests.dll" />
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
-            <ProjectToNugetPack Include="src\Cassette\Cassette.csproj"/>
-            <ProjectToNugetPack Include="src\Cassette.Views\Cassette.Views.csproj"/>
-            <ProjectToNugetPack Include="src\Cassette.Web\Cassette.Web.csproj"/>
-            <ProjectToNugetPack Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.csproj"/>
-        </ItemGroup>
+            <MainNuspec Include="src\Cassette\Cassette.nuspec"/>
+            <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
+            <MainNuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
+	        <MainNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Web\Cassette.Web.symbols.nuspec"/>
+	        <SymbolsNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.symbols.nuspec"/>
+            <Transforms Include="src\**\*.nutrans" />
+        </ItemGroup>        
         <PropertyGroup>
-            <OutputDir>build\nuget\</OutputDir>
+            <OutputDir>build\nuget</OutputDir>
         </PropertyGroup>
+
+        <!-- Get shared assembly version -->
+        <GetAssemblyInformationalVersion Assembly="build\bin\lib40\Cassette.dll">
+            <Output PropertyName="Version" TaskParameter="Version" />
+        </GetAssemblyInformationalVersion>
+
+        <Message Text="Building Nuget packages for v$(Version)" />
+
+        <!-- Transform Nuspecs -->
+        <TransformXmlHierarchy
+            Source="%(Transforms.Identity)"
+            Destination="src\%(Transforms.RecursiveDir)%(Transforms.Filename).nuspec"
+            TaskDirectory="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\" />
+
         <MakeDir Directories="$(OutputDir)"/>
-        <Exec Command="nuget pack -Build %(ProjectToNugetPack.Identity) -Symbols -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration)"/>
+        <Exec Command="nuget pack %(MainNuspec.Identity) -Version $(Version) -OutputDirectory $(OutputDir)"/>
+        <Exec Command="nuget pack %(SymbolsNuspec.Identity) -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
+
         <!-- The Cassette.MSBuild package is slightly different (-Tool, no symbols and -NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
-        <Exec Command="nuget pack -Build src\Cassette.MSBuild\Cassette.MSBuild.csproj -Tool -OutputDirectory $(OutputDir) -Prop Configuration=$(Configuration) -NoPackageAnalysis"/>
+        <!-- TODO: This is packaged as a 4.0 package, as it includes the 4.0 DLLs of its dependencies in the Tools folder.
+                   If it is an issue for 3.5-based projects, can maybe figure out a clean way to package tools for 3.5 and 4.0.
+                   See: src\Cassette.MSBuild\Cassette.MSBuild.nuspec -->
+        <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -NoPackageAnalysis"/>
+
+        <!-- TODO: Until we can multi-target within Nuget easily, we are packaging Fx35 as a zip file for release -->
+        <ItemGroup>
+            <Binary Include="build\bin\lib35\Cassette.dll" />
+            <Binary Include="build\bin\lib35\Cassette.Views.dll" />
+            <Binary Include="build\bin\lib35\Cassette.Web.dll" />
+            <Binary Include="build\bin\lib35\Iesi.Collections.dll" />
+            <Binary Include="build\bin\lib35\Pandora.dll" />
+            <Content Include="src\Cassette.Web\CassetteConfiguration.cs.pp" />
+            <Content Include="src\Cassette.Web\web.config.transform" />
+            <Content Include="src\Cassette.Views\web.config.mvc2.transform" />
+            <Root Include="license.txt" />
+            <Root Include="readme_fx35.md" />
+        </ItemGroup>
+
+        <Copy SourceFiles="%(Binary.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\lib35" />
+        <Copy SourceFiles="%(Content.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\content" />
+        <Copy SourceFiles="%(Root.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)" />
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">

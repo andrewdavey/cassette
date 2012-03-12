@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Cassette.IO;
 using Cassette.Scripts;
+using Cassette.Utilities;
 using Should;
 using Xunit;
 
@@ -103,7 +104,7 @@ namespace Cassette.Configuration
             using (var temp = new TempDirectory())
             {
                 Directory.CreateDirectory(Path.Combine(temp, "bundle"));
-                File.WriteAllText(Path.Combine(temp, "bundle", "file1.js"), "");
+                File.WriteAllText(PathUtilities.Combine(temp, "bundle", "file1.js"), "");
 
                 var settings = new CassetteSettings("");
                 var bundles = new BundleCollection(settings);
