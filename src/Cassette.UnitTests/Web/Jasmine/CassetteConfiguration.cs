@@ -1,10 +1,10 @@
-﻿using Cassette.Configuration;
+﻿#if NET40
+using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Should;
 using Xunit;
 
-#if NET40
 namespace Cassette.Web.Jasmine
 {
     public class CassetteConfiguration_WhenConfigure

@@ -1,4 +1,6 @@
+#if NET40
 using System;
+#endif
 using System.Xml.Linq;
 using Cassette.Utilities;
 

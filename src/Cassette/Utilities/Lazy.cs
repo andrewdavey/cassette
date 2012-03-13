@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#if NET35
+using System;
 
 namespace Cassette
 {
-#if NET35
     /// <summary>
     /// Provides support for lazy initialization.
     /// </summary>
@@ -75,5 +72,5 @@ namespace Cassette
             return Value.ToString();
         }
     }
-#endif
 }
+#endif

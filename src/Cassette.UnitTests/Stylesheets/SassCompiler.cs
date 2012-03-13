@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿#if NET40
+using System.IO;
 using System.Linq;
 using Cassette.IO;
 using Moq;
@@ -6,7 +7,6 @@ using Should;
 using Xunit;
 using Cassette.Utilities;
 
-#if NET40
 namespace Cassette.Stylesheets
 {
     public class SassCompiler_Tests

@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-#if NET35
-using Iesi.Collections;
-#endif
 using Should;
 using Xunit;
 

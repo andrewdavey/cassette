@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !NET35
 using System.Web;
+#endif
 
 namespace Cassette.Views
 {
