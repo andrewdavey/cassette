@@ -3,7 +3,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Cassette.IO;
+#if NET35
 using Cassette.Utilities;
+#endif
 
 namespace Cassette.Stylesheets
 {

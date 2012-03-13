@@ -13,13 +13,13 @@ namespace Cassette.Utilities
             return Path.Combine(paths);
 #endif
 #if NET35
-            return paths.Aggregate((p1, p2) => Path.Combine(p1, p2));
+            return paths.Aggregate(Path.Combine);
 #endif
         }
     
         public static string CombineWithForwardSlashes(params string[] paths)
         {
-            return paths.Aggregate((a, b) => Path.Combine(a, b)).Replace('\\', '/');
+            return paths.Aggregate(Path.Combine).Replace('\\', '/');
         }
 
         public static string NormalizePath(string path)

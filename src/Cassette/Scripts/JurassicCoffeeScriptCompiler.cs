@@ -2,6 +2,9 @@
 using System.Diagnostics;
 using Cassette.IO;
 using Jurassic;
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette.Scripts
 {

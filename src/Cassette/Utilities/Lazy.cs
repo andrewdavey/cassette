@@ -1,7 +1,7 @@
 ﻿#if NET35
 using System;
 
-namespace Cassette
+namespace Cassette.Utilities
 {
     /// <summary>
     /// Provides support for lazy initialization.

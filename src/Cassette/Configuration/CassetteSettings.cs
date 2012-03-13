@@ -7,6 +7,9 @@ using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.Manifests;
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette.Configuration
 {

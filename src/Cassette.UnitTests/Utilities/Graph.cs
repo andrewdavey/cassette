@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Should;
 using Xunit;
+#if NET35
+using System.Collections.ObjectModel;
+#endif
 
 namespace Cassette.Utilities
 {

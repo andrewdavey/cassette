@@ -78,7 +78,7 @@ namespace Cassette
             {
                 references[reference.Key] = new HashedSet<Bundle>(reference.Value);
             }
-            for (int i = 1; i < roots.Count; i++)
+            for (var i = 1; i < roots.Count; i++)
             {
                 var bundle = roots[i];
                 var previous = roots[i - 1];

@@ -2,6 +2,9 @@
 using System.Diagnostics;
 using Cassette.Interop;
 using Cassette.IO;
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette.Scripts
 {

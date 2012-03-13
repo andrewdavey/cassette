@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 using System.Xml.Linq;
 using Cassette.HtmlTemplates.Manifests;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
+#if NET35
+using System.Xml;
+#endif
 
 namespace Cassette.Manifests
 {

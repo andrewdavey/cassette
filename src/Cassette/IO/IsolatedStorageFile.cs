@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.IO.IsolatedStorage;
 using Storage = System.IO.IsolatedStorage.IsolatedStorageFile;
+#if NET35
+using System.IO.IsolatedStorage;
+#endif
 
 namespace Cassette.IO
 {

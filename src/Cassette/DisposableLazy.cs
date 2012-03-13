@@ -1,4 +1,7 @@
 ﻿using System;
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette
 {
