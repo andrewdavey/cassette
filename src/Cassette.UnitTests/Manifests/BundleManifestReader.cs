@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Linq;
+using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -43,7 +44,7 @@ namespace Cassette.Manifests
 
         class TestableBundleManifest : BundleManifest
         {
-            protected override Bundle CreateBundleCore()
+            protected override Bundle CreateBundleCore(CassetteSettings settings)
             {
                 throw new NotImplementedException();
             }

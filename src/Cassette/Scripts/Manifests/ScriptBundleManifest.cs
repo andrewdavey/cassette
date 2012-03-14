@@ -1,3 +1,4 @@
+using Cassette.Configuration;
 using Cassette.Manifests;
 
 namespace Cassette.Scripts.Manifests
@@ -6,12 +7,12 @@ namespace Cassette.Scripts.Manifests
     {
         public string Condition { get; set; }
 
-        protected override Bundle CreateBundleCore()
+        protected override Bundle CreateBundleCore(CassetteSettings settings)
         {
             return new ScriptBundle(Path)
             {
                 Condition = Condition,
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>(Html())
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>(Html(), settings.UrlModifier)
             };
         }
     }

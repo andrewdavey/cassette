@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Utilities;
 using Should;
@@ -10,10 +11,12 @@ namespace Cassette.Scripts.Manifests
     {
         readonly ScriptBundleManifest manifest;
         readonly ScriptBundle createdBundle;
+        readonly CassetteSettings settings;
         const string BundleContent = "BUNDLE-CONTENT";
 
         public ScriptBundleManifest_Tests()
         {
+            settings = new CassetteSettings("");
             manifest = new ScriptBundleManifest
             {
                 Path = "~",
@@ -28,7 +31,7 @@ namespace Cassette.Scripts.Manifests
                 Content = Encoding.UTF8.GetBytes(BundleContent),
                 Html = () => "EXPECTED-HTML"
             };
-            createdBundle = (ScriptBundle)manifest.CreateBundle();
+            createdBundle = (ScriptBundle)manifest.CreateBundle(settings);
         }
 
         [Fact]

@@ -1,5 +1,6 @@
 ﻿using Should;
 using Xunit;
+using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates.Manifests
 {
@@ -7,16 +8,18 @@ namespace Cassette.HtmlTemplates.Manifests
     {
         readonly HtmlTemplateBundle createdBundle;
         readonly HtmlTemplateBundleManifest manifest;
+        readonly CassetteSettings settings;
 
         public HtmlTemplateBundleManifest_Test()
         {
+            settings = new CassetteSettings("");
             manifest = new HtmlTemplateBundleManifest
             {
                 Path = "~",
                 Hash = new byte[0],
                 Html = () => "EXPECTED-HTML"
             };
-            createdBundle = (HtmlTemplateBundle)manifest.CreateBundle();
+            createdBundle = (HtmlTemplateBundle)manifest.CreateBundle(settings);
         }
 
         [Fact]

@@ -20,7 +20,7 @@ namespace Cassette.MSBuild
             settings = new CassetteSettings("")
             {
                 SourceDirectory = sourceDirectory,
-                UrlModifier = new VirtualDirectoryPrepender("/")
+                UrlModifier = new UrlPlaceholderWrapper()
             };
             bundles = new BundleCollection(settings);
         }

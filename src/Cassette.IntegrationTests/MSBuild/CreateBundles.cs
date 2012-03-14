@@ -56,7 +56,7 @@ namespace Cassette.MSBuild
             var bundles = LoadBundlesFromManifestFile();
             var content = bundles.First().OpenStream().ReadToEnd();
 
-            Regex.IsMatch(content, @"url\(/_cassette/file/test_[a-z0-9]+\.png\)").ShouldBeTrue();
+            Regex.IsMatch(content, @"url\(\<CASSETTE_URL_ROOT\>_cassette/file/test_[a-z0-9]+\.png\<\/CASSETTE_URL_ROOT\>\)").ShouldBeTrue();
         }
 
         IEnumerable<Bundle> LoadBundlesFromManifestFile()

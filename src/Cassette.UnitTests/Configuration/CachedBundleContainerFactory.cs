@@ -36,7 +36,8 @@ namespace Cassette.Configuration
             );
             cache.Setup(c => c.LoadCassetteManifest()).Returns(cachedManifest);
 
-            var scriptBundle = new ScriptBundle("~") { Renderer = new ConstantHtmlRenderer<ScriptBundle>("") };
+            var urlModifier = Mock.Of<IUrlModifier>();
+            var scriptBundle = new ScriptBundle("~") { Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier) };
             var factory = CreateFactory(new[] { scriptBundle });
             var container = factory.CreateBundleContainer();
 

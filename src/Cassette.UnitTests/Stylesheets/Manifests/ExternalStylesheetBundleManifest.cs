@@ -1,4 +1,5 @@
-﻿using Should;
+﻿using Cassette.Configuration;
+using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets.Manifests
@@ -7,9 +8,11 @@ namespace Cassette.Stylesheets.Manifests
     {
         readonly ExternalStylesheetBundleManifest manifest;
         readonly ExternalStylesheetBundle createdBundle;
+        readonly CassetteSettings settings;
 
         public ExternalStylesheetBundleManifest_Tests()
         {
+            settings = new CassetteSettings("");
             manifest = new ExternalStylesheetBundleManifest
             {
                 Path = "~",
@@ -18,7 +21,7 @@ namespace Cassette.Stylesheets.Manifests
                 Url = "http://example.com/",
                 Html = () => "EXPECTED-HTML"
             };
-            createdBundle = (ExternalStylesheetBundle)manifest.CreateBundle();
+            createdBundle = (ExternalStylesheetBundle)manifest.CreateBundle(settings);
         }
 
         [Fact]

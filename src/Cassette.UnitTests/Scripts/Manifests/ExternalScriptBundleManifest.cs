@@ -1,4 +1,5 @@
-﻿using Cassette.Manifests;
+﻿using Cassette.Configuration;
+using Cassette.Manifests;
 using Should;
 using Xunit;
 
@@ -8,9 +9,11 @@ namespace Cassette.Scripts.Manifests
     {
         readonly ExternalScriptBundleManifest manifest;
         readonly ExternalScriptBundle createdBundle;
+        readonly CassetteSettings settings;
 
         public ExternalScriptBundleManifest_Tests()
         {
+            settings = new CassetteSettings("");
             manifest = new ExternalScriptBundleManifest
             {
                 Path = "~",
@@ -23,7 +26,7 @@ namespace Cassette.Scripts.Manifests
                         new AssetManifest { Path = "~/asset-b" }
                     }
             };
-            createdBundle = (ExternalScriptBundle)manifest.CreateBundle();
+            createdBundle = (ExternalScriptBundle)manifest.CreateBundle(settings);
         }
 
         [Fact]

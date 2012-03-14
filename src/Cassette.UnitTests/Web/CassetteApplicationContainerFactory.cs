@@ -177,7 +177,8 @@ namespace Cassette.Web
             asset.References.Add(new AssetReference("http://example.org/", asset, 1, AssetReferenceType.Url));
             bundle.Assets.Add(asset);
             bundle.Process(new CassetteSettings(""));
-            bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
+            var urlModifier = Mock.Of<IUrlModifier>();
+            bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier);
             return bundle;
         }
 

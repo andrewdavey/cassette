@@ -1,4 +1,5 @@
-﻿using Cassette.Manifests;
+﻿using Cassette.Configuration;
+using Cassette.Manifests;
 
 namespace Cassette.Stylesheets.Manifests
 {
@@ -7,13 +8,13 @@ namespace Cassette.Stylesheets.Manifests
         public string Media { get; set; }
         public string Condition { get; set; }
 
-        protected override Bundle CreateBundleCore()
+        protected override Bundle CreateBundleCore(CassetteSettings settings)
         {
             return new StylesheetBundle(Path)
             {
                 Condition = Condition,
                 Media = Media,
-                Renderer = new ConstantHtmlRenderer<StylesheetBundle>(Html())
+                Renderer = new ConstantHtmlRenderer<StylesheetBundle>(Html(), settings.UrlModifier)
             };
         }
     }

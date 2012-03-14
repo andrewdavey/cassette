@@ -53,13 +53,13 @@ namespace Cassette.Manifests
 
         public BundleCollection CreateBundleCollection(CassetteSettings settings)
         {
-            var bundles = CreateBundles();
+            var bundles = CreateBundles(settings);
             return new BundleCollection(settings, bundles);
         }
 
-        IEnumerable<Bundle> CreateBundles()
+        IEnumerable<Bundle> CreateBundles(CassetteSettings settings)
         {
-            return BundleManifests.Select(m => m.CreateBundle());
+            return BundleManifests.Select(m => m.CreateBundle(settings));
         }
     }
 }

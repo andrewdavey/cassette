@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Configuration;
 using Cassette.IO;
 
 namespace Cassette.Manifests
@@ -24,9 +25,9 @@ namespace Cassette.Manifests
         public byte[] Content { get; set; }
         public Func<string> Html { get; set; }
 
-        public Bundle CreateBundle()
+        public Bundle CreateBundle(CassetteSettings settings)
         {
-            var bundle = CreateBundleCore();
+            var bundle = CreateBundleCore(settings);
             bundle.Hash = Hash;
             bundle.ContentType = ContentType;
             bundle.PageLocation = PageLocation;
@@ -47,7 +48,7 @@ namespace Cassette.Manifests
             }
         }
 
-        protected abstract Bundle CreateBundleCore();
+        protected abstract Bundle CreateBundleCore(CassetteSettings settings);
 
         CachedBundleContent CreateCachedBundleContent()
         {

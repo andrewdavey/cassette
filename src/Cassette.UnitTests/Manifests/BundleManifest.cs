@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets.Manifests;
@@ -12,7 +13,7 @@ namespace Cassette.Manifests
     {
         class TestableBundleManifest : BundleManifest
         {
-            protected override Bundle CreateBundleCore()
+            protected override Bundle CreateBundleCore(CassetteSettings settings)
             {
                 throw new NotImplementedException();
             }
@@ -102,9 +103,11 @@ namespace Cassette.Manifests
     public class BundleManifest_CreateBundle_Tests
     {
         readonly TestableBundleManifest manifest;
+        readonly CassetteSettings settings;
 
         public BundleManifest_CreateBundle_Tests()
         {
+            settings = new CassetteSettings("");
             manifest = new TestableBundleManifest
             {
                 Path = "~",
@@ -117,7 +120,7 @@ namespace Cassette.Manifests
         {
             manifest.Assets.Add(new AssetManifest { Path = "~/asset" });
             manifest.Content = new byte[] { 1, 2, 3 };
-            var bundle = manifest.CreateBundle();
+            var bundle = manifest.CreateBundle(settings);
 
             using (var stream = bundle.OpenStream())
             {
@@ -131,7 +134,7 @@ namespace Cassette.Manifests
         public void GivenManifestHasNoContent_WhenCreateBundle_ThenBundleOpenStreamReturnsEmpty()
         {
             manifest.Content = null;
-            var bundle = manifest.CreateBundle();
+            var bundle = manifest.CreateBundle(settings);
 
             bundle.OpenStream().Length.ShouldEqual(0);
         }
@@ -140,7 +143,7 @@ namespace Cassette.Manifests
         public void GivenManifestWithReferences_WhenCreateBundle_ThenBundleHasTheReferences()
         {
             manifest.References.Add("~/reference");
-            var bundle = manifest.CreateBundle();
+            var bundle = manifest.CreateBundle(settings);
             bundle.References.ShouldEqual(new[] { "~/reference" });
         }
 
@@ -149,7 +152,7 @@ namespace Cassette.Manifests
         {
             manifest.HtmlAttributes.Add("attribute", "value");
 
-            var bundle = manifest.CreateBundle();
+            var bundle = manifest.CreateBundle(settings);
 
             bundle.HtmlAttributes["attribute"].ShouldEqual("value");
         }
@@ -159,7 +162,7 @@ namespace Cassette.Manifests
         {
             manifest.HtmlAttributes.Add("attribute", null);
 
-            var bundle = manifest.CreateBundle();
+            var bundle = manifest.CreateBundle(settings);
 
             bundle.HtmlAttributes["attribute"].ShouldBeNull();
         }
@@ -167,14 +170,14 @@ namespace Cassette.Manifests
         [Fact]
         public void WhenCreateBundle_WhenBundleIsNotProcessed()
         {
-            var bundle = manifest.CreateBundle();
+            var bundle = manifest.CreateBundle(settings);
             
             bundle.IsProcessed.ShouldBeFalse();
         }
 
         class TestableBundleManifest : BundleManifest
         {
-            protected override Bundle CreateBundleCore()
+            protected override Bundle CreateBundleCore(CassetteSettings settings)
             {
                 return new TestableBundle(Path);
             }
@@ -304,7 +307,7 @@ namespace Cassette.Manifests
 
         class TestableBundleManifest : BundleManifest
         {
-            protected override Bundle CreateBundleCore()
+            protected override Bundle CreateBundleCore(CassetteSettings settings)
             {
                 throw new NotImplementedException();
             }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Cassette.Configuration;
 using Cassette.Manifests;
+using Moq;
 using Should;
 using Xunit;
 
@@ -34,7 +35,8 @@ namespace Cassette.Scripts.Manifests
             bundle.Assets.Add(asset);
             bundle.AddReference("~/reference/path");
             bundle.Process(new CassetteSettings(""));
-            bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("");
+            var urlModifier = Mock.Of<IUrlModifier>();
+            bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier);
 
             manifest = builder.BuildManifest(bundle);
         }
@@ -121,10 +123,11 @@ namespace Cassette.Scripts.Manifests
         [Fact]
         public void ManifestConditionEqualsBundleCondition()
         {
+            var urlModifier = Mock.Of<IUrlModifier>();
             bundle = new ScriptBundle("~")
             {
                 Condition = "CONDITION",
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>("")
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier)
             };
             builder = new ScriptBundleManifestBuilder();
             var scriptBundleManifest = builder.BuildManifest(bundle);

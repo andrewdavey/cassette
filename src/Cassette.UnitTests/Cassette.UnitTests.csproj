@@ -114,6 +114,7 @@
     <Compile Include="Configuration\BundleCollection.AddPerSubDirectory.cs" />
     <Compile Include="Configuration\BundleCollection.AddUrl.cs" />
     <Compile Include="Configuration\BundleCollection.AddPerIndividualFile.cs" />
+    <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Manifests\CassetteManifestCache.cs" />
     <Compile Include="Manifests\BundleManifestBuilder.cs" />
     <Compile Include="MSBuild\CreateBundlesImplementation.cs" />
+    <Compile Include="MSBuild\UrlPlaceholderWrapper.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifestWriter.cs" />
