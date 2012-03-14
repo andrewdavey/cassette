@@ -1,6 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <system.web>
+        <httpModules>
+            <add name="CassetteHttpModule" type="Cassette.Web.CassetteHttpModule, Cassette.Web" />
+        </httpModules>
+    </system.web>
     <system.webServer>
-        <modules runAllManagedModulesForAllRequests="true"/>
+        <modules runAllManagedModulesForAllRequests="true">
+            <add name="CassetteHttpModule" type="Cassette.Web.CassetteHttpModule, Cassette.Web" />
+        </modules>
     </system.webServer>
 </configuration>

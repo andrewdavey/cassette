@@ -20,17 +20,10 @@ namespace Cassette.Web
         static readonly StartUpTraceRecorder StartUpTraceRecorder = new StartUpTraceRecorder();
 
         // ReSharper disable UnusedMember.Global
-        public static void PreApplicationStart()
+        // This runs *after* Global.asax Application_Start.
+        public static void ApplicationStart()
         {
             StartUpTraceRecorder.Start();
-            Trace.Source.TraceInformation("Registering CassetteHttpModule.");
-        }
-        // ReSharper restore UnusedMember.Global
-
-        // ReSharper disable UnusedMember.Global
-        // This runs *after* Global.asax Application_Start.
-        public static void PostApplicationStart()
-        {
             Trace.Source.TraceInformation("PostApplicationStart.");
             try
             {

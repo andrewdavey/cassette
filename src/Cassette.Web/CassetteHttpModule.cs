@@ -5,8 +5,8 @@ namespace Cassette.Web
 {
     public class CassetteHttpModule : IHttpModule
     {
-        private static object _lock = new object();
-        private static int _initializedModuleCount;
+        static readonly object Lock = new object();
+        static int _initializedModuleCount;
 
         public void Init(HttpApplication httpApplication)
         {
@@ -15,14 +15,13 @@ namespace Cassette.Web
 
             // FX35 & FX40: Handle app_start, app_end events to avoid forcing folks to edit their Global asax files
             // See: https://bitbucket.org/davidebbo/webactivator/src/bb05d55459bc/WebActivator/ActivationManager.cs#cl-121
-            lock (_lock)
+            lock (Lock)
             {
                 // Keep track of the number of modules initialized and
                 // make sure we only call the startup methods once per app domain
                 if (_initializedModuleCount++ != 0) return;
 
-                StartUp.PreApplicationStart();
-                StartUp.PostApplicationStart();
+                StartUp.ApplicationStart();
             }
         }
 
@@ -43,7 +42,7 @@ namespace Cassette.Web
 
         void IHttpModule.Dispose()
         {
-            lock (_lock)
+            lock (Lock)
             {
                 // Call the shutdown methods when the last module is disposed
                 if (--_initializedModuleCount != 0) return;
