@@ -35,6 +35,24 @@
 &lt;/configuration&gt;</pre>
 
         <p>When the web application starts, Cassette will load the pre-compiled bundles
-        from the file in App_Data. This removes just about all of Cassette's start-up overhead.</p>
+            from the file in App_Data. This removes just about all of Cassette's start-up overhead.</p>
+            
+        <h2>Important CassetteConfiguration Note</h2>
+        <p>The application's <code>CassetteConfiguration</code> is used at both compile-time and run-time.</p>
+        <p>However, at runtime the bundles will be added from the manifest, so you MUST NOT try to add them in the configuration. Use the follow code to handle this scenario:</p>
+        <pre>public class CassetteConfiguration : ICassetteConfiguration
+{
+    public void Configure(BundleCollection bundles, CassetteSettings settings)
+    {
+        // Put any code that runs at both compile-time and run-time here.
+        // For example, assigning settings.UrlModifier
+
+        <strong>if (settings.IsUsingPrecompiledManifest) return;</strong>
+        
+        // Add your bundles here - this only runs at compile-time.
+        bundles.Add&lt;StylesheetBundle&gt;("Content");
+        bundles.Add&lt;ScriptBundle&gt;("Scripts");
+    }
+}</pre>
     </body>
 </html>
