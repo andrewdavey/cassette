@@ -151,7 +151,19 @@ namespace Cassette.Web
             }
         }
 
+        [Fact]
+        public void GivenCompileTimeManifest_WhenCreateContainer_ThenSettingsIsUsingPrecompiledManifestEqualsTrue()
+        {
+            using (var path = new TempDirectory())
+            {
+                CompileTimeManifestWithBundleExists(path);
 
+                var factory = CreateCassetteApplicationContainerFactory(path);
+                var container = factory.CreateContainer();
+
+                container.Application.Settings.IsUsingPrecompiledManifest.ShouldBeTrue();
+            }
+        }
 
         void CompileTimeManifestWithBundleExists(string rootDirectory)
         {

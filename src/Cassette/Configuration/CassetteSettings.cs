@@ -31,6 +31,12 @@ namespace Cassette.Configuration
         }
 
         /// <summary>
+        /// When true, Cassette has already loaded bundles from a compile-time generated manifest file.
+        /// The application's Cassette configuration MUST NOT add bundles to the bundle collection.
+        /// </summary>
+        public bool IsUsingPrecompiledManifest { get; internal set; }
+
+        /// <summary>
         /// When this property is true, Cassette will output debug-friendly assets. When false, combined, minified bundles are used instead.
         /// </summary>
         public bool IsDebuggingEnabled { get; set; }

@@ -32,6 +32,7 @@ namespace Cassette
 
         public virtual CassetteApplicationContainer<T> CreateContainer()
         {
+            cassetteConfigurations = CreateCassetteConfigurations();
             if (string.IsNullOrEmpty(configurationSection.PrecompiledManifest))
             {
                 return CreateContainerFromConfiguration();
@@ -44,7 +45,6 @@ namespace Cassette
 
         CassetteApplicationContainer<T> CreateContainerFromConfiguration()
         {
-            cassetteConfigurations = CreateCassetteConfigurations();
             var container = new CassetteApplicationContainer<T>(CreateApplication);
             if (ShouldWatchFileSystem)
             {
@@ -83,6 +83,10 @@ namespace Cassette
         CassetteApplicationContainer<T> CreateContainerFromCompileTimeManifest()
         {
             var settings = CreateSettingsForBundlesFromCompileTime();
+            foreach (var configuration in CassetteConfigurations)
+            {
+                configuration.Configure(null, settings);
+            }
             var bundleContainerFactory = new CompileTimeManifestBundleContainerFactory(PrecompiledManifestFilename, settings);
             var bundleContainer = bundleContainerFactory.CreateBundleContainer();
 
@@ -95,6 +99,7 @@ namespace Cassette
         {
             return new CassetteSettings("")
             {
+                IsUsingPrecompiledManifest = true,
                 UrlGenerator = new UrlGenerator(
                     new VirtualDirectoryPrepender(virtualDirectory),
                     UrlGenerator.RoutePrefix
