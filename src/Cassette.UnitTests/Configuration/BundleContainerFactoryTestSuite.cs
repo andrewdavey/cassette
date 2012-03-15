@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Cassette.BundleProcessing;
 using Cassette.IO;
 using Cassette.Scripts;
 using Moq;
@@ -65,11 +66,11 @@ namespace Cassette.Configuration
         public void WhenExternalModuleReferencedTwice_ThenContainerOnlyHasTheExternalModuleOnce()
         {
             var urlModifier = Mock.Of<IUrlModifier>();
-            var externalBundle = new ExternalScriptBundle("http://external.com/api.js");
-            var bundle1 = new ScriptBundle("~/test1");
+            var externalBundle = new ExternalScriptBundle("http://external.com/api.js") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle1 = new ScriptBundle("~/test1") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
             bundle1.Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier);
             bundle1.AddReference("http://external.com/api.js");
-            var bundle2 = new ScriptBundle("~/test2");
+            var bundle2 = new ScriptBundle("~/test2") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
             bundle2.Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier);
             bundle2.AddReference("http://external.com/api.js");
             var bundles = new[] { bundle1, bundle2 };

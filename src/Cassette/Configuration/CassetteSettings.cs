@@ -20,7 +20,13 @@ namespace Cassette.Configuration
     public class CassetteSettings
     {
         readonly Lazy<ICassetteManifestCache> cassetteManifestCache;
-
+        readonly Dictionary<Type, object> defaultBundleProcessors = new Dictionary<Type, object>
+        {
+            { typeof(ScriptBundle), new ScriptPipeline() },
+            { typeof(StylesheetBundle), new StylesheetPipeline() },
+            { typeof(HtmlTemplateBundle), new HtmlTemplatePipeline() },
+        };
+ 
         public CassetteSettings(string cacheVersion)
         {
             Version = cacheVersion;
@@ -77,13 +83,6 @@ namespace Cassette.Configuration
 
         internal string Version { get; set; }
 
-        readonly Dictionary<Type, object> defaultBundleProcessors = new Dictionary<Type, object>
-        {
-            { typeof(ScriptBundle), new ScriptPipeline() },
-            { typeof(StylesheetBundle), new StylesheetPipeline() },
-            { typeof(HtmlTemplateBundle), new HtmlTemplatePipeline() },
-        };
- 
         public void SetDefaultBundleProcessor<T>(IBundleProcessor<T> processor)
             where T : Bundle
         {
@@ -96,13 +95,13 @@ namespace Cassette.Configuration
             return (IBundleProcessor<T>)defaultBundleProcessors[typeof(T)];
         }
 
-        static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
+        Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {
             return new Dictionary<Type, IBundleFactory<Bundle>>
             {
-                { typeof(ScriptBundle), new ScriptBundleFactory() },
-                { typeof(StylesheetBundle), new StylesheetBundleFactory() },
-                { typeof(HtmlTemplateBundle), new HtmlTemplateBundleFactory() }
+                { typeof(ScriptBundle), new ScriptBundleFactory(this) },
+                { typeof(StylesheetBundle), new StylesheetBundleFactory(this) },
+                { typeof(HtmlTemplateBundle), new HtmlTemplateBundleFactory(this) }
             };
         }
 

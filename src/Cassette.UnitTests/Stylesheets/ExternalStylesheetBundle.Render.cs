@@ -15,8 +15,11 @@ namespace Cassette.Stylesheets
         public ExternalStylesheetBundleRender_Tests()
         {
             settings = new CassetteSettings("");
-            fallbackRenderer = new Mock<IBundleHtmlRenderer<StylesheetBundle>>(); 
-            bundle = new ExternalStylesheetBundle("http://test.com/");
+            fallbackRenderer = new Mock<IBundleHtmlRenderer<StylesheetBundle>>();
+            bundle = new ExternalStylesheetBundle("http://test.com/")
+            {
+                Processor = new StylesheetPipeline()
+            };
         }
 
         string Render()

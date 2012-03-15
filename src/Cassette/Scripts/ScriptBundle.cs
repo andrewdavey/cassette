@@ -11,7 +11,6 @@ namespace Cassette.Scripts
             : base(applicationRelativePath)
         {
             ContentType = "text/javascript";
-            Processor = new ScriptPipeline();
         }
 
         protected ScriptBundle()

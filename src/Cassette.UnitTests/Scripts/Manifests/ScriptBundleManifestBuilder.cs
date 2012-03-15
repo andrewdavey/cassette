@@ -22,7 +22,8 @@ namespace Cassette.Scripts.Manifests
             bundle = new ScriptBundle("~/path")
             {
                 PageLocation = "body",
-                Hash = new byte[] { 1, 2, 3 }
+                Hash = new byte[] { 1, 2, 3 },
+                Processor = new ScriptPipeline()
             };
             asset = new StubAsset
             {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -9,8 +10,15 @@ namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateBundleFactory_Tests
     {
-        readonly HtmlTemplateBundleFactory factory = new HtmlTemplateBundleFactory();
+        readonly HtmlTemplateBundleFactory factory;
         readonly List<IFile> allFiles = new List<IFile>();
+        readonly CassetteSettings settings;
+
+        public HtmlTemplateBundleFactory_Tests()
+        {
+            settings = new CassetteSettings("");
+            factory = new HtmlTemplateBundleFactory(settings);
+        }
 
         void FilesExist(params string[] paths)
         {
@@ -184,6 +192,15 @@ namespace Cassette.HtmlTemplates
             bundle.Assets.Select(a => a.SourceFile.FullPath)
                 .SequenceEqual(new[] { "~/shared/a.htm", "~/shared/b.htm", "~/c.htm" })
                 .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void CreateBundleAssignsSettingsDefaultProcessor()
+        {
+            var processor = new HtmlTemplatePipeline();
+            settings.SetDefaultBundleProcessor(processor);
+            var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
+            bundle.Processor.ShouldBeSameAs(processor);
         }
     }
 }

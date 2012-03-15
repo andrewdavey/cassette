@@ -11,7 +11,6 @@ namespace Cassette.Stylesheets
             : base(applicationRelativePath)
         {
             ContentType = "text/css";
-            Processor = new StylesheetPipeline();
         }
 
         /// <summary>

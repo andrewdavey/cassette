@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts;
@@ -132,7 +133,7 @@ namespace Cassette
         {
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
-                         .Returns(new ExternalScriptBundle("http://test.com/test.js"));
+                         .Returns(new ExternalScriptBundle("http://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
 
             builder.Reference("http://test.com/test.js");
@@ -160,7 +161,7 @@ namespace Cassette
         {
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("https://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
-                         .Returns(new ExternalScriptBundle("https://test.com/test.js"));
+                         .Returns(new ExternalScriptBundle("https://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
             builder.Reference("https://test.com/test.js");
 
@@ -173,7 +174,7 @@ namespace Cassette
         {
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("//test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
-                         .Returns(new ExternalScriptBundle("//test.com/test.js"));
+                         .Returns(new ExternalScriptBundle("//test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
             bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
 
             builder.Reference("//test.com/test.js");
@@ -187,7 +188,7 @@ namespace Cassette
         {
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.css", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
-                         .Returns(new ExternalStylesheetBundle("http://test.com/test.css"));
+                         .Returns(new ExternalStylesheetBundle("http://test.com/test.css") { Processor = StubProcessor<StylesheetBundle>() });
             bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
 
             builder.Reference("http://test.com/test.css");
@@ -209,7 +210,7 @@ namespace Cassette
         {
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
-                         .Returns(new ExternalStylesheetBundle("http://test.com/test"));
+                         .Returns(new ExternalStylesheetBundle("http://test.com/test") { Processor = StubProcessor<StylesheetBundle>() });
             bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
 
             builder.Reference<StylesheetBundle>("http://test.com/test");
@@ -374,6 +375,11 @@ namespace Cassette
 
             builder.GetBundles("head").Single().ShouldBeSameAs(jquery);
             builder.GetBundles(null).Single().ShouldBeSameAs(app);
+        }
+
+        IBundleProcessor<T> StubProcessor<T>() where T : Bundle
+        {
+            return Mock.Of<IBundleProcessor<T>>();
         }
     }
 

@@ -11,7 +11,6 @@ namespace Cassette.HtmlTemplates
             : base(applicationRelativePath)
         {
             ContentType = "text/html";
-            Processor = new HtmlTemplatePipeline();
         }
 
         public IBundleProcessor<HtmlTemplateBundle> Processor { get; set; }

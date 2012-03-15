@@ -184,7 +184,10 @@ namespace Cassette.Web
 
         ScriptBundle StubBundle()
         {
-            var bundle = new ScriptBundle("~");
+            var bundle = new ScriptBundle("~")
+            {
+                Processor = new ScriptPipeline()
+            };
             var asset = new StubAsset(fullPath: "~/test.js");
             asset.References.Add(new AssetReference("http://example.org/", asset, 1, AssetReferenceType.Url));
             bundle.Assets.Add(asset);
@@ -204,31 +207,6 @@ namespace Cassette.Web
                 false,
                 Mock.Of<HttpContextBase>
             );
-        }
-
-        IAsset StubAssetX(string filename)
-        {
-            var asset = new Mock<IAsset>();
-            asset
-                .Setup(a => a.OpenStream())
-                .Returns(Stream.Null);
-
-            asset
-                .Setup(a => a.SourceFile.FullPath)
-                .Returns(filename);
-
-            asset
-                .Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
-                .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-
-            asset
-                .SetupGet(a => a.References)
-                .Returns(new[]
-                {
-                    new AssetReference("http://example.org/", asset.Object, 1, AssetReferenceType.Url)
-                });
-
-            return asset.Object;
         }
     }
 }

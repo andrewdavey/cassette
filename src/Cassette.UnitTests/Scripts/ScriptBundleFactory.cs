@@ -2,15 +2,23 @@
 using Cassette.IO;
 using Should;
 using Xunit;
+using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
     public class ScriptBundleFactory_Tests
     {
+        readonly CassetteSettings settings;
+
+        public ScriptBundleFactory_Tests()
+        {
+            settings = new CassetteSettings("");
+        }
+
         [Fact]
         public void CreateBundleReturnsScriptBundle()
         {
-            var factory = new ScriptBundleFactory();
+            var factory = new ScriptBundleFactory(settings);
             var bundle = factory.CreateBundle(
                 "~/test",
                 Enumerable.Empty<IFile>(),
@@ -22,7 +30,7 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleAssignsScriptBundleDirectory()
         {
-            var factory = new ScriptBundleFactory();
+            var factory = new ScriptBundleFactory(settings);
             var bundle = factory.CreateBundle(
                 "~/test",
                 Enumerable.Empty<IFile>(),
@@ -34,13 +42,13 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleWithUrlCreatesExternalScriptBundle()
         {
-            new ScriptBundleFactory().CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
+            new ScriptBundleFactory(settings).CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
         }
 
         [Fact]
         public void GivenDescriptorIsFromFile_WhenCreateBundle_ThenBundleIsFromDescriptorFileEqualsTrue()
         {
-            var factory = new ScriptBundleFactory();
+            var factory = new ScriptBundleFactory(settings);
             var descriptor = new BundleDescriptor
             {
                 IsFromFile = true,
@@ -52,6 +60,16 @@ namespace Cassette.Scripts
                 descriptor
             );
             bundle.IsFromDescriptorFile.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void CreateBundleAssignsSettingsDefaultProcessor()
+        {
+            var processor = new ScriptPipeline();
+            settings.SetDefaultBundleProcessor(processor);
+            var factory = new ScriptBundleFactory(settings);
+            var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
+            bundle.Processor.ShouldBeSameAs(processor);
         }
     }
 }

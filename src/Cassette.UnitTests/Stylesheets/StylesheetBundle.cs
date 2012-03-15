@@ -1,7 +1,6 @@
 ﻿using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Moq;
-using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -25,12 +24,6 @@ namespace Cassette.Stylesheets
 
     public class StylesheetBundle_Process_Tests
     {
-        [Fact]
-        public void ProcessorDefaultsToStylesheetPipeline()
-        {
-            new StylesheetBundle("~").Processor.ShouldBeType<StylesheetPipeline>();
-        }
-
         [Fact]
         public void ProcessCallsProcessor()
         {
