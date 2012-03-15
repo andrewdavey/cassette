@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.Web.Jasmine", "Cas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.Less", "Cassette.Less\Cassette.Less.csproj", "{EC1BE4F4-A2A7-4154-9F4D-F75D1B1FD976}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.CoffeeScript", "Cassette.CoffeeScript\Cassette.CoffeeScript.csproj", "{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,16 @@ Global
 		{EC1BE4F4-A2A7-4154-9F4D-F75D1B1FD976}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EC1BE4F4-A2A7-4154-9F4D-F75D1B1FD976}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EC1BE4F4-A2A7-4154-9F4D-F75D1B1FD976}.Release|x86.ActiveCfg = Release|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

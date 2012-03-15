@@ -255,6 +255,10 @@
     <Compile Include="Stylesheets\StylesheetPipelineExtensions.CompileLess.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cassette.CoffeeScript\Cassette.CoffeeScript.csproj">
+      <Project>{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}</Project>
+      <Name>Cassette.CoffeeScript</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette.Less\Cassette.Less.csproj">
       <Project>{EC1BE4F4-A2A7-4154-9F4D-F75D1B1FD976}</Project>
       <Name>Cassette.Less</Name>

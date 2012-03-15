@@ -61,7 +61,7 @@
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Include="Microsoft.Build.Utilities.v3.5, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Condition="'$(TargetFrameworkVersion)' == 'v4.0'" Include="Microsoft.Build.Utilities.v4.0"/>
+    <Reference Condition="'$(TargetFrameworkVersion)' == 'v4.0'" Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\packages\IronRuby.1.1.3\Lib\Microsoft.Dynamic.dll</HintPath>
     </Reference>
@@ -150,6 +150,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cassette.CoffeeScript\Cassette.CoffeeScript.csproj">
+      <Project>{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}</Project>
+      <Name>Cassette.CoffeeScript</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette.MSBuild\Cassette.MSBuild.csproj">
       <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
       <Name>Cassette.MSBuild</Name>

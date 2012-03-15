@@ -33,6 +33,13 @@ namespace Cassette
             if (getApplication == null) throw new ArgumentNullException("getApplication");
             _getApplication = getApplication;
         }
+
+        internal static event Action Shutdown = delegate { };
+
+        internal static void TriggerShutdown()
+        {
+            Shutdown();
+        }
     }
 
     class CassetteApplicationContainer<T> : ICassetteApplicationContainer<T>

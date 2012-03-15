@@ -18,7 +18,7 @@ namespace Cassette.Web
     {
         static CassetteApplicationContainer<CassetteApplication> _container;
         static readonly StartUpTraceRecorder StartUpTraceRecorder = new StartUpTraceRecorder();
-
+ 
         // ReSharper disable UnusedMember.Global
         // This runs *after* Global.asax Application_Start.
         public static void ApplicationStart()
@@ -80,9 +80,7 @@ namespace Cassette.Web
             Trace.Source.TraceInformation("Application shutdown - disposing resources.");
             _container.Dispose();
             IsolatedStorageContainer.Dispose();
-#if NET40
-            Scripts.IECoffeeScriptCompiler.SingleThreadedWorker.Singleton.Stop();
-#endif
+            CassetteApplicationContainer.TriggerShutdown();
         }
         // ReSharper restore UnusedMember.Global
 

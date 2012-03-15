@@ -112,7 +112,9 @@ function asset1() {
         [Fact]
         public void GivenDebugMode_ThenGetCoffeeScriptAssetReturnsItCompiledInToJavaScript()
         {
-            using (CreateApplication(bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts"), isDebuggingEnabled: true))
+            using (CreateApplication(
+                bundles => bundles.AddPerSubDirectory<ScriptBundle>("Scripts", b=>b.Processor=new ScriptPipeline().CompileCoffeeScript()), 
+                isDebuggingEnabled: true))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -225,7 +227,10 @@ document.write(unescape('%3Cscript src=""/_cassette/scriptbundle/scripts/bundle-
         {
             using (var storage = IsolatedStorageFile.GetMachineStoreForAssembly())
             {
-                storage.Remove();
+                if (storage.FileExists("cassette.xml"))
+                {
+                    storage.DeleteFile("cassette.xml");
+                }
             }
         }
 

@@ -11,13 +11,6 @@ namespace Cassette.Scripts
     public class ScriptPipeline_Tests
     {
         [Fact]
-        public void CompileCoffeeScriptDefaultsToTrue()
-        {
-            var pipeline = new ScriptPipeline();
-            pipeline.CompileCoffeeScript.ShouldBeTrue();
-        }
-
-        [Fact]
         public void GivenProductionMode_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
         {
             var settings = new CassetteSettings("") { IsDebuggingEnabled = false };
@@ -46,7 +39,7 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenCompileCoffeeScriptIsFalse_WhenProcessBundle_ThenCompileAssetTransformerNotAddedToAsset()
         {
-            var pipeline = new ScriptPipeline { CompileCoffeeScript = false };
+            var pipeline = new ScriptPipeline();
             var bundle = new ScriptBundle("~");
             var asset = StubCoffeeScriptAsset();
             bundle.Assets.Add(asset.Object);
@@ -59,7 +52,7 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenCompileCoffeeScriptIsTrue_WhenProcessBundle_ThenCompileAssetTransformerIsAddedToAsset()
         {
-            var pipeline = new ScriptPipeline { CompileCoffeeScript = true };
+            var pipeline = new ScriptPipeline().CompileCoffeeScript();
             var bundle = new ScriptBundle("~");
             var asset = StubCoffeeScriptAsset();
             bundle.Assets.Add(asset.Object);

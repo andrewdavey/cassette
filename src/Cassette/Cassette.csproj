@@ -222,14 +222,12 @@
     <Compile Include="Stylesheets\ParseSassReferences.cs" />
     <Compile Include="Stylesheets\SassCompiler.cs" />
     <Compile Include="Scripts\AssignScriptRenderer.cs" />
-    <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifest.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
-    <Compile Include="Scripts\IECoffeeScriptCompiler.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
@@ -281,7 +279,6 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetReferenceException.cs" />
     <Compile Include="AssetReferenceType.cs" />
-    <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
     <Compile Include="IO\FileSystemFile.cs" />
     <Compile Include="IAsset.cs" />
@@ -296,7 +293,6 @@
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="BundleContainer.cs" />
-    <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleFactory.cs" />
@@ -305,8 +301,6 @@
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
     <Compile Include="UrlGenerator.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
-    <Compile Include="Scripts\JurassicCoffeeScriptCompiler.cs" />
-    <Compile Include="Scripts\CoffeeScriptCompileException.cs" />
     <Compile Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Include="Utilities\EnumT.cs" />
     <Compile Include="Utilities\HashedSets.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
@@ -337,7 +331,6 @@
     </None>
     <None Include="Cassette.symbols.nutrans" />
     <None Include="packages.config" />
-    <None Include="Resources\coffeescript.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\jqueryTmplCompiler.js" />

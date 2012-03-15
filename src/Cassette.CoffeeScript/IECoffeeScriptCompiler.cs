@@ -9,7 +9,7 @@ using Cassette.Utilities;
 namespace Cassette.Scripts
 {
 
-#if NET40
+#if !NET35
     using System.Collections.Concurrent;
     using System.Threading;
 
@@ -46,6 +46,8 @@ namespace Cassette.Scripts
 
             SingleThreadedWorker()
             {
+                CassetteApplicationContainer.Shutdown += () => Singleton.Stop();
+
                 lazyQueue = new Lazy<ConcurrentQueue<CompileTask>>(Start);
             }
 
@@ -81,7 +83,7 @@ namespace Cassette.Scripts
                 engine.Dispose();
             }
 
-            public void Stop()
+            void Stop()
             {
                 stop = true;
             }
