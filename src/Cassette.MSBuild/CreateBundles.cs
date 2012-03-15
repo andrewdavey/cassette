@@ -10,6 +10,8 @@ using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
+    [Serializable]
+    [LoadInSeparateAppDomain]
     public class CreateBundles : AppDomainIsolatedTask
     {
         /// <summary>
