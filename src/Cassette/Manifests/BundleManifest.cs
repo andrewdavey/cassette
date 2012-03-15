@@ -33,7 +33,7 @@ namespace Cassette.Manifests
             bundle.PageLocation = PageLocation;
             if (Assets.Count > 0)
             {
-                bundle.Assets.Add(CreateCachedBundleContent());
+                bundle.Assets.Add(CreateCachedBundleContent(settings));
             }
             AddReferencesToBundle(bundle);
             AddHtmlAttributesToBundle(bundle);
@@ -50,9 +50,9 @@ namespace Cassette.Manifests
 
         protected abstract Bundle CreateBundleCore(CassetteSettings settings);
 
-        CachedBundleContent CreateCachedBundleContent()
+        CachedBundleContent CreateCachedBundleContent(CassetteSettings settings)
         {
-            return new CachedBundleContent(Content, CreateOriginalAssets());
+            return new CachedBundleContent(Content, CreateOriginalAssets(), settings);
         }
 
         IEnumerable<IAsset> CreateOriginalAssets()

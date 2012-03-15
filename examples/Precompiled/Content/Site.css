@@ -12,3 +12,9 @@ nav,
 section {
     display: block;
 }
+
+h1 {
+    background-image: url(cassette-logo.png);
+    background-repeat: no-repeat;
+    padding-top: 120px;
+}
