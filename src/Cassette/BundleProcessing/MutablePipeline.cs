@@ -76,6 +76,19 @@ namespace Cassette.BundleProcessing
             return this;
         }
 
+        public MutablePipeline<T> InsertAfter<TStep>(params IBundleProcessor<T>[] newSteps)
+            where TStep : IBundleProcessor<T>
+        {
+            pipelineModifiers.Add(
+                steps => steps.SelectMany(
+                    step => step is TStep
+                        ? new[] { step }.Concat(newSteps)
+                        : new[] { step }
+                )
+            );
+            return this;
+        }
+
         public MutablePipeline<T> InsertBefore<TStep>(IBundleProcessor<T> newStep)
             where TStep : IBundleProcessor<T>
         {

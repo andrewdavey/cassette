@@ -9,12 +9,10 @@ namespace Cassette.Stylesheets
         public StylesheetPipeline()
         {
             StylesheetMinifier = new MicrosoftStylesheetMinifier();
-            CompileLess = true;
             CompileSass = true;
         }
 
         public IAssetTransformer StylesheetMinifier { get; set; }
-        public bool CompileLess { get; set; }
         public bool CompileSass { get; set; }
         // TODO: Obselete this property in next version
         // Use the EmbedImages extension method instead.
@@ -24,11 +22,6 @@ namespace Cassette.Stylesheets
         {
             yield return new AssignStylesheetRenderer();
             yield return new ParseCssReferences();
-            if (CompileLess)
-            {
-                yield return new ParseLessReferences();
-                yield return new CompileLess(new LessCompiler());
-            }
 #if NET40
             if (CompileSass)
             {

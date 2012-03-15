@@ -12,13 +12,6 @@ namespace Cassette.Stylesheets
     public class StylesheetPipeline_Tests
     {
         [Fact]
-        public void CompileLessDefaultsToTrue()
-        {
-            new StylesheetPipeline().CompileLess.ShouldBeTrue();
-        }
-
-
-        [Fact]
         public void CompileSassDefaultsToTrue()
         {
             new StylesheetPipeline().CompileSass.ShouldBeTrue();
@@ -39,7 +32,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            var pipeline = new StylesheetPipeline { CompileLess = true };
+            var pipeline = new StylesheetPipeline().CompileLess();
             pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
@@ -54,7 +47,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            var pipeline = new StylesheetPipeline { CompileLess = false };
+            var pipeline = new StylesheetPipeline();
             pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
@@ -228,8 +221,7 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("asset.less");
             asset.Setup(a => a.OpenStream()).Returns(() => "// @reference 'other.less';".AsStream());
             bundle.Assets.Add(asset.Object);
-            pipeline = new StylesheetPipeline();
-            pipeline.CompileLess = true;
+            pipeline = new StylesheetPipeline().CompileLess();
         }
 
         readonly Mock<IAsset> asset;
