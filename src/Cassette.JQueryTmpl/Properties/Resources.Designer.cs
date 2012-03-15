@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Cassette.Properties {
+namespace Cassette.HtmlTemplates.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Cassette.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Cassette.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Cassette.HtmlTemplates.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,30 @@ namespace Cassette.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // This code was butchered out of https://github.com/jquery/jquery-tmpl
+        ///// It provides just enough to build HTML templates into a JavaScript function.
+        ///
+        ////*!
+        ///* jQuery Templates Plugin 1.0.0pre
+        ///* http://github.com/jquery/jquery-tmpl
+        ///* Requires jQuery 1.4.2
+        ///*
+        ///* Copyright Software Freedom Conservancy, Inc.
+        ///* Dual licensed under the MIT or GPL Version 2 licenses.
+        ///* http://jquery.org/license
+        ///*/
+        ///var tmplTags = {
+        ///    &quot;tmpl&quot;: {
+        ///        _default: { $2: &quot;null&quot; },
+        ///        open: &quot;if($notnull_1){__=__.conca [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string jqueryTmplCompiler {
+            get {
+                return ResourceManager.GetString("jqueryTmplCompiler", resourceCulture);
             }
         }
     }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Cassette.Properties {
+namespace Cassette.HtmlTemplates.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Cassette.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Cassette.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Cassette.HtmlTemplates.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,26 @@ namespace Cassette.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*
+        /// *  Copyright 2011 Twitter, Inc.
+        /// *  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+        /// *  you may not use this file except in compliance with the License.
+        /// *  You may obtain a copy of the License at
+        /// *
+        /// *  http://www.apache.org/licenses/LICENSE-2.0
+        /// *
+        /// *  Unless required by applicable law or agreed to in writing, software
+        /// *  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+        /// *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        /// *  See the License for [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string hogan {
+            get {
+                return ResourceManager.GetString("hogan", resourceCulture);
             }
         }
     }

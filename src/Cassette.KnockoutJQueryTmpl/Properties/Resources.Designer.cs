@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Cassette.Properties {
+namespace Cassette.HtmlTemplates.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Cassette.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Cassette.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Cassette.HtmlTemplates.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,25 @@ namespace Cassette.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // This code was butchered out of https://github.com/SteveSanderson/knockout
+        ///// It provides the rewriteTemplate function which is need to rewrite any data-bind attributes
+        ///// in an HTML template before compiling it into JavaScript.
+        ///
+        ///// Knockout JavaScript library v1.2
+        ///// (c) Steven Sanderson - http://knockoutjs.com/
+        ///// License: MIT (http://www.opensource.org/licenses/mit-license.php)
+        ///var ko = {};
+        ///var stringTrimRegex = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
+        ///
+        ///// Extend the default tmplTags object (from jque [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string jqueryTmplKnockout {
+            get {
+                return ResourceManager.GetString("jqueryTmplKnockout", resourceCulture);
             }
         }
     }
