@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;
@@ -75,6 +76,25 @@ namespace Cassette.Configuration
         internal bool AllowRemoteDiagnostics { get; set; }
 
         internal string Version { get; set; }
+
+        readonly Dictionary<Type, object> defaultBundleProcessors = new Dictionary<Type, object>
+        {
+            { typeof(ScriptBundle), new ScriptPipeline() },
+            { typeof(StylesheetBundle), new StylesheetPipeline() },
+            { typeof(HtmlTemplateBundle), new HtmlTemplatePipeline() },
+        };
+ 
+        public void SetDefaultBundleProcessor<T>(IBundleProcessor<T> processor)
+            where T : Bundle
+        {
+            defaultBundleProcessors[typeof(T)] = processor;
+        }
+
+        public IBundleProcessor<T> GetDefaultBundleProcessor<T>()
+            where T : Bundle
+        {
+            return (IBundleProcessor<T>)defaultBundleProcessors[typeof(T)];
+        }
 
         static Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
         {

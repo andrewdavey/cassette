@@ -114,6 +114,7 @@
     <Compile Include="Configuration\BundleCollection.AddPerSubDirectory.cs" />
     <Compile Include="Configuration\BundleCollection.AddUrl.cs" />
     <Compile Include="Configuration\BundleCollection.AddPerIndividualFile.cs" />
+    <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
