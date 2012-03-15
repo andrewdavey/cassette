@@ -13,12 +13,10 @@
       <dependency id="SassAndCoffee.Ruby" version="2.0.2" />
     </dependencies>
     <references xdt:Transform="Insert">
-      <reference file="Pandora.dll"/>
       <reference file="Cassette.dll"/>
     </references>
   </metadata>
   <files xdt:Transform="Insert">
     <file src="..\..\build\bin\lib40\Cassette.dll" target="lib\net40-client" />
-    <file src="..\..\build\bin\lib40\Pandora.dll" target="lib\net40-client"/>
   </files>
 </package>

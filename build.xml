@@ -36,10 +36,12 @@
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
             <MainNuspec Include="src\Cassette\Cassette.nuspec"/>
+            <MainNuspec Include="src\Cassette.Less\Cassette.Less.nuspec"/>
             <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
             <MainNuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
 	        <MainNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.nuspec"/>
             <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Less\Cassette.Less.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Web\Cassette.Web.symbols.nuspec"/>
 	        <SymbolsNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.symbols.nuspec"/>

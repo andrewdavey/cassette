@@ -187,6 +187,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cassette.Less.nutrans">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Cassette.Less.symbols.nutrans" />
     <None Include="dotless\Core\license.txt" />
     <None Include="packages.config" />
   </ItemGroup>
