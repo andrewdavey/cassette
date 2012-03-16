@@ -9,6 +9,9 @@ namespace Example
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
+            // Enable compilation of LESS files:
+            settings.SetDefaultBundleProcessor(new StylesheetPipeline().CompileLess());
+
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             bundles.AddUrlWithAlias(
                 "http://platform.twitter.com/widgets.js",

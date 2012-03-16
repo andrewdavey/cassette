@@ -90,6 +90,7 @@
     <ProjectReference Include="..\..\src\Cassette.MSBuild\Cassette.MSBuild.csproj">
       <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
       <Name>Cassette.MSBuild</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
@@ -104,6 +105,9 @@
       <Name>Cassette</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Cassette.targets" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -115,10 +119,7 @@
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
-  <UsingTask TaskName="CreateBundles" AssemblyFile="..\..\src\Cassette.MSBuild\bin\$(Configuration)\Cassette.MSBuild.dll" />
-  <Target Name="CreateBundles" AfterTargets="AfterBuild">
-    <CreateBundles Assemblies="$(OutputPath)Precompiled.dll" Output="App_Data\cassette.xml" />
-  </Target>
+  <Import Project="Cassette.targets" />
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
