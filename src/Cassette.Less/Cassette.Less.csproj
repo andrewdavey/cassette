@@ -177,6 +177,7 @@
     <Compile Include="dotless\Core\Utils\StringExtensions.cs" />
     <Compile Include="LessCompileException.cs" />
     <Compile Include="LessCompiler.cs" />
+    <Compile Include="ParseLessReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StylesheetPipelineExtensions.cs" />
   </ItemGroup>

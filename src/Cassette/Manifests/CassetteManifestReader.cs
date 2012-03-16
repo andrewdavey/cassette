@@ -27,8 +27,7 @@ namespace Cassette.Manifests
 #if NET35
             var reader = XmlReader.Create(inputStream);
             var document = XDocument.Load(reader);
-#endif
-#if NET40
+#else
             var document = XDocument.Load(inputStream);
 #endif
             var cassetteElement = document.Root;

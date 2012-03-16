@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.JQueryTmpl")]
 [assembly: InternalsVisibleTo("Cassette.KnockoutJQueryTmpl")]
 [assembly: InternalsVisibleTo("Cassette.Less")]
+[assembly: InternalsVisibleTo("Cassette.Sass")]
 [assembly: InternalsVisibleTo("Cassette.Web")]
 [assembly: InternalsVisibleTo("Cassette.Views")]
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]

@@ -79,7 +79,7 @@ namespace Cassette.BundleProcessing
 
         void IDisposable.Dispose()
         {
-#if NET40
+#if !NET35
            sha1.Dispose();
 #endif
         }

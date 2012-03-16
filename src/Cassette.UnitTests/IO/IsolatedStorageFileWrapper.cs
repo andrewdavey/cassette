@@ -57,7 +57,7 @@ namespace Cassette.IO
 
         // According to andrew, LastWriteTime is actually never really called in
         // code, so we should be able to safely ignore it (for FX35)
-#if NET40
+#if !NET35
         [Fact]
         public void GetLastWriteTimeUtcReturnsFileWriteTime()
         {

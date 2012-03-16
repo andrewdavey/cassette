@@ -76,8 +76,7 @@ namespace Cassette.Manifests
             {
                 document.Save(writer);
             }
-#endif
-#if NET40
+#else
             document.Save(outputStream);
 #endif
         }

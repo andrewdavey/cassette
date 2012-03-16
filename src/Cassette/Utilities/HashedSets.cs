@@ -6,7 +6,7 @@ using Iesi.Collections.Generic;
 namespace Cassette.Utilities
 {
 
-#if NET40
+#if !NET35
     // Redirect for 4.0 to native
     class HashedSet<T> : HashSet<T>
     {
@@ -22,9 +22,7 @@ namespace Cassette.Utilities
         public HashedCompareSet(IEnumerable<T> initialValues, IEqualityComparer<T> comparer)
             : base(initialValues, comparer) {}
     }
-#endif
-
-#if NET35
+#else
     sealed class HashedCompareSet<T> : DictionarySet<T>
     {
         public HashedCompareSet(ICollection<T> initialValues, IEqualityComparer<T> comparer)

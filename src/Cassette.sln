@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.JQueryTmpl", "Cass
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.KnockoutJQueryTmpl", "Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.csproj", "{C38D3ED4-367B-42E6-97A3-B8403DB528FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.Sass", "Cassette.Sass\Cassette.Sass.csproj", "{52B1448C-8165-46B7-B024-A6BF9F60D766}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,16 @@ Global
 		{C38D3ED4-367B-42E6-97A3-B8403DB528FF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C38D3ED4-367B-42E6-97A3-B8403DB528FF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C38D3ED4-367B-42E6-97A3-B8403DB528FF}.Release|x86.ActiveCfg = Release|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{52B1448C-8165-46B7-B024-A6BF9F60D766}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

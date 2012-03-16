@@ -69,6 +69,8 @@ namespace Cassette.Interop
             }
         }
 
+        // TODO: Someone smarter can figure out how to make this test pass in FX35. (kamranayub)
+#if !NET35
         [Fact]
         public void GivenGlobalAddedToEngine_WhenScriptUsesGlobalFunctionWithCallback_ThenCallbackInvoked()
         {
@@ -84,13 +86,12 @@ function go() {
     });
     return result;
 }");
-                // TODO: Someone smarter can figure out how to make this test pass in FX35. (kamranayub)
-#if NET40
+
                 var result = engine.CallFunction<string>("go");
                 result.ShouldEqual("done");
-#endif
             }
         }
+#endif
 
         [ComVisible(true)]
         public class GlobalData
@@ -99,7 +100,7 @@ function go() {
             {
                 return "Hello, " + name;
             }
-#if NET40
+#if !NET35
             public void process(dynamic callback)
             {
                 // By the magic of 'dynamic' this actually figures out the correct COM-voodoo required to call the callback!!

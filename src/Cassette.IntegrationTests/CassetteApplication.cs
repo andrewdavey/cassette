@@ -61,29 +61,26 @@ namespace Cassette.IntegrationTests
             }
         }
 
+#if !NET35
         [Fact]
         public void CanGetStylesheetBundleA()
         {
-            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles", b => b.Processor = new StylesheetPipeline().CompileSass())))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
                     http.Get("~/_cassette/stylesheetbundle/styles/bundle-a");
-#if NET35
-                    http.ResponseOutputStream.ReadToEnd().ShouldEqual("color: red;a{color:$color}p{border:1px solid red}body{color:#abc}");
-#endif
-#if NET40
                     http.ResponseOutputStream.ReadToEnd().ShouldEqual("a{color:red}p{border:1px solid red}body{color:#abc}");
-#endif
                 }
             }
         }
+#endif
 
-#if NET40
+#if !NET35
         [Fact]
         public void CanGetStylesheetBundleB()
         {
-            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles", b => b.Processor = new StylesheetPipeline().CompileSass())))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -93,6 +90,7 @@ namespace Cassette.IntegrationTests
             }
         }
 #endif
+
         [Fact]
         public void GivenDebugMode_ThenCanGetAsset()
         {
@@ -227,10 +225,17 @@ document.write(unescape('%3Cscript src=""/_cassette/scriptbundle/scripts/bundle-
         {
             using (var storage = IsolatedStorageFile.GetMachineStoreForAssembly())
             {
+#if NET35
+                if (storage.GetFileNames("casette.xml").Length > 0)
+                {
+                    storage.DeleteFile("cassette.xml");
+                }
+#else
                 if (storage.FileExists("cassette.xml"))
                 {
                     storage.DeleteFile("cassette.xml");
                 }
+#endif
             }
         }
 

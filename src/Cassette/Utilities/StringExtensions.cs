@@ -35,8 +35,7 @@ namespace Cassette.Utilities
         {
 #if NET35
             return String.IsNullOrEmpty(s) || s.Trim().Length == 0;
-#endif
-#if NET40
+#else
             return String.IsNullOrWhiteSpace(s);
 #endif
         }

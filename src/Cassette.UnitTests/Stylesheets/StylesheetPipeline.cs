@@ -12,12 +12,6 @@ namespace Cassette.Stylesheets
     public class StylesheetPipeline_Tests
     {
         [Fact]
-        public void CompileSassDefaultsToTrue()
-        {
-            new StylesheetPipeline().CompileSass.ShouldBeTrue();
-        }
-
-        [Fact]
         public void StylesheetMinifierDefaultsToMicrosoft()
         {
             new StylesheetPipeline().StylesheetMinifier.ShouldBeType<MicrosoftStylesheetMinifier>();
@@ -53,7 +47,7 @@ namespace Cassette.Stylesheets
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
         }
 
-#if NET40
+#if !NET35
         [Fact]
         public void GivenCompileSassIsTrue_WhenProcessBundle_ThenSassAssetHasCompileAssetTransformAdded()
         {
@@ -63,7 +57,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            var pipeline = new StylesheetPipeline { CompileSass = true };
+            var pipeline = new StylesheetPipeline().CompileSass();
             pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
@@ -78,7 +72,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            var pipeline = new StylesheetPipeline { CompileSass = false };
+            var pipeline = new StylesheetPipeline();
             pipeline.Process(bundle, new CassetteSettings(""));
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
@@ -245,17 +239,16 @@ namespace Cassette.Stylesheets
         }
     }
 
-#if NET40
-    public class StylesheetPipelineWhereSassCompilerTrue : StylesheetPipeline_Process_TestBase
+#if !NET35
+    public class StylesheetPipelineWithSassCompilation : StylesheetPipeline_Process_TestBase
     {
-        public StylesheetPipelineWhereSassCompilerTrue()
+        public StylesheetPipelineWithSassCompilation()
         {
             asset = new Mock<IAsset>();
             asset.SetupGet(a => a.SourceFile.FullPath).Returns("asset.scss");
             asset.Setup(a => a.OpenStream()).Returns(() => "// @reference 'other.scss';".AsStream());
             bundle.Assets.Add(asset.Object);
-            pipeline = new StylesheetPipeline();
-            pipeline.CompileSass = true;
+            pipeline = new StylesheetPipeline().CompileSass();
         }
 
         readonly Mock<IAsset> asset;

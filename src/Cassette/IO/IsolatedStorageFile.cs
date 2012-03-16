@@ -41,8 +41,7 @@ namespace Cassette.IO
         {
 #if NET35
             return new IsolatedStorageFileStream(systemFilename, mode, access, fileShare, Storage);
-#endif
-#if NET40
+#else
             return Storage.OpenFile(systemFilename, mode, access, fileShare);
 #endif
         }
@@ -53,8 +52,7 @@ namespace Cassette.IO
             {
 #if NET35
                 return Storage.GetFileNames(systemFilename).Length > 0;
-#endif
-#if NET40
+#else
                 return Storage.FileExists(systemFilename);
 #endif
             }
@@ -66,8 +64,7 @@ namespace Cassette.IO
             {
 #if NET35
                 throw new NotImplementedException();
-#endif
-#if NET40
+#else
                 return Storage.GetLastWriteTime(systemFilename).UtcDateTime;
 #endif
             }

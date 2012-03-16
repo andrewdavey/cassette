@@ -111,8 +111,7 @@ namespace Cassette.IO
         {
 #if NET35
             return Directory.GetDirectories(fullSystemPath).Select(GetDirectory);
-#endif
-#if NET40
+#else
             return Directory.EnumerateDirectories(fullSystemPath).Select(GetDirectory);
 #endif
         }

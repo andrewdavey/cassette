@@ -1,4 +1,4 @@
-﻿#if NET40
+﻿#if !NET35
 using System.IO;
 using System.Linq;
 using Cassette.IO;

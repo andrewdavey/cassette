@@ -139,8 +139,7 @@ namespace Cassette.Manifests
 #if NET35
             var reader = System.Xml.XmlReader.Create(new MemoryStream(bytes));
             var xml = XDocument.Load(reader);
-#endif
-#if NET40
+#else
             var xml = XDocument.Load(new MemoryStream(bytes));
 #endif
             return xml;

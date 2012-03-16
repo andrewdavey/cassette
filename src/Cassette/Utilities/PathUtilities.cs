@@ -9,10 +9,9 @@ namespace Cassette.Utilities
     {
         public static string Combine(params string[] paths)
         {
-#if NET40
+#if !NET35
             return Path.Combine(paths);
-#endif
-#if NET35
+#else
             return paths.Aggregate(Path.Combine);
 #endif
         }

@@ -1,4 +1,4 @@
-#if NET40
+#if !NET35
 using System;
 #endif
 using System.Xml.Linq;
@@ -62,9 +62,7 @@ namespace Cassette.Manifests
             {
                 return type;
             }
-#endif
-
-#if NET40
+#else
             if (Enum.TryParse(typeString, out type)) {
                 return type;
             }

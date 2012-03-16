@@ -1,4 +1,4 @@
-﻿#if NET40
+﻿#if !NET35
 using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
