@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <package inherits="../Cassette.Shared.nuspec" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <metadata>
-    <id xdt:Transform="Insert">Cassette.Less</id>
-    <description xdt:Transform="Insert">Less CSS compiler support for Cassette.</description>
+    <id xdt:Transform="Insert">Cassette.Sass</id>
+    <description xdt:Transform="Insert">Sass CSS compiler support for Cassette.</description>
     <dependencies xdt:Transform="Insert">
       <dependency id="Cassette" version="$version$" />
-      <dependency id="CommonServiceLocator" version="1.0"/>
+      <dependency id="IronRuby" version="1.1" />
+      <dependency id="SassAndCoffee.Core" version="2.0" />
+      <dependency id="SassAndCoffee.Ruby" version="2.0" />
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.Less.dll" target="lib\net40-client" />
-    <file src="..\..\build\bin\lib40\Pandora.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\Cassette.Sass.dll" target="lib\net40-client" />
   </files>
 </package>

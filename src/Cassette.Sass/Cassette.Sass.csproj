@@ -80,6 +80,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cassette.Sass.nutrans">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Cassette.Sass.symbols.nutrans" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -80,6 +80,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cassette.KnockoutJQueryTmpl.nutrans">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Cassette.KnockoutJQueryTmpl.symbols.nutrans" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

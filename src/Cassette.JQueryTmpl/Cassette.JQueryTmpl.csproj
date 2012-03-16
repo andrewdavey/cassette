@@ -83,6 +83,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cassette.JQueryTmpl.nutrans">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Cassette.JQueryTmpl.symbols.nutrans" />
     <None Include="packages.config" />
     <None Include="Resources\jqueryTmplCompiler.js" />
   </ItemGroup>

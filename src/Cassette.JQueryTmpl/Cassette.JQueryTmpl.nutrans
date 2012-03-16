@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <package inherits="../Cassette.Shared.nuspec" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <metadata>
-    <id xdt:Transform="Insert">Cassette.Less</id>
-    <description xdt:Transform="Insert">Less CSS compiler support for Cassette.</description>
+    <id xdt:Transform="Insert">Cassette.JQueryTmpl</id>
+    <description xdt:Transform="Insert">jQuery-tmpl HTML template compilation support for Cassette.</description>
     <dependencies xdt:Transform="Insert">
       <dependency id="Cassette" version="$version$" />
-      <dependency id="CommonServiceLocator" version="1.0"/>
+      <dependency id="Jurassic" version="2.1" />
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.Less.dll" target="lib\net40-client" />
-    <file src="..\..\build\bin\lib40\Pandora.dll" target="lib\net40-client"/>
+    <file src="..\..\build\bin\lib40\Cassette.JQueryTmpl.dll" target="lib\net40-client" />
   </files>
 </package>

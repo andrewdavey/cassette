@@ -35,13 +35,24 @@
 
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
+            <ExistingPackageFiles Include="build\nuget\*"/>
             <MainNuspec Include="src\Cassette\Cassette.nuspec"/>
             <MainNuspec Include="src\Cassette.Less\Cassette.Less.nuspec"/>
+            <MainNuspec Include="src\Cassette.Sass\Cassette.Sass.nuspec"/>
+            <MainNuspec Include="src\Cassette.CoffeeScript\Cassette.CoffeeScript.nuspec"/>
+            <MainNuspec Include="src\Cassette.Hogan\Cassette.Hogan.nuspec"/>
+            <MainNuspec Include="src\Cassette.JQueryTmpl\Cassette.JQueryTmpl.nuspec"/>
+            <MainNuspec Include="src\Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.nuspec"/>
             <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
             <MainNuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
 	        <MainNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.nuspec"/>
             <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Less\Cassette.Less.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Sass\Cassette.Sass.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.CoffeeScript\Cassette.CoffeeScript.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Hogan\Cassette.Hogan.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.JQueryTmpl\Cassette.JQueryTmpl.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Web\Cassette.Web.symbols.nuspec"/>
 	        <SymbolsNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.symbols.nuspec"/>
@@ -57,6 +68,8 @@
         </GetAssemblyInformationalVersion>
 
         <Message Text="Building Nuget packages for v$(Version)" />
+
+        <Delete Files="@(ExistingPackageFiles)"/>
 
         <!-- Transform Nuspecs -->
         <TransformXmlHierarchy

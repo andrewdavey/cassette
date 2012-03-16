@@ -76,6 +76,10 @@
     <Compile Include="ScriptPipelineExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cassette.CoffeeScript.nutrans">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Cassette.CoffeeScript.symbols.nutrans" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
