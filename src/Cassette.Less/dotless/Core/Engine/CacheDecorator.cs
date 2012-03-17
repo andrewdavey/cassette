@@ -8,7 +8,7 @@ namespace dotless.Core
     using Cache;
     using Loggers;
 
-    public class CacheDecorator : ILessEngine
+    class CacheDecorator : ILessEngine
     {
         public readonly ILessEngine Underlying;
         public readonly ICache Cache;

@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Collections.Generic;
 
-    public class Expression : Node
+    class Expression : Node
     {
         public NodeList Value { get; set; }
 

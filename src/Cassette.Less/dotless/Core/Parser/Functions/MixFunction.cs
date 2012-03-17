@@ -6,7 +6,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using Utils;
 
-    public class MixFunction : Function
+    class MixFunction : Function
     {
         protected override Node Evaluate(Env env)
         {

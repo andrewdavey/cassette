@@ -10,7 +10,7 @@ namespace dotless.Core
     using Parameters;
     using Stylizers;
 
-    public class ContainerFactory
+    class ContainerFactory
     {
         private PandoraContainer Container { get; set; }
 

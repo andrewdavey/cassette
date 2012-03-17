@@ -5,7 +5,7 @@ namespace dotless.Core.Parser.Infrastructure
     using Nodes;
     using Tree;
 
-    public class DefaultNodeProvider : INodeProvider
+    class DefaultNodeProvider : INodeProvider
     {
         public Element Element(Combinator combinator, string value, int index)
         {

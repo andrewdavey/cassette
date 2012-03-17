@@ -2,7 +2,7 @@ namespace dotless.Core
 {
     using configuration;
 
-    public class EngineFactory
+    class EngineFactory
     {
         public DotlessConfiguration Configuration { get; set; }
 

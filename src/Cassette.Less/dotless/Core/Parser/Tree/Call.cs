@@ -4,7 +4,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Call : Node
+    class Call : Node
     {
         public string Name { get; set; }
         public NodeList<Expression> Arguments { get; set; }

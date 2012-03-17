@@ -2,7 +2,7 @@
 {
     using Parser;
 
-    public class PlainStylizer : IStylizer
+    class PlainStylizer : IStylizer
     {
         public string Stylize(Zone zone)
         {

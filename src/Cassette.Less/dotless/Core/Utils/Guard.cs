@@ -5,7 +5,7 @@ namespace dotless.Core.Utils
     using Parser.Infrastructure;
     using Parser.Infrastructure.Nodes;
 
-    public static class Guard
+    static class Guard
     {
         public static void Expect(string expected, string actual, object @in, int index)
         {

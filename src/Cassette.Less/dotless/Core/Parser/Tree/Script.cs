@@ -3,7 +3,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Script : Node
+    class Script : Node
     {
         public string Expression { get; set; }
 

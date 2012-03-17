@@ -4,7 +4,7 @@ namespace dotless.Core.configuration
     using Input;
     using Loggers;
 
-    public class DotlessConfiguration
+    class DotlessConfiguration
     {
         public static readonly DotlessConfiguration Default = new DotlessConfiguration();
         public static readonly DotlessConfiguration DefaultWeb = new DotlessConfiguration

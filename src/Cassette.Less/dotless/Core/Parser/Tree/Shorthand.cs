@@ -3,7 +3,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Shorthand : Node
+    class Shorthand : Node
     {
         public Node First { get; set; }
         public Node Second { get; set; }

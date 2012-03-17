@@ -9,7 +9,7 @@
     using Nodes;
     using Tree;
 
-    public class Env
+    class Env
     {
         private Dictionary<string, Type> _functionTypes;
         private Dictionary<int, IExtension> _extensions;

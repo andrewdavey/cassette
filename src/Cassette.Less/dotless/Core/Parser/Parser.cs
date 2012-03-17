@@ -43,7 +43,7 @@ namespace dotless.Core.Parser
     //    It also takes care of moving all the indices forwards.
     //
     //
-    public class Parser
+    class Parser
     {
         public Tokenizer Tokenizer { get; set; }
         public IStylizer Stylizer { get; set; }

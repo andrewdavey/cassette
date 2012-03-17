@@ -9,7 +9,7 @@ namespace dotless.Core.Importers
     using Parser.Tree;
     using Utils;
 
-    public class Importer : IImporter
+    class Importer : IImporter
     {
         public IFileReader FileReader { get; set; }
         public List<string> Imports { get; set; }

@@ -1,6 +1,6 @@
 namespace dotless.Core.Input
 {
-    public interface IFileReader
+    interface IFileReader
     {
         string GetFileContents(string fileName);
 

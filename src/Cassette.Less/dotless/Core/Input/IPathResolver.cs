@@ -1,6 +1,6 @@
 namespace dotless.Core.Input
 {
-    public interface IPathResolver
+    interface IPathResolver
     {
         string GetFullPath(string path);
     }

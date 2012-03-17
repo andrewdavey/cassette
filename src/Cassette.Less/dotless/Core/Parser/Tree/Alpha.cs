@@ -3,7 +3,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Alpha : Call
+    class Alpha : Call
     {
         public Node Value { get; set; }
 

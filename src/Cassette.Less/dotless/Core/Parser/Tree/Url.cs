@@ -8,7 +8,7 @@
     using Infrastructure.Nodes;
     using Utils;
 
-    public class Url : Node
+    class Url : Node
     {
         public Node Value { get; set; }
 

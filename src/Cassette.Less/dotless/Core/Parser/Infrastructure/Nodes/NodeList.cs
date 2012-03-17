@@ -3,7 +3,7 @@
     using System.Collections;
     using System.Collections.Generic;
 
-    public class NodeList : NodeList<Node>
+    class NodeList : NodeList<Node>
     {
         public NodeList()
         {
@@ -25,7 +25,7 @@
         }
     }
 
-    public class NodeList<TNode> : Node, IList<TNode>
+    class NodeList<TNode> : Node, IList<TNode>
         where TNode : Node
     {
         protected List<TNode> Inner;

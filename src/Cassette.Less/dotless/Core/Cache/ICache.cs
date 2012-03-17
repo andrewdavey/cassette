@@ -2,7 +2,7 @@ namespace dotless.Core.Cache
 {
     using System.Collections.Generic;
 
-    public interface ICache
+    interface ICache
     {
         void Insert(string cacheKey, IEnumerable<string> fileDependancies, string css);
         bool Exists(string cacheKey);

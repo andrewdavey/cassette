@@ -2,7 +2,7 @@ namespace dotless.Core.Loggers
 {
     using System;
 
-    public class ConsoleLogger : Logger
+    class ConsoleLogger : Logger
     {
         public ConsoleLogger(LogLevel level) : base(level) {}
 

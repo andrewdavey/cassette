@@ -5,7 +5,7 @@
     using System.Text;
     using Parameters;
 
-    public class ParameterDecorator : ILessEngine
+    class ParameterDecorator : ILessEngine
     {
         public readonly ILessEngine Underlying;
         private readonly IParameterSource parameterSource;

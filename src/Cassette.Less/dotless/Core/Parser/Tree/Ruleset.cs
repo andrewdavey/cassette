@@ -7,7 +7,7 @@ namespace dotless.Core.Parser.Tree
     using Utils;
     using System.Text;
 
-    public class Ruleset : Node
+    class Ruleset : Node
     {
         public NodeList<Selector> Selectors { get; set; }
         public NodeList Rules { get; set; }

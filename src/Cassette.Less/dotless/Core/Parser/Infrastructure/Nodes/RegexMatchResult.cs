@@ -2,7 +2,7 @@
 {
     using System.Text.RegularExpressions;
 
-    public class RegexMatchResult : TextNode
+    class RegexMatchResult : TextNode
     {
         public Match Match { get; set; }
 

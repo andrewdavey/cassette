@@ -7,7 +7,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using dotless.Core.Exceptions;
 
-    public class FormatStringFunction : Function
+    class FormatStringFunction : Function
     {
         protected override Node Evaluate(Env env)
         {

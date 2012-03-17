@@ -2,7 +2,7 @@ namespace dotless.Core.Input
 {
     using System.IO;
 
-    public class FileReader : IFileReader
+    class FileReader : IFileReader
     {
         public IPathResolver PathResolver { get; set; }
 

@@ -5,7 +5,7 @@ namespace dotless.Core.Parser.Functions
     using Infrastructure.Nodes;
     using Tree;
 
-    public class FloorFunction : NumberFunctionBase
+    class FloorFunction : NumberFunctionBase
     {
         protected override Node Eval(Env env, Number number, Node[] args)
         {

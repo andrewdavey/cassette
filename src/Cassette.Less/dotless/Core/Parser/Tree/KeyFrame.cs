@@ -4,7 +4,7 @@
     using dotless.Core.Parser.Infrastructure;
     using dotless.Core.Parser.Infrastructure.Nodes;
 
-    public class KeyFrame : Ruleset
+    class KeyFrame : Ruleset
     {
         public string Identifier { get; set; }
 

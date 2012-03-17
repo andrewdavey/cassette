@@ -8,7 +8,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure.Nodes;
     using Utils;
 
-    public class MixinCall : Node
+    class MixinCall : Node
     {
         public List<NamedArgument> Arguments { get; set; }
         protected Selector Selector { get; set; }

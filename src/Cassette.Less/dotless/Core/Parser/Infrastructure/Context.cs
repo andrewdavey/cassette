@@ -6,7 +6,7 @@
     using Tree;
     using Utils;
 
-    public class Context : IEnumerable<IEnumerable<Selector>>
+    class Context : IEnumerable<IEnumerable<Selector>>
     {
         private List<List<Selector>> Paths { get; set; }
 

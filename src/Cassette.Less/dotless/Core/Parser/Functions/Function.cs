@@ -5,7 +5,7 @@ namespace dotless.Core.Parser.Functions
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public abstract class Function
+    abstract class Function
     {
         public string Name { get; set; }
         protected List<Node> Arguments { get; set; }

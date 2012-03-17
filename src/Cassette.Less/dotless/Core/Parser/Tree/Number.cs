@@ -5,7 +5,7 @@
     using Infrastructure.Nodes;
     using Utils;
 
-    public class Number : Node, IOperable
+    class Number : Node, IOperable
     {
         public double Value { get; set; }
         public string Unit { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
-    public class TextNode : Node
+    class TextNode : Node
     {
         public string Value { get; set; }
 

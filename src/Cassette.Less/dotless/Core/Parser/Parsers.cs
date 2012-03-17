@@ -41,7 +41,7 @@ namespace dotless.Core.Parser
     using Infrastructure.Nodes;
     using Tree;
 
-    public class Parsers
+    class Parsers
     {
         public INodeProvider NodeProvider { get; set; }
 

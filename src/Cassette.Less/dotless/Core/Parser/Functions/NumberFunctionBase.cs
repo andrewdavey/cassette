@@ -6,7 +6,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using Utils;
 
-    public abstract class NumberFunctionBase : Function
+    abstract class NumberFunctionBase : Function
     {
         protected override Node Evaluate(Env env)
         {

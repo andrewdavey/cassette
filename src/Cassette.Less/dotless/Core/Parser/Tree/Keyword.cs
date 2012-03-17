@@ -3,7 +3,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Keyword : Node
+    class Keyword : Node
     {
         public string Value { get; set; }
 

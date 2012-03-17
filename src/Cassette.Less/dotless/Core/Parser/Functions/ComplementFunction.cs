@@ -4,7 +4,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using Utils;
 
-    public class ComplementFunction : HslColorFunctionBase
+    class ComplementFunction : HslColorFunctionBase
     {
         protected override Node EvalHsl(HslColor color)
         {

@@ -6,7 +6,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using Utils;
 
-    public class AddFunction : Function
+    class AddFunction : Function
     {
         protected override Node Evaluate(Env env)
         {

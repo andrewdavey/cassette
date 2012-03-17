@@ -4,7 +4,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Variable : Node
+    class Variable : Node
     {
         public string Name { get; set; }
 

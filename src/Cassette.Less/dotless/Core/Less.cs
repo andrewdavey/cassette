@@ -2,7 +2,7 @@
 {
     using configuration;
 
-    public static class Less
+    static class Less
     {
         public static string Parse(string less)
         {

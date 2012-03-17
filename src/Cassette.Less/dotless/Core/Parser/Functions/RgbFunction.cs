@@ -5,7 +5,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using Utils;
 
-    public class RgbFunction : RgbaFunction
+    class RgbFunction : RgbaFunction
     {
         protected override Node Evaluate(Env env)
         {

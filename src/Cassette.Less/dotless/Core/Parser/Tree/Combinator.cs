@@ -4,7 +4,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Combinator : Node
+    class Combinator : Node
     {
         public string Value { get; set; }
 

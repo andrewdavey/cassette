@@ -1,6 +1,6 @@
 namespace dotless.Core.Loggers
 {
-    public class DiagnosticsLogger : Logger
+    class DiagnosticsLogger : Logger
     {
         public DiagnosticsLogger(LogLevel level) : base(level)
         {

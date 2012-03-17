@@ -7,7 +7,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure.Nodes;
     using Utils;
 
-    public class Import : Directive
+    class Import : Directive
     {
         public IImporter Importer { get; set; }
         public string Path { get; set; }

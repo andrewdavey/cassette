@@ -5,7 +5,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Value : Node
+    class Value : Node
     {
         public NodeList Values { get; set; }
         public NodeList PreImportantComments { get; set; }

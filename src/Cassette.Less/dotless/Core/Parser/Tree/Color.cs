@@ -10,7 +10,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure.Nodes;
     using Utils;
 
-    public class Color : Node, IOperable
+    class Color : Node, IOperable
     {
         private static readonly Dictionary<int, string> Html4ColorsReverse;
 

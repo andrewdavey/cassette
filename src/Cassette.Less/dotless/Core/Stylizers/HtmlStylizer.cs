@@ -2,7 +2,7 @@ namespace dotless.Core.Stylizers
 {
     using Parser;
 
-    public class HtmlStylizer : IStylizer
+    class HtmlStylizer : IStylizer
     {
         public string Stylize(Zone zone)
         {

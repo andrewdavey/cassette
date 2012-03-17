@@ -3,7 +3,7 @@ namespace dotless.Core.Stylizers
     using System.Collections.Generic;
     using Parser;
 
-    public class ConsoleStylizer : IStylizer
+    class ConsoleStylizer : IStylizer
     {
         private Dictionary<string, int[]> styles;
 

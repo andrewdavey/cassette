@@ -4,7 +4,7 @@ namespace dotless.Core.Parser.Functions
     using Infrastructure.Nodes;
     using Tree;
 
-    public class GrayscaleFunction : ColorFunctionBase
+    class GrayscaleFunction : ColorFunctionBase
     {
         protected override Node Eval(Color color)
         {

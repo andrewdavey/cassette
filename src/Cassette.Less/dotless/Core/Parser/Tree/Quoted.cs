@@ -4,7 +4,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Quoted : TextNode
+    class Quoted : TextNode
     {
         public char? Quote { get; set; }
         public bool Escaped { get; set; }

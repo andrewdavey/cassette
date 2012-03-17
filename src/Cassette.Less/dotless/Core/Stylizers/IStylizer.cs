@@ -2,7 +2,7 @@ namespace dotless.Core.Stylizers
 {
     using Parser;
 
-    public interface IStylizer
+    interface IStylizer
     {
         string Stylize(Zone zone);
     }

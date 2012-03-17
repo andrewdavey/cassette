@@ -1,7 +1,7 @@
 ﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
 
-    public abstract class Node
+    abstract class Node
     {
         public int Index { get; set; }
 

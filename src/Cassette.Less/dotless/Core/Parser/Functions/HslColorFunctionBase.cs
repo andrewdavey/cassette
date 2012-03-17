@@ -4,7 +4,7 @@
     using Tree;
     using Utils;
 
-    public abstract class HslColorFunctionBase : ColorFunctionBase
+    abstract class HslColorFunctionBase : ColorFunctionBase
     {
         protected override Node Eval(Color color)
         {

@@ -2,7 +2,7 @@
 {
     using Tree;
 
-    public class NamedArgument
+    class NamedArgument
     {
         public string Name { get; set; }
         public Expression Value { get; set; }

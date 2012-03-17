@@ -17,7 +17,7 @@ namespace dotless.Core.Loggers
     using System;
     using System.Diagnostics;
 
-    public class DebuggerLogger : ILogger
+    class DebuggerLogger : ILogger
     {
         public void WriteError(string file, int line, string message)
         {

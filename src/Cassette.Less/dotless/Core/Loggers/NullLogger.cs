@@ -1,6 +1,6 @@
 namespace dotless.Core.Loggers
 {
-    public class NullLogger : Logger
+    class NullLogger : Logger
     {
         public NullLogger(LogLevel level) : base(level)
         {

@@ -5,7 +5,7 @@
     using Infrastructure.Nodes;
     using Tree;
 
-    public class PercentageFunction : NumberFunctionBase
+    class PercentageFunction : NumberFunctionBase
     {
         protected override Node Eval(Env env, Number number, Node[] args)
         {

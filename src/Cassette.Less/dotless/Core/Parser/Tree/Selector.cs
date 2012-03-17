@@ -4,7 +4,7 @@
     using Infrastructure.Nodes;
     using System.Collections.Generic;
 
-    public class Selector : Node
+    class Selector : Node
     {
         private string _css;
         public NodeList<Element> Elements { get; set; }

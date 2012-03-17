@@ -4,7 +4,7 @@
     using Tree;
     using Utils;
 
-    public class HueFunction : HslColorFunctionBase
+    class HueFunction : HslColorFunctionBase
     {
         protected override Node EvalHsl(HslColor color)
         {
@@ -18,5 +18,5 @@
         }
     }
 
-    public class SpinFunction : HueFunction { }
+    class SpinFunction : HueFunction { }
 }

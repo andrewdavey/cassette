@@ -4,7 +4,7 @@ namespace dotless.Core.configuration
     using System.Xml;
     using Loggers;
 
-    public class XmlConfigurationInterpreter
+    class XmlConfigurationInterpreter
     {
         public DotlessConfiguration Process(XmlNode section)
         {

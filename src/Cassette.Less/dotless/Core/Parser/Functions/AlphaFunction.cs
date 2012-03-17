@@ -3,7 +3,7 @@
     using Infrastructure.Nodes;
     using Tree;
 
-    public class AlphaFunction : ColorFunctionBase
+    class AlphaFunction : ColorFunctionBase
     {
         protected override Node Eval(Color color)
         {
@@ -21,9 +21,9 @@
         }
     }
 
-    public class FadeInFunction : AlphaFunction {}
+    class FadeInFunction : AlphaFunction {}
 
-    public class FadeOutFunction : AlphaFunction
+    class FadeOutFunction : AlphaFunction
     {
         protected override Node EditColor(Color color, Number number)
         {

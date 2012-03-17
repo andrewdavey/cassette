@@ -8,7 +8,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using Utils;
 
-    public class EFunction : Function
+    class EFunction : Function
     {
         protected override Node Evaluate(Env env)
         {
@@ -25,7 +25,7 @@ namespace dotless.Core.Parser.Functions
         }
     }
 
-    public class CFormatString : Function
+    class CFormatString : Function
     {
         protected override Node Evaluate(Env env)
         {

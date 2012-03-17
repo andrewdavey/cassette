@@ -5,7 +5,7 @@ namespace dotless.Core.Parser.Functions
     using Infrastructure.Nodes;
     using Tree;
 
-    public class HexFunction : NumberFunctionBase
+    class HexFunction : NumberFunctionBase
     {
         protected override Node Eval(Env env, Number number, Node[] args)
         {

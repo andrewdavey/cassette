@@ -5,7 +5,7 @@ namespace dotless.Core.Parser.Functions
     using Tree;
     using Utils;
 
-    public class HslFunction : HslaFunction
+    class HslFunction : HslaFunction
     {
         protected override Node Evaluate(Env env)
         {

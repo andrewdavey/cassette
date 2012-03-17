@@ -7,7 +7,7 @@ namespace dotless.Core.Parser
     using Exceptions;
     using Infrastructure.Nodes;
 
-    public class Tokenizer
+    class Tokenizer
     {
         public int Optimization { get; set; }
 
@@ -543,7 +543,7 @@ namespace dotless.Core.Parser
         }
     }
 
-    public class Zone
+    class Zone
     {
         public int LineNumber { get; set; }
         public int Position { get; set; }
@@ -554,7 +554,7 @@ namespace dotless.Core.Parser
         public Extract CallExtract { get; set; }
     }
 
-    public class Extract
+    class Extract
     {
         public Extract(string[] lines, int line)
         {
@@ -568,7 +568,7 @@ namespace dotless.Core.Parser
         public string Line { get; set; }
     }
 
-    public class Location 
+    class Location 
     {
         public int Index { get; set; }
         public int CurrentChunk { get; set; }

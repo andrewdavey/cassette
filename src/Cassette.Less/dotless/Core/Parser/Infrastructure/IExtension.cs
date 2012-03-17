@@ -1,6 +1,6 @@
 ﻿namespace dotless.Core.Parser.Infrastructure
 {
-    public interface IExtension
+    interface IExtension
     {
         void Setup(Env environment);
     }

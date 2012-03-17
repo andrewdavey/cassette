@@ -5,7 +5,7 @@
     using System.Text;
     using Nodes;
 
-    public class Output
+    class Output
     {
         private Env Env { get; set; }
         private StringBuilder Builder { get; set; }

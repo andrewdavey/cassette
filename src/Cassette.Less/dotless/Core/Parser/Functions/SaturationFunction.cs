@@ -4,7 +4,7 @@
     using Tree;
     using Utils;
 
-    public class SaturationFunction : HslColorFunctionBase
+    class SaturationFunction : HslColorFunctionBase
     {
         protected override Node EvalHsl(HslColor color)
         {
@@ -18,9 +18,9 @@
         }
     }
 
-    public class SaturateFunction : SaturationFunction {}
+    class SaturateFunction : SaturationFunction {}
 
-    public class DesaturateFunction : SaturationFunction
+    class DesaturateFunction : SaturationFunction
     {
         protected override Node EditHsl(HslColor color, Number number)
         {

@@ -4,7 +4,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Directive : Ruleset
+    class Directive : Ruleset
     {
         public string Name { get; set; }
         public string Identifier { get; set; }

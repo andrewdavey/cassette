@@ -8,7 +8,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure.Nodes;
     using Utils;
 
-    public class MixinDefinition : Ruleset
+    class MixinDefinition : Ruleset
     {
         private int _required;
         private int _arity;

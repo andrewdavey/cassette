@@ -7,7 +7,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Root : Ruleset
+    class Root : Ruleset
     {
         public Func<ParsingException, ParserException> Error { get; set; }
 

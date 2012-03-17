@@ -2,7 +2,7 @@ namespace dotless.Core.Exceptions
 {
     using System;
 
-    public class ParsingException : Exception
+    class ParsingException : Exception
     {
         public int Index { get; set; }
         public int Call { get; set; }

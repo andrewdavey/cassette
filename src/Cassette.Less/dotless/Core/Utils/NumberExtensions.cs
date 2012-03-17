@@ -2,7 +2,7 @@ namespace dotless.Core.Utils
 {
     using Parser.Tree;
 
-    public static class NumberExtensions
+    static class NumberExtensions
     {
         public static double Normalize(this Number value)
         {

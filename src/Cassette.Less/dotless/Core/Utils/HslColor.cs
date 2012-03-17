@@ -4,7 +4,7 @@ namespace dotless.Core.Utils
     using System.Linq;
     using Parser.Tree;
 
-    public class HslColor
+    class HslColor
     {
         // Note: To avoid converting back and forth between HlsColor and Color, HlsColor should perhaps inherit from color and only cenvert when needed.
 

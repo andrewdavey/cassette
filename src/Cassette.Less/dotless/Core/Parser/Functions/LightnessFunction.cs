@@ -4,7 +4,7 @@
     using Tree;
     using Utils;
 
-    public class LightnessFunction : HslColorFunctionBase
+    class LightnessFunction : HslColorFunctionBase
     {
         protected override Node EvalHsl(HslColor color)
         {
@@ -18,9 +18,9 @@
         }
     }
 
-    public class LightenFunction : LightnessFunction {}
+    class LightenFunction : LightnessFunction {}
 
-    public class DarkenFunction : LightnessFunction
+    class DarkenFunction : LightnessFunction
     {
         protected override Node EditHsl(HslColor color, Number number)
         {

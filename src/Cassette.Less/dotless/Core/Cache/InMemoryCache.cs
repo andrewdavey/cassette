@@ -2,7 +2,7 @@ namespace dotless.Core.Cache
 {
     using System.Collections.Generic;
 
-    public class InMemoryCache : ICache
+    class InMemoryCache : ICache
     {
         private readonly Dictionary<string, string> _cache;
 

@@ -5,7 +5,7 @@
     using Parser;
     using Parser.Tree;
 
-    public interface IImporter
+    interface IImporter
     {
         /// <summary>
         ///  a list of the imported paths in order resolve urls to be relative to the base imported file

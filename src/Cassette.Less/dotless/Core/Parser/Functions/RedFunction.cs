@@ -3,7 +3,7 @@
     using Infrastructure.Nodes;
     using Tree;
 
-    public class RedFunction : ColorFunctionBase
+    class RedFunction : ColorFunctionBase
     {
         protected override Node Eval(Color color)
         {

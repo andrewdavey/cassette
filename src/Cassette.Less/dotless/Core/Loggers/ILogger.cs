@@ -1,6 +1,6 @@
 namespace dotless.Core.Loggers
 {
-    public interface ILogger
+    interface ILogger
     {
         void Log(LogLevel level, string message);
         void Info(string message);
@@ -9,7 +9,7 @@ namespace dotless.Core.Loggers
         void Error(string message);
     }
 
-    public enum LogLevel
+    enum LogLevel
     {
         Info = 1,
         Debug,

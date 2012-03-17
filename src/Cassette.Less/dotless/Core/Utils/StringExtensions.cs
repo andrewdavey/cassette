@@ -5,7 +5,7 @@
     using System.IO;
     using System.Linq;
 
-    public static class StringExtensions
+    static class StringExtensions
     {
         public static string JoinStrings(this IEnumerable<string> source, string separator)
         {

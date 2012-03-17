@@ -1,6 +1,6 @@
 namespace dotless.Core.Loggers
 {
-    public abstract class Logger : ILogger
+    abstract class Logger : ILogger
     {
         public LogLevel Level { get; set; }
 

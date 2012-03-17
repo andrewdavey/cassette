@@ -3,7 +3,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Comment : Node
+    class Comment : Node
     {
         public string Value { get; set; }
         public bool Silent { get; set; }

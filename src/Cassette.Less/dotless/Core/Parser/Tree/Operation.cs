@@ -5,7 +5,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Operation : Node
+    class Operation : Node
     {
         public Node First { get; set; }
         public Node Second { get; set; }
