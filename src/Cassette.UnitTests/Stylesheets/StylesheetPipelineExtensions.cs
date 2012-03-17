@@ -44,11 +44,11 @@ namespace Cassette.Stylesheets
             AssertPipelineContains<ConvertFontUrlsToDataUris>();
         }
 
-        void AssertPipelineContains<T>() where T : IBundleProcessor<Bundle>
+        void AssertPipelineContains<T>() where T : IBundleProcessor<StylesheetBundle>
         {
             // MutablePipeline steps are actually created when Process is called.
             var bundle = new StylesheetBundle("~");
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings("") { SourceDirectory = new FakeFileSystem() });
 
             pipeline.CreatedPipeline.OfType<T>().ShouldNotBeEmpty();
         }

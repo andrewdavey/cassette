@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Cassette.IO;
 
 namespace Cassette
 {
@@ -12,9 +11,9 @@ namespace Cassette
         byte[] Hash { get; }
 
         /// <summary>
-        /// Gets the file containing the source of this asset.
+        /// Gets the application relative path of the asset.
         /// </summary>
-        IFile SourceFile { get; }
+        string Path { get; }
 
         /// <summary>
         /// Gets the references made by this asset.

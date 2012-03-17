@@ -20,7 +20,7 @@ namespace Cassette.Scripts
         {
             var bundle = new TestableBundle("~");
             var coffeeScriptAsset = new Mock<IAsset>();
-            coffeeScriptAsset.SetupGet(a => a.SourceFile.FullPath).Returns("test.coffee");
+            coffeeScriptAsset.SetupGet(a => a.Path).Returns("test.coffee");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
             step.Process(bundle, new CassetteSettings(""));
@@ -39,7 +39,7 @@ namespace Cassette.Scripts
         {
             var bundle = new TestableBundle("~");
             var coffeeScriptAsset = new Mock<IAsset>();
-            coffeeScriptAsset.SetupGet(a => a.SourceFile.FullPath).Returns("test.js");
+            coffeeScriptAsset.SetupGet(a => a.Path).Returns("test.js");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
             step.Process(bundle, new CassetteSettings(""));

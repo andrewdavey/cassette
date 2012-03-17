@@ -157,7 +157,7 @@ namespace Cassette
             if (IsSorted) return;
             // Graph topological sort, based on references between assets.
             var assetsByFilename = Assets.ToDictionary(
-                a => a.SourceFile.FullPath,
+                a => a.Path,
                 StringComparer.OrdinalIgnoreCase
             );
             var graph = new Graph<IAsset>(
@@ -172,7 +172,7 @@ namespace Cassette
                 var details = string.Join(
                     Environment.NewLine,
                     cycles.Select(
-                        cycle => "[" + string.Join(", ", cycle.Select(a => a.SourceFile.FullPath).ToArray()) + "]"
+                        cycle => "[" + string.Join(", ", cycle.Select(a => a.Path).ToArray()) + "]"
                     ).ToArray()
                 );
                 throw new InvalidOperationException("Cycles detected in asset references:" + Environment.NewLine + details);

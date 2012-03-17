@@ -23,9 +23,9 @@ namespace Cassette
         readonly Lazy<byte[]> hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
-        public override IFile SourceFile
+        public override string Path
         {
-            get { return sourceFile; }
+            get { return sourceFile.FullPath; }
         }
 
         public override byte[] Hash
@@ -57,7 +57,7 @@ namespace Cassette
                 }
                 else
                 {
-                    var subDirectory = SourceFile.Directory.FullPath;
+                    var subDirectory = sourceFile.Directory.FullPath;
                     appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
                         subDirectory,
                         assetRelativePath
@@ -90,9 +90,9 @@ namespace Cassette
             else if (!relativeFilename.StartsWith("~"))
             {
                 relativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
-                    SourceFile.Directory.FullPath,
+                    sourceFile.Directory.FullPath,
                     relativeFilename
-                                                                   ));
+                ));
             }
 
             var alreadyExists = references.Any(r => r.Path.Equals(relativeFilename, StringComparison.OrdinalIgnoreCase));

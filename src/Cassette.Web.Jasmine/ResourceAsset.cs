@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
-using Cassette.IO;
 
 namespace Cassette.Web.Jasmine
 {
@@ -34,9 +33,9 @@ namespace Cassette.Web.Jasmine
             }
         }
 
-        public IFile SourceFile
+        public string Path
         {
-            get { return new ResourceFile("~/" + resourceName); }
+            get { return "~/" + resourceName; }
         }
 
         public IEnumerable<AssetReference> References

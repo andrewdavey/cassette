@@ -27,7 +27,7 @@ namespace Cassette.BundleProcessing
             }
         }
 
-        public override IO.IFile SourceFile
+        public override string Path
         {
             get { throw new NotImplementedException(); }
         }

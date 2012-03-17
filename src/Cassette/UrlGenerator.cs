@@ -26,7 +26,7 @@ namespace Cassette
                 String.Format(
                     "{0}/asset/{1}?{2}",
                     routePrefix,
-                    asset.SourceFile.FullPath.Substring(2),
+                    asset.Path.Substring(2),
                     asset.Hash.ToHexString()
                 )
             );

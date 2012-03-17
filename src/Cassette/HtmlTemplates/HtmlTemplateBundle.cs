@@ -29,7 +29,7 @@ namespace Cassette.HtmlTemplates
 
         internal string GetTemplateId(IAsset asset)
         {
-            var path = asset.SourceFile.FullPath
+            var path = asset.Path
                 .Substring(Path.Length + 1)
                 .Replace(System.IO.Path.DirectorySeparatorChar, '-')
                 .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');

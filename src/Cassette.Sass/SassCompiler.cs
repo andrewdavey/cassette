@@ -27,11 +27,12 @@ namespace Cassette.Stylesheets
         dynamic scssOption;
         bool initialized;
         readonly object _lock = new object();
-        IDirectory rootDirectory;
         List<string> dependentFileList;
+        IDirectory rootDirectory;
 
-        public string Compile(string source, IFile sourceFile)
+        public CompileResult Compile(string source, CompileContext context)
         {
+            var sourceFile = context.RootDirectory.GetFile(context.SourceFilePath);
             lock (_lock)
             {
                 rootDirectory = sourceFile.Directory;
@@ -43,7 +44,8 @@ namespace Cassette.Stylesheets
                 try
                 {
                     var compilerOptions = GetCompilerOptions(sourceFile);
-                    return (string)sassCompiler.compile(source, compilerOptions);
+                    var css = (string)sassCompiler.compile(source, compilerOptions);
+                    return new CompileResult(css, dependentFileList);
                 }
                 catch (Exception e)
                 {
@@ -79,12 +81,6 @@ namespace Cassette.Stylesheets
         void StopRecordingOpenedFiles()
         {
             pal.OnOpenInputFileStream = null;
-        }
-
-        // TODO: Refactor the Compile interface to return imported file paths as well as the compiled output.
-        internal IEnumerable<string> ReferencedFiles
-        {
-            get { return dependentFileList; }
         }
 
         dynamic GetCompilerOptions(IFile sourceFile)

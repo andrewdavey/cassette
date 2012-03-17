@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Cassette.Interop;
-using Cassette.IO;
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -17,19 +17,20 @@ namespace Cassette.Scripts
     public class IECoffeeScriptCompiler : ICompiler
 // ReSharper restore InconsistentNaming
     {
-        public string Compile(string source, IFile sourceFile)
+        public CompileResult Compile(string source, CompileContext context)
         {
-            Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
+            Trace.Source.TraceInformation("Compiling {0}", context.SourceFilePath);
             var workItem = new CompileTask(source);
             try
             {
-                return workItem.QueueAndWaitForResult();
+                var javascript = workItem.QueueAndWaitForResult();
+                return new CompileResult(javascript, Enumerable.Empty<string>());
             }
             catch (Exception ex)
             {
-                var message = ex.Message + " in " + sourceFile.FullPath;
+                var message = ex.Message + " in " + context.SourceFilePath;
                 Trace.Source.TraceEvent(TraceEventType.Critical, 0, message);
-                throw new CoffeeScriptCompileException(message, sourceFile.FullPath, ex);                    
+                throw new CoffeeScriptCompileException(message, context.SourceFilePath, ex);                    
             }
         }
 
@@ -175,22 +176,23 @@ namespace Cassette.Scripts
             lazyEngine = new Lazy<IEJavaScriptEngine>(CreateEngine);
         }
 
-        public string Compile(string source, IFile sourceFile)
+        public CompileResult Compile(string source, CompileContext context)
         {
-            Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
+            Trace.Source.TraceInformation("Compiling {0}", context.SourceFilePath);
             var engine = lazyEngine.Value;
             lock (engine)
             {
                 try
                 {
-                    Trace.Source.TraceInformation("Compiled {0}", sourceFile.FullPath);
-                    return engine.CallFunction<string>("compile", source);
+                    Trace.Source.TraceInformation("Compiled {0}", context.SourceFilePath);
+                    var javascript = engine.CallFunction<string>("compile", source);
+                    return new CompileResult(javascript, Enumerable.Empty<string>());
                 }
                 catch (Exception ex)
                 {
-                    var message = ex.Message + " in " + sourceFile.FullPath;
+                    var message = ex.Message + " in " + context.SourceFilePath;
                     Trace.Source.TraceEvent(TraceEventType.Critical, 0, message);
-                    throw new CoffeeScriptCompileException(message, sourceFile.FullPath, ex);
+                    throw new CoffeeScriptCompileException(message, context.SourceFilePath, ex);
                 }
             }
         }

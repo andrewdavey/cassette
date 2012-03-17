@@ -11,7 +11,7 @@ namespace Cassette.HtmlTemplates
         public void GivenHtmAsset_WhenProcess_ThenItAddsReferencesToHtmlTemplateAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.htm");
+            asset.SetupGet(a => a.Path).Returns("~/asset.htm");
 
             var javaScriptSource = @"
 <!-- @reference ""another1.js""
@@ -36,7 +36,7 @@ namespace Cassette.HtmlTemplates
         public void GivenHtmlAsset_WhenProcess_ThenItAddsReferencesToHtmlTemplateAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.html");
+            asset.SetupGet(a => a.Path).Returns("~/asset.html");
 
             var javaScriptSource = @"
 <!-- @reference ""another1.js""

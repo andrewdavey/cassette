@@ -12,14 +12,14 @@ namespace Cassette.Stylesheets
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
-        public CssImageToDataUriTransformer(Func<string, bool> shouldEmbedUrl)
-            : base(shouldEmbedUrl, BackgroundUrlRegex)
+        public CssImageToDataUriTransformer(Func<string, bool> shouldEmbedUrl, IDirectory rootDirectory)
+            : base(shouldEmbedUrl, BackgroundUrlRegex, rootDirectory)
         {
         }
 
-        protected override CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset)
+        protected override CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset, IDirectory rootDirectory)
         {
-            return new CssBackgroundImageUrlMatchTransformer(match, asset);
+            return new CssBackgroundImageUrlMatchTransformer(match, asset, rootDirectory);
         }
 
         class CssBackgroundImageUrlMatchTransformer : CssUrlMatchTransformer
@@ -28,8 +28,8 @@ namespace Cassette.Stylesheets
             readonly string start;
             readonly string end;
 
-            public CssBackgroundImageUrlMatchTransformer(Match match, IAsset asset)
-                : base(match, asset)
+            public CssBackgroundImageUrlMatchTransformer(Match match, IAsset asset, IDirectory rootDirectory)
+                : base(match, asset, rootDirectory)
             {
                 fullProperty = match.Value;
                 start = match.Groups["start"].Value;

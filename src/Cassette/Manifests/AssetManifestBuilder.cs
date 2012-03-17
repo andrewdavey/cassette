@@ -9,7 +9,7 @@ namespace Cassette.Manifests
         {
             var assetManifest = new AssetManifest
             {
-                Path = asset.SourceFile.FullPath
+                Path = asset.Path
             };
             foreach (var reference in GetReferences(asset))
             {

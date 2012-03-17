@@ -19,13 +19,13 @@ namespace Cassette.Stylesheets
             var sassAssets = bundle.Assets.Where(IsSassOrScss);
             foreach (var asset in sassAssets)
             {
-                asset.AddAssetTransformer(new CompileAsset(sassCompiler));
+                asset.AddAssetTransformer(new CompileAsset(sassCompiler, settings.SourceDirectory));
             }
         }
 
         bool IsSassOrScss(IAsset asset)
         {
-            var path = asset.SourceFile.FullPath;
+            var path = asset.Path;
             return path.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".sass", StringComparison.OrdinalIgnoreCase);
         }

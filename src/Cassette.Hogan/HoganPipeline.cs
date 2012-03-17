@@ -20,7 +20,7 @@ namespace Cassette.HtmlTemplates
             yield return new AssignContentType("text/javascript");
             yield return new ParseHtmlTemplateReferences();
             yield return new CompileHogan();
-            yield return new RegisterTemplatesWithHogan(bundle, JavaScriptVariableName);
+            yield return new RegisterTemplatesWithHogan(JavaScriptVariableName);
             yield return new AssignHash();
             yield return new ConcatenateAssets();
         }

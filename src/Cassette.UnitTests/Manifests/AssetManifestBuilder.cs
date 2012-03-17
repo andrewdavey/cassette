@@ -15,7 +15,7 @@ namespace Cassette.Manifests
         public AssetManifestBuilder_Tests()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset");
+            asset.SetupGet(a => a.Path).Returns("~/asset");
             bundleReference = new AssetReference("~/bundle", asset.Object, 1, AssetReferenceType.DifferentBundle);
             urlReference = new AssetReference("http://example.com/", asset.Object, 2, AssetReferenceType.Url);
             rawFileReference = new AssetReference("~/file", asset.Object, 3, AssetReferenceType.RawFilename);

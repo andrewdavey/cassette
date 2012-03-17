@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Cassette.IO;
 using System.Linq;
 
 namespace Cassette.Manifests
@@ -20,9 +19,9 @@ namespace Cassette.Manifests
             get { throw new NotImplementedException(); }
         }
 
-        public IFile SourceFile
+        public string Path
         {
-            get { return new StubFile(assetManifest.Path); }
+            get { return assetManifest.Path; }
         }
 
         public IEnumerable<AssetReference> References
@@ -58,46 +57,6 @@ namespace Cassette.Manifests
         public Stream OpenStream()
         {
             throw new NotImplementedException();
-        }
-
-        class StubFile : IFile
-        {
-            readonly string fullPath;
-
-            public StubFile(string fullPath)
-            {
-                this.fullPath = fullPath;
-            }
-
-            public IDirectory Directory
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public bool Exists
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public DateTime LastWriteTimeUtc
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public string FullPath
-            {
-                get { return fullPath; }
-            }
-
-            public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Delete()
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

@@ -81,7 +81,7 @@ namespace Cassette.Web
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.SetupGet(a => a.SourceFile.FullPath)
+            asset.SetupGet(a => a.Path)
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(Stream.Null);
@@ -105,7 +105,7 @@ namespace Cassette.Web
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.SetupGet(a => a.SourceFile.FullPath)
+            asset.SetupGet(a => a.Path)
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(() => "output".AsStream());

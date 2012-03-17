@@ -90,7 +90,7 @@ namespace Cassette.Configuration
         public void GivenAssetWithUrlReference_WhenCreate_ThenExternalBundleInContainer()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset");
+            asset.SetupGet(a => a.Path).Returns("~/asset");
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.References)
@@ -158,7 +158,7 @@ namespace Cassette.Configuration
         public void GivenAssetWithAdHocUrlReference_WhenCreate_ThenExternalBundleIsCreatedAndProcessed()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset");
+            asset.SetupGet(a => a.Path).Returns("~/asset");
             asset.SetupGet(a => a.References)
                  .Returns(new[] { new AssetReference("http://test.com/", asset.Object, -1, AssetReferenceType.Url) });
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))

@@ -1,18 +1,21 @@
 ﻿using System;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    public class ConvertImageUrlsToDataUris : AddTransformerToAssets
+    public class ConvertImageUrlsToDataUris : AddTransformerToAssets<StylesheetBundle>
     {
-        public ConvertImageUrlsToDataUris()
-            : base(new CssImageToDataUriTransformer(anyUrl => true))
-        {   
-        }
+        readonly Func<string, bool> shouldEmbedUrl;
 
         public ConvertImageUrlsToDataUris(Func<string, bool> shouldEmbedUrl)
-            : base(new CssImageToDataUriTransformer(shouldEmbedUrl))
         {
+            this.shouldEmbedUrl = shouldEmbedUrl;
+        }
+
+        protected override IAssetTransformer CreateAssetTransformer(StylesheetBundle bundle, CassetteSettings settings)
+        {
+            return new CssImageToDataUriTransformer(shouldEmbedUrl, settings.SourceDirectory);
         }
     }
 }

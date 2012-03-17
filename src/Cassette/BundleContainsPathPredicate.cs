@@ -25,7 +25,7 @@ namespace Cassette
 
         void IBundleVisitor.Visit(IAsset asset)
         {
-            if (IsMatch(asset.SourceFile.FullPath))
+            if (IsMatch(asset.Path))
             {
                 isFound = true;
             }

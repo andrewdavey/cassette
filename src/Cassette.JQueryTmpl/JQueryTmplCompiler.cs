@@ -1,5 +1,5 @@
-﻿using Cassette.IO;
-using Jurassic;
+﻿using Jurassic;
+using System.Linq;
 
 namespace Cassette.HtmlTemplates
 {
@@ -13,9 +13,10 @@ namespace Cassette.HtmlTemplates
 
         protected readonly ScriptEngine ScriptEngine;
 
-        public string Compile(string source, IFile sourceFile)
+        public CompileResult Compile(string source, CompileContext context)
         {
-            return CreateFunction(source);
+            var javascript = CreateFunction(source);
+            return new CompileResult(javascript, Enumerable.Empty<string>());
         }
 
         protected virtual string CreateFunction(string source)

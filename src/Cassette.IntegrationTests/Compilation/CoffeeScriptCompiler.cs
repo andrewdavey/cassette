@@ -1,6 +1,4 @@
-﻿using Cassette.IO;
-using Cassette.Scripts;
-using Moq;
+﻿using Cassette.Scripts;
 using Should;
 using Xunit;
 
@@ -24,8 +22,8 @@ namespace Cassette
         {
             var source = "x = 1";
             var compiler = new T();
-            var javaScript = compiler.Compile(source, Mock.Of<IFile>());
-            javaScript.ShouldEqual("(function() {\n  var x;\n\n  x = 1;\n\n}).call(this);\n");
+            var javaScript = compiler.Compile(source, new CompileContext());
+            javaScript.Output.ShouldEqual("(function() {\n  var x;\n\n  x = 1;\n\n}).call(this);\n");
         }
 
         [Fact]
@@ -33,15 +31,12 @@ namespace Cassette
         {
             var source = "'unclosed string";
             var compiler = new T();
-            var file = new Mock<IFile>();
-            file.SetupGet(f => f.FullPath)
-                .Returns("test.coffee");
             var exception = Assert.Throws<CoffeeScriptCompileException>(delegate
             {
-                compiler.Compile(source, file.Object);
+                compiler.Compile(source, new CompileContext { SourceFilePath = "~/test.coffee" });
             });
-            exception.Message.ShouldContain("Parse error on line 1: Unexpected ''' in test.coffee");
-            exception.SourcePath.ShouldEqual("test.coffee");
+            exception.Message.ShouldContain("Parse error on line 1: Unexpected ''' in ~/test.coffee");
+            exception.SourcePath.ShouldEqual("~/test.coffee");
         }
     }
 }

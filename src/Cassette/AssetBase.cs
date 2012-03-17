@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Cassette.IO;
 
 namespace Cassette
 {
@@ -31,7 +30,7 @@ namespace Cassette
 
         protected abstract Stream OpenStreamCore();
 
-        public abstract IFile SourceFile { get; }
+        public abstract string Path { get; }
 
         public abstract byte[] Hash { get; }
 
@@ -42,4 +41,3 @@ namespace Cassette
         public abstract void AddRawFileReference(string relativeFilename);
     }
 }
-
