@@ -93,11 +93,11 @@ namespace Cassette.BundleProcessing
             }
             else if (state == State.InDoubleQuote)
             {
-                throw new Exception(string.Format("Asset reference error in {0} line {1}. Missing closing double quote (\").", sourceAsset.SourceFile.FullPath, lineNumber));
+                throw new Exception(string.Format("Asset reference error in {0} line {1}. Missing closing double quote (\").", sourceAsset.Path, lineNumber));
             }
             else if (state == State.InSingleQuote)
             {
-                throw new Exception(string.Format("Asset reference error in {0} line {1}. Missing closing single quote (').", sourceAsset.SourceFile.FullPath, lineNumber));
+                throw new Exception(string.Format("Asset reference error in {0} line {1}. Missing closing single quote (').", sourceAsset.Path, lineNumber));
             }
         }
     }

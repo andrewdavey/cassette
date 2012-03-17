@@ -17,9 +17,9 @@ namespace Cassette.Scripts
         {
             foreach (var asset in bundle.Assets)
             {
-                if (asset.SourceFile.FullPath.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
+                if (asset.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
                 {
-                    asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler));                    
+                    asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler, settings.SourceDirectory));                    
                 }
             }
         }

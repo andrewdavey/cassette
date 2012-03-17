@@ -11,7 +11,7 @@ namespace Cassette.Scripts
         public void ProcessAddsReferencesToJavaScriptAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.js");
+            asset.SetupGet(a => a.Path).Returns("~/asset.js");
 
             var javaScriptSource = @"
 /// <reference path=""another1.js""/>

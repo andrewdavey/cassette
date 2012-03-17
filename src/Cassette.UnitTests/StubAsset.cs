@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -12,7 +11,7 @@ namespace Cassette
         {
             Hash = new byte[] {1};
             CreateStream = () => content.AsStream();
-            SourceFile = new StubFile { FullPath = fullPath };
+            Path = fullPath;
             References = new List<AssetReference>();
         }
 
@@ -20,7 +19,7 @@ namespace Cassette
  
         public byte[] Hash { get; set; }
 
-        public IFile SourceFile { get; set; }
+        public string Path { get; set; }
 
         public List<AssetReference> References { get; set; }
 
@@ -49,36 +48,6 @@ namespace Cassette
         public Stream OpenStream()
         {
             return CreateStream();
-        }
-
-        class StubFile : IFile
-        {
-            public IDirectory Directory
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public bool Exists
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public DateTime LastWriteTimeUtc
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public string FullPath { get; set; }
-
-            public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Delete()
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

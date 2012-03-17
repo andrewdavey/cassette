@@ -2,11 +2,11 @@
 
 namespace Cassette.HtmlTemplates
 {
-    public class CompileJQueryTmpl : AddTransformerToAssets
+    public class CompileJQueryTmpl : AddTransformerToAssets<HtmlTemplateBundle>
     {
-        public CompileJQueryTmpl()
-            : base(new CompileAsset(new JQueryTmplCompiler()))
+        protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle, Configuration.CassetteSettings settings)
         {
+            return new CompileAsset(new JQueryTmplCompiler(), settings.SourceDirectory);
         }
     }
 }

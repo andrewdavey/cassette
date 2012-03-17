@@ -52,7 +52,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.Setup(a => a.Path).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~\\test\\asset.js").ShouldBeTrue();
@@ -65,7 +65,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.Setup(a => a.Path).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~/test/asset.js").ShouldBeTrue();
@@ -78,7 +78,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.Setup(a => a.Path).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~\\TEST\\ASSET.js").ShouldBeTrue();

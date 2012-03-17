@@ -82,7 +82,7 @@ namespace Cassette
         public void UrlModifierModifyIsCalled()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
+            asset.SetupGet(a => a.Path).Returns("~/test/asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[0]);
 
             UrlGenerator.CreateAssetUrl(asset.Object);
@@ -94,7 +94,7 @@ namespace Cassette
         public void CreateAssetUrlReturnsCompileUrl()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.coffee");
+            asset.SetupGet(a => a.Path).Returns("~/test/asset.coffee");
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
 
             var url = UrlGenerator.CreateAssetUrl(asset.Object);

@@ -52,7 +52,7 @@ namespace Cassette.HtmlTemplates
 
             var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
-            bundle.Assets[0].SourceFile.ShouldBeSameAs(allFiles[0]);
+            bundle.Assets[0].Path.ShouldEqual("~/test/file.htm");
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Cassette.HtmlTemplates
 
             var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
-            bundle.Assets[0].SourceFile.ShouldBeSameAs(allFiles[0]);
+            bundle.Assets[0].Path.ShouldEqual("~/test/yes.htm");
             bundle.Assets.Count.ShouldEqual(1);
         }
 
@@ -83,10 +83,10 @@ namespace Cassette.HtmlTemplates
             var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
             bundle.Assets.Count.ShouldEqual(4);
-            bundle.Assets[0].SourceFile.ShouldBeSameAs(allFiles[3]);
-            bundle.Assets[1].SourceFile.ShouldBeSameAs(allFiles[1]);
-            new HashSet<IFile>(bundle.Assets.Skip(2).Select(a => a.SourceFile))
-                .SetEquals(new[] { allFiles[0], allFiles[2] })
+            bundle.Assets[0].Path.ShouldEqual("~/test/3.htm");
+            bundle.Assets[1].Path.ShouldEqual("~/test/1.htm");
+            new HashSet<string>(bundle.Assets.Skip(2).Select(a => a.Path))
+                .SetEquals(new[] { "~/test/0.htm", "~/test/2.htm" })
                 .ShouldBeTrue();
         }
 
@@ -101,7 +101,7 @@ namespace Cassette.HtmlTemplates
 
             var bundle = factory.CreateBundle("~/test", allFiles, bundleDescriptor);
 
-            bundle.Assets[0].SourceFile.FullPath.ShouldEqual("~/test/file.htm");
+            bundle.Assets[0].Path.ShouldEqual("~/test/file.htm");
         }
 
         [Fact]
@@ -155,7 +155,7 @@ namespace Cassette.HtmlTemplates
 
             var bundle = factory.CreateBundle("~", allFiles, bundleDescriptor);
             
-            bundle.Assets.Select(a => a.SourceFile.FullPath)
+            bundle.Assets.Select(a => a.Path)
                 .SequenceEqual(new[] { "~/shared/shared-test1.htm", "~/shared/shared-test2.htm", "~/app/app-test1.htm", "~/app/app-test2.htm" })
                 .ShouldBeTrue();
         }
@@ -173,7 +173,7 @@ namespace Cassette.HtmlTemplates
 
             var bundle = factory.CreateBundle("~", allFiles, bundleDescriptor);
 
-            bundle.Assets.Select(a => a.SourceFile.FullPath)
+            bundle.Assets.Select(a => a.Path)
                 .SequenceEqual(new[] { "~/shared/shared-test2.htm", "~/shared/shared-test1.htm", "~/app/app-test1.htm", "~/app/app-test2.htm" })
                 .ShouldBeTrue();
         }
@@ -189,7 +189,7 @@ namespace Cassette.HtmlTemplates
 
             var bundle = factory.CreateBundle("~", allFiles, bundleDescriptor);
 
-            bundle.Assets.Select(a => a.SourceFile.FullPath)
+            bundle.Assets.Select(a => a.Path)
                 .SequenceEqual(new[] { "~/shared/a.htm", "~/shared/b.htm", "~/c.htm" })
                 .ShouldBeTrue();
         }

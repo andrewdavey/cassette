@@ -44,9 +44,9 @@ namespace Cassette
         }
 
         [Fact]
-        public void SourceFileIsPassedViaConstructor()
+        public void PathIsSourceFileFullPath()
         {
-            asset.SourceFile.ShouldBeSameAs(sourceFile);
+            asset.Path.ShouldBeSameAs(sourceFile.FullPath);
         }
 
         [Fact]

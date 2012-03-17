@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Cassette.IO;
 using Cassette.Configuration;
 
 namespace Cassette.Manifests
@@ -57,7 +56,7 @@ namespace Cassette.Manifests
             get { throw new NotImplementedException(); }
         }
 
-        public IFile SourceFile
+        public string Path
         {
             get { throw new NotImplementedException(); }
         }

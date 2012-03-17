@@ -1,18 +1,26 @@
 ﻿using System;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    public class ConvertFontUrlsToDataUris : AddTransformerToAssets
+    public class ConvertFontUrlsToDataUris : AddTransformerToAssets<StylesheetBundle>
     {
+        readonly Func<string, bool> shouldEmbedUrl;
+
         public ConvertFontUrlsToDataUris()
-            : base(new CssFontToDataUriTransformer(anyUrl => true))
         {
+            shouldEmbedUrl = anyUrl => true;
         }
 
         public ConvertFontUrlsToDataUris(Func<string, bool> shouldEmbedUrl)
-            : base(new CssFontToDataUriTransformer(shouldEmbedUrl))
         {
+            this.shouldEmbedUrl = shouldEmbedUrl;
+        }
+
+        protected override IAssetTransformer CreateAssetTransformer(StylesheetBundle bundle, CassetteSettings settings)
+        {
+            return new CssFontToDataUriTransformer(shouldEmbedUrl, settings.SourceDirectory);
         }
     }
 }

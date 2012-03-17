@@ -1,12 +1,13 @@
 ﻿using Cassette.BundleProcessing;
+using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
-    public class RegisterTemplatesWithJQueryTmpl : AddTransformerToAssets
+    public class RegisterTemplatesWithJQueryTmpl : AddTransformerToAssets<HtmlTemplateBundle>
     {
-        public RegisterTemplatesWithJQueryTmpl(HtmlTemplateBundle bundle)
-            : base(new RegisterTemplateWithJQueryTmpl(bundle))
+        protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
+            return new RegisterTemplateWithJQueryTmpl(bundle);
         }
     }
 }

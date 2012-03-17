@@ -76,6 +76,8 @@
     </Compile>
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleReferenceCollector.cs" />
+    <Compile Include="CompileContext.cs" />
+    <Compile Include="CompileResult.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="Configuration\CompileTimeManifestBundleContainerFactory.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />

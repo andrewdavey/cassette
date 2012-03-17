@@ -457,7 +457,7 @@ namespace Cassette.Configuration
         {
             foreach (var asset in bundle.Assets)
             {
-                Trace.Source.TraceInformation(string.Format("Added asset {0}", asset.SourceFile.FullPath));
+                Trace.Source.TraceInformation(string.Format("Added asset {0}", asset.Path));
             }
         }
 

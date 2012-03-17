@@ -1,4 +1,4 @@
-﻿using Cassette.IO;
+﻿using System.Linq;
 using Jurassic;
 
 namespace Cassette.HtmlTemplates
@@ -13,9 +13,10 @@ namespace Cassette.HtmlTemplates
 
         readonly ScriptEngine scriptEngine;
 
-        public string Compile(string source, IFile sourceFile)
+        public CompileResult Compile(string source, CompileContext context)
         {
-            return scriptEngine.CallGlobalFunction<string>("compile", source);
+            var javascript = scriptEngine.CallGlobalFunction<string>("compile", source);
+            return new CompileResult(javascript, Enumerable.Empty<string>());
         }
     }
 }

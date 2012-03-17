@@ -126,7 +126,7 @@ namespace Cassette.Configuration
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings { Path = "path" });
 
-            bundles["path"].Assets[0].SourceFile.ShouldBeSameAs(file.Object);
+            bundles["path"].Assets[0].Path.ShouldEqual("~/path/file.js");
         }
 
         [Fact]
@@ -189,7 +189,7 @@ namespace Cassette.Configuration
                 FileSearch = fileSearch.Object
             });
 
-            bundles["path"].Assets[0].SourceFile.ShouldBeSameAs(file.Object);
+            bundles["path"].Assets[0].Path.ShouldEqual("~/path/file.js");
         }
 
         [Fact]
@@ -208,7 +208,7 @@ namespace Cassette.Configuration
             });
 
             var bundle = bundles["jquery.js"].ShouldBeType<ExternalScriptBundle>();
-            bundle.Assets[0].SourceFile.ShouldBeSameAs(file.Object);
+            bundle.Assets[0].Path.ShouldEqual("~/jquery.js");
         }
 
         [Fact]

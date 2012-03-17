@@ -7,7 +7,7 @@ namespace Cassette.Scripts
     {
         protected override bool ShouldParseAsset(IAsset asset)
         {
-            return asset.SourceFile.FullPath.EndsWith(".js", StringComparison.OrdinalIgnoreCase);
+            return asset.Path.EndsWith(".js", StringComparison.OrdinalIgnoreCase);
         }
 
         internal override ICommentParser CreateCommentParser()

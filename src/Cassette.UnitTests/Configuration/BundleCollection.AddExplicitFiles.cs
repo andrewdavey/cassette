@@ -22,7 +22,7 @@ namespace Cassette.Configuration
 
                 bundles.Add<ScriptBundle>("~/path", new[] { "~/file1.js" });
 
-                bundles["~/path"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file1.js");
+                bundles["~/path"].Assets[0].Path.ShouldEqual("~/file1.js");
             }
         }
 
@@ -40,8 +40,8 @@ namespace Cassette.Configuration
 
                 bundles.Add<ScriptBundle>("~/path", "~/file1.js", "~/file2.js");
 
-                bundles["~/path"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file1.js");
-                bundles["~/path"].Assets[1].SourceFile.FullPath.ShouldEqual("~/file2.js");
+                bundles["~/path"].Assets[0].Path.ShouldEqual("~/file1.js");
+                bundles["~/path"].Assets[1].Path.ShouldEqual("~/file2.js");
             }
         }
 
@@ -59,8 +59,8 @@ namespace Cassette.Configuration
 
                 bundles.Add<ScriptBundle>("~/path", new[] { "~/file1.js", "~/file2.js" });
 
-                bundles["~/path"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file1.js");
-                bundles["~/path"].Assets[1].SourceFile.FullPath.ShouldEqual("~/file2.js");
+                bundles["~/path"].Assets[0].Path.ShouldEqual("~/file1.js");
+                bundles["~/path"].Assets[1].Path.ShouldEqual("~/file2.js");
             }
         }
 
@@ -94,7 +94,7 @@ namespace Cassette.Configuration
 
                 bundles.Add<ScriptBundle>("~/path", new[] { "file1.js" });
 
-                bundles["~/path"].Assets[0].SourceFile.FullPath.ShouldEqual("~/file1.js");
+                bundles["~/path"].Assets[0].Path.ShouldEqual("~/file1.js");
             }
         }
 
@@ -112,7 +112,7 @@ namespace Cassette.Configuration
 
                 bundles.Add<ScriptBundle>("~/bundle", new[] { "file1.js" });
 
-                bundles["~/bundle"].Assets[0].SourceFile.FullPath.ShouldEqual("~/bundle/file1.js");
+                bundles["~/bundle"].Assets[0].Path.ShouldEqual("~/bundle/file1.js");
             }
         }
 

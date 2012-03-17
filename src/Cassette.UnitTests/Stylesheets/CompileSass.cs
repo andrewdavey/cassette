@@ -21,7 +21,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenACompiler_WhenProcessCalled_ThenCompileAssetTransformerAddedToScssAsset()
         {
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.scss");
+            asset.SetupGet(a => a.Path).Returns("test.scss");
             bundle.Assets.Add(asset.Object);
 
             processor.Process(bundle, new CassetteSettings(""));
@@ -32,7 +32,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenACompiler_WhenProcessCalled_ThenCompileAssetTransformerAddedToSassAsset()
         {
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.sass");
+            asset.SetupGet(a => a.Path).Returns("test.sass");
             bundle.Assets.Add(asset.Object);
 
             processor.Process(bundle, new CassetteSettings(""));
@@ -43,7 +43,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenACompiler_WhenProcessCalled_ThenCompileAssetTransformerNotAddedToCssAsset()
         {
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("test.css");
+            asset.SetupGet(a => a.Path).Returns("test.css");
             bundle.Assets.Add(asset.Object);
 
             processor.Process(bundle, new CassetteSettings(""));

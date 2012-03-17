@@ -116,6 +116,7 @@
     <Compile Include="Configuration\BundleCollection.AddPerIndividualFile.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
+    <Compile Include="FakeFileSystem.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
+    <Compile Include="Scripts\ScriptPipelineExtensions.CompileCoffeeScript.cs" />
     <Compile Include="StubAsset.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\CompileSass.cs" Condition="'$(TargetFrameworkVersion)' == 'v4.0'" />
@@ -228,7 +230,6 @@
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\ScriptBundleFactory.cs" />
     <Compile Include="BundleProcessing\SortAssetsByDependency.cs" />
-    <Compile Include="StubFileSystem.cs" />
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
     <Compile Include="Utilities\Graph.cs" />

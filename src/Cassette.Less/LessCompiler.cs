@@ -12,8 +12,11 @@ namespace Cassette.Stylesheets
 {
     public class LessCompiler : ICompiler
     {
-        public string Compile(string source, IFile sourceFile)
+        List<string> importedFilePaths;
+
+        public CompileResult Compile(string source, CompileContext context)
         {
+            var sourceFile = context.RootDirectory.GetFile(context.SourceFilePath);
             var parser = new Parser
             {
                 Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory))
@@ -21,6 +24,9 @@ namespace Cassette.Stylesheets
             var errorLogger = new ErrorLogger();
             var engine = new LessEngine(parser, errorLogger, false);
             
+            importedFilePaths = new List<string>();
+            // TODO: Ensure `@import`ed .less files get add to importedFilePaths
+
             var css = engine.TransformToCss(source, sourceFile.FullPath);
 
             if (errorLogger.HasErrors)
@@ -29,7 +35,7 @@ namespace Cassette.Stylesheets
             }
             else
             {
-                return css;
+                return new CompileResult(css, importedFilePaths);
             }
         }
 

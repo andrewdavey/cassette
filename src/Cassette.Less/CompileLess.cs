@@ -17,9 +17,9 @@ namespace Cassette.Stylesheets
         {
             foreach (var asset in bundle.Assets)
             {
-                if (asset.SourceFile.FullPath.EndsWith(".less", StringComparison.OrdinalIgnoreCase))
+                if (asset.Path.EndsWith(".less", StringComparison.OrdinalIgnoreCase))
                 {
-                    asset.AddAssetTransformer(new CompileAsset(lessCompiler));
+                    asset.AddAssetTransformer(new CompileAsset(lessCompiler, settings.SourceDirectory));
                 }
             }
         }

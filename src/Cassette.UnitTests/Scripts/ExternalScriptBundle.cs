@@ -103,7 +103,7 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle(Url, "~/test", "condition") { Processor = new ScriptPipeline() };
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.SetupGet(a => a.Path).Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
             var urlGenerator = new Mock<IUrlGenerator>();

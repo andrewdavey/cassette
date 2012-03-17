@@ -81,7 +81,7 @@ namespace Cassette.Configuration
 
         internal bool AllowRemoteDiagnostics { get; set; }
 
-        internal string Version { get; set; }
+        internal string Version { get; private set; }
 
         public void SetDefaultBundleProcessor<T>(IBundleProcessor<T> processor)
             where T : Bundle

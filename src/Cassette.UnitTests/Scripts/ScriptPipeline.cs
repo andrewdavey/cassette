@@ -1,10 +1,9 @@
 ﻿using System.IO;
 using Cassette.BundleProcessing;
-using Cassette.IO;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
@@ -76,13 +75,10 @@ namespace Cassette.Scripts
         static Mock<IAsset> StubCoffeeScriptAsset()
         {
             var asset = new Mock<IAsset>();
-            var file = new Mock<IFile>();
-            file.SetupGet(f => f.FullPath)
-                .Returns("~/test.coffee");
             asset.Setup(f => f.OpenStream())
                 .Returns(Stream.Null);
-            asset.SetupGet(a => a.SourceFile)
-                .Returns(file.Object);
+            asset.SetupGet(a => a.Path)
+                .Returns("~/test.coffee");
             return asset;
         }
     }
