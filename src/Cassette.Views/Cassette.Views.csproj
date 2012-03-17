@@ -59,7 +59,6 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Assets.cs" />
     <Compile Include="Bundles.cs" />
     <Compile Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Include="HtmlString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
