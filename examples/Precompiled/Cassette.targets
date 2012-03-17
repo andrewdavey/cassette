@@ -5,8 +5,15 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">    
     <UsingTask AssemblyFile="$(OutputPath)\Cassette.MSBuild.dll" TaskName="CreateBundles"/>
-    <Target Name="Bundle" AfterTargets="Build">
+    <Target Name="Bundle"> 
         <MakeDir Directories="App_Data"/>
         <CreateBundles Assemblies="$(OutputPath)$(AssemblyName).dll" Output="App_Data\cassette.xml"/>
     </Target>
+
+    <!-- 
+    When using the Cassette.MSBuild nuget package, the target will include the AfterTargets attribute.
+    <Target Name="Bundle" AfterTargets="Build">
+        ...
+    See Precompiled.csproj for why we're calling this targets file in a different way.
+    -->
 </Project>

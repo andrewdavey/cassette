@@ -90,7 +90,7 @@
     <ProjectReference Include="..\..\src\Cassette.MSBuild\Cassette.MSBuild.csproj">
       <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
       <Name>Cassette.MSBuild</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
@@ -113,13 +113,28 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
+  </Target>-->
+  
+  <!--
+  *** Generate Cassette Bundles ***
+
+  Usually, we can do something simple like:
+  <Import Project="Cassette.targets" />
+
+  But for this example, that would lock Cassette.MSBuild.dll, which means the
+  Cassette.MSBuild project cannot be built again next time. We have a project
+  reference instead of a plain DLL reference.
+
+  So instead we call msbuild.exe as a separate process:
+  -->
   <Target Name="AfterBuild">
-  </Target> -->
+      <Exec Command="$(MSBuildToolsPath)\msbuild.exe /target:Bundle &quot;/p:OutputPath=$(OutputPath);AssemblyName=$(AssemblyName)&quot; &quot;Cassette.targets&quot;"/>
+  </Target> 
+
+
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
-  <Import Project="Cassette.targets" />
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
