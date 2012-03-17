@@ -6,16 +6,19 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
 using System.Diagnostics;
+using Cassette.Configuration;
 
 namespace Cassette.Web
 {
     class RawFileRequestHandler : IHttpHandler
     {
         readonly IEnumerable<Bundle> bundles;
+        readonly CassetteSettings settings;
 
-        public RawFileRequestHandler(RequestContext requestContext, IEnumerable<Bundle> bundles)
+        public RawFileRequestHandler(RequestContext requestContext, IEnumerable<Bundle> bundles, CassetteSettings settings)
         {
             this.bundles = bundles;
+            this.settings = settings;
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
             request = requestContext.HttpContext.Request;
@@ -71,6 +74,12 @@ namespace Cassette.Web
         }
 
         bool AllowGet(string filename)
+        {
+            return IsRawFileReferencedByAsset(filename) ||
+                   settings.CanRequestRawFile(filename);
+        }
+
+        bool IsRawFileReferencedByAsset(string filename)
         {
             var rawFileReferenceFinder = new RawFileReferenceFinder(filename);
             foreach (var bundle in bundles)

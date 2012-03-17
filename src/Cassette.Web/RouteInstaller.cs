@@ -91,7 +91,7 @@ namespace Cassette.Web
         {
             var url = routePrefix + "/file/{*path}";
             var handler = new DelegateRouteHandler(
-                requestContext => new RawFileRequestHandler(requestContext, container.Application.Bundles)
+                requestContext => new RawFileRequestHandler(requestContext, container.Application.Bundles, container.Application.Settings)
             );
             Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
             InsertRouteIntoTable(url, handler);
