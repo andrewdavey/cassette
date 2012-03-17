@@ -44,5 +44,20 @@ namespace Cassette.Configuration
 
             settings.GetDefaultBundleProcessor<ScriptBundle>().ShouldBeSameAs(processor);
         }
+
+        [Fact]
+        public void ByDefaultDenyAllRawFileRequests()
+        {
+            var settings = new CassetteSettings("");
+            settings.CanRequestRawFile("~/file.png").ShouldBeFalse();
+        }
+
+        [Fact]
+        public void GivenAllowRawFileRequestPredicate_ThenAllowRequest()
+        {
+            var settings = new CassetteSettings("");
+            settings.AllowRawFileRequest(path => path == "~/file.png");
+            settings.CanRequestRawFile("~/file.png").ShouldBeTrue();
+        }
     }
 }

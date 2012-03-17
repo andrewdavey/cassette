@@ -99,6 +99,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
@@ -218,6 +219,7 @@
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
+    <Compile Include="TestableApplication.cs" />
     <Compile Include="TestableBundle.cs" />
     <Compile Include="Views\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
@@ -233,6 +235,7 @@
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
     <Compile Include="Utilities\Graph.cs" />
+    <Compile Include="Web\UrlHelper.CassetteFile.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />
     <Compile Include="Web\CassetteApplicationContainerFactory.cs" />

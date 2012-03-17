@@ -4,12 +4,14 @@ using System.IO;
 using System.Security.Cryptography;
 using Moq;
 using Xunit;
+using Cassette.Configuration;
 
 namespace Cassette.Web
 {
     public class RawFileRequestHandler_Tests
     {
         readonly IEnumerable<Bundle> bundles;
+        readonly CassetteSettings settings;
 
         public RawFileRequestHandler_Tests()
         {
@@ -23,6 +25,8 @@ namespace Cassette.Web
             });
             bundle.Assets.Add(asset.Object);
             bundles = new[] { bundle };
+
+            settings = new CassetteSettings("");
         }
 
         [Fact]
@@ -35,12 +39,10 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
-
                 http.Get("~/test_hash.png");
-
 
                 string expectedETag;
                 using (var hasher = SHA1.Create())
@@ -61,7 +63,7 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
                 string eTag;
@@ -87,7 +89,7 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
                 http.Get("~/test_hash.png");
@@ -95,9 +97,8 @@ namespace Cassette.Web
             }
         }
 
-
         [Fact]
-        public void WhenRequestFileThatIsNoReferencedByAsset_ThenDoNotReturnFile()
+        public void WhenRequestFileThatIsNoReferencedByAssetAndNotExplicityAllowed_ThenDoNotReturnFile()
         {
             using (var temp = new TempDirectory())
             using (var http = new HttpTestHarness())
@@ -106,13 +107,34 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles));
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
                 http.Server.Setup(s => s.MapPath("~/protected.png")).Returns(filename);
 
                 http.Get("~/protected_hash.png");
 
                 http.Response.Verify(r => r.WriteFile(It.IsAny<string>()), Times.Never());
                 http.Response.VerifySet(r => r.StatusCode = 404);
+            }
+        }
+
+        [Fact]
+        public void WhenRequestFileThatIsNoReferencedByAssetButIsExplicityAllowed_ThenReturnFile()
+        {
+            using (var temp = new TempDirectory())
+            using (var http = new HttpTestHarness())
+            {
+                var filename = Path.Combine(temp, "image.png");
+                var content = new byte[] { 1, 2, 3 };
+                File.WriteAllBytes(filename, content);
+                
+                settings.AllowRawFileRequest(path => path == "~/image.png");
+
+                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
+                http.Server.Setup(s => s.MapPath("~/image.png")).Returns(filename);
+
+                http.Get("~/image_hash.png");
+
+                http.Response.Verify(r => r.WriteFile(filename));
             }
         }
     }

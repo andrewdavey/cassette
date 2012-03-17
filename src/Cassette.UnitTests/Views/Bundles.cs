@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Cassette.Configuration;
 using Cassette.HtmlTemplates;
-using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
@@ -284,39 +281,6 @@ namespace Cassette.Views
             var returnedUrls = Bundles.GetReferencedBundleUrls<TestableBundle>();
 
             returnedUrls.ShouldEqual(new[] { "/asset1", "/asset2" });
-        }
-
-        class TestableApplication : CassetteApplicationBase
-        {
-            readonly IReferenceBuilder referenceBuilder;
-            readonly IBundleContainer bundleContainer;
-
-            public TestableApplication(IUrlGenerator urlGenerator, IReferenceBuilder referenceBuilder, IBundleContainer bundleContainer)
-                : base(new BundleContainer(Enumerable.Empty<Bundle>()), new CassetteSettings("")
-                {
-                    SourceDirectory = Mock.Of<IDirectory>(),
-                    IsDebuggingEnabled = true,
-                    UrlGenerator = urlGenerator
-                })
-            {
-                this.referenceBuilder = referenceBuilder;
-                this.bundleContainer = bundleContainer;
-            }
-
-            public override T FindBundleContainingPath<T>(string path)
-            {
-                return bundleContainer.FindBundlesContainingPath(path).OfType<T>().FirstOrDefault();
-            }
-            
-            protected override IReferenceBuilder GetOrCreateReferenceBuilder(Func<IReferenceBuilder> create)
-            {
-                return referenceBuilder;
-            }
-
-            protected override IPlaceholderTracker GetPlaceholderTracker()
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
@@ -170,6 +171,18 @@ namespace Cassette.Configuration
                 configuration.Configure(bundles, this);
             }
             return bundles;
+        }
+
+        internal bool CanRequestRawFile(string filePath)
+        {
+            return allowPathPredicates.Any(predicate => predicate(filePath));
+        }
+
+        readonly List<Func<string, bool>> allowPathPredicates = new List<Func<string, bool>>();
+
+        public void AllowRawFileRequest(Func<string, bool> pathIsAllowed)
+        {
+            allowPathPredicates.Add(pathIsAllowed);
         }
     }
 }
