@@ -1,0 +1,2 @@
+This dotless.Core.dll is from a fork of dotless:
+https://github.com/andrewdavey/dotless/tree/separate-aspnet

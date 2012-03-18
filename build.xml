@@ -14,14 +14,14 @@
             <Tests Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
         <PropertyGroup>
-            <OutputPath>..\..\build\bin</OutputPath>
+            <OutputPath>..\..\build\bin\</OutputPath>
         </PropertyGroup>
 
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
-            Properties="Configuration=$(Configuration)$(FX35Suffix);OutputPath=$(OutputPath)\lib35"/>
+            Properties="Configuration=$(Configuration)$(FX35Suffix);OutputPath=$(OutputPath)lib35\"/>
         <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
-            Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)\lib40"/>
+            Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)lib40\"/>
 
     </Target>
 
