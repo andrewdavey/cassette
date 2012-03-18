@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.IO;
+using System.Text;
+using Cassette.Utilities;
 
 namespace Cassette
 {
     public class FakeFileSystem : IEnumerable, IDirectory
     {
         readonly Dictionary<string, IFile> files;
+        FakeFileSystem root;
 
         public FakeFileSystem()
         {
@@ -24,7 +27,7 @@ namespace Cassette
 
         public void Add(string filename)
         {
-            Add(filename, null);
+            Add(filename, "");
         }
 
         public void Add(string filename, byte[] bytes)
@@ -35,6 +38,11 @@ namespace Cassette
                 Content = bytes
             };
             files.Add(filename, file);
+        }
+
+        public void Add(string filename, string content)
+        {
+            Add(filename, Encoding.UTF8.GetBytes(content));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -51,17 +59,28 @@ namespace Cassette
 
         public IFile GetFile(string filename)
         {
-            if (!filename.StartsWith("~"))
+            if (filename.StartsWith("~"))
             {
-                filename = FullPath + "/" + filename;
-            }
-            if (files.ContainsKey(filename))
-            {
-                return files[filename];
+                if (root != null)
+                {
+                    return root.GetFile(filename);
+                }
+                else
+                {
+                    if (files.ContainsKey(filename))
+                    {
+                        return files[filename];
+                    }
+                    else
+                    {
+                        return new NonExistentFile(filename);
+                    }
+                }
             }
             else
             {
-                return new NonExistentFile(filename);
+                filename = PathUtilities.NormalizePath(FullPath + "/" + filename);
+                return GetFile(filename);
             }
         }
 
@@ -69,7 +88,8 @@ namespace Cassette
         {
             return new FakeFileSystem(files.Where(f => f.Key.StartsWith(path)))
             {
-                FullPath = path
+                FullPath = path,
+                root = root ?? this
             };
         }
 

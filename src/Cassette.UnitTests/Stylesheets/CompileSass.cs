@@ -1,4 +1,5 @@
-﻿using Cassette.BundleProcessing;
+﻿#if !NET35
+using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Moq;
 using Xunit;
@@ -52,3 +53,4 @@ namespace Cassette.Stylesheets
         }
     }
 }
+#endif
