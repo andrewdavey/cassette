@@ -7,17 +7,20 @@ using dotless.Core.Importers;
 using dotless.Core.Input;
 using dotless.Core.Loggers;
 using dotless.Core.Parser;
+#if NET35
+using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette.Stylesheets
 {
     public class LessCompiler : ICompiler
     {
-        HashSet<string> importedFilePaths;
+        HashedSet<string> importedFilePaths;
 
         public CompileResult Compile(string source, CompileContext context)
         {
             var sourceFile = context.RootDirectory.GetFile(context.SourceFilePath);
-            importedFilePaths = new HashSet<string>();
+            importedFilePaths = new HashedSet<string>();
             var parser = new Parser
             {
                 Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory, importedFilePaths))
@@ -92,9 +95,9 @@ namespace Cassette.Stylesheets
         class CassetteLessFileReader : IFileReader
         {
             readonly IDirectory directory;
-            readonly ISet<string> importFilePaths;
+            readonly HashedSet<string> importFilePaths;
 
-            public CassetteLessFileReader(IDirectory directory, ISet<string> importFilePaths)
+            public CassetteLessFileReader(IDirectory directory, HashedSet<string> importFilePaths)
             {
                 this.directory = directory;
                 this.importFilePaths = importFilePaths;

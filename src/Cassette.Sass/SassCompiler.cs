@@ -27,7 +27,7 @@ namespace Cassette.Stylesheets
         dynamic scssOption;
         bool initialized;
         readonly object _lock = new object();
-        List<string> dependentFileList;
+        List<string> importedFilePaths;
         IDirectory rootDirectory;
 
         public CompileResult Compile(string source, CompileContext context)
@@ -39,13 +39,12 @@ namespace Cassette.Stylesheets
                 Initialize();
 
                 StartRecordingOpenedFiles();
-                dependentFileList.Add(sourceFile.FullPath);
 
                 try
                 {
                     var compilerOptions = GetCompilerOptions(sourceFile);
                     var css = (string)sassCompiler.compile(source, compilerOptions);
-                    return new CompileResult(css, dependentFileList);
+                    return new CompileResult(css, importedFilePaths);
                 }
                 catch (Exception e)
                 {
@@ -68,12 +67,12 @@ namespace Cassette.Stylesheets
 
         void StartRecordingOpenedFiles()
         {
-            dependentFileList = new List<string>();
+            importedFilePaths = new List<string>();
             pal.OnOpenInputFileStream = accessedFile =>
             {
                 if (!accessedFile.Contains(".sass-cache"))
                 {
-                    dependentFileList.Add(accessedFile);
+                    importedFilePaths.Add(accessedFile);
                 }
             };
         }

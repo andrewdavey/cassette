@@ -63,21 +63,20 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenScssThatImportsOtherScssFile_WhenCompile_ThenReferencedFilesContainsBothPaths()
+        public void GivenScssThatImportsOtherScssFile_WhenCompile_ThenImportedFilePathsContainsTheOtherScssFile()
         {
             var other = new Mock<IFile>();
             other.SetupGet(f => f.Exists).Returns(true);
+            other.SetupGet(f => f.FullPath).Returns("~/other.scss");
             other.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
                 .Returns(() => "p { color: red; }".AsStream());
-            directory.Setup(d => d.GetFile("other.scss"))
-                .Returns(other.Object);
+            directory.Setup(d => d.GetFile("other.scss")).Returns(other.Object);
 
             var result = compiler.Compile("@import \"other.scss\";", compileContext);
 
             result.ImportedFilePaths.ToArray().ShouldEqual(new[]
             {
-                "~/test.scss",
-                "./other.scss"
+                "~/other.scss"
             });
         }
     }
