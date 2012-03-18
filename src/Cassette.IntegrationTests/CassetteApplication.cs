@@ -205,6 +205,7 @@ document.write(unescape('%3Cscript src=""/_cassette/scriptbundle/scripts/bundle-
                 IsDebuggingEnabled = isDebuggingEnabled
             };
             var bundles = new BundleCollection(settings);
+            ExecuteInternalConfiguration(settings, bundles);
             configure(bundles);
             foreach (var bundle in bundles)
             {
@@ -219,6 +220,23 @@ document.write(unescape('%3Cscript src=""/_cassette/scriptbundle/scripts/bundle-
             container.Setup(c => c.Application).Returns(() => application);
             new RouteInstaller(container.Object, "_cassette").InstallRoutes(routes);
             return application;
+        }
+
+        static void ExecuteInternalConfiguration(CassetteSettings settings, BundleCollection bundles)
+        {
+            var configFactory = new AssemblyScanningCassetteConfigurationFactory(new[]
+            {
+                typeof(Bundle).Assembly,
+                typeof(CoffeeScriptConfiguration).Assembly,
+                typeof(LessConfiguration).Assembly
+#if !NET35
+                ,typeof(SassConfiguration).Assembly
+#endif
+            });
+            foreach (var config in configFactory.CreateCassetteConfigurations())
+            {
+                config.Configure(bundles, settings);
+            }
         }
 
         void RemoveExistingCache()

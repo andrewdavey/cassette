@@ -11,22 +11,22 @@ namespace Cassette.Configuration
 
         protected FileSearch_Tests()
         {
-            FileSearch = GetDefaultInitializer();
+            FileSearch = GetDefaultFileSearch();
         }
 
-        static FileSearch GetDefaultInitializer()
+        static FileSearch GetDefaultFileSearch()
         {
             var settings = new CassetteSettings("");
-            return settings.DefaultFileSearches[typeof(T)] as FileSearch;
+            return settings.GetDefaultFileSearch<T>() as FileSearch;
         }
     }
 
-    public class FileSourceConfiguration_ScriptBundle_Tests : FileSearch_Tests<Scripts.ScriptBundle>
+    public class FileSearchConfiguration_ScriptBundle_Tests : FileSearch_Tests<Scripts.ScriptBundle>
     {
         [Fact]
-        public void FilePatternIsJsAndCoffee()
+        public void FilePatternIsJs()
         {
-            FileSearch.Pattern.ShouldEqual("*.js;*.coffee");
+            FileSearch.Pattern.ShouldEqual("*.js");
         }
 
         [Fact]
@@ -46,9 +46,9 @@ namespace Cassette.Configuration
     public class FileSourceConfiguration_StylesheetBundle_Tests : FileSearch_Tests<Stylesheets.StylesheetBundle>
     {
         [Fact]
-        public void FilePatternIsCssAndLess()
+        public void FilePatternIsCss()
         {
-            FileSearch.Pattern.ShouldEqual("*.css;*.less;*.scss;*.sass");
+            FileSearch.Pattern.ShouldEqual("*.css");
         }
 
         [Fact]
@@ -58,12 +58,12 @@ namespace Cassette.Configuration
         }
     }
 
-    public class FileSourceConfiguration_HtmlTemplateBundle_Tests : FileSearch_Tests<HtmlTemplates.HtmlTemplateBundle>
+    public class FileSearchConfiguration_HtmlTemplateBundle_Tests : FileSearch_Tests<HtmlTemplates.HtmlTemplateBundle>
     {
         [Fact]
-        public void FilePatternIsHtmHtmlJstTmplMustache()
+        public void FilePatternIsHtmAndHtml()
         {
-            FileSearch.Pattern.ShouldEqual("*.htm;*.html;*.jst;*.tmpl;*.mustache");
+            FileSearch.Pattern.ShouldEqual("*.htm;*.html");
         }
 
         [Fact]

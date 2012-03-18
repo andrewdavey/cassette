@@ -86,6 +86,7 @@
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />
+    <Compile Include="InternalCassetteConfigurationAttribute.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
     <Compile Include="Manifests\AssetReferenceManifest.cs" />
     <Compile Include="Manifests\CassetteManifestCache.cs" />

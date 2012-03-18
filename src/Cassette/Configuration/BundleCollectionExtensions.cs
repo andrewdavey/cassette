@@ -67,7 +67,7 @@ namespace Cassette.Configuration
             var source = bundleCollection.Settings.SourceDirectory;
             if (source.DirectoryExists(applicationRelativePath))
             {
-                fileSearch = fileSearch ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+                fileSearch = fileSearch ?? bundleCollection.Settings.GetDefaultFileSearch<T>();
                 var directory = source.GetDirectory(applicationRelativePath);
                 var allFiles = fileSearch.FindFiles(directory);
                 bundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, allFiles, directory);
@@ -252,7 +252,7 @@ namespace Cassette.Configuration
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for each subdirectory of {1}", typeof(T).Name, applicationRelativePath));
 
-            fileSearch = fileSearch ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+            fileSearch = fileSearch ?? bundleCollection.Settings.GetDefaultFileSearch<T>();
 
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var parentDirectory = bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath);
@@ -317,7 +317,7 @@ namespace Cassette.Configuration
 
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             var sourceDirectory = bundleCollection.Settings.SourceDirectory;
-            var defaultFileSearch = bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+            var defaultFileSearch = bundleCollection.Settings.GetDefaultFileSearch<T>();
             IEnumerable<IFile> files;
             BundleDescriptor bundleDescriptor;
 
@@ -438,7 +438,7 @@ namespace Cassette.Configuration
                 ? bundleCollection.Settings.SourceDirectory
                 : bundleCollection.Settings.SourceDirectory.GetDirectory(directoryPath);
 
-            fileSearch = fileSearch ?? bundleCollection.Settings.DefaultFileSearches[typeof(T)];
+            fileSearch = fileSearch ?? bundleCollection.Settings.GetDefaultFileSearch<T>();
             var files = fileSearch.FindFiles(directory);
             var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
             foreach (var file in files)
