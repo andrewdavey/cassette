@@ -41,17 +41,11 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void WhenCompileScss_ThenReferencedFilesContainsTheSourceFile()
-        {
-            var result = compiler.Compile("$x: red; p { color: $x; }", compileContext);
-            result.ImportedFilePaths.ShouldEqual(new[] { "~/test.scss" });
-        }
-
-        [Fact]
         public void GivenScssThatImportsOtherScssFile_WhenCompile_ThenCssReturned()
         {
             var other = new Mock<IFile>();
             other.SetupGet(f => f.Exists).Returns(true);
+            other.SetupGet(f => f.FullPath).Returns("~/other.scss");
             other.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
                 .Returns(() => "p { color: red; }".AsStream());
             directory.Setup(d => d.GetFile("other.scss"))

@@ -27,12 +27,29 @@ namespace Cassette.Stylesheets
             };
             var errorLogger = new ErrorLogger();
             var engine = new LessEngine(parser, errorLogger, false);
-            
-            var css = engine.TransformToCss(source, sourceFile.FullPath);
+
+            string css;
+            try
+            {
+                css = engine.TransformToCss(source, sourceFile.FullPath);
+            }
+            catch (Exception ex)
+            {
+                throw new LessCompileException(
+                    string.Format("Error compiling {0}{1}{2}", context.SourceFilePath, Environment.NewLine, ex.Message),
+                    ex
+                );
+            }
 
             if (errorLogger.HasErrors)
             {
-                throw new LessCompileException(errorLogger.ErrorMessage);
+                var exceptionMessage = string.Format(
+                    "Error compiling {0}{1}{2}",
+                    context.SourceFilePath,
+                    Environment.NewLine,
+                    errorLogger.ErrorMessage
+                );
+                throw new LessCompileException(exceptionMessage);
             }
             else
             {
