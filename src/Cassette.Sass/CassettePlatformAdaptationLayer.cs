@@ -39,8 +39,9 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
-                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
-                return getDirectory().GetFile(path.Substring(2)).OpenRead();
+                var file = getDirectory().GetFile(path.Substring(2));
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(file.FullPath);
+                return file.OpenRead();
             }
             else
             {
@@ -52,8 +53,9 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
-                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
-                return getDirectory().GetFile(path.Substring(2)).Open(mode, access, share);
+                var file = getDirectory().GetFile(path.Substring(2));
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(file.FullPath);
+                return file.Open(mode, access, share);
             }
             else
             {
@@ -65,8 +67,9 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
-                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
-                return getDirectory().GetFile(path.Substring(2)).Open(mode, access, share);
+                var file = getDirectory().GetFile(path.Substring(2));
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(file.FullPath);
+                return file.Open(mode, access, share);
             }
             else
             {
