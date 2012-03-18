@@ -94,8 +94,7 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  -->
   <Target Name="AfterBuild">
-      <Exec Command="..\..\tools\ilrepack.exe /internalize /out:$(OutputPath)Cassette.Less.dll $(OutputPath)Cassette.Less.dll $(OutputPath)dotless.Core.dll"/>
   </Target>
+  -->
 </Project>
