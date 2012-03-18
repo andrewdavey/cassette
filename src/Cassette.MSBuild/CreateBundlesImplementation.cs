@@ -19,8 +19,7 @@ namespace Cassette.MSBuild
             configurations = configurationFactory.CreateCassetteConfigurations();
             settings = new CassetteSettings("")
             {
-                SourceDirectory = sourceDirectory,
-                UrlModifier = new UrlPlaceholderWrapper()
+                SourceDirectory = sourceDirectory
             };
             bundles = new BundleCollection(settings);
         }
@@ -28,6 +27,7 @@ namespace Cassette.MSBuild
         public void Execute()
         {
             Configure();
+            AssignUrlModifier();
             AssignUrlGeneratorIfNull();
             ProcessBundles();
             WriteManifest();
@@ -39,6 +39,13 @@ namespace Cassette.MSBuild
             {
                 configuration.Configure(bundles, settings);
             }
+        }
+
+        void AssignUrlModifier()
+        {
+            // The URLs saved in the manifest data MUST be wrapped using a special placeholder.
+            // This is so Cassette can parse them at runtime and call the application's own IUrlModifier.
+            settings.UrlModifier = new UrlPlaceholderWrapper();
         }
 
         void AssignUrlGeneratorIfNull()

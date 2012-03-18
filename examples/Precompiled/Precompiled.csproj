@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CassetteConfiguration.cs" />
+    <Compile Include="CdnUrlModifier.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -114,7 +115,6 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  
   <!--
   *** Generate Cassette Bundles ***
 
@@ -128,10 +128,8 @@
   So instead we call msbuild.exe as a separate process:
   -->
   <Target Name="AfterBuild">
-      <Exec Command="$(MSBuildToolsPath)\msbuild.exe /target:Bundle &quot;/p:OutputPath=$(OutputPath);AssemblyName=$(AssemblyName)&quot; &quot;Cassette.targets&quot;"/>
-  </Target> 
-
-
+    <Exec Command="$(MSBuildToolsPath)\msbuild.exe /target:Bundle &quot;/p:OutputPath=$(OutputPath);AssemblyName=$(AssemblyName)&quot; &quot;Cassette.targets&quot;" />
+  </Target>
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
