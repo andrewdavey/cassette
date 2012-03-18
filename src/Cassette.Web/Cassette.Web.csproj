@@ -99,6 +99,7 @@
     <None Include="Cassette.Web.symbols.nutrans">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Views.Web.config.transform" />
     <None Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>
