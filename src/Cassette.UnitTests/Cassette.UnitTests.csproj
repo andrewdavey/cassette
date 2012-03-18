@@ -108,6 +108,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyScanningCassetteConfigurationFactory.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="ConditionalRenderer.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Manifests\BundleManifestBuilder.cs" />
     <Compile Include="MSBuild\CreateBundlesImplementation.cs" />
     <Compile Include="MSBuild\UrlPlaceholderWrapper.cs" />
+    <Compile Include="Scripts\ExtensionConfigurationTests.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifestWriter.cs" />

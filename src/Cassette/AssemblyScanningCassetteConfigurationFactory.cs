@@ -24,6 +24,7 @@ namespace Cassette
             // Scan all assemblies for implementations of the interface and create instances.
             return from assembly in applicationAssemblies
                    from type in GetConfigurationTypes(assembly)
+                   orderby type.GetCustomAttributes(typeof(InternalCassetteConfigurationAttribute), false).Length == 1 ? 0 : 1
                    select CreateConfigurationInstance(type);
         }
 

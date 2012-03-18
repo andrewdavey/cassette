@@ -71,6 +71,7 @@
     <Compile Include="ParseSassReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SassCompiler.cs" />
+    <Compile Include="SassConfiguration.cs" />
     <Compile Include="StylesheetPipelineExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

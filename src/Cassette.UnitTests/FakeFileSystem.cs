@@ -105,7 +105,10 @@ namespace Cassette
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
-            throw new System.NotImplementedException();
+            var extensions = searchPattern.Split(';').Select(e => e.Substring(1)).ToArray();
+            return files.Values.Where(
+                file => extensions.Contains(Path.GetExtension(file.FullPath))
+            );
         }
     }
 
