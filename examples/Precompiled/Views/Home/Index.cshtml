@@ -39,7 +39,7 @@
             
         <h2>Important CassetteConfiguration Note</h2>
         <p>The application's <code>CassetteConfiguration</code> is used at both compile-time and run-time.</p>
-        <p>However, at runtime the bundles will be added from the manifest, so you MUST NOT try to add them in the configuration. Use the follow code to handle this scenario:</p>
+        <p>However, at runtime the bundles will be added from the manifest, so you MUST NOT try to add them in the configuration. Use the following code to handle this scenario:</p>
         <pre>public class CassetteConfiguration : ICassetteConfiguration
 {
     public void Configure(BundleCollection bundles, CassetteSettings settings)
