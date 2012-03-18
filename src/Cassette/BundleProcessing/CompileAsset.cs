@@ -22,16 +22,34 @@ namespace Cassette.BundleProcessing
             {
                 using (var input = new StreamReader(openSourceStream()))
                 {
-                    var context = new CompileContext
-                    {
-                        SourceFilePath = asset.Path,
-                        RootDirectory = rootDirectory
-                    };
-                    var compileResult = compiler.Compile(input.ReadToEnd(), context);
-                    // TODO: for each compileResource.ImportedFilePaths -> asset.RawFileReference
+                    var compileResult = Compile(asset, input);
+                    AddRawFileReferenceForEachImportedFile(asset, compileResult);
                     return compileResult.Output.AsStream();
                 }
             };
+        }
+
+        CompileResult Compile(IAsset asset, StreamReader input)
+        {
+            var context = CreateCompileContext(asset);
+            return compiler.Compile(input.ReadToEnd(), context);
+        }
+
+        CompileContext CreateCompileContext(IAsset asset)
+        {
+            return new CompileContext
+            {
+                SourceFilePath = asset.Path,
+                RootDirectory = rootDirectory
+            };
+        }
+
+        void AddRawFileReferenceForEachImportedFile(IAsset asset, CompileResult compileResult)
+        {
+            foreach (var importedFilePath in compileResult.ImportedFilePaths)
+            {
+                asset.AddRawFileReference(importedFilePath);
+            }
         }
     }
 }
