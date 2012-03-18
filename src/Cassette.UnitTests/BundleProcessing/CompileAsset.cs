@@ -11,7 +11,7 @@ namespace Cassette.BundleProcessing
     public class CompileAsset_Tests
     {
         [Fact]
-        public void TransformCallsLessCompiler()
+        public void TransformCallsCompiler()
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("test.less");
