@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET35
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Web.Mvc;
@@ -84,3 +85,4 @@ namespace Cassette.Web
         }
     }
 }
+#endif
