@@ -12,21 +12,19 @@ namespace Cassette.Stylesheets
 {
     public class LessCompiler : ICompiler
     {
-        List<string> importedFilePaths;
+        HashSet<string> importedFilePaths;
 
         public CompileResult Compile(string source, CompileContext context)
         {
             var sourceFile = context.RootDirectory.GetFile(context.SourceFilePath);
+            importedFilePaths = new HashSet<string>();
             var parser = new Parser
             {
-                Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory))
+                Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory, importedFilePaths))
             };
             var errorLogger = new ErrorLogger();
             var engine = new LessEngine(parser, errorLogger, false);
             
-            importedFilePaths = new List<string>();
-            // TODO: Ensure `@import`ed .less files get add to importedFilePaths
-
             var css = engine.TransformToCss(source, sourceFile.FullPath);
 
             if (errorLogger.HasErrors)
@@ -94,15 +92,19 @@ namespace Cassette.Stylesheets
         class CassetteLessFileReader : IFileReader
         {
             readonly IDirectory directory;
+            readonly ISet<string> importFilePaths;
 
-            public CassetteLessFileReader(IDirectory directory)
+            public CassetteLessFileReader(IDirectory directory, ISet<string> importFilePaths)
             {
                 this.directory = directory;
+                this.importFilePaths = importFilePaths;
             }
 
             public string GetFileContents(string fileName)
             {
-                return directory.GetFile(fileName).OpenRead().ReadToEnd();
+                var file = directory.GetFile(fileName);
+                importFilePaths.Add(file.FullPath);
+                return file.OpenRead().ReadToEnd();
             }
 
             public bool DoesFileExist(string fileName)
