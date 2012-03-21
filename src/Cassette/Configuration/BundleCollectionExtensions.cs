@@ -62,12 +62,13 @@ namespace Cassette.Configuration
             Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, applicationRelativePath));
 
             T bundle;
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var defaults = bundleCollection.Settings.GetDefaults<T>();
+            var bundleFactory = defaults.BundleFactory;
             
             var source = bundleCollection.Settings.SourceDirectory;
             if (source.DirectoryExists(applicationRelativePath))
             {
-                fileSearch = fileSearch ?? bundleCollection.Settings.GetDefaultFileSearch<T>();
+                fileSearch = fileSearch ?? defaults.FileSearch;
                 var directory = source.GetDirectory(applicationRelativePath);
                 var allFiles = fileSearch.FindFiles(directory);
                 bundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, allFiles, directory);
@@ -139,7 +140,8 @@ namespace Cassette.Configuration
                                 : bundleCollection.Settings.SourceDirectory;
             var files = assetFilenames.Select(directory.GetFile);
 
-            var factory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var defaults = bundleCollection.Settings.GetDefaults<T>();
+            var factory = defaults.BundleFactory;
 
             var bundle = factory.CreateBundle(
                 applicationRelativePath,
@@ -252,9 +254,10 @@ namespace Cassette.Configuration
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for each subdirectory of {1}", typeof(T).Name, applicationRelativePath));
 
-            fileSearch = fileSearch ?? bundleCollection.Settings.GetDefaultFileSearch<T>();
+            var defaults = bundleCollection.Settings.GetDefaults<T>();
+            fileSearch = fileSearch ?? defaults.FileSearch;
 
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var bundleFactory = defaults.BundleFactory;
             var parentDirectory = bundleCollection.Settings.SourceDirectory.GetDirectory(applicationRelativePath);
 
             if (!excludeTopLevel)
@@ -315,15 +318,15 @@ namespace Cassette.Configuration
                 bundleCollection.Remove(existingBundle);
             }
 
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var defaults = bundleCollection.Settings.GetDefaults<T>();
+            var bundleFactory = defaults.BundleFactory;
             var sourceDirectory = bundleCollection.Settings.SourceDirectory;
-            var defaultFileSearch = bundleCollection.Settings.GetDefaultFileSearch<T>();
             IEnumerable<IFile> files;
             BundleDescriptor bundleDescriptor;
 
             if (sourceDirectory.DirectoryExists(settings.Path))
             {
-                var fileSearch = settings.FileSearch ?? defaultFileSearch;
+                var fileSearch = settings.FileSearch ?? defaults.FileSearch;
                 var directory = sourceDirectory.GetDirectory(settings.Path);
                 files = fileSearch.FindFiles(directory);
 
@@ -372,7 +375,8 @@ namespace Cassette.Configuration
         public static void AddUrlWithAlias<T>(this BundleCollection bundleCollection, string url, string alias, Action<Bundle> customizeBundle = null)
             where T : Bundle
         {
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var defaults = bundleCollection.Settings.GetDefaults<T>();
+            var bundleFactory = defaults.BundleFactory;
             var bundle = bundleFactory.CreateBundle(
                 alias,
                 new IFile[0],
@@ -393,7 +397,8 @@ namespace Cassette.Configuration
         public static void AddUrl<T>(this BundleCollection bundleCollection, string url, Action<Bundle> customizeBundle = null)
             where T : Bundle
         {
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var defaults = bundleCollection.Settings.GetDefaults<T>();
+            var bundleFactory = defaults.BundleFactory;
             var bundle = bundleFactory.CreateExternalBundle(url);
             if (customizeBundle != null) customizeBundle(bundle);
             bundleCollection.Add(bundle);
@@ -438,9 +443,11 @@ namespace Cassette.Configuration
                 ? bundleCollection.Settings.SourceDirectory
                 : bundleCollection.Settings.SourceDirectory.GetDirectory(directoryPath);
 
-            fileSearch = fileSearch ?? bundleCollection.Settings.GetDefaultFileSearch<T>();
+            var defaults = bundleCollection.Settings.GetDefaults<T>();
+
+            fileSearch = fileSearch ?? defaults.FileSearch;
             var files = fileSearch.FindFiles(directory);
-            var bundleFactory = (IBundleFactory<T>)bundleCollection.Settings.BundleFactories[typeof(T)];
+            var bundleFactory = defaults.BundleFactory;
             foreach (var file in files)
             {
                 var bundle = bundleFactory.CreateBundle(

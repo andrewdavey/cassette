@@ -39,7 +39,7 @@ namespace Cassette.Stylesheets
         public void CreateBundleAssignsSettingsDefaultProcessor()
         {
             var processor = new StylesheetPipeline();
-            settings.SetDefaultBundleProcessor(processor);
+            settings.ModifyDefaults<StylesheetBundle>(defaults => defaults.BundlePipeline = processor);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
             bundle.Processor.ShouldBeSameAs(processor);
         }

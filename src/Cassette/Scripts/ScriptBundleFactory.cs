@@ -12,6 +12,7 @@ namespace Cassette.Scripts
 
         protected override ScriptBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
+            var pipeline = settings.GetDefaults<ScriptBundle>().BundlePipeline;
             if (bundleDescriptor.ExternalUrl != null)
             {
                 return new ExternalScriptBundle(
@@ -20,14 +21,14 @@ namespace Cassette.Scripts
                     bundleDescriptor.FallbackCondition
                 )
                 {
-                    Processor = settings.GetDefaultBundleProcessor<ScriptBundle>()
+                    Processor = pipeline
                 };
             }
             else
             {
                 return new ScriptBundle(path)
                 {
-                    Processor = settings.GetDefaultBundleProcessor<ScriptBundle>()
+                    Processor = pipeline
                 };
             }
         }

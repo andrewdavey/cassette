@@ -54,7 +54,7 @@ namespace Cassette.Configuration
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://external.com/api.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            SetBundleFactory(factory);
 
             var builder = CreateFactory(new[] { bundle });
             var container = builder.CreateBundleContainer();
@@ -75,15 +75,21 @@ namespace Cassette.Configuration
             bundle2.AddReference("http://external.com/api.js");
             var bundles = new[] { bundle1, bundle2 };
 
-            var factory = new Mock<IBundleFactory<Bundle>>();
+            var factory = new Mock<IBundleFactory<ScriptBundle>>();
             factory.Setup(f => f.CreateBundle("http://external.com/api.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            Settings.BundleFactories[typeof(ScriptBundle)] = factory.Object;
+            SetBundleFactory(factory);
 
             var builder = CreateFactory(bundles);
             var container = builder.CreateBundleContainer();
 
             container.Bundles.Count().ShouldEqual(3);
+        }
+
+        void SetBundleFactory<T>(Mock<IBundleFactory<T>> factory)
+            where T : Bundle
+        {
+            Settings.ModifyDefaults<T>(defaults => defaults.BundleFactory = factory.Object);
         }
 
         [Fact]
@@ -101,7 +107,7 @@ namespace Cassette.Configuration
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            SetBundleFactory(factory);
 
             var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(asset.Object);
@@ -124,7 +130,7 @@ namespace Cassette.Configuration
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            SetBundleFactory(factory);
 
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
@@ -143,7 +149,7 @@ namespace Cassette.Configuration
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            SetBundleFactory(factory);
 
             var bundle = new TestableBundle("~/test");
             bundle.AddReference("http://test.com/");
@@ -169,7 +175,7 @@ namespace Cassette.Configuration
             var factory = new Mock<IBundleFactory<Bundle>>();
             factory.Setup(f => f.CreateBundle("http://test.com/", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                    .Returns(externalBundle);
-            Settings.BundleFactories[typeof(TestableBundle)] = factory.Object;
+            SetBundleFactory(factory);
 
             var bundle = new TestableBundle("~/test");
             bundle.Assets.Add(asset.Object);

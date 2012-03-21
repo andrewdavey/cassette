@@ -58,12 +58,7 @@ namespace Cassette.Configuration
 
         IBundleFactory<Bundle> GetBundleFactory(Type bundleType)
         {
-            IBundleFactory<Bundle> factory;
-            if (settings.BundleFactories.TryGetValue(bundleType, out factory))
-            {
-                return factory;
-            }
-            throw new ArgumentException(string.Format("Cannot find bundle factory for {0}", bundleType.FullName));
+            return settings.GetDefaults(bundleType).BundleFactory;
         }
     }
 }

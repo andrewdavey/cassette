@@ -13,18 +13,19 @@ namespace Cassette.Stylesheets
 
         protected override StylesheetBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
+            var pipeline = settings.GetDefaults<StylesheetBundle>().BundlePipeline;
             if (bundleDescriptor.ExternalUrl != null)
             {
                 return new ExternalStylesheetBundle(bundleDescriptor.ExternalUrl, path)
                 {
-                    Processor = settings.GetDefaultBundleProcessor<StylesheetBundle>()
+                    Processor = pipeline
                 };
             }
             else
             {
                 return new StylesheetBundle(path)
                 {
-                    Processor = settings.GetDefaultBundleProcessor<StylesheetBundle>()
+                    Processor = pipeline
                 };
             }
         }

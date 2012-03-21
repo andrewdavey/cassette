@@ -7,7 +7,11 @@ namespace Cassette.HtmlTemplates
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            settings.AddDefaultFileSearchPattern<HtmlTemplateBundle>("*.mustache;*.jst;*.tmpl");
+            settings.ModifyDefaults<HtmlTemplateBundle>(defaults =>
+            {
+                defaults.FileSearch.Pattern += ";*.mustache;*.jst;*.tmpl";
+                defaults.BundlePipeline = new HoganPipeline();
+            });
         }
     }
 }

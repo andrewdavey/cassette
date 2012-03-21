@@ -82,10 +82,14 @@
     <Compile Include="CompileContext.cs" />
     <Compile Include="CompileResult.cs" />
     <Compile Include="ConditionalRenderer.cs" />
+    <Compile Include="Configuration\BundleDefaults.cs" />
     <Compile Include="Configuration\CompileTimeManifestBundleContainerFactory.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
+    <Compile Include="Configuration\HtmlTemplateBundleConfiguration.cs" />
     <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
+    <Compile Include="Configuration\ScriptBundleConfiguration.cs" />
+    <Compile Include="Configuration\StylesheetBundleConfiguration.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />

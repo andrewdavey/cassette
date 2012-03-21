@@ -66,7 +66,7 @@ namespace Cassette.Scripts
         public void CreateBundleAssignsSettingsDefaultProcessor()
         {
             var processor = new ScriptPipeline();
-            settings.SetDefaultBundleProcessor(processor);
+            settings.ModifyDefaults<ScriptBundle>(defaults => defaults.BundlePipeline = processor);
             var factory = new ScriptBundleFactory(settings);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
             bundle.Processor.ShouldBeSameAs(processor);

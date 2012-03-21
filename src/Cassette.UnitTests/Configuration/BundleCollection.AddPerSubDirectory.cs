@@ -17,7 +17,7 @@ namespace Cassette.Configuration
         readonly BundleCollection bundles;
         TestableBundle createdBundle;
         readonly Mock<IBundleFactory<TestableBundle>> factory;
-        readonly Mock<IFileSearch> defaultAssetSource;
+        readonly Mock<IFileSearch> fileSearch;
 
         public BundleCollection_AddPerSubDirectory_Tests()
         {
@@ -27,13 +27,16 @@ namespace Cassette.Configuration
                 .Returns<string, IEnumerable<IFile>, BundleDescriptor>(
                     (path, files, d) => createdBundle = new TestableBundle(path)
                 );
-            defaultAssetSource = new Mock<IFileSearch>();
+            fileSearch = new Mock<IFileSearch>();
             settings = new CassetteSettings("")
             {
-                SourceDirectory = new FileSystemDirectory(tempDirectory),
-                BundleFactories = { { typeof(TestableBundle), factory.Object } },
-                DefaultFileSearches = { { typeof(TestableBundle), defaultAssetSource.Object } }
+                SourceDirectory = new FileSystemDirectory(tempDirectory)
             };
+            settings.ModifyDefaults<TestableBundle>(defaults =>
+            {
+                defaults.BundleFactory = factory.Object;
+                defaults.FileSearch = fileSearch.Object;
+            });
             bundles = new BundleCollection(settings);
         }
 
@@ -43,7 +46,7 @@ namespace Cassette.Configuration
             CreateDirectory("bundle-a");
             CreateDirectory("bundle-b");
 
-            defaultAssetSource.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+            fileSearch.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(() => new[] { StubFile() });
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
@@ -70,7 +73,7 @@ namespace Cassette.Configuration
         [Fact]
         public void GivenBundleCustomizeAction_WhenAddPerSubDirectory_ThenActionIsCalledWithBundle()
         {
-            defaultAssetSource.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+            fileSearch.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile() });
             CreateDirectory("bundle");
 
@@ -137,7 +140,7 @@ namespace Cassette.Configuration
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
             File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
-            defaultAssetSource
+            fileSearch
                 .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
                 .Returns(new[] { StubFile() });
@@ -164,7 +167,7 @@ namespace Cassette.Configuration
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
             File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
-            defaultAssetSource
+            fileSearch
                 .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
                 .Returns(new[] { StubFile() });
@@ -186,7 +189,7 @@ namespace Cassette.Configuration
             File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
             CreateDirectory("test");
             File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
-            defaultAssetSource
+            fileSearch
                 .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile() });
 

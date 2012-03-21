@@ -16,7 +16,7 @@ namespace Cassette.HtmlTemplates
         {
             return new HtmlTemplateBundle(path)
             {
-                Processor = settings.GetDefaultBundleProcessor<HtmlTemplateBundle>()
+                Processor = settings.GetDefaults<HtmlTemplateBundle>().BundlePipeline
             };
         }
     }

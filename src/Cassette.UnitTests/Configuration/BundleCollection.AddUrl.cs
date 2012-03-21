@@ -30,8 +30,8 @@ namespace Cassette.Configuration
         public void WhenAddUrlOfScriptBundle_ThenExternalScriptBundleAdded()
         {
             var url = "http://cdn.com/jquery.js";
-            var factory = new Mock<IBundleFactory<ScriptBundle>>(); 
-            settings.BundleFactories[typeof(ScriptBundle)] = factory.Object;
+            var factory = new Mock<IBundleFactory<ScriptBundle>>();
+            SetBundleFactory(factory);
             factory.Setup(f => f.CreateBundle(
                 url,
                 It.IsAny<IEnumerable<IFile>>(),
@@ -48,7 +48,7 @@ namespace Cassette.Configuration
         {
             var url = "http://cdn.com/jquery.js";
             var factory = new Mock<IBundleFactory<ScriptBundle>>();
-            settings.BundleFactories[typeof(ScriptBundle)] = factory.Object;
+            SetBundleFactory(factory);
             factory.Setup(f => f.CreateBundle(
                 url,
                 It.IsAny<IEnumerable<IFile>>(),
@@ -61,6 +61,12 @@ namespace Cassette.Configuration
             bundles.AddUrl(url, customizeBundle);
 
             called.ShouldBeTrue();
+        }
+
+        void SetBundleFactory<T>(Mock<IBundleFactory<T>> factory)
+            where T : Bundle
+        {
+            settings.ModifyDefaults<T>(defaults => defaults.BundleFactory = factory.Object);
         }
 
         [Fact]

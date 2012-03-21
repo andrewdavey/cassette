@@ -198,7 +198,7 @@ namespace Cassette.HtmlTemplates
         public void CreateBundleAssignsSettingsDefaultProcessor()
         {
             var processor = new HtmlTemplatePipeline();
-            settings.SetDefaultBundleProcessor(processor);
+            settings.ModifyDefaults<HtmlTemplateBundle>(defaults => defaults.BundlePipeline = processor);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
             bundle.Processor.ShouldBeSameAs(processor);
         }

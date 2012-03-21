@@ -7,7 +7,11 @@ namespace Cassette.Stylesheets
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            settings.AddDefaultFileSearchPattern<StylesheetBundle>("*.less");
+            settings.ModifyDefaults<StylesheetBundle>(defaults =>
+            {
+                defaults.FileSearch.Pattern += ";*.less";
+                defaults.BundlePipeline.CompileLess();
+            });
         }
     }
 }

@@ -50,7 +50,6 @@ namespace Cassette
         {
             return new ReferenceBuilder(
                 bundleContainer,
-                settings.BundleFactories,
                 GetPlaceholderTracker(),
                 settings
             );

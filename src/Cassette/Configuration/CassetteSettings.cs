@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
+using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-using Cassette.Manifests;
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -20,36 +17,21 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
-        readonly IDictionary<Type, Func<IFileSearch>> defaultFileSearchFactories;
-        readonly Dictionary<Type, string> defaultFileSearchPatterns = new Dictionary<Type, string>();
-        readonly Dictionary<Type, IFileSearch> applicationProvidedDefaultFileSearches = new Dictionary<Type, IFileSearch>();
+        readonly Dictionary<Type, object> bundleDefaultsByType = new Dictionary<Type, object>(); 
         readonly Lazy<ICassetteManifestCache> cassetteManifestCache;
-        readonly Dictionary<Type, object> defaultBundleProcessors;
         readonly List<Func<string, bool>> allowPathPredicates = new List<Func<string, bool>>();
  
         public CassetteSettings(string cacheVersion)
         {
+            bundleDefaultsByType = new Dictionary<Type, object>
+            {
+                { typeof(ScriptBundle), new BundleDefaults<ScriptBundle>() },
+                { typeof(StylesheetBundle), new BundleDefaults<StylesheetBundle>() },
+                { typeof(HtmlTemplateBundle), new BundleDefaults<HtmlTemplateBundle>() },
+            };
+
             Version = cacheVersion;
 
-            defaultBundleProcessors = new Dictionary<Type, object>
-            {
-                { typeof(ScriptBundle), new ScriptPipeline() },
-                { typeof(StylesheetBundle), new StylesheetPipeline() },
-                { typeof(HtmlTemplateBundle), new HtmlTemplatePipeline() },
-            };
-
-            AddDefaultFileSearchPattern<ScriptBundle>("*.js");
-            AddDefaultFileSearchPattern<StylesheetBundle>("*.css");
-            AddDefaultFileSearchPattern<HtmlTemplateBundle>("*.htm;*.html");
-
-            defaultFileSearchFactories = new Dictionary<Type, Func<IFileSearch>>
-            {
-                { typeof(ScriptBundle), CreateScriptFileSearch },
-                { typeof(StylesheetBundle), CreateStylesheetFileSearch },
-                { typeof(HtmlTemplateBundle), CreateHtmlTemplateFileSearch }
-            };
-
-            BundleFactories = CreateBundleFactories();
             cassetteManifestCache = new Lazy<ICassetteManifestCache>(
                 () => new CassetteManifestCache(CacheDirectory.GetFile("cassette.xml"))
             );
@@ -88,86 +70,33 @@ namespace Cassette.Configuration
         /// </summary>
         public IUrlModifier UrlModifier { get; set; }
 
-        /// <summary>
-        /// The default <see cref="IFileSearch"/> object for each type of <see cref="Bundle"/>, used to find asset files to include.
-        /// </summary>
-        public IDictionary<Type, IFileSearch> DefaultFileSearches
-        {
-            get { return applicationProvidedDefaultFileSearches; }
-        }
-
         public IUrlGenerator UrlGenerator { get; set; }
-
-        internal IDictionary<Type, IBundleFactory<Bundle>> BundleFactories { get; private set; }
 
         internal bool AllowRemoteDiagnostics { get; set; }
 
         internal string Version { get; private set; }
 
-        internal IFileSearch GetDefaultFileSearch<T>()
-            where T : Bundle
-        {
-            IFileSearch fileSearch;
-            if (applicationProvidedDefaultFileSearches.TryGetValue(typeof(T), out fileSearch))
-            {
-                return fileSearch;
-            }
-            return defaultFileSearchFactories[typeof(T)]();
-        }
-
-        public void SetDefaultBundleProcessor<T>(IBundleProcessor<T> processor)
-            where T : Bundle
-        {
-            defaultBundleProcessors[typeof(T)] = processor;
-        }
-
-        public IBundleProcessor<T> GetDefaultBundleProcessor<T>()
-            where T : Bundle
-        {
-            return (IBundleProcessor<T>)defaultBundleProcessors[typeof(T)];
-        }
-
-        Dictionary<Type, IBundleFactory<Bundle>> CreateBundleFactories()
-        {
-            return new Dictionary<Type, IBundleFactory<Bundle>>
-            {
-                { typeof(ScriptBundle), new ScriptBundleFactory(this) },
-                { typeof(StylesheetBundle), new StylesheetBundleFactory(this) },
-                { typeof(HtmlTemplateBundle), new HtmlTemplateBundleFactory(this) }
-            };
-        }
-
-        FileSearch CreateScriptFileSearch()
-        {
-            return new FileSearch
-            {
-                Pattern = defaultFileSearchPatterns[typeof(ScriptBundle)],
-                Exclude = new Regex("-vsdoc\\.js"),
-                SearchOption = SearchOption.AllDirectories
-            };
-        }
-
-        FileSearch CreateStylesheetFileSearch()
-        {
-            return new FileSearch
-            {
-                Pattern = defaultFileSearchPatterns[typeof(StylesheetBundle)],
-                SearchOption = SearchOption.AllDirectories
-            };
-        }
-
-        FileSearch CreateHtmlTemplateFileSearch()
-        {
-            return new FileSearch
-            {
-                Pattern = defaultFileSearchPatterns[typeof(HtmlTemplateBundle)],
-                SearchOption = SearchOption.AllDirectories
-            };
-        }
-
         internal ICassetteManifestCache CassetteManifestCache
         {
             get { return cassetteManifestCache.Value; }
+        }
+
+        public void ModifyDefaults<T>(Action<BundleDefaults<T>> modifications)
+            where T : Bundle
+        {
+            var defaults = (BundleDefaults<T>)bundleDefaultsByType[typeof(T)];
+            modifications(defaults);
+        }
+
+        public BundleDefaults<T> GetDefaults<T>()
+            where T : Bundle
+        {
+            return (BundleDefaults<T>)bundleDefaultsByType[typeof(T)];
+        }
+
+        internal IBundleDefaults GetDefaults(Type bundleType)
+        {
+            return (IBundleDefaults)bundleDefaultsByType[bundleType];
         }
 
         internal IBundleContainerFactory GetBundleContainerFactory(IEnumerable<ICassetteConfiguration> cassetteConfigurations)
@@ -202,20 +131,6 @@ namespace Cassette.Configuration
         public void AllowRawFileRequest(Func<string, bool> pathIsAllowed)
         {
             allowPathPredicates.Add(pathIsAllowed);
-        }
-
-        internal void AddDefaultFileSearchPattern<T>(string fileSearchPattern)
-            where T : Bundle
-        {
-            string existingPattern;
-            if (defaultFileSearchPatterns.TryGetValue(typeof(T), out existingPattern))
-            {
-                defaultFileSearchPatterns[typeof(T)] = existingPattern + ";" + fileSearchPattern;
-            }
-            else
-            {
-                defaultFileSearchPatterns[typeof(T)] = fileSearchPattern;
-            }
         }
     }
 }

@@ -11,16 +11,14 @@ namespace Cassette
 {
     class ReferenceBuilder : IReferenceBuilder
     {
-        public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, CassetteSettings settings)
+        public ReferenceBuilder(IBundleContainer bundleContainer, IPlaceholderTracker placeholderTracker, CassetteSettings settings)
         {
             this.bundleContainer = bundleContainer;
-            this.bundleFactories = bundleFactories;
             this.placeholderTracker = placeholderTracker;
             this.settings = settings;
         }
 
         readonly IBundleContainer bundleContainer;
-        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
         readonly IPlaceholderTracker placeholderTracker;
         readonly CassetteSettings settings;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
@@ -30,7 +28,7 @@ namespace Cassette
         public void Reference<T>(string path, string location = null)
             where T : Bundle
         {
-            var bundles = GetBundles(path, () => bundleFactories[typeof(T)].CreateExternalBundle(path));
+            var bundles = GetBundles(path, () => settings.GetDefaults<T>().BundleFactory.CreateExternalBundle(path));
             Reference(bundles, location);
         }
 
@@ -40,11 +38,11 @@ namespace Cassette
             {
                 if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
                 {
-                    return bundleFactories[typeof(Scripts.ScriptBundle)].CreateExternalBundle(path);
+                    return settings.GetDefaults<Scripts.ScriptBundle>().BundleFactory.CreateExternalBundle(path);
                 }
                 else if (path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
                 {
-                    return bundleFactories[typeof(Stylesheets.StylesheetBundle)].CreateExternalBundle(path);
+                    return settings.GetDefaults<Stylesheets.StylesheetBundle>().BundleFactory.CreateExternalBundle(path);
                 }
                 else
                 {

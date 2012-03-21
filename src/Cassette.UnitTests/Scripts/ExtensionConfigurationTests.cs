@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using Cassette.Configuration;
+using Cassette.HtmlTemplates;
 using Cassette.Stylesheets;
 using Should;
 using Xunit;
-using Cassette.HtmlTemplates;
 
 namespace Cassette.Scripts
 {
@@ -14,7 +14,7 @@ namespace Cassette.Scripts
         protected void AssertFileIsMatchedByDefaultFileSearch<T>(string filename)
             where T : Bundle
         {
-            var search = Settings.GetDefaultFileSearch<T>();
+            var search = Settings.GetDefaults<T>().FileSearch;
             var directory = new FakeFileSystem { filename };
             var files = search.FindFiles(directory);
             files.Count().ShouldEqual(1);

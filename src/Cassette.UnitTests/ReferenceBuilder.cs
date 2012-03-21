@@ -17,17 +17,23 @@ namespace Cassette
         public ReferenceBuilder_Reference_Tests()
         {
             new Mock<ICassetteApplication>();
-            bundleFactories = new Dictionary<Type, IBundleFactory<Bundle>>();
             bundleContainer = new Mock<IBundleContainer>();
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(ms => ms);
 
-            builder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, Mock.Of<IPlaceholderTracker>(), new CassetteSettings(""));
+            settings = new CassetteSettings("");
+            builder = new ReferenceBuilder(bundleContainer.Object, Mock.Of<IPlaceholderTracker>(), settings);
         }
 
         ReferenceBuilder builder;
         readonly Mock<IBundleContainer> bundleContainer;
-        readonly Dictionary<Type, IBundleFactory<Bundle>> bundleFactories;
+        readonly CassetteSettings settings;
+
+        void SetBundleFactory<T>(Mock<IBundleFactory<T>> bundleFactory)
+            where T : Bundle
+        {
+            settings.ModifyDefaults<T>(defaults => defaults.BundleFactory = bundleFactory.Object);
+        }
 
         [Fact]
         public void WhenAddReferenceToBundleDirectory_ThenGetBundlesReturnTheBundle()
@@ -134,7 +140,8 @@ namespace Cassette
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("http://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+            
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("http://test.com/test.js");
 
@@ -149,7 +156,7 @@ namespace Cassette
             var bundle = new TestableBundle("~");
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(bundle);
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("http://test.com/test.js");
 
@@ -162,7 +169,7 @@ namespace Cassette
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("https://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("https://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
             builder.Reference("https://test.com/test.js");
 
             var bundle = builder.GetBundles(null).First();
@@ -175,7 +182,7 @@ namespace Cassette
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("//test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("//test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("//test.com/test.js");
 
@@ -189,7 +196,7 @@ namespace Cassette
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.css", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalStylesheetBundle("http://test.com/test.css") { Processor = StubProcessor<StylesheetBundle>() });
-            bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("http://test.com/test.css");
 
@@ -211,7 +218,7 @@ namespace Cassette
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalStylesheetBundle("http://test.com/test") { Processor = StubProcessor<StylesheetBundle>() });
-            bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference<StylesheetBundle>("http://test.com/test");
 
@@ -264,7 +271,7 @@ namespace Cassette
         {
             builder = new ReferenceBuilder(
                 bundleContainer.Object,
-                bundleFactories, Mock.Of<IPlaceholderTracker>(), 
+                Mock.Of<IPlaceholderTracker>(), 
                 new CassetteSettings("") { IsHtmlRewritingEnabled = true }
             );
             var bundle = new ScriptBundle("~/test");
@@ -390,7 +397,6 @@ namespace Cassette
             bundleContainer = new Mock<IBundleContainer>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
             Mock.Of<ICassetteApplication>();
-            bundleFactories = new Dictionary<Type, IBundleFactory<Bundle>>();
 
             bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
                            .Returns<IEnumerable<Bundle>>(ms => ms);
@@ -398,13 +404,12 @@ namespace Cassette
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
                               .Returns(("output"));
 
-            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, new CassetteSettings(""));
+            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, placeholderTracker.Object, new CassetteSettings(""));
         }
 
         readonly ReferenceBuilder referenceBuilder;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
         readonly Mock<IBundleContainer> bundleContainer;
-        readonly Dictionary<Type, IBundleFactory<Bundle>> bundleFactories;
 
         [Fact]
         public void GivenAddReferenceToPath_WhenRender_ThenBundleRenderOutputReturned()
@@ -457,4 +462,3 @@ namespace Cassette
         }
     }
 }
-

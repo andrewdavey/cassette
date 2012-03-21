@@ -7,7 +7,11 @@ namespace Cassette.Scripts
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            settings.AddDefaultFileSearchPattern<ScriptBundle>("*.coffee");
+            settings.ModifyDefaults<ScriptBundle>(defaults =>
+            {
+                defaults.FileSearch.Pattern += ";*.coffee";
+                defaults.BundlePipeline.CompileCoffeeScript();
+            });
         }
     }
 }

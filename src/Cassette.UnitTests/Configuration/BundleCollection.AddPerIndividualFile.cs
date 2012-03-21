@@ -18,18 +18,21 @@ namespace Cassette.Configuration
         public BundleCollection_AddPerIndividualFile_Tests()
         {
             var factory = new Mock<IBundleFactory<TestableBundle>>();
+            fileSearch = new Mock<IFileSearch>();
             factory
                 .Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                 .Returns<string, IEnumerable<IFile>, BundleDescriptor>((path, _, __) => new TestableBundle(path));
 
             sourceDirectory = new Mock<IDirectory>();
-            fileSearch = new Mock<IFileSearch>();
             settings = new CassetteSettings("")
             {
                 SourceDirectory = sourceDirectory.Object,
-                BundleFactories = { { typeof(TestableBundle), factory.Object } },
-                DefaultFileSearches = { { typeof(TestableBundle), fileSearch.Object } }
             };
+            settings.ModifyDefaults<TestableBundle>(defaults =>
+            {
+                defaults.BundleFactory = factory.Object;
+                defaults.FileSearch = fileSearch.Object;
+            });
             bundles = new BundleCollection(settings);
         }
 

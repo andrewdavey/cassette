@@ -7,7 +7,11 @@ namespace Cassette.Stylesheets
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            settings.AddDefaultFileSearchPattern<StylesheetBundle>("*.scss;*.sass");
+            settings.ModifyDefaults<StylesheetBundle>(defaults =>
+            {
+                defaults.FileSearch.Pattern += ";*.scss;*.sass";
+                defaults.BundlePipeline.CompileSass();
+            });
         }
     }
 }
