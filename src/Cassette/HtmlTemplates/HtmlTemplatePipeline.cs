@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
-using Cassette.BundleProcessing;
-using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplatePipeline : MutablePipeline<HtmlTemplateBundle>
+    public class HtmlTemplatePipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
+        public HtmlTemplatePipeline()
         {
-            yield return new AssignHtmlTemplateRenderer(new InlineHtmlTemplateBundleRenderer());
-            yield return new ParseHtmlTemplateReferences();
-            yield return new WrapHtmlTemplatesInScriptElements();
-            yield return new AssignHash();
-            yield return new ConcatenateAssets();
+            AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
+            {
+                new AssignHtmlTemplateRenderer(settings => new InlineHtmlTemplateBundleRenderer()),
+                new ParseHtmlTemplateReferences(),
+                new WrapHtmlTemplatesInScriptElements(),
+                new AssignHash(),
+                new ConcatenateAssets()
+            });
         }
     }
 }

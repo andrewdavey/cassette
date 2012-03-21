@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -9,11 +7,11 @@ namespace Cassette.Stylesheets
 {
     public class StylesheetPipelineExtensions_Tests
     {
-        readonly TestableStylesheetPipeline pipeline;
+        readonly StylesheetPipeline pipeline;
 
         public StylesheetPipelineExtensions_Tests()
         {
-            pipeline = new TestableStylesheetPipeline();
+            pipeline = new StylesheetPipeline();
         }
 
         [Fact]
@@ -46,21 +44,7 @@ namespace Cassette.Stylesheets
 
         void AssertPipelineContains<T>() where T : IBundleProcessor<StylesheetBundle>
         {
-            // MutablePipeline steps are actually created when Process is called.
-            var bundle = new StylesheetBundle("~");
-            pipeline.Process(bundle, new CassetteSettings("") { SourceDirectory = new FakeFileSystem() });
-
-            pipeline.CreatedPipeline.OfType<T>().ShouldNotBeEmpty();
-        }
-
-        class TestableStylesheetPipeline : StylesheetPipeline
-        {
-            public IEnumerable<IBundleProcessor<StylesheetBundle>> CreatedPipeline { get; private set; }
-
-            protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreateMutatedPipeline(StylesheetBundle bundle, CassetteSettings settings)
-            {
-                return CreatedPipeline = base.CreateMutatedPipeline(bundle, settings);
-            }
+            pipeline.OfType<T>().ShouldNotBeEmpty();
         }
     }
 }

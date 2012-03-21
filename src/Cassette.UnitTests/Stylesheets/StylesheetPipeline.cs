@@ -14,7 +14,40 @@ namespace Cassette.Stylesheets
         [Fact]
         public void StylesheetMinifierDefaultsToMicrosoft()
         {
-            new StylesheetPipeline().StylesheetMinifier.ShouldBeType<MicrosoftStylesheetMinifier>();
+            var bundle = new StylesheetBundle("~");
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.Path).Returns("~/asset.css");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            bundle.Assets.Add(asset.Object);
+
+            var pipeline = new StylesheetPipeline();
+            // Remove the ConcatenateAssets step, so the transformer is added to our mock asset instead of the concatenated asset object.
+            var lastStep = (ConditionalBundlePipeline<StylesheetBundle>)pipeline[pipeline.Count - 1];
+            lastStep.RemoveAt(0);
+
+            pipeline.Process(bundle, new CassetteSettings(""));
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is MicrosoftStylesheetMinifier)));
+        }
+
+        [Fact]
+        public void CanProvideMinifier()
+        {
+            var bundle = new StylesheetBundle("~");
+            var asset = new Mock<IAsset>();
+            asset.SetupGet(a => a.Path).Returns("~/asset.css");
+            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            bundle.Assets.Add(asset.Object);
+
+            var minifier = new Mock<IAssetTransformer>();
+            var pipeline = new StylesheetPipeline(minifier.Object);
+            // Remove the ConcatenateAssets step, so the transformer is added to our mock asset instead of the concatenated asset object.
+            var lastStep = (ConditionalBundlePipeline<StylesheetBundle>)pipeline[pipeline.Count - 1];
+            lastStep.RemoveAt(0);
+
+            pipeline.Process(bundle, new CassetteSettings(""));
+
+            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t == minifier.Object)));
         }
 
         [Fact]

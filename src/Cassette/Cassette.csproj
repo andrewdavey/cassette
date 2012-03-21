@@ -75,6 +75,9 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BundleProcessing\AssignHash.cs" />
+    <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
+    <Compile Include="BundleProcessing\ConditionalBundlePipeline.cs" />
+    <Compile Include="BundleProcessing\IBundlePipeline.cs" />
     <Compile Include="BundleReferenceCollector.cs" />
     <Compile Include="CompileContext.cs" />
     <Compile Include="CompileResult.cs" />
@@ -133,13 +136,9 @@
     <Compile Include="HtmlAttributeDictionary.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestBuilder.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifest.cs" />
-    <Compile Include="HtmlTemplates\RegisterTemplatesWithHogan.cs" />
-    <Compile Include="HtmlTemplates\RegisterTemplateWithHogan.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestReader.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
-    <Compile Include="HtmlTemplates\RegisterTemplatesWithJQueryTmpl.cs" />
-    <Compile Include="HtmlTemplates\RegisterTemplateWithJQueryTmpl.cs" />
     <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
     <Compile Include="HtmlTemplates\RemoteHtmlTemplateBundleRenderer.cs" />
@@ -178,7 +177,7 @@
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="BundleDescriptor.cs" />
     <Compile Include="BundleProcessing\AddTransformerToAssets.cs" />
-    <Compile Include="BundleProcessing\MutablePipeline.cs" />
+    <Compile Include="BundleProcessing\BundlePipeline.cs" />
     <Compile Include="IUrlModifier.cs" />
     <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="NullPlaceholderTracker.cs" />

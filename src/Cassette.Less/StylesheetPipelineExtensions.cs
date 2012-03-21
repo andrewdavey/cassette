@@ -4,9 +4,10 @@ namespace Cassette.Stylesheets
 {
     public static class StylesheetPipelineExtensions
     {
-        public static T CompileLess<T>(this T pipeline) where T : MutablePipeline<StylesheetBundle>
+        public static T CompileLess<T>(this T pipeline) 
+            where T : IBundlePipeline<StylesheetBundle>
         {
-            pipeline.InsertAfter<ParseCssReferences>(
+            pipeline.InsertAfter<ParseCssReferences, StylesheetBundle>(
                 new ParseLessReferences(),
                 new CompileLess(new LessCompiler())
             );

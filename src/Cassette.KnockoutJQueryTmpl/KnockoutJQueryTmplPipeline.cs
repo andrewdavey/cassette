@@ -1,22 +1,21 @@
-﻿using System.Collections.Generic;
-using Cassette.BundleProcessing;
-using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class KnockoutJQueryTmplPipeline : MutablePipeline<HtmlTemplateBundle>
+    public class KnockoutJQueryTmplPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
+        public KnockoutJQueryTmplPipeline()
         {
-            yield return new AssignHtmlTemplateRenderer(
-                new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)
-            );
-            yield return new AssignContentType("text/javascript");
-            yield return new ParseHtmlTemplateReferences();
-            yield return new CompileKnockoutJQueryTmpl();
-            yield return new RegisterTemplatesWithJQueryTmpl();
-            yield return new AssignHash();
-            yield return new ConcatenateAssets();
+            AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
+            {
+                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)),
+                new AssignContentType("text/javascript"),
+                new ParseHtmlTemplateReferences(),
+                new CompileKnockoutJQueryTmpl(),
+                new RegisterTemplatesWithJQueryTmpl(),
+                new AssignHash(),
+                new ConcatenateAssets()
+            });
         }
     }
 }

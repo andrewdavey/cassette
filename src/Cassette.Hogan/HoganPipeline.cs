@@ -1,28 +1,30 @@
-﻿using System.Collections.Generic;
-using Cassette.BundleProcessing;
-using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HoganPipeline : MutablePipeline<HtmlTemplateBundle>
+    public class HoganPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        /// <summary>
+        public HoganPipeline()
+            : this("JST")
+        {
+        }
+
+        /// <param name="javaScriptVariableName">
         /// The name of the JavaScript variable to store compiled templates in.
         /// For example, the default is "JST", so a template will be registered as <code>JST['my-template'] = ...;</code>.
-        /// </summary>
-        public string JavaScriptVariableName { get; set; }
-        
-        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
+        /// </param>
+        public HoganPipeline(string javaScriptVariableName)
         {
-            yield return new AssignHtmlTemplateRenderer(
-                new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)
-            );
-            yield return new AssignContentType("text/javascript");
-            yield return new ParseHtmlTemplateReferences();
-            yield return new CompileHogan();
-            yield return new RegisterTemplatesWithHogan(JavaScriptVariableName);
-            yield return new AssignHash();
-            yield return new ConcatenateAssets();
+            AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
+            {
+                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)),
+                new AssignContentType("text/javascript"),
+                new ParseHtmlTemplateReferences(),
+                new CompileHogan(),
+                new RegisterTemplatesWithHogan(javaScriptVariableName),
+                new AssignHash(),
+                new ConcatenateAssets()
+            });
         }
     }
 }

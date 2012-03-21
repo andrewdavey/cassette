@@ -69,6 +69,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RegisterTemplatesWithHogan.cs" />
+    <Compile Include="RegisterTemplateWithHogan.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">

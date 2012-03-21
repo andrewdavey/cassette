@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
@@ -11,19 +12,19 @@ namespace Cassette.Stylesheets
 
         public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline, Func<string, bool> shouldEmbedUrl)
         {
-            pipeline.InsertBefore<ExpandCssUrls>(new ConvertImageUrlsToDataUris(shouldEmbedUrl));
+            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(new ConvertImageUrlsToDataUris(shouldEmbedUrl));
             return pipeline;
         }
 
         public static StylesheetPipeline EmbedFonts(this StylesheetPipeline pipeline)
         {
-            pipeline.InsertBefore<ExpandCssUrls>(new ConvertFontUrlsToDataUris());
+            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(new ConvertFontUrlsToDataUris());
             return pipeline;
         }
 
         public static StylesheetPipeline EmbedFonts(this StylesheetPipeline pipeline, Func<string, bool> shouldEmbedUrl)
         {
-            pipeline.InsertBefore<ExpandCssUrls>(new ConvertFontUrlsToDataUris(shouldEmbedUrl));
+            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(new ConvertFontUrlsToDataUris(shouldEmbedUrl));
             return pipeline;
         }
     }
