@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Description = "Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS and HTML templates to help you manage your client-side code.";
+    ViewBag.Description = "Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS, Sass and HTML templates to help you manage your client-side code.";
     ViewBag.Title = "Cassette | Asset bundling for .NET web apps";
     ViewBag.Section = "home";
     Bundles.Reference("assets/scripts/home");
@@ -9,7 +9,7 @@
         <h1>Asset bundling for .NET web apps</h1>
         <div class="intro">
             <p>Dumping your scripts into a folder is no way to manage your client-side code!</p>
-            <p>Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS and HTML templates.</p>
+            <p>Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS, Sass and HTML templates.</p>
             <p>It's flexible, extensible and optimized for developer happiness.</p>
             <p><a class="action" href="@Url.RouteUrl("Download")"><span class="download-button">Download</span></a></p>
         </div>
@@ -17,8 +17,22 @@
         @Html.Partial("_Share")
         
         <div class="favtweets">
-
+        
             <div class="tweets">
+                <p class="tweet">&#8220;Yeah! Getting some time to experiment with <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> to improve the performance of our websites even more!&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/jaspio" target="_blank">&#64;jaspio</a></p>                
+                <p class="tweet">&#8220;Thanks for making my life as dev so easy!! getcassette.net via <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a>&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/peitor" target="_blank">&#64;peitor</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;I'm in love with Cassette&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/schummbo" target="_blank">&#64;schummbo</a></p>                
+                <p class="tweet">&#8220;<a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> is a fantastic &#35;asp.net-mvc asset manager. Great features, great docs, and a beautiful website too. Thanks getcassette.net&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/mmurch" target="_blank">&#64;mmurch</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
                 <p class="tweet">&#8220;Excellent! Automagic asset (scripts, CSS, Less, CoffeeScript) management for .NET web apps getcassette.net via <a href="http://twitter.com/#!/getcassette" target="_blank">&#64;getcassette</a>&#8221;</p>
                 <p class="tweeter">via <a href="http://www.twitter.com/shanselman" target="_blank">&#64;shanselman</a></p>                
                 <p class="tweet">&#8220;man, <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a>, please don't be too good to be true, you look so wonderful&#8221;</p>
