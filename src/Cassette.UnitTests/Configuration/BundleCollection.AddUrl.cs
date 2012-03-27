@@ -126,7 +126,6 @@ namespace Cassette.Configuration
             sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
-            settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSearch.Object;
             fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
             BundleDescriptorDoesNotExist(directory);
 
@@ -146,7 +145,6 @@ namespace Cassette.Configuration
             sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
-            settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSearch.Object;
             fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
             BundleDescriptorDoesNotExist(directory);
 
@@ -166,7 +164,6 @@ namespace Cassette.Configuration
             sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
-            settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSearch.Object;
             fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
             BundleDescriptorDoesNotExist(directory);
 
@@ -228,7 +225,6 @@ namespace Cassette.Configuration
             sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
             sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
             settings.SourceDirectory = sourceDirectory.Object;
-            settings.DefaultFileSearches[typeof(ScriptBundle)] = fileSearch.Object;
             fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
             BundleDescriptorDoesNotExist(directory);
 

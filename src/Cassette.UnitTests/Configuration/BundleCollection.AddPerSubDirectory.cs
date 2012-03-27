@@ -35,7 +35,6 @@ namespace Cassette.Configuration
             settings.ModifyDefaults<TestableBundle>(defaults =>
             {
                 defaults.BundleFactory = factory.Object;
-                defaults.FileSearch = fileSearch.Object;
             });
             bundles = new BundleCollection(settings);
         }

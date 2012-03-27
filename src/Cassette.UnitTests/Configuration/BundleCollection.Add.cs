@@ -31,8 +31,6 @@ namespace Cassette.Configuration
             settings = new CassetteSettings("")
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory),
-                BundleFactories = { { typeof(TestableBundle), factory.Object } },
-                DefaultFileSearches = { { typeof(TestableBundle), defaultFileSource.Object } }
             };
             bundles = new BundleCollection(settings);
         }
