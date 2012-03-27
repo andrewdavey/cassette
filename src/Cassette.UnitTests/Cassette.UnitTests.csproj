@@ -124,6 +124,7 @@
     <Compile Include="Configuration\ScriptBundleConfiguration.cs" />
     <Compile Include="Configuration\StylesheetBundleConfiguration.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
+    <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />

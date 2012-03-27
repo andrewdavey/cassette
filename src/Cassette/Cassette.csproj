@@ -74,6 +74,8 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AppDomainAssemblyTypeScanner.cs" />
+    <Compile Include="BootstrapperLocator.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
     <Compile Include="BundleProcessing\ConditionalBundlePipeline.cs" />
@@ -91,7 +93,9 @@
     <Compile Include="Configuration\ScriptBundleConfiguration.cs" />
     <Compile Include="Configuration\StylesheetBundleConfiguration.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
+    <Compile Include="DefaultBootstrapper.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
+    <Compile Include="IBootstrapper.cs" />
     <Compile Include="IExternalBundle.cs" />
     <Compile Include="InternalCassetteConfigurationAttribute.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
