@@ -7,6 +7,7 @@ namespace Cassette.Web
     {
         static readonly object Lock = new object();
         static int _initializedModuleCount;
+        static ICassetteApplication _application;
 
         public void Init(HttpApplication httpApplication)
         {
@@ -21,7 +22,9 @@ namespace Cassette.Web
                 // make sure we only call the startup methods once per app domain
                 if (_initializedModuleCount++ != 0) return;
 
-                StartUp.ApplicationStart();
+                var bootstrapper = BootstrapperLocator<DefaultBootstrapper>.Bootstrapper;
+                bootstrapper.Initialize();
+                _application = bootstrapper.GetApplication();
             }
         }
 
@@ -44,11 +47,19 @@ namespace Cassette.Web
         {
             lock (Lock)
             {
-                // Call the shutdown methods when the last module is disposed
                 if (--_initializedModuleCount != 0) return;
 
-                StartUp.ApplicationShutdown();
+                _application.Dispose();
+                _application = null;
             }
+        }
+    }
+
+    public class DefaultBootstrapper : DefaultBootstrapperBase
+    {
+        protected override Type UrlGenerator
+        {
+            get { return typeof(UrlGenerator); }
         }
     }
 }

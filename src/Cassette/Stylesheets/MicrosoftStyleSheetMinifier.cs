@@ -5,7 +5,7 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    public class MicrosoftStylesheetMinifier : IAssetTransformer
+    public class MicrosoftStylesheetMinifier : IStylesheetMinifier
     {
         public MicrosoftStylesheetMinifier()
             : this(new CssSettings())

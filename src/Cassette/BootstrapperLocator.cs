@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace Cassette
 {
-    public static class BootstrapperLocator
+    public static class BootstrapperLocator<T> where T : IBootstrapper
     {
         public static IBootstrapper Bootstrapper;
 
         static BootstrapperLocator()
         {
-            var defaultBootstrapperType = typeof(DefaultBootstrapper);
+            var defaultBootstrapperType = typeof(T);
             var customBootstrappers = CustomBootstrappers(defaultBootstrapperType);
 
             var bootstrapperType = customBootstrappers.FirstOrDefault() ?? defaultBootstrapperType;

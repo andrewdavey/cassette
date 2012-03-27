@@ -235,6 +235,7 @@
     <Compile Include="BundleProcessing\CompileAsset.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
+    <Compile Include="TinyIoC.cs" />
     <Compile Include="Trace.cs" />
     <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
