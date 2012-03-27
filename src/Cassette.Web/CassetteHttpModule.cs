@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using Cassette.Configuration;
 
 namespace Cassette.Web
 {
@@ -57,9 +58,5 @@ namespace Cassette.Web
 
     public class DefaultBootstrapper : DefaultBootstrapperBase
     {
-        protected override Type UrlGenerator
-        {
-            get { return typeof(UrlGenerator); }
-        }
     }
 }

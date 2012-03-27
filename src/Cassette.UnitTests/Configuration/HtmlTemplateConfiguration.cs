@@ -1,4 +1,7 @@
+using System;
 using System.IO;
+using System.Linq;
+using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
 using Should;
 using Xunit;
@@ -7,38 +10,54 @@ namespace Cassette.Configuration
 {
     public class HtmlTemplateConfiguration_Tests
     {
-        readonly BundleDefaults<HtmlTemplateBundle> defaults;
+        readonly FileSearch fileSearch;
+        readonly HtmlTemplateBootstrapperContributor contributor;
 
         public HtmlTemplateConfiguration_Tests()
         {
-            var configuration = new HtmlTemplateBundleConfiguration();
-            var settings = new CassetteSettings("");
-            configuration.Configure(null, settings);
-            defaults = settings.GetDefaults<HtmlTemplateBundle>();
+            contributor = new HtmlTemplateBootstrapperContributor();
+            fileSearch = (FileSearch)contributor.GetInstance<IFileSearch>();
         }
 
         [Fact]
         public void FileSearchPatternIsHtmAndHtml()
         {
-            defaults.FileSearch.Pattern.ShouldEqual("*.htm;*.html");
+            fileSearch.Pattern.ShouldEqual("*.htm;*.html");
         }
 
         [Fact]
         public void FileSearchSearchOptionIsAllDirectories()
         {
-            defaults.FileSearch.SearchOption.ShouldEqual(SearchOption.AllDirectories);
+            fileSearch.SearchOption.ShouldEqual(SearchOption.AllDirectories);
         }
 
         [Fact]
         public void BundleFactoryIsHtmlTemplateBundleFactory()
         {
-            defaults.BundleFactory.ShouldBeType<HtmlTemplateBundleFactory>();
+            contributor.ShouldHaveTypeRegistration<IBundleFactory<HtmlTemplateBundle>, HtmlTemplateBundleFactory>();
         }
 
         [Fact]
         public void BundlePipelineIsHtmlTemplatePipeline()
         {
-            defaults.BundlePipeline.ShouldBeType<HtmlTemplatePipeline>();
+            contributor.ShouldHaveTypeRegistration<IBundlePipeline<HtmlTemplateBundle>, HtmlTemplatePipeline>();
+        }
+    }
+
+    static class BootstrapperContributorExtensions
+    {
+        public static T GetInstance<T>(this BootstrapperContributor contributor)
+        {
+            return (T)contributor.InstanceRegistrations.First(i => i.RegistrationType == typeof(T)).Instance;
+        }
+
+        public static void ShouldHaveTypeRegistration<TR,TI>(this BootstrapperContributor contributor)
+        {
+            contributor
+                .TypeRegistrations
+                .First(t => t.RegistrationType == typeof(TR))
+                .ImplementationType
+                .ShouldEqual(typeof(TI));
         }
     }
 }

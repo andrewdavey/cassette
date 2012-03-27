@@ -15,7 +15,8 @@ namespace Cassette
     public abstract class DefaultBootstrapperBase : IBootstrapper
     {
         TinyIoCContainer container = new TinyIoCContainer();
-
+        readonly List<InstanceRegistration> additionalInstanceRegistrations = new List<InstanceRegistration>();
+ 
         public void Initialize()
         {
             var contributors = BootstrapperContributors.ToArray();
@@ -26,7 +27,7 @@ namespace Cassette
             var collectionTypeRegistrations = CollectionTypeRegistrations.Concat(contributors.SelectMany(c => c.CollectionTypeRegistrations));
             RegisterCollectionTypes(collectionTypeRegistrations);
 
-            var instanceRegistrations = InstanceRegistrationTypes.Concat(contributors.SelectMany(c => c.InstanceRegistrations));
+            var instanceRegistrations = InstanceRegistrationTypes.Concat(contributors.SelectMany(c => c.InstanceRegistrations)).Concat(additionalInstanceRegistrations);
             RegisterInstances(instanceRegistrations);
         }
 
@@ -45,7 +46,7 @@ namespace Cassette
             foreach (var typeRegistration in typeRegistrations)
             {
                 container
-                    .Register(typeRegistration.RegistrationType, typeRegistration.ImplementationType)
+                    .Register(typeRegistration.RegistrationType, typeRegistration.ImplementationType, typeRegistration.Name)
                     .AsSingleton();
             }
         }
@@ -94,7 +95,6 @@ namespace Cassette
                     new TypeRegistration(typeof(IUrlGenerator), UrlGenerator),
                     new TypeRegistration(typeof(IJavaScriptMinifier), JavaScriptMinifier),
                     new TypeRegistration(typeof(IStylesheetMinifier), CssMinifier),
-                    new TypeRegistration(typeof(IDefaultFileSearchProvider), DefaultFileSearchProvider),
                     new TypeRegistration(typeof(BundleCollectionX), typeof(BundleCollectionX))
                 };
             }
@@ -119,11 +119,20 @@ namespace Cassette
                 {
                     new InstanceRegistration(typeof(CassetteSettings), CassetteSettings),
                     new InstanceRegistration(
-                        typeof(Func<Type, FileSearch>),
-                        new Func<Type, FileSearch>(type => container.Resolve<FileSearch>(type.Name + ".FileSearch"))
-                        )
+                        typeof(Func<Type, IFileSearch>),
+                        new Func<Type, IFileSearch>(bundleType => container.Resolve<IFileSearch>(FileSearchComponentName(bundleType)))
+                    )
                 };
             }
+        }
+
+        /// <summary>
+        /// A separate <see cref="IFileSearch"/> is stored in the container for each type of bundle.
+        /// This method returns a name that identifies the FileSearch for a particular bundle type.
+        /// </summary>
+        public static string FileSearchComponentName(Type bundleType)
+        {
+            return bundleType.Name + ".FileSearch";
         }
 
         protected virtual Type UrlModifier
@@ -131,7 +140,10 @@ namespace Cassette
             get { return typeof(VirtualDirectoryPrepender); }
         }
         
-        protected abstract Type UrlGenerator { get; }
+        protected virtual Type UrlGenerator
+        {
+            get { return typeof(UrlGenerator); }            
+        }
 
         protected virtual Type JavaScriptMinifier
         {
@@ -150,59 +162,49 @@ namespace Cassette
 
         protected virtual CassetteSettings CassetteSettings
         {
-            get { return new CassetteSettings("");}
+            get { return new CassetteSettings(""); }
         }
 
-        protected virtual Type DefaultFileSearchProvider
+        protected void SetDefaultFileSearch<T>(IFileSearch fileSearch)
         {
-            get { return typeof(DefaultFileSearchProvider); }
+            additionalInstanceRegistrations.Add(
+                new InstanceRegistration(typeof(IFileSearch), fileSearch, FileSearchComponentName(typeof(T)))
+            );
+        }
+    }
+
+    public class FileSearch<T> : FileSearch
+    {
+        public FileSearch(IEnumerable<IFileSearchModifier<T>> modifiers)
+        {
+            foreach (var modifier in modifiers)
+            {
+                modifier.Modify(this);
+            }
         }
     }
 
     public class BundleCollectionX
     {
         readonly CassetteSettings settings;
-        readonly IDefaultFileSearchProvider defaultFileSearchProvider;
+        readonly Func<Type, IFileSearch> getFileSearchForBundleType;
 
-        public BundleCollectionX(CassetteSettings settings, IDefaultFileSearchProvider defaultFileSearchProvider)
+        public BundleCollectionX(CassetteSettings settings, Func<Type, IFileSearch> getFileSearchForBundleType)
         {
             this.settings = settings;
-            this.defaultFileSearchProvider = defaultFileSearchProvider;
+            this.getFileSearchForBundleType = getFileSearchForBundleType;
         }
 
         public void Add<T>(string applicationRelativePath) where T : Bundle
         {
-            var fileSearch = defaultFileSearchProvider.GetDefaultFileSearch<T>();
-            var files = fileSearch.FindFiles(settings.SourceDirectory);
+            var fileSearch = getFileSearchForBundleType(typeof(T));
+            //var files = fileSearch.FindFiles(settings.SourceDirectory);
         }    
     }
 
-    public interface IDefaultFileSearchProvider
+    public interface IFileSearchModifier<T>
     {
-        IFileSearch GetDefaultFileSearch<T>() where T : Bundle;
-    }
-
-    public class DefaultFileSearchProvider : IDefaultFileSearchProvider
-    {
-        readonly Func<Type, FileSearch> getDefaultFileSearchForBundleType;
-        readonly IEnumerable<IFileSearchModifier> fileSearchModifiers;
-
-        public DefaultFileSearchProvider(Func<Type, FileSearch> getDefaultFileSearchForBundleType, IEnumerable<IFileSearchModifier> fileSearchModifiers)
-        {
-            this.getDefaultFileSearchForBundleType = getDefaultFileSearchForBundleType;
-            this.fileSearchModifiers = fileSearchModifiers;
-        }
-
-        public IFileSearch GetDefaultFileSearch<T>() where T : Bundle
-        {
-            var fileSearch = getDefaultFileSearchForBundleType(typeof(T));
-            return fileSearchModifiers.Aggregate(fileSearch, (current, modifier) => modifier.Modify(current, typeof(T)));
-        }
-    }
-
-    public interface IFileSearchModifier
-    {
-        FileSearch Modify(FileSearch fileSearch, Type bundleType);
+        void Modify(FileSearch fileSearch);
     }
 
     public interface IBundleDefinition
@@ -230,7 +232,7 @@ namespace Cassette
         {
             get
             {
-                yield return new CollectionTypeRegistration(typeof(IFileSearchModifier), DefaultFileSearchModifiers);
+                yield return new CollectionTypeRegistration(typeof(IFileSearchModifier<T>), FileSearchModifiers);
                 yield return new CollectionTypeRegistration(typeof(IBundlePipelineModifier<T>), BundlePipelineModifiers);
             }
         }
@@ -241,20 +243,13 @@ namespace Cassette
             {
                 yield return new TypeRegistration(typeof(IBundlePipeline<T>), BundlePipeline);
                 yield return new TypeRegistration(typeof(IBundleFactory<T>), BundleFactory);
+                yield return new TypeRegistration(typeof(IFileSearch), typeof(FileSearch<T>), DefaultBootstrapperBase.FileSearchComponentName(typeof(T)));
             }
         }
 
-        public override IEnumerable<InstanceRegistration> InstanceRegistrations
+        IEnumerable<Type> FileSearchModifiers
         {
-            get
-            {
-                yield return new InstanceRegistration(typeof(FileSearch), FileSearch, typeof(T).Name + ".FileSearch");
-            }
-        }
-
-        IEnumerable<Type> DefaultFileSearchModifiers
-        {
-            get { return AppDomainAssemblyTypeScanner.TypesOf<IFileSearchModifier>(); }
+            get { return AppDomainAssemblyTypeScanner.TypesOf<IFileSearchModifier<T>>(); }
         }
 
         IEnumerable<Type> BundlePipelineModifiers
@@ -265,8 +260,6 @@ namespace Cassette
         protected abstract Type BundlePipeline { get; }
 
         protected abstract Type BundleFactory { get; }
-
-        protected abstract FileSearch FileSearch { get; }
     }
 
     public class ScriptBootstrapperContributor : BootstrapperContributor<ScriptBundle>
@@ -281,18 +274,15 @@ namespace Cassette
         {
             get { return typeof(ScriptBundleFactory); }
         }
+    }
 
-        protected override FileSearch FileSearch
+    public class ScriptFileSearchModifier : IFileSearchModifier<ScriptBundle>
+    {
+        public void Modify(FileSearch fileSearch)
         {
-            get
-            {
-                return new FileSearch
-                {
-                    Pattern = "*.js",
-                    SearchOption = SearchOption.AllDirectories,
-                    Exclude = new Regex("-vsdoc\\.js")
-                };
-            }
+            fileSearch.Pattern = "*.js";
+            fileSearch.SearchOption = SearchOption.AllDirectories;
+            fileSearch.Exclude = new Regex("-vsdoc\\.js");
         }
     }
 
@@ -307,17 +297,14 @@ namespace Cassette
         {
             get { return typeof(StylesheetBundleFactory); }
         }
+    }
 
-        protected override FileSearch FileSearch
+    public class StylesheetFileSearchModifier : IFileSearchModifier<StylesheetBundle>
+    {
+        public void Modify(FileSearch fileSearch)
         {
-            get
-            {
-                return new FileSearch
-                {
-                    Pattern = "*.css",
-                    SearchOption = SearchOption.AllDirectories
-                };
-            }
+            fileSearch.Pattern = "*.css";
+            fileSearch.SearchOption = SearchOption.AllDirectories;
         }
     }
 
@@ -332,17 +319,14 @@ namespace Cassette
         {
             get { return typeof(HtmlTemplateBundleFactory); }
         }
+    }
 
-        protected override FileSearch FileSearch
+    public class HtmlTemplateFileSearchModifier : IFileSearchModifier<HtmlTemplateBundle>
+    {
+        public void Modify(FileSearch fileSearch)
         {
-            get
-            {
-                return new FileSearch
-                {
-                    Pattern = "*.htm;*.html",
-                    SearchOption = SearchOption.AllDirectories
-                };
-            }
+            fileSearch.Pattern = "*.htm;*.html";
+            fileSearch.SearchOption = SearchOption.AllDirectories;
         }
     }
 
@@ -375,8 +359,14 @@ namespace Cassette
     {
         public Type RegistrationType { get; private set; }
         public Type ImplementationType { get; private set; }
+        public string Name { get; private set; }
 
         public TypeRegistration(Type registrationType, Type implementationType)
+            : this(registrationType, implementationType, null)
+        {
+        }
+
+        public TypeRegistration(Type registrationType, Type implementationType, string name)
         {
             if (registrationType == null)
             {
@@ -393,6 +383,7 @@ namespace Cassette
 
             RegistrationType = registrationType;
             ImplementationType = implementationType;
+            Name = name;
         }
     }
 
@@ -454,26 +445,12 @@ namespace Cassette
         }
     }
 
-    public abstract class FileSearchModifier<T> : IFileSearchModifier
-        where T : Bundle
-    {
-        public FileSearch Modify(FileSearch fileSearch, Type bundleType)
-        {
-            return typeof(T) == bundleType 
-                ? Modify(fileSearch) 
-                : fileSearch;
-        }
-
-        protected abstract FileSearch Modify(FileSearch fileSearch);
-    }
-
     // TODO: Move to Cassette.CoffeeScript
-    public class CoffeeScriptFileSearchModifier : FileSearchModifier<ScriptBundle>
+    public class CoffeeScriptFileSearchModifier : IFileSearchModifier<ScriptBundle>
     {
-        protected override FileSearch Modify(FileSearch fileSearch)
+        public void Modify(FileSearch fileSearch)
         {
             fileSearch.Pattern += ";*.coffee";
-            return fileSearch;
         }
     }
 }

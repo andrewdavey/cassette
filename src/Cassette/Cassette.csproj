@@ -88,7 +88,6 @@
     <Compile Include="Configuration\CompileTimeManifestBundleContainerFactory.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
-    <Compile Include="Configuration\HtmlTemplateBundleConfiguration.cs" />
     <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
     <Compile Include="Configuration\ScriptBundleConfiguration.cs" />
     <Compile Include="Configuration\StylesheetBundleConfiguration.cs" />
