@@ -64,6 +64,7 @@
     <Compile Include="CoffeeScriptCommentParser.cs" />
     <Compile Include="CoffeeScriptCompileException.cs" />
     <Compile Include="CoffeeScriptConfiguration.cs" />
+    <Compile Include="CoffeeScriptFileSearchModifier.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="IECoffeeScriptCompiler.cs" />
     <Compile Include="JurassicCoffeeScriptCompiler.cs" />

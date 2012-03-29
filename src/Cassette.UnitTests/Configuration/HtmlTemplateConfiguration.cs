@@ -11,11 +11,11 @@ namespace Cassette.Configuration
     public class HtmlTemplateConfiguration_Tests
     {
         readonly FileSearch fileSearch;
-        readonly HtmlTemplateBootstrapperContributor contributor;
+        readonly HtmlTemplateBundleBootstrapperContributor contributor;
 
         public HtmlTemplateConfiguration_Tests()
         {
-            contributor = new HtmlTemplateBootstrapperContributor();
+            contributor = new HtmlTemplateBundleBootstrapperContributor();
             fileSearch = (FileSearch)contributor.GetInstance<IFileSearch>();
         }
 

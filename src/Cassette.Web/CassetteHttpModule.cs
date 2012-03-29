@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web;
-using Cassette.Configuration;
 
 namespace Cassette.Web
 {
@@ -54,9 +53,5 @@ namespace Cassette.Web
                 _application = null;
             }
         }
-    }
-
-    public class DefaultBootstrapper : DefaultBootstrapperBase
-    {
     }
 }

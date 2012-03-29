@@ -66,4 +66,15 @@ namespace Cassette.Configuration
                    || file.FullPath.EndsWith("/module.txt", StringComparison.OrdinalIgnoreCase);
         }
     }
+
+    public class FileSearch<T> : FileSearch
+    {
+        public FileSearch(IEnumerable<IFileSearchModifier<T>> modifiers)
+        {
+            foreach (var modifier in modifiers)
+            {
+                modifier.Modify(this);
+            }
+        }
+    }
 }

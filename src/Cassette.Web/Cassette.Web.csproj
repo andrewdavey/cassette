@@ -71,6 +71,7 @@
     <Compile Include="AssignUrlGenerator.cs" />
     <Compile Include="CassetteApplication.cs" />
     <Compile Include="CassetteApplicationContainerFactory.cs" />
+    <Compile Include="DefaultBootstrapper.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="IsolatedStorageContainer.cs" />
     <Compile Include="DelegateCassetteConfigurationFactory.cs" />
