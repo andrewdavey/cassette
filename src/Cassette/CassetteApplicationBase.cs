@@ -7,14 +7,16 @@ namespace Cassette
 {
     abstract class CassetteApplicationBase : ICassetteApplication
     {
-        protected CassetteApplicationBase(IBundleContainer bundleContainer, CassetteSettings settings)
+        protected CassetteApplicationBase(IBundleContainer bundleContainer, IBundleFactoryProvider bundleFactoryProvider, CassetteSettings settings)
         {
             this.settings = settings;
             this.bundleContainer = bundleContainer;
+            this.bundleFactoryProvider = bundleFactoryProvider;
         }
 
         readonly CassetteSettings settings;
         readonly IBundleContainer bundleContainer;
+        readonly IBundleFactoryProvider bundleFactoryProvider;
 
         public CassetteSettings Settings
         {
@@ -51,6 +53,7 @@ namespace Cassette
             return new ReferenceBuilder(
                 bundleContainer,
                 GetPlaceholderTracker(),
+                bundleFactoryProvider,
                 settings
             );
         }

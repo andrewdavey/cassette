@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Cassette.Manifests;
 
 namespace Cassette.Configuration
@@ -8,13 +9,15 @@ namespace Cassette.Configuration
         readonly BundleCollection runtimeGeneratedBundles;
         readonly ICassetteManifestCache cache;
         readonly CassetteSettings settings;
+        readonly IUrlModifier urlModifier;
 
-        public CachedBundleContainerFactory(BundleCollection runtimeGeneratedBundles, ICassetteManifestCache cache, CassetteSettings settings)
-            : base(settings)
+        public CachedBundleContainerFactory(BundleCollection runtimeGeneratedBundles, ICassetteManifestCache cache, CassetteSettings settings, IBundleFactoryProvider bundleFactoryProvider, IUrlModifier urlModifier)
+            : base(settings, bundleFactoryProvider)
         {
             this.runtimeGeneratedBundles = runtimeGeneratedBundles;
             this.cache = cache;
             this.settings = settings;
+            this.urlModifier = urlModifier;
         }
 
         public override IBundleContainer CreateBundleContainer()
@@ -29,12 +32,12 @@ namespace Cassette.Configuration
             return new BundleContainer(allBundles);
         }
 
-        BundleCollection CreateBundles(CassetteManifest cachedManifest, CassetteManifest currentManifest)
+        IEnumerable<Bundle> CreateBundles(CassetteManifest cachedManifest, CassetteManifest currentManifest)
         {
             if (CanUseCachedBundles(cachedManifest, currentManifest))
             {
                 Trace.Source.TraceInformation("Using cache.");
-                return cachedManifest.CreateBundleCollection(settings);
+                return cachedManifest.CreateBundles(urlModifier);
             }
             else
             {
@@ -48,7 +51,7 @@ namespace Cassette.Configuration
                    cachedManifest.IsUpToDateWithFileSystem(settings.SourceDirectory);
         }
 
-        BundleCollection ProcessAndCacheAndGetRuntimeGeneratedBundles()
+        IEnumerable<Bundle> ProcessAndCacheAndGetRuntimeGeneratedBundles()
         {
             ProcessAllBundles(runtimeGeneratedBundles);
 
@@ -56,7 +59,7 @@ namespace Cassette.Configuration
 
             Trace.Source.TraceInformation("Saving cache.");
             cache.SaveCassetteManifest(manifest);
-            return manifest.CreateBundleCollection(settings);
+            return manifest.CreateBundles(urlModifier);
         }
 
         CassetteManifest CreateCassetteManifestFromRuntimeGeneratedBundles()

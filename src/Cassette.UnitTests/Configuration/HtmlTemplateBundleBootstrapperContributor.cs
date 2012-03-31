@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
 using Should;
@@ -8,12 +6,12 @@ using Xunit;
 
 namespace Cassette.Configuration
 {
-    public class HtmlTemplateConfiguration_Tests
+    public class HtmlTemplateBundleBootstrapperContributor_Tests
     {
         readonly FileSearch fileSearch;
         readonly HtmlTemplateBundleBootstrapperContributor contributor;
 
-        public HtmlTemplateConfiguration_Tests()
+        public HtmlTemplateBundleBootstrapperContributor_Tests()
         {
             contributor = new HtmlTemplateBundleBootstrapperContributor();
             fileSearch = (FileSearch)contributor.GetInstance<IFileSearch>();
@@ -41,23 +39,6 @@ namespace Cassette.Configuration
         public void BundlePipelineIsHtmlTemplatePipeline()
         {
             contributor.ShouldHaveTypeRegistration<IBundlePipeline<HtmlTemplateBundle>, HtmlTemplatePipeline>();
-        }
-    }
-
-    static class BootstrapperContributorExtensions
-    {
-        public static T GetInstance<T>(this BootstrapperContributor contributor)
-        {
-            return (T)contributor.InstanceRegistrations.First(i => i.RegistrationType == typeof(T)).Instance;
-        }
-
-        public static void ShouldHaveTypeRegistration<TR,TI>(this BootstrapperContributor contributor)
-        {
-            contributor
-                .TypeRegistrations
-                .First(t => t.RegistrationType == typeof(TR))
-                .ImplementationType
-                .ShouldEqual(typeof(TI));
         }
     }
 }

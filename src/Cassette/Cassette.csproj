@@ -77,6 +77,8 @@
     <Compile Include="AppDomainAssemblyTypeScanner.cs" />
     <Compile Include="BootstrapperBase.cs" />
     <Compile Include="BootstrapperLocator.cs" />
+    <Compile Include="BundleCollection.cs" />
+    <Compile Include="BundleFactoryProvider.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
     <Compile Include="BundleProcessing\ConditionalBundlePipeline.cs" />
@@ -88,7 +90,6 @@
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="Configuration\BootstrapperContributor.cs" />
     <Compile Include="Configuration\BundleBootstrapperContributor.cs" />
-    <Compile Include="Configuration\BundleDefaults.cs" />
     <Compile Include="Configuration\CollectionTypeRegistration.cs" />
     <Compile Include="Configuration\CompileTimeManifestBundleContainerFactory.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
@@ -98,8 +99,6 @@
     <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
     <Compile Include="Configuration\IFileSearchModifier.cs" />
     <Compile Include="Configuration\InstanceRegistration.cs" />
-    <Compile Include="Configuration\ScriptBundleConfiguration.cs" />
-    <Compile Include="Configuration\StylesheetBundleConfiguration.cs" />
     <Compile Include="Configuration\TypeRegistration.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DefaultBootstrapper.cs" />
@@ -107,6 +106,8 @@
     <Compile Include="HtmlTemplates\HtmlTemplateFileSearchModifier.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IBootstrapper.cs" />
+    <Compile Include="IBundleCollectionBuilder.cs" />
+    <Compile Include="IBundleFactoryProvider.cs" />
     <Compile Include="IExternalBundle.cs" />
     <Compile Include="InternalCassetteConfigurationAttribute.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -140,12 +141,10 @@
     <Compile Include="FileAsset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="AssetFinder.cs" />
-    <Compile Include="BundleContainerExtensions.cs" />
     <Compile Include="BundleFactoryBase.cs" />
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
-    <Compile Include="Configuration\BundleCollectionExtensions.cs" />
     <Compile Include="Configuration\BundleContainerFactory.cs" />
     <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
     <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
@@ -272,14 +271,12 @@
     <Compile Include="IAssetTransformer.cs" />
     <Compile Include="IBundleVisitor.cs" />
     <Compile Include="IO\IDirectory.cs" />
-    <Compile Include="IBundleContainer.cs" />
     <Compile Include="IBundleFactory.cs" />
     <Compile Include="BundleProcessing\IBundleProcessor.cs" />
     <Compile Include="BundleProcessing\ConcatenatedAsset.cs" />
     <Compile Include="Scripts\MicrosoftJavaScriptMinifier.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="Bundle.cs" />
-    <Compile Include="BundleContainer.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleFactory.cs" />

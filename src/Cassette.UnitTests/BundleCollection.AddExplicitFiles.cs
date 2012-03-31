@@ -1,11 +1,12 @@
 ﻿using System.IO;
+using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Utilities;
 using Should;
 using Xunit;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class BundleCollection_AddExplicitFiles_Tests
     {

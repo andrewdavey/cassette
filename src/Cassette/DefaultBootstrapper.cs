@@ -47,36 +47,21 @@ namespace Cassette
 
         protected override ICassetteApplication GetApplication(TinyIoCContainer container)
         {
-            var bundleCollection = container.Resolve<BundleCollectionX>();
-            foreach (var bundleDefinition in container.ResolveAll<IBundleDefinition>())
-            {
-                bundleDefinition.AddBundles(bundleCollection);
-            }
+            var bundleCollection = container.Resolve<BundleCollection>();
+            var bundleCollectionBuilder = container.Resolve<IBundleCollectionBuilder>();
+            bundleCollectionBuilder.BuildBundleCollection(bundleCollection);
 
             throw new NotImplementedException();
         }
 
-        protected override IFileSearch GetFileSearch(TinyIoCContainer container, string name)
+        protected override IFileSearch GetFileSearch(string name, TinyIoCContainer container)
         {
             return container.Resolve<IFileSearch>(name);
         }
-    }
 
-    public class BundleCollectionX
-    {
-        readonly CassetteSettings settings;
-        readonly Func<Type, IFileSearch> getFileSearchForBundleType;
-
-        public BundleCollectionX(CassetteSettings settings, Func<Type, IFileSearch> getFileSearchForBundleType)
+        protected override IBundleFactory<Bundle> GetBundleFactory(Type bundleType, TinyIoCContainer container)
         {
-            this.settings = settings;
-            this.getFileSearchForBundleType = getFileSearchForBundleType;
+            return (IBundleFactory<Bundle>)container.Resolve(typeof(IBundleFactory<>).MakeGenericType(bundleType));
         }
-
-        public void Add<T>(string applicationRelativePath) where T : Bundle
-        {
-            var fileSearch = getFileSearchForBundleType(typeof(T));
-            //var files = fileSearch.FindFiles(settings.SourceDirectory);
-        }    
     }
 }

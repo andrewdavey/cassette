@@ -2,7 +2,7 @@
 
 namespace Cassette
 {
-    class BundleDescriptor
+    public class BundleDescriptor
     {
         public BundleDescriptor()
         {

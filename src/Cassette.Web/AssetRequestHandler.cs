@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Web;
+﻿using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
 
@@ -7,14 +6,14 @@ namespace Cassette.Web
 {
     class AssetRequestHandler : IHttpHandler
     {
-        public AssetRequestHandler(RequestContext requestContext, IEnumerable<Bundle> bundles)
+        public AssetRequestHandler(RequestContext requestContext, BundleCollection bundles)
         {
             this.requestContext = requestContext;
             this.bundles = bundles;
         }
 
         readonly RequestContext requestContext;
-        readonly IEnumerable<Bundle> bundles;
+        readonly BundleCollection bundles;
 
         public bool IsReusable
         {

@@ -1,31 +1,30 @@
-﻿using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
     class StylesheetBundleFactory : BundleFactoryBase<StylesheetBundle>
     {
-        readonly CassetteSettings settings;
+        readonly IBundlePipeline<StylesheetBundle> stylesheetPipeline;
 
-        public StylesheetBundleFactory(CassetteSettings settings)
+        public StylesheetBundleFactory(IBundlePipeline<StylesheetBundle> stylesheetPipeline)
         {
-            this.settings = settings;
+            this.stylesheetPipeline = stylesheetPipeline;
         }
 
         protected override StylesheetBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
-            var pipeline = settings.GetDefaults<StylesheetBundle>().BundlePipeline;
             if (bundleDescriptor.ExternalUrl != null)
             {
                 return new ExternalStylesheetBundle(bundleDescriptor.ExternalUrl, path)
                 {
-                    Processor = pipeline
+                    Processor = stylesheetPipeline
                 };
             }
             else
             {
                 return new StylesheetBundle(path)
                 {
-                    Processor = pipeline
+                    Processor = stylesheetPipeline
                 };
             }
         }

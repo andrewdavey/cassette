@@ -7,12 +7,13 @@ namespace Cassette.Configuration
     class CompileTimeManifestBundleContainerFactory : BundleContainerFactoryBase
     {
         readonly string filename;
-        readonly CassetteSettings settings;
+        readonly IUrlModifier urlModifier;
 
-        public CompileTimeManifestBundleContainerFactory(string filename, CassetteSettings settings) : base(settings)
+        public CompileTimeManifestBundleContainerFactory(string filename, CassetteSettings settings, IBundleFactoryProvider bundleFactoryProvider, IUrlModifier urlModifier)
+            : base(settings, bundleFactoryProvider)
         {
             this.filename = filename;
-            this.settings = settings;
+            this.urlModifier = urlModifier;
         }
 
         public override IBundleContainer CreateBundleContainer()
@@ -20,7 +21,7 @@ namespace Cassette.Configuration
             Trace.Source.TraceInformation("Initializing bundles from compile-time manifest: {0}", filename);
 
             var manifest = ReadCassetteManifest();
-            var bundles = manifest.CreateBundleCollection(settings);
+            var bundles = manifest.CreateBundles(urlModifier);
 
             var externalBundles = CreateExternalBundlesUrlReferences(bundles);
             return new BundleContainer(bundles.Concat(externalBundles));

@@ -4,24 +4,19 @@ namespace Cassette.Stylesheets
 {
     public class StylesheetPipeline : BundlePipeline<StylesheetBundle>
     {
-        public StylesheetPipeline()
-            : this(new MicrosoftStylesheetMinifier())
-        {
-        }
-
-        public StylesheetPipeline(IAssetTransformer cssMinifier)
+        public StylesheetPipeline(IStylesheetMinifier stylesheetMinifier, IUrlGenerator urlGenerator)
         {
             AddRange(new IBundleProcessor<StylesheetBundle>[]
             {
-                new AssignStylesheetRenderer(),
+                new AssignStylesheetRenderer(urlGenerator),
                 new ParseCssReferences(),
-                new ExpandCssUrls(),
+                new ExpandCssUrls(urlGenerator),
                 new SortAssetsByDependency(),
                 new AssignHash(),
                 new ConditionalBundlePipeline<StylesheetBundle>(
                     settings => !settings.IsDebuggingEnabled,
                     new ConcatenateAssets(),
-                    new MinifyAssets(cssMinifier)
+                    new MinifyAssets(stylesheetMinifier)
                 )
             });
         }

@@ -9,17 +9,17 @@ namespace Cassette.Configuration
     /// <summary>
     /// A collection of asset bundles.
     /// </summary>
-    public class BundleCollection : IEnumerable<Bundle>
+    public class BundleCollectionOld : IEnumerable<Bundle>
     {
         readonly CassetteSettings settings;
         readonly List<Bundle> bundles = new List<Bundle>();
 
-        public BundleCollection(CassetteSettings settings)
+        public BundleCollectionOld(CassetteSettings settings)
         {
             this.settings = settings;
         }
 
-        internal BundleCollection(CassetteSettings settings, IEnumerable<Bundle> bundles)
+        internal BundleCollectionOld(CassetteSettings settings, IEnumerable<Bundle> bundles)
             : this(settings)
         {
             this.bundles.AddRange(bundles);
@@ -83,16 +83,6 @@ namespace Cassette.Configuration
             get { return Get(path); }
         }
 
-        IEnumerator<Bundle> IEnumerable<Bundle>.GetEnumerator()
-        {
-            return bundles.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return bundles.GetEnumerator();
-        }
-
         T Get<T>(string path, Func<Bundle[], T> getFromMatching)
         {
             path = PathUtilities.AppRelative(path);
@@ -107,6 +97,16 @@ namespace Cassette.Configuration
 
             return getFromMatching(matchingBundles);
         }
+        IEnumerator<Bundle> IEnumerable<Bundle>.GetEnumerator()
+        {
+            return bundles.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return bundles.GetEnumerator();
+        }
+
 
         internal void Remove(Bundle bundle)
         {

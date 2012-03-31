@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Manifests;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
+
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -17,19 +15,11 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
-        readonly Dictionary<Type, object> bundleDefaultsByType = new Dictionary<Type, object>(); 
         readonly Lazy<ICassetteManifestCache> cassetteManifestCache;
         readonly List<Func<string, bool>> allowPathPredicates = new List<Func<string, bool>>();
  
         public CassetteSettings(string cacheVersion)
         {
-            bundleDefaultsByType = new Dictionary<Type, object>
-            {
-                { typeof(ScriptBundle), new BundleDefaults<ScriptBundle>() },
-                { typeof(StylesheetBundle), new BundleDefaults<StylesheetBundle>() },
-                { typeof(HtmlTemplateBundle), new BundleDefaults<HtmlTemplateBundle>() },
-            };
-
             Version = cacheVersion;
 
             cassetteManifestCache = new Lazy<ICassetteManifestCache>(
@@ -42,6 +32,8 @@ namespace Cassette.Configuration
         /// The application's Cassette configuration MUST NOT add bundles to the bundle collection.
         /// </summary>
         public bool IsUsingPrecompiledManifest { get; internal set; }
+
+        internal IFile PrecompiledManifestFile { get; set; }
 
         /// <summary>
         /// When this property is true, Cassette will output debug-friendly assets. When false, combined, minified bundles are used instead.
@@ -65,13 +57,6 @@ namespace Cassette.Configuration
         /// </summary>
         public IDirectory CacheDirectory { get; set; }
 
-        /// <summary>
-        /// The <see cref="IUrlModifier"/> used to convert application relative URLs into absolute URLs.
-        /// </summary>
-        public IUrlModifier UrlModifier { get; set; }
-
-        public IUrlGenerator UrlGenerator { get; set; }
-
         internal bool AllowRemoteDiagnostics { get; set; }
 
         internal string Version { get; private set; }
@@ -79,48 +64,6 @@ namespace Cassette.Configuration
         internal ICassetteManifestCache CassetteManifestCache
         {
             get { return cassetteManifestCache.Value; }
-        }
-
-        public void ModifyDefaults<T>(Action<BundleDefaults<T>> modifications)
-            where T : Bundle
-        {
-            var defaults = (BundleDefaults<T>)bundleDefaultsByType[typeof(T)];
-            modifications(defaults);
-        }
-
-        public BundleDefaults<T> GetDefaults<T>()
-            where T : Bundle
-        {
-            return (BundleDefaults<T>)bundleDefaultsByType[typeof(T)];
-        }
-
-        internal IBundleDefaults GetDefaults(Type bundleType)
-        {
-            return (IBundleDefaults)bundleDefaultsByType[bundleType];
-        }
-
-        internal IBundleContainerFactory GetBundleContainerFactory(IEnumerable<ICassetteConfiguration> cassetteConfigurations)
-        {
-            var bundles = ExecuteCassetteConfiguration(cassetteConfigurations);
-            if (IsDebuggingEnabled)
-            {
-                return new BundleContainerFactory(bundles, this);
-            }
-            else
-            {
-                return new CachedBundleContainerFactory(bundles, CassetteManifestCache, this);
-            }
-        }
-
-        BundleCollection ExecuteCassetteConfiguration(IEnumerable<ICassetteConfiguration> cassetteConfigurations)
-        {
-            var bundles = new BundleCollection(this);
-            foreach (var configuration in cassetteConfigurations)
-            {
-                Trace.Source.TraceInformation("Executing configuration {0}", configuration.GetType().AssemblyQualifiedName);
-                configuration.Configure(bundles, this);
-            }
-            return bundles;
         }
 
         internal bool CanRequestRawFile(string filePath)

@@ -1,28 +1,38 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
     class ExternalBundleGenerator : IBundleVisitor
     {
+        readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly CassetteSettings settings;
-        readonly HashSet<string> existingUrls;
-        readonly List<Bundle> bundles = new List<Bundle>();
+        HashSet<string> existingUrls;
+        List<Bundle> createdExternalBundles;
         Bundle currentBundle;
 
-        public ExternalBundleGenerator(IEnumerable<string> existingUrls, CassetteSettings settings)
+        public ExternalBundleGenerator(IBundleFactoryProvider bundleFactoryProvider, CassetteSettings settings)
         {
+            this.bundleFactoryProvider = bundleFactoryProvider;
             this.settings = settings;
-            this.existingUrls = new HashSet<string>(existingUrls); // TODO: use case-insensitive string comparer?
         }
 
-        public IEnumerable<Bundle> ExternalBundles
+        public void AddBundlesForUrlReferences(BundleCollection bundleCollection)
         {
-            get { return bundles; }
+            createdExternalBundles = new List<Bundle>();
+            existingUrls = new HashSet<string>(bundleCollection.OfType<IExternalBundle>().Select(b => b.ExternalUrl)); // TODO: use case-insensitive string comparer?
+
+            bundleCollection.Accept(this);
+
+            foreach (var bundle in createdExternalBundles)
+            {
+                bundleCollection.Add(bundle);
+            }
         }
 
-        public void Visit(Bundle bundle)
+        void IBundleVisitor.Visit(Bundle bundle)
         {
             currentBundle = bundle;
 
@@ -32,11 +42,11 @@ namespace Cassette.Configuration
                 if (existingUrls.Contains(reference)) continue;
 
                 existingUrls.Add(reference);
-                bundles.Add(CreateExternalBundle(reference, currentBundle));
+                createdExternalBundles.Add(CreateExternalBundle(reference, currentBundle));
             }
         }
 
-        public void Visit(IAsset asset)
+        void IBundleVisitor.Visit(IAsset asset)
         {
             foreach (var assetReference in asset.References)
             {
@@ -44,7 +54,7 @@ namespace Cassette.Configuration
                 if (existingUrls.Contains(assetReference.Path)) continue;
 
                 existingUrls.Add(assetReference.Path);
-                bundles.Add(CreateExternalBundle(assetReference.Path, currentBundle));
+                createdExternalBundles.Add(CreateExternalBundle(assetReference.Path, currentBundle));
             }
         }
 
@@ -58,7 +68,7 @@ namespace Cassette.Configuration
 
         IBundleFactory<Bundle> GetBundleFactory(Type bundleType)
         {
-            return settings.GetDefaults(bundleType).BundleFactory;
+            return bundleFactoryProvider.GetBundleFactory(bundleType);
         }
     }
 }

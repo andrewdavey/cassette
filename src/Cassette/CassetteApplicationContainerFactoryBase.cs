@@ -100,10 +100,6 @@ namespace Cassette
             return new CassetteSettings("")
             {
                 IsUsingPrecompiledManifest = true,
-                UrlGenerator = new UrlGenerator(
-                    new VirtualDirectoryPrepender(virtualDirectory),
-                    UrlGenerator.RoutePrefix
-                ),
                 IsHtmlRewritingEnabled = configurationSection.RewriteHtml,
                 AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics
             };

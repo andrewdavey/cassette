@@ -4,16 +4,11 @@ namespace Cassette.Scripts
 {
     public class ScriptPipeline : BundlePipeline<ScriptBundle>
     {
-        public ScriptPipeline()
-            : this(new MicrosoftJavaScriptMinifier())
-        {
-        }
-
-        public ScriptPipeline(IAssetTransformer javaScriptMinifier)
+        public ScriptPipeline(IJavaScriptMinifier javaScriptMinifier, IUrlGenerator urlGenerator)
         {
             AddRange(new IBundleProcessor<ScriptBundle>[]
             {
-                new AssignScriptRenderer(),
+                new AssignScriptRenderer(urlGenerator),
                 new ParseJavaScriptReferences(),
                 new SortAssetsByDependency(),
                 new AssignHash(),

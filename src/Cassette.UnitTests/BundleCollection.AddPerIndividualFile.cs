@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Configuration;
 using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class BundleCollection_AddPerIndividualFile_Tests
     {

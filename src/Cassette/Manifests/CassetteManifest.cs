@@ -36,6 +36,11 @@ namespace Cassette.Manifests
             );
         }
 
+        public IEnumerable<Bundle> CreateBundles(IUrlModifier urlModifier)
+        {
+            return BundleManifests.Select(m => m.CreateBundle(urlModifier));
+        }
+
 // ReSharper disable CSharpWarnings::CS0659
         public override bool Equals(object obj)
 // ReSharper restore CSharpWarnings::CS0659
@@ -49,17 +54,6 @@ namespace Cassette.Manifests
         bool BundleManifestsEqual(CassetteManifest other)
         {
             return BundleManifests.OrderBy(b => b.Path).SequenceEqual(other.BundleManifests.OrderBy(b => b.Path));
-        }
-
-        public BundleCollection CreateBundleCollection(CassetteSettings settings)
-        {
-            var bundles = CreateBundles(settings);
-            return new BundleCollection(settings, bundles);
-        }
-
-        IEnumerable<Bundle> CreateBundles(CassetteSettings settings)
-        {
-            return BundleManifests.Select(m => m.CreateBundle(settings));
         }
     }
 }

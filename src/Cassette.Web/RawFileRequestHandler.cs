@@ -12,10 +12,14 @@ namespace Cassette.Web
 {
     class RawFileRequestHandler : IHttpHandler
     {
-        readonly IEnumerable<Bundle> bundles;
+        readonly BundleCollection bundles;
         readonly CassetteSettings settings;
-
-        public RawFileRequestHandler(RequestContext requestContext, IEnumerable<Bundle> bundles, CassetteSettings settings)
+        readonly RouteData routeData;
+        readonly HttpResponseBase response;
+        readonly HttpRequestBase request;
+        readonly HttpServerUtilityBase server;
+        
+        public RawFileRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings)
         {
             this.bundles = bundles;
             this.settings = settings;
@@ -25,11 +29,6 @@ namespace Cassette.Web
             server = requestContext.HttpContext.Server;
         }
 
-        readonly RouteData routeData;
-        readonly HttpResponseBase response;
-        readonly HttpRequestBase request;
-        readonly HttpServerUtilityBase server;
-        
         static readonly Dictionary<string, string> ContentTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {

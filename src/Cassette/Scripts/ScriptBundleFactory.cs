@@ -1,18 +1,18 @@
-﻿using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
+
 namespace Cassette.Scripts
 {
     class ScriptBundleFactory : BundleFactoryBase<ScriptBundle>
     {
-        readonly CassetteSettings settings;
+        readonly IBundlePipeline<ScriptBundle> scriptPipeline;
 
-        public ScriptBundleFactory(CassetteSettings settings)
+        public ScriptBundleFactory(IBundlePipeline<ScriptBundle> scriptPipeline)
         {
-            this.settings = settings;
+            this.scriptPipeline = scriptPipeline;
         }
 
         protected override ScriptBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
-            var pipeline = settings.GetDefaults<ScriptBundle>().BundlePipeline;
             if (bundleDescriptor.ExternalUrl != null)
             {
                 return new ExternalScriptBundle(
@@ -21,14 +21,14 @@ namespace Cassette.Scripts
                     bundleDescriptor.FallbackCondition
                 )
                 {
-                    Processor = pipeline
+                    Processor = scriptPipeline
                 };
             }
             else
             {
                 return new ScriptBundle(path)
                 {
-                    Processor = pipeline
+                    Processor = scriptPipeline
                 };
             }
         }

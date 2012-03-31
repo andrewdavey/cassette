@@ -44,7 +44,9 @@ namespace Cassette
 
         protected abstract ICassetteApplication GetApplication(TContainer container);
 
-        protected abstract IFileSearch GetFileSearch(TContainer container, string name);
+        protected abstract IFileSearch GetFileSearch(string name, TContainer container);
+
+        protected abstract IBundleFactory<Bundle> GetBundleFactory(Type bundleType, TContainer container);
 
         protected virtual IEnumerable<IBootstrapperContributor> BootstrapperContributors
         {
@@ -66,7 +68,7 @@ namespace Cassette
                     new TypeRegistration(typeof(IUrlGenerator), UrlGenerator),
                     new TypeRegistration(typeof(IJavaScriptMinifier), JavaScriptMinifier),
                     new TypeRegistration(typeof(IStylesheetMinifier), CssMinifier),
-                    new TypeRegistration(typeof(BundleCollectionX), typeof(BundleCollectionX))
+                    new TypeRegistration(typeof(BundleCollection), typeof(BundleCollection))
                 };
             }
         }
@@ -89,9 +91,10 @@ namespace Cassette
                 return new[]
                 {
                     new InstanceRegistration(typeof(CassetteSettings), Settings),
+                    new InstanceRegistration(typeof(IBundleFactoryProvider), BundleFactoryProvider), 
                     new InstanceRegistration(
                         typeof(Func<Type, IFileSearch>),
-                        new Func<Type, IFileSearch>(bundleType => GetFileSearch(container, FileSearchComponentName(bundleType)))
+                        new Func<Type, IFileSearch>(bundleType => GetFileSearch(FileSearchComponentName(bundleType), container))
                         )
                 };
             }
@@ -120,6 +123,11 @@ namespace Cassette
         protected virtual IEnumerable<Type> BundleDefinitions
         {
             get { return AppDomainAssemblyTypeScanner.TypesOf<IBundleDefinition>(); }
+        }
+
+        protected virtual IBundleFactoryProvider BundleFactoryProvider
+        {
+            get { return new BundleFactoryProvider(t => GetBundleFactory(t, container)); }
         }
 
         protected virtual CassetteSettings Settings

@@ -6,8 +6,8 @@ namespace Cassette.Configuration
     {
         readonly BundleCollection bundles;
 
-        public BundleContainerFactory(BundleCollection bundles, CassetteSettings settings)
-            : base(settings)
+        public BundleContainerFactory(BundleCollection bundles, CassetteSettings settings, IBundleFactoryProvider bundleFactoryProvider)
+            : base(settings, bundleFactoryProvider)
         {
             this.bundles = bundles;
         }
