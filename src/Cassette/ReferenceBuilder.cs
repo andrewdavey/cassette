@@ -13,15 +13,15 @@ namespace Cassette
 {
     class ReferenceBuilder : IReferenceBuilder
     {
-        public ReferenceBuilder(IBundleContainer bundleContainer, IPlaceholderTracker placeholderTracker, IBundleFactoryProvider bundleFactoryProvider, CassetteSettings settings)
+        public ReferenceBuilder(BundleCollection allBundles, IPlaceholderTracker placeholderTracker, IBundleFactoryProvider bundleFactoryProvider, CassetteSettings settings)
         {
-            this.bundleContainer = bundleContainer;
+            this.allBundles = allBundles;
             this.placeholderTracker = placeholderTracker;
             this.bundleFactoryProvider = bundleFactoryProvider;
             this.settings = settings;
         }
 
-        readonly IBundleContainer bundleContainer;
+        readonly BundleCollection allBundles;
         readonly IPlaceholderTracker placeholderTracker;
         readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly CassetteSettings settings;
@@ -69,7 +69,7 @@ namespace Cassette
         {
             path = PathUtilities.AppRelative(path);
 
-            var bundles = bundleContainer.FindBundlesContainingPath(path).ToArray();
+            var bundles = this.allBundles.FindBundlesContainingPath(path).ToArray();
             if (bundles.Length == 0 && path.IsUrl())
             {
                 var bundle = createExternalBundle();
@@ -142,8 +142,9 @@ namespace Cassette
         {
             var bundles = GetOrCreateBundleSet(location);
             var bundlesForLocation = GetOrCreateBundleSet(location);
-            return bundleContainer.IncludeReferencesAndSortBundles(bundles)
-                                  .Where(b => bundlesForLocation.Contains(b) || BundlePageLocationIs(b, location));
+            return this.allBundles
+                .IncludeReferencesAndSortBundles(bundles)
+                .Where(b => bundlesForLocation.Contains(b) || BundlePageLocationIs(b, location));
         }
 
         bool BundlePageLocationIs(Bundle bundle, string location)

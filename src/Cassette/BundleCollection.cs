@@ -51,6 +51,30 @@ namespace Cassette
             bundles.Add(bundle);
         }
 
+        public void AddRange(IEnumerable<Bundle> bundles)
+        {
+            foreach (var bundle in bundles)
+            {
+                Add(bundle);
+            }
+        }
+
+        internal void AddRange(IEnumerable<IBundleDefinition> bundleDefinitions)
+        {
+            foreach (var bundleDefinition in bundleDefinitions)
+            {
+                bundleDefinition.AddBundles(this);
+            }
+        }
+
+        internal void Process()
+        {
+            foreach (var bundle in bundles)
+            {
+                bundle.Process(settings);
+            }
+        }
+
         void Remove(Bundle bundle)
         {
             bundles.Remove(bundle);

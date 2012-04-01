@@ -78,6 +78,7 @@
     <Compile Include="BootstrapperBase.cs" />
     <Compile Include="BootstrapperLocator.cs" />
     <Compile Include="BundleCollection.cs" />
+    <Compile Include="BundleCollectionBuilder.cs" />
     <Compile Include="BundleFactoryProvider.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="Configuration\BootstrapperContributor.cs" />
     <Compile Include="Configuration\BundleBootstrapperContributor.cs" />
     <Compile Include="Configuration\CollectionTypeRegistration.cs" />
-    <Compile Include="Configuration\CompileTimeManifestBundleContainerFactory.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
     <Compile Include="Configuration\IBootstrapperContributor.cs" />
@@ -101,6 +101,7 @@
     <Compile Include="Configuration\InstanceRegistration.cs" />
     <Compile Include="Configuration\TypeRegistration.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
+    <Compile Include="DebugModeBundleCollectionBuilder.cs" />
     <Compile Include="DefaultBootstrapper.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleBootstrapperContributor.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateFileSearchModifier.cs" />
@@ -145,11 +146,7 @@
     <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
-    <Compile Include="Configuration\BundleContainerFactory.cs" />
-    <Compile Include="Configuration\BundleContainerFactoryBase.cs" />
-    <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
-    <Compile Include="Configuration\IBundleContainerFactory.cs" />
     <Compile Include="Configuration\ICassetteConfiguration.cs" />
     <Compile Include="HtmlAttributeDictionary.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestBuilder.cs" />
@@ -200,6 +197,8 @@
     <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="NullPlaceholderTracker.cs" />
     <Compile Include="PlaceholderTracker.cs" />
+    <Compile Include="PrecompiledBundleCollectionBuilder.cs" />
+    <Compile Include="ProductionModeBundleCollectionBuilder.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\AssignScriptRenderer.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />

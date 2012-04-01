@@ -4,6 +4,13 @@ namespace Cassette.Web
 {
     public class DefaultBootstrapper : DefaultBootstrapperBase
     {
+        protected override ICassetteApplication GetApplication(TinyIoC.TinyIoCContainer container)
+        {
+            // TODO: Install routes...
+
+            return base.GetApplication(container);
+        }
+
         protected override CassetteSettings Settings
         {
             get

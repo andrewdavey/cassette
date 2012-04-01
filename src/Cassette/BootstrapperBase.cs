@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Configuration;
+using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
@@ -68,7 +69,9 @@ namespace Cassette
                     new TypeRegistration(typeof(IUrlGenerator), UrlGenerator),
                     new TypeRegistration(typeof(IJavaScriptMinifier), JavaScriptMinifier),
                     new TypeRegistration(typeof(IStylesheetMinifier), CssMinifier),
-                    new TypeRegistration(typeof(BundleCollection), typeof(BundleCollection))
+                    new TypeRegistration(typeof(BundleCollection), typeof(BundleCollection)),
+                    new TypeRegistration(typeof(IBundleCollectionBuilder), typeof(BundleCollectionBuilder)),
+                    new TypeRegistration(typeof(ICassetteManifestCache), typeof(CassetteManifestCache)), 
                 };
             }
         }
