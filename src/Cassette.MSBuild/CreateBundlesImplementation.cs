@@ -1,73 +1,38 @@
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Cassette.Configuration;
-using Cassette.IO;
 using Cassette.Manifests;
 
 namespace Cassette.MSBuild
 {
-    class CreateBundlesImplementation
+    class CreateBundlesImplementation : IStartUpTask
     {
-        readonly ICassetteManifestWriter manifestWriter;
-        readonly CassetteSettings settings;
+        readonly string outputFilename;
         readonly BundleCollection bundles;
-        readonly IEnumerable<ICassetteConfiguration> configurations;
+        readonly CassetteSettings settings;
 
-        public CreateBundlesImplementation(ICassetteConfigurationFactory configurationFactory, ICassetteManifestWriter manifestWriter, IDirectory sourceDirectory)
+        public CreateBundlesImplementation(string outputFilename, BundleCollection bundles, CassetteSettings settings)
         {
-            this.manifestWriter = manifestWriter;
-            configurations = configurationFactory.CreateCassetteConfigurations();
-            settings = new CassetteSettings("")
-            {
-                SourceDirectory = sourceDirectory
-            };
-            bundles = new BundleCollection(settings);
+            this.outputFilename = outputFilename;
+            this.bundles = bundles;
+            this.settings = settings;
         }
 
-        public void Execute()
+        public void Run()
         {
-            Configure();
-            AssignUrlModifier();
-            AssignUrlGeneratorIfNull();
-            ProcessBundles();
             WriteManifest();
-        }
-
-        void Configure()
-        {
-            foreach (var configuration in configurations)
-            {
-                configuration.Configure(bundles, settings);
-            }
-        }
-
-        void AssignUrlModifier()
-        {
-            // The URLs saved in the manifest data MUST be wrapped using a special placeholder.
-            // This is so Cassette can parse them at runtime and call the application's own IUrlModifier.
-            settings.UrlModifier = new UrlPlaceholderWrapper();
-        }
-
-        void AssignUrlGeneratorIfNull()
-        {
-            if (settings.UrlGenerator == null)
-            {
-                settings.UrlGenerator = new UrlGenerator(settings.UrlModifier, UrlGenerator.RoutePrefix);
-            }
-        }
-
-        void ProcessBundles()
-        {
-            foreach (var bundle in bundles)
-            {
-                bundle.Process(settings);
-            }
         }
 
         void WriteManifest()
         {
-            var manifest = new CassetteManifest("", bundles.Select(bundle => bundle.CreateBundleManifest(true)));
-            manifestWriter.Write(manifest);
+            var file = settings.SourceDirectory.GetFile(outputFilename);
+            using (var outputStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                var writer = new CassetteManifestWriter(outputStream);
+                var manifest = new CassetteManifest("", bundles.Select(bundle => bundle.CreateBundleManifest(true)));
+                writer.Write(manifest);
+                outputStream.Flush();
+            }
         }
     }
 }

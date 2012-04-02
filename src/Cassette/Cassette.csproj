@@ -110,7 +110,7 @@
     <Compile Include="IBundleCollectionBuilder.cs" />
     <Compile Include="IBundleFactoryProvider.cs" />
     <Compile Include="IExternalBundle.cs" />
-    <Compile Include="InternalCassetteConfigurationAttribute.cs" />
+    <Compile Include="IStartUpTask.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
     <Compile Include="Manifests\AssetReferenceManifest.cs" />
     <Compile Include="Manifests\CassetteManifestCache.cs" />
@@ -134,16 +134,13 @@
     <Compile Include="BundleProcessing\ParseReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="Manifests\CachedBundleContent.cs" />
-    <Compile Include="CassetteApplicationContainerFactoryBase.cs" />
     <Compile Include="Configuration\CassetteConfigurationSection.cs" />
     <Compile Include="Configuration\ConventionalMinifiedFileFilter.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
-    <Compile Include="AssemblyScanningCassetteConfigurationFactory.cs" />
     <Compile Include="FileAsset.cs" />
     <Compile Include="AssetBase.cs" />
     <Compile Include="AssetFinder.cs" />
     <Compile Include="BundleFactoryBase.cs" />
-    <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
@@ -162,7 +159,6 @@
     <Compile Include="HtmlTemplates\WrapHtmlTemplateInScriptElement.cs" />
     <Compile Include="HtmlTemplates\WrapHtmlTemplatesInScriptElements.cs" />
     <Compile Include="IBundleHtmlRenderer.cs" />
-    <Compile Include="ICassetteApplicationContainer.cs" />
     <Compile Include="Interop\ActiveScriptException.cs" />
     <Compile Include="Interop\ActiveScriptParseWrapper.cs" />
     <Compile Include="Interop\ChakraJavaScriptEngine.cs" />
@@ -252,11 +248,9 @@
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="Trace.cs" />
-    <Compile Include="CassetteApplicationBase.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
-    <Compile Include="ICassetteApplication.cs" />
     <Compile Include="IO\IsolatedStorageFile.cs" />
     <Compile Include="BundleContainsPathPredicate.cs" />
     <Compile Include="Stylesheets\MicrosoftStylesheetMinifier.cs" />

@@ -16,26 +16,51 @@ namespace Cassette
 
         public void Initialize()
         {
-            var contributors = BootstrapperContributors.ToArray();
-
             container = CreateContainer();
-
-            var typeRegistrations = TypeRegistrations.Concat(contributors.SelectMany(c => c.TypeRegistrations));
-            RegisterTypesAsSingletons(typeRegistrations, container);
-
-            var collectionTypeRegistrations = CollectionTypeRegistrations.Concat(contributors.SelectMany(c => c.CollectionTypeRegistrations));
-            RegisterCollectionTypes(collectionTypeRegistrations, container);
-
-            var instanceRegistrations = InstanceRegistrationTypes.Concat(contributors.SelectMany(c => c.InstanceRegistrations)).Concat(additionalInstanceRegistrations);
-            RegisterInstances(instanceRegistrations, container);
-        }
-
-        public ICassetteApplication GetApplication()
-        {
-            return GetApplication(container);
+            RegisterContainerItems();
+            CreateBundles();
+            RunStartUpTasks();
         }
 
         protected abstract TContainer CreateContainer();
+
+        void RegisterContainerItems()
+        {
+            var contributors = BootstrapperContributors.ToArray();
+
+            var typeRegistrations = TypeRegistrations
+                .Concat(contributors.SelectMany(c => c.TypeRegistrations));
+            RegisterTypesAsSingletons(typeRegistrations, container);
+
+            var collectionTypeRegistrations = CollectionTypeRegistrations
+                .Concat(contributors.SelectMany(c => c.CollectionTypeRegistrations));
+            RegisterCollectionTypes(collectionTypeRegistrations, container);
+
+            var instanceRegistrations = InstanceRegistrationTypes
+                .Concat(contributors.SelectMany(c => c.InstanceRegistrations))
+                .Concat(additionalInstanceRegistrations);
+            RegisterInstances(instanceRegistrations, container);
+        }
+
+        void CreateBundles()
+        {
+            var bundles = CreateBundleCollection(container);
+            var bundleDefinitions = CreateBundleDefinitions(container);
+            bundles.AddRange(bundleDefinitions);
+        }
+
+        protected abstract BundleCollection CreateBundleCollection(TContainer container);
+
+        protected abstract IEnumerable<IBundleDefinition> CreateBundleDefinitions(TContainer container);
+
+        void RunStartUpTasks()
+        {
+            var startUpTasks = CreateStartUpTasks(container);
+            foreach (var startUpTask in startUpTasks)
+            {
+                startUpTask.Run();
+            }
+        }
 
         protected abstract void RegisterTypesAsSingletons(IEnumerable<TypeRegistration> typeRegistrations, TContainer container);
 
@@ -43,7 +68,7 @@ namespace Cassette
 
         protected abstract void RegisterInstances(IEnumerable<InstanceRegistration> instanceRegistrations, TContainer container);
 
-        protected abstract ICassetteApplication GetApplication(TContainer container);
+        protected abstract IEnumerable<IStartUpTask> CreateStartUpTasks(TContainer container);
 
         protected abstract IFileSearch GetFileSearch(string name, TContainer container);
 
@@ -70,8 +95,11 @@ namespace Cassette
                     new TypeRegistration(typeof(IJavaScriptMinifier), JavaScriptMinifier),
                     new TypeRegistration(typeof(IStylesheetMinifier), CssMinifier),
                     new TypeRegistration(typeof(BundleCollection), typeof(BundleCollection)),
-                    new TypeRegistration(typeof(IBundleCollectionBuilder), typeof(BundleCollectionBuilder)),
-                    new TypeRegistration(typeof(ICassetteManifestCache), typeof(CassetteManifestCache)), 
+                    new TypeRegistration(typeof(BundleCollectionBuilder), typeof(BundleCollectionBuilder)),
+                    new TypeRegistration(typeof(DebugModeBundleCollectionBuilder), typeof(DebugModeBundleCollectionBuilder)),
+                    new TypeRegistration(typeof(ProductionModeBundleCollectionBuilder), typeof(ProductionModeBundleCollectionBuilder)),
+                    new TypeRegistration(typeof(PrecompiledBundleCollectionBuilder), typeof(PrecompiledBundleCollectionBuilder)),
+                    new TypeRegistration(typeof(ICassetteManifestCache), typeof(CassetteManifestCache)) 
                 };
             }
         }
@@ -82,6 +110,7 @@ namespace Cassette
             {
                 return new[]
                 {
+                    new CollectionTypeRegistration(typeof(IStartUpTask), StartUpTasks), 
                     new CollectionTypeRegistration(typeof(IBundleDefinition), BundleDefinitions)
                 };
             }
@@ -98,7 +127,7 @@ namespace Cassette
                     new InstanceRegistration(
                         typeof(Func<Type, IFileSearch>),
                         new Func<Type, IFileSearch>(bundleType => GetFileSearch(FileSearchComponentName(bundleType), container))
-                        )
+                    )
                 };
             }
         }
@@ -123,6 +152,11 @@ namespace Cassette
             get { return typeof(MicrosoftStylesheetMinifier); }
         }
 
+        protected virtual IEnumerable<Type> StartUpTasks
+        {
+            get { return AppDomainAssemblyTypeScanner.TypesOf<IStartUpTask>(); }
+        }
+
         protected virtual IEnumerable<Type> BundleDefinitions
         {
             get { return AppDomainAssemblyTypeScanner.TypesOf<IBundleDefinition>(); }
@@ -135,15 +169,26 @@ namespace Cassette
 
         protected virtual CassetteSettings Settings
         {
-            get { return new CassetteSettings(""); }
+            get
+            {
+                return new CassetteSettings(GetVersion());
+            }
+        }
+
+        string GetVersion()
+        {
+            throw new NotImplementedException();
         }
 
         protected void SetDefaultFileSearch<T>(IFileSearch fileSearch)
         {
+            // This will override the existing named file search object in the container.
             additionalInstanceRegistrations.Add(
                 new InstanceRegistration(typeof(IFileSearch), fileSearch, FileSearchComponentName(typeof(T)))
-                );
+            );
         }
+
+        // TODO: SetDefaultBundlePipeline<T>?
 
         /// <summary>
         /// A separate <see cref="IFileSearch"/> is stored in the container for each type of bundle.

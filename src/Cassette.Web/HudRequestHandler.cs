@@ -14,14 +14,17 @@ namespace Cassette.Web
 {
     class HudRequestHandler : IHttpHandler
     {
-        readonly ICassetteApplicationContainer<ICassetteApplication> container;
         readonly RequestContext requestContext;
-        IUrlGenerator urlGenerator;
+        readonly BundleCollection bundles;
+        readonly CassetteSettings settings;
+        readonly IUrlGenerator urlGenerator;
 
-        public HudRequestHandler(ICassetteApplicationContainer<ICassetteApplication> container, RequestContext requestContext)
+        public HudRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator)
         {
-            this.container = container;
             this.requestContext = requestContext;
+            this.bundles = bundles;
+            this.settings = settings;
+            this.urlGenerator = urlGenerator;
         }
 
         public void ProcessRequest(HttpContext _)
@@ -60,34 +63,32 @@ namespace Cassette.Web
         {
             if (requestContext.HttpContext.Request.Form["action"] == "rebuild-cache")
             {
-                Application.Settings.CassetteManifestCache.Clear();
-                container.RecycleApplication();
+                // TODO: Reimplement recycling bundles
+                //Application.Settings.CassetteManifestCache.Clear();
+                //container.RecycleApplication();
             }
         }
 
         bool CanAccessHud(HttpRequestBase request)
         {
-            return request.IsLocal || Application.Settings.AllowRemoteDiagnostics;
+            return request.IsLocal || settings.AllowRemoteDiagnostics;
         }
 
         string CreateJson()
         {
-            var settings = Application.Settings;
-            urlGenerator = settings.UrlGenerator;
-
-            var scripts = Application.Bundles.OfType<ScriptBundle>();
-            var stylesheets = Application.Bundles.OfType<StylesheetBundle>();
-            var htmlTemplates = Application.Bundles.OfType<HtmlTemplateBundle>();
+            var scripts = bundles.OfType<ScriptBundle>();
+            var stylesheets = bundles.OfType<StylesheetBundle>();
+            var htmlTemplates = bundles.OfType<HtmlTemplateBundle>();
 
             var data = new
             {
                 Scripts = scripts.Select(ScriptData),
                 Stylesheets = stylesheets.Select(StylesheetData),
                 HtmlTemplates = htmlTemplates.Select(HtmlTemplateData),
-                StartupTrace = StartUp.TraceOutput,
+                StartupTrace = CassetteHttpModule.StartUpTrace,
                 Cassette = new
                 {
-                    Version = new AssemblyName(typeof(ICassetteApplication).Assembly.FullName).Version.ToString(),
+                    Version = new AssemblyName(typeof(Bundle).Assembly.FullName).Version.ToString(),
                     CacheDirectory = GetCacheDirectory(settings),
                     SourceDirectory = GetSourceDirectory(settings),
                     settings.IsHtmlRewritingEnabled,
@@ -108,11 +109,6 @@ namespace Cassette.Web
         {
             if (settings.CacheDirectory == null) return "(none)";
             return settings.CacheDirectory.FullPath + " (" + settings.CacheDirectory.GetType().FullName + ")";
-        }
-
-        ICassetteApplication Application
-        {
-            get { return container.Application; }
         }
 
         object HtmlTemplateData(HtmlTemplateBundle htmlTemplate)
@@ -169,7 +165,7 @@ namespace Cassette.Web
 
         long BundleSize(Bundle bundle)
         {
-            if (Application.Settings.IsDebuggingEnabled)
+            if (settings.IsDebuggingEnabled)
             {
                 return -1;
             }
@@ -187,7 +183,7 @@ namespace Cassette.Web
 
         IEnumerable<AssetLink> AssetPaths(Bundle bundle)
         {
-            var generateUrls = container.Application.Settings.IsDebuggingEnabled;
+            var generateUrls = settings.IsDebuggingEnabled;
             var visitor = generateUrls ? new AssetLinkCreator(urlGenerator) : new AssetLinkCreator();
             bundle.Accept(visitor);
             return visitor.AssetLinks;

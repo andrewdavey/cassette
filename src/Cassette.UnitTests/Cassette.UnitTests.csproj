@@ -108,7 +108,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyScanningCassetteConfigurationFactory.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="BundleCollection.FindBundlesContainingPath.cs" />
     <Compile Include="BundleCollection.BuildReferences.cs" />
@@ -154,9 +153,6 @@
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="BundleCollection.cs" />
     <Compile Include="BundleCollection.AddExplicitFiles.cs" />
-    <Compile Include="Configuration\BundleContainerFactoryTestSuite.cs" />
-    <Compile Include="Configuration\BundleContainerFactory.cs" />
-    <Compile Include="Configuration\CachedBundleContainerFactory.cs" />
     <Compile Include="Configuration\LocalAssetSettings.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
@@ -230,7 +226,6 @@
     <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
-    <Compile Include="TestableApplication.cs" />
     <Compile Include="TestableBundle.cs" />
     <Compile Include="Views\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />

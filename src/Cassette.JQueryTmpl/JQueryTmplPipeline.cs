@@ -4,11 +4,12 @@ namespace Cassette.HtmlTemplates
 {
     public class JQueryTmplPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        public JQueryTmplPipeline()
+        public JQueryTmplPipeline(IUrlGenerator urlGenerator)
         {
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {
-                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)),
+                // TODO: Drop the settings parameter from the delegate?
+                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(urlGenerator)),
                 new AssignContentType("text/javascript"),
                 new ParseHtmlTemplateReferences(),
                 new CompileJQueryTmpl(),

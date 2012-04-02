@@ -6,7 +6,7 @@ namespace Cassette
 {
     public static class BootstrapperLocator<T> where T : IBootstrapper
     {
-        public static IBootstrapper Bootstrapper;
+        public static T Bootstrapper;
 
         static BootstrapperLocator()
         {
@@ -15,7 +15,7 @@ namespace Cassette
 
             var bootstrapperType = customBootstrappers.FirstOrDefault() ?? defaultBootstrapperType;
 
-            Bootstrapper = (IBootstrapper)Activator.CreateInstance(bootstrapperType);
+            Bootstrapper = (T)Activator.CreateInstance(bootstrapperType);
         }
 
         static IEnumerable<Type> CustomBootstrappers(Type defaultBootstrapperType)

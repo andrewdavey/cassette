@@ -4,11 +4,11 @@ namespace Cassette.HtmlTemplates
 {
     public class KnockoutJQueryTmplPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        public KnockoutJQueryTmplPipeline()
+        public KnockoutJQueryTmplPipeline(IUrlGenerator urlGenerator)
         {
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {
-                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)),
+                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(urlGenerator)),
                 new AssignContentType("text/javascript"),
                 new ParseHtmlTemplateReferences(),
                 new CompileKnockoutJQueryTmpl(),

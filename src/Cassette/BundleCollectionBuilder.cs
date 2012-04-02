@@ -1,24 +1,20 @@
-using System.Collections.Generic;
 using Cassette.Configuration;
-using Cassette.Manifests;
 
 namespace Cassette
 {
     class BundleCollectionBuilder : IBundleCollectionBuilder
     {
+        readonly ProductionModeBundleCollectionBuilder productionModeBundleCollectionBuilder;
+        readonly DebugModeBundleCollectionBuilder debugModeBundleCollectionBuilder;
+        readonly PrecompiledBundleCollectionBuilder precompiledBundleCollectionBuilder;
         readonly CassetteSettings settings;
-        readonly IEnumerable<IBundleDefinition> bundleDefinitions;
-        readonly ICassetteManifestCache manifestCache;
-        readonly ExternalBundleGenerator externalBundleGenerator;
-        readonly IUrlModifier urlModifier;
 
-        public BundleCollectionBuilder(CassetteSettings settings, IEnumerable<IBundleDefinition> bundleDefinitions, ICassetteManifestCache manifestCache, ExternalBundleGenerator externalBundleGenerator, IUrlModifier urlModifier)
+        public BundleCollectionBuilder(CassetteSettings settings, ProductionModeBundleCollectionBuilder productionModeBundleCollectionBuilder, DebugModeBundleCollectionBuilder debugModeBundleCollectionBuilder, PrecompiledBundleCollectionBuilder precompiledBundleCollectionBuilder)
         {
             this.settings = settings;
-            this.bundleDefinitions = bundleDefinitions;
-            this.manifestCache = manifestCache;
-            this.externalBundleGenerator = externalBundleGenerator;
-            this.urlModifier = urlModifier;
+            this.productionModeBundleCollectionBuilder = productionModeBundleCollectionBuilder;
+            this.debugModeBundleCollectionBuilder = debugModeBundleCollectionBuilder;
+            this.precompiledBundleCollectionBuilder = precompiledBundleCollectionBuilder;
         }
 
         public void BuildBundleCollection(BundleCollection bundles)
@@ -26,15 +22,15 @@ namespace Cassette
             IBundleCollectionBuilder builder;
             if (settings.PrecompiledManifestFile.Exists)
             {
-                builder = new PrecompiledBundleCollectionBuilder(settings.PrecompiledManifestFile, urlModifier);
+                builder = precompiledBundleCollectionBuilder;
             }
             else if (settings.IsDebuggingEnabled)
             {
-                builder = new DebugModeBundleCollectionBuilder(bundleDefinitions, externalBundleGenerator);
+                builder = debugModeBundleCollectionBuilder;
             }
             else
             {
-                builder = new ProductionModeBundleCollectionBuilder(bundleDefinitions, manifestCache, urlModifier, settings, externalBundleGenerator);
+                builder = productionModeBundleCollectionBuilder;
             }
 
             builder.BuildBundleCollection(bundles);

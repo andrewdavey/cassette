@@ -4,8 +4,8 @@ namespace Cassette.HtmlTemplates
 {
     public class HoganPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        public HoganPipeline()
-            : this("JST")
+        public HoganPipeline(IUrlGenerator urlGenerator)
+            : this("JST", urlGenerator)
         {
         }
 
@@ -13,11 +13,12 @@ namespace Cassette.HtmlTemplates
         /// The name of the JavaScript variable to store compiled templates in.
         /// For example, the default is "JST", so a template will be registered as <code>JST['my-template'] = ...;</code>.
         /// </param>
-        public HoganPipeline(string javaScriptVariableName)
+        /// <param name="urlGenerator">Used to create the URLs for bundles.</param>
+        public HoganPipeline(string javaScriptVariableName, IUrlGenerator urlGenerator)
         {
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {
-                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)),
+                new AssignHtmlTemplateRenderer(settings => new RemoteHtmlTemplateBundleRenderer(urlGenerator)),
                 new AssignContentType("text/javascript"),
                 new ParseHtmlTemplateReferences(),
                 new CompileHogan(),

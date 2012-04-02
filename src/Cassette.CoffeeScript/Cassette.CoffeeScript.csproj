@@ -63,9 +63,11 @@
     </Compile>
     <Compile Include="CoffeeScriptCommentParser.cs" />
     <Compile Include="CoffeeScriptCompileException.cs" />
-    <Compile Include="CoffeeScriptConfiguration.cs" />
+    <Compile Include="CoffeeScriptBootstrapperContributor.cs" />
     <Compile Include="CoffeeScriptFileSearchModifier.cs" />
+    <Compile Include="CoffeeScriptPipelineModifier.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
+    <Compile Include="ICoffeeScriptCompiler.cs" />
     <Compile Include="IECoffeeScriptCompiler.cs" />
     <Compile Include="JurassicCoffeeScriptCompiler.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />

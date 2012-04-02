@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web;
+﻿using System.Web;
 
 namespace Cassette.Web
 {
@@ -7,51 +6,42 @@ namespace Cassette.Web
     {
         static readonly object Lock = new object();
         static int _initializedModuleCount;
-        static ICassetteApplication _application;
+        internal static string StartUpTrace;
 
         public void Init(HttpApplication httpApplication)
         {
-            httpApplication.PostMapRequestHandler += HttpApplicationPostMapRequestHandler;
-            httpApplication.PostRequestHandlerExecute += HttpApplicationPostRequestHandlerExecute;            
-
-            // FX35 & FX40: Handle app_start, app_end events to avoid forcing folks to edit their Global asax files
-            // See: https://bitbucket.org/davidebbo/webactivator/src/bb05d55459bc/WebActivator/ActivationManager.cs#cl-121
             lock (Lock)
             {
-                // Keep track of the number of modules initialized and
-                // make sure we only call the startup methods once per app domain
-                if (_initializedModuleCount++ != 0) return;
+                var isFirstModuleInitForAppDomain = _initializedModuleCount == 0;
+                _initializedModuleCount++;
+                if (!isFirstModuleInitForAppDomain) return;
 
-                var bootstrapper = BootstrapperLocator<DefaultBootstrapper>.Bootstrapper;
-                bootstrapper.Initialize();
-                _application = bootstrapper.GetApplication();
+                using (var recorder = new StartUpTraceRecorder())
+                {
+                    var bootstrapper = BootstrapperLocator<DefaultBootstrapper>.Bootstrapper;
+                    bootstrapper.Initialize();
+
+                    StartUpTrace = recorder.TraceOutput;
+                }
             }
-        }
-
-        void HttpApplicationPostMapRequestHandler(object sender, EventArgs e)
-        {
-            Application.OnPostMapRequestHandler();
-        }
-
-        void HttpApplicationPostRequestHandlerExecute(object sender, EventArgs e)
-        {
-            Application.OnPostRequestHandlerExecute();
-        }
-
-        CassetteApplication Application
-        {
-            get { return (CassetteApplication)CassetteApplicationContainer.Application; }
         }
 
         void IHttpModule.Dispose()
         {
             lock (Lock)
             {
-                if (--_initializedModuleCount != 0) return;
+                _initializedModuleCount--;
+                var isFinalModule = _initializedModuleCount == 0;
+                if (!isFinalModule) return;
 
-                _application.Dispose();
-                _application = null;
+                Shutdown();
             }
+        }
+
+        void Shutdown()
+        {
+            IsolatedStorageContainer.Dispose();
+            
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Cassette.IO
         readonly Func<Storage> getStorage;
         readonly string basePath;
 
+        // TODO: Remove this constructor?
         public IsolatedStorageDirectory(Storage storage)
             : this(() => storage, "~/")
         {

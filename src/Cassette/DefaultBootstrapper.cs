@@ -45,13 +45,19 @@ namespace Cassette
             }
         }
 
-        protected override ICassetteApplication GetApplication(TinyIoCContainer container)
+        protected override BundleCollection CreateBundleCollection(TinyIoCContainer container)
         {
-            var bundleCollection = container.Resolve<BundleCollection>();
-            var bundleCollectionBuilder = container.Resolve<IBundleCollectionBuilder>();
-            bundleCollectionBuilder.BuildBundleCollection(bundleCollection);
+            return container.Resolve<BundleCollection>();
+        }
 
-            throw new NotImplementedException();
+        protected override IEnumerable<IBundleDefinition> CreateBundleDefinitions(TinyIoCContainer container)
+        {
+            return container.ResolveAll<IBundleDefinition>();
+        }
+
+        protected override IEnumerable<IStartUpTask> CreateStartUpTasks(TinyIoCContainer container)
+        {
+            return container.ResolveAll<IStartUpTask>();
         }
 
         protected override IFileSearch GetFileSearch(string name, TinyIoCContainer container)

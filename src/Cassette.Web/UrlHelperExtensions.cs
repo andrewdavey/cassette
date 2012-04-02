@@ -8,18 +8,26 @@ using Cassette.Utilities;
 
 namespace Cassette.Web
 {
-    public static class UrlHelperExtensions
+    public class UrlHelperExtensions : IStartUpTask
     {
-        /// <summary>
-        /// Returns the Cassette cache-friendly URL for a file, such as an image.
-        /// </summary>
-        /// <param name="urlHelper">The page UrlHelper object.</param>
-        /// <param name="applicationRelativeFilePath">The application relative file path of the file.</param>
-        public static string CassetteFile(this UrlHelper urlHelper, string applicationRelativeFilePath)
+        readonly CassetteSettings settings;
+        readonly IUrlGenerator urlGenerator;
+
+        public UrlHelperExtensions(CassetteSettings settings, IUrlGenerator urlGenerator)
+        {
+            this.settings = settings;
+            this.urlGenerator = urlGenerator;
+        }
+
+        void IStartUpTask.Run()
+        {
+            UrlHelperExtensionMethods.Implementation = this;
+        }
+
+        public string CassetteFile(string applicationRelativeFilePath)
         {
             applicationRelativeFilePath = PathUtilities.AppRelative(applicationRelativeFilePath);
 
-            var settings = CassetteApplicationContainer.Application.Settings;
             var file = settings.SourceDirectory.GetFile(applicationRelativeFilePath);
             ThrowIfFileNotFound(applicationRelativeFilePath, file);
             ThrowIfCannotRequestRawFile(applicationRelativeFilePath, file, settings);
@@ -27,14 +35,14 @@ namespace Cassette.Web
             using (var stream = file.OpenRead())
             {
                 var hash = stream.ComputeSHA1Hash().ToHexString();
-                return settings.UrlGenerator.CreateRawFileUrl(applicationRelativeFilePath, hash);
+                return urlGenerator.CreateRawFileUrl(applicationRelativeFilePath, hash);
             }
         }
 
         static void ThrowIfCannotRequestRawFile(string applicationRelativeFilePath, IFile file, CassetteSettings settings)
         {
             if (settings.CanRequestRawFile(file.FullPath)) return;
-            
+
             throw new Exception(
                 string.Format(
                     "The file {0} cannot be requested. In CassetteConfiguration, use the settings.AllowRawFileAccess method to tell Cassette which files are safe to request.",
@@ -50,6 +58,21 @@ namespace Cassette.Web
                 "Cannot find file " + applicationRelativeFilePath,
                 applicationRelativeFilePath
             );
+        }
+    }
+
+    public static class UrlHelperExtensionMethods
+    {
+        public static UrlHelperExtensions Implementation { get; set; }
+
+        /// <summary>
+        /// Returns the Cassette cache-friendly URL for a file, such as an image.
+        /// </summary>
+        /// <param name="urlHelper">The page UrlHelper object.</param>
+        /// <param name="applicationRelativeFilePath">The application relative file path of the file.</param>
+        public static string CassetteFile(this UrlHelper urlHelper, string applicationRelativeFilePath)
+        {
+            return Implementation.CassetteFile(applicationRelativeFilePath);
         }
     }
 }

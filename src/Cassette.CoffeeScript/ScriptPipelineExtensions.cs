@@ -4,7 +4,7 @@ namespace Cassette.Scripts
 {
     public static class ScriptPipelineExtensions
     {
-        public static T CompileCoffeeScript<T>(this T pipeline, ICompiler coffeeScriptCompiler)
+        public static T CompileCoffeeScript<T>(this T pipeline, ICoffeeScriptCompiler coffeeScriptCompiler)
             where T : IBundlePipeline<ScriptBundle>
         {
             pipeline.InsertAfter<ParseJavaScriptReferences, ScriptBundle>(

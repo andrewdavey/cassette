@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="CreateBundles.cs" />
     <Compile Include="CreateBundlesImplementation.cs" />
+    <Compile Include="MSBuildBootstrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UrlPlaceholderWrapper.cs" />
   </ItemGroup>
