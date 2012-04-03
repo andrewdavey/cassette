@@ -1,4 +1,7 @@
 ﻿/// <reference path="~/assets/scripts/jquery/jquery.js"/>
+/// <reference path="../../vsdoc/something-vsdoc.js" /> -ignore
+
+
 $(function () {
     var tweets = $(".tweets");
     var tweetIndex = 0;
