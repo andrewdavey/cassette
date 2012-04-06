@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Cassette.Interop;
 using Cassette.IO;
 
@@ -36,48 +37,39 @@ namespace Cassette.Scripts
             public static readonly SingleThreadedWorker Singleton = new SingleThreadedWorker();
 
             bool stop;
-            readonly Lazy<ConcurrentQueue<CompileTask>> lazyQueue;
-
-            SingleThreadedWorker()
+        	readonly BlockingCollection<CompileTask> queue;
+			
+			SingleThreadedWorker()
             {
-                lazyQueue = new Lazy<ConcurrentQueue<CompileTask>>(Start);
+                queue = new BlockingCollection<CompileTask>();
             }
 
             ConcurrentQueue<CompileTask> Start()
             {
-                var thread = new Thread(Loop)
-                {
-                    IsBackground = true
-                };
-                thread.Start();
+            	Task.Factory.StartNew(Loop);
                 return new ConcurrentQueue<CompileTask>();
             }
 
             public void QueueWorkItem(CompileTask item)
             {
-                lazyQueue.Value.Enqueue(item);
+                queue.Add(item);
             }
 
             void Loop()
             {
                 var engine = CreateEngine();
-                while (!stop)
-                {
-                    CompileTask item;
-                    if (!lazyQueue.Value.TryDequeue(out item))
-                    {
-                        Thread.Sleep(100);
-                        continue;
-                    }
 
-                    item.Execute(engine);
-                }
+				foreach (var item in queue.GetConsumingEnumerable())
+				{
+					item.Execute(engine);
+				}
+
                 engine.Dispose();
             }
 
             public void Stop()
             {
-                stop = true;
+                queue.CompleteAdding();
             }
 
             IEJavaScriptEngine CreateEngine()
