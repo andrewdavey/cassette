@@ -128,6 +128,7 @@
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />
+    <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />

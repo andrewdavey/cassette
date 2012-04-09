@@ -6,6 +6,7 @@ using System.Linq;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Utilities;
+using System.Threading;
 
 namespace Cassette
 {
@@ -15,6 +16,7 @@ namespace Cassette
         readonly CassetteSettings settings;
         readonly Func<Type, IFileSearch> getFileSearchForBundleType;
         readonly IBundleFactoryProvider bundleFactoryProvider;
+        readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
 
         public BundleCollection(CassetteSettings settings, Func<Type, IFileSearch> getFileSearchForBundleType, IBundleFactoryProvider bundleFactoryProvider)
@@ -22,6 +24,18 @@ namespace Cassette
             this.settings = settings;
             this.getFileSearchForBundleType = getFileSearchForBundleType;
             this.bundleFactoryProvider = bundleFactoryProvider;
+        }
+
+        public IDisposable GetReadLock()
+        {
+            readerWriterLock.EnterReadLock();
+            return new DelegatingDisposable(() => readerWriterLock.ExitReadLock());
+        }
+
+        public IDisposable GetWriteLock()
+        {
+            readerWriterLock.EnterWriteLock();
+            return new DelegatingDisposable(() => readerWriterLock.ExitWriteLock());
         }
 
         public void Accept(IBundleVisitor bundleVisitor)

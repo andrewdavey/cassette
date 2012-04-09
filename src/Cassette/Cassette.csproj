@@ -103,6 +103,8 @@
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DebugModeBundleCollectionBuilder.cs" />
     <Compile Include="DefaultBootstrapper.cs" />
+    <Compile Include="DelegatingDisposable.cs" />
+    <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleBootstrapperContributor.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateFileSearchModifier.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
