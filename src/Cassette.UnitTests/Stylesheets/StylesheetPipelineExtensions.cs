@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Cassette.BundleProcessing;
+using Moq;
 using Should;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace Cassette.Stylesheets
 
         public StylesheetPipelineExtensions_Tests()
         {
-            pipeline = new StylesheetPipeline();
+            pipeline = new StylesheetPipeline(Mock.Of<IStylesheetMinifier>(), Mock.Of<IUrlGenerator>());
         }
 
         [Fact]

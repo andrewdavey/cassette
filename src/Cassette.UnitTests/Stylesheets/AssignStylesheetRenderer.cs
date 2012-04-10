@@ -1,4 +1,5 @@
 ﻿using Cassette.Configuration;
+using Moq;
 using Should;
 using Xunit;
 
@@ -9,7 +10,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenProductionMode_WhenProcess_ThenBundleRenderIsStylesheetHtmlRenderer()
         {
-            var processor = new AssignStylesheetRenderer();
+            var processor = new AssignStylesheetRenderer(Mock.Of<IUrlGenerator>());
             var settings = new CassetteSettings("") { IsDebuggingEnabled = false };
             var bundle = new StylesheetBundle("~/test");
 
@@ -21,7 +22,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenDebugMode_WhenProcess_ThenBundleRenderIsDebugStylesheetHtmlRenderer()
         {
-            var processor = new AssignStylesheetRenderer();
+            var processor = new AssignStylesheetRenderer(Mock.Of<IUrlGenerator>());
             var settings = new CassetteSettings("") { IsDebuggingEnabled = true };
             var bundle = new StylesheetBundle("~/test");
 

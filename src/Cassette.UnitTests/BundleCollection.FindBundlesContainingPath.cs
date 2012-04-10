@@ -51,10 +51,11 @@ namespace Cassette
             AssetAcceptsVisitor(asset);
             asset.SetupGet(a => a.Path).Returns("~/test/test.js");
             expectedBundle.Assets.Add(asset.Object);
-            var container = new BundleContainer(new[] {
+            var bundles = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>())
+            {
                 expectedBundle
-            });
-            var actualBundle = container.FindBundlesContainingPath("~/test/test.js").First();
+            };
+            var actualBundle = bundles.FindBundlesContainingPath("~/test/test.js").First();
             actualBundle.ShouldBeSameAs(expectedBundle);
         }
 

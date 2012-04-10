@@ -45,7 +45,7 @@ namespace Cassette
 
         class TestableBundleManifest : BundleManifest
         {
-            protected override Bundle CreateBundleCore(CassetteSettings settings)
+            protected override Bundle CreateBundleCore(IUrlModifier urlModifier)
             {
                 return new TestableBundle(Path) { Hash = Hash };
             }

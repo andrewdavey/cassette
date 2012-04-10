@@ -129,6 +129,7 @@
     <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
+    <Compile Include="HtmlTemplates\HoganFileSearchModifier.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -142,12 +143,11 @@
     <Compile Include="Manifests\BundleManifestBuilder.cs" />
     <Compile Include="MSBuild\CreateBundlesImplementation.cs" />
     <Compile Include="MSBuild\UrlPlaceholderWrapper.cs" />
-    <Compile Include="Scripts\ExtensionConfigurationTests.cs" />
+    <Compile Include="Scripts\CoffeeScriptFileSearchModifier.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifestWriter.cs" />
     <Compile Include="Manifests\BundleManifestWriter.cs" />
-    <Compile Include="CassetteApplicationContainer.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifest.cs" />
     <Compile Include="HtmlAttributeDictionary.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
@@ -191,6 +191,7 @@
     <Compile Include="Stylesheets\CompileSass.cs" Condition="'$(TargetFrameworkVersion)' == 'v4.0'" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
     <Compile Include="Stylesheets\LessCompiler.cs" />
+    <Compile Include="Stylesheets\LessFileSearchModifier.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
     <Compile Include="Stylesheets\SassCompiler.cs" />
+    <Compile Include="Stylesheets\SassFileSearchModifier.cs" />
     <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
@@ -245,18 +247,15 @@
     <Compile Include="Web\UrlHelper.CassetteFile.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />
-    <Compile Include="Web\CassetteApplicationContainerFactory.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
     <Compile Include="UrlGenerator.cs" />
     <Compile Include="Web\DelegateRouteHandler.cs" />
-    <Compile Include="Web\InitialConfiguration.cs" />
     <Compile Include="Web\Jasmine\CassetteConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />
-    <Compile Include="Web\CassetteApplication.cs" />
     <Compile Include="Web\BundleRequestHandler.cs" />
     <Compile Include="Web\RouteInstaller.cs" />
     <Compile Include="Web\RawFileRequestHandler.cs" />

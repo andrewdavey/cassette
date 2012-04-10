@@ -23,7 +23,7 @@ namespace Cassette.Web
         protected RouteData routeData;
         protected RequestContext requestContext;
         protected Stream outputStream;
-        internal Mock<ICassetteApplication> application;
+        protected BundleCollection bundles;
 
         public BundleRequestHandler_Tests()
         {
@@ -45,14 +45,15 @@ namespace Cassette.Web
 
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            application = new Mock<ICassetteApplication>();
+            var settings = new CassetteSettings("");
+            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
         }
 
         internal BundleRequestHandler<TestableBundle> CreateRequestHandler(string bundlePath)
         {
             routeData.Values.Add("path", bundlePath);
             return new BundleRequestHandler<TestableBundle>(
-                application.Object,
+                bundles,
                 requestContext
             );
         }
@@ -66,8 +67,8 @@ namespace Cassette.Web
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
             bundle.Assets.Add(asset.Object);
             bundle.Hash = new byte[] { 1, 2, 3 };
-            application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
-                       .Returns(bundle);
+            bundles.Add(bundle);
+            bundles.BuildReferences();
             bundle.Process(new CassetteSettings(""));
         }
 
@@ -87,8 +88,8 @@ namespace Cassette.Web
                     .Returns(() => "asset-content".AsStream());
             bundle.Hash = new byte[] { 1, 2, 3 };
             bundle.Assets.Add(asset.Object);
-            application.Setup(c => c.FindBundleContainingPath<TestableBundle>("~/test"))
-                       .Returns(bundle);
+            bundles.Add(bundle);
+            bundles.BuildReferences();
             bundle.Process(new CassetteSettings(""));
 
             var handler = CreateRequestHandler("test_010203");

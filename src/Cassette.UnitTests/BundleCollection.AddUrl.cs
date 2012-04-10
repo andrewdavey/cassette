@@ -16,6 +16,7 @@ namespace Cassette
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
         readonly Mock<IDirectory> sourceDirectory;
+        readonly Mock<IBundleFactoryProvider> factoryProvider;
 
         public BundleCollection_AddUrl_Tests()
         {
@@ -24,7 +25,8 @@ namespace Cassette
             {
                 SourceDirectory = sourceDirectory.Object
             };
-            bundles = new BundleCollection(settings);
+            factoryProvider = new Mock<IBundleFactoryProvider>();
+            bundles = new BundleCollection(settings, t => null, factoryProvider.Object);
         }
 
         [Fact]
@@ -50,13 +52,15 @@ namespace Cassette
             var url = "http://cdn.com/jquery.js";
             var factory = new Mock<IBundleFactory<ScriptBundle>>();
             SetBundleFactory(factory);
-            factory.Setup(f => f.CreateBundle(
-                url,
-                It.IsAny<IEnumerable<IFile>>(),
-                It.IsAny<BundleDescriptor>()
-                                   )).Returns(new ExternalScriptBundle(url));
+            factory
+                .Setup(f => f.CreateBundle(
+                    url,
+                    It.IsAny<IEnumerable<IFile>>(),
+                    It.IsAny<BundleDescriptor>()
+                ))
+                .Returns(new ExternalScriptBundle(url));
 
-            bool called = false;
+            var called = false;
             Action<Bundle> customizeBundle = b => called = true;
 
             bundles.AddUrl(url, customizeBundle);
@@ -67,7 +71,7 @@ namespace Cassette
         void SetBundleFactory<T>(Mock<IBundleFactory<T>> factory)
             where T : Bundle
         {
-            settings.ModifyDefaults<T>(defaults => defaults.BundleFactory = factory.Object);
+            factoryProvider.Setup(p => p.GetBundleFactory<T>()).Returns(factory.Object);
         }
 
         [Fact]

@@ -2,6 +2,7 @@
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Utilities;
+using Moq;
 using Should;
 using Xunit;
 
@@ -11,12 +12,10 @@ namespace Cassette.Scripts.Manifests
     {
         readonly ScriptBundleManifest manifest;
         readonly ScriptBundle createdBundle;
-        readonly CassetteSettings settings;
         const string BundleContent = "BUNDLE-CONTENT";
 
         public ScriptBundleManifest_Tests()
         {
-            settings = new CassetteSettings("");
             manifest = new ScriptBundleManifest
             {
                 Path = "~",
@@ -31,7 +30,7 @@ namespace Cassette.Scripts.Manifests
                 Content = Encoding.UTF8.GetBytes(BundleContent),
                 Html = () => "EXPECTED-HTML"
             };
-            createdBundle = (ScriptBundle)manifest.CreateBundle(settings);
+            createdBundle = (ScriptBundle)manifest.CreateBundle(Mock.Of<IUrlModifier>());
         }
 
         [Fact]

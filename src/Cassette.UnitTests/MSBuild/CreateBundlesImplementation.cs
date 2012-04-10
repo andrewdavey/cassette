@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Manifests;
@@ -27,7 +28,7 @@ namespace Cassette.MSBuild
         public void ItCallsConfigurationConfigure()
         {
             SetupConfig();
-            task.Execute();
+            task.Run();
             configuration.ConfigureWasCalled.ShouldBeTrue();
         }
 
@@ -35,7 +36,7 @@ namespace Cassette.MSBuild
         public void ItProcessesBundles()
         {
             SetupConfig();
-            task.Execute();
+            task.Run();
             bundle.IsProcessed.ShouldBeTrue();
         }
 
@@ -43,42 +44,15 @@ namespace Cassette.MSBuild
         public void ItWritesManifestWithWriter()
         {
             SetupConfig();
-            task.Execute();
+            task.Run();
             writer.Verify(w => w.Write(It.IsAny<CassetteManifest>()));
-        }
-
-        [Fact]
-        public void ItAssignsSettingsUrlGenerator()
-        {
-            SetupConfig();
-            task.Execute();
-            configuration.SettingsPassedToConfigure.UrlGenerator.ShouldNotBeNull();
-        }
-
-        [Fact]
-        public void GivenConfigurationAssignsUrlGenerator_ThenItShouldNotOverwriteUrlGenerator()
-        {
-            var customUrlGenerator = Mock.Of<IUrlGenerator>();
-            SetupConfig(c => c.CustomUrlGenerator = customUrlGenerator);
-
-            task.Execute();
-
-            configuration.SettingsPassedToConfigure.UrlGenerator.ShouldBeSameAs(customUrlGenerator);
-        }
-
-        [Fact]
-        public void ItAssignsSettingsUrlModifier()
-        {
-            SetupConfig();
-            task.Execute();
-            configuration.SettingsPassedToConfigure.UrlModifier.ShouldNotBeNull();
         }
 
         [Fact]
         public void ItAssignsSettingsSourceDirectory()
         {
             SetupConfig();
-            task.Execute();
+            task.Run();
             configuration.SettingsPassedToConfigure.SourceDirectory.ShouldBeSameAs(sourceDirectory);
         }
 
@@ -94,11 +68,13 @@ namespace Cassette.MSBuild
             configurationFactory
                 .Setup(f => f.CreateCassetteConfigurations())
                 .Returns(() => new[] { configuration });
-            
+
+            var settings = new CassetteSettings("");
+            var bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
             task = new CreateBundlesImplementation(
-                configurationFactory.Object,
-                writer.Object,
-                sourceDirectory
+                Path.Combine(path, "cassette.xml"),
+                bundles,
+                settings
             );
         }
 
@@ -117,16 +93,10 @@ namespace Cassette.MSBuild
                 this.bundle = bundle;
             }
 
-            public IUrlGenerator CustomUrlGenerator { get; set; }
-
             public void Configure(BundleCollection bundles, CassetteSettings settings)
             {
                 this.settings = settings;
                 ConfigureWasCalled = true;
-                if (CustomUrlGenerator != null)
-                {
-                    settings.UrlGenerator = CustomUrlGenerator;
-                }
                 bundles.Add(bundle);
             }
 

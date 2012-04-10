@@ -4,6 +4,7 @@ using System.Linq;
 using Cassette.Configuration;
 using Cassette.Scripts;
 using Moq;
+using Should;
 using Xunit;
 
 namespace Cassette

@@ -33,11 +33,11 @@ namespace Cassette
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory)
             };
-            settings.ModifyDefaults<TestableBundle>(defaults =>
-            {
-                defaults.BundleFactory = factory.Object;
-            });
-            bundles = new BundleCollection(settings);
+
+            var provider = new Mock<IBundleFactoryProvider>();
+            provider.Setup(p => p.GetBundleFactory<TestableBundle>()).Returns(factory.Object);
+
+            bundles = new BundleCollection(settings, t => null, provider.Object);
         }
 
         [Fact]

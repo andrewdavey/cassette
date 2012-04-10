@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Moq;
 using Should;
@@ -18,7 +19,7 @@ namespace Cassette.Stylesheets
             fallbackRenderer = new Mock<IBundleHtmlRenderer<StylesheetBundle>>();
             bundle = new ExternalStylesheetBundle("http://test.com/")
             {
-                Processor = new StylesheetPipeline()
+                Processor = Mock.Of<IBundlePipeline<StylesheetBundle>>()
             };
         }
 

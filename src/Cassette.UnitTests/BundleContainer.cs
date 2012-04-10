@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Cassette.Scripts;
+﻿using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -20,10 +18,9 @@ namespace Cassette
                   .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentBundle) });
             bundle.Assets.Add(asset.Object);
 
-            var exception = Assert.Throws<AssetReferenceException>(delegate
-            {
-                new BundleContainer(new[] { bundle });
-            });
+            var exception = Assert.Throws<AssetReferenceException>(
+                () => BuildReferences(bundle)
+            );
             exception.Message.ShouldEqual("Reference error in \"bundle-1\\a.js\". Cannot find \"~\\fail\\fail.js\".");
         }
 
@@ -38,10 +35,9 @@ namespace Cassette
                   .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentBundle) });
             bundle.Assets.Add(asset.Object);
 
-            var exception = Assert.Throws<AssetReferenceException>(delegate
-            {
-                new BundleContainer(new[] { bundle });
-            });
+            var exception = Assert.Throws<AssetReferenceException>(
+                () => BuildReferences(bundle)
+            );
             exception.Message.ShouldEqual("Reference error in \"~/bundle-1/a.js\", line 42. Cannot find \"~\\fail\\fail.js\".");
         }
 
@@ -51,10 +47,9 @@ namespace Cassette
             var bundle1 = new TestableBundle("~/bundle1");
             bundle1.AddReference("~\\bundle2");
 
-            var exception = Assert.Throws<AssetReferenceException>(delegate
-            {
-                new BundleContainer(new[] {bundle1});
-            });
+            var exception = Assert.Throws<AssetReferenceException>(
+                () => BuildReferences(bundle1)
+            );
             exception.Message.ShouldEqual("Reference error in bundle descriptor for \"~/bundle1\". Cannot find \"~/bundle2\".");
         }
 
@@ -70,7 +65,7 @@ namespace Cassette
             bundle.IsFromDescriptorFile = true;
             
             Assert.DoesNotThrow(
-                () => new BundleContainer(new[] { bundle })
+                () => BuildReferences(bundle)
             );
         }
 
@@ -78,6 +73,13 @@ namespace Cassette
         {
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+        }
+
+        void BuildReferences(TestableBundle bundle)
+        {
+            var bundles = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>());
+            bundles.Add(bundle);
+            bundles.BuildReferences();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -13,7 +14,6 @@ namespace Cassette.Web
 {
     public class UrlHelper_CassetteFile_Tests
     {
-        readonly TestableApplication application;
         readonly Mock<IUrlGenerator> urlGenerator;
         readonly FakeFileSystem fileSystem;
         readonly string hashOfFileContent;
@@ -32,10 +32,10 @@ namespace Cassette.Web
                 hashOfFileContent = sha1.ComputeHash(new byte[] { 1, 2, 3 }).ToHexString();
             }
 
-            application = new TestableApplication(urlGenerator: urlGenerator.Object, sourceDirectory: fileSystem);
-            CassetteApplicationContainer.SetApplicationAccessor(() => application);
-            application.Settings.AllowRawFileRequest(path => path == "~/test.png");
+            var settings = new CassetteSettings("");
+            settings.AllowRawFileRequest(path => path == "~/test.png");
 
+            UrlHelperExtensionMethods.Implementation = new UrlHelperExtensions(settings, urlGenerator.Object);
             urlHelper = new UrlHelper(new RequestContext());
         }
 

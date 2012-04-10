@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
+using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Moq;
@@ -23,7 +24,7 @@ namespace Cassette.Scripts.Manifests
             {
                 PageLocation = "body",
                 Hash = new byte[] { 1, 2, 3 },
-                Processor = new ScriptPipeline()
+                Processor = Mock.Of<IBundlePipeline<ScriptBundle>>()
             };
             asset = new StubAsset
             {

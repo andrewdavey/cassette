@@ -1,4 +1,5 @@
-﻿using Should;
+﻿using Moq;
+using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -8,7 +9,9 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CompileLessReturnsTheSamePipeline()
         {
-            var pipeline = new StylesheetPipeline();
+            var minifier = Mock.Of<IStylesheetMinifier>();
+            var urlGenerator = Mock.Of<IUrlGenerator>();
+            var pipeline = new StylesheetPipeline(minifier, urlGenerator);
             var returnedPipeline = pipeline.CompileLess();
             returnedPipeline.ShouldBeSameAs(pipeline);
         }

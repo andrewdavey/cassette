@@ -12,7 +12,7 @@ namespace Cassette.Scripts
         readonly ScriptBundle bundle;
         readonly Mock<IAsset> asset;
         readonly ScriptPipeline pipeline;
-        readonly Mock<ICompiler> compiler;
+        readonly Mock<ICoffeeScriptCompiler> compiler;
 
         public GivenPiplineWhereCompileCoffeeScriptWithCustomCompiler()
         {
@@ -22,8 +22,8 @@ namespace Cassette.Scripts
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
 
-            compiler = new Mock<ICompiler>();
-            pipeline = new ScriptPipeline().CompileCoffeeScript(compiler.Object);
+            compiler = new Mock<ICoffeeScriptCompiler>();
+            pipeline = new ScriptPipeline(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IUrlGenerator>()).CompileCoffeeScript(compiler.Object);
         }
 
         [Fact]
@@ -41,7 +41,8 @@ namespace Cassette.Scripts
 
         void ExpectCompileAssetTransformToBeAddedToAsset(Action<CompileAsset> gotTransformer)
         {
-            asset.Setup(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()))
+            asset
+                .Setup(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()))
                 .Callback<IAssetTransformer>(c =>
                 {
                     var t = c as CompileAsset;

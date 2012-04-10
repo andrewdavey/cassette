@@ -13,8 +13,7 @@ namespace Cassette.Scripts
         {
             settings = new CassetteSettings("")
             {
-                IsDebuggingEnabled = false,
-                UrlGenerator = Mock.Of<IUrlGenerator>()
+                IsDebuggingEnabled = false
             };
             fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
         }
@@ -46,7 +45,6 @@ namespace Cassette.Scripts
         public void WhenRenderExternalScriptBundleWithNotIECondition_ThenHtmlIsScriptElementWithConditionalButLeavesScriptVisibleToAllBrowsers()
         {
             var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "(gt IE 9)|!(IE)", Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
-            var fallbackRenderer = new Mock<IBundleHtmlRenderer<ScriptBundle>>();
 
             var html = bundle.Render(bundle);
 

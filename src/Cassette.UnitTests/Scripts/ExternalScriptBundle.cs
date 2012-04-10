@@ -101,14 +101,15 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenBundleIsProcessed_WhenRender_ThenExternalRendererUsed()
         {
-            var bundle = new ExternalScriptBundle(Url, "~/test", "condition") { Processor = new ScriptPipeline() };
+            var bundle = new ExternalScriptBundle(Url, "~/test", "condition")
+            {
+                Processor = Mock.Of<IBundleProcessor<ScriptBundle>>()
+            };
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
-            var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings("") { UrlGenerator = urlGenerator.Object };
+            var settings = new CassetteSettings("");
             bundle.Process(settings);
             
             var html = bundle.Render();

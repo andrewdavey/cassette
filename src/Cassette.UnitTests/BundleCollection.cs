@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class BundleCollection_Tests
     {
-        readonly BundleCollection bundles = new BundleCollection(new CassetteSettings(""));
+        readonly BundleCollection bundles = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>());
 
         [Fact]
         public void GivenBundleAdded_WhenGetByAppRelativePath_ThenBundleReturned()

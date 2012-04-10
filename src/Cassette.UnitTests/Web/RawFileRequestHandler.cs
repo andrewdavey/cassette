@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using Cassette.Configuration;
 using Moq;
 using Xunit;
-using Cassette.Configuration;
 
 namespace Cassette.Web
 {
     public class RawFileRequestHandler_Tests
     {
-        readonly IEnumerable<Bundle> bundles;
+        readonly BundleCollection bundles;
         readonly CassetteSettings settings;
 
         public RawFileRequestHandler_Tests()
@@ -24,9 +23,9 @@ namespace Cassette.Web
                 new AssetReference("~/test.png", asset.Object, -1, AssetReferenceType.RawFilename)
             });
             bundle.Assets.Add(asset.Object);
-            bundles = new[] { bundle };
 
             settings = new CassetteSettings("");
+            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>()) { bundle };
         }
 
         [Fact]
