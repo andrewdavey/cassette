@@ -13,7 +13,7 @@ namespace Cassette.HtmlTemplates
             var pipeline = new JQueryTmplPipeline(Mock.Of<IUrlGenerator>());
             var bundle = new HtmlTemplateBundle("~/");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.ContentType.ShouldEqual("text/javascript");
         }
@@ -24,7 +24,7 @@ namespace Cassette.HtmlTemplates
             var pipeline = new JQueryTmplPipeline(Mock.Of<IUrlGenerator>());
             var bundle = new HtmlTemplateBundle("~");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.Hash.ShouldNotBeNull();
         }

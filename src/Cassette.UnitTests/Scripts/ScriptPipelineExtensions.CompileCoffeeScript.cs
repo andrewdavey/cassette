@@ -32,7 +32,7 @@ namespace Cassette.Scripts
             CompileAsset transformer = null;
             ExpectCompileAssetTransformToBeAddedToAsset(t => transformer = t);
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             ExpectCompileToBeCalled();
             ApplyTransform(transformer);

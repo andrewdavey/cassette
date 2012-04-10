@@ -2,11 +2,12 @@
 using System.Web.Routing;
 using Moq;
 using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Web
 {
-    public class DelegateRouteHandler_Tests
+    public class CassetteRouteHandler_Tests
     {
         [Fact]
         public void GetHttpHandlerCallsDelegatePassingInTheRequestContextAndReturnsTheCreatedHttpHandler()
@@ -16,10 +17,9 @@ namespace Cassette.Web
             var stubHttp = new Mock<HttpContextBase>();
             var stubContext = new Mock<RequestContext>(stubHttp.Object, new RouteData());
 
-            var routeHandler = new DelegateRouteHandler(context => {
-                actualContext = context;
-                return stubHandler;
-            });
+            var container = new TinyIoCContainer();
+            container.Register(typeof(IHttpHandler), stubHandler);
+            var routeHandler = new CassetteRouteHandler<IHttpHandler>(container);
 
             var actualHttpHandler = routeHandler.GetHttpHandler(stubContext.Object);
 

@@ -23,7 +23,7 @@ namespace Cassette.Scripts
             coffeeScriptAsset.SetupGet(a => a.Path).Returns("test.coffee");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(bundle, new CassetteSettings(""));
+            step.Process(bundle, new CassetteSettings());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(
@@ -42,7 +42,7 @@ namespace Cassette.Scripts
             coffeeScriptAsset.SetupGet(a => a.Path).Returns("test.js");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(bundle, new CassetteSettings(""));
+            step.Process(bundle, new CassetteSettings());
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(

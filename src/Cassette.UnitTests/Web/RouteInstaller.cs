@@ -6,6 +6,7 @@ using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
 using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Web
@@ -19,10 +20,15 @@ namespace Cassette.Web
         protected RouteInstaller_Tests()
         {
             var urlGenerator = Mock.Of<IUrlGenerator>();
-            var settings = new CassetteSettings("");
-            var bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            var settings = new CassetteSettings();
+            var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             httpContext = new Mock<HttpContextBase>();
-            routing = new RouteInstaller(routes, bundles, settings, urlGenerator);
+            var container = new TinyIoCContainer();
+            container.Register(bundles);
+            container.Register(settings);
+            container.Register(typeof(IUrlGenerator), urlGenerator);
+
+            routing = new RouteInstaller(routes, container);
 
             routing.Run();
         }

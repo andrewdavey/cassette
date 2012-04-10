@@ -39,7 +39,7 @@ namespace Cassette.Web
             response.SetupGet(r => r.Cache).Returns(cache.Object);
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            bundles = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>());
+            bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             handler = new AssetRequestHandler(requestContext, bundles);
         }
 

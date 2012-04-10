@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Cassette.Configuration
 {
-    public class BootstrapperContributor : IBootstrapperContributor
+    public class ServiceRegistry : IServiceRegistry
     {
         public virtual IEnumerable<TypeRegistration> TypeRegistrations
         {

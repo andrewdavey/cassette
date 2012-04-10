@@ -28,7 +28,7 @@ namespace Cassette.MSBuild
         public void ItCallsConfigurationConfigure()
         {
             SetupConfig();
-            task.Run();
+            task.Execute();
             configuration.ConfigureWasCalled.ShouldBeTrue();
         }
 
@@ -36,7 +36,7 @@ namespace Cassette.MSBuild
         public void ItProcessesBundles()
         {
             SetupConfig();
-            task.Run();
+            task.Execute();
             bundle.IsProcessed.ShouldBeTrue();
         }
 
@@ -44,7 +44,7 @@ namespace Cassette.MSBuild
         public void ItWritesManifestWithWriter()
         {
             SetupConfig();
-            task.Run();
+            task.Execute();
             writer.Verify(w => w.Write(It.IsAny<CassetteManifest>()));
         }
 
@@ -52,7 +52,7 @@ namespace Cassette.MSBuild
         public void ItAssignsSettingsSourceDirectory()
         {
             SetupConfig();
-            task.Run();
+            task.Execute();
             configuration.SettingsPassedToConfigure.SourceDirectory.ShouldBeSameAs(sourceDirectory);
         }
 
@@ -69,8 +69,8 @@ namespace Cassette.MSBuild
                 .Setup(f => f.CreateCassetteConfigurations())
                 .Returns(() => new[] { configuration });
 
-            var settings = new CassetteSettings("");
-            var bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            var settings = new CassetteSettings();
+            var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             task = new CreateBundlesImplementation(
                 Path.Combine(path, "cassette.xml"),
                 bundles,

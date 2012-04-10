@@ -10,7 +10,7 @@ namespace Cassette
     /// <summary>
     /// Watches the source directory for file system changes. Rebuilds the <see cref="BundleCollection"/>.
     /// </summary>
-    public class FileSystemWatchingBundleRebuilder : IStartUpTask, IDisposable
+    class FileSystemWatchingBundleRebuilder : IStartUpTask, IDisposable
     {
         readonly CassetteSettings settings;
         readonly BundleCollection bundles;
@@ -30,12 +30,15 @@ namespace Cassette
         /// </summary>
         public void Run()
         {
-            if (!File.Exists(settings.SourceDirectory.FullPath.Substring(2)))
+            var pathToWatch = settings.SourceDirectory.FullPath.Substring(2);
+            if (!File.Exists(pathToWatch))
             {
                 Trace.Source.TraceEvent(TraceEventType.Warning, 0, "Cannot watch file system for asset file changes because the path does not exist: {0}", settings.SourceDirectory.FullPath);
+                return;
             }
+
             rebuildDelayTimer = new Timer(RebuildDelayTimerCallback);
-            watcher = new FileSystemWatcher(settings.SourceDirectory.FullPath)
+            watcher = new FileSystemWatcher(pathToWatch)
             {
                 IncludeSubdirectories = true,
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,

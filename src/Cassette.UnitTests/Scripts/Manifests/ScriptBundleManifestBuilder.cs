@@ -36,7 +36,7 @@ namespace Cassette.Scripts.Manifests
             };
             bundle.Assets.Add(asset);
             bundle.AddReference("~/reference/path");
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
             var urlModifier = Mock.Of<IUrlModifier>();
             bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier);
 

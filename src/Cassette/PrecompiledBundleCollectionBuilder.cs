@@ -16,9 +16,13 @@ namespace Cassette
 
         public void BuildBundleCollection(BundleCollection bundles)
         {
-            var manifest = ReadManifest();
-            var createdBundles = manifest.CreateBundles(urlModifier);
-            bundles.AddRange(createdBundles);
+            using (bundles.GetWriteLock())
+            {
+                var manifest = ReadManifest();
+                var createdBundles = manifest.CreateBundles(urlModifier);
+                bundles.AddRange(createdBundles);
+                bundles.BuildReferences();
+            }
         }
 
         CassetteManifest ReadManifest()

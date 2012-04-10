@@ -16,7 +16,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset1.Object);
             bundle.Assets.Add(asset2.Object);
 
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle, new CassetteSettings());
 
             asset1.Verify(a => a.AddAssetTransformer(
                 It.Is<IAssetTransformer>(t => t is ExpandCssUrlsAssetTransformer)

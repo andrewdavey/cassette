@@ -249,7 +249,7 @@
     <Compile Include="Web\AssetRequestHandler.cs" />
     <Compile Include="Web\CassetteRoute.cs" />
     <Compile Include="UrlGenerator.cs" />
-    <Compile Include="Web\DelegateRouteHandler.cs" />
+    <Compile Include="Web\CassetteRouteHandler.cs" />
     <Compile Include="Web\Jasmine\CassetteConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="PlaceholderTracker.cs" />

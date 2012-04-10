@@ -32,7 +32,7 @@ namespace Cassette.Web
                 hashOfFileContent = sha1.ComputeHash(new byte[] { 1, 2, 3 }).ToHexString();
             }
 
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
             settings.AllowRawFileRequest(path => path == "~/test.png");
 
             UrlHelperExtensionMethods.Implementation = new UrlHelperExtensions(settings, urlGenerator.Object);

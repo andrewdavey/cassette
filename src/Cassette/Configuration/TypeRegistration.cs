@@ -9,7 +9,7 @@ namespace Cassette.Configuration
         public string Name { get; private set; }
 
         public TypeRegistration(Type registrationType, Type implementationType)
-            : this(registrationType, implementationType, null)
+            : this(registrationType, implementationType, "")
         {
         }
 

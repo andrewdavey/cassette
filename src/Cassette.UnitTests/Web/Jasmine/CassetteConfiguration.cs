@@ -15,8 +15,8 @@ namespace Cassette.Web.Jasmine
         public CassetteConfiguration_WhenConfigure()
         {
             var bundleDefinition = new JasmineBundleDefinition(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IStylesheetMinifier>(), Mock.Of<IUrlGenerator>());
-            var settings = new CassetteSettings("");
-            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            var settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
 
             bundleDefinition.AddBundles(bundles);
         }

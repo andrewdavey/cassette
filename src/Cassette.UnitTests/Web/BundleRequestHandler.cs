@@ -45,8 +45,8 @@ namespace Cassette.Web
 
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            var settings = new CassetteSettings("");
-            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            var settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
         }
 
         internal BundleRequestHandler<TestableBundle> CreateRequestHandler(string bundlePath)
@@ -69,7 +69,7 @@ namespace Cassette.Web
             bundle.Hash = new byte[] { 1, 2, 3 };
             bundles.Add(bundle);
             bundles.BuildReferences();
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
         }
 
         void IDisposable.Dispose()
@@ -90,7 +90,7 @@ namespace Cassette.Web
             bundle.Assets.Add(asset.Object);
             bundles.Add(bundle);
             bundles.BuildReferences();
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
 
             var handler = CreateRequestHandler("test_010203");
             handler.ProcessRequest();

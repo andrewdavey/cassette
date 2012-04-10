@@ -63,7 +63,7 @@
     </Compile>
     <Compile Include="CoffeeScriptCommentParser.cs" />
     <Compile Include="CoffeeScriptCompileException.cs" />
-    <Compile Include="CoffeeScriptBootstrapperContributor.cs" />
+    <Compile Include="CoffeeScriptServiceRegistry.cs" />
     <Compile Include="CoffeeScriptFileSearchModifier.cs" />
     <Compile Include="CoffeeScriptPipelineModifier.cs" />
     <Compile Include="CompileCoffeeScript.cs" />

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Cassette.Configuration
 {
-    public interface IBootstrapperContributor
+    public interface IServiceRegistry
     {
         IEnumerable<TypeRegistration> TypeRegistrations { get; }
         IEnumerable<CollectionTypeRegistration> CollectionTypeRegistrations { get; }

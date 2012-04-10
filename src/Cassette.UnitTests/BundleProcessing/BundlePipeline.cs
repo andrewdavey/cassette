@@ -20,7 +20,7 @@ namespace Cassette.BundleProcessing
         public void ProcessCallsStep()
         {
             var bundle = new TestableBundle("~");
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
 
             pipeline.Process(bundle, settings);
 

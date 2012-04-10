@@ -26,7 +26,7 @@ class Foo
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseCoffeeScriptReferences();
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.coffee", 3));

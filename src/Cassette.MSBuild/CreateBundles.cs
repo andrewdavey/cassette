@@ -22,8 +22,10 @@ namespace Cassette.MSBuild
 
         public override bool Execute()
         {
-            var bootstrapper = BootstrapperLocator<MSBuildBootstrapper>.Bootstrapper;
-            bootstrapper.Initialize();
+            var host = new MSBuildHost();
+            host.Initialize();
+            host.Execute();
+            host.Dispose();
             return true;
         }
     }

@@ -25,7 +25,7 @@ namespace Cassette
                 .Returns<string, IEnumerable<IFile>, BundleDescriptor>((path, _, __) => new TestableBundle(path));
 
             sourceDirectory = new Mock<IDirectory>();
-            settings = new CassetteSettings("")
+            settings = new CassetteSettings()
             {
                 SourceDirectory = sourceDirectory.Object,
             };
@@ -33,7 +33,7 @@ namespace Cassette
             var provider = new Mock<IBundleFactoryProvider>();
             provider.Setup(p => p.GetBundleFactory<TestableBundle>()).Returns(factory.Object);
 
-            bundles = new BundleCollection(settings, t => null, provider.Object);
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), provider.Object);
         }
 
         [Fact]

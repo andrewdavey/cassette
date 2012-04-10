@@ -24,8 +24,8 @@ namespace Cassette.Web
             });
             bundle.Assets.Add(asset.Object);
 
-            settings = new CassetteSettings("");
-            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>()) { bundle };
+            settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>()) { bundle };
         }
 
         [Fact]

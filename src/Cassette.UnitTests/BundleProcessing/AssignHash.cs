@@ -66,7 +66,7 @@ namespace Cassette.BundleProcessing
 
         void ProcessBundleWithAssignHash()
         {
-            assignHash.Process(bundle, new CassetteSettings(""));
+            assignHash.Process(bundle, new CassetteSettings());
         }
 
         void AssertHashIsSha1Of(string expected)

@@ -12,7 +12,7 @@ namespace Cassette.HtmlTemplates
         {
             var bundle = new HtmlTemplateBundle("~");
             var processor = new Mock<IBundleProcessor<HtmlTemplateBundle>>();
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
             bundle.Processor = processor.Object;
 
             bundle.Process(settings);

@@ -12,7 +12,7 @@ namespace Cassette.HtmlTemplates
             var bundle = new HtmlTemplateBundle("~");
             var pipeline = new HtmlTemplatePipeline();
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.Renderer.ShouldBeType<InlineHtmlTemplateBundleRenderer>();
         }
@@ -23,7 +23,7 @@ namespace Cassette.HtmlTemplates
             var pipeline = new HtmlTemplatePipeline();
             var bundle = new HtmlTemplateBundle("~");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.Hash.ShouldNotBeNull();
         }

@@ -12,7 +12,7 @@ namespace Cassette
         public void FindBundleContainingPathOfBundleReturnsTheBundle()
         {
             var expectedBundle = new TestableBundle("~/test");
-            var collection = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>())
+            var collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>())
             {
                 expectedBundle
             };
@@ -24,7 +24,7 @@ namespace Cassette
         public void FindBundleContainingPathOfBundleWherePathIsMissingRootPrefixReturnsTheBundle()
         {
             var expectedBundle = new TestableBundle("~/test");
-            var collection = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>())
+            var collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>())
             {
                 expectedBundle
             };
@@ -35,7 +35,7 @@ namespace Cassette
         [Fact]
         public void FindBundleContainingPathWithWrongPathReturnsNull()
         {
-            var collection = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>())
+            var collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>())
             {
                 new TestableBundle("~/test")
             };
@@ -51,7 +51,7 @@ namespace Cassette
             AssetAcceptsVisitor(asset);
             asset.SetupGet(a => a.Path).Returns("~/test/test.js");
             expectedBundle.Assets.Add(asset.Object);
-            var bundles = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>())
+            var bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>())
             {
                 expectedBundle
             };

@@ -3,7 +3,7 @@ using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
-    public class CoffeeScriptBootstrapperContributor : BootstrapperContributor
+    public class CoffeeScriptServiceRegistry : ServiceRegistry
     {
         public override IEnumerable<TypeRegistration> TypeRegistrations
         {

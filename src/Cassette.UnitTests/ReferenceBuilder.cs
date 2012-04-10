@@ -16,8 +16,8 @@ namespace Cassette
     {
         protected ReferenceBuilder_Reference_TestBase()
         {
-            settings = new CassetteSettings("");
-            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             bundleFactoryProvider = new Mock<IBundleFactoryProvider>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
             builder = new ReferenceBuilder(bundles, placeholderTracker.Object, bundleFactoryProvider.Object, settings);

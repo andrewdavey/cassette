@@ -11,7 +11,7 @@ namespace Cassette
 
         public BundleCollection_BuildReferences()
         {
-            collection = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>());
+            collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
         }
 
         [Fact]

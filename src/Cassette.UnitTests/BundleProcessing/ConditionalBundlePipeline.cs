@@ -15,7 +15,7 @@ namespace Cassette.BundleProcessing
                 step.Object
             );
 
-            pipeline.Process(new TestableBundle("~"), new CassetteSettings(""));
+            pipeline.Process(new TestableBundle("~"), new CassetteSettings());
 
             step.Verify(s => s.Process(It.IsAny<TestableBundle>(), It.IsAny<CassetteSettings>()), Times.Never());
         }
@@ -30,7 +30,7 @@ namespace Cassette.BundleProcessing
             );
 
             var bundle = new TestableBundle("~");
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
             pipeline.Process(bundle, settings);
 
             step.Verify(s => s.Process(bundle, settings));

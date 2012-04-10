@@ -21,8 +21,8 @@ namespace Cassette.Views
         {
             urlGenerator = new Mock<IUrlGenerator>();
             referenceBuilder = new Mock<IReferenceBuilder>();
-            settings = new CassetteSettings("");
-            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object);
         }
 

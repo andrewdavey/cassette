@@ -58,6 +58,21 @@ namespace Cassette
             routes.Add(route);
         }
 
+        class DelegateRouteHandler : IRouteHandler
+        {
+            readonly Func<RequestContext, IHttpHandler> createHandler;
+
+            public DelegateRouteHandler(Func<RequestContext, IHttpHandler> createHandler)
+            {
+                this.createHandler = createHandler;
+            }
+
+            public IHttpHandler GetHttpHandler(RequestContext requestContext)
+            {
+                return createHandler(requestContext);
+            }
+        }
+
         public void Get(string url)
         {
             var queryStringStart = url.IndexOf('?');

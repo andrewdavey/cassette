@@ -3,7 +3,7 @@ using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateBundleBootstrapperContributor : BundleBootstrapperContributor<HtmlTemplateBundle>
+    public class HtmlTemplateBundleServiceRegistry : BundleServiceRegistry<HtmlTemplateBundle>
     {
         protected override Type BundlePipeline
         {

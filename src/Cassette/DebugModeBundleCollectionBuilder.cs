@@ -18,9 +18,13 @@ namespace Cassette
         public void BuildBundleCollection(BundleCollection bundleCollection)
         {
             bundles = bundleCollection;
-            AddBundlesFromDefinitions();
-            ProcessBundles();
-            AddBundlesForUrlReferences();
+            using (bundles.GetWriteLock())
+            {
+                AddBundlesFromDefinitions();
+                ProcessBundles();
+                AddBundlesForUrlReferences();
+                bundles.BuildReferences();
+            }
         }
 
         void AddBundlesFromDefinitions()

@@ -9,18 +9,26 @@ using Cassette.IO;
 
 namespace Cassette.Web
 {
-    public class DefaultBootstrapper : DefaultBootstrapperBase
+    public class WebHost : HostBase
     {
-        protected override IEnumerable<InstanceRegistration> InstanceRegistrationTypes
+        protected override void RegisterContainerItems()
         {
-            get
+            Container.Register(typeof(HttpContextBase), (c, p) => new HttpContextWrapper(HttpContext.Current));
+            Container.Register(typeof(RouteCollection), RouteTable.Routes);
+            Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(HttpRuntime.AppDomainAppVirtualPath));
+
+            base.RegisterContainerItems();
+        }
+
+        protected override IEnumerable<Type> GetStartUpTaskTypes()
+        {
+            var startUpTaskTypes = base.GetStartUpTaskTypes();
+            return startUpTaskTypes.Concat(new[]
             {
-                return base.InstanceRegistrationTypes.Concat(new[]
-                {
-                    new InstanceRegistration(typeof(Func<HttpContextBase>), new Func<HttpContextBase>(() => new HttpContextWrapper(HttpContext.Current))),
-                    new InstanceRegistration(typeof(RouteCollection), RouteTable.Routes)
-                });
-            }
+                typeof(RouteInstaller),
+                typeof(FileSystemWatchingBundleRebuilder),
+                typeof(UrlHelperExtensions)
+            });
         }
 
         protected override CassetteSettings Settings
@@ -34,6 +42,7 @@ namespace Cassette.Web
                 settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
                 settings.SourceDirectory = new FileSystemDirectory(HttpRuntime.AppDomainAppPath);
                 settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
+                settings.PrecompiledManifestFile = settings.SourceDirectory.GetFile(string.IsNullOrEmpty(configurationSection.PrecompiledManifest) ? "~/App_Data/cassette.xml" : configurationSection.PrecompiledManifest);
                 return settings;
             }
         }
@@ -50,6 +59,12 @@ namespace Cassette.Web
                 var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
                 return compilation != null && compilation.Debug;
             }
+        }
+
+        public void Hook(HttpApplication httpApplication)
+        {
+            var installer = Container.Resolve<PlaceholderReplacingResponseFilterInstaller>();
+            installer.Install(httpApplication);
         }
     }
 }

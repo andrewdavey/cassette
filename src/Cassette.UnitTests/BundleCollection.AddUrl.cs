@@ -21,12 +21,12 @@ namespace Cassette
         public BundleCollection_AddUrl_Tests()
         {
             sourceDirectory = new Mock<IDirectory>();
-            settings = new CassetteSettings("")
+            settings = new CassetteSettings()
             {
                 SourceDirectory = sourceDirectory.Object
             };
             factoryProvider = new Mock<IBundleFactoryProvider>();
-            bundles = new BundleCollection(settings, t => null, factoryProvider.Object);
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), factoryProvider.Object);
         }
 
         [Fact]

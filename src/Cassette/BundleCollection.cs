@@ -14,15 +14,15 @@ namespace Cassette
     {
         readonly List<Bundle> bundles = new List<Bundle>();
         readonly CassetteSettings settings;
-        readonly Func<Type, IFileSearch> getFileSearchForBundleType;
+        readonly IFileSearchProvider fileSearchProvider;
         readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
 
-        public BundleCollection(CassetteSettings settings, Func<Type, IFileSearch> getFileSearchForBundleType, IBundleFactoryProvider bundleFactoryProvider)
+        public BundleCollection(CassetteSettings settings, IFileSearchProvider fileSearchProvider, IBundleFactoryProvider bundleFactoryProvider)
         {
             this.settings = settings;
-            this.getFileSearchForBundleType = getFileSearchForBundleType;
+            this.fileSearchProvider = fileSearchProvider;
             this.bundleFactoryProvider = bundleFactoryProvider;
         }
 
@@ -148,7 +148,7 @@ namespace Cassette
             var source = settings.SourceDirectory;
             if (source.DirectoryExists(applicationRelativePath))
             {
-                fileSearch = fileSearch ?? getFileSearchForBundleType(typeof(T));
+                fileSearch = fileSearch ?? fileSearchProvider.GetFileSearch(typeof(T));
                 var directory = source.GetDirectory(applicationRelativePath);
                 var allFiles = fileSearch.FindFiles(directory);
                 bundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, allFiles, directory);
@@ -326,7 +326,7 @@ namespace Cassette
         {
             Trace.Source.TraceInformation(string.Format("Creating {0} for each subdirectory of {1}", typeof(T).Name, applicationRelativePath));
 
-            fileSearch = fileSearch ?? getFileSearchForBundleType(typeof(T));
+            fileSearch = fileSearch ?? fileSearchProvider.GetFileSearch(typeof(T));
 
             var bundleFactory = bundleFactoryProvider.GetBundleFactory<T>();
             var parentDirectory = settings.SourceDirectory.GetDirectory(applicationRelativePath);
@@ -398,7 +398,7 @@ namespace Cassette
 
             if (sourceDirectory.DirectoryExists(localAssetSettings.Path))
             {
-                var fileSearch = localAssetSettings.FileSearch ?? getFileSearchForBundleType(typeof(T));
+                var fileSearch = localAssetSettings.FileSearch ?? fileSearchProvider.GetFileSearch(typeof(T));
                 var directory = sourceDirectory.GetDirectory(localAssetSettings.Path);
                 files = fileSearch.FindFiles(directory);
 
@@ -510,7 +510,7 @@ namespace Cassette
                                 ? settings.SourceDirectory
                                 : settings.SourceDirectory.GetDirectory(directoryPath);
 
-            fileSearch = fileSearch ?? getFileSearchForBundleType(typeof(T));
+            fileSearch = fileSearch ?? fileSearchProvider.GetFileSearch(typeof(T));
             var files = fileSearch.FindFiles(directory);
             var bundleFactory = bundleFactoryProvider.GetBundleFactory<T>();
             foreach (var file in files)

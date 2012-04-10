@@ -3,7 +3,7 @@ using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetBundleBootstrapperContributor : BundleBootstrapperContributor<StylesheetBundle>
+    public class StylesheetBundleServiceRegistry : BundleServiceRegistry<StylesheetBundle>
     {
         protected override Type BundlePipeline
         {

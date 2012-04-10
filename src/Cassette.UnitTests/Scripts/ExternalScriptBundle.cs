@@ -59,7 +59,7 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle(Url);
             var processor = new Mock<IBundleProcessor<ScriptBundle>>();
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
 
             bundle.Processor = processor.Object;
             bundle.Process(settings);
@@ -109,7 +109,7 @@ namespace Cassette.Scripts
             asset.SetupGet(a => a.Path).Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
             bundle.Process(settings);
             
             var html = bundle.Render();

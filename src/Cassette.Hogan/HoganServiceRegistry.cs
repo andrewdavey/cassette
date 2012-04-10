@@ -4,7 +4,7 @@ using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HoganBootstrapperContributor : BootstrapperContributor
+    public class HoganServiceRegistry : ServiceRegistry
     {
         public override IEnumerable<TypeRegistration> TypeRegistrations
         {

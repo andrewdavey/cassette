@@ -5,7 +5,7 @@ using Cassette.Manifests;
 
 namespace Cassette.MSBuild
 {
-    class CreateBundlesImplementation : IStartUpTask
+    class CreateBundlesImplementation
     {
         readonly string outputFilename;
         readonly BundleCollection bundles;
@@ -18,7 +18,7 @@ namespace Cassette.MSBuild
             this.settings = settings;
         }
 
-        public void Run()
+        public void Execute()
         {
             WriteManifest();
         }

@@ -35,7 +35,7 @@ namespace Cassette.Stylesheets
             var lastStep = (ConditionalBundlePipeline<StylesheetBundle>)pipeline[pipeline.Count - 1];
             lastStep.RemoveAt(0);
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is MicrosoftStylesheetMinifier)));
         }
@@ -53,7 +53,7 @@ namespace Cassette.Stylesheets
             var lastStep = (ConditionalBundlePipeline<StylesheetBundle>)pipeline[pipeline.Count - 1];
             lastStep.RemoveAt(0);
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t == minifier.Object)));
         }
@@ -68,7 +68,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             pipeline.CompileLess();
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
         }
@@ -82,7 +82,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
         }
@@ -98,7 +98,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             pipeline.CompileSass();
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
         }
@@ -112,7 +112,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)), Times.Never());
         }
@@ -129,7 +129,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             pipeline.EmbedImages();
-            pipeline.Process(bundle, new CassetteSettings("") { SourceDirectory = new FakeFileSystem() });
+            pipeline.Process(bundle, new CassetteSettings() { SourceDirectory = new FakeFileSystem() });
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)));
         }
@@ -143,7 +143,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)), Times.Never());
         }
@@ -153,7 +153,7 @@ namespace Cassette.Stylesheets
         {
             var bundle = new StylesheetBundle("~");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.Hash.ShouldNotBeNull();
         }
@@ -163,7 +163,7 @@ namespace Cassette.Stylesheets
     {
         public StylesheetPipeline_Process_TestBase()
         {
-            settings = new CassetteSettings("");
+            settings = new CassetteSettings();
             bundle = new StylesheetBundle("~");
             asset1 = new Mock<IAsset>();
             asset2 = new Mock<IAsset>();

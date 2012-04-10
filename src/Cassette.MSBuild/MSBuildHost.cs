@@ -1,14 +1,17 @@
-using System.Collections.Generic;
+using System;
 using Cassette.Configuration;
 using Cassette.IO;
-using System;
-using TinyIoC;
 
 namespace Cassette.MSBuild
 {
-    public class MSBuildBootstrapper : DefaultBootstrapperBase
+    public class MSBuildHost : HostBase
     {
         public string OutputFilename { get; set; }
+
+        public void Execute()
+        {
+            Container.Resolve<CreateBundlesImplementation>().Execute();
+        }
 
         protected override CassetteSettings Settings
         {
@@ -20,25 +23,22 @@ namespace Cassette.MSBuild
             }
         }
 
-        protected override Type UrlModifier
+        protected override void RegisterContainerItems()
         {
-            get
-            {
-                return typeof(UrlPlaceholderWrapper);
-            }
-        }
-
-        protected override void RegisterTypesAsSingletons(IEnumerable<TypeRegistration> typeRegistrations, TinyIoCContainer container)
-        {
-            base.RegisterTypesAsSingletons(typeRegistrations, container);
-
-            container.Register(
+            Container.Register(
                 (c, p) => new CreateBundlesImplementation(
                     OutputFilename,
                     c.Resolve<BundleCollection>(),
                     c.Resolve<CassetteSettings>()
                 )
             );
+
+            base.RegisterContainerItems();
+
+            // Override any URL modifier, even if set by the application.
+            // So this is *after* the base.RegisterContainerItems() call.
+            // We must output specially wrapped URLs at compile-time. These are then modified by the application at run-time.
+            Container.Register<IUrlModifier>(new UrlPlaceholderWrapper());
         }
     }
 }

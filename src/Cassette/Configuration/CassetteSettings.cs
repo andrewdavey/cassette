@@ -18,10 +18,8 @@ namespace Cassette.Configuration
         readonly Lazy<ICassetteManifestCache> cassetteManifestCache;
         readonly List<Func<string, bool>> allowPathPredicates = new List<Func<string, bool>>();
  
-        public CassetteSettings(string cacheVersion)
+        public CassetteSettings()
         {
-            Version = cacheVersion;
-
             cassetteManifestCache = new Lazy<ICassetteManifestCache>(
                 () => new CassetteManifestCache(CacheDirectory.GetFile("cassette.xml"))
             );
@@ -59,7 +57,7 @@ namespace Cassette.Configuration
 
         internal bool AllowRemoteDiagnostics { get; set; }
 
-        internal string Version { get; private set; }
+        internal string Version { get; set; }
 
         internal ICassetteManifestCache CassetteManifestCache
         {

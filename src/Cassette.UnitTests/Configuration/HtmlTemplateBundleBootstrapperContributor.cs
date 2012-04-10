@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Cassette.Configuration
 {
-    public class HtmlTemplateBundleBootstrapperContributor_Tests
+    public class HtmlTemplateBundleServiceRegistry_Tests
     {
         readonly FileSearch fileSearch;
-        readonly HtmlTemplateBundleBootstrapperContributor contributor;
+        readonly HtmlTemplateBundleServiceRegistry contributor;
 
-        public HtmlTemplateBundleBootstrapperContributor_Tests()
+        public HtmlTemplateBundleServiceRegistry_Tests()
         {
-            contributor = new HtmlTemplateBundleBootstrapperContributor();
+            contributor = new HtmlTemplateBundleServiceRegistry();
             fileSearch = (FileSearch)contributor.GetInstance<IFileSearch>();
         }
 

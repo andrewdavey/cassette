@@ -77,7 +77,7 @@ namespace Cassette
 
         void BuildReferences(TestableBundle bundle)
         {
-            var bundles = new BundleCollection(new CassetteSettings(""), t => null, Mock.Of<IBundleFactoryProvider>());
+            var bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             bundles.Add(bundle);
             bundles.BuildReferences();
         }

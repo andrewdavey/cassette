@@ -29,7 +29,7 @@ namespace Cassette
                     (path, files, d) => (createdBundle = new TestableBundle(path))
                 );
             defaultFileSource = new Mock<IFileSearch>();
-            settings = new CassetteSettings("")
+            settings = new CassetteSettings()
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory),
             };
@@ -37,7 +37,7 @@ namespace Cassette
             var provider = new Mock<IBundleFactoryProvider>();
             provider.Setup(p => p.GetBundleFactory<TestableBundle>()).Returns(factory.Object);
 
-            bundles = new BundleCollection(settings, t => null, provider.Object);
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), provider.Object);
         }
 
         [Fact]

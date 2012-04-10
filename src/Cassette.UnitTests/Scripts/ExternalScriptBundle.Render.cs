@@ -11,7 +11,7 @@ namespace Cassette.Scripts
     {
         public ExternalScriptBundleRender_Tests()
         {
-            settings = new CassetteSettings("")
+            settings = new CassetteSettings()
             {
                 IsDebuggingEnabled = false
             };

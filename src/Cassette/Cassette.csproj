@@ -75,8 +75,9 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppDomainAssemblyTypeScanner.cs" />
-    <Compile Include="BootstrapperBase.cs" />
-    <Compile Include="BootstrapperLocator.cs" />
+    <Compile Include="Configuration\ServiceRegistryBase.cs" />
+    <Compile Include="FileSearchProvider.cs" />
+    <Compile Include="HostBase.cs" />
     <Compile Include="BundleCollection.cs" />
     <Compile Include="BundleCollectionBuilder.cs" />
     <Compile Include="BundleFactoryProvider.cs" />
@@ -89,12 +90,12 @@
     <Compile Include="CompileContext.cs" />
     <Compile Include="CompileResult.cs" />
     <Compile Include="ConditionalRenderer.cs" />
-    <Compile Include="Configuration\BootstrapperContributor.cs" />
-    <Compile Include="Configuration\BundleBootstrapperContributor.cs" />
+    <Compile Include="Configuration\ServiceRegistry.cs" />
+    <Compile Include="Configuration\BundleServiceRegistry.cs" />
     <Compile Include="Configuration\CollectionTypeRegistration.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
-    <Compile Include="Configuration\IBootstrapperContributor.cs" />
+    <Compile Include="Configuration\IServiceRegistry.cs" />
     <Compile Include="Configuration\IBundleDefinition.cs" />
     <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
     <Compile Include="Configuration\IFileSearchModifier.cs" />
@@ -102,13 +103,12 @@
     <Compile Include="Configuration\TypeRegistration.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DebugModeBundleCollectionBuilder.cs" />
-    <Compile Include="DefaultBootstrapper.cs" />
     <Compile Include="DelegatingDisposable.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
-    <Compile Include="HtmlTemplates\HtmlTemplateBundleBootstrapperContributor.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleServiceRegistry.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateFileSearchModifier.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
-    <Compile Include="IBootstrapper.cs" />
+    <Compile Include="IFileSearchProvider.cs" />
     <Compile Include="IBundleCollectionBuilder.cs" />
     <Compile Include="IBundleFactoryProvider.cs" />
     <Compile Include="IExternalBundle.cs" />
@@ -210,7 +210,7 @@
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
-    <Compile Include="Scripts\ScriptBundleBootstrapperContributor.cs" />
+    <Compile Include="Scripts\ScriptBundleServiceRegistry.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifest.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
@@ -222,7 +222,7 @@
     <Compile Include="Stylesheets\CssUrlMatchTransformer.cs" />
     <Compile Include="Stylesheets\CssUrlToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\IStylesheetMinifier.cs" />
-    <Compile Include="Stylesheets\StylesheetBundleBootstrapperContributor.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleServiceRegistry.cs" />
     <Compile Include="Stylesheets\StylesheetFileSearchModifier.cs" />
     <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
     <Compile Include="Stylesheets\CssFontToDataUriTransformer.cs" />

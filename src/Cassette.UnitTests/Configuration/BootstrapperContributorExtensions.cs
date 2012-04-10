@@ -3,14 +3,14 @@ using Should;
 
 namespace Cassette.Configuration
 {
-    static class BootstrapperContributorExtensions
+    static class ServiceRegistryExtensions
     {
-        public static T GetInstance<T>(this BootstrapperContributor contributor)
+        public static T GetInstance<T>(this ServiceRegistry contributor)
         {
             return (T)contributor.InstanceRegistrations.First(i => i.RegistrationType == typeof(T)).Instance;
         }
 
-        public static void ShouldHaveTypeRegistration<TR,TI>(this BootstrapperContributor contributor)
+        public static void ShouldHaveTypeRegistration<TR,TI>(this ServiceRegistry contributor)
         {
             contributor
                 .TypeRegistrations

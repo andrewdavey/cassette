@@ -16,11 +16,11 @@ namespace Cassette
         public FileSystemWatchingBundleRebuilder_Tests()
         {
             tempDirectory = new TempDirectory();
-            var settings = new CassetteSettings("")
+            var settings = new CassetteSettings()
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory)
             };
-            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             bundleDefinition = new Mock<IBundleDefinition>();
 
             rebuilder = new FileSystemWatchingBundleRebuilder(settings, bundles, new[] { bundleDefinition.Object });

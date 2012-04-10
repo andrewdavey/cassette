@@ -3,7 +3,7 @@ using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
-    public class ScriptBundleBootstrapperContributor : BundleBootstrapperContributor<ScriptBundle>
+    public class ScriptBundleServiceRegistry : BundleServiceRegistry<ScriptBundle>
     {
         protected override Type BundlePipeline
         {

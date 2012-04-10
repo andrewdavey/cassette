@@ -26,18 +26,21 @@ namespace Cassette
         public void BuildBundleCollection(BundleCollection bundleCollection)
         {
             bundles = bundleCollection;
-
-            AddBundlesFromDefinitions();
-
-            var cachedManifest = manifestCache.LoadCassetteManifest();
-            var currentManifest = CreateCurrentManifest();
-            if (CanUseCachedBundles(cachedManifest, currentManifest))
+            using (bundles.GetWriteLock())
             {
-                ReplaceBundlesWithCachedBundles(cachedManifest);
-            }
-            else
-            {
-                UseCurrentBundles();
+                AddBundlesFromDefinitions();
+
+                var cachedManifest = manifestCache.LoadCassetteManifest();
+                var currentManifest = CreateCurrentManifest();
+                if (CanUseCachedBundles(cachedManifest, currentManifest))
+                {
+                    ReplaceBundlesWithCachedBundles(cachedManifest);
+                }
+                else
+                {
+                    UseCurrentBundles();
+                }
+                bundles.BuildReferences();
             }
         }
 

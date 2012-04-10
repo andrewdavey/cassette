@@ -19,11 +19,11 @@ namespace Cassette
         public BundleCollection_AddExplicitFiles_Tests()
         {
             temp = new TempDirectory();
-            settings = new CassetteSettings("")
+            settings = new CassetteSettings()
             {
                 SourceDirectory = new FileSystemDirectory(temp)
             };
-            bundles = new BundleCollection(settings, t => null, Mock.Of<IBundleFactoryProvider>());
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
         }
 
         [Fact]

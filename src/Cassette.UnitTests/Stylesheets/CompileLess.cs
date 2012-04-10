@@ -16,7 +16,7 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.Path).Returns("test.less");
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)));
         }
@@ -30,7 +30,7 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.Path).Returns("test.css");
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle, new CassetteSettings());
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)), Times.Never());
         }
