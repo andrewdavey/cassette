@@ -45,6 +45,7 @@ namespace Cassette
 
             var collection = CreateBundleCollection(new[] { bundle1, bundle2, bundle3, bundle4 });
 
+            collection.BuildReferences();
             collection.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2, bundle3, bundle4 })
                 .SequenceEqual(new[] { bundle4, bundle2, bundle3, bundle1 }).ShouldBeTrue();
         }
@@ -55,6 +56,8 @@ namespace Cassette
             var externalBundle1 = new ExternalScriptBundle("http://test.com/test1.js");
             var externalBundle2 = new ExternalScriptBundle("http://test.com/test2.js");
             var collection = CreateBundleCollection(Enumerable.Empty<Bundle>());
+
+            collection.BuildReferences();
             var results = collection.IncludeReferencesAndSortBundles(new[] { externalBundle1, externalBundle2 });
             results.SequenceEqual(new[] { externalBundle1, externalBundle2 }).ShouldBeTrue();
         }
@@ -67,6 +70,7 @@ namespace Cassette
             bundle1.AddReference("~/bundle2");
 
             var collection = CreateBundleCollection(new[] { bundle1, bundle2 });
+            collection.BuildReferences();
             var sorted = collection.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2 });
             sorted.SequenceEqual(new[] { bundle2, bundle1 }).ShouldBeTrue();
         }
@@ -78,6 +82,7 @@ namespace Cassette
             var bundle2 = new TestableBundle("~/bundle2");
             var collection = CreateBundleCollection(new[] { bundle1, bundle2 });
 
+            collection.BuildReferences();
             var sorted = collection.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
 
             sorted.SequenceEqual(new[] { bundle2, bundle1 }).ShouldBeTrue();
@@ -94,6 +99,7 @@ namespace Cassette
 
             Assert.Throws<InvalidOperationException>(delegate
             {
+                collection.BuildReferences();
                 collection.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
             });
         }
@@ -107,6 +113,7 @@ namespace Cassette
             ms[4].AddReference("~/3");
 
             var collection = CreateBundleCollection(ms);
+            collection.BuildReferences();
             var sorted = collection.IncludeReferencesAndSortBundles(ms).ToArray();
 
             sorted[0].ShouldBeSameAs(ms[0]);
@@ -126,7 +133,7 @@ namespace Cassette
 
             var collection = CreateBundleCollection(new[] { bundleA, bundleB });
             var exception = Assert.Throws<InvalidOperationException>(
-                () => collection.IncludeReferencesAndSortBundles(new[] { bundleA, bundleB })
+                () => collection.BuildReferences()
             );
             exception.Message.ShouldContain("~/a");
             exception.Message.ShouldContain("~/b");

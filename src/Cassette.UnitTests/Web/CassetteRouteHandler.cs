@@ -10,12 +10,11 @@ namespace Cassette.Web
     public class CassetteRouteHandler_Tests
     {
         [Fact]
-        public void GetHttpHandlerCallsDelegatePassingInTheRequestContextAndReturnsTheCreatedHttpHandler()
+        public void GetHttpHandlerReturnHttpHandlerFromContainer()
         {
-            RequestContext actualContext = null;
             var stubHandler = Mock.Of<IHttpHandler>();
-            var stubHttp = new Mock<HttpContextBase>();
-            var stubContext = new Mock<RequestContext>(stubHttp.Object, new RouteData());
+            var stubHttpContext = Mock.Of<HttpContextBase>();
+            var stubContext = new Mock<RequestContext>(stubHttpContext, new RouteData());
 
             var container = new TinyIoCContainer();
             container.Register(typeof(IHttpHandler), stubHandler);
@@ -24,7 +23,6 @@ namespace Cassette.Web
             var actualHttpHandler = routeHandler.GetHttpHandler(stubContext.Object);
 
             actualHttpHandler.ShouldBeSameAs(stubHandler);
-            actualContext.ShouldBeSameAs(stubContext.Object);
         }
     }
 }

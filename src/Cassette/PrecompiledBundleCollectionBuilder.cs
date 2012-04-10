@@ -3,7 +3,7 @@ using Cassette.Manifests;
 
 namespace Cassette
 {
-    class PrecompiledBundleCollectionBuilder : IBundleCollectionBuilder
+    class PrecompiledBundleCollectionBuilder
     {
         readonly IFile precompiledManifestFile;
         readonly IUrlModifier urlModifier;

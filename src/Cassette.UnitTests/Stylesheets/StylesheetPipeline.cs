@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.Configuration;
@@ -20,24 +21,6 @@ namespace Cassette.Stylesheets
             minifier = new Mock<IStylesheetMinifier>();
             urlGenerator = new Mock<IUrlGenerator>();
             pipeline = new StylesheetPipeline(minifier.Object, urlGenerator.Object);
-        }
-
-        [Fact]
-        public void StylesheetMinifierDefaultsToMicrosoft()
-        {
-            var bundle = new StylesheetBundle("~");
-            var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.Path).Returns("~/asset.css");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
-            bundle.Assets.Add(asset.Object);
-
-            // Remove the ConcatenateAssets step, so the transformer is added to our mock asset instead of the concatenated asset object.
-            var lastStep = (ConditionalBundlePipeline<StylesheetBundle>)pipeline[pipeline.Count - 1];
-            lastStep.RemoveAt(0);
-
-            pipeline.Process(bundle, new CassetteSettings());
-
-            asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is MicrosoftStylesheetMinifier)));
         }
 
         [Fact]
@@ -181,13 +164,13 @@ namespace Cassette.Stylesheets
             asset1.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference("~/asset2.css", asset1.Object, -1, AssetReferenceType.SameBundle) });
 
-            minifier = new Mock<IStylesheetMinifier>();
+            minifier = new MicrosoftStylesheetMinifier();
             urlGenerator = new Mock<IUrlGenerator>();
-            pipeline = new StylesheetPipeline(minifier.Object, urlGenerator.Object);
+            pipeline = new StylesheetPipeline(minifier, urlGenerator.Object);
         }
 
         protected readonly StylesheetPipeline pipeline;
-        protected readonly Mock<IStylesheetMinifier> minifier;
+        protected readonly IStylesheetMinifier minifier;
         protected readonly Mock<IUrlGenerator> urlGenerator;
         protected readonly Mock<IAsset> asset1;
         protected readonly Mock<IAsset> asset2;

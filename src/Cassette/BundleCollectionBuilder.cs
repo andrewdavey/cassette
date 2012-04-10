@@ -2,7 +2,7 @@ using Cassette.Configuration;
 
 namespace Cassette
 {
-    class BundleCollectionBuilder : IBundleCollectionBuilder
+    class BundleCollectionBuilder
     {
         readonly ProductionModeBundleCollectionBuilder productionModeBundleCollectionBuilder;
         readonly DebugModeBundleCollectionBuilder debugModeBundleCollectionBuilder;
@@ -19,21 +19,18 @@ namespace Cassette
 
         public void BuildBundleCollection(BundleCollection bundles)
         {
-            IBundleCollectionBuilder builder;
             if (settings.PrecompiledManifestFile.Exists)
             {
-                builder = precompiledBundleCollectionBuilder;
+                precompiledBundleCollectionBuilder.BuildBundleCollection(bundles);
             }
             else if (settings.IsDebuggingEnabled)
             {
-                builder = debugModeBundleCollectionBuilder;
+                debugModeBundleCollectionBuilder.BuildBundleCollection(bundles);
             }
             else
             {
-                builder = productionModeBundleCollectionBuilder;
+                productionModeBundleCollectionBuilder.BuildBundleCollection(bundles);
             }
-
-            builder.BuildBundleCollection(bundles);
         }
     }
 }

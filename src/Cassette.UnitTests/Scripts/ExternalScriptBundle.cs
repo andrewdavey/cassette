@@ -99,10 +99,16 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenBundleIsProcessed_WhenRender_ThenExternalRendererUsed()
+        public void GivenProcessedExternalScriptBundleWithFallbackCondition_WhenRender_ThenExternalRendererUsed()
         {
+            var urlGenerator = new Mock<IUrlGenerator>();
+            urlGenerator
+                .Setup(g => g.CreateBundleUrl(It.IsAny<Bundle>()))
+                .Returns("/");
+
             var bundle = new ExternalScriptBundle(Url, "~/test", "condition")
             {
+                Renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object),
                 Processor = Mock.Of<IBundleProcessor<ScriptBundle>>()
             };
             var asset = new Mock<IAsset>();
@@ -114,7 +120,12 @@ namespace Cassette.Scripts
             
             var html = bundle.Render();
 
-            html.ShouldContain("condition");
+            html.ShouldEqual(@"<script src=""http://test.com/asset.js"" type=""text/javascript""></script>
+<script type=""text/javascript"">
+if(condition){
+document.write(unescape('%3Cscript src=""/"" type=""text/javascript""%3E%3C/script%3E'));
+}
+</script>");
         }
     }
 }

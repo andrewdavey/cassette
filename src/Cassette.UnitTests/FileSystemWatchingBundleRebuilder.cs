@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Threading;
 using Cassette.Configuration;
+using Cassette.IO;
 using Moq;
 using Xunit;
-using Cassette.IO;
-using System;
+
 namespace Cassette
 {
     public class FileSystemWatchingBundleRebuilder_Tests : IDisposable
@@ -16,7 +18,7 @@ namespace Cassette
         public FileSystemWatchingBundleRebuilder_Tests()
         {
             tempDirectory = new TempDirectory();
-            var settings = new CassetteSettings()
+            var settings = new CassetteSettings
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory)
             };
@@ -32,6 +34,7 @@ namespace Cassette
             rebuilder.Run();
 
             File.WriteAllText(Path.Combine(tempDirectory, "test.js"), "");
+            Thread.Sleep(200); // Wait for the file system change event to fire.
 
             bundleDefinition.Verify(d => d.AddBundles(bundles), Times.Once());
         }
@@ -45,6 +48,7 @@ namespace Cassette
             rebuilder.Run();
 
             File.Delete(filename);
+            Thread.Sleep(200); // Wait for the file system change event to fire.
 
             bundleDefinition.Verify(d => d.AddBundles(bundles), Times.Once());
         }

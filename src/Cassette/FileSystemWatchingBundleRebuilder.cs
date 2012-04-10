@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using Cassette.Configuration;
 
@@ -15,7 +13,7 @@ namespace Cassette
         readonly CassetteSettings settings;
         readonly BundleCollection bundles;
         readonly IEnumerable<IBundleDefinition> bundleDefinitions;
-        FileSystemWatcher watcher;
+        IDisposable fileSystemWatcher;
         Timer rebuildDelayTimer;
 
         public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, IEnumerable<IBundleDefinition> bundleDefinitions)
@@ -30,27 +28,11 @@ namespace Cassette
         /// </summary>
         public void Run()
         {
-            var pathToWatch = settings.SourceDirectory.FullPath.Substring(2);
-            if (!File.Exists(pathToWatch))
-            {
-                Trace.Source.TraceEvent(TraceEventType.Warning, 0, "Cannot watch file system for asset file changes because the path does not exist: {0}", settings.SourceDirectory.FullPath);
-                return;
-            }
-
             rebuildDelayTimer = new Timer(RebuildDelayTimerCallback);
-            watcher = new FileSystemWatcher(pathToWatch)
-            {
-                IncludeSubdirectories = true,
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-            };
-            watcher.Changed += HandleFileSystemChange;
-            watcher.Created += HandleFileSystemChange;
-            watcher.Deleted += HandleFileSystemChange;
-            watcher.Renamed += HandleFileSystemChange;
-            watcher.EnableRaisingEvents = true;
+            fileSystemWatcher = settings.SourceDirectory.WatchForChanges(HandleFileSystemChange);
         }
 
-        void HandleFileSystemChange(object sender, FileSystemEventArgs e)
+        void HandleFileSystemChange(string path)
         {
             // TODO: Ignore App_Data (and other special directories?)
 
@@ -79,8 +61,7 @@ namespace Cassette
         /// </summary>
         public void Dispose()
         {
-            watcher.EnableRaisingEvents = false;
-            watcher.Dispose();
+            fileSystemWatcher.Dispose();
             rebuildDelayTimer.Dispose();
         }
     }

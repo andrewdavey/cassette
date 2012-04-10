@@ -11,6 +11,7 @@ using Cassette.Configuration;
 using Cassette.IntegrationTests;
 using Cassette.Manifests;
 using Cassette.Stylesheets;
+using Moq;
 using Should;
 using Xunit;
 
@@ -64,7 +65,7 @@ namespace Cassette.MSBuild
             using (var file = File.OpenRead(manifestFilename))
             {
                 var reader = new CassetteManifestReader(file);
-                return reader.Read().CreateBundleCollection(new CassetteSettings(""));
+                return reader.Read().CreateBundles(Mock.Of<IUrlModifier>());
             }
         }
 

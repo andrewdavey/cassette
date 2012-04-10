@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Cassette.Configuration;
 using Cassette.IO;
@@ -9,41 +8,17 @@ using Xunit;
 
 namespace Cassette
 {
-    public class BundleCollection_AddPerIndividualFile_Tests
+    public class BundleCollection_AddPerIndividualFile_Tests : BundleCollectionTestsBase
     {
-        readonly BundleCollection bundles;
-        readonly CassetteSettings settings;
-        readonly Mock<IDirectory> sourceDirectory;
-        readonly Mock<IFileSearch> fileSearch;
-
-        public BundleCollection_AddPerIndividualFile_Tests()
-        {
-            var factory = new Mock<IBundleFactory<TestableBundle>>();
-            fileSearch = new Mock<IFileSearch>();
-            factory
-                .Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
-                .Returns<string, IEnumerable<IFile>, BundleDescriptor>((path, _, __) => new TestableBundle(path));
-
-            sourceDirectory = new Mock<IDirectory>();
-            settings = new CassetteSettings()
-            {
-                SourceDirectory = sourceDirectory.Object,
-            };
-
-            var provider = new Mock<IBundleFactoryProvider>();
-            provider.Setup(p => p.GetBundleFactory<TestableBundle>()).Returns(factory.Object);
-
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), provider.Object);
-        }
-
         [Fact]
         public void GivenTwoFiles_WhenAddPerIndividualFile_ThenTwoBundlesAreAdded()
         {
-            sourceDirectory
-                .Setup(d => d.GetDirectory("~"))
-                .Returns(sourceDirectory.Object);
-            FilesExist(sourceDirectory.Object, "~/file-a.js", "~/sub/file-b.js");
-            
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/file-a.js",
+                "~/sub/file-b.js"
+            };
+
             bundles.AddPerIndividualFile<TestableBundle>();
 
             bundles.Count().ShouldEqual(2);
@@ -54,11 +29,11 @@ namespace Cassette
         [Fact]
         public void GivenFilesInSubDirectory_WhenAddPerIndividualFileOfDirectoryPath_ThenBundlesAreOnlyAddedForSubDirFiles()
         {
-            var subDirectory = new Mock<IDirectory>();
-            sourceDirectory
-                .Setup(d => d.GetDirectory("sub"))
-                .Returns(subDirectory.Object);
-            FilesExist(subDirectory.Object, "~/sub/file-b.js", "~/sub/file-c.js");
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/sub/file-b.js",
+                "~/sub/file-c.js"
+            };
 
             bundles.AddPerIndividualFile<TestableBundle>("sub");
 
@@ -70,10 +45,11 @@ namespace Cassette
         [Fact]
         public void GivenCustomFileSearch_WhenAddPerIndividualFile_ThenCustomFileSearchIsUsedToFindFiles()
         {
-            sourceDirectory
-                .Setup(d => d.GetDirectory("~"))
-                .Returns(sourceDirectory.Object);
-            FilesExist(sourceDirectory.Object, "~/file-a.js", "~/sub/file-b.js");
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/file-a.js",
+                "~/sub/file-b.js"
+            };
 
             var customFileSearch = new Mock<IFileSearch>();
             customFileSearch
@@ -89,10 +65,11 @@ namespace Cassette
         [Fact]
         public void GivenCustomizeAction_WhenAddPerIndividualFile_ThenActionCalledForEachBundle()
         {
-            sourceDirectory
-                .Setup(d => d.GetDirectory("~"))
-                .Returns(sourceDirectory.Object);
-            FilesExist(sourceDirectory.Object, "~/file-a.js", "~/file-b.js");
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/file-a.js",
+                "~/file-b.js"
+            };
 
             var customizeCalled = 0;
             Action<TestableBundle> customize = b => customizeCalled++;
@@ -100,20 +77,6 @@ namespace Cassette
             bundles.AddPerIndividualFile("~", customizeBundle: customize);
 
             customizeCalled.ShouldEqual(2);
-        }
-
-        void FilesExist(IDirectory directory, params string[] paths)
-        {
-            fileSearch
-                .Setup(d => d.FindFiles(directory))
-                .Returns(paths.Select(StubFile));
-        }
-
-        IFile StubFile(string path)
-        {
-            var file = new Mock<IFile>();
-            file.SetupGet(f => f.FullPath).Returns(path);
-            return file.Object;
         }
     }
 }

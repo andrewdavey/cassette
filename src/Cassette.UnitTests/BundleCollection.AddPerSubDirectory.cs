@@ -11,43 +11,27 @@ using Xunit;
 
 namespace Cassette
 {
-    public class BundleCollection_AddPerSubDirectory_Tests : IDisposable
+    public class BundleCollection_AddPerSubDirectory_Tests : BundleCollectionTestsBase
     {
-        readonly TempDirectory tempDirectory;
-        readonly CassetteSettings settings;
-        readonly BundleCollection bundles;
         TestableBundle createdBundle;
-        readonly Mock<IBundleFactory<TestableBundle>> factory;
-        readonly Mock<IFileSearch> fileSearch;
 
         public BundleCollection_AddPerSubDirectory_Tests()
         {
-            tempDirectory = new TempDirectory();
-            factory = new Mock<IBundleFactory<TestableBundle>>();
-            factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+            factory
+                .Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                 .Returns<string, IEnumerable<IFile>, BundleDescriptor>(
                     (path, files, d) => createdBundle = new TestableBundle(path)
                 );
-            fileSearch = new Mock<IFileSearch>();
-            settings = new CassetteSettings()
-            {
-                SourceDirectory = new FileSystemDirectory(tempDirectory)
-            };
-
-            var provider = new Mock<IBundleFactoryProvider>();
-            provider.Setup(p => p.GetBundleFactory<TestableBundle>()).Returns(factory.Object);
-
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), provider.Object);
         }
 
         [Fact]
         public void GivenTwoSubDirectoriesWithFiles_WhenAddPerSubDirectory_ThenTwoBundlesAreAdded()
         {
-            CreateDirectory("bundle-a");
-            CreateDirectory("bundle-b");
-
-            fileSearch.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
-                .Returns(() => new[] { StubFile() });
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/bundle-a/file.js",
+                "~/bundle-b/file.js",
+            };
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
 
@@ -56,12 +40,14 @@ namespace Cassette
         }
 
         [Fact]
-        public void GivenCustomAssetSource_WhenAddPerSubDirectory_ThenAssetSourceIsUsedToGetAssets()
+        public void GivenCustomFileSearch_WhenAddPerSubDirectory_ThenFileSearchIsUsedToGetAssets()
         {
-            var fileSearch = new Mock<IFileSearch>();
-            var file = StubFile();
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/bundle/file.js"
+            };
             fileSearch.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
-                .Returns(new[] { file })
+                .Returns(new[] { settings.SourceDirectory.GetFile("~/bundle/file.js") })
                 .Verifiable();
             CreateDirectory("bundle");
 
@@ -73,9 +59,10 @@ namespace Cassette
         [Fact]
         public void GivenBundleCustomizeAction_WhenAddPerSubDirectory_ThenActionIsCalledWithBundle()
         {
-            fileSearch.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
-                .Returns(new[] { StubFile() });
-            CreateDirectory("bundle");
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/bundle/file.js"
+            };
 
             Bundle bundle = null;
             bundles.AddPerSubDirectory<TestableBundle>("~", b => bundle = b);
@@ -137,13 +124,11 @@ namespace Cassette
         [Fact]
         public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectory_ThenBundleAlsoCreatedForTopLevel()
         {
-            File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
-            CreateDirectory("test");
-            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
-            fileSearch
-                .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
-                .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
-                .Returns(new[] { StubFile() });
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/file-a.js",
+                "~/test/file-b.js"
+            };
 
             bundles.AddPerSubDirectory<TestableBundle>("~");
 
@@ -164,13 +149,11 @@ namespace Cassette
         [Fact]
         public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectoryWithCustomizeAction_ThenBundleForTopLevelIsCustomized()
         {
-            File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
-            CreateDirectory("test");
-            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
-            fileSearch
-                .SetupSequence(s => s.FindFiles(It.IsAny<IDirectory>()))
-                .Returns(new[] { StubFile(mock => mock.SetupGet(f => f.Directory).Returns(settings.SourceDirectory)) })
-                .Returns(new[] { StubFile() });
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/file-a.js",
+                "~/test/file-b.js"
+            };
 
             factory.Setup(f => f.CreateBundle(
                 "~",
@@ -186,35 +169,16 @@ namespace Cassette
         [Fact]
         public void GivenTopLevelDirectoryHasFilesAndSubDirectory_WhenAddPerSubDirectoryWithExcludeTopLevelTrue_ThenBundleNotCreatedForTopLevel()
         {
-            File.WriteAllText(Path.Combine(tempDirectory, "file-a.js"), "");
-            CreateDirectory("test");
-            File.WriteAllText(PathUtilities.Combine(tempDirectory, "test", "file-b.js"), "");
-            fileSearch
-                .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
-                .Returns(new[] { StubFile() });
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/file-a.js",
+                "~/test/file-b.js"
+            };
 
             bundles.AddPerSubDirectory<TestableBundle>("~", excludeTopLevel: true);
 
             bundles.Count().ShouldEqual(1);
             bundles["~/test"].ShouldBeType<TestableBundle>();
-        }
-
-        void CreateDirectory(string path)
-        {
-            Directory.CreateDirectory(Path.Combine(tempDirectory, path));
-        }
-
-        IFile StubFile(Action<Mock<IFile>> customizeMock = null)
-        {
-            var file = new Mock<IFile>();
-            file.SetupGet(a => a.FullPath).Returns("");
-            if (customizeMock != null) customizeMock(file);
-            return file.Object;
-        }
-
-        public void Dispose()
-        {
-            tempDirectory.Dispose();
         }
     }
 }

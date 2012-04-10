@@ -1,6 +1,9 @@
 using System;
+using System.IO;
+using System.Linq;
 using Cassette.Configuration;
 using Cassette.IO;
+using Cassette.Manifests;
 
 namespace Cassette.MSBuild
 {
@@ -10,7 +13,21 @@ namespace Cassette.MSBuild
 
         public void Execute()
         {
-            Container.Resolve<CreateBundlesImplementation>().Execute();
+            var bundles = Container.Resolve<BundleCollection>();
+            var settings = Container.Resolve<CassetteSettings>();
+            WriteManifest(bundles, settings);
+        }
+
+        void WriteManifest(BundleCollection bundles, CassetteSettings settings)
+        {
+            var file = settings.SourceDirectory.GetFile(OutputFilename);
+            using (var outputStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                var writer = new CassetteManifestWriter(outputStream);
+                var manifest = new CassetteManifest("", bundles.Select(bundle => bundle.CreateBundleManifest(true)));
+                writer.Write(manifest);
+                outputStream.Flush();
+            }
         }
 
         protected override CassetteSettings Settings
@@ -25,14 +42,6 @@ namespace Cassette.MSBuild
 
         protected override void RegisterContainerItems()
         {
-            Container.Register(
-                (c, p) => new CreateBundlesImplementation(
-                    OutputFilename,
-                    c.Resolve<BundleCollection>(),
-                    c.Resolve<CassetteSettings>()
-                )
-            );
-
             base.RegisterContainerItems();
 
             // Override any URL modifier, even if set by the application.

@@ -3,7 +3,7 @@ using Cassette.Configuration;
 
 namespace Cassette
 {
-    class DebugModeBundleCollectionBuilder : IBundleCollectionBuilder
+    class DebugModeBundleCollectionBuilder
     {
         readonly IEnumerable<IBundleDefinition> bundleDefinitions;
         readonly ExternalBundleGenerator externalBundleGenerator;

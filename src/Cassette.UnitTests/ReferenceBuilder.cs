@@ -121,6 +121,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("http://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
@@ -136,24 +137,30 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownUrl_ThenCreatedBundleIsProcessed()
         {
-            var bundleFactory = new Mock<IBundleFactory<TestableBundle>>();
-            var bundle = new TestableBundle("~");
+            bundles.BuildReferences();
+
+            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
+            var bundle = new ScriptBundle("~");
+            var processor = new Mock<IBundleProcessor<ScriptBundle>>();
+            bundle.Processor = processor.Object;
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(bundle);
             SetBundleFactory(bundleFactory);
 
             builder.Reference("http://test.com/test.js");
 
-            bundle.WasProcessed.ShouldBeTrue();
+            processor.Verify(p => p.Process(bundle, settings));
         }
 
         [Fact]
         public void WhenAddReferenceToUnknownHttpsUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("https://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("https://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
             SetBundleFactory(bundleFactory);
+
             builder.Reference("https://test.com/test.js");
 
             var bundle = builder.GetBundles(null).First();
@@ -163,6 +170,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownProtocolRelativeUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("//test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("//test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
@@ -177,6 +185,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownCssUrl_ThenExternalStylesheetBundleIsCreated()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.css", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalStylesheetBundle("http://test.com/test.css") { Processor = StubProcessor<StylesheetBundle>() });
@@ -199,6 +208,7 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownUrlWithBundleTypeAndUnexpectedExtension_ThenBundleCreatedInFactory()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalStylesheetBundle("http://test.com/test") { Processor = StubProcessor<StylesheetBundle>() });
@@ -340,7 +350,7 @@ namespace Cassette
         [Fact]
         public void GivenAddReferenceToPath_WhenRender_ThenBundleRenderOutputReturned()
         {
-            var bundle = new TestableBundle("~/stub");
+            var bundle = new TestableBundle("~/test");
             AddBundles(bundle);
 
             builder.Reference("test");
@@ -353,7 +363,7 @@ namespace Cassette
         [Fact]
         public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenBundleRenderOutputReturned()
         {
-            var bundle = new TestableBundle("~/stub") { RenderResult = "output" };
+            var bundle = new TestableBundle("~/test") { RenderResult = "output" };
             AddBundles(bundle);
 
             builder.Reference("test");

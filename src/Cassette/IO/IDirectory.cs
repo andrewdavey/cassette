@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Cassette.IO
@@ -12,5 +13,6 @@ namespace Cassette.IO
         bool DirectoryExists(string path);
         IEnumerable<IDirectory> GetDirectories();
         IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption);
+        IDisposable WatchForChanges(Action<string> pathChanged);
     }
 }

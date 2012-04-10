@@ -334,7 +334,7 @@ namespace Cassette
             if (!excludeTopLevel)
             {
                 var topLevelFiles = fileSearch.FindFiles(parentDirectory)
-                    .Where(f => f.Directory == parentDirectory)
+                    .Where(f => f.Directory.Equals(parentDirectory))
                     .ToArray();
                 var directoryBundle = CreateDirectoryBundle(applicationRelativePath, bundleFactory, topLevelFiles, parentDirectory);
                 if (topLevelFiles.Any() || directoryBundle is IExternalBundle)
@@ -622,6 +622,9 @@ namespace Cassette
             ValidateBundleReferences();
             ValidateAssetReferences();
             bundleImmediateReferences = BuildBundleImmediateReferenceDictionary();
+
+            var graph = new Graph<Bundle>(bundles, b => bundleImmediateReferences[b]);
+            ThrowIfCyclesInBundleGraph(graph);
         }
 
         void ValidateBundleReferences()
@@ -717,7 +720,6 @@ namespace Cassette
             var references = GetBundleReferencesWithImplicitOrderingIncluded(bundlesArray);
             var all = GetAllRequiredBundles(bundlesArray);
             var graph = BuildBundleGraph(references, all);
-            ThrowIfCyclesInBundleGraph(graph);
             return graph.TopologicalSort();
         }
 

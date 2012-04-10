@@ -74,7 +74,7 @@ namespace Cassette.Scripts.Manifests
         }
 
         [Fact]
-        public void AssetManifestPathEqualsAssetSourceFileFullPath()
+        public void AssetManifestPathEqualsAssetPath()
         {
             manifest.Assets[0].Path.ShouldEqual(asset.Path);
         }

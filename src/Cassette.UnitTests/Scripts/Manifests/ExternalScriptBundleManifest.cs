@@ -18,6 +18,7 @@ namespace Cassette.Scripts.Manifests
                 Hash = new byte[0],
                 Url = "http://example.com/",
                 Html = () => "EXPECTED-HTML",
+                Content = new byte[0],
                 Assets =
                     {
                         new AssetManifest { Path = "~/asset-a" },

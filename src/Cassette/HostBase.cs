@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using Cassette.Configuration;
-using Cassette.IO;
+using Cassette.HtmlTemplates;
 using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -13,7 +15,7 @@ namespace Cassette
     /// <summary>
     /// A host initializes Cassette for an application.
     /// </summary>
-    public abstract class HostBase
+    public abstract class HostBase : IDisposable
     {
         protected TinyIoCContainer Container;
 
@@ -37,7 +39,7 @@ namespace Cassette
 
             Container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
             Container.Register(typeof(IReferenceBuilder), typeof(ReferenceBuilder));
-            Container.Register(typeof(IPlaceholderTracker), typeof(PlaceholderTracker));
+            Container.Register(typeof(IPlaceholderTracker), (c,p) => GetPlaceholderTracker(c));
             Container.Register(typeof(IJavaScriptMinifier), typeof(MicrosoftJavaScriptMinifier));
             Container.Register(typeof(IStylesheetMinifier), typeof(MicrosoftStylesheetMinifier));
 
@@ -72,6 +74,10 @@ namespace Cassette
                 )
             );
 
+            new ScriptBundleContainerModule().Load(Container);
+            new StylesheetBundleContainerModule().Load(Container);
+            new HtmlTemplateBundleContainerModule().Load(Container);
+
             foreach (var serviceRegistry in ServiceRegistries)
             {
                 foreach (var registration in serviceRegistry.TypeRegistrations)
@@ -86,6 +92,18 @@ namespace Cassette
                 {
                     Container.Register(registration.RegistrationType, registration.Instance, registration.Name);
                 }
+            }
+        }
+
+        IPlaceholderTracker GetPlaceholderTracker(TinyIoCContainer container)
+        {
+            if (container.Resolve<CassetteSettings>().IsHtmlRewritingEnabled)
+            {
+                return new PlaceholderTracker();
+            }
+            else
+            {
+                return new NullPlaceholderTracker();
             }
         }
 
@@ -124,7 +142,39 @@ namespace Cassette
         {
             get
             {
-                return new CassetteSettings();
+                return new CassetteSettings
+                {
+                    Version = HashAppDomainAssemblies()
+                };
+            }
+        }
+
+        protected virtual string GetHostVersion()
+        {
+            return HashAppDomainAssemblies();
+        }
+
+        string HashAppDomainAssemblies()
+        {
+            using (var allHashes = new MemoryStream())
+            using (var sha1 = SHA1.Create())
+            {
+                var filenames = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .Where(assembly => !assembly.IsDynamic)
+                    .Select(assembly => assembly.Location)
+                    .OrderBy(filename => filename);
+
+                foreach (var filename in filenames)
+                {
+                    using (var file = File.OpenRead(filename))
+                    {
+                        var hash = sha1.ComputeHash(file);
+                        allHashes.Write(hash, 0, hash.Length);
+                    }
+                }
+                allHashes.Position = 0;
+                return Convert.ToBase64String(sha1.ComputeHash(allHashes));
             }
         }
 

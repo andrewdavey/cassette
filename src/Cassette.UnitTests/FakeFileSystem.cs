@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Cassette.IO;
 using System.Text;
 using Cassette.Utilities;
@@ -52,7 +53,7 @@ namespace Cassette
 
         public FileAttributes Attributes
         {
-            get { throw new System.NotImplementedException(); }
+            get { return FileAttributes.Normal; }
         }
 
         public string FullPath { get; set; }
@@ -86,6 +87,7 @@ namespace Cassette
 
         public IDirectory GetDirectory(string path)
         {
+            path = PathUtilities.AppRelative(path);
             return new FakeFileSystem(files.Where(f => f.Key.StartsWith(path)))
             {
                 FullPath = path,
@@ -95,20 +97,43 @@ namespace Cassette
 
         public bool DirectoryExists(string path)
         {
-            throw new System.NotImplementedException();
+            path = PathUtilities.AppRelative(path);
+            return files.Any(f => f.Key.StartsWith(path) && f.Key != path);
         }
 
         public IEnumerable<IDirectory> GetDirectories()
         {
-            throw new System.NotImplementedException();
+            var groups = (
+                from pair in files
+                let secondSlashIndex = pair.Key.IndexOf('/', 2)
+                where secondSlashIndex > -1
+                select new { pair, secondSlashIndex }
+                ).GroupBy(x => x.pair.Key.Substring(0, x.secondSlashIndex));
+            return groups.Select(g => new FakeFileSystem(g.Select(x => x.pair))
+            {
+                FullPath = g.Key,
+                root = root ?? this
+            });
         }
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
         {
+            if (searchPattern == "*.*") return files.Values;
+
             var extensions = searchPattern.Split(';').Select(e => e.Substring(1)).ToArray();
             return files.Values.Where(
                 file => extensions.Contains(Path.GetExtension(file.FullPath))
             );
+        }
+
+        public IDisposable WatchForChanges(Action<string> pathChanged)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return FullPath == ((FakeFileSystem)obj).FullPath;
         }
     }
 

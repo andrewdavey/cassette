@@ -10,41 +10,26 @@ using Xunit;
 
 namespace Cassette
 {
-    public class BundleCollection_Add_Tests : IDisposable
+    public class BundleCollection_Add_Tests : BundleCollectionTestsBase
     {
         TestableBundle createdBundle;
-        readonly BundleCollection bundles;
-        readonly TempDirectory tempDirectory;
-        readonly Mock<IBundleFactory<TestableBundle>> factory;
-        readonly Mock<IFileSearch> defaultFileSource;
-        readonly CassetteSettings settings;
-
+        
         public BundleCollection_Add_Tests()
         {
-            tempDirectory = new TempDirectory();
             CreateDirectory("test");
-            factory = new Mock<IBundleFactory<TestableBundle>>();
-            factory.Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+        
+            factory
+                .Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                 .Returns<string, IEnumerable<IFile>, BundleDescriptor>(
                     (path, files, d) => (createdBundle = new TestableBundle(path))
                 );
-            defaultFileSource = new Mock<IFileSearch>();
-            settings = new CassetteSettings()
-            {
-                SourceDirectory = new FileSystemDirectory(tempDirectory),
-            };
-
-            var provider = new Mock<IBundleFactoryProvider>();
-            provider.Setup(p => p.GetBundleFactory<TestableBundle>()).Returns(factory.Object);
-
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), provider.Object);
         }
 
         [Fact]
         public void GivenDefaultFileSourceReturnsAFile_WhenAddDirectoryPath_ThenFactoryUsedToCreateBundle()
         {
             var file = StubFile();
-            defaultFileSource
+            fileSearch
                 .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { file });
 
@@ -60,7 +45,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void WhenAddWithDirectoryPathAndAssetSource_ThenSourceIsUsedToGetAssets()
+        public void WhenAddWithDirectoryPathAndFileSearch_ThenFileSearchIsUsedToGetAssets()
         {
             var fileSearch = new Mock<IFileSearch>();
             fileSearch.Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
@@ -75,7 +60,7 @@ namespace Cassette
         [Fact]
         public void WhenAddWithCustomizeAction_ThenCustomizeActionCalledWithTheBundle()
         {
-            defaultFileSource
+            fileSearch
                 .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { StubFile() });
 
@@ -107,8 +92,8 @@ namespace Cassette
                 It.IsAny<IEnumerable<IFile>>(),
                 It.Is<BundleDescriptor>(
                     descriptor => descriptor.AssetFilenames.Single().Equals("~/file.js")
-                    )
-                                    ));
+                )
+            ));
         }
 
         [Fact]
@@ -126,7 +111,7 @@ namespace Cassette
 
             var fileA = StubFile("~/a.js");
             var fileB = StubFile("~/b.js");
-            defaultFileSource
+            fileSearch
                 .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
                 .Returns(new[] { fileA, fileB });
 
@@ -137,23 +122,6 @@ namespace Cassette
                 It.IsAny<IEnumerable<IFile>>(),
                 It.Is<BundleDescriptor>(d => d.AssetFilenames.SequenceEqual(new[] { "~/b.js", "~/a.js" }))
             ));
-        }
-
-        void CreateDirectory(string path)
-        {
-            Directory.CreateDirectory(Path.Combine(tempDirectory, path));
-        }
-
-        IFile StubFile(string path = "")
-        {
-            var file = new Mock<IFile>();
-            file.SetupGet(a => a.FullPath).Returns(path);
-            return file.Object;
-        }
-
-        public void Dispose()
-        {
-            tempDirectory.Dispose();
         }
     }
 }

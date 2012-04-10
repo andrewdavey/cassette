@@ -75,6 +75,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppDomainAssemblyTypeScanner.cs" />
+    <Compile Include="BundleContainerModule.cs" />
     <Compile Include="Configuration\ServiceRegistryBase.cs" />
     <Compile Include="FileSearchProvider.cs" />
     <Compile Include="HostBase.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="CompileResult.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="Configuration\ServiceRegistry.cs" />
-    <Compile Include="Configuration\BundleServiceRegistry.cs" />
     <Compile Include="Configuration\CollectionTypeRegistration.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
@@ -105,11 +105,9 @@
     <Compile Include="DebugModeBundleCollectionBuilder.cs" />
     <Compile Include="DelegatingDisposable.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
-    <Compile Include="HtmlTemplates\HtmlTemplateBundleServiceRegistry.cs" />
-    <Compile Include="HtmlTemplates\HtmlTemplateFileSearchModifier.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleContainerModule.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IFileSearchProvider.cs" />
-    <Compile Include="IBundleCollectionBuilder.cs" />
     <Compile Include="IBundleFactoryProvider.cs" />
     <Compile Include="IExternalBundle.cs" />
     <Compile Include="IStartUpTask.cs" />
@@ -210,20 +208,18 @@
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
-    <Compile Include="Scripts\ScriptBundleServiceRegistry.cs" />
+    <Compile Include="Scripts\ScriptBundleContainerModule.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifest.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
-    <Compile Include="Scripts\ScriptFileSearchModifier.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\ConvertFontUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\CssUrlMatchTransformer.cs" />
     <Compile Include="Stylesheets\CssUrlToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\IStylesheetMinifier.cs" />
-    <Compile Include="Stylesheets\StylesheetBundleServiceRegistry.cs" />
-    <Compile Include="Stylesheets\StylesheetFileSearchModifier.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleContainerModule.cs" />
     <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
     <Compile Include="Stylesheets\CssFontToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />

@@ -80,5 +80,10 @@ namespace Cassette.IO
         {
             throw new NotSupportedException();
         }
+
+        public IDisposable WatchForChanges(Action<string> pathChanged)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

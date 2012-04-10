@@ -5,7 +5,7 @@ using Cassette.Manifests;
 
 namespace Cassette
 {
-    class ProductionModeBundleCollectionBuilder : IBundleCollectionBuilder
+    class ProductionModeBundleCollectionBuilder
     {
         readonly IEnumerable<IBundleDefinition> bundleDefinitions;
         readonly ICassetteManifestCache manifestCache;

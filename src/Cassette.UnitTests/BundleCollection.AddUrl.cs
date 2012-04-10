@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts;
@@ -11,22 +12,17 @@ using Xunit;
 
 namespace Cassette
 {
-    public class BundleCollection_AddUrl_Tests
+    public class BundleCollection_AddUrl_Tests : BundleCollectionTestsBase
     {
-        readonly BundleCollection bundles;
-        readonly CassetteSettings settings;
-        readonly Mock<IDirectory> sourceDirectory;
-        readonly Mock<IBundleFactoryProvider> factoryProvider;
-
         public BundleCollection_AddUrl_Tests()
         {
-            sourceDirectory = new Mock<IDirectory>();
-            settings = new CassetteSettings()
-            {
-                SourceDirectory = sourceDirectory.Object
-            };
-            factoryProvider = new Mock<IBundleFactoryProvider>();
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), factoryProvider.Object);
+            bundleFactoryProvider
+                .Setup(f => f.GetBundleFactory<ScriptBundle>())
+                .Returns(new ScriptBundleFactory(Mock.Of<IBundlePipeline<ScriptBundle>>()));
+
+            bundleFactoryProvider
+                .Setup(f => f.GetBundleFactory<StylesheetBundle>())
+                .Returns(new StylesheetBundleFactory(Mock.Of<IBundlePipeline<StylesheetBundle>>()));
         }
 
         [Fact]
@@ -66,12 +62,6 @@ namespace Cassette
             bundles.AddUrl(url, customizeBundle);
 
             called.ShouldBeTrue();
-        }
-
-        void SetBundleFactory<T>(Mock<IBundleFactory<T>> factory)
-            where T : Bundle
-        {
-            factoryProvider.Setup(p => p.GetBundleFactory<T>()).Returns(factory.Object);
         }
 
         [Fact]
@@ -123,16 +113,10 @@ namespace Cassette
         [Fact]
         public void WhenAddUrlWithLocalAssets_ThenBundleHasAsset()
         {
-            var fileSearch = new Mock<IFileSearch>();
-            var directory = new Mock<IDirectory>();
-            var file = new Mock<IFile>();
-
-            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
-            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
-            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
-            settings.SourceDirectory = sourceDirectory.Object;
-            fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
-            BundleDescriptorDoesNotExist(directory);
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/path/file.js"
+            };
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings { Path = "path" });
 
@@ -142,16 +126,10 @@ namespace Cassette
         [Fact]
         public void WhenAddUrlWithLocalAssetsUntyped_ThenBundleTypeInferedFromExtension()
         {
-            var fileSearch = new Mock<IFileSearch>();
-            var directory = new Mock<IDirectory>();
-            var file = new Mock<IFile>();
-
-            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
-            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
-            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
-            settings.SourceDirectory = sourceDirectory.Object;
-            fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
-            BundleDescriptorDoesNotExist(directory);
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/path/file.js"
+            };
 
             bundles.AddUrlWithLocalAssets("http://cdn.com/jquery.js", new LocalAssetSettings { Path = "path" });
 
@@ -161,16 +139,10 @@ namespace Cassette
         [Fact]
         public void WhenAddUrlWithLocalAssets_ThenBundleCanBeAccessedByUrl()
         {
-            var fileSearch = new Mock<IFileSearch>();
-            var directory = new Mock<IDirectory>();
-            var file = new Mock<IFile>();
-
-            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
-            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
-            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
-            settings.SourceDirectory = sourceDirectory.Object;
-            fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
-            BundleDescriptorDoesNotExist(directory);
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/path/file.js"
+            };
 
             bundles.AddUrlWithLocalAssets("http://cdn.com/jquery.js", new LocalAssetSettings { Path = "path" });
 
@@ -180,16 +152,10 @@ namespace Cassette
         [Fact]
         public void WhenAddUrlWithLocalAssetsWithFileSearch_ThenFileSourceUsed()
         {
-            var fileSearch = new Mock<IFileSearch>();
-            var directory = new Mock<IDirectory>();
-            var file = new Mock<IFile>();
-
-            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
-            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
-            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
-            settings.SourceDirectory = sourceDirectory.Object;
-            fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
-            BundleDescriptorDoesNotExist(directory);
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/path/file.js"
+            };
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings
             {
@@ -203,12 +169,10 @@ namespace Cassette
         [Fact]
         public void WhenAddUrlWithLocalAssetsSingleFile_ThenBundleHasSingleAsset()
         {
-            var file = new Mock<IFile>();
-
-            file.SetupGet(f => f.Exists).Returns(true);
-            file.SetupGet(f => f.FullPath).Returns("~/jquery.js");
-            sourceDirectory.Setup(d => d.GetFile("~/jquery.js"))
-                .Returns(file.Object);
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/jquery.js"
+            };
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings
             {
@@ -222,16 +186,10 @@ namespace Cassette
         [Fact]
         public void WhenAddUrlWithFallback_ThenExternalBundleCreatedWithFallbackCondition()
         {
-            var fileSearch = new Mock<IFileSearch>();
-            var directory = new Mock<IDirectory>();
-            var file = new Mock<IFile>();
-
-            file.SetupGet(f => f.FullPath).Returns("~/path/file.js");
-            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
-            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
-            settings.SourceDirectory = sourceDirectory.Object;
-            fileSearch.Setup(s => s.FindFiles(directory.Object)).Returns(new[] { file.Object });
-            BundleDescriptorDoesNotExist(directory);
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/path/file.js"
+            };
 
             bundles.AddUrlWithLocalAssets<ScriptBundle>("http://cdn.com/jquery.js", new LocalAssetSettings
             {
@@ -248,12 +206,10 @@ namespace Cassette
             var existingBundle = new ScriptBundle("~/path");
             bundles.Add(existingBundle);
 
-            var directory = new Mock<IDirectory>();
-
-            sourceDirectory.Setup(d => d.DirectoryExists("path")).Returns(true);
-            sourceDirectory.Setup(d => d.GetDirectory("path")).Returns(directory.Object);
-            settings.SourceDirectory = sourceDirectory.Object;
-            BundleDescriptorDoesNotExist(directory);
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/path/file.js"
+            };
 
             bundles.AddUrlWithLocalAssets("http://cdn.com/jquery.js", new LocalAssetSettings
             {
@@ -262,12 +218,6 @@ namespace Cassette
 
             bundles.Count().ShouldEqual(1);
             bundles.First().ShouldNotBeSameAs(existingBundle);
-        }
-
-        void BundleDescriptorDoesNotExist(Mock<IDirectory> directory)
-        {
-            directory.Setup(d => d.GetFile("bundle.txt")).Returns(new NonExistentFile(""));
-            directory.Setup(d => d.GetFile("module.txt")).Returns(new NonExistentFile(""));
         }
     }
 }
