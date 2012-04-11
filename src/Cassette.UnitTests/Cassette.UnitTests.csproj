@@ -126,6 +126,7 @@
     <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
+    <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
     <Compile Include="HtmlTemplates\HoganFileSearchModifier.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleContainerModule.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />

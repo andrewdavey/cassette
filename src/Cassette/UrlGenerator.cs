@@ -55,9 +55,6 @@ namespace Cassette
             );
         }
 
-        // TODO: move RoutePrefix to settings?
-        public const string RoutePrefix = "_cassette";
-        
         string ConvertToForwardSlashes(string path)
         {
             return path.Replace('\\', '/');

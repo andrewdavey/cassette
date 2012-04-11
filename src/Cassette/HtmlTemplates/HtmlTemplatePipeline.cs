@@ -8,7 +8,7 @@ namespace Cassette.HtmlTemplates
         {
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {
-                new AssignHtmlTemplateRenderer(settings => new InlineHtmlTemplateBundleRenderer()),
+                new AssignHtmlTemplateRenderer(new InlineHtmlTemplateBundleRenderer()),
                 new ParseHtmlTemplateReferences(),
                 new WrapHtmlTemplatesInScriptElements(),
                 new AssignHash(),

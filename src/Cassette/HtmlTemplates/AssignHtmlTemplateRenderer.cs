@@ -1,21 +1,20 @@
-﻿using System;
-using Cassette.BundleProcessing;
+﻿using Cassette.BundleProcessing;
 using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
     public class AssignHtmlTemplateRenderer : IBundleProcessor<HtmlTemplateBundle>
     {
-        readonly Func<CassetteSettings, IBundleHtmlRenderer<HtmlTemplateBundle>> createRenderer;
+        readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
 
-        public AssignHtmlTemplateRenderer(Func<CassetteSettings, IBundleHtmlRenderer<HtmlTemplateBundle>> createRenderer)
+        public AssignHtmlTemplateRenderer(IBundleHtmlRenderer<HtmlTemplateBundle> renderer)
         {
-            this.createRenderer = createRenderer;
+            this.renderer = renderer;
         }
 
         public void Process(HtmlTemplateBundle bundle, CassetteSettings settings)
         {
-            bundle.Renderer = createRenderer(settings);
+            bundle.Renderer = renderer;
         }
     }
 }
