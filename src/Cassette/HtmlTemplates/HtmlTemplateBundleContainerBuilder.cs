@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Cassette.HtmlTemplates
 {
-    class HtmlTemplateBundleContainerModule : BundleContainerModule<HtmlTemplateBundle>
+    class HtmlTemplateBundleContainerBuilder : BundleContainerModule<HtmlTemplateBundle>
     {
+        public HtmlTemplateBundleContainerBuilder(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        {
+        }
+
         protected override string FilePattern
         {
             get { return "*.htm;*.html"; }

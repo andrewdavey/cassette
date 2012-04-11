@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Cassette.BundleProcessing;
 using Cassette.Configuration;
@@ -10,14 +11,14 @@ namespace Cassette.HtmlTemplates
     public class HtmlTemplateBundleContainerModule_Tests
     {
         readonly TinyIoCContainer container;
-        readonly HtmlTemplateBundleContainerModule module;
+        readonly HtmlTemplateBundleContainerBuilder builder;
         readonly FileSearch fileSearch;
 
         public HtmlTemplateBundleContainerModule_Tests()
         {
             container = new TinyIoCContainer();
-            module = new HtmlTemplateBundleContainerModule();
-            module.Load(container);
+            builder = new HtmlTemplateBundleContainerBuilder(type => new Type[0]);
+            builder.Build(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(HtmlTemplateBundle)));
         }

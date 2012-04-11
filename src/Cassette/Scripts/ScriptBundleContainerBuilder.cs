@@ -1,10 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Cassette.Scripts
 {
-    class ScriptBundleContainerModule : BundleContainerModule<ScriptBundle>
+    class ScriptBundleContainerBuilder : BundleContainerModule<ScriptBundle>
     {
+        public ScriptBundleContainerBuilder(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        {
+        }
+
         protected override string FilePattern
         {
             get { return "*.js"; }

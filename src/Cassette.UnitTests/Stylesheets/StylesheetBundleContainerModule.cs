@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Cassette.BundleProcessing;
 using Cassette.Configuration;
@@ -11,7 +12,7 @@ namespace Cassette.Stylesheets
     public class StylesheetBundleContainerModule_Tests
     {
         readonly TinyIoCContainer container;
-        readonly StylesheetBundleContainerModule module;
+        readonly StylesheetBundleContainerBuilder builder;
         readonly FileSearch fileSearch;
 
         public StylesheetBundleContainerModule_Tests()
@@ -21,8 +22,8 @@ namespace Cassette.Stylesheets
             container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
 
-            module = new StylesheetBundleContainerModule();
-            module.Load(container);
+            builder = new StylesheetBundleContainerBuilder(type => new Type[0]);
+            builder.Build(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(StylesheetBundle)));
         }

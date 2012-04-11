@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
@@ -21,19 +22,48 @@ namespace Cassette
     public abstract class HostBase : IDisposable
     {
         protected TinyIoCContainer Container;
+        Type[] types;
 
         public void Initialize()
         {
+            LoadAllTypes();
             Container = new TinyIoCContainer();
             RegisterContainerItems();
             CreateBundles();
             RunStartUpTasks();
         }
 
+        void LoadAllTypes()
+        {
+            var assemblies = LoadAssemblies();
+            types = (from assembly in assemblies
+                     where !IgnoredAssemblies.Any(ignore => ignore(assembly))
+                     from type in assembly.GetExportedTypes()
+                     where !type.IsAbstract
+                     select type).ToArray();
+        }
+
+        static readonly List<Func<Assembly, bool>> IgnoredAssemblies = new List<Func<Assembly, bool>>
+        {
+            assembly => assembly.FullName.StartsWith("Microsoft.", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("mscorlib,", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("System.", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("System,", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("IronPython", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("IronRuby", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("CR_ExtUnitTest", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("CR_VSTest", StringComparison.InvariantCulture),
+            assembly => assembly.FullName.StartsWith("DevExpress.CodeRush", StringComparison.InvariantCulture)
+        };
+
         public virtual void Dispose()
         {
             Container.Dispose();
         }
+
+        protected abstract TinyIoCContainer.ITinyIoCObjectLifetimeProvider RequestLifetimeProvider { get; }
+
+        protected abstract IEnumerable<Assembly> LoadAssemblies();
 
         protected virtual void RegisterContainerItems()
         {
@@ -42,10 +72,15 @@ namespace Cassette
             Container.Register(typeof(IBundleCollectionInitializer), BundleCollectionInitializerType);
 
             Container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
-            Container.Register(typeof(IReferenceBuilder), typeof(ReferenceBuilder));
-            Container.Register(typeof(IPlaceholderTracker), (c,p) => GetPlaceholderTracker(c));
             Container.Register(typeof(IJavaScriptMinifier), typeof(MicrosoftJavaScriptMinifier));
             Container.Register(typeof(IStylesheetMinifier), typeof(MicrosoftStylesheetMinifier));
+
+            if (RequestLifetimeProvider != null)
+            {
+                Container.Register(typeof(IReferenceBuilder), typeof(ReferenceBuilder)).AsPerRequestSingleton(RequestLifetimeProvider);
+                Container.Register(typeof(PlaceholderTracker)).AsPerRequestSingleton(RequestLifetimeProvider);
+                Container.Register(typeof(IPlaceholderTracker), (c, p) => GetPlaceholderTracker(c));
+            }
 
             Container.Register(typeof(ICassetteManifestCache), (c, p) =>
             {
@@ -59,7 +94,7 @@ namespace Cassette
             });
 
             Container.RegisterMultiple(typeof(IStartUpTask), GetStartUpTaskTypes());
-            Container.RegisterMultiple(typeof(IBundleDefinition), AppDomainAssemblyTypeScanner.TypesOf<IBundleDefinition>());
+            Container.RegisterMultiple(typeof(IBundleDefinition), GetImplementationTypes(typeof(IBundleDefinition)));
 
             Container.Register(typeof(CassetteSettings), Settings);
             Container.Register(
@@ -78,9 +113,9 @@ namespace Cassette
                 )
             );
 
-            new ScriptBundleContainerModule().Load(Container);
-            new StylesheetBundleContainerModule().Load(Container);
-            new HtmlTemplateBundleContainerModule().Load(Container);
+            new ScriptBundleContainerBuilder(GetImplementationTypes).Build(Container);
+            new StylesheetBundleContainerBuilder(GetImplementationTypes).Build(Container);
+            new HtmlTemplateBundleContainerBuilder(GetImplementationTypes).Build(Container);
 
             foreach (var serviceRegistry in ServiceRegistries)
             {
@@ -99,6 +134,11 @@ namespace Cassette
             }
         }
 
+        IEnumerable<Type> GetImplementationTypes(Type baseType)
+        {
+            return types.Where(baseType.IsAssignableFrom); 
+        }
+
         protected virtual Type BundleCollectionInitializerType
         {
             get { return typeof(RuntimeBundleCollectionInitializer); }
@@ -108,7 +148,7 @@ namespace Cassette
         {
             if (container.Resolve<CassetteSettings>().IsHtmlRewritingEnabled)
             {
-                return new PlaceholderTracker();
+                return container.Resolve<PlaceholderTracker>();
             }
             else
             {
@@ -118,7 +158,7 @@ namespace Cassette
 
         protected virtual IEnumerable<Type> GetStartUpTaskTypes()
         {
-            return AppDomainAssemblyTypeScanner.TypesOf<IStartUpTask>();
+            return GetImplementationTypes(typeof(IStartUpTask));
         }
 
         void CreateBundles()
@@ -133,6 +173,7 @@ namespace Cassette
             var startUpTasks = Container.ResolveAll<IStartUpTask>();
             foreach (var startUpTask in startUpTasks)
             {
+                Trace.Source.TraceInformation("Running start-up task: {0}", startUpTask.GetType().FullName);
                 startUpTask.Run();
             }
         }
@@ -141,7 +182,7 @@ namespace Cassette
         {
             get
             {
-                return AppDomainAssemblyTypeScanner.TypesOf<IServiceRegistry>()
+                return GetImplementationTypes(typeof(IServiceRegistry))
                     .Where(type => type.IsClass && !type.IsAbstract)
                     .Select(type => (IServiceRegistry)Activator.CreateInstance(type));
             }

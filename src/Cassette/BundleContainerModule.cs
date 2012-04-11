@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -11,6 +12,13 @@ namespace Cassette
     abstract class BundleContainerModule<T>
         where T : Bundle
     {
+        readonly Func<Type, IEnumerable<Type>> getImplementationTypes;
+
+        protected BundleContainerModule(Func<Type, IEnumerable<Type>> getImplementationTypes)
+        {
+            this.getImplementationTypes = getImplementationTypes;
+        }
+
         protected abstract string FilePattern { get; }
 
         protected abstract Type BundleFactoryType { get; }
@@ -22,7 +30,7 @@ namespace Cassette
             get { return null; }
         }
 
-        public void Load(TinyIoCContainer container)
+        public void Build(TinyIoCContainer container)
         {
             RegisterFileSearchServices(container);
             RegisterBundleFactory(container);
@@ -38,7 +46,7 @@ namespace Cassette
             );
             container.RegisterMultiple(
                 typeof(IFileSearchModifier<T>),
-                AppDomainAssemblyTypeScanner.TypesOf<IFileSearchModifier<T>>()
+                getImplementationTypes(typeof(IFileSearchModifier<T>))
             );
         }
 
@@ -50,7 +58,7 @@ namespace Cassette
             );
             container.RegisterMultiple(
                 typeof(IBundlePipelineModifier<T>),
-                AppDomainAssemblyTypeScanner.TypesOf<IBundlePipelineModifier<T>>()
+                getImplementationTypes(typeof(IBundlePipelineModifier<T>))
             );
         }
 

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Manifests;
@@ -9,11 +11,25 @@ namespace Cassette.MSBuild
 {
     public class MSBuildHost : HostBase
     {
+        readonly string inputDirectory;
         readonly string outputFilename;
 
-        public MSBuildHost(string outputFilename)
+        public MSBuildHost(string inputDirectory, string outputFilename)
         {
+            this.inputDirectory = inputDirectory;
             this.outputFilename = outputFilename;
+        }
+
+        protected override IEnumerable<Assembly> LoadAssemblies()
+        {
+            return Directory
+                .GetFiles(inputDirectory, "*.dll")
+                .Select(Assembly.LoadFrom);
+        }
+
+        protected override TinyIoC.TinyIoCContainer.ITinyIoCObjectLifetimeProvider RequestLifetimeProvider
+        {
+            get { return null; }
         }
 
         protected override Type BundleCollectionInitializerType

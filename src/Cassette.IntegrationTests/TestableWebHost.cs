@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Configuration;
@@ -22,6 +24,12 @@ namespace Cassette
             this.routes = routes;
             this.getHttpContext = getHttpContext;
             this.isAspNetDebuggingEnabled = isAspNetDebuggingEnabled;
+        }
+
+        protected override IEnumerable<Assembly> LoadAssemblies()
+        {
+            var dlls = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
+            return dlls.Select(Assembly.LoadFrom);
         }
 
         protected override void RegisterContainerItems()

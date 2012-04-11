@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using System.Reflection;
 
 namespace Cassette.MSBuild
 {
@@ -9,11 +8,8 @@ namespace Cassette.MSBuild
     [LoadInSeparateAppDomain]
     public class CreateBundles : AppDomainIsolatedTask
     {
-        /// <summary>
-        /// File names of assemblies containing Cassette configuration classes.
-        /// </summary>
         [Required]
-        public string[] Assemblies { get; set; }
+        public string Input { get; set; }
 
         /// <summary>
         /// File name to save the Cassette manifest as.
@@ -23,15 +19,11 @@ namespace Cassette.MSBuild
 
         public override bool Execute()
         {
-            foreach(var filename in Assemblies)
+            using (var host = new MSBuildHost(Input, Output))
             {
-                Assembly.LoadFrom(filename);
+                host.Initialize();
+                host.Execute();
             }
-
-            var host = new MSBuildHost(Output);
-            host.Initialize();
-            host.Execute();
-            host.Dispose();
             return true;
         }
     }

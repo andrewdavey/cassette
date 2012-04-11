@@ -1,4 +1,5 @@
 ﻿using System.Web;
+using System.Diagnostics;
 
 namespace Cassette.Web
 {
@@ -20,11 +21,13 @@ namespace Cassette.Web
                 _initializedModuleCount++;
                 if (isFirstModuleInitForAppDomain)
                 {
+                    var startupTimer = Stopwatch.StartNew();
                     using (var recorder = new StartUpTraceRecorder())
                     {
                         _host = new WebHost();
                         _host.Initialize();
 
+                        Trace.Source.TraceInformation("Total time elapsed: {0}ms", startupTimer.ElapsedMilliseconds);
                         StartUpTrace = recorder.TraceOutput;
                     }
                 }

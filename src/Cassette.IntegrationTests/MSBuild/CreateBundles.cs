@@ -37,7 +37,7 @@ namespace Cassette.MSBuild
             using (var container = new AppDomainInstance<CreateBundles>())
             {
                 var task = container.Value;
-                task.Assemblies = new[] { assemblyPath };
+                task.Input = path;
                 manifestFilename = Path.Combine(path, "cassette.xml");
                 Environment.CurrentDirectory = path;
                 task.Output = manifestFilename;
@@ -123,7 +123,7 @@ namespace Cassette.MSBuild
             }
         }
 
-        public class BundleDefinition : IBundleDefinition
+        public abstract class BundleDefinition : IBundleDefinition
         {
             public void AddBundles(BundleCollection bundles)
             {
@@ -145,6 +145,11 @@ namespace Cassette.MSBuild
                 var parentAssembly = typeof(BundleDefinition).Assembly.Location;
                 File.Copy(parentAssembly, Path.Combine(directory, Path.GetFileName(parentAssembly)));
                 File.Copy("Cassette.dll", Path.Combine(directory, "Cassette.dll"));
+                File.Copy("Cassette.CoffeeScript.dll", Path.Combine(directory, "Cassette.CoffeeScript.dll"));
+                File.Copy("Cassette.Less.dll", Path.Combine(directory, "Cassette.Less.dll"));
+#if !NET35
+                File.Copy("Cassette.Sass.dll", Path.Combine(directory, "Cassette.Sass.dll"));
+#endif
                 File.Copy("Cassette.MSBuild.dll", Path.Combine(directory, "Cassette.MSBuild.dll"));
             }
 

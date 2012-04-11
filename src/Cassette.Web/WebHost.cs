@@ -1,16 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.Configuration;
 using System.Web.Routing;
 using Cassette.Configuration;
 using Cassette.IO;
+using TinyIoC;
 
 namespace Cassette.Web
 {
     public class WebHost : HostBase
     {
+        protected override IEnumerable<Assembly> LoadAssemblies()
+        {
+            return BuildManager.GetReferencedAssemblies().Cast<Assembly>();
+        }
+
+        protected override TinyIoCContainer.ITinyIoCObjectLifetimeProvider RequestLifetimeProvider
+        {
+            get { return new HttpContextLifetimeProvider(() => Container.Resolve<HttpContextBase>()); }
+        }
+
         protected override void RegisterContainerItems()
         {
             Container.Register(typeof(HttpContextBase), (c, p) => HttpContext());

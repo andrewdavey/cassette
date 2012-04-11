@@ -7,6 +7,7 @@ using System.Web.Routing;
 using System.Web.Script.Serialization;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
+using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
@@ -18,13 +19,17 @@ namespace Cassette.Web
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
         readonly IUrlGenerator urlGenerator;
+        readonly ICassetteManifestCache cache;
+        readonly IBundleCollectionInitializer bundleCollectionInitializer;
 
-        public HudRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator)
+        public HudRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, ICassetteManifestCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
         {
             this.requestContext = requestContext;
             this.bundles = bundles;
             this.settings = settings;
             this.urlGenerator = urlGenerator;
+            this.cache = cache;
+            this.bundleCollectionInitializer = bundleCollectionInitializer;
         }
 
         public void ProcessRequest(HttpContext _)
@@ -63,9 +68,17 @@ namespace Cassette.Web
         {
             if (requestContext.HttpContext.Request.Form["action"] == "rebuild-cache")
             {
-                // TODO: Reimplement recycling bundles
-                //Application.Settings.CassetteManifestCache.Clear();
-                //container.RecycleApplication();
+                RebuildCache();
+            }
+        }
+
+        void RebuildCache()
+        {
+            cache.Clear();
+            using (bundles.GetWriteLock())
+            {
+                bundles.Clear();
+                bundleCollectionInitializer.Initialize(bundles);
             }
         }
 

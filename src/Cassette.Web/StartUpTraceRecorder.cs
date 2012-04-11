@@ -8,21 +8,16 @@ namespace Cassette.Web
     /// </summary>
     class StartUpTraceRecorder : IDisposable
     {
-        readonly Stopwatch startupTimer;
         readonly TraceListener startupTraceListener;
 
         public StartUpTraceRecorder()
         {
             startupTraceListener = CreateTraceListener();
             Trace.Source.Listeners.Add(startupTraceListener);
-            startupTimer = Stopwatch.StartNew();
         }
 
         public void Dispose()
         {
-            if (startupTimer == null) return;
-
-            startupTimer.Stop();
             Trace.Source.Listeners.Remove(startupTraceListener);
         }
 
@@ -30,12 +25,9 @@ namespace Cassette.Web
         {
             get
             {
-                return string.Format(
-                    "{0}{1}Total time elapsed: {2}ms",
-                    startupTraceListener,
-                    Environment.NewLine,
-                    startupTimer.ElapsedMilliseconds
-                );
+                Trace.Source.Flush();
+                startupTraceListener.Flush();
+                return startupTraceListener.ToString();
             }
         }
 
