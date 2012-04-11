@@ -142,7 +142,6 @@
     <Compile Include="AssetFinder.cs" />
     <Compile Include="BundleFactoryBase.cs" />
     <Compile Include="Configuration\FileSearch.cs" />
-    <Compile Include="Configuration\BundleCollection.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
     <Compile Include="HtmlAttributeDictionary.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestBuilder.cs" />

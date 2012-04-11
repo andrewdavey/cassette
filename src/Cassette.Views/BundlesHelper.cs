@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using Cassette.Configuration;
+using Cassette.IO;
+using Cassette.Utilities;
 
 namespace Cassette.Views
 {
@@ -106,6 +109,42 @@ namespace Cassette.Views
             {
                 Assets.Add(asset);
             }
+        }
+
+        public string FileUrl(string applicationRelativeFilePath)
+        {
+            applicationRelativeFilePath = PathUtilities.AppRelative(applicationRelativeFilePath);
+
+            var file = settings.SourceDirectory.GetFile(applicationRelativeFilePath);
+            ThrowIfFileNotFound(applicationRelativeFilePath, file);
+            ThrowIfCannotRequestRawFile(applicationRelativeFilePath, file, settings);
+
+            using (var stream = file.OpenRead())
+            {
+                var hash = stream.ComputeSHA1Hash().ToHexString();
+                return urlGenerator.CreateRawFileUrl(applicationRelativeFilePath, hash);
+            }
+        }
+
+        static void ThrowIfCannotRequestRawFile(string applicationRelativeFilePath, IFile file, CassetteSettings settings)
+        {
+            if (settings.CanRequestRawFile(file.FullPath)) return;
+
+            throw new Exception(
+                string.Format(
+                    "The file {0} cannot be requested. In CassetteConfiguration, use the settings.AllowRawFileAccess method to tell Cassette which files are safe to request.",
+                    applicationRelativeFilePath
+                )
+            );
+        }
+
+        static void ThrowIfFileNotFound(string applicationRelativeFilePath, IFile file)
+        {
+            if (file.Exists) return;
+            throw new FileNotFoundException(
+                "Cannot find file " + applicationRelativeFilePath,
+                applicationRelativeFilePath
+            );
         }
     }
 }

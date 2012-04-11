@@ -30,7 +30,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void FileSearchPatternIsCss()
         {
-            fileSearch.Pattern.ShouldEqual("*.css");
+            fileSearch.Pattern.ShouldContain("*.css");
         }
 
         [Fact]

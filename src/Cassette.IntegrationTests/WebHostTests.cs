@@ -63,6 +63,8 @@ namespace Cassette
             }
         }
 
+#if !NET35
+        // The styles bundles contain a SASS file - which Cassette for .NET 3.5 doesn't support
         [Fact]
         public void PageThatReferencesStylesBundleAGetsStylesBundleA()
         {
@@ -78,6 +80,7 @@ namespace Cassette
                 Download(urls[0]).ShouldEqual("a{color:red}p{border:1px solid red}body{color:#abc}");
             }
         }
+#endif
 
         string[] GetPageHtmlResourceUrls(params string[] references)
         {

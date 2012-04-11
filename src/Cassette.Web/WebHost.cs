@@ -48,8 +48,7 @@ namespace Cassette.Web
             return startUpTaskTypes.Concat(new[]
             {
                 typeof(RouteInstaller),
-                typeof(FileSystemWatchingBundleRebuilder),
-                typeof(UrlHelperExtensions)
+                typeof(FileSystemWatchingBundleRebuilder)
             });
         }
 

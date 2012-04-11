@@ -1,25 +1,21 @@
-﻿#if !NET35
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.Web
+namespace Cassette.Views
 {
-    public class UrlHelper_CassetteFile_Tests
+    public class Bundles_FileUrl_Tests
     {
         readonly Mock<IUrlGenerator> urlGenerator;
         readonly FakeFileSystem fileSystem;
         readonly string hashOfFileContent;
-        readonly UrlHelper urlHelper;
 
-        public UrlHelper_CassetteFile_Tests()
+        public Bundles_FileUrl_Tests()
         {
             urlGenerator = new Mock<IUrlGenerator>();
             fileSystem = new FakeFileSystem
@@ -38,8 +34,9 @@ namespace Cassette.Web
             };
             settings.AllowRawFileRequest(path => path == "~/test.png");
 
-            UrlHelperExtensionMethods.Implementation = new UrlHelperExtensions(settings, urlGenerator.Object);
-            urlHelper = new UrlHelper(new RequestContext());
+            var referenceBuilder = new Mock<IReferenceBuilder>();
+            var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object);
         }
 
         [Fact]
@@ -47,7 +44,7 @@ namespace Cassette.Web
         {
             urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png", hashOfFileContent)).Returns("URL");
 
-            var url = urlHelper.CassetteFile("~/test.png");
+            var url = Bundles.FileUrl("~/test.png");
 
             url.ShouldEqual("URL");
         }
@@ -57,7 +54,7 @@ namespace Cassette.Web
         {
             urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png", hashOfFileContent)).Returns("URL");
 
-            var url = urlHelper.CassetteFile("test.png");
+            var url = Bundles.FileUrl("test.png");
 
             url.ShouldEqual("URL");
         }
@@ -67,7 +64,7 @@ namespace Cassette.Web
         {
             urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png", hashOfFileContent)).Returns("URL");
 
-            var url = urlHelper.CassetteFile("/test.png");
+            var url = Bundles.FileUrl("/test.png");
 
             url.ShouldEqual("URL");
         }
@@ -75,7 +72,7 @@ namespace Cassette.Web
         [Fact]
         public void WhenFileNotFound_ThenThrowFileNotFoundException()
         {
-            var exception = Assert.Throws<FileNotFoundException>(() => urlHelper.CassetteFile("not-found.png"));
+            var exception = Assert.Throws<FileNotFoundException>(() => Bundles.FileUrl("not-found.png"));
             exception.FileName.ShouldEqual("~/not-found.png");
         }
 
@@ -83,9 +80,8 @@ namespace Cassette.Web
         public void WhenSettingsDoNotAllowRawFileRequest_ThenThrowException()
         {
             fileSystem.Add("~/web.config");
-            var exception = Assert.Throws<Exception>(() => urlHelper.CassetteFile("~/web.config"));
+            var exception = Assert.Throws<Exception>(() => Bundles.FileUrl("~/web.config"));
             exception.Message.ShouldEqual("The file ~/web.config cannot be requested. In CassetteConfiguration, use the settings.AllowRawFileAccess method to tell Cassette which files are safe to request.");
         }
     }
 }
-#endif

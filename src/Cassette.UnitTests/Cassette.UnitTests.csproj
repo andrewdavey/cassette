@@ -230,7 +230,7 @@
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
     <Compile Include="Utilities\Graph.cs" />
-    <Compile Include="Web\UrlHelper.CassetteFile.cs" />
+    <Compile Include="Views\Bundles_FileUrl_Tests.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="Web\AssetRequestHandler.cs" />
     <Compile Include="Web\CassetteRoute.cs" />

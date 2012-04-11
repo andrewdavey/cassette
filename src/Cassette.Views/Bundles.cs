@@ -317,5 +317,14 @@ namespace Cassette.Views
         {
             return Helper.Render<T>(location);
         }
+
+        /// <summary>
+        /// Returns the Cassette cache-friendly URL for a file, such as an image.
+        /// </summary>
+        /// <param name="applicationRelativeFilePath">The application relative file path of the file.</param>
+        public static string FileUrl(string applicationRelativeFilePath)
+        {
+            return Helper.FileUrl(applicationRelativeFilePath);
+        }
     }
 }

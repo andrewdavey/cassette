@@ -9,6 +9,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
+#pragma warning disable 0659 // Don't need to use GetHashCode
     public class FakeFileSystem : IEnumerable, IDirectory
     {
         readonly Dictionary<string, IFile> files;
@@ -108,11 +109,19 @@ namespace Cassette
                 where secondSlashIndex > -1
                 select new { pair, secondSlashIndex }
                 ).GroupBy(x => x.pair.Key.Substring(0, x.secondSlashIndex));
+#if NET35
+            return groups.Select(g => new FakeFileSystem(g.Select(x => x.pair))
+            {
+                FullPath = g.Key,
+                root = root ?? this
+            }).Cast<IDirectory>();
+#else
             return groups.Select(g => new FakeFileSystem(g.Select(x => x.pair))
             {
                 FullPath = g.Key,
                 root = root ?? this
             });
+#endif
         }
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
@@ -135,6 +144,7 @@ namespace Cassette
             return FullPath == ((FakeFileSystem)obj).FullPath;
         }
     }
+#pragma warning restore 0659
 
     public class FakeFile : IFile
     {

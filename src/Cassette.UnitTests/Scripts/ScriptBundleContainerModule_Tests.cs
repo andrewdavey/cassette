@@ -31,7 +31,7 @@ namespace Cassette.Scripts
         [Fact]
         public void FileSearchPatternIsJs()
         {
-            fileSearch.Pattern.ShouldEqual("*.js");
+            fileSearch.Pattern.ShouldContain("*.js");
         }
 
         [Fact]

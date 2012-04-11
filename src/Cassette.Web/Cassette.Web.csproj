@@ -68,8 +68,6 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="IUrlHelperExtensions.cs" />
-    <Compile Include="UrlHelperExtensionMethods.cs" />
     <Compile Include="WebHost.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="IsolatedStorageContainer.cs" />
@@ -78,7 +76,6 @@
     <Compile Include="StartUpTraceRecorder.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="StringBuilderTraceListener.cs" />
-    <Compile Include="UrlHelperExtensions.cs" />
     <None Include="CassetteConfiguration.cs.pp" />
     <Compile Include="CassetteHttpModule.cs" />
     <Compile Include="AssetRequestHandler.cs" />

@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Utilities;
-using System.Threading;
+#if NET35
+using Iesi.Collections.Generic;
+#endif
 
 namespace Cassette
 {
@@ -18,7 +21,7 @@ namespace Cassette
         readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
-
+        
         public BundleCollection(CassetteSettings settings, IFileSearchProvider fileSearchProvider, IBundleFactoryProvider bundleFactoryProvider)
         {
             this.settings = settings;

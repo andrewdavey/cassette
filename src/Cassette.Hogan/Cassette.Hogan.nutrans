@@ -9,6 +9,6 @@
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.Hogan.dll" target="lib\net40-client" />
+    <file src="bin\Release\Cassette.Hogan.dll" target="lib\net40-client" />
   </files>
 </package>

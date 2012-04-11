@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Cassette
 {
@@ -116,9 +117,13 @@ namespace Cassette
         private static void UpdateAssemblies()
         {
             _assemblies = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                          where !assembly.IsDynamic
-                          where !assembly.ReflectionOnly
-                          select assembly).ToArray();
+#if NET35
+                           where !(assembly.ManifestModule is ModuleBuilder)
+#else
+                           where !assembly.IsDynamic
+#endif
+                           where !assembly.ReflectionOnly
+                           select assembly).ToArray();
         }
 
         /// <summary>
