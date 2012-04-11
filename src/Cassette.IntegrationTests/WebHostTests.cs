@@ -8,10 +8,12 @@ using System.Xml.Linq;
 using Cassette.Configuration;
 using Cassette.IntegrationTests;
 using Cassette.Scripts;
-using Cassette.Stylesheets;
 using Cassette.Views;
 using Should;
 using Xunit;
+#if !NET35
+using Cassette.Stylesheets;
+#endif
 
 namespace Cassette
 {

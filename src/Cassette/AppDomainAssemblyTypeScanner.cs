@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+#if NET35
 using System.Reflection.Emit;
+#endif
 
 namespace Cassette
 {

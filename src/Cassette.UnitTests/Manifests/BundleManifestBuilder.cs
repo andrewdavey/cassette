@@ -1,4 +1,3 @@
-using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -32,5 +31,4 @@ namespace Cassette.Manifests
             }
         }
     }
-
 }

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets;

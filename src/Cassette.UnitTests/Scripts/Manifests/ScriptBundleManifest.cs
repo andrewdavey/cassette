@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Utilities;
 using Moq;

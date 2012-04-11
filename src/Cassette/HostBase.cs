@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Security.Cryptography;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
@@ -10,6 +9,9 @@ using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using TinyIoC;
+#if NET35
+using System.Reflection.Emit;
+#endif
 
 namespace Cassette
 {
