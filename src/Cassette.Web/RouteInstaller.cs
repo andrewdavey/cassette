@@ -20,7 +20,7 @@ namespace Cassette.Web
             routePrefix = "_cassette";
         }
 
-        public void Run()
+        public void Start()
         {
             InstallRoutes();
         }

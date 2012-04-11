@@ -14,7 +14,7 @@ namespace Cassette.Web.Jasmine
             this.container = container;
         }
 
-        public void Run()
+        public void Start()
         {
             InstallRoute();
         }

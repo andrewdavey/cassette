@@ -5,6 +5,6 @@
     /// </summary>
     public interface IStartUpTask
     {
-        void Run();
+        void Start();
     }
 }

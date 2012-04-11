@@ -63,11 +63,13 @@
     </Compile>
     <Compile Include="CoffeeScriptCommentParser.cs" />
     <Compile Include="CoffeeScriptCompileException.cs" />
-    <Compile Include="CoffeeScriptServiceRegistry.cs" />
     <Compile Include="CoffeeScriptFileSearchModifier.cs" />
     <Compile Include="CoffeeScriptPipelineModifier.cs" />
+    <Compile Include="CoffeeScriptServices.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="ICoffeeScriptCompiler.cs" />
+    <Compile Include="IECoffeeScriptCompilationQueue.cs" />
+    <Compile Include="IECoffeeScriptCompilationQueueStarter.cs" />
     <Compile Include="IECoffeeScriptCompiler.cs" />
     <Compile Include="JurassicCoffeeScriptCompiler.cs" />
     <Compile Include="ParseCoffeeScriptReferences.cs" />

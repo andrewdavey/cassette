@@ -65,6 +65,23 @@ namespace Cassette
             }
         }
 
+        [Fact]
+        public void PageThatReferencesScriptsBundleCGetsScriptsBundleBAndScriptsBundleC()
+        {
+            using (var host = new TestableWebHost("assets", routes, () => httpContext))
+            {
+                host.AddBundleDefinition(new BundleDefinition(bundles =>
+                    bundles.AddPerSubDirectory<ScriptBundle>("scripts")
+                ));
+                host.Initialize();
+
+                var scriptUrls = GetPageHtmlResourceUrls("scripts/bundle-c");
+
+                scriptUrls[0].ShouldMatch(new Regex("^/_cassette/scriptbundle/scripts/bundle-c_"));
+                Download(scriptUrls[0]).ShouldEqual(@"(function(){var n;n=1}).call(this)");
+            }
+        }
+
 #if !NET35
         // The styles bundles contain a SASS file - which Cassette for .NET 3.5 doesn't support
         [Fact]

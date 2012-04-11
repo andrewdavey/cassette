@@ -26,7 +26,7 @@ namespace Cassette
         /// <summary>
         /// Starts watching the file system for changes.
         /// </summary>
-        public void Run()
+        public void Start()
         {
             rebuildDelayTimer = new Timer(RebuildDelayTimerCallback);
             fileSystemWatcher = settings.SourceDirectory.WatchForChanges(HandleFileSystemChange);

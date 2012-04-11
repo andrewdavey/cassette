@@ -29,8 +29,8 @@ namespace Cassette
             LoadAllTypes();
             Container = new TinyIoCContainer();
             RegisterContainerItems();
-            CreateBundles();
             RunStartUpTasks();
+            CreateBundles();
         }
 
         void LoadAllTypes()
@@ -117,6 +117,11 @@ namespace Cassette
             new StylesheetBundleContainerBuilder(GetImplementationTypes).Build(Container);
             new HtmlTemplateBundleContainerBuilder(GetImplementationTypes).Build(Container);
 
+            foreach (var containerBuilder in ContainerBuilders)
+            {
+                containerBuilder.Build(Container);
+            }
+
             foreach (var serviceRegistry in ServiceRegistries)
             {
                 foreach (var registration in serviceRegistry.TypeRegistrations)
@@ -174,7 +179,17 @@ namespace Cassette
             foreach (var startUpTask in startUpTasks)
             {
                 Trace.Source.TraceInformation("Running start-up task: {0}", startUpTask.GetType().FullName);
-                startUpTask.Run();
+                startUpTask.Start();
+            }
+        }
+
+        IEnumerable<IContainerBuilder> ContainerBuilders
+        {
+            get
+            {
+                return GetImplementationTypes(typeof(IContainerBuilder))
+                    .Where(type => type.IsClass && !type.IsAbstract)
+                    .Select(type => (IContainerBuilder)Activator.CreateInstance(type));
             }
         }
 

@@ -31,7 +31,7 @@ namespace Cassette
         [Fact]
         public void WhenNewFileCreated_ThenBundleDefinitionIsUsedToRebuildBundleCollection()
         {
-            rebuilder.Run();
+            rebuilder.Start();
 
             File.WriteAllText(Path.Combine(tempDirectory, "test.js"), "");
             Thread.Sleep(200); // Wait for the file system change event to fire.
@@ -45,7 +45,7 @@ namespace Cassette
             var filename = Path.Combine(tempDirectory, "test.js");
             File.WriteAllText(filename, "");
 
-            rebuilder.Run();
+            rebuilder.Start();
 
             File.Delete(filename);
             Thread.Sleep(200); // Wait for the file system change event to fire.

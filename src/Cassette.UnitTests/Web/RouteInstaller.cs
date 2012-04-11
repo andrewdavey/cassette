@@ -30,7 +30,7 @@ namespace Cassette.Web
 
             routing = new RouteInstaller(routes, container);
 
-            routing.Run();
+            routing.Start();
         }
 
         void SetupAppRelativeCurrentExecutionFilePath(string path)

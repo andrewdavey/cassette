@@ -29,7 +29,7 @@ namespace Cassette.Views
             this.getReferenceBuilder = getReferenceBuilder;
         }
 
-        void IStartUpTask.Run()
+        void IStartUpTask.Start()
         {
             Trace.Source.TraceInformation("Initializing Bundles helper");
             // At application start-up, Cassette's infrastructure will create an instance of this class

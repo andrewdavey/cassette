@@ -8,6 +8,7 @@ namespace Cassette.Web
     {
         readonly Func<HttpContextBase> getHttpContext;
         readonly string keyName = String.Format("TinyIoC.HttpContext.{0}", Guid.NewGuid());
+        bool isSet;
 
         public HttpContextLifetimeProvider(Func<HttpContextBase> getHttpContext)
         {
@@ -21,7 +22,14 @@ namespace Cassette.Web
 
         public override void SetObject(object value)
         {
+            isSet = true;
             getHttpContext().Items[keyName] = value;
+        }
+
+        public override void ReleaseObject()
+        {
+            if (!isSet) return;
+            base.ReleaseObject();
         }
     }
 }
