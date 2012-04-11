@@ -14,7 +14,7 @@ namespace Cassette.IO
         public IsolatedStorageFileWrapper_Tests()
         {
             storage = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly();
-            directory = new IsolatedStorageDirectory(storage);            
+            directory = new IsolatedStorageDirectory(() => storage);            
             using (var stream = storage.CreateFile("exists.js"))
             {
                 "content".AsStream().CopyTo(stream);

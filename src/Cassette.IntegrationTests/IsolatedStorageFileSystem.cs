@@ -22,7 +22,7 @@ namespace Cassette.IntegrationTests
                     writer.Flush();
                 }
 
-                var directory = new IsolatedStorageDirectory(store);
+                var directory = new IsolatedStorageDirectory(() => store);
                 var file = directory.GetFile("test.txt");
                 file.Exists.ShouldBeTrue();
                 using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))

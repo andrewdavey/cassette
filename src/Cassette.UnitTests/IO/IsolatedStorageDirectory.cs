@@ -30,7 +30,7 @@ namespace Cassette.IO
         [Fact]
         public void FullPathDefaultsToForwardSlash()
         {
-            var directory = new IsolatedStorageDirectory(storage);
+            var directory = new IsolatedStorageDirectory(() => storage);
             directory.FullPath.ShouldEqual("~/");
         }
 
@@ -39,7 +39,7 @@ namespace Cassette.IO
         {
             storage.CreateFile("test.js").Close();
 
-            var directory = new IsolatedStorageDirectory(storage);
+            var directory = new IsolatedStorageDirectory(() => storage);
             var file = directory.GetFile("test.js");
 
             file.ShouldBeType<IsolatedStorageFile>();
@@ -53,7 +53,7 @@ namespace Cassette.IO
             storage.CreateFile("test1.js").Close();
             storage.CreateFile("test2.js").Close();
 
-            var directory = new IsolatedStorageDirectory(storage);
+            var directory = new IsolatedStorageDirectory(() => storage);
             var files = directory.GetFiles("*", SearchOption.AllDirectories).ToArray();
 
             files[0].ShouldBeType<IsolatedStorageFile>();
