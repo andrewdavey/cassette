@@ -1,22 +1,29 @@
 ﻿using System.Web.Routing;
-using StartUp = Cassette.Web.Jasmine.StartUp;
-
-[assembly: WebActivator.PostApplicationStartMethod(typeof(StartUp), "PostApplicationStart")]
+using TinyIoC;
 
 namespace Cassette.Web.Jasmine
 {
-    public static class StartUp
+    public class StartUp : IStartUpTask
     {
-        public static void PostApplicationStart()
+        readonly RouteCollection routes;
+        readonly TinyIoCContainer container;
+
+        public StartUp(RouteCollection routes, TinyIoCContainer container)
         {
-            InstallRoute(RouteTable.Routes);
+            this.routes = routes;
+            this.container = container;
         }
 
-        static void InstallRoute(RouteCollection routes)
+        public void Run()
+        {
+            InstallRoute();
+        }
+
+        void InstallRoute()
         {
             var route = new CassetteRoute(
                 "_cassette/jasmine/{*specbundle}",
-                new DelegateRouteHandler(context => new PageHandler(context))
+                new CassetteRouteHandler<PageHandler>(container)
             );
             routes.Insert(0, route);
         }

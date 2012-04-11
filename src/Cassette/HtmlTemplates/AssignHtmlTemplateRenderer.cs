@@ -5,12 +5,12 @@ namespace Cassette.HtmlTemplates
 {
     public class AssignHtmlTemplateRenderer : IBundleProcessor<HtmlTemplateBundle>
     {
+        readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
+
         public AssignHtmlTemplateRenderer(IBundleHtmlRenderer<HtmlTemplateBundle> renderer)
         {
             this.renderer = renderer;
         }
-
-        readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
 
         public void Process(HtmlTemplateBundle bundle, CassetteSettings settings)
         {

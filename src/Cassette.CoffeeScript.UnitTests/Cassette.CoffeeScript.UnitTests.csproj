@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FC7BD8AA-A175-4E25-A8B2-10CCB8F46503}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cassette.Scripts</RootNamespace>
+    <AssemblyName>Cassette.CoffeeScript.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-FX35|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug-FX35\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET35</DefineConstants>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release-FX35|AnyCPU'">
+    <OutputPath>bin\Release-FX35\</OutputPath>
+    <DefineConstants>TRACE;NET35</DefineConstants>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Moq" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET35\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Should">
+      <HintPath>..\packages\Should.1.1.12.0\lib\Should.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" Condition="'$(TargetFrameworkVersion)' != 'v3.5'"/>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CoffeeScriptCommentParser.cs" />
+    <Compile Include="CoffeeScriptFileSearchModifier.cs" />
+    <Compile Include="CompileCoffeeScript.cs" />
+    <Compile Include="IEJavaScriptEngine.cs" />
+    <Compile Include="ParseCoffeeScriptReferences.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptPipelineExtensions.CompileCoffeeScript.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cassette.CoffeeScript\Cassette.CoffeeScript.csproj">
+      <Project>{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}</Project>
+      <Name>Cassette.CoffeeScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette.UnitTests\Cassette.UnitTests.csproj">
+      <Project>{F200A67A-D7B5-441B-AB36-69AA5C87577E}</Project>
+      <Name>Cassette.UnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette\Cassette.csproj">
+      <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
+      <Name>Cassette</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

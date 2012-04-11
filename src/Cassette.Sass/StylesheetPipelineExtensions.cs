@@ -5,9 +5,9 @@ namespace Cassette.Stylesheets
     public static class StylesheetPipelineExtensions
     {
         public static T CompileSass<T>(this T pipeline)
-            where T : MutablePipeline<StylesheetBundle>
+            where T : IBundlePipeline<StylesheetBundle>
         {
-            pipeline.InsertAfter<ParseCssReferences>(
+            pipeline.InsertAfter<ParseCssReferences, StylesheetBundle>(
                 new ParseSassReferences(),
                 new CompileSass(new SassCompiler())
             );

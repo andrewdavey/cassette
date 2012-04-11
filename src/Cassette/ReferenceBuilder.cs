@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Scripts;
+using Cassette.Stylesheets;
 using Cassette.Utilities;
 using Cassette.Configuration;
 #if NET35
@@ -11,17 +13,17 @@ namespace Cassette
 {
     class ReferenceBuilder : IReferenceBuilder
     {
-        public ReferenceBuilder(IBundleContainer bundleContainer, IDictionary<Type, IBundleFactory<Bundle>> bundleFactories, IPlaceholderTracker placeholderTracker, CassetteSettings settings)
+        public ReferenceBuilder(BundleCollection allBundles, IPlaceholderTracker placeholderTracker, IBundleFactoryProvider bundleFactoryProvider, CassetteSettings settings)
         {
-            this.bundleContainer = bundleContainer;
-            this.bundleFactories = bundleFactories;
+            this.allBundles = allBundles;
             this.placeholderTracker = placeholderTracker;
+            this.bundleFactoryProvider = bundleFactoryProvider;
             this.settings = settings;
         }
 
-        readonly IBundleContainer bundleContainer;
-        readonly IDictionary<Type, IBundleFactory<Bundle>> bundleFactories;
+        readonly BundleCollection allBundles;
         readonly IPlaceholderTracker placeholderTracker;
+        readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly CassetteSettings settings;
         readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
         readonly HashedSet<string> renderedLocations = new HashedSet<string>();
@@ -30,7 +32,8 @@ namespace Cassette
         public void Reference<T>(string path, string location = null)
             where T : Bundle
         {
-            var bundles = GetBundles(path, () => bundleFactories[typeof(T)].CreateExternalBundle(path));
+            var factory = bundleFactoryProvider.GetBundleFactory<T>();
+            var bundles = GetBundles(path, () => factory.CreateExternalBundle(path));
             Reference(bundles, location);
         }
 
@@ -40,11 +43,13 @@ namespace Cassette
             {
                 if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
                 {
-                    return bundleFactories[typeof(Scripts.ScriptBundle)].CreateExternalBundle(path);
+                    var factory = bundleFactoryProvider.GetBundleFactory<ScriptBundle>();
+                    return factory.CreateExternalBundle(path);
                 }
                 else if (path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
                 {
-                    return bundleFactories[typeof(Stylesheets.StylesheetBundle)].CreateExternalBundle(path);
+                    var factory = bundleFactoryProvider.GetBundleFactory<StylesheetBundle>();
+                    return factory.CreateExternalBundle(path);
                 }
                 else
                 {
@@ -64,7 +69,7 @@ namespace Cassette
         {
             path = PathUtilities.AppRelative(path);
 
-            var bundles = bundleContainer.FindBundlesContainingPath(path).ToArray();
+            var bundles = this.allBundles.FindBundlesContainingPath(path).ToArray();
             if (bundles.Length == 0 && path.IsUrl())
             {
                 var bundle = createExternalBundle();
@@ -137,8 +142,9 @@ namespace Cassette
         {
             var bundles = GetOrCreateBundleSet(location);
             var bundlesForLocation = GetOrCreateBundleSet(location);
-            return bundleContainer.IncludeReferencesAndSortBundles(bundles)
-                                  .Where(b => bundlesForLocation.Contains(b) || BundlePageLocationIs(b, location));
+            return this.allBundles
+                .IncludeReferencesAndSortBundles(bundles)
+                .Where(b => bundlesForLocation.Contains(b) || BundlePageLocationIs(b, location));
         }
 
         bool BundlePageLocationIs(Bundle bundle, string location)

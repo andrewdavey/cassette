@@ -6,44 +6,36 @@ namespace Cassette.Web
     /// <summary>
     /// Collects all of Cassette's trace output during start-up.
     /// </summary>
-    class StartUpTraceRecorder
+    class StartUpTraceRecorder : IDisposable
     {
-        Stopwatch startupTimer;
-        TraceListener startupTraceListener;
+        readonly Stopwatch startupTimer;
+        readonly TraceListener startupTraceListener;
 
-        public void Start()
+        public StartUpTraceRecorder()
         {
-            RequireNotStarted();
-
             startupTraceListener = CreateTraceListener();
             Trace.Source.Listeners.Add(startupTraceListener);
             startupTimer = Stopwatch.StartNew();
         }
 
-        public void Stop()
+        public void Dispose()
         {
             if (startupTimer == null) return;
 
             startupTimer.Stop();
             Trace.Source.Listeners.Remove(startupTraceListener);
-            startupTimer = null;
-        }
-
-        public long ElapsedMilliseconds
-        {
-            get { return startupTimer.ElapsedMilliseconds; }
         }
 
         public string TraceOutput
         {
-            get { return startupTraceListener.ToString(); }
-        }
-
-        void RequireNotStarted()
-        {
-            if (startupTimer != null)
+            get
             {
-                throw new InvalidOperationException("Cannot Start because StartUpTracer has already been stared.");
+                return string.Format(
+                    "{0}{1}Total time elapsed: {2}ms",
+                    startupTraceListener,
+                    Environment.NewLine,
+                    startupTimer.ElapsedMilliseconds
+                );
             }
         }
 
@@ -54,6 +46,5 @@ namespace Cassette.Web
                 Filter = new EventTypeFilter(SourceLevels.All)
             };
         }
-
     }
 }

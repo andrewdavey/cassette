@@ -4,24 +4,20 @@ namespace Cassette.Scripts
 {
     public static class ScriptPipelineExtensions
     {
-        public static T CompileCoffeeScript<T>(this T pipeline, ICompiler coffeeScriptCompiler)
-            where T : MutablePipeline<ScriptBundle>
+        public static T CompileCoffeeScript<T>(this T pipeline, ICoffeeScriptCompiler coffeeScriptCompiler)
+            where T : IBundlePipeline<ScriptBundle>
         {
-            pipeline.InsertAfter<ParseJavaScriptReferences>(
+            pipeline.InsertAfter<ParseJavaScriptReferences, ScriptBundle>(
                 new ParseCoffeeScriptReferences(),
                 new CompileCoffeeScript(coffeeScriptCompiler)
-                );
+            );
             return pipeline;
         }
 
         public static T CompileCoffeeScript<T>(this T pipeline)
-            where T : MutablePipeline<ScriptBundle>
+            where T : IBundlePipeline<ScriptBundle>
         {
-            pipeline.InsertAfter<ParseJavaScriptReferences>(
-                new ParseCoffeeScriptReferences(),
-                new CompileCoffeeScript(new JurassicCoffeeScriptCompiler())
-                );
-            return pipeline;
+            return CompileCoffeeScript(pipeline, new JurassicCoffeeScriptCompiler());
         }
     }
 }

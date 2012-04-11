@@ -1,41 +1,36 @@
-﻿using System.Linq;
-using System.Web;
+﻿using System.Web;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
 using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Web
 {
     public abstract class RouteInstaller_Tests
     {
-        protected readonly Mock<IUrlModifier> urlModifier = new Mock<IUrlModifier>();
-        internal readonly RouteInstaller routing;
-
-        public RouteInstaller_Tests()
-        {
-            urlModifier.Setup(m => m.Modify(It.IsAny<string>()))
-                       .Returns<string>(url => url);
-
-            var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
-            container.SetupGet(c => c.Application.Bundles).Returns(Enumerable.Empty<Bundle>());
-            routing = new RouteInstaller(container.Object, "_cassette");
-        }
-    }
-
-    public class UrlGenerator_InstallRoutes_Tests : RouteInstaller_Tests
-    {
-        readonly RouteCollection routes;
+        readonly RouteInstaller routing;
+        readonly RouteCollection routes = new RouteCollection();
         readonly Mock<HttpContextBase> httpContext;
 
-        public UrlGenerator_InstallRoutes_Tests()
+        protected RouteInstaller_Tests()
         {
-            routes = new RouteCollection();
-            routing.InstallRoutes(routes);
+            var urlGenerator = Mock.Of<IUrlGenerator>();
+            var settings = new CassetteSettings();
+            var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             httpContext = new Mock<HttpContextBase>();
+            var container = new TinyIoCContainer();
+            container.Register(bundles);
+            container.Register(settings);
+            container.Register(typeof(IUrlGenerator), urlGenerator);
+
+            routing = new RouteInstaller(routes, container);
+
+            routing.Run();
         }
 
         void SetupAppRelativeCurrentExecutionFilePath(string path)

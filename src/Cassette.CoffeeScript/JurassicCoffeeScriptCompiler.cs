@@ -8,7 +8,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class JurassicCoffeeScriptCompiler : ICompiler
+    public class JurassicCoffeeScriptCompiler : ICoffeeScriptCompiler
     {
         static JurassicCoffeeScriptCompiler()
         {

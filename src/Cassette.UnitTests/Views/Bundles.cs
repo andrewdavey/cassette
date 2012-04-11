@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -11,19 +12,18 @@ namespace Cassette.Views
 {
     public class Bundles_Test
     {
-        readonly TestableApplication application;
         readonly Mock<IReferenceBuilder> referenceBuilder;
         readonly Mock<IUrlGenerator> urlGenerator;
-        readonly Mock<IBundleContainer> bundleContainer;
+        readonly BundleCollection bundles;
+        readonly CassetteSettings settings;
 
         public Bundles_Test()
         {
             urlGenerator = new Mock<IUrlGenerator>();
             referenceBuilder = new Mock<IReferenceBuilder>();
-            bundleContainer = new Mock<IBundleContainer>();
-            application = new TestableApplication(urlGenerator.Object, referenceBuilder.Object, bundleContainer.Object);
-
-            CassetteApplicationContainer.SetApplicationAccessor(() => application);
+            settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object);
         }
 
         [Fact]
@@ -180,9 +180,7 @@ namespace Cassette.Views
         public void UrlUsesGetBundleUrlDelegate()
         {
             var bundle = new TestableBundle("~/test");
-            bundleContainer
-                .Setup(c => c.FindBundlesContainingPath("~/test"))
-                .Returns(new[] { bundle });
+            bundles.Add(bundle);
             urlGenerator
                 .Setup(g => g.CreateBundleUrl(bundle))
                 .Returns("URL");
@@ -196,9 +194,7 @@ namespace Cassette.Views
         public void TypedUrlUsesGetBundleUrlDelegate()
         {
             var bundle = new TestableBundle("~/test");
-            bundleContainer
-                .Setup(c => c.FindBundlesContainingPath("~/test"))
-                .Returns(new[] { bundle });
+            bundles.Add(bundle);
             urlGenerator
                 .Setup(g => g.CreateBundleUrl(bundle))
                 .Returns("URL");
@@ -233,7 +229,7 @@ namespace Cassette.Views
         [Fact]
         public void GivenNotDebugModeAndReferencedBundle_WhenGetReferencedBundleUrls_ThenReturnUrlInArray()
         {
-            application.Settings.IsDebuggingEnabled = false;
+            settings.IsDebuggingEnabled = false;
             referenceBuilder
                 .Setup(b => b.GetBundles(null))
                 .Returns(new[] { new TestableBundle("~") });
@@ -249,7 +245,7 @@ namespace Cassette.Views
         [Fact]
         public void GivenNotDebugModeAndReferencedBundle_WhenGetReferencedBundleUrlsWithLocation_ThenReturnUrlInArray()
         {
-            application.Settings.IsDebuggingEnabled = false;
+            settings.IsDebuggingEnabled = false;
             referenceBuilder
                 .Setup(b => b.GetBundles("body"))
                 .Returns(new[] { new TestableBundle("~") });
@@ -265,7 +261,7 @@ namespace Cassette.Views
         [Fact]
         public void GivenDebugModeAndReferencedBundleWithAssets_WhenGetReferencedBundleUrls_ThenReturnEachAssetUrlInArray()
         {
-            application.Settings.IsDebuggingEnabled = true;
+            settings.IsDebuggingEnabled = true;
             var bundle = new TestableBundle("~");
             bundle.Assets.Add(new StubAsset());
             bundle.Assets.Add(new StubAsset());

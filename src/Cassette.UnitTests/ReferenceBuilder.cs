@@ -12,55 +12,60 @@ using Xunit;
 
 namespace Cassette
 {
-    public class ReferenceBuilder_Reference_Tests
+    public abstract class ReferenceBuilder_Reference_TestBase
     {
-        public ReferenceBuilder_Reference_Tests()
+        protected ReferenceBuilder_Reference_TestBase()
         {
-            new Mock<ICassetteApplication>();
-            bundleFactories = new Dictionary<Type, IBundleFactory<Bundle>>();
-            bundleContainer = new Mock<IBundleContainer>();
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(ms => ms);
-
-            builder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, Mock.Of<IPlaceholderTracker>(), new CassetteSettings(""));
+            settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            bundleFactoryProvider = new Mock<IBundleFactoryProvider>();
+            placeholderTracker = new Mock<IPlaceholderTracker>();
+            builder = new ReferenceBuilder(bundles, placeholderTracker.Object, bundleFactoryProvider.Object, settings);
         }
 
-        ReferenceBuilder builder;
-        readonly Mock<IBundleContainer> bundleContainer;
-        readonly Dictionary<Type, IBundleFactory<Bundle>> bundleFactories;
+        internal readonly ReferenceBuilder builder;
+        protected readonly BundleCollection bundles;
+        protected readonly CassetteSettings settings;
+        protected readonly Mock<IBundleFactoryProvider> bundleFactoryProvider;
+        internal readonly Mock<IPlaceholderTracker> placeholderTracker;
+
+        protected void AddBundles(params Bundle[] bundlesToAdd)
+        {
+            bundles.AddRange(bundlesToAdd);
+            bundles.BuildReferences();
+        }
+    }
+
+    public class ReferenceBuilder_Reference_Tests : ReferenceBuilder_Reference_TestBase
+    {
+        void SetBundleFactory<T>(Mock<IBundleFactory<T>> bundleFactory)
+            where T : Bundle
+        {
+            bundleFactoryProvider
+                .Setup(p => p.GetBundleFactory<T>())
+                .Returns(bundleFactory.Object);
+        }
 
         [Fact]
         public void WhenAddReferenceToBundleDirectory_ThenGetBundlesReturnTheBundle()
         {
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new[] { bundle });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns(new[] { bundle })
-                           .Verifiable();
+            AddBundles(bundle);
 
             builder.Reference("test", null);
 
-            var bundles = builder.GetBundles(null).ToArray();
-            bundles[0].ShouldBeSameAs(bundle);
-            bundleContainer.Verify();
+            builder.GetBundles(null).First().ShouldBeSameAs(bundle);
         }
 
         [Fact]
         public void WhenAddReferenceToSameBundleTwice_ThenGetBundlesReturnsOnlyOneBundle()
         {
-            var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new[] { bundle });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns(new[] { bundle })
-                           .Verifiable();
+            AddBundles(new ScriptBundle("~/test"));
 
-            builder.Reference("test");
-            builder.Reference("test");
+            builder.Reference("test", null);
+            builder.Reference("test", null);
 
-            var bundles = builder.GetBundles(null).ToArray();
-            bundles.Length.ShouldEqual(1);
+            builder.GetBundles(null).Count().ShouldEqual(1);
         }
 
         [Fact]
@@ -68,17 +73,11 @@ namespace Cassette
         {
             var bundle = new ScriptBundle("~/test");
             bundle.PageLocation = "body";
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new[] { bundle });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns(new[] { bundle })
-                           .Verifiable();
+            AddBundles(bundle);
+
             builder.Reference("test", null);
 
-            var bundles = builder.GetBundles("body").ToArray();
-
-            bundles[0].ShouldBeSameAs(bundle);
-            bundleContainer.Verify();
+            builder.GetBundles("body").First().ShouldBeSameAs(bundle);
         }
 
         [Fact]
@@ -87,25 +86,19 @@ namespace Cassette
             var bundle1 = new ScriptBundle("~/test1");
             var bundle2 = new ScriptBundle("~/test2");
             bundle1.PageLocation = "body";
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test1"))
-                           .Returns(new[] { bundle1 });
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test2"))
-                           .Returns(new[] { bundle2 });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns(new[] { bundle1 });
+            AddBundles(bundle1, bundle2);
+
             builder.Reference("test1");
             builder.Reference("test2");
 
-            var bundles = builder.GetBundles("body").ToArray();
-            bundles.Length.ShouldEqual(1);
-            bundles[0].ShouldBeSameAs(bundle1);
+            var gotBundles = builder.GetBundles("body").ToArray();
+            gotBundles.Length.ShouldEqual(1);
+            gotBundles[0].ShouldBeSameAs(bundle1);
         }
 
         [Fact]
         public void WhenAddReferenceToNonExistentBundle_ThenThrowException()
         {
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~\\test")).Returns(new ScriptBundle[0]);
-
             Assert.Throws<ArgumentException>(delegate
             {
                 builder.Reference("test");
@@ -117,11 +110,8 @@ namespace Cassette
         {
             var bundleA = new ScriptBundle("~/a");
             var bundleB = new ScriptBundle("~/b");
-
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/a"))
-                           .Returns(new[] { bundleA });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns(new[] { bundleB, bundleA });
+            bundleA.AddReference("~/b");
+            AddBundles(bundleA, bundleB);
 
             builder.Reference("a");
 
@@ -131,10 +121,12 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("http://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("http://test.com/test.js");
 
@@ -145,24 +137,30 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownUrl_ThenCreatedBundleIsProcessed()
         {
-            var bundleFactory = new Mock<IBundleFactory<TestableBundle>>();
-            var bundle = new TestableBundle("~");
+            bundles.BuildReferences();
+
+            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
+            var bundle = new ScriptBundle("~");
+            var processor = new Mock<IBundleProcessor<ScriptBundle>>();
+            bundle.Processor = processor.Object;
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(bundle);
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("http://test.com/test.js");
 
-            bundle.WasProcessed.ShouldBeTrue();
+            processor.Verify(p => p.Process(bundle, settings));
         }
 
         [Fact]
         public void WhenAddReferenceToUnknownHttpsUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("https://test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("https://test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
+
             builder.Reference("https://test.com/test.js");
 
             var bundle = builder.GetBundles(null).First();
@@ -172,10 +170,11 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownProtocolRelativeUrl_ThenGetBundlesReturnsAnExternalBundle()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("//test.com/test.js", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalScriptBundle("//test.com/test.js") { Processor = StubProcessor<ScriptBundle>() });
-            bundleFactories[typeof(ScriptBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("//test.com/test.js");
 
@@ -186,10 +185,11 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownCssUrl_ThenExternalStylesheetBundleIsCreated()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.css", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalStylesheetBundle("http://test.com/test.css") { Processor = StubProcessor<StylesheetBundle>() });
-            bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference("http://test.com/test.css");
 
@@ -208,10 +208,11 @@ namespace Cassette
         [Fact]
         public void WhenAddReferenceToUnknownUrlWithBundleTypeAndUnexpectedExtension_ThenBundleCreatedInFactory()
         {
+            bundles.BuildReferences();
             var bundleFactory = new Mock<IBundleFactory<StylesheetBundle>>();
             bundleFactory.Setup(f => f.CreateBundle("http://test.com/test", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
                          .Returns(new ExternalStylesheetBundle("http://test.com/test") { Processor = StubProcessor<StylesheetBundle>() });
-            bundleFactories[typeof(StylesheetBundle)] = bundleFactory.Object;
+            SetBundleFactory(bundleFactory);
 
             builder.Reference<StylesheetBundle>("http://test.com/test");
 
@@ -222,10 +223,8 @@ namespace Cassette
         public void WhenAddReferenceWithLocation_ThenGetBundlesForThatLocationReturnsTheBundle()
         {
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new[] { bundle });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns(new[] { bundle });
+            AddBundles(bundle);
+
             builder.Reference("test", "body");
 
             builder.GetBundles("body").SequenceEqual(new[] { bundle}).ShouldBeTrue();
@@ -234,9 +233,7 @@ namespace Cassette
         [Fact]
         public void GivenNullLocationAlreadyRendered_WhenAddReferenceToNullLocation_ThenExceptionThrown()
         {
-            var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new[] { bundle });
+            AddBundles(new ScriptBundle("~/test"));
 
             builder.Render<ScriptBundle>();
 
@@ -248,9 +245,7 @@ namespace Cassette
         [Fact]
         public void GivenLocationAlreadyRendered_WhenAddReferenceToThatLocation_ThenExceptionThrown()
         {
-            var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new[] { bundle });
+            AddBundles(new ScriptBundle("~/test"));
 
             builder.Render<ScriptBundle>("location");
 
@@ -262,14 +257,10 @@ namespace Cassette
         [Fact]
         public void GivenLocationAlreadyRenderedButHtmlRewrittingEnabled_WhenAddReferenceToThatLocation_ThenBundleStillAdded()
         {
-            builder = new ReferenceBuilder(
-                bundleContainer.Object,
-                bundleFactories, Mock.Of<IPlaceholderTracker>(), 
-                new CassetteSettings("") { IsHtmlRewritingEnabled = true }
-            );
+            settings.IsHtmlRewritingEnabled = true;
             var bundle = new ScriptBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new[] { bundle });
+            AddBundles(bundle);
+
             builder.Render<ScriptBundle>("test");
 
             builder.Reference("~/test", "test");
@@ -282,8 +273,7 @@ namespace Cassette
         {
             var bundle1 = new ScriptBundle("~/test");
             var bundle2 = new StylesheetBundle("~/test");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test"))
-                           .Returns(new Bundle[] { bundle1, bundle2 });
+            AddBundles(bundle1, bundle2);
 
             builder.Reference("~/test");
             builder.GetBundles(null).Count().ShouldEqual(2);
@@ -295,10 +285,7 @@ namespace Cassette
             var bundle1 = new TestableBundle("~/test1") { PageLocation = "head" };
             var bundle2 = new TestableBundle("~/test2");
             bundle2.AddReference("~/test1");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test2"))
-                           .Returns(new Bundle[] { bundle2 });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(ms => new[] { bundle1, bundle2 });
+            AddBundles(bundle1, bundle2);
 
             builder.Reference("~/test2");
             builder.GetBundles(null).Count().ShouldEqual(1);
@@ -310,10 +297,7 @@ namespace Cassette
             var bundle1 = new TestableBundle("~/test1") { PageLocation = "head" };
             var bundle2 = new TestableBundle("~/test2");
             bundle2.AddReference("~/test1");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/test2"))
-                           .Returns(new Bundle[] { bundle2 });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(ms => new[] { bundle1, bundle2 });
+            AddBundles(bundle1, bundle2);
 
             builder.Reference("~/test2", "LOCATION");
             builder.GetBundles("LOCATION").Count().ShouldEqual(1);
@@ -325,21 +309,7 @@ namespace Cassette
             var jquery = new TestableBundle("~/jquery");
             var app = new TestableBundle("~/app");
             app.AddReference("~/jquery");
-
-            var findResultQueue = new Queue<IEnumerable<Bundle>>(new[]
-            {
-                new Bundle[] { jquery },
-                new Bundle[] { app }
-            });
-
-            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
-                           .Returns<string>(s => findResultQueue.Dequeue());
-
-            var queue = new Queue<IEnumerable<Bundle>>();
-            queue.Enqueue(new[] { jquery });
-            queue.Enqueue(new[] { jquery, app });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(ms => queue.Dequeue());
+            AddBundles(jquery, app);
 
             builder.Reference("~/jquery", "head");
             builder.Reference("~/app");
@@ -354,22 +324,8 @@ namespace Cassette
             var jquery = new TestableBundle("~/jquery") { PageLocation = "head" };
             var app = new TestableBundle("~/app");
             app.AddReference("~/jquery");
-
-            var findResultQueue = new Queue<IEnumerable<Bundle>>(new[]
-            {
-                new Bundle[] { jquery },
-                new Bundle[] { app }
-            });
-
-            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
-                           .Returns<string>(s => findResultQueue.Dequeue());
-
-            var queue = new Queue<IEnumerable<Bundle>>();
-            queue.Enqueue(new[] { jquery });
-            queue.Enqueue(new[] { jquery, app });
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(ms => queue.Dequeue());
-
+            AddBundles(jquery, app);
+            
             builder.Reference("~/jquery");
             builder.Reference("~/app");
 
@@ -383,39 +339,23 @@ namespace Cassette
         }
     }
 
-    public class ReferenceBuilder_Render_Tests
+    public class ReferenceBuilder_Render_Tests : ReferenceBuilder_Reference_TestBase
     {
         public ReferenceBuilder_Render_Tests()
         {
-            bundleContainer = new Mock<IBundleContainer>();
-            placeholderTracker = new Mock<IPlaceholderTracker>();
-            Mock.Of<ICassetteApplication>();
-            bundleFactories = new Dictionary<Type, IBundleFactory<Bundle>>();
-
-            bundleContainer.Setup(c => c.IncludeReferencesAndSortBundles(It.IsAny<IEnumerable<Bundle>>()))
-                           .Returns<IEnumerable<Bundle>>(ms => ms);
-
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
                               .Returns(("output"));
-
-            referenceBuilder = new ReferenceBuilder(bundleContainer.Object, bundleFactories, placeholderTracker.Object, new CassetteSettings(""));
         }
-
-        readonly ReferenceBuilder referenceBuilder;
-        readonly Mock<IPlaceholderTracker> placeholderTracker;
-        readonly Mock<IBundleContainer> bundleContainer;
-        readonly Dictionary<Type, IBundleFactory<Bundle>> bundleFactories;
 
         [Fact]
         public void GivenAddReferenceToPath_WhenRender_ThenBundleRenderOutputReturned()
         {
-            var bundle = new TestableBundle("~/stub");
-            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
-                           .Returns(new[] { bundle });
+            var bundle = new TestableBundle("~/test");
+            AddBundles(bundle);
 
-            referenceBuilder.Reference("test");
+            builder.Reference("test");
 
-            var html = referenceBuilder.Render<TestableBundle>();
+            var html = builder.Render<TestableBundle>();
 
             html.ShouldEqual("output");
         }
@@ -423,12 +363,12 @@ namespace Cassette
         [Fact]
         public void GivenAddReferenceToPath_WhenRenderWithLocation_ThenBundleRenderOutputReturned()
         {
-            var bundle = new TestableBundle("~/stub") { RenderResult = "output" };
-            bundleContainer.Setup(c => c.FindBundlesContainingPath(It.IsAny<string>()))
-                           .Returns(new[] { bundle });
-            referenceBuilder.Reference("test");
+            var bundle = new TestableBundle("~/test") { RenderResult = "output" };
+            AddBundles(bundle);
 
-            var html = referenceBuilder.Render<TestableBundle>("body");
+            builder.Reference("test");
+
+            var html = builder.Render<TestableBundle>("body");
 
             html.ShouldEqual("output");
         }
@@ -438,23 +378,19 @@ namespace Cassette
         {
             var bundle1 = new TestableBundle("~/stub1") { RenderResult = "output1" };
             var bundle2 = new TestableBundle("~/stub2") { RenderResult = "output2" };
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/stub1"))
-                           .Returns(new[] { bundle1 });
-            bundleContainer.Setup(c => c.FindBundlesContainingPath("~/stub2"))
-                           .Returns(new[] { bundle2 });
+            AddBundles(bundle1, bundle2);
 
-            referenceBuilder.Reference("~/stub1");
-            referenceBuilder.Reference("~/stub2");
+            builder.Reference("~/stub1");
+            builder.Reference("~/stub2");
 
             Func<string> createHtml = null;
             placeholderTracker.Setup(t => t.InsertPlaceholder(It.IsAny<Func<string>>()))
                 .Returns(("output"))
                 .Callback<Func<string>>(f => createHtml = f);
 
-            referenceBuilder.Render<TestableBundle>();
+            builder.Render<TestableBundle>();
 
             createHtml().ShouldEqual("output1" + Environment.NewLine + "output2");
         }
     }
 }
-

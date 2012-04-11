@@ -1,4 +1,5 @@
 ﻿using Cassette.Configuration;
+using Moq;
 using Should;
 using Xunit;
 
@@ -9,10 +10,10 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void WhenProcessBundle_ThenBundleContentTypeIsTextJavascript()
         {
-            var pipeline = new JQueryTmplPipeline();
+            var pipeline = new JQueryTmplPipeline(Mock.Of<IUrlGenerator>());
             var bundle = new HtmlTemplateBundle("~/");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.ContentType.ShouldEqual("text/javascript");
         }
@@ -20,10 +21,10 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void WhenProcessBundle_ThenHashIsAssigned()
         {
-            var pipeline = new JQueryTmplPipeline();
+            var pipeline = new JQueryTmplPipeline(Mock.Of<IUrlGenerator>());
             var bundle = new HtmlTemplateBundle("~");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle, new CassetteSettings());
 
             bundle.Hash.ShouldNotBeNull();
         }

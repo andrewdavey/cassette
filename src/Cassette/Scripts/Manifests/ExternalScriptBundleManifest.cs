@@ -1,5 +1,3 @@
-using Cassette.Configuration;
-
 namespace Cassette.Scripts.Manifests
 {
     class ExternalScriptBundleManifest : ScriptBundleManifest
@@ -7,11 +5,11 @@ namespace Cassette.Scripts.Manifests
         public string Url { get; set; }
         public string FallbackCondition { get; set; }
 
-        protected override Bundle CreateBundleCore(CassetteSettings settings)
+        protected override Bundle CreateBundleCore(IUrlModifier urlModifier)
         {
             return new ExternalScriptBundle(Url, Path, FallbackCondition)
             {
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>(Html(), settings.UrlModifier)
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>(Html(), urlModifier)
             };
         }
     }

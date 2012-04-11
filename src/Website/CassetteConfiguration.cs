@@ -1,12 +1,13 @@
-﻿using Cassette.Configuration;
+﻿using Cassette;
+using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
 namespace Website
 {
-    public class CassetteConfiguration : ICassetteConfiguration
+    public class CassetteConfiguration : IBundleDefinition
     {
-        public void Configure(BundleCollection bundles, CassetteSettings settings)
+        public void AddBundles(BundleCollection bundles)
         {
             bundles.Add<StylesheetBundle>("assets/styles");
             bundles.Add<StylesheetBundle>("assets/iestyles", b => b.Condition = "IE");
@@ -17,7 +18,7 @@ namespace Website
                 new LocalAssetSettings
                 {
                     FallbackCondition = "!window.jQuery",
-                    Path =  "assets/scripts/jquery"
+                    Path = "assets/scripts/jquery"
                 }
             );
         }

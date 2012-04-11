@@ -14,7 +14,7 @@ namespace Cassette.Scripts
     using System.Threading;
 
 // ReSharper disable InconsistentNaming - IE == Internet Explorer
-    public class IECoffeeScriptCompiler : ICompiler
+    public class IECoffeeScriptCompiler : ICoffeeScriptCompiler
 // ReSharper restore InconsistentNaming
     {
         public CompileResult Compile(string source, CompileContext context)
@@ -47,8 +47,6 @@ namespace Cassette.Scripts
 
             SingleThreadedWorker()
             {
-                CassetteApplicationContainer.Shutdown += () => Singleton.Stop();
-
                 lazyQueue = new Lazy<ConcurrentQueue<CompileTask>>(Start);
             }
 
@@ -84,6 +82,7 @@ namespace Cassette.Scripts
                 engine.Dispose();
             }
 
+            // TODO: Call Stop when app shutting down?
             void Stop()
             {
                 stop = true;

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Cassette.Configuration;
 
 namespace Cassette.Manifests
 {
@@ -13,9 +12,10 @@ namespace Cassette.Manifests
         readonly byte[] content;
         readonly IEnumerable<IAsset> originalAssets;
 
-        public CachedBundleContent(byte[] content, IEnumerable<IAsset> originalAssets, CassetteSettings settings)
+        public CachedBundleContent(byte[] content, IEnumerable<IAsset> originalAssets, IUrlModifier urlModifier)
         {
-            this.content = settings.IsUsingPrecompiledManifest ? TransformUrls(content, settings.UrlModifier) : content;
+            // TODO: Ensure blank urlModifier is passed here when loading from precompiled manifest
+            this.content = TransformUrls(content, urlModifier);
             this.originalAssets = originalAssets.ToArray();
         }
 

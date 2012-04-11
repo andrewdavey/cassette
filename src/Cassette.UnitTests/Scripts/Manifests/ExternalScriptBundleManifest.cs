@@ -1,5 +1,5 @@
-﻿using Cassette.Configuration;
-using Cassette.Manifests;
+﻿using Cassette.Manifests;
+using Moq;
 using Should;
 using Xunit;
 
@@ -9,24 +9,23 @@ namespace Cassette.Scripts.Manifests
     {
         readonly ExternalScriptBundleManifest manifest;
         readonly ExternalScriptBundle createdBundle;
-        readonly CassetteSettings settings;
 
         public ExternalScriptBundleManifest_Tests()
         {
-            settings = new CassetteSettings("");
             manifest = new ExternalScriptBundleManifest
             {
                 Path = "~",
                 Hash = new byte[0],
                 Url = "http://example.com/",
                 Html = () => "EXPECTED-HTML",
+                Content = new byte[0],
                 Assets =
                     {
                         new AssetManifest { Path = "~/asset-a" },
                         new AssetManifest { Path = "~/asset-b" }
                     }
             };
-            createdBundle = (ExternalScriptBundle)manifest.CreateBundle(settings);
+            createdBundle = (ExternalScriptBundle)manifest.CreateBundle(Mock.Of<IUrlModifier>());
         }
 
         [Fact]

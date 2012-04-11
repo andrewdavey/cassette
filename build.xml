@@ -3,14 +3,17 @@
     <Import Project="Cassette.targets" />
     <PropertyGroup>
         <Configuration>Release</Configuration>
-        <FX35Suffix>-FX35</FX35Suffix>
+        <Configuration35>Release-FX35</Configuration35>
     </PropertyGroup>
 
-    <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
+    <Target Name="Default" DependsOnTargets="Test;Test35;NugetPack"></Target>
 
     <Target Name="Build">
         <ItemGroup>
             <Tests Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.CoffeeScript.UnitTests\Cassette.CoffeeScript.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.Less.UnitTests\Cassette.Less.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.Sass.UnitTests\Cassette.Sass.UnitTests.csproj"/>
             <Tests Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
         <PropertyGroup>
@@ -18,22 +21,48 @@
         </PropertyGroup>
 
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
-        <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
-            Properties="Configuration=$(Configuration)$(FX35Suffix);OutputPath=$(OutputPath)lib35\"/>
-        <MSBuild Projects="@(Tests)" Targets="Clean;Build" 
-            Properties="Configuration=$(Configuration);OutputPath=$(OutputPath)lib40\"/>
+        <MSBuild Projects="@(Tests)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
+        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Core.dll"/>
+    </Target>
 
-        <Exec WorkingDirectory="build\bin\lib40\" Command="..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Core.dll"/>
-        <Exec WorkingDirectory="build\bin\lib35\" Command="..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Core.dll"/>
+    <Target Name="Build35">
+        <ItemGroup>
+            <Tests35 Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <Tests35 Include="src\Cassette.CoffeeScript.UnitTests\Cassette.CoffeeScript.UnitTests.csproj"/>
+            <Tests35 Include="src\Cassette.Less.UnitTests\Cassette.Less.UnitTests.csproj"/>
+            <Tests35 Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
+        </ItemGroup>
+        <PropertyGroup>
+            <OutputPath>..\..\build\bin\</OutputPath>
+        </PropertyGroup>
 
+        <!-- Only need to build test projects as dependent projects will be automatically built. -->
+        <MSBuild Projects="@(Tests35)" Targets="Clean;Build" Properties="Configuration=$(Configuration35)"/>
+        <!-- merge dotless into Cassette.Less -->
+        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration35)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Core.dll"/>
     </Target>
     
     <Target Name="Test" DependsOnTargets="Build">
+        <ItemGroup>
+            <TestProjects Include="UnitTests"/>
+            <TestProjects Include="CoffeeScript.UnitTests"/>
+            <TestProjects Include="Less.UnitTests"/>
+            <TestProjects Include="Sass.UnitTests"/>
+            <TestProjects Include="IntegrationTests"/>
+        </ItemGroup>
         <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
-        <Exec Command="tools\xunit.console.clr4.x86.exe build\bin\lib40\Cassette.UnitTests.dll" />
-        <Exec Command="tools\xunit.console.clr4.x86.exe build\bin\lib40\Cassette.IntegrationTests.dll" />
-        <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.UnitTests.dll" />
-        <Exec Command="tools\xunit.console.x86.exe build\bin\lib35\Cassette.IntegrationTests.dll" />
+        <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(TestProjects.Identity)\bin\Release\Cassette.%(TestProjects.Identity).dll" />
+    </Target>
+
+    <Target Name="Test35" DependsOnTargets="Build35">
+        <ItemGroup>
+            <TestProjects35 Include="UnitTests"/>
+            <TestProjects35 Include="CoffeeScript.UnitTests"/>
+            <TestProjects35 Include="Less.UnitTests"/>
+            <TestProjects35 Include="IntegrationTests"/>
+        </ItemGroup>
+        <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
+        <Exec Command="tools\xunit.console.x86.exe src\Cassette.%(TestProjects35.Identity)\bin\Release-FX35\Cassette.%(TestProjects35.Identity).dll" />
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">
@@ -92,11 +121,12 @@
 
         <!-- TODO: Until we can multi-target within Nuget easily, we are packaging Fx35 as a zip file for release -->
         <ItemGroup>
-            <Binary Include="build\bin\lib35\Cassette.dll" />
-            <Binary Include="build\bin\lib35\Cassette.Views.dll" />
-            <Binary Include="build\bin\lib35\Cassette.Web.dll" />
-            <Binary Include="build\bin\lib35\Iesi.Collections.dll" />
-            <Binary Include="build\bin\lib35\Pandora.dll" />
+            <Binary Include="src\Cassette\bin\Release-FX35\Cassette.dll" />
+            <Binary Include="src\Cassette.Views\bin\Release-FX35\Cassette.Views.dll" />
+            <Binary Include="src\Cassette.Web\bin\Release-FX35\Cassette.Web.dll" />
+            <Binary Include="src\Cassette\bin\Release-FX35\Iesi.Collections.dll" />
+            <Binary Include="src\Cassette.Less\bin\Release-FX35\Pandora.dll" />
+            <Binary Include="src\Cassette.Less\bin\Release-FX35\Microsoft.Practices.ServiceLocation.dll" />
             <Content Include="src\Cassette.Web\CassetteConfiguration.cs.pp" />
             <Content Include="src\Cassette.Web\web.config.transform" />
             <Content Include="src\Cassette.Views\web.config.mvc2.transform" />

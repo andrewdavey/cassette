@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Routing;
+using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -37,7 +39,7 @@ namespace Cassette.Web
             response.SetupGet(r => r.Cache).Returns(cache.Object);
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
 
-            bundles = new List<Bundle>();
+            bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             handler = new AssetRequestHandler(requestContext, bundles);
         }
 
@@ -46,7 +48,7 @@ namespace Cassette.Web
         readonly Mock<HttpResponseBase> response;
         readonly Mock<HttpCachePolicyBase> cache;
         readonly NameValueCollection requestHeaders;
-        readonly List<Bundle> bundles;
+        readonly BundleCollection bundles;
         MemoryStream outputStream;
 
         [Fact]
@@ -85,7 +87,7 @@ namespace Cassette.Web
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(Stream.Null);
-            bundles[0].Assets.Add(asset.Object);
+            bundles.First().Assets.Add(asset.Object);
 
             using (outputStream = new MemoryStream())
             {
@@ -109,7 +111,7 @@ namespace Cassette.Web
                  .Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream())
                  .Returns(() => "output".AsStream());
-            bundles[0].Assets.Add(asset.Object);
+            bundles.First().Assets.Add(asset.Object);
 
             using (outputStream = new MemoryStream())
             {

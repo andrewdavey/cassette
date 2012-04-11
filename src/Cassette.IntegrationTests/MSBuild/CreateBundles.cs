@@ -11,6 +11,7 @@ using Cassette.Configuration;
 using Cassette.IntegrationTests;
 using Cassette.Manifests;
 using Cassette.Stylesheets;
+using Moq;
 using Should;
 using Xunit;
 
@@ -28,7 +29,7 @@ namespace Cassette.MSBuild
             path = new TempDirectory();
 
             var assemblyPath = Path.Combine(path, "Test.dll");
-            Configuration.GenerateAssembly(assemblyPath);
+            BundleDefinition.GenerateAssembly(assemblyPath);
 
             File.WriteAllText(Path.Combine(path, "test.css"), "p { background-image: url(test.png); }");
             File.WriteAllText(Path.Combine(path, "test.png"), "");
@@ -53,18 +54,25 @@ namespace Cassette.MSBuild
         [Fact]
         public void CssUrlIsRewrittenToBeApplicationRooted()
         {
-            var bundles = LoadBundlesFromManifestFile();
+            var passThroughModifier = new Mock<IUrlModifier>();
+            passThroughModifier
+                .Setup(m => m.Modify(It.IsAny<string>()))
+                .Returns<string>(url => url)
+                .Verifiable();
+
+            var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
             var content = bundles.First().OpenStream().ReadToEnd();
 
-            Regex.IsMatch(content, @"url\(\<CASSETTE_URL_ROOT\>_cassette/file/test_[a-z0-9]+\.png\<\/CASSETTE_URL_ROOT\>\)").ShouldBeTrue();
+            Regex.IsMatch(content, @"url\(_cassette/file/test_[a-z0-9]+\.png\)").ShouldBeTrue();
+            passThroughModifier.Verify();
         }
 
-        IEnumerable<Bundle> LoadBundlesFromManifestFile()
+        IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
         {
             using (var file = File.OpenRead(manifestFilename))
             {
                 var reader = new CassetteManifestReader(file);
-                return reader.Read().CreateBundleCollection(new CassetteSettings(""));
+                return reader.Read().CreateBundles(urlModifier);
             }
         }
 
@@ -97,9 +105,11 @@ namespace Cassette.MSBuild
 
                 // This will not demand a FileIOPermission and is a safe way to load an assembly
                 // from an app domain
-                value =
-                    (T)Activator.CreateInstanceFrom(domain, Path.GetFileName(typeof(T).Assembly.Location),
-                                                 typeof(T).FullName).Unwrap();
+                value = (T)Activator.CreateInstanceFrom(
+                    domain,
+                    Path.GetFileName(typeof(T).Assembly.Location),
+                    typeof(T).FullName
+                ).Unwrap();
             }
 
             public T Value
@@ -113,9 +123,9 @@ namespace Cassette.MSBuild
             }
         }
 
-        public class Configuration : ICassetteConfiguration
+        public class BundleDefinition : IBundleDefinition
         {
-            public void Configure(BundleCollection bundles, CassetteSettings settings)
+            public void AddBundles(BundleCollection bundles)
             {
                 bundles.Add<StylesheetBundle>("~");
             }
@@ -132,7 +142,7 @@ namespace Cassette.MSBuild
                 AddSubClassOfConfiguration(module);
                 assembly.Save(filename);
 
-                var parentAssembly = typeof(Configuration).Assembly.Location;
+                var parentAssembly = typeof(BundleDefinition).Assembly.Location;
                 File.Copy(parentAssembly, Path.Combine(directory, Path.GetFileName(parentAssembly)));
                 File.Copy("Cassette.dll", Path.Combine(directory, "Cassette.dll"));
                 File.Copy("Cassette.MSBuild.dll", Path.Combine(directory, "Cassette.MSBuild.dll"));
@@ -140,7 +150,7 @@ namespace Cassette.MSBuild
 
             static void AddSubClassOfConfiguration(ModuleBuilder module)
             {
-                var type = module.DefineType("TestConfiguration", TypeAttributes.Public | TypeAttributes.Class, typeof(Configuration));
+                var type = module.DefineType("TestBundleDefinition", TypeAttributes.Public | TypeAttributes.Class, typeof(BundleDefinition));
                 type.CreateType();
             }
         }

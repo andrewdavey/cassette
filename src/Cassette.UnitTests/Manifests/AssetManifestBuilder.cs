@@ -28,7 +28,7 @@ namespace Cassette.Manifests
         }
 
         [Fact]
-        public void ManifestPathEqualsAssetSourceFileFullPath()
+        public void ManifestPathEqualsAssetPath()
         {
             manifest.Path.ShouldEqual("~/asset");
         }

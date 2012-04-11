@@ -8,10 +8,10 @@ namespace Cassette
         readonly IUrlModifier urlModifier;
         readonly string routePrefix;
 
-        public UrlGenerator(IUrlModifier urlModifier, string routePrefix)
+        public UrlGenerator(IUrlModifier urlModifier)
         {
             this.urlModifier = urlModifier;
-            this.routePrefix = routePrefix;
+            this.routePrefix = "_cassette";
         }
 
         public string CreateBundleUrl(Bundle bundle)
@@ -55,9 +55,6 @@ namespace Cassette
             );
         }
 
-        // TODO: move RoutePrefix to settings?
-        public const string RoutePrefix = "_cassette";
-        
         string ConvertToForwardSlashes(string path)
         {
             return path.Replace('\\', '/');

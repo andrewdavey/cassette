@@ -5,7 +5,7 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.Scripts
 {
-    public class MicrosoftJavaScriptMinifier : IAssetTransformer
+    public class MicrosoftJavaScriptMinifier : IJavaScriptMinifier
     {
         public MicrosoftJavaScriptMinifier()
             : this(new CodeSettings())

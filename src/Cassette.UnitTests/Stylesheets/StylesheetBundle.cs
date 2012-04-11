@@ -31,7 +31,7 @@ namespace Cassette.Stylesheets
             var processor = new Mock<IBundleProcessor<StylesheetBundle>>();
             bundle.Processor = processor.Object;
             
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
 
             processor.Verify(p => p.Process(bundle, It.IsAny<CassetteSettings>()));
         }

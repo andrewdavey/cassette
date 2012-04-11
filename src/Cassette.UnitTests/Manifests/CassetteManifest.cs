@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Scripts.Manifests;
 using Cassette.Stylesheets;
 using Cassette.Stylesheets.Manifests;
+using Moq;
 using Should;
 using Xunit;
 
@@ -90,7 +90,7 @@ namespace Cassette.Manifests
                 new StylesheetBundleManifest { Path = "~/css", Hash = new byte[0], Html = () => "" }
             });
 
-            var bundles = manifest.CreateBundleCollection(new CassetteSettings("")).ToArray();
+            var bundles = manifest.CreateBundles(Mock.Of<IUrlModifier>()).ToArray();
 
             bundles.Length.ShouldEqual(2);
             bundles[0].ShouldBeType<ScriptBundle>();

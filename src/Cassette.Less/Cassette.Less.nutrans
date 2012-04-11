@@ -9,7 +9,7 @@
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.Less.dll" target="lib\net40-client" />
-    <file src="..\..\build\bin\lib40\Pandora.dll" target="lib\net40-client"/>
+    <file src="bin\Release\Cassette.Less.dll" target="lib\net40-client" />
+    <file src="bin\Release\Pandora.dll" target="lib\net40-client"/>
   </files>
 </package>

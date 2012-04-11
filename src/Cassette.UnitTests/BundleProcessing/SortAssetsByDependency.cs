@@ -22,7 +22,7 @@ namespace Cassette.BundleProcessing
             bundle.Assets.Add(assetB.Object);
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(bundle, new CassetteSettings(""));
+            sorter.Process(bundle, new CassetteSettings());
 
             bundle.Assets[0].ShouldBeSameAs(assetB.Object);
             bundle.Assets[1].ShouldBeSameAs(assetA.Object);
@@ -42,7 +42,7 @@ namespace Cassette.BundleProcessing
             bundle.Assets.Add(assetB.Object);
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(bundle, new CassetteSettings(""));
+            sorter.Process(bundle, new CassetteSettings());
 
             bundle.Assets[0].ShouldBeSameAs(assetB.Object);
             bundle.Assets[1].ShouldBeSameAs(assetA.Object);
@@ -63,7 +63,7 @@ namespace Cassette.BundleProcessing
             bundle.IsSorted = true;
 
             var sorter = new SortAssetsByDependency();
-            sorter.Process(bundle, new CassetteSettings(""));
+            sorter.Process(bundle, new CassetteSettings());
 
             bundle.Assets[0].ShouldBeSameAs(assetA.Object);
             bundle.Assets[1].ShouldBeSameAs(assetB.Object);
@@ -87,7 +87,7 @@ namespace Cassette.BundleProcessing
 
             var sorter = new SortAssetsByDependency();
             Assert.Throws<InvalidOperationException>(
-                () => sorter.Process(bundle, new CassetteSettings(""))
+                () => sorter.Process(bundle, new CassetteSettings())
             );
         }
     }

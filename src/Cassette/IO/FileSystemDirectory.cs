@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.Utilities;
@@ -126,6 +127,22 @@ namespace Cassette.IO
             return (parent == null)
                 ? this 
                 : parent.GetRootDirectory();
+        }
+
+        public IDisposable WatchForChanges(Action<string> pathChanged)
+        {
+            var watcher = new FileSystemWatcher(fullSystemPath)
+            {
+                IncludeSubdirectories = true
+            };
+
+            watcher.Created += (sender, args) => pathChanged(args.FullPath);
+            watcher.Deleted += (sender, args) => pathChanged(args.FullPath);
+            watcher.Changed += (sender, args) => pathChanged(args.FullPath);
+            watcher.Renamed += (sender, args) => pathChanged(args.FullPath);
+            
+            watcher.EnableRaisingEvents = true;
+            return watcher;
         }
     }
 }

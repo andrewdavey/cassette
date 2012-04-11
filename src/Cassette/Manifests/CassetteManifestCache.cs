@@ -7,20 +7,20 @@ namespace Cassette.Manifests
 {
     class CassetteManifestCache : ICassetteManifestCache
     {
-        readonly IFile file;
+        readonly IFile cacheFile;
 
-        public CassetteManifestCache(IFile file)
+        public CassetteManifestCache(IFile cacheFile)
         {
-            this.file = file;
+            this.cacheFile = cacheFile;
         }
 
         public CassetteManifest LoadCassetteManifest()
         {
             try
             {
-                if (file.Exists)
+                if (cacheFile.Exists)
                 {
-                    using (var fileStream = file.OpenRead())
+                    using (var fileStream = cacheFile.OpenRead())
                     {
                         var reader = new CassetteManifestReader(fileStream);
                         return reader.Read();
@@ -46,7 +46,7 @@ namespace Cassette.Manifests
 
         public void SaveCassetteManifest(CassetteManifest cassetteManifest)
         {
-            using (var fileStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            using (var fileStream = cacheFile.Open(FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
                 var writer = new CassetteManifestWriter(fileStream);
                 writer.Write(cassetteManifest);
@@ -55,9 +55,9 @@ namespace Cassette.Manifests
 
         public void Clear()
         {
-            if (file.Exists)
+            if (cacheFile.Exists)
             {
-                file.Delete();
+                cacheFile.Delete();
             }
         }
     }

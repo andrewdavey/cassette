@@ -228,7 +228,7 @@ namespace Cassette
             {
                 asset.Setup(a => a.OpenStream()).Returns(stream);
                 bundle.Assets.Add(asset.Object);
-                bundle.Process(new CassetteSettings(""));
+                bundle.Process(new CassetteSettings());
 
                 var actualStream = bundle.OpenStream();
 
@@ -257,7 +257,7 @@ namespace Cassette
         public void WhenProcess_ThenIsProcessedIsTrue()
         {
             var bundle = new TestableBundle("~");
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
             bundle.IsProcessed.ShouldBeTrue();
         }
 
@@ -265,10 +265,10 @@ namespace Cassette
         public void GivenBundleIsProcessed_WhenProcess_ThenThrowInvalidOperationException()
         {
             var bundle = new TestableBundle("~");
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
            
             Assert.Throws<InvalidOperationException>(
-                () => bundle.Process(new CassetteSettings(""))
+                () => bundle.Process(new CassetteSettings())
             );
         }
 

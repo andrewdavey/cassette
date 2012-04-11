@@ -59,7 +59,7 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle(Url);
             var processor = new Mock<IBundleProcessor<ScriptBundle>>();
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
 
             bundle.Processor = processor.Object;
             bundle.Process(settings);
@@ -99,21 +99,33 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenBundleIsProcessed_WhenRender_ThenExternalRendererUsed()
+        public void GivenProcessedExternalScriptBundleWithFallbackCondition_WhenRender_ThenExternalRendererUsed()
         {
-            var bundle = new ExternalScriptBundle(Url, "~/test", "condition") { Processor = new ScriptPipeline() };
+            var urlGenerator = new Mock<IUrlGenerator>();
+            urlGenerator
+                .Setup(g => g.CreateBundleUrl(It.IsAny<Bundle>()))
+                .Returns("/");
+
+            var bundle = new ExternalScriptBundle(Url, "~/test", "condition")
+            {
+                Renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object),
+                Processor = Mock.Of<IBundleProcessor<ScriptBundle>>()
+            };
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
-            var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings("") { UrlGenerator = urlGenerator.Object };
+            var settings = new CassetteSettings();
             bundle.Process(settings);
             
             var html = bundle.Render();
 
-            html.ShouldContain("condition");
+            html.ShouldEqual(@"<script src=""http://test.com/asset.js"" type=""text/javascript""></script>
+<script type=""text/javascript"">
+if(condition){
+document.write(unescape('%3Cscript src=""/"" type=""text/javascript""%3E%3C/script%3E'));
+}
+</script>");
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cassette.Configuration;
 using Cassette.IO;
 
 namespace Cassette.Manifests
@@ -25,15 +24,15 @@ namespace Cassette.Manifests
         public byte[] Content { get; set; }
         public Func<string> Html { get; set; }
 
-        public Bundle CreateBundle(CassetteSettings settings)
+        public Bundle CreateBundle(IUrlModifier urlModifier)
         {
-            var bundle = CreateBundleCore(settings);
+            var bundle = CreateBundleCore(urlModifier);
             bundle.Hash = Hash;
             bundle.ContentType = ContentType;
             bundle.PageLocation = PageLocation;
             if (Assets.Count > 0)
             {
-                bundle.Assets.Add(CreateCachedBundleContent(settings));
+                bundle.Assets.Add(CreateCachedBundleContent(urlModifier));
             }
             AddReferencesToBundle(bundle);
             AddHtmlAttributesToBundle(bundle);
@@ -48,11 +47,11 @@ namespace Cassette.Manifests
             }
         }
 
-        protected abstract Bundle CreateBundleCore(CassetteSettings settings);
+        protected abstract Bundle CreateBundleCore(IUrlModifier urlModifier);
 
-        CachedBundleContent CreateCachedBundleContent(CassetteSettings settings)
+        CachedBundleContent CreateCachedBundleContent(IUrlModifier urlModifier)
         {
-            return new CachedBundleContent(Content, CreateOriginalAssets(), settings);
+            return new CachedBundleContent(Content, CreateOriginalAssets(), urlModifier);
         }
 
         IEnumerable<IAsset> CreateOriginalAssets()

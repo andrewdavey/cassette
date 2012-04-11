@@ -3,25 +3,31 @@ using System.Web.Routing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using TinyIoC;
 
 namespace Cassette.Web
 {
-    class RouteInstaller
+    class RouteInstaller : IStartUpTask
     {
-        readonly ICassetteApplicationContainer<ICassetteApplication> container;
+        readonly RouteCollection routeCollection;
+        readonly TinyIoCContainer container;
         readonly string routePrefix;
-        RouteCollection routes;
 
-        public RouteInstaller(ICassetteApplicationContainer<ICassetteApplication> container, string routePrefix)
+        public RouteInstaller(RouteCollection routeCollection, TinyIoCContainer container)
         {
+            this.routeCollection = routeCollection;
             this.container = container;
-            this.routePrefix = routePrefix;
+            routePrefix = "_cassette";
         }
 
-        public void InstallRoutes(RouteCollection routeCollection)
+        public void Run()
         {
-            routes = routeCollection;
-            using (routes.GetWriteLock())
+            InstallRoutes();
+        }
+
+        void InstallRoutes()
+        {
+            using (routeCollection.GetWriteLock())
             {
                 InstallHudRoute();
                 InstallBundleRoute<ScriptBundle>();
@@ -35,7 +41,7 @@ namespace Cassette.Web
         void InstallHudRoute()
         {
             var url = routePrefix;
-            var handler = new DelegateRouteHandler(context => new HudRequestHandler(container, context));
+            var handler = new CassetteRouteHandler<HudRequestHandler>(container);
             Trace.Source.TraceInformation("Installing diagnostics route handler for \"_cassette\".");
             InsertRouteIntoTable(url, handler);
         }
@@ -44,9 +50,7 @@ namespace Cassette.Web
             where T : Bundle
         {
             var url = GetBundleRouteUrl<T>();
-            var handler = new DelegateRouteHandler(
-                requestContext => new BundleRequestHandler<T>(container.Application, requestContext)
-            );
+            var handler = new CassetteRouteHandler<BundleRequestHandler<T>>(container);
             Trace.Source.TraceInformation("Installing {0} route handler for \"{1}\".", typeof(T).FullName, url);
             InsertRouteIntoTable(url, handler);
         }
@@ -77,12 +81,7 @@ namespace Cassette.Web
         {
             // Used to return compiled coffeescript, less, etc.
             var url = routePrefix + "/asset/{*path}";
-            var handler = new DelegateRouteHandler(
-                requestContext => new AssetRequestHandler(
-                    requestContext,
-                    container.Application.Bundles
-                )
-            );
+            var handler = new CassetteRouteHandler<AssetRequestHandler>(container);
             Trace.Source.TraceInformation("Installing asset route handler for \"{0}\".", url);
             InsertRouteIntoTable(url, handler);
         }
@@ -90,9 +89,7 @@ namespace Cassette.Web
         void InstallRawFileRoute()
         {
             var url = routePrefix + "/file/{*path}";
-            var handler = new DelegateRouteHandler(
-                requestContext => new RawFileRequestHandler(requestContext, container.Application.Bundles, container.Application.Settings)
-            );
+            var handler = new CassetteRouteHandler<RawFileRequestHandler>(container);
             Trace.Source.TraceInformation("Installing raw file route handler for \"{0}\".", url);
             InsertRouteIntoTable(url, handler);
         }
@@ -106,7 +103,7 @@ namespace Cassette.Web
         {
             // Insert Cassette's routes at the start of the table, 
             // to avoid conflicts with the application's own routes.
-            routes.Insert(0, route);
+            routeCollection.Insert(0, route);
         }
     }
 }

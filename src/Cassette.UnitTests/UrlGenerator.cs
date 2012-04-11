@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;
@@ -18,9 +17,7 @@ namespace Cassette
             UrlModifier.Setup(m => m.Modify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
-            var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
-            container.SetupGet(c => c.Application.Bundles).Returns(Enumerable.Empty<Bundle>());
-            UrlGenerator = new UrlGenerator(UrlModifier.Object, "_cassette");
+            UrlGenerator = new UrlGenerator(UrlModifier.Object);
         }
     }
 

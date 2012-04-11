@@ -1,51 +1,90 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Configuration
 {
+    /// <summary>
+    /// Modifies a <see cref="BundleCollection"/> by adding external bundles for any URL references made by existing bundles,
+    /// which are not already represented by external bundles.
+    /// </summary>
     class ExternalBundleGenerator : IBundleVisitor
     {
+        readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly CassetteSettings settings;
-        readonly HashSet<string> existingUrls;
-        readonly List<Bundle> bundles = new List<Bundle>();
+        HashSet<string> existingUrls;
+        List<Bundle> createdExternalBundles;
         Bundle currentBundle;
 
-        public ExternalBundleGenerator(IEnumerable<string> existingUrls, CassetteSettings settings)
+        public ExternalBundleGenerator(IBundleFactoryProvider bundleFactoryProvider, CassetteSettings settings)
         {
+            this.bundleFactoryProvider = bundleFactoryProvider;
             this.settings = settings;
-            this.existingUrls = new HashSet<string>(existingUrls); // TODO: use case-insensitive string comparer?
         }
 
-        public IEnumerable<Bundle> ExternalBundles
+        public void AddBundlesForUrlReferences(BundleCollection bundleCollection)
         {
-            get { return bundles; }
+            createdExternalBundles = new List<Bundle>();
+            existingUrls = GetExistingUrls(bundleCollection);
+
+            bundleCollection.Accept(this);
+
+            bundleCollection.AddRange(createdExternalBundles);
         }
 
-        public void Visit(Bundle bundle)
+        HashSet<string> GetExistingUrls(IEnumerable<Bundle> bundleCollection)
+        {
+            return new HashSet<string>(
+                bundleCollection
+                    .OfType<IExternalBundle>()
+                    .Select(b => b.ExternalUrl)
+            );
+        }
+
+        void IBundleVisitor.Visit(Bundle bundle)
         {
             currentBundle = bundle;
 
-            foreach (var reference in bundle.References)
+            var urlReferencesNotYetSeen = bundle.References.Where(IsUrlReferenceNotYetSeen);
+            foreach (var reference in urlReferencesNotYetSeen)
             {
-                if (reference.IsUrl() == false) continue;
-                if (existingUrls.Contains(reference)) continue;
-
-                existingUrls.Add(reference);
-                bundles.Add(CreateExternalBundle(reference, currentBundle));
+                RecordUrlAsSeen(reference);
+                AddNewExternalBundle(reference);
             }
         }
 
-        public void Visit(IAsset asset)
+        bool IsUrlReferenceNotYetSeen(string reference)
         {
-            foreach (var assetReference in asset.References)
-            {
-                if (assetReference.Type != AssetReferenceType.Url) continue;
-                if (existingUrls.Contains(assetReference.Path)) continue;
+            var isUrl = reference.IsUrl() == false;
+            var alreadySeenUrl = existingUrls.Contains(reference);
+            return isUrl && !alreadySeenUrl;
+        }
 
-                existingUrls.Add(assetReference.Path);
-                bundles.Add(CreateExternalBundle(assetReference.Path, currentBundle));
+        void IBundleVisitor.Visit(IAsset asset)
+        {
+            foreach (var assetReference in asset.References.Where(IsUrlReferenceNotYetSeen))
+            {
+                RecordUrlAsSeen(assetReference.Path);
+                AddNewExternalBundle(assetReference.Path);
             }
+        }
+
+        void RecordUrlAsSeen(string url)
+        {
+            existingUrls.Add(url);
+        }
+
+        bool IsUrlReferenceNotYetSeen(AssetReference reference)
+        {
+            var isUrl = reference.Type == AssetReferenceType.Url;
+            var alreadySeenUrl = existingUrls.Contains(reference.Path);
+            return isUrl && !alreadySeenUrl;
+        }
+
+        void AddNewExternalBundle(string url)
+        {
+            createdExternalBundles.Add(CreateExternalBundle(url, currentBundle));
         }
 
         Bundle CreateExternalBundle(string url, Bundle referencer)
@@ -58,12 +97,7 @@ namespace Cassette.Configuration
 
         IBundleFactory<Bundle> GetBundleFactory(Type bundleType)
         {
-            IBundleFactory<Bundle> factory;
-            if (settings.BundleFactories.TryGetValue(bundleType, out factory))
-            {
-                return factory;
-            }
-            throw new ArgumentException(string.Format("Cannot find bundle factory for {0}", bundleType.FullName));
+            return bundleFactoryProvider.GetBundleFactory(bundleType);
         }
     }
 }

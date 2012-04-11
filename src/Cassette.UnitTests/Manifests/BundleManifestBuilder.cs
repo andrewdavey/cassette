@@ -1,4 +1,3 @@
-using Cassette.Configuration;
 using Should;
 using Xunit;
 
@@ -26,11 +25,10 @@ namespace Cassette.Manifests
 
         class TestableBundleManifest : BundleManifest
         {
-            protected override Bundle CreateBundleCore(CassetteSettings settings)
+            protected override Bundle CreateBundleCore(IUrlModifier urlModifier)
             {
                 throw new System.NotImplementedException();
             }
         }
     }
-
 }

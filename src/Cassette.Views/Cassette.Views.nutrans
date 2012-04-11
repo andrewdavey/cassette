@@ -9,7 +9,7 @@
   </metadata>
 
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.Views.dll" target="lib\net40" />      
+    <file src="bin\Release\Cassette.Views.dll" target="lib\net40" />      
     <file src="Web.config.transform" target="content\Views"/>
   </files>
 </package>

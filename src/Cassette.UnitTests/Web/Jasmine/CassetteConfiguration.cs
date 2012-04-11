@@ -2,6 +2,7 @@
 using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Moq;
 using Should;
 using Xunit;
 
@@ -13,11 +14,11 @@ namespace Cassette.Web.Jasmine
 
         public CassetteConfiguration_WhenConfigure()
         {
-            var config = new CassetteConfiguration();
-            var settings = new CassetteSettings("");
-            bundles = new BundleCollection(settings);
+            var bundleDefinition = new JasmineBundleDefinition(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IStylesheetMinifier>(), Mock.Of<IUrlGenerator>());
+            var settings = new CassetteSettings();
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
 
-            config.Configure(bundles, settings);
+            bundleDefinition.AddBundles(bundles);
         }
 
         [Fact]

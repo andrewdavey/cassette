@@ -1,30 +1,24 @@
-﻿using System.Collections.Generic;
-using Cassette.BundleProcessing;
-using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetPipeline : MutablePipeline<StylesheetBundle>
+    public class StylesheetPipeline : BundlePipeline<StylesheetBundle>
     {
-        public StylesheetPipeline()
+        public StylesheetPipeline(IStylesheetMinifier stylesheetMinifier, IUrlGenerator urlGenerator)
         {
-            StylesheetMinifier = new MicrosoftStylesheetMinifier();
-        }
-
-        public IAssetTransformer StylesheetMinifier { get; set; }
-        
-        protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, CassetteSettings settings)
-        {
-            yield return new AssignStylesheetRenderer();
-            yield return new ParseCssReferences();
-            yield return new ExpandCssUrls();
-            yield return new SortAssetsByDependency();
-            yield return new AssignHash();
-            if (!settings.IsDebuggingEnabled)
+            AddRange(new IBundleProcessor<StylesheetBundle>[]
             {
-                yield return new ConcatenateAssets();
-                yield return new MinifyAssets(StylesheetMinifier);
-            }
+                new AssignStylesheetRenderer(urlGenerator),
+                new ParseCssReferences(),
+                new ExpandCssUrls(urlGenerator),
+                new SortAssetsByDependency(),
+                new AssignHash(),
+                new ConditionalBundlePipeline<StylesheetBundle>(
+                    settings => !settings.IsDebuggingEnabled,
+                    new ConcatenateAssets(),
+                    new MinifyAssets(stylesheetMinifier)
+                )
+            });
         }
     }
 }

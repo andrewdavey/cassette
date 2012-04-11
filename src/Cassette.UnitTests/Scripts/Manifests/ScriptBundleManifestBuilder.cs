@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
+using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.Manifests;
 using Moq;
@@ -23,7 +24,7 @@ namespace Cassette.Scripts.Manifests
             {
                 PageLocation = "body",
                 Hash = new byte[] { 1, 2, 3 },
-                Processor = new ScriptPipeline()
+                Processor = Mock.Of<IBundlePipeline<ScriptBundle>>()
             };
             asset = new StubAsset
             {
@@ -35,7 +36,7 @@ namespace Cassette.Scripts.Manifests
             };
             bundle.Assets.Add(asset);
             bundle.AddReference("~/reference/path");
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
             var urlModifier = Mock.Of<IUrlModifier>();
             bundle.Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier);
 
@@ -73,7 +74,7 @@ namespace Cassette.Scripts.Manifests
         }
 
         [Fact]
-        public void AssetManifestPathEqualsAssetSourceFileFullPath()
+        public void AssetManifestPathEqualsAssetPath()
         {
             manifest.Assets[0].Path.ShouldEqual(asset.Path);
         }

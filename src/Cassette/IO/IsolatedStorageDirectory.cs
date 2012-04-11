@@ -15,6 +15,7 @@ namespace Cassette.IO
         readonly Func<Storage> getStorage;
         readonly string basePath;
 
+        // TODO: Remove this constructor?
         public IsolatedStorageDirectory(Storage storage)
             : this(() => storage, "~/")
         {
@@ -76,6 +77,11 @@ namespace Cassette.IO
         }
 
         public IEnumerable<IDirectory> GetDirectories()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IDisposable WatchForChanges(Action<string> pathChanged)
         {
             throw new NotSupportedException();
         }

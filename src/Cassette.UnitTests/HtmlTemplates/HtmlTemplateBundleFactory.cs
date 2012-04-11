@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Cassette.Configuration;
+using Cassette.BundleProcessing;
+using Cassette.IO;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.IO;
 
 namespace Cassette.HtmlTemplates
 {
@@ -12,12 +12,12 @@ namespace Cassette.HtmlTemplates
     {
         readonly HtmlTemplateBundleFactory factory;
         readonly List<IFile> allFiles = new List<IFile>();
-        readonly CassetteSettings settings;
+        readonly IBundlePipeline<HtmlTemplateBundle> pipeline;
 
         public HtmlTemplateBundleFactory_Tests()
         {
-            settings = new CassetteSettings("");
-            factory = new HtmlTemplateBundleFactory(settings);
+            pipeline = Mock.Of<IBundlePipeline<HtmlTemplateBundle>>();
+            factory = new HtmlTemplateBundleFactory(pipeline);
         }
 
         void FilesExist(params string[] paths)
@@ -195,12 +195,10 @@ namespace Cassette.HtmlTemplates
         }
 
         [Fact]
-        public void CreateBundleAssignsSettingsDefaultProcessor()
+        public void CreateBundleAssignsProcessor()
         {
-            var processor = new HtmlTemplatePipeline();
-            settings.SetDefaultBundleProcessor(processor);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
-            bundle.Processor.ShouldBeSameAs(processor);
+            bundle.Processor.ShouldBeSameAs(pipeline);
         }
     }
 }
