@@ -140,7 +140,6 @@
     <Compile Include="Manifests\CassetteManifestCache.cs" />
     <Compile Include="Manifests\BundleManifestBuilder.cs" />
     <Compile Include="MSBuild\UrlPlaceholderWrapper.cs" />
-    <Compile Include="Scripts\CoffeeScriptFileSearchModifier.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifestWriter.cs" />
@@ -178,18 +177,13 @@
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifest.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
-    <Compile Include="Scripts\CoffeeScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleContainerModule_Tests.cs" />
-    <Compile Include="Scripts\ScriptPipelineExtensions.CompileCoffeeScript.cs" />
     <Compile Include="StubAsset.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
-    <Compile Include="Stylesheets\CompileSass.cs" Condition="'$(TargetFrameworkVersion)' == 'v4.0'" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
-    <Compile Include="Stylesheets\LessCompiler.cs" />
-    <Compile Include="Stylesheets\LessFileSearchModifier.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifest.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
@@ -199,13 +193,10 @@
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
-    <Compile Include="Stylesheets\SassCompiler.cs" />
-    <Compile Include="Stylesheets\SassFileSearchModifier.cs" />
-    <Compile Include="Stylesheets\StylesheetBundleContainerModule_Tests.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleContainerModule.cs" />
     <Compile Include="Stylesheets\StylesheetPipelineExtensions.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
-    <Compile Include="Scripts\CompileCoffeeScript.cs" />
     <Compile Include="BundleProcessing\CompileAsset.cs" />
     <Compile Include="BundleProcessing\ConcatenateAssets.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
@@ -216,23 +207,19 @@
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ScriptPipeline.cs" />
-    <Compile Include="Stylesheets\CompileLess.cs" />
     <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="Stylesheets\ExternalStylesheetBundle.cs" />
-    <Compile Include="Stylesheets\LessCompileException.cs" />
     <Compile Include="Stylesheets\MicrosoftStylesheetMinifier.cs" />
     <Compile Include="Stylesheets\ParseCssReferences.cs" />
-    <Compile Include="Stylesheets\ParseLessReferences.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="TestableBundle.cs" />
     <Compile Include="Views\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="BundleContainer.cs" />
-    <Compile Include="Scripts\ParseCoffeeScriptReferences.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -261,13 +248,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Compile Include="Stylesheets\StylesheetPipelineExtensions.CompileLess.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cassette.CoffeeScript\Cassette.CoffeeScript.csproj">
-      <Project>{C9A552DA-83EB-4479-BAB6-C40B6091E3D4}</Project>
-      <Name>Cassette.CoffeeScript</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cassette.Hogan\Cassette.Hogan.csproj">
       <Project>{4D64EC45-C42A-4601-9E80-2D166AC849F3}</Project>
       <Name>Cassette.Hogan</Name>
@@ -280,17 +262,9 @@
       <Project>{C38D3ED4-367B-42E6-97A3-B8403DB528FF}</Project>
       <Name>Cassette.KnockoutJQueryTmpl</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cassette.Less\Cassette.Less.csproj">
-      <Project>{EC1BE4F4-A2A7-4154-9F4D-F75D1B1FD976}</Project>
-      <Name>Cassette.Less</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cassette.MSBuild\Cassette.MSBuild.csproj">
       <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
       <Name>Cassette.MSBuild</Name>
-    </ProjectReference>
-    <ProjectReference Condition="'$(TargetFrameworkVersion)' == 'v4.0'" Include="..\Cassette.Sass\Cassette.Sass.csproj">
-      <Project>{52B1448C-8165-46B7-B024-A6BF9F60D766}</Project>
-      <Name>Cassette.Sass</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>

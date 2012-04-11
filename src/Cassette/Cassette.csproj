@@ -80,7 +80,8 @@
     <Compile Include="FileSearchProvider.cs" />
     <Compile Include="HostBase.cs" />
     <Compile Include="BundleCollection.cs" />
-    <Compile Include="BundleCollectionBuilder.cs" />
+    <Compile Include="IBundleCollectionInitializer.cs" />
+    <Compile Include="RuntimeBundleCollectionInitializer.cs" />
     <Compile Include="BundleFactoryProvider.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
@@ -97,12 +98,11 @@
     <Compile Include="Configuration\FilePathComparer.cs" />
     <Compile Include="Configuration\IServiceRegistry.cs" />
     <Compile Include="Configuration\IBundleDefinition.cs" />
-    <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
     <Compile Include="Configuration\IFileSearchModifier.cs" />
     <Compile Include="Configuration\InstanceRegistration.cs" />
     <Compile Include="Configuration\TypeRegistration.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
-    <Compile Include="DebugModeBundleCollectionBuilder.cs" />
+    <Compile Include="BundleCollectionInitializer.cs" />
     <Compile Include="DelegatingDisposable.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleContainerModule.cs" />
@@ -144,7 +144,6 @@
     <Compile Include="Configuration\FileSearch.cs" />
     <Compile Include="Configuration\BundleCollection.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
-    <Compile Include="Configuration\ICassetteConfiguration.cs" />
     <Compile Include="HtmlAttributeDictionary.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestBuilder.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifest.cs" />
@@ -193,8 +192,8 @@
     <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="NullPlaceholderTracker.cs" />
     <Compile Include="PlaceholderTracker.cs" />
-    <Compile Include="PrecompiledBundleCollectionBuilder.cs" />
-    <Compile Include="ProductionModeBundleCollectionBuilder.cs" />
+    <Compile Include="PrecompiledBundleCollectionInitializer.cs" />
+    <Compile Include="CacheAwareBundleCollectionInitializer.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\AssignScriptRenderer.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />

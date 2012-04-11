@@ -3,23 +3,23 @@ using Cassette.Configuration;
 
 namespace Cassette
 {
-    class DebugModeBundleCollectionBuilder
+    class BundleCollectionInitializer : IBundleCollectionInitializer
     {
         readonly IEnumerable<IBundleDefinition> bundleDefinitions;
         readonly ExternalBundleGenerator externalBundleGenerator;
         BundleCollection bundles;
 
-        public DebugModeBundleCollectionBuilder(IEnumerable<IBundleDefinition> bundleDefinitions, ExternalBundleGenerator externalBundleGenerator)
+        public BundleCollectionInitializer(IEnumerable<IBundleDefinition> bundleDefinitions, ExternalBundleGenerator externalBundleGenerator)
         {
             this.bundleDefinitions = bundleDefinitions;
             this.externalBundleGenerator = externalBundleGenerator;
         }
 
-        public void BuildBundleCollection(BundleCollection bundleCollection)
+        public void Initialize(BundleCollection bundleCollection)
         {
-            bundles = bundleCollection;
-            using (bundles.GetWriteLock())
+            using (bundleCollection.GetWriteLock())
             {
+                bundles = bundleCollection;
                 AddBundlesFromDefinitions();
                 ProcessBundles();
                 AddBundlesForUrlReferences();

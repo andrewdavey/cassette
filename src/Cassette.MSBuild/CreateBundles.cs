@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using System.Reflection;
 
 namespace Cassette.MSBuild
 {
@@ -22,7 +23,12 @@ namespace Cassette.MSBuild
 
         public override bool Execute()
         {
-            var host = new MSBuildHost();
+            foreach(var filename in Assemblies)
+            {
+                Assembly.LoadFrom(filename);
+            }
+
+            var host = new MSBuildHost(Output);
             host.Initialize();
             host.Execute();
             host.Dispose();

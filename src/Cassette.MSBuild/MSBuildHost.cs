@@ -9,7 +9,17 @@ namespace Cassette.MSBuild
 {
     public class MSBuildHost : HostBase
     {
-        public string OutputFilename { get; set; }
+        readonly string outputFilename;
+
+        public MSBuildHost(string outputFilename)
+        {
+            this.outputFilename = outputFilename;
+        }
+
+        protected override Type BundleCollectionInitializerType
+        {
+            get { return typeof(BundleCollectionInitializer); }
+        }
 
         public void Execute()
         {
@@ -20,7 +30,7 @@ namespace Cassette.MSBuild
 
         void WriteManifest(BundleCollection bundles, CassetteSettings settings)
         {
-            var file = settings.SourceDirectory.GetFile(OutputFilename);
+            var file = settings.SourceDirectory.GetFile(outputFilename);
             using (var outputStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 var writer = new CassetteManifestWriter(outputStream);

@@ -3,18 +3,18 @@ using Cassette.Manifests;
 
 namespace Cassette
 {
-    class PrecompiledBundleCollectionBuilder
+    class PrecompiledBundleCollectionInitializer
     {
         readonly IFile precompiledManifestFile;
         readonly IUrlModifier urlModifier;
 
-        public PrecompiledBundleCollectionBuilder(IFile precompiledManifestFile, IUrlModifier urlModifier)
+        public PrecompiledBundleCollectionInitializer(IFile precompiledManifestFile, IUrlModifier urlModifier)
         {
             this.precompiledManifestFile = precompiledManifestFile;
             this.urlModifier = urlModifier;
         }
 
-        public void BuildBundleCollection(BundleCollection bundles)
+        public void Initialize(BundleCollection bundles)
         {
             using (bundles.GetWriteLock())
             {

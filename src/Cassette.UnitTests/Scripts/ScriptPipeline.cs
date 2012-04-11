@@ -57,19 +57,6 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenCompileCoffeeScriptIsTrue_WhenProcessBundle_ThenCompileAssetTransformerIsAddedToAsset()
-        {
-            pipeline.CompileCoffeeScript();
-            var bundle = new ScriptBundle("~");
-            var asset = StubCoffeeScriptAsset();
-            bundle.Assets.Add(asset.Object);
-
-            pipeline.Process(bundle, new CassetteSettings());
-
-            asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()));
-        }
-
-        [Fact]
         public void WhenProcessBundle_ThenHashIsAssigned()
         {
             var bundle = new ScriptBundle("~");

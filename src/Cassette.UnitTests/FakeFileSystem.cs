@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Cassette.IO;
 using System.Text;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette

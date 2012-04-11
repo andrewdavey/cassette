@@ -5,7 +5,7 @@ using Cassette.Manifests;
 
 namespace Cassette
 {
-    class ProductionModeBundleCollectionBuilder
+    class CacheAwareBundleCollectionInitializer
     {
         readonly IEnumerable<IBundleDefinition> bundleDefinitions;
         readonly ICassetteManifestCache manifestCache;
@@ -14,7 +14,7 @@ namespace Cassette
         readonly ExternalBundleGenerator externalBundleGenerator;
         BundleCollection bundles;
 
-        public ProductionModeBundleCollectionBuilder(IEnumerable<IBundleDefinition> bundleDefinitions, ICassetteManifestCache manifestCache, IUrlModifier urlModifier, CassetteSettings settings, ExternalBundleGenerator externalBundleGenerator)
+        public CacheAwareBundleCollectionInitializer(IEnumerable<IBundleDefinition> bundleDefinitions, ICassetteManifestCache manifestCache, IUrlModifier urlModifier, CassetteSettings settings, ExternalBundleGenerator externalBundleGenerator)
         {
             this.bundleDefinitions = bundleDefinitions;
             this.manifestCache = manifestCache;
@@ -23,7 +23,7 @@ namespace Cassette
             this.externalBundleGenerator = externalBundleGenerator;
         }
 
-        public void BuildBundleCollection(BundleCollection bundleCollection)
+        public void Initialize(BundleCollection bundleCollection)
         {
             bundles = bundleCollection;
             using (bundles.GetWriteLock())

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Cassette
 {
-    class TempDirectory : IDisposable
+    public class TempDirectory : IDisposable
     {
         public TempDirectory()
         {

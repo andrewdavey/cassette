@@ -11,6 +11,9 @@
     <Target Name="Build">
         <ItemGroup>
             <Tests Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.CoffeeScript.UnitTests\Cassette.CoffeeScript.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.Less.UnitTests\Cassette.Less.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.Sass.UnitTests\Cassette.Sass.UnitTests.csproj"/>
             <Tests Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
         <PropertyGroup>

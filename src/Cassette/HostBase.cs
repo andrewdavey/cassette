@@ -36,6 +36,7 @@ namespace Cassette
         {
             // There is only ever one BundleCollection for the lifetime of the application.
             Container.Register(typeof(BundleCollection)).AsSingleton();
+            Container.Register(typeof(IBundleCollectionInitializer), BundleCollectionInitializerType);
 
             Container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
             Container.Register(typeof(IReferenceBuilder), typeof(ReferenceBuilder));
@@ -48,10 +49,10 @@ namespace Cassette
                 var cacheFile = c.Resolve<CassetteSettings>().CacheDirectory.GetFile("cassette.xml");
                 return new CassetteManifestCache(cacheFile);
             });
-            Container.Register(typeof(PrecompiledBundleCollectionBuilder), (c, p) =>
+            Container.Register(typeof(PrecompiledBundleCollectionInitializer), (c, p) =>
             {
                 var file = Container.Resolve<CassetteSettings>().PrecompiledManifestFile;
-                return new PrecompiledBundleCollectionBuilder(file, c.Resolve<IUrlModifier>());
+                return new PrecompiledBundleCollectionInitializer(file, c.Resolve<IUrlModifier>());
             });
 
             Container.RegisterMultiple(typeof(IStartUpTask), GetStartUpTaskTypes());
@@ -95,6 +96,11 @@ namespace Cassette
             }
         }
 
+        protected virtual Type BundleCollectionInitializerType
+        {
+            get { return typeof(RuntimeBundleCollectionInitializer); }
+        }
+
         IPlaceholderTracker GetPlaceholderTracker(TinyIoCContainer container)
         {
             if (container.Resolve<CassetteSettings>().IsHtmlRewritingEnabled)
@@ -114,9 +120,9 @@ namespace Cassette
 
         void CreateBundles()
         {
-            var builder = Container.Resolve<BundleCollectionBuilder>();
+            var builder = Container.Resolve<IBundleCollectionInitializer>();
             var bundles = Container.Resolve<BundleCollection>();
-            builder.BuildBundleCollection(bundles);
+            builder.Initialize(bundles);
         }
 
         void RunStartUpTasks()
