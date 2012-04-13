@@ -17,7 +17,7 @@ namespace Cassette.Stylesheets
     /// Based on the SassCompiler from SassAndCoffee.Ruby, but modified to work with
     /// Cassette's file system abstraction.
     /// </remarks>
-    public class SassCompiler : ICompiler
+    public class SassCompiler : ISassCompiler
     {
         ScriptEngine engine;
         ScriptScope scope;

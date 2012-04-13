@@ -73,13 +73,14 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CompileLess.cs" />
+    <Compile Include="ILessCompiler.cs" />
     <Compile Include="LessCompileException.cs" />
     <Compile Include="LessCompiler.cs" />
     <Compile Include="LessBundlePipelineModifier.cs" />
     <Compile Include="LessFileSearchModifier.cs" />
+    <Compile Include="LessServices.cs" />
     <Compile Include="ParseLessReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StylesheetPipelineExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">

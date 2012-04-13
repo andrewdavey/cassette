@@ -64,7 +64,7 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetStylesheetBundleA()
         {
-            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles", b => b.Processor = new StylesheetPipeline().CompileSass())))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
             {
                 using (var http = new HttpTestHarness(routes))
                 {
@@ -79,7 +79,7 @@ namespace Cassette.IntegrationTests
         [Fact]
         public void CanGetStylesheetBundleB()
         {
-            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles", b => b.Processor = new StylesheetPipeline().CompileSass())))
+            using (CreateApplication(bundles => bundles.AddPerSubDirectory<StylesheetBundle>("Styles")))
             {
                 using (var http = new HttpTestHarness(routes))
                 {

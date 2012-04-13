@@ -4,9 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace Cassette.Scripts
 {
-    class ScriptBundleContainerBuilder : BundleContainerModule<ScriptBundle>
+    // TODO: Decide if this should be Script or ScriptBundle
+    class ScriptContainerConfiguration : ContainerConfiguration<ScriptBundle>
     {
-        public ScriptBundleContainerBuilder(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        public ScriptContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
         }
 

@@ -68,12 +68,13 @@
     </Compile>
     <Compile Include="CassettePlatformAdaptationLayer.cs" />
     <Compile Include="CompileSass.cs" />
+    <Compile Include="ISassCompiler.cs" />
     <Compile Include="ParseSassReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SassCompiler.cs" />
     <Compile Include="SassBundlePipelineModifier.cs" />
     <Compile Include="SassFileSearchModifier.cs" />
-    <Compile Include="StylesheetPipelineExtensions.cs" />
+    <Compile Include="SassServices.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">

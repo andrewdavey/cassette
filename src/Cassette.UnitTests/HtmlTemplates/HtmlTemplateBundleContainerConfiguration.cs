@@ -8,17 +8,17 @@ using Xunit;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateBundleContainerModule_Tests
+    public class HtmlTemplateBundleContainerConfiguration_Tests
     {
         readonly TinyIoCContainer container;
-        readonly HtmlTemplateBundleContainerBuilder builder;
+        readonly HtmlTemplateContainerConfiguration configuration;
         readonly FileSearch fileSearch;
 
-        public HtmlTemplateBundleContainerModule_Tests()
+        public HtmlTemplateBundleContainerConfiguration_Tests()
         {
             container = new TinyIoCContainer();
-            builder = new HtmlTemplateBundleContainerBuilder(type => new Type[0]);
-            builder.Build(container);
+            configuration = new HtmlTemplateContainerConfiguration(type => new Type[0]);
+            configuration.Configure(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(HtmlTemplateBundle)));
         }

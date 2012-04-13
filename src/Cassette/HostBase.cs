@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
+using Cassette.IO;
 using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -21,26 +22,46 @@ namespace Cassette
     /// </summary>
     public abstract class HostBase : IDisposable
     {
-        protected TinyIoCContainer Container;
-        Type[] types;
+        TinyIoCContainer container;
+        Type[] allTypes;
+        Type[] configurationTypes;
 
         public void Initialize()
         {
             LoadAllTypes();
-            Container = new TinyIoCContainer();
+            configurationTypes = GetConfigurationTypes().ToArray();
+            container = new TinyIoCContainer();
             RegisterContainerItems();
             RunStartUpTasks();
             CreateBundles();
         }
 
+        protected virtual IEnumerable<Type> GetConfigurationTypes()
+        {
+            return
+                from type in allTypes
+                where type.IsClass && !type.IsAbstract
+                from interfaceType in type.GetInterfaces()
+                where interfaceType.IsGenericType &&
+                      interfaceType.GetGenericTypeDefinition() == typeof(IConfiguration<>)
+                select type;
+        }
+
+        protected TinyIoCContainer Container
+        {
+            get { return container; }
+        }
+
         void LoadAllTypes()
         {
             var assemblies = LoadAssemblies();
-            types = (from assembly in assemblies
-                     where !IgnoredAssemblies.Any(ignore => ignore(assembly))
-                     from type in assembly.GetExportedTypes()
-                     where !type.IsAbstract
-                     select type).ToArray();
+            allTypes = (
+                from assembly in assemblies
+                where !IgnoredAssemblies.Any(ignore => ignore(assembly))
+                from type in assembly.GetExportedTypes()
+                where !type.IsAbstract
+                select type
+            ).ToArray();
         }
 
         static readonly List<Func<Assembly, bool>> IgnoredAssemblies = new List<Func<Assembly, bool>>
@@ -113,35 +134,49 @@ namespace Cassette
                 )
             );
 
-            new ScriptBundleContainerBuilder(GetImplementationTypes).Build(Container);
-            new StylesheetBundleContainerBuilder(GetImplementationTypes).Build(Container);
-            new HtmlTemplateBundleContainerBuilder(GetImplementationTypes).Build(Container);
+            new ScriptContainerConfiguration(GetImplementationTypes).Configure(Container);
+            new StylesheetContainerConfiguration(GetImplementationTypes).Configure(Container);
+            new HtmlTemplateContainerConfiguration(GetImplementationTypes).Configure(Container);
 
-            foreach (var containerBuilder in ContainerBuilders)
+            var containerConfigurations = configurationTypes
+                .Where(type => typeof(IConfiguration<TinyIoCContainer>).IsAssignableFrom(type))
+                .Select(Activator.CreateInstance)
+                .Cast<IConfiguration<TinyIoCContainer>>();
+            foreach (var containerConfiguration in containerConfigurations)
             {
-                containerBuilder.Build(Container);
+                containerConfiguration.Configure(container);
             }
 
-            foreach (var serviceRegistry in ServiceRegistries)
+
+            RegisterConfigurationTypes();
+        }
+
+        void RegisterConfigurationTypes()
+        {
+            var configurations =
+                from type in configurationTypes
+                from interfaceType in type.GetInterfaces()
+                where interfaceType.IsGenericType &&
+                      interfaceType.GetGenericTypeDefinition() == typeof(IConfiguration<>)
+                select new
+                {
+                    registrationType = interfaceType,
+                    implementationType = type
+                };
+
+            var groupedByRegistrationType = configurations.GroupBy(
+                c => c.registrationType,
+                c => c.implementationType
+            );
+            foreach (var configs in groupedByRegistrationType)
             {
-                foreach (var registration in serviceRegistry.TypeRegistrations)
-                {
-                    Container.Register(registration.RegistrationType, registration.ImplementationType, registration.Name);
-                }
-                foreach (var registration in serviceRegistry.CollectionTypeRegistrations)
-                {
-                    Container.RegisterMultiple(registration.RegistrationType, registration.ImplementationTypes);
-                }
-                foreach (var registration in serviceRegistry.InstanceRegistrations)
-                {
-                    Container.Register(registration.RegistrationType, registration.Instance, registration.Name);
-                }
+                Container.RegisterMultiple(configs.Key, configs);
             }
         }
 
         IEnumerable<Type> GetImplementationTypes(Type baseType)
         {
-            return types.Where(baseType.IsAssignableFrom); 
+            return allTypes.Where(baseType.IsAssignableFrom); 
         }
 
         protected virtual Type BundleCollectionInitializerType
@@ -183,33 +218,14 @@ namespace Cassette
             }
         }
 
-        IEnumerable<IContainerBuilder> ContainerBuilders
-        {
-            get
-            {
-                return GetImplementationTypes(typeof(IContainerBuilder))
-                    .Where(type => type.IsClass && !type.IsAbstract)
-                    .Select(type => (IContainerBuilder)Activator.CreateInstance(type));
-            }
-        }
-
-        protected virtual IEnumerable<IServiceRegistry> ServiceRegistries
-        {
-            get
-            {
-                return GetImplementationTypes(typeof(IServiceRegistry))
-                    .Where(type => type.IsClass && !type.IsAbstract)
-                    .Select(type => (IServiceRegistry)Activator.CreateInstance(type));
-            }
-        }
-
         protected virtual CassetteSettings Settings
         {
             get
             {
                 return new CassetteSettings
                 {
-                    Version = HashAppDomainAssemblies()
+                    Version = GetHostVersion(),
+                    PrecompiledManifestFile = new NonExistentFile("")
                 };
             }
         }

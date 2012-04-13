@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Cassette.HtmlTemplates
 {
-    class HtmlTemplateBundleContainerBuilder : BundleContainerModule<HtmlTemplateBundle>
+    class HtmlTemplateContainerConfiguration : ContainerConfiguration<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundleContainerBuilder(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        public HtmlTemplateContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
         }
 

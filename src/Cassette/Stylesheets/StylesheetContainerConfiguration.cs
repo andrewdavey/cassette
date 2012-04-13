@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Cassette.Stylesheets
 {
-    class StylesheetBundleContainerBuilder : BundleContainerModule<StylesheetBundle>
+    class StylesheetContainerConfiguration : ContainerConfiguration<StylesheetBundle>
     {
-        public StylesheetBundleContainerBuilder(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        public StylesheetContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
         }
 

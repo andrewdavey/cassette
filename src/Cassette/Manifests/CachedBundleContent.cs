@@ -14,7 +14,6 @@ namespace Cassette.Manifests
 
         public CachedBundleContent(byte[] content, IEnumerable<IAsset> originalAssets, IUrlModifier urlModifier)
         {
-            // TODO: Ensure blank urlModifier is passed here when loading from precompiled manifest
             this.content = TransformUrls(content, urlModifier);
             this.originalAssets = originalAssets.ToArray();
         }

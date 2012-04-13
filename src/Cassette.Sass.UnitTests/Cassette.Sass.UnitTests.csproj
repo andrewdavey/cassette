@@ -92,7 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SassCompiler.cs" />
     <Compile Include="SassFileSearchModifier.cs" />
-    <Compile Include="StylesheetPipelineExtensions.cs" />
+    <Compile Include="SassBundlePipelineModifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette.Sass\Cassette.Sass.csproj">

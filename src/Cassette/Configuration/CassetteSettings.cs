@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.IO;
-using Cassette.Manifests;
-
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -15,22 +13,8 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
-        readonly Lazy<ICassetteManifestCache> cassetteManifestCache;
         readonly List<Func<string, bool>> allowPathPredicates = new List<Func<string, bool>>();
  
-        public CassetteSettings()
-        {
-            cassetteManifestCache = new Lazy<ICassetteManifestCache>(
-                () => new CassetteManifestCache(CacheDirectory.GetFile("cassette.xml"))
-            );
-        }
-
-        /// <summary>
-        /// When true, Cassette has already loaded bundles from a compile-time generated manifest file.
-        /// The application's Cassette configuration MUST NOT add bundles to the bundle collection.
-        /// </summary>
-        public bool IsUsingPrecompiledManifest { get; internal set; }
-
         internal IFile PrecompiledManifestFile { get; set; }
 
         /// <summary>
@@ -58,11 +42,6 @@ namespace Cassette.Configuration
         internal bool AllowRemoteDiagnostics { get; set; }
 
         internal string Version { get; set; }
-
-        internal ICassetteManifestCache CassetteManifestCache
-        {
-            get { return cassetteManifestCache.Value; }
-        }
 
         internal bool CanRequestRawFile(string filePath)
         {

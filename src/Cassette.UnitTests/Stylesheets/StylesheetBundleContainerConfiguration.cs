@@ -9,21 +9,21 @@ using Xunit;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetBundleContainerModule_Tests
+    public class StylesheetBundleContainerConfiguration_Tests
     {
         readonly TinyIoCContainer container;
-        readonly StylesheetBundleContainerBuilder builder;
+        readonly StylesheetContainerConfiguration configuration;
         readonly FileSearch fileSearch;
 
-        public StylesheetBundleContainerModule_Tests()
+        public StylesheetBundleContainerConfiguration_Tests()
         {
             container = new TinyIoCContainer();
             container.Register<IStylesheetMinifier, MicrosoftStylesheetMinifier>();
             container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
 
-            builder = new StylesheetBundleContainerBuilder(type => new Type[0]);
-            builder.Build(container);
+            configuration = new StylesheetContainerConfiguration(type => new Type[0]);
+            configuration.Configure(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(StylesheetBundle)));
         }

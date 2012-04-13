@@ -11,7 +11,7 @@ namespace Cassette.Scripts
     {
         readonly ScriptBundle bundle;
         readonly Mock<IAsset> asset;
-        readonly ScriptPipeline pipeline;
+        readonly IBundlePipeline<ScriptBundle> pipeline;
         readonly Mock<ICoffeeScriptCompiler> compiler;
 
         public GivenPiplineWhereCompileCoffeeScriptWithCustomCompiler()
@@ -23,7 +23,9 @@ namespace Cassette.Scripts
             bundle.Assets.Add(asset.Object);
 
             compiler = new Mock<ICoffeeScriptCompiler>();
-            pipeline = new ScriptPipeline(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IUrlGenerator>()).CompileCoffeeScript(compiler.Object);
+            var modifier = new CoffeeScriptBundlePipelineModifier(compiler.Object);
+            pipeline = new ScriptPipeline(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IUrlGenerator>());
+            pipeline = modifier.Modify(pipeline);
         }
 
         [Fact]

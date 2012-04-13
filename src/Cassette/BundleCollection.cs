@@ -29,6 +29,7 @@ namespace Cassette
             this.bundleFactoryProvider = bundleFactoryProvider;
         }
 
+        // TODO: Use GetReadLock!
         public IDisposable GetReadLock()
         {
             readerWriterLock.EnterReadLock();

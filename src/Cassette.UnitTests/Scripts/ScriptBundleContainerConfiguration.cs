@@ -9,21 +9,21 @@ using Xunit;
 
 namespace Cassette.Scripts
 {
-    public class ScriptBundleContainerModule_Tests
+    public class ScriptBundleContainerConfiguration_Tests
     {
         readonly TinyIoCContainer container;
-        readonly ScriptBundleContainerBuilder builder;
+        readonly ScriptContainerConfiguration configuration;
         readonly FileSearch fileSearch;
 
-        public ScriptBundleContainerModule_Tests()
+        public ScriptBundleContainerConfiguration_Tests()
         {
             container = new TinyIoCContainer();
             container.Register<IJavaScriptMinifier, MicrosoftJavaScriptMinifier>();
             container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
 
-            builder = new ScriptBundleContainerBuilder(type => new Type[0]);
-            builder.Build(container);
+            configuration = new ScriptContainerConfiguration(type => new Type[0]);
+            configuration.Configure(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(ScriptBundle)));
         }
@@ -62,7 +62,7 @@ namespace Cassette.Scripts
     public class ScriptBundleContainerModuleWithFileSearchModifierTests
     {
         readonly TinyIoCContainer container;
-        readonly ScriptBundleContainerBuilder builder;
+        readonly ScriptContainerConfiguration configuration;
         readonly FileSearch fileSearch;
 
         public ScriptBundleContainerModuleWithFileSearchModifierTests()
@@ -79,8 +79,8 @@ namespace Cassette.Scripts
 
             container.Register(typeof(IFileSearchModifier<ScriptBundle>), modifier.Object);
 
-            builder = new ScriptBundleContainerBuilder(type => new Type[0]);
-            builder.Build(container);
+            configuration = new ScriptContainerConfiguration(type => new Type[0]);
+            configuration.Configure(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(ScriptBundle)));
         }

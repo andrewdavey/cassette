@@ -64,7 +64,7 @@
     <Compile Include="CoffeeScriptCommentParser.cs" />
     <Compile Include="CoffeeScriptCompileException.cs" />
     <Compile Include="CoffeeScriptFileSearchModifier.cs" />
-    <Compile Include="CoffeeScriptPipelineModifier.cs" />
+    <Compile Include="CoffeeScriptBundlePipelineModifier.cs" />
     <Compile Include="CoffeeScriptServices.cs" />
     <Compile Include="CompileCoffeeScript.cs" />
     <Compile Include="ICoffeeScriptCompiler.cs" />
@@ -79,7 +79,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ScriptPipelineExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Cassette.CoffeeScript.nutrans">

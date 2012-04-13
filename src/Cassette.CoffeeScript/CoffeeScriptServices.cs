@@ -4,17 +4,17 @@ using TinyIoC;
 namespace Cassette.Scripts
 {
 #if NET35
-    public class CoffeeScriptServices : IContainerBuilder
+    public class CoffeeScriptServices : IConfiguration<TinyIoCContainer>
     {
-        public void Build(TinyIoCContainer container)
+        public void Configure(TinyIoCContainer container)
         {
             container.Register(typeof(ICoffeeScriptCompiler), typeof(JurassicCoffeeScriptCompiler)).AsSingleton();
         }
     }
 #else
-    public class CoffeeScriptServices : IContainerBuilder
+    public class CoffeeScriptServices : IConfiguration<TinyIoCContainer>
     {
-        public void Build(TinyIoCContainer container)
+        public void Configure(TinyIoCContainer container)
         {
             container.Register(typeof(IECoffeeScriptCompilationQueue)).AsSingleton();
             container.Register(typeof(IECoffeeScriptCompiler));

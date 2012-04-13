@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.Less.UnitTests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.Sass.UnitTests", "Cassette.Sass.UnitTests\Cassette.Sass.UnitTests.csproj", "{2CA5DE76-6CEB-4402-948D-9FBD62E22F51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassette.Hogan.UnitTests", "Cassette.Hogan.UnitTests\Cassette.Hogan.UnitTests.csproj", "{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +223,16 @@ Global
 		{2CA5DE76-6CEB-4402-948D-9FBD62E22F51}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2CA5DE76-6CEB-4402-948D-9FBD62E22F51}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2CA5DE76-6CEB-4402-948D-9FBD62E22F51}.Release|x86.ActiveCfg = Release|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

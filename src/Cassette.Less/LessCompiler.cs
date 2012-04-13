@@ -13,7 +13,7 @@ using Iesi.Collections.Generic;
 
 namespace Cassette.Stylesheets
 {
-    public class LessCompiler : ICompiler
+    public class LessCompiler : ILessCompiler
     {
         HashedSet<string> importedFilePaths;
 

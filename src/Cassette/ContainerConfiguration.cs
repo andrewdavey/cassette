@@ -9,14 +9,21 @@ using TinyIoC;
 
 namespace Cassette
 {
-    abstract class BundleContainerModule<T>
+    abstract class ContainerConfiguration<T>
         where T : Bundle
     {
         readonly Func<Type, IEnumerable<Type>> getImplementationTypes;
 
-        protected BundleContainerModule(Func<Type, IEnumerable<Type>> getImplementationTypes)
+        protected ContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes)
         {
             this.getImplementationTypes = getImplementationTypes;
+        }
+
+        public void Configure(TinyIoCContainer container)
+        {
+            RegisterFileSearchServices(container);
+            RegisterBundleFactory(container);
+            RegisterBundlePipelineServices(container);
         }
 
         protected abstract string FilePattern { get; }
@@ -28,13 +35,6 @@ namespace Cassette
         protected virtual Regex FileSearchExclude
         {
             get { return null; }
-        }
-
-        public void Build(TinyIoCContainer container)
-        {
-            RegisterFileSearchServices(container);
-            RegisterBundleFactory(container);
-            RegisterBundlePipelineServices(container);
         }
 
         void RegisterFileSearchServices(TinyIoCContainer container)
