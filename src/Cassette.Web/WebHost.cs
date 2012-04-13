@@ -19,18 +19,23 @@ namespace Cassette.Web
             return BuildManager.GetReferencedAssemblies().Cast<Assembly>();
         }
 
-        protected override TinyIoCContainer.ITinyIoCObjectLifetimeProvider RequestLifetimeProvider
+        protected override bool CanCreateRequestLifetimeProvider
         {
-            get { return new HttpContextLifetimeProvider(() => Container.Resolve<HttpContextBase>()); }
+            get { return true; }
         }
 
-        protected override void RegisterContainerItems()
+        protected override TinyIoCContainer.ITinyIoCObjectLifetimeProvider CreateRequestLifetimeProvider()
+        {
+            return new HttpContextLifetimeProvider(() => Container.Resolve<HttpContextBase>());
+        }
+
+        protected override void ConfigureContainer()
         {
             Container.Register(typeof(HttpContextBase), (c, p) => HttpContext());
             Container.Register(typeof(RouteCollection), Routes);
             Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(AppDomainAppVirtualPath));
 
-            base.RegisterContainerItems();
+            base.ConfigureContainer();
         }
 
         protected virtual HttpContextBase HttpContext()

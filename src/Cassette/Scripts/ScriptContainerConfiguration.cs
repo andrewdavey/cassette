@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using TinyIoC;
 
 namespace Cassette.Scripts
 {
@@ -10,6 +11,12 @@ namespace Cassette.Scripts
     {
         public ScriptContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
+        }
+
+        public override void Configure(TinyIoCContainer container)
+        {
+            base.Configure(container);
+            container.Register(typeof(IJavaScriptMinifier), typeof(MicrosoftJavaScriptMinifier));
         }
 
         protected override string FilePattern

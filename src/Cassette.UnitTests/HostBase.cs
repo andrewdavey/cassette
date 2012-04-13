@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Moq;
+using Cassette.Configuration;
 using Should;
 using TinyIoC;
 using Xunit;
@@ -40,6 +40,32 @@ namespace Cassette
 
             host.Container.Resolve<string>("Order").ShouldEqual("FirstSecond");
         }
+
+        [Fact]
+        public void InitializeCallsSettingsConfigurations()
+        {
+            var host = new Host
+            {
+                ConfigurationTypes = new[]
+                {
+                    typeof(SettingsConfiguration)
+                }
+            };
+            host.Initialize();
+
+            var settings = host.Container.Resolve<CassetteSettings>();
+            settings.Version.ShouldEqual("SettingsConfigurationWasCalled");
+        }
+
+        [Fact]
+        public void CassetteSettingsIsSingleton()
+        {
+            var host = new Host();
+            host.Initialize();
+            var settings1 = host.Container.Resolve<CassetteSettings>();
+            var settings2 = host.Container.Resolve<CassetteSettings>();
+            settings1.ShouldBeSameAs(settings2);
+        }
     }
 
     class Host : HostBase
@@ -56,9 +82,9 @@ namespace Cassette
             return ConfigurationTypes;
         }
 
-        protected override TinyIoCContainer.ITinyIoCObjectLifetimeProvider RequestLifetimeProvider
+        protected override bool CanCreateRequestLifetimeProvider
         {
-            get { return Mock.Of<TinyIoCContainer.ITinyIoCObjectLifetimeProvider>(); }
+            get { return false; }
         }
 
         protected override IEnumerable<Assembly> LoadAssemblies()
@@ -66,16 +92,16 @@ namespace Cassette
             yield return typeof(HostBase).Assembly;
         }
 
-        protected override Configuration.CassetteSettings CreateSettings()
+        protected override CassetteSettings CreateSettings()
         {
             var settings = base.CreateSettings();
             settings.CacheDirectory = new FakeFileSystem();
             return settings;
         }
 
-        protected override void RegisterContainerItems()
+        protected override void ConfigureContainer()
         {
-            base.RegisterContainerItems();
+            base.ConfigureContainer();
             Container.Register<IUrlModifier>(new VirtualDirectoryPrepender("/"));
             Container.Register<IBundleCollectionInitializer, BundleCollectionInitializer>();
         }
@@ -108,4 +134,11 @@ namespace Cassette
         }
     }
 
+    class SettingsConfiguration : IConfiguration<CassetteSettings>
+    {
+        public void Configure(CassetteSettings settings)
+        {
+            settings.Version = "SettingsConfigurationWasCalled";
+        }
+    }
 }

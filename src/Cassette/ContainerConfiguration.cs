@@ -19,7 +19,7 @@ namespace Cassette
             this.getImplementationTypes = getImplementationTypes;
         }
 
-        public void Configure(TinyIoCContainer container)
+        public virtual void Configure(TinyIoCContainer container)
         {
             RegisterFileSearchServices(container);
             RegisterBundleFactory(container);

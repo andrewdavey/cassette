@@ -27,9 +27,9 @@ namespace Cassette.MSBuild
                 .Select(Assembly.LoadFrom);
         }
 
-        protected override TinyIoC.TinyIoCContainer.ITinyIoCObjectLifetimeProvider RequestLifetimeProvider
+        protected override bool CanCreateRequestLifetimeProvider
         {
-            get { return null; }
+            get { return false; }
         }
 
         protected override Type BundleCollectionInitializerType
@@ -63,9 +63,9 @@ namespace Cassette.MSBuild
             return settings;
         }
 
-        protected override void RegisterContainerItems()
+        protected override void ConfigureContainer()
         {
-            base.RegisterContainerItems();
+            base.ConfigureContainer();
 
             // Override any URL modifier, even if set by the application.
             // So this is *after* the base.RegisterContainerItems() call.

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TinyIoC;
 
 namespace Cassette.Stylesheets
 {
@@ -8,6 +9,12 @@ namespace Cassette.Stylesheets
     {
         public StylesheetContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
+        }
+
+        public override void Configure(TinyIoCContainer container)
+        {
+            base.Configure(container);
+            container.Register(typeof(IStylesheetMinifier), typeof(MicrosoftStylesheetMinifier));
         }
 
         protected override string FilePattern

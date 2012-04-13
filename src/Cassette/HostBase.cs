@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
@@ -23,22 +21,42 @@ namespace Cassette
     public abstract class HostBase : IDisposable
     {
         TinyIoCContainer container;
-        Assembly[] allAssemblies;
         Type[] allTypes;
         Type[] configurationTypes;
+        AssemblyScanner assemblyScanner;
+        CassetteSettings settings;
+        readonly object createSettingsLock = new object();
 
         public void Initialize()
         {
-            allAssemblies = LoadAssemblies().ToArray();
-            allTypes = LoadAllTypes(allAssemblies).ToArray();
+            var assemblies = LoadAssemblies();
+            assemblyScanner = new AssemblyScanner(assemblies);
+            allTypes = assemblyScanner.GetAllTypes();
             configurationTypes = GetConfigurationTypes(allTypes).ToArray();
 
             container = new TinyIoCContainer();
-            RegisterContainerItems();
+            ConfigureContainer();
             RunStartUpTasks();
-            CreateBundles();
+            InitializeBundles();
         }
 
+        protected TinyIoCContainer Container
+        {
+            get
+            {
+                if (container == null) throw new InvalidOperationException("Container is not available before Initialize has been called.");
+                return container;
+            }
+        }
+
+        /// <summary>
+        /// Loads and returns all the assemblies used by the application. These will be scanned for Cassette types.
+        /// </summary>
+        protected abstract IEnumerable<Assembly> LoadAssemblies();
+
+        /// <summary>
+        /// Returns all types that implement <see cref="IConfiguration{T}"/>.
+        /// </summary>
         protected virtual IEnumerable<Type> GetConfigurationTypes(IEnumerable<Type> typesToSearch)
         {
             var publicTypes =
@@ -59,93 +77,109 @@ namespace Cassette
             return publicTypes.Concat(internalTypes);
         }
 
-        protected TinyIoCContainer Container
+        protected virtual void ConfigureContainer()
         {
-            get { return container; }
+            // REGISTER ALL THE THINGS!
+            RegisterBundleCollection();
+            RegisterUrlGenerator();
+            RegisterManifestCache();
+            RegisterBundleCollectionInitializer();
+            RegisterStartUpTasks();
+            RegisterSettings();
+            RegisterBundleFactoryProvider();
+            RegisterFileSearchProvider();
+            RegisterPerRequestServices();
+            RegisterConfigurationTypes();
+
+            // Classes that implement IConfiguration<TinyIoCContainer> can register services in the container.
+            // This means plugins and the application can add to and override Cassette's default services.
+            ExecuteContainerConfigurations();
         }
 
-        IEnumerable<Type> LoadAllTypes(IEnumerable<Assembly> assemblies)
+        void RegisterBundleCollection()
         {
-            return
-                from assembly in assemblies
-                where !IgnoredAssemblies.Any(ignore => ignore(assembly))
-                from type in assembly.GetExportedTypes()
-                where !type.IsAbstract
-                select type;
+            container.Register(typeof(BundleCollection)).AsSingleton();
         }
 
-        static readonly List<Func<Assembly, bool>> IgnoredAssemblies = new List<Func<Assembly, bool>>
+        void RegisterUrlGenerator()
         {
-            assembly => assembly.FullName.StartsWith("Microsoft.", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("mscorlib,", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("System.", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("System,", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("IronPython", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("IronRuby", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("CR_ExtUnitTest", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("CR_VSTest", StringComparison.InvariantCulture),
-            assembly => assembly.FullName.StartsWith("DevExpress.CodeRush", StringComparison.InvariantCulture)
-        };
-
-        public virtual void Dispose()
-        {
-            Container.Dispose();
+            container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
         }
 
-        protected abstract TinyIoCContainer.ITinyIoCObjectLifetimeProvider RequestLifetimeProvider { get; }
-
-        protected abstract IEnumerable<Assembly> LoadAssemblies();
-
-        protected virtual void RegisterContainerItems()
+        void RegisterManifestCache()
         {
-            // There is only ever one BundleCollection for the lifetime of the application.
-            Container.Register(typeof(BundleCollection)).AsSingleton();
-            Container.Register(typeof(IBundleCollectionInitializer), BundleCollectionInitializerType);
-
-            Container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
-            Container.Register(typeof(IJavaScriptMinifier), typeof(MicrosoftJavaScriptMinifier));
-            Container.Register(typeof(IStylesheetMinifier), typeof(MicrosoftStylesheetMinifier));
-
-            if (RequestLifetimeProvider != null)
-            {
-                Container.Register(typeof(IReferenceBuilder), typeof(ReferenceBuilder)).AsPerRequestSingleton(RequestLifetimeProvider);
-                Container.Register(typeof(PlaceholderTracker)).AsPerRequestSingleton(RequestLifetimeProvider);
-                Container.Register(typeof(IPlaceholderTracker), (c, p) => GetPlaceholderTracker(c));
-            }
-
-            Container.Register(typeof(ICassetteManifestCache), (c, p) =>
+            container.Register(typeof(ICassetteManifestCache), (c, p) =>
             {
                 var cacheFile = c.Resolve<CassetteSettings>().CacheDirectory.GetFile("cassette.xml");
                 return new CassetteManifestCache(cacheFile);
             });
-            Container.Register(typeof(PrecompiledBundleCollectionInitializer), (c, p) =>
+        }
+
+        void RegisterBundleCollectionInitializer()
+        {
+            container.Register(typeof(IBundleCollectionInitializer), BundleCollectionInitializerType);
+            container.Register(typeof(PrecompiledBundleCollectionInitializer), (c, p) =>
             {
-                var file = Container.Resolve<CassetteSettings>().PrecompiledManifestFile;
+                var file = container.Resolve<CassetteSettings>().PrecompiledManifestFile;
                 return new PrecompiledBundleCollectionInitializer(file, c.Resolve<IUrlModifier>());
             });
+        }
 
-            Container.RegisterMultiple(typeof(IStartUpTask), GetStartUpTaskTypes());
-            
-            Container.Register(typeof(CassetteSettings), CreateSettings());
-            Container.Register(
+        void RegisterStartUpTasks()
+        {
+            container.RegisterMultiple(typeof(IStartUpTask), GetStartUpTaskTypes());
+        }
+
+        void RegisterSettings()
+        {
+            container.Register(typeof(CassetteSettings), (c, p) => CreateSettings(c));
+        }
+
+        void RegisterBundleFactoryProvider()
+        {
+            container.Register(
                 typeof(IBundleFactoryProvider),
                 (c, p) => new BundleFactoryProvider(
                     bundleType =>
                     {
                         var factoryType = typeof(IBundleFactory<>).MakeGenericType(bundleType);
                         return (IBundleFactory<Bundle>)c.Resolve(factoryType);
-                    })
+                    }
+                )
             );
-            Container.Register(
+        }
+
+        void RegisterFileSearchProvider()
+        {
+            container.Register(
                 typeof(IFileSearchProvider),
                 (c, p) => new FileSearchProvider(
                     bundleType => c.Resolve<IFileSearch>(FileSearchComponentName(bundleType))
                 )
             );
+        }
 
-            ExecuteContainerConfigurations();
+        void RegisterPerRequestServices()
+        {
+            if (!CanCreateRequestLifetimeProvider) return;
 
-            RegisterConfigurationTypes();
+            container
+                .Register(typeof(IReferenceBuilder), typeof(ReferenceBuilder))
+                .AsPerRequestSingleton(CreateRequestLifetimeProvider());
+
+            container
+                .Register(typeof(PlaceholderTracker))
+                .AsPerRequestSingleton(CreateRequestLifetimeProvider());
+
+            container.
+                Register(typeof(IPlaceholderTracker), (c, p) => CreatePlaceholderTracker(c));
+        }
+
+        protected abstract bool CanCreateRequestLifetimeProvider { get; }
+
+        protected virtual TinyIoCContainer.ITinyIoCObjectLifetimeProvider CreateRequestLifetimeProvider()
+        {
+            throw new NotSupportedException();
         }
 
         void ExecuteContainerConfigurations()
@@ -159,21 +193,20 @@ namespace Cassette
 
         IEnumerable<IConfiguration<TinyIoCContainer>> CreateContainerConfigurations()
         {
-            var containerConfigurations =
+            return
                 from type in configurationTypes
                 where typeof(IConfiguration<TinyIoCContainer>).IsAssignableFrom(type)
                 orderby ConfigurationOrderAttribute.GetOrder(type)
                 select CreateContainerConfiguration(type);
-            return containerConfigurations;
         }
 
-        IConfiguration<TinyIoCContainer> CreateContainerConfiguration(Type type)
+        IConfiguration<TinyIoCContainer> CreateContainerConfiguration(Type configurationC)
         {
-            var ctor = type.GetConstructors().First();
+            var ctor = configurationC.GetConstructors().First();
             var isDefaultConstructor = ctor.GetParameters().Length == 0;
             if (isDefaultConstructor)
             {
-                return (IConfiguration<TinyIoCContainer>)Activator.CreateInstance(type);
+                return (IConfiguration<TinyIoCContainer>)Activator.CreateInstance(configurationC);
             }
             else
             {
@@ -204,7 +237,9 @@ namespace Cassette
             );
             foreach (var configs in groupedByRegistrationType)
             {
-                Container.RegisterMultiple(configs.Key, configs);
+                var registrationType = configs.Key;
+                var implementationTypes = configs.OrderBy(ConfigurationOrderAttribute.GetOrder);
+                container.RegisterMultiple(registrationType, implementationTypes);
             }
         }
 
@@ -218,11 +253,11 @@ namespace Cassette
             get { return typeof(RuntimeBundleCollectionInitializer); }
         }
 
-        IPlaceholderTracker GetPlaceholderTracker(TinyIoCContainer container)
+        IPlaceholderTracker CreatePlaceholderTracker(TinyIoCContainer currentContainer)
         {
-            if (container.Resolve<CassetteSettings>().IsHtmlRewritingEnabled)
+            if (currentContainer.Resolve<CassetteSettings>().IsHtmlRewritingEnabled)
             {
-                return container.Resolve<PlaceholderTracker>();
+                return currentContainer.Resolve<PlaceholderTracker>();
             }
             else
             {
@@ -235,20 +270,42 @@ namespace Cassette
             return GetImplementationTypes(typeof(IStartUpTask));
         }
 
-        void CreateBundles()
+        void InitializeBundles()
         {
-            var builder = Container.Resolve<IBundleCollectionInitializer>();
-            var bundles = Container.Resolve<BundleCollection>();
+            var builder = container.Resolve<IBundleCollectionInitializer>();
+            var bundles = container.Resolve<BundleCollection>();
             builder.Initialize(bundles);
         }
 
         void RunStartUpTasks()
         {
-            var startUpTasks = Container.ResolveAll<IStartUpTask>();
+            var startUpTasks = container.ResolveAll<IStartUpTask>();
             foreach (var startUpTask in startUpTasks)
             {
                 Trace.Source.TraceInformation("Running start-up task: {0}", startUpTask.GetType().FullName);
                 startUpTask.Start();
+            }
+        }
+
+        CassetteSettings CreateSettings(TinyIoCContainer currentContainer)
+        {
+            lock (createSettingsLock)
+            {
+                // Only create settings once, then reuse that instance.
+                if (settings != null) return settings;
+
+                settings = CreateSettings();
+                ConfigureSettings(settings, currentContainer);
+                return settings;
+            }
+        }
+
+        void ConfigureSettings(CassetteSettings settingsToConfigure, TinyIoCContainer currentContainer)
+        {
+            var configurations = currentContainer.ResolveAll<IConfiguration<CassetteSettings>>();
+            foreach (var configuration in configurations)
+            {
+                configuration.Configure(settingsToConfigure);
             }
         }
 
@@ -263,39 +320,7 @@ namespace Cassette
 
         protected virtual string GetHostVersion()
         {
-            return HashAppDomainAssemblies();
-        }
-
-        string HashAppDomainAssemblies()
-        {
-            using (var allHashes = new MemoryStream())
-            using (var sha1 = SHA1.Create())
-            {
-                var filenames = allAssemblies
-                    .Where(IsNotDynamic)
-                    .Select(assembly => assembly.Location)
-                    .OrderBy(filename => filename);
-
-                foreach (var filename in filenames)
-                {
-                    using (var file = File.OpenRead(filename))
-                    {
-                        var hash = sha1.ComputeHash(file);
-                        allHashes.Write(hash, 0, hash.Length);
-                    }
-                }
-                allHashes.Position = 0;
-                return Convert.ToBase64String(sha1.ComputeHash(allHashes));
-            }
-        }
-
-        bool IsNotDynamic(Assembly assembly)
-        {
-#if NET35
-            return !(assembly.ManifestModule is ModuleBuilder);
-#else
-            return !assembly.IsDynamic;
-#endif
+            return assemblyScanner.HashAssemblies();
         }
 
         /// <summary>
@@ -305,6 +330,11 @@ namespace Cassette
         internal static string FileSearchComponentName(Type bundleType)
         {
             return bundleType.Name + ".FileSearch";
+        }
+
+        public virtual void Dispose()
+        {
+            container.Dispose();
         }
     }
 }

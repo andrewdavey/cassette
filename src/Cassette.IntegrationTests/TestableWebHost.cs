@@ -32,9 +32,9 @@ namespace Cassette
             return dlls.Select(Assembly.LoadFrom);
         }
 
-        protected override void RegisterContainerItems()
+        protected override void ConfigureContainer()
         {
-            base.RegisterContainerItems();
+            base.ConfigureContainer();
             Container.Register(typeof(IEnumerable<IConfiguration<BundleCollection>>), bundleConfigurations);
         }
 
