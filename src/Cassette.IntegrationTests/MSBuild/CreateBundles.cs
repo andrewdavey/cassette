@@ -7,7 +7,6 @@ using System.Reflection.Emit;
 using System.Security;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
-using Cassette.Configuration;
 using Cassette.IntegrationTests;
 using Cassette.Manifests;
 using Cassette.Stylesheets;
@@ -29,7 +28,7 @@ namespace Cassette.MSBuild
             path = new TempDirectory();
 
             var assemblyPath = Path.Combine(path, "Test.dll");
-            BundleDefinition.GenerateAssembly(assemblyPath);
+            BundleConfiguration.GenerateAssembly(assemblyPath);
 
             File.WriteAllText(Path.Combine(path, "test.css"), "p { background-image: url(test.png); }");
             File.WriteAllText(Path.Combine(path, "test.png"), "");
@@ -123,9 +122,9 @@ namespace Cassette.MSBuild
             }
         }
 
-        public abstract class BundleDefinition : IBundleDefinition
+        public abstract class BundleConfiguration : IConfiguration<BundleCollection>
         {
-            public void AddBundles(BundleCollection bundles)
+            public void Configure(BundleCollection bundles)
             {
                 bundles.Add<StylesheetBundle>("~");
             }
@@ -142,7 +141,7 @@ namespace Cassette.MSBuild
                 AddSubClassOfConfiguration(module);
                 assembly.Save(filename);
 
-                var parentAssembly = typeof(BundleDefinition).Assembly.Location;
+                var parentAssembly = typeof(BundleConfiguration).Assembly.Location;
                 File.Copy(parentAssembly, Path.Combine(directory, Path.GetFileName(parentAssembly)));
                 File.Copy("Cassette.dll", Path.Combine(directory, "Cassette.dll"));
                 File.Copy("Cassette.CoffeeScript.dll", Path.Combine(directory, "Cassette.CoffeeScript.dll"));
@@ -155,7 +154,7 @@ namespace Cassette.MSBuild
 
             static void AddSubClassOfConfiguration(ModuleBuilder module)
             {
-                var type = module.DefineType("TestBundleDefinition", TypeAttributes.Public | TypeAttributes.Class, typeof(BundleDefinition));
+                var type = module.DefineType("TestBundleDefinition", TypeAttributes.Public | TypeAttributes.Class, typeof(BundleConfiguration));
                 type.CreateType();
             }
         }

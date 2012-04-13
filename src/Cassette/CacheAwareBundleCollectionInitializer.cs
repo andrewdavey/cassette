@@ -7,16 +7,16 @@ namespace Cassette
 {
     class CacheAwareBundleCollectionInitializer
     {
-        readonly IEnumerable<IBundleDefinition> bundleDefinitions;
+        readonly IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations;
         readonly ICassetteManifestCache manifestCache;
         readonly IUrlModifier urlModifier;
         readonly CassetteSettings settings;
         readonly ExternalBundleGenerator externalBundleGenerator;
         BundleCollection bundles;
 
-        public CacheAwareBundleCollectionInitializer(IEnumerable<IBundleDefinition> bundleDefinitions, ICassetteManifestCache manifestCache, IUrlModifier urlModifier, CassetteSettings settings, ExternalBundleGenerator externalBundleGenerator)
+        public CacheAwareBundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, ICassetteManifestCache manifestCache, IUrlModifier urlModifier, CassetteSettings settings, ExternalBundleGenerator externalBundleGenerator)
         {
-            this.bundleDefinitions = bundleDefinitions;
+            this.bundleConfigurations = bundleConfigurations;
             this.manifestCache = manifestCache;
             this.urlModifier = urlModifier;
             this.settings = settings;
@@ -46,7 +46,7 @@ namespace Cassette
 
         void AddBundlesFromDefinitions()
         {
-            bundles.AddRange(bundleDefinitions);
+            bundles.AddRange(bundleConfigurations);
         }
 
         void UseCurrentBundles()

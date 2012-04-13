@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
 using System.Xml.Linq;
-using Cassette.Configuration;
 using Cassette.IntegrationTests;
 using Cassette.Scripts;
 using Cassette.Views;
@@ -27,7 +26,7 @@ namespace Cassette
         {
             using (var host = new TestableWebHost("assets", routes, () => httpContext))
             {
-                host.AddBundleDefinition(new BundleDefinition(bundles => 
+                host.AddBundleConfiguration(new BundleConfiguration(bundles => 
                     bundles.AddPerSubDirectory<ScriptBundle>("scripts")
                 ));
                 host.Initialize();
@@ -47,7 +46,7 @@ namespace Cassette
         {
             using (var host = new TestableWebHost("assets", routes, () => httpContext, isAspNetDebuggingEnabled: true))
             {
-                host.AddBundleDefinition(new BundleDefinition(bundles =>
+                host.AddBundleConfiguration(new BundleConfiguration(bundles =>
                     bundles.AddPerSubDirectory<ScriptBundle>("scripts")
                 ));
                 host.Initialize();
@@ -70,7 +69,7 @@ namespace Cassette
         {
             using (var host = new TestableWebHost("assets", routes, () => httpContext))
             {
-                host.AddBundleDefinition(new BundleDefinition(bundles =>
+                host.AddBundleConfiguration(new BundleConfiguration(bundles =>
                     bundles.AddPerSubDirectory<ScriptBundle>("scripts")
                 ));
                 host.Initialize();
@@ -89,7 +88,7 @@ namespace Cassette
         {
             using (var host = new TestableWebHost("assets", routes, () => httpContext))
             {
-                host.AddBundleDefinition(new BundleDefinition(bundles =>
+                host.AddBundleConfiguration(new BundleConfiguration(bundles =>
                     bundles.AddPerSubDirectory<StylesheetBundle>("styles")
                 ));
                 host.Initialize();
@@ -136,16 +135,16 @@ namespace Cassette
             }
         }
 
-        class BundleDefinition : IBundleDefinition
+        class BundleConfiguration : IConfiguration<BundleCollection>
         {
             readonly Action<BundleCollection> addBundles;
 
-            public BundleDefinition(Action<BundleCollection> addBundles)
+            public BundleConfiguration(Action<BundleCollection> addBundles)
             {
                 this.addBundles = addBundles;
             }
 
-            public void AddBundles(BundleCollection bundles)
+            public void Configure(BundleCollection bundles)
             {
                 addBundles(bundles);
             }

@@ -238,7 +238,7 @@
     <Compile Include="Web\CassetteRoute.cs" />
     <Compile Include="UrlGenerator.cs" />
     <Compile Include="Web\CassetteRouteHandler.cs" />
-    <Compile Include="Web\Jasmine\CassetteConfiguration.cs" />
+    <Compile Include="Web\Jasmine\JasmineBundleConfiguration.cs" />
     <Compile Include="Web\PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />

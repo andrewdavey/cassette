@@ -12,7 +12,7 @@ namespace Cassette
     {
         readonly BundleCollection bundles;
         readonly FileSystemWatchingBundleRebuilder rebuilder;
-        readonly Mock<IBundleDefinition> bundleDefinition;
+        readonly Mock<IConfiguration<BundleCollection>> bundleConfiguration;
         readonly TempDirectory tempDirectory;
 
         public FileSystemWatchingBundleRebuilder_Tests()
@@ -23,9 +23,9 @@ namespace Cassette
                 SourceDirectory = new FileSystemDirectory(tempDirectory)
             };
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
-            bundleDefinition = new Mock<IBundleDefinition>();
+            bundleConfiguration = new Mock<IConfiguration<BundleCollection>>();
 
-            rebuilder = new FileSystemWatchingBundleRebuilder(settings, bundles, new[] { bundleDefinition.Object });
+            rebuilder = new FileSystemWatchingBundleRebuilder(settings, bundles, new[] { bundleConfiguration.Object });
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Cassette
             File.WriteAllText(Path.Combine(tempDirectory, "test.js"), "");
             Thread.Sleep(200); // Wait for the file system change event to fire.
 
-            bundleDefinition.Verify(d => d.AddBundles(bundles), Times.Once());
+            bundleConfiguration.Verify(d => d.Configure(bundles), Times.Once());
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Cassette
             File.Delete(filename);
             Thread.Sleep(200); // Wait for the file system change event to fire.
 
-            bundleDefinition.Verify(d => d.AddBundles(bundles), Times.Once());
+            bundleConfiguration.Verify(d => d.Configure(bundles), Times.Once());
         }
 
         public void Dispose()

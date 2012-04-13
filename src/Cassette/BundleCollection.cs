@@ -77,11 +77,11 @@ namespace Cassette
             }
         }
 
-        internal void AddRange(IEnumerable<IBundleDefinition> bundleDefinitions)
+        internal void AddRange(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations)
         {
-            foreach (var bundleDefinition in bundleDefinitions)
+            foreach (var configuration in bundleConfigurations)
             {
-                bundleDefinition.AddBundles(this);
+                configuration.Configure(this);
             }
         }
 

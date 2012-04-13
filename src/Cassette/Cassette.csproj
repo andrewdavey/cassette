@@ -74,6 +74,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />
     <Compile Include="FileSearchProvider.cs" />
     <Compile Include="HostBase.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
-    <Compile Include="Configuration\IBundleDefinition.cs" />
     <Compile Include="Configuration\IFileSearchModifier.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="BundleCollectionInitializer.cs" />

@@ -12,15 +12,15 @@ namespace Cassette
     {
         readonly CassetteSettings settings;
         readonly BundleCollection bundles;
-        readonly IEnumerable<IBundleDefinition> bundleDefinitions;
+        readonly IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations;
         IDisposable fileSystemWatcher;
         Timer rebuildDelayTimer;
 
-        public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, IEnumerable<IBundleDefinition> bundleDefinitions)
+        public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations)
         {
             this.settings = settings;
             this.bundles = bundles;
-            this.bundleDefinitions = bundleDefinitions;
+            this.bundleConfigurations = bundleConfigurations;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Cassette
             using (bundles.GetWriteLock())
             {
                 bundles.Clear();
-                bundles.AddRange(bundleDefinitions);
+                bundles.AddRange(bundleConfigurations);
             }
         }
 

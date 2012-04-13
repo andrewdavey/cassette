@@ -56,14 +56,11 @@ namespace Cassette.MSBuild
             }
         }
 
-        protected override CassetteSettings Settings
+        protected override CassetteSettings CreateSettings()
         {
-            get
-            {
-                var settings = base.Settings;
-                settings.SourceDirectory = new FileSystemDirectory(Environment.CurrentDirectory);
-                return settings;
-            }
+            var settings = base.CreateSettings();
+            settings.SourceDirectory = new FileSystemDirectory(Environment.CurrentDirectory);
+            return settings;
         }
 
         protected override void RegisterContainerItems()

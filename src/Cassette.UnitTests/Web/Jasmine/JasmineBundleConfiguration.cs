@@ -8,17 +8,17 @@ using Xunit;
 
 namespace Cassette.Web.Jasmine
 {
-    public class CassetteConfiguration_WhenConfigure
+    public class JasmineBundleConfiguration_WhenConfigure
     {
         readonly BundleCollection bundles;
 
-        public CassetteConfiguration_WhenConfigure()
+        public JasmineBundleConfiguration_WhenConfigure()
         {
-            var bundleDefinition = new JasmineBundleDefinition(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IStylesheetMinifier>(), Mock.Of<IUrlGenerator>());
+            var configuration = new JasmineBundleConfiguration(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IStylesheetMinifier>(), Mock.Of<IUrlGenerator>());
             var settings = new CassetteSettings();
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
 
-            bundleDefinition.AddBundles(bundles);
+            configuration.Configure(bundles);
         }
 
         [Fact]

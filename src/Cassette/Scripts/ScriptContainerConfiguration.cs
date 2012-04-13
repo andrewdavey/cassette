@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 namespace Cassette.Scripts
 {
     // TODO: Decide if this should be Script or ScriptBundle
+    [ConfigurationOrder(10)]
     class ScriptContainerConfiguration : ContainerConfiguration<ScriptBundle>
     {
         public ScriptContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)

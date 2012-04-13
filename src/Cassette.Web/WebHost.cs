@@ -65,20 +65,20 @@ namespace Cassette.Web
             });
         }
 
-        protected override CassetteSettings Settings
+        protected override CassetteSettings CreateSettings()
         {
-            get
-            {
-                var settings = base.Settings;
-                var configurationSection = GetConfigurationSection();
-                settings.IsDebuggingEnabled = configurationSection.Debug.HasValue ? configurationSection.Debug.Value : IsAspNetDebuggingEnabled;
-                settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
-                settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
-                settings.SourceDirectory = new FileSystemDirectory(AppDomainAppPath);
-                settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
-                settings.PrecompiledManifestFile = settings.SourceDirectory.GetFile(string.IsNullOrEmpty(configurationSection.PrecompiledManifest) ? "~/App_Data/cassette.xml" : configurationSection.PrecompiledManifest);
-                return settings;
-            }
+            var settings = base.CreateSettings();
+            var configurationSection = GetConfigurationSection();
+            settings.IsDebuggingEnabled = configurationSection.Debug.HasValue ? configurationSection.Debug.Value : IsAspNetDebuggingEnabled;
+            settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
+            settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
+            settings.SourceDirectory = new FileSystemDirectory(AppDomainAppPath);
+            settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
+            var precompiledManifestFilename = string.IsNullOrEmpty(configurationSection.PrecompiledManifest) 
+                ? "~/App_Data/cassette.xml" 
+                : configurationSection.PrecompiledManifest;
+            settings.PrecompiledManifestFile = settings.SourceDirectory.GetFile(precompiledManifestFilename);
+            return settings;
         }
 
         protected virtual string AppDomainAppPath

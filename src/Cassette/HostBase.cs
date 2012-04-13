@@ -23,28 +23,40 @@ namespace Cassette
     public abstract class HostBase : IDisposable
     {
         TinyIoCContainer container;
+        Assembly[] allAssemblies;
         Type[] allTypes;
         Type[] configurationTypes;
 
         public void Initialize()
         {
-            LoadAllTypes();
-            configurationTypes = GetConfigurationTypes().ToArray();
+            allAssemblies = LoadAssemblies().ToArray();
+            allTypes = LoadAllTypes(allAssemblies).ToArray();
+            configurationTypes = GetConfigurationTypes(allTypes).ToArray();
+
             container = new TinyIoCContainer();
             RegisterContainerItems();
             RunStartUpTasks();
             CreateBundles();
         }
 
-        protected virtual IEnumerable<Type> GetConfigurationTypes()
+        protected virtual IEnumerable<Type> GetConfigurationTypes(IEnumerable<Type> typesToSearch)
         {
-            return
-                from type in allTypes
+            var publicTypes =
+                from type in typesToSearch
                 where type.IsClass && !type.IsAbstract
                 from interfaceType in type.GetInterfaces()
                 where interfaceType.IsGenericType &&
                       interfaceType.GetGenericTypeDefinition() == typeof(IConfiguration<>)
                 select type;
+
+            var internalTypes = new[]
+            {
+                typeof(ScriptContainerConfiguration),
+                typeof(HtmlTemplateContainerConfiguration),
+                typeof(StylesheetContainerConfiguration)
+            };
+
+            return publicTypes.Concat(internalTypes);
         }
 
         protected TinyIoCContainer Container
@@ -52,16 +64,14 @@ namespace Cassette
             get { return container; }
         }
 
-        void LoadAllTypes()
+        IEnumerable<Type> LoadAllTypes(IEnumerable<Assembly> assemblies)
         {
-            var assemblies = LoadAssemblies();
-            allTypes = (
+            return
                 from assembly in assemblies
                 where !IgnoredAssemblies.Any(ignore => ignore(assembly))
                 from type in assembly.GetExportedTypes()
                 where !type.IsAbstract
-                select type
-            ).ToArray();
+                select type;
         }
 
         static readonly List<Func<Assembly, bool>> IgnoredAssemblies = new List<Func<Assembly, bool>>
@@ -115,9 +125,8 @@ namespace Cassette
             });
 
             Container.RegisterMultiple(typeof(IStartUpTask), GetStartUpTaskTypes());
-            Container.RegisterMultiple(typeof(IBundleDefinition), GetImplementationTypes(typeof(IBundleDefinition)));
-
-            Container.Register(typeof(CassetteSettings), Settings);
+            
+            Container.Register(typeof(CassetteSettings), CreateSettings());
             Container.Register(
                 typeof(IBundleFactoryProvider),
                 (c, p) => new BundleFactoryProvider(
@@ -134,21 +143,45 @@ namespace Cassette
                 )
             );
 
-            new ScriptContainerConfiguration(GetImplementationTypes).Configure(Container);
-            new StylesheetContainerConfiguration(GetImplementationTypes).Configure(Container);
-            new HtmlTemplateContainerConfiguration(GetImplementationTypes).Configure(Container);
+            ExecuteContainerConfigurations();
 
-            var containerConfigurations = configurationTypes
-                .Where(type => typeof(IConfiguration<TinyIoCContainer>).IsAssignableFrom(type))
-                .Select(Activator.CreateInstance)
-                .Cast<IConfiguration<TinyIoCContainer>>();
+            RegisterConfigurationTypes();
+        }
+
+        void ExecuteContainerConfigurations()
+        {
+            var containerConfigurations = CreateContainerConfigurations();
             foreach (var containerConfiguration in containerConfigurations)
             {
                 containerConfiguration.Configure(container);
             }
+        }
 
+        IEnumerable<IConfiguration<TinyIoCContainer>> CreateContainerConfigurations()
+        {
+            var containerConfigurations =
+                from type in configurationTypes
+                where typeof(IConfiguration<TinyIoCContainer>).IsAssignableFrom(type)
+                orderby ConfigurationOrderAttribute.GetOrder(type)
+                select CreateContainerConfiguration(type);
+            return containerConfigurations;
+        }
 
-            RegisterConfigurationTypes();
+        IConfiguration<TinyIoCContainer> CreateContainerConfiguration(Type type)
+        {
+            var ctor = type.GetConstructors().First();
+            var isDefaultConstructor = ctor.GetParameters().Length == 0;
+            if (isDefaultConstructor)
+            {
+                return (IConfiguration<TinyIoCContainer>)Activator.CreateInstance(type);
+            }
+            else
+            {
+                // Special hack for the bundle container configurations.
+                // They take the GetImplementationTypes delegate.
+                var args = new object[] { new Func<Type, IEnumerable<Type>>(GetImplementationTypes) };
+                return (IConfiguration<TinyIoCContainer>)ctor.Invoke(args);
+            }
         }
 
         void RegisterConfigurationTypes()
@@ -157,7 +190,8 @@ namespace Cassette
                 from type in configurationTypes
                 from interfaceType in type.GetInterfaces()
                 where interfaceType.IsGenericType &&
-                      interfaceType.GetGenericTypeDefinition() == typeof(IConfiguration<>)
+                      interfaceType.GetGenericTypeDefinition() == typeof(IConfiguration<>) &&
+                      interfaceType != typeof(IConfiguration<TinyIoCContainer>) //  These have already been created and used.
                 select new
                 {
                     registrationType = interfaceType,
@@ -218,16 +252,13 @@ namespace Cassette
             }
         }
 
-        protected virtual CassetteSettings Settings
+        protected virtual CassetteSettings CreateSettings()
         {
-            get
+            return new CassetteSettings
             {
-                return new CassetteSettings
-                {
-                    Version = GetHostVersion(),
-                    PrecompiledManifestFile = new NonExistentFile("")
-                };
-            }
+                Version = GetHostVersion(),
+                PrecompiledManifestFile = new NonExistentFile("")
+            };
         }
 
         protected virtual string GetHostVersion()
@@ -240,13 +271,8 @@ namespace Cassette
             using (var allHashes = new MemoryStream())
             using (var sha1 = SHA1.Create())
             {
-                var filenames = AppDomain.CurrentDomain
-                    .GetAssemblies()
-#if NET35
-                    .Where(assembly => !(assembly.ManifestModule is ModuleBuilder))
-#else
-                    .Where(assembly => !assembly.IsDynamic)
-#endif
+                var filenames = allAssemblies
+                    .Where(IsNotDynamic)
                     .Select(assembly => assembly.Location)
                     .OrderBy(filename => filename);
 
@@ -261,6 +287,15 @@ namespace Cassette
                 allHashes.Position = 0;
                 return Convert.ToBase64String(sha1.ComputeHash(allHashes));
             }
+        }
+
+        bool IsNotDynamic(Assembly assembly)
+        {
+#if NET35
+            return !(assembly.ManifestModule is ModuleBuilder);
+#else
+            return !assembly.IsDynamic;
+#endif
         }
 
         /// <summary>

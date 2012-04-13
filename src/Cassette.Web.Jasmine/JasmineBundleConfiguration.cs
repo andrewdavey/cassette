@@ -1,23 +1,22 @@
-using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
 namespace Cassette.Web.Jasmine
 {
-    public class JasmineBundleDefinition : IBundleDefinition
+    public class JasmineBundleConfiguration : IConfiguration<BundleCollection>
     {
         readonly IJavaScriptMinifier javaScriptMinifier;
         readonly IStylesheetMinifier stylesheetMinifier;
         readonly IUrlGenerator urlGenerator;
 
-        public JasmineBundleDefinition(IJavaScriptMinifier javaScriptMinifier, IStylesheetMinifier stylesheetMinifier, IUrlGenerator urlGenerator)
+        public JasmineBundleConfiguration(IJavaScriptMinifier javaScriptMinifier, IStylesheetMinifier stylesheetMinifier, IUrlGenerator urlGenerator)
         {
             this.javaScriptMinifier = javaScriptMinifier;
             this.stylesheetMinifier = stylesheetMinifier;
             this.urlGenerator = urlGenerator;
         }
 
-        public void AddBundles(BundleCollection bundles)
+        public void Configure(BundleCollection bundles)
         {
             var script = CreateScriptBundle();
             bundles.Add(script);

@@ -5,13 +5,13 @@ namespace Cassette
 {
     class BundleCollectionInitializer : IBundleCollectionInitializer
     {
-        readonly IEnumerable<IBundleDefinition> bundleDefinitions;
+        readonly IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations;
         readonly ExternalBundleGenerator externalBundleGenerator;
         BundleCollection bundles;
 
-        public BundleCollectionInitializer(IEnumerable<IBundleDefinition> bundleDefinitions, ExternalBundleGenerator externalBundleGenerator)
+        public BundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, ExternalBundleGenerator externalBundleGenerator)
         {
-            this.bundleDefinitions = bundleDefinitions;
+            this.bundleConfigurations = bundleConfigurations;
             this.externalBundleGenerator = externalBundleGenerator;
         }
 
@@ -20,16 +20,16 @@ namespace Cassette
             using (bundleCollection.GetWriteLock())
             {
                 bundles = bundleCollection;
-                AddBundlesFromDefinitions();
+                AddBundles();
                 ProcessBundles();
                 AddBundlesForUrlReferences();
                 bundles.BuildReferences();
             }
         }
 
-        void AddBundlesFromDefinitions()
+        void AddBundles()
         {
-            bundles.AddRange(bundleDefinitions);
+            bundles.AddRange(bundleConfigurations);
         }
 
         void ProcessBundles()

@@ -5,9 +5,9 @@ using Cassette.Stylesheets;
 
 namespace Website
 {
-    public class CassetteConfiguration : IBundleDefinition
+    public class CassetteConfiguration : IConfiguration<BundleCollection>
     {
-        public void AddBundles(BundleCollection bundles)
+        public void Configure(BundleCollection bundles)
         {
             bundles.Add<StylesheetBundle>("assets/styles");
             bundles.Add<StylesheetBundle>("assets/iestyles", b => b.Condition = "IE");

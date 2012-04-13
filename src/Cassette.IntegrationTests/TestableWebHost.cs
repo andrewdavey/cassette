@@ -16,7 +16,7 @@ namespace Cassette
         readonly RouteCollection routes;
         readonly Func<HttpContextBase> getHttpContext;
         readonly bool isAspNetDebuggingEnabled;
-        readonly List<IBundleDefinition> bundleDefinitions = new List<IBundleDefinition>();
+        readonly List<IConfiguration<BundleCollection>> bundleConfigurations = new List<IConfiguration<BundleCollection>>();
 
         public TestableWebHost(string sourceDirectory, RouteCollection routes, Func<HttpContextBase> getHttpContext, bool isAspNetDebuggingEnabled = false)
         {
@@ -35,12 +35,12 @@ namespace Cassette
         protected override void RegisterContainerItems()
         {
             base.RegisterContainerItems();
-            Container.Register(typeof(IEnumerable<IBundleDefinition>), bundleDefinitions);
+            Container.Register(typeof(IEnumerable<IConfiguration<BundleCollection>>), bundleConfigurations);
         }
 
-        public void AddBundleDefinition(IBundleDefinition bundleDefinition)
+        public void AddBundleConfiguration(IConfiguration<BundleCollection> bundleConfiguration)
         {
-            bundleDefinitions.Add(bundleDefinition);
+            bundleConfigurations.Add(bundleConfiguration);
         }
 
         protected override HttpContextBase HttpContext()

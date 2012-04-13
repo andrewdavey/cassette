@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Cassette.Stylesheets
 {
+    [ConfigurationOrder(10)]
     class StylesheetContainerConfiguration : ContainerConfiguration<StylesheetBundle>
     {
         public StylesheetContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
