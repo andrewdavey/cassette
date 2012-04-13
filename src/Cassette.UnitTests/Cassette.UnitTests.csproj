@@ -222,7 +222,6 @@
     <Compile Include="TestableBundle.cs" />
     <Compile Include="Views\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
-    <Compile Include="BundleContainer.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
