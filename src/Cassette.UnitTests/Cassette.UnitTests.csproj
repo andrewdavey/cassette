@@ -183,6 +183,7 @@
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
     <Compile Include="Scripts\ScriptBundleContainerConfiguration.cs" />
+    <Compile Include="ServicesConfiguration.cs" />
     <Compile Include="StubAsset.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
