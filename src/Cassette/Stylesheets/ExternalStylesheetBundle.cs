@@ -11,6 +11,7 @@ namespace Cassette.Stylesheets
     {
         readonly string url;
         bool isDebuggingEnabled;
+        IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer;
 
         public ExternalStylesheetBundle(string url)
             : base(url)
@@ -27,7 +28,7 @@ namespace Cassette.Stylesheets
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            FallbackRenderer = Renderer;
+            fallbackRenderer = Renderer;
             isDebuggingEnabled = settings.IsDebuggingEnabled;
             Renderer = this;
         }
@@ -48,13 +49,11 @@ namespace Cassette.Stylesheets
             get { return url; }
         }
 
-        internal IBundleHtmlRenderer<StylesheetBundle> FallbackRenderer { get; set; } 
-
         public string Render(StylesheetBundle unusedParameter)
         {
             if (isDebuggingEnabled && Assets.Any())
             {
-                return FallbackRenderer.Render(this);
+                return fallbackRenderer.Render(this);
             }
 
             var conditionalRenderer = new ConditionalRenderer();
