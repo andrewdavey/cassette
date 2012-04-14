@@ -15,7 +15,7 @@ namespace Cassette.BundleProcessing
 
             public WhenInsertAfterSingleExistingStep()
             {
-                pipeline = new BundlePipeline<TestableBundle>();
+                pipeline = new TestableBundlePipeline();
                 firstStep = new AssignHash();
                 pipeline.Add(firstStep);
 
@@ -45,7 +45,7 @@ namespace Cassette.BundleProcessing
 
             public WhenInsertAfterWithMultipleNewSteps()
             {
-                pipeline = new BundlePipeline<TestableBundle>();
+                pipeline = new TestableBundlePipeline();
                 var firstStep = new AssignHash();
                 pipeline.Add(firstStep);
 
@@ -70,7 +70,7 @@ namespace Cassette.BundleProcessing
 
             public WhenInsertBeforeSingleExistingStep()
             {
-                pipeline = new BundlePipeline<TestableBundle>();
+                pipeline = new TestableBundlePipeline();
                 firstStep = new AssignHash();
                 pipeline.Add(firstStep);
 
@@ -100,7 +100,7 @@ namespace Cassette.BundleProcessing
 
             public WhenInsertBeforeWithMultipleNewSteps()
             {
-                pipeline = new BundlePipeline<TestableBundle>();
+                pipeline = new TestableBundlePipeline();
                 var firstStep = new AssignHash();
                 pipeline.Add(firstStep);
 

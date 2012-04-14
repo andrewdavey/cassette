@@ -3,6 +3,7 @@ using System.IO;
 using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Moq;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Scripts
@@ -23,8 +24,13 @@ namespace Cassette.Scripts
             bundle.Assets.Add(asset.Object);
 
             compiler = new Mock<ICoffeeScriptCompiler>();
-            var modifier = new CoffeeScriptBundlePipelineModifier(compiler.Object);
-            pipeline = new ScriptPipeline(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IUrlGenerator>());
+            var settings = new CassetteSettings();
+            var modifier = new CoffeeScriptBundlePipelineModifier(compiler.Object, settings);
+            var container = new TinyIoCContainer();
+            container.Register(Mock.Of<IJavaScriptMinifier>());
+            container.Register(Mock.Of<IUrlGenerator>());
+            container.Register(settings);
+            pipeline = new ScriptPipeline(container, settings);
             pipeline = modifier.Modify(pipeline);
         }
 
@@ -34,7 +40,7 @@ namespace Cassette.Scripts
             CompileAsset transformer = null;
             ExpectCompileAssetTransformToBeAddedToAsset(t => transformer = t);
 
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle);
 
             ExpectCompileToBeCalled();
             ApplyTransform(transformer);

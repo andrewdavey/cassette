@@ -115,7 +115,7 @@
     <Compile Include="BundleCollectionTestsBase.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
-    <Compile Include="BundleProcessing\ConditionalBundlePipeline.cs" />
+    <Compile Include="BundleProcessing\TestableBundlePipeline.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="BundleCollection.Add.cs" />
     <Compile Include="BundleCollection.AddPerSubDirectory.cs" />

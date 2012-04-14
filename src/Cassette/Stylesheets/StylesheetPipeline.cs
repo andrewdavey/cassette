@@ -1,24 +1,28 @@
 ﻿using Cassette.BundleProcessing;
+using Cassette.Configuration;
+using TinyIoC;
 
 namespace Cassette.Stylesheets
 {
     public class StylesheetPipeline : BundlePipeline<StylesheetBundle>
     {
-        public StylesheetPipeline(IStylesheetMinifier stylesheetMinifier, IUrlGenerator urlGenerator)
+        public StylesheetPipeline(TinyIoCContainer container, CassetteSettings settings) : base(container)
         {
             AddRange(new IBundleProcessor<StylesheetBundle>[]
             {
-                new AssignStylesheetRenderer(urlGenerator),
-                new ParseCssReferences(),
-                new ExpandCssUrls(urlGenerator),
+                container.Resolve<AssignStylesheetRenderer>(),
+                new ParseCssReferences(), 
+                container.Resolve<ExpandCssUrls>(),
                 new SortAssetsByDependency(),
-                new AssignHash(),
-                new ConditionalBundlePipeline<StylesheetBundle>(
-                    settings => !settings.IsDebuggingEnabled,
-                    new ConcatenateAssets(),
-                    new MinifyAssets(stylesheetMinifier)
-                )
+                new AssignHash()
             });
+
+            if (!settings.IsDebuggingEnabled)
+            {
+                Add(container.Resolve<ConcatenateAssets>());
+                var minifier = container.Resolve<IStylesheetMinifier>();
+                Add(new MinifyAssets(minifier));
+            }
         }
     }
 }

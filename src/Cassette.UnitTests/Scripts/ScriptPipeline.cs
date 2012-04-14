@@ -4,6 +4,7 @@ using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
+using TinyIoC;
 
 namespace Cassette.Scripts
 {
@@ -12,22 +13,28 @@ namespace Cassette.Scripts
         readonly ScriptPipeline pipeline;
         readonly IJavaScriptMinifier minifier;
         readonly IUrlGenerator urlGenerator;
+        readonly CassetteSettings settings;
 
         public ScriptPipeline_Tests()
         {
             minifier = Mock.Of<IJavaScriptMinifier>();
             urlGenerator = Mock.Of<IUrlGenerator>();
-            pipeline = new ScriptPipeline(minifier, urlGenerator);
+            var container = new TinyIoCContainer();
+            settings = new CassetteSettings();
+            container.Register(minifier);
+            container.Register(urlGenerator);
+            container.Register(settings);
+            pipeline = new ScriptPipeline(container, settings);
         }
 
         [Fact]
         public void GivenProductionMode_WhenProcessBundle_ThenRendererIsScriptBundleHtmlRenderer()
         {
-            var settings = new CassetteSettings() { IsDebuggingEnabled = false };
+            settings.IsDebuggingEnabled = false;
 
             var bundle = new ScriptBundle("~/test");
 
-            pipeline.Process(bundle, settings);
+            pipeline.Process(bundle);
 
             bundle.Renderer.ShouldBeType<ScriptBundleHtmlRenderer>();
         }
@@ -35,11 +42,11 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenDebugMode_WhenProcessBundle_ThenRendererIsDebugScriptBundleHtmlRenderer()
         {
-            var settings = new CassetteSettings() { IsDebuggingEnabled = true };
+            settings.IsDebuggingEnabled = true;
 
             var bundle = new ScriptBundle("~/test");
 
-            pipeline.Process(bundle, settings);
+            pipeline.Process(bundle);
 
             bundle.Renderer.ShouldBeType<DebugScriptBundleHtmlRenderer>();
         }
@@ -51,7 +58,7 @@ namespace Cassette.Scripts
             var asset = StubCoffeeScriptAsset();
             bundle.Assets.Add(asset.Object);
             
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()), Times.Never());
         }
@@ -61,7 +68,7 @@ namespace Cassette.Scripts
         {
             var bundle = new ScriptBundle("~");
 
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle);
 
             bundle.Hash.ShouldNotBeNull();
         }

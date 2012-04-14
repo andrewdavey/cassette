@@ -1,10 +1,12 @@
 ﻿using Cassette.BundleProcessing;
+using TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplatePipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        public HtmlTemplatePipeline()
+        public HtmlTemplatePipeline(TinyIoCContainer container)
+            : base(container)
         {
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {

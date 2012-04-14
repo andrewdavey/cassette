@@ -4,6 +4,7 @@ using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -18,9 +19,15 @@ namespace Cassette.Stylesheets
             var minifier = Mock.Of<IStylesheetMinifier>();
             var urlGenerator = Mock.Of<IUrlGenerator>();
             var compiler = new Mock<ISassCompiler>();
-            var modifier = new SassBundlePipelineModifier(compiler.Object);
+            var settings = new CassetteSettings();
+            var modifier = new SassBundlePipelineModifier(compiler.Object, settings);
 
-            originalPipeline = new StylesheetPipeline(minifier, urlGenerator);
+            var container = new TinyIoCContainer();
+            container.Register(minifier);
+            container.Register(urlGenerator);
+            container.Register(settings);
+
+            originalPipeline = new StylesheetPipeline(container, settings);
             modifiedPipeline = modifier.Modify(originalPipeline);
         }
 
@@ -36,7 +43,7 @@ namespace Cassette.Stylesheets
             var asset = StubAsset("~/file.scss", "// @reference 'other.scss';");
             var bundle = StubBundle(asset);
 
-            modifiedPipeline.Process(bundle, new CassetteSettings());
+            modifiedPipeline.Process(bundle);
 
             asset.Verify(a => a.AddReference("other.scss", 1));
         }
@@ -47,7 +54,7 @@ namespace Cassette.Stylesheets
             var asset = StubAsset("~/file.sass", "// @reference 'other.sass';");
             var bundle = StubBundle(asset);
 
-            modifiedPipeline.Process(bundle, new CassetteSettings());
+            modifiedPipeline.Process(bundle);
 
             asset.Verify(a => a.AddReference("other.sass", 1));
         }
@@ -58,7 +65,7 @@ namespace Cassette.Stylesheets
             var asset = StubAsset("~/file.scss");
             var bundle = StubBundle(asset);
 
-            modifiedPipeline.Process(bundle, new CassetteSettings());
+            modifiedPipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
         }
@@ -69,7 +76,7 @@ namespace Cassette.Stylesheets
             var asset = StubAsset("~/file.sass");
             var bundle = StubBundle(asset);
 
-            modifiedPipeline.Process(bundle, new CassetteSettings());
+            modifiedPipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
         }

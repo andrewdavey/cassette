@@ -1,23 +1,28 @@
 ﻿using Cassette.BundleProcessing;
+using Cassette.Configuration;
+using TinyIoC;
 
 namespace Cassette.Scripts
 {
     public class ScriptPipeline : BundlePipeline<ScriptBundle>
     {
-        public ScriptPipeline(IJavaScriptMinifier javaScriptMinifier, IUrlGenerator urlGenerator)
+        public ScriptPipeline(TinyIoCContainer container, CassetteSettings settings)
+            : base(container)
         {
             AddRange(new IBundleProcessor<ScriptBundle>[]
             {
-                new AssignScriptRenderer(urlGenerator),
+                container.Resolve<AssignScriptRenderer>(),
                 new ParseJavaScriptReferences(),
                 new SortAssetsByDependency(),
-                new AssignHash(),
-                new ConditionalBundlePipeline<ScriptBundle>(
-                    settings => !settings.IsDebuggingEnabled,
-                    new ConcatenateAssets(),
-                    new MinifyAssets(javaScriptMinifier)
-                )
+                new AssignHash()
             });
+
+            if (!settings.IsDebuggingEnabled)
+            {
+                Add(new ConcatenateAssets());
+                var minifier = container.Resolve<IJavaScriptMinifier>();
+                Add(new MinifyAssets(minifier));
+            }
         }
     }
 }

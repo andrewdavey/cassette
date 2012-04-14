@@ -1,5 +1,4 @@
-﻿using Cassette.Configuration;
-using Moq;
+﻿using Moq;
 using Xunit;
 using Cassette.Utilities;
 
@@ -24,7 +23,7 @@ namespace Cassette.HtmlTemplates
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseHtmlTemplateReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.js", 3));
@@ -49,7 +48,7 @@ namespace Cassette.HtmlTemplates
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseHtmlTemplateReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.js", 3));

@@ -86,7 +86,6 @@
     <Compile Include="BundleFactoryProvider.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
-    <Compile Include="BundleProcessing\ConditionalBundlePipeline.cs" />
     <Compile Include="BundleProcessing\IBundlePipeline.cs" />
     <Compile Include="BundleProcessing\IBundlePipelineModifier.cs" />
     <Compile Include="BundleReferenceCollector.cs" />

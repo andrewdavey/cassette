@@ -1,5 +1,4 @@
-﻿using Cassette.Configuration;
-using Cassette.Utilities;
+﻿using Cassette.Utilities;
 using Moq;
 using Xunit;
 
@@ -24,7 +23,7 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseLessReferences();
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddReference("another1.less", 2));
             asset.Verify(a => a.AddReference("/another2.less", 3));

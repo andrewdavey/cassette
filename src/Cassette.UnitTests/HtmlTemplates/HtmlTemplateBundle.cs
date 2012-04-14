@@ -17,7 +17,7 @@ namespace Cassette.HtmlTemplates
 
             bundle.Process(settings);
 
-            processor.Verify(p => p.Process(bundle, settings));
+            processor.Verify(p => p.Process(bundle));
         }
 
         [Fact]

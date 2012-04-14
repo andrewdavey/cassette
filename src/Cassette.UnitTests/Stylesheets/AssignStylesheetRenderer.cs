@@ -10,11 +10,11 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenProductionMode_WhenProcess_ThenBundleRenderIsStylesheetHtmlRenderer()
         {
-            var processor = new AssignStylesheetRenderer(Mock.Of<IUrlGenerator>());
-            var settings = new CassetteSettings() { IsDebuggingEnabled = false };
+            var settings = new CassetteSettings { IsDebuggingEnabled = false };
+            var processor = new AssignStylesheetRenderer(Mock.Of<IUrlGenerator>(), settings);
             var bundle = new StylesheetBundle("~/test");
 
-            processor.Process(bundle, settings);
+            processor.Process(bundle);
 
             bundle.Renderer.ShouldBeType<StylesheetHtmlRenderer>();
         }
@@ -22,11 +22,11 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenDebugMode_WhenProcess_ThenBundleRenderIsDebugStylesheetHtmlRenderer()
         {
-            var processor = new AssignStylesheetRenderer(Mock.Of<IUrlGenerator>());
-            var settings = new CassetteSettings() { IsDebuggingEnabled = true };
+            var settings = new CassetteSettings { IsDebuggingEnabled = true };
+            var processor = new AssignStylesheetRenderer(Mock.Of<IUrlGenerator>(), settings);
             var bundle = new StylesheetBundle("~/test");
 
-            processor.Process(bundle, settings);
+            processor.Process(bundle);
 
             bundle.Renderer.ShouldBeType<DebugStylesheetHtmlRenderer>();
         }

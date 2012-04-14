@@ -12,19 +12,22 @@ namespace Cassette.Stylesheets
 
         public static StylesheetPipeline EmbedImages(this StylesheetPipeline pipeline, Func<string, bool> shouldEmbedUrl)
         {
-            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(new ConvertImageUrlsToDataUris(shouldEmbedUrl));
+            var factory = pipeline.Container.Resolve<ConvertImageUrlsToDataUris.Factory>();
+            var step = factory(shouldEmbedUrl);
+            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(step);
             return pipeline;
         }
 
         public static StylesheetPipeline EmbedFonts(this StylesheetPipeline pipeline)
         {
-            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(new ConvertFontUrlsToDataUris());
-            return pipeline;
+            return pipeline.EmbedFonts(path => true);
         }
 
         public static StylesheetPipeline EmbedFonts(this StylesheetPipeline pipeline, Func<string, bool> shouldEmbedUrl)
         {
-            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(new ConvertFontUrlsToDataUris(shouldEmbedUrl));
+            var factory = pipeline.Container.Resolve<ConvertFontUrlsToDataUris.Factory>();
+            var step = factory(shouldEmbedUrl);
+            pipeline.InsertBefore<ExpandCssUrls, StylesheetBundle>(step);
             return pipeline;
         }
     }

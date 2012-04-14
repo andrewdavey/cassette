@@ -149,7 +149,7 @@ namespace Cassette
 
             builder.Reference("http://test.com/test.js");
 
-            processor.Verify(p => p.Process(bundle, settings));
+            processor.Verify(p => p.Process(bundle));
         }
 
         [Fact]

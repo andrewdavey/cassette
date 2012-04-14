@@ -10,7 +10,7 @@ namespace Cassette.Scripts
         public CompileCoffeeScript_Tests()
         {
             var compiler = new Mock<ICompiler>();
-            step = new CompileCoffeeScript(compiler.Object);
+            step = new CompileCoffeeScript(compiler.Object, new CassetteSettings());
         }
 
         readonly CompileCoffeeScript step;
@@ -23,7 +23,7 @@ namespace Cassette.Scripts
             coffeeScriptAsset.SetupGet(a => a.Path).Returns("test.coffee");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(bundle, new CassetteSettings());
+            step.Process(bundle);
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(
@@ -42,7 +42,7 @@ namespace Cassette.Scripts
             coffeeScriptAsset.SetupGet(a => a.Path).Returns("test.js");
             bundle.Assets.Add(coffeeScriptAsset.Object);
 
-            step.Process(bundle, new CassetteSettings());
+            step.Process(bundle);
 
             coffeeScriptAsset.Verify(
                 a => a.AddAssetTransformer(

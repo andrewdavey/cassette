@@ -14,7 +14,7 @@ namespace Cassette.Stylesheets
 
         public CompileSass_Tests()
         {
-            processor = new CompileSass(Mock.Of<ICompiler>());
+            processor = new CompileSass(Mock.Of<ICompiler>(), new CassetteSettings());
             bundle = new StylesheetBundle("~");
             asset = new Mock<IAsset>();
         }
@@ -25,7 +25,7 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.Path).Returns("test.scss");
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)));
         }
@@ -36,7 +36,7 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.Path).Returns("test.sass");
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)));
         }
@@ -47,7 +47,7 @@ namespace Cassette.Stylesheets
             asset.SetupGet(a => a.Path).Returns("test.css");
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(at => at is CompileAsset)), Times.Never());
         }

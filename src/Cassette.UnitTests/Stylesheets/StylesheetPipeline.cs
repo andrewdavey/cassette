@@ -1,25 +1,33 @@
 ﻿using System.IO;
 using System.Linq;
-using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Stylesheets
 {
     public class StylesheetPipeline_Tests
     {
-        readonly StylesheetPipeline pipeline;
         readonly Mock<IStylesheetMinifier> minifier;
         readonly Mock<IUrlGenerator> urlGenerator;
+        readonly CassetteSettings settings;
+        readonly TinyIoCContainer container;
 
         public StylesheetPipeline_Tests()
         {
             minifier = new Mock<IStylesheetMinifier>();
             urlGenerator = new Mock<IUrlGenerator>();
-            pipeline = new StylesheetPipeline(minifier.Object, urlGenerator.Object);
+            settings = new CassetteSettings
+            {
+                SourceDirectory = new FakeFileSystem()
+            };
+            container = new TinyIoCContainer();
+            container.Register(minifier.Object);
+            container.Register(urlGenerator.Object);
+            container.Register(settings);
         }
 
         [Fact]
@@ -32,10 +40,10 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             // Remove the ConcatenateAssets step, so the transformer is added to our mock asset instead of the concatenated asset object.
-            var lastStep = (ConditionalBundlePipeline<StylesheetBundle>)pipeline[pipeline.Count - 1];
-            lastStep.RemoveAt(0);
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.RemoveAt(pipeline.Count - 2);
 
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t == minifier.Object)));
         }
@@ -49,8 +57,9 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
+            var pipeline = new StylesheetPipeline(container, settings);
             pipeline.EmbedImages();
-            pipeline.Process(bundle, new CassetteSettings() { SourceDirectory = new FakeFileSystem() });
+            pipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)));
         }
@@ -64,7 +73,8 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            pipeline.Process(bundle, new CassetteSettings());
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)), Times.Never());
         }
@@ -74,7 +84,8 @@ namespace Cassette.Stylesheets
         {
             var bundle = new StylesheetBundle("~");
 
-            pipeline.Process(bundle, new CassetteSettings());
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.Process(bundle);
 
             bundle.Hash.ShouldNotBeNull();
         }
@@ -104,16 +115,19 @@ namespace Cassette.Stylesheets
 
             minifier = new MicrosoftStylesheetMinifier();
             urlGenerator = new Mock<IUrlGenerator>();
-            pipeline = new StylesheetPipeline(minifier, urlGenerator.Object);
+            container = new TinyIoCContainer();
+            container.Register(minifier);
+            container.Register(urlGenerator.Object);
+            container.Register(settings);
         }
 
-        protected readonly StylesheetPipeline pipeline;
-        protected readonly IStylesheetMinifier minifier;
-        protected readonly Mock<IUrlGenerator> urlGenerator;
+        readonly IStylesheetMinifier minifier;
+        readonly Mock<IUrlGenerator> urlGenerator;
         protected readonly Mock<IAsset> asset1;
         protected readonly Mock<IAsset> asset2;
         protected readonly StylesheetBundle bundle;
         protected readonly CassetteSettings settings;
+        protected readonly TinyIoCContainer container;
     }
 
     public class StylesheetPipeline_Process_Tests : StylesheetPipeline_Process_TestBase
@@ -121,7 +135,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CssReferencesAreParsed()
         {
-            pipeline.Process(bundle, settings);
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.Process(bundle);
             asset1.Verify(a => a.AddReference("asset2.css", 1));
         }
 
@@ -129,7 +144,8 @@ namespace Cassette.Stylesheets
         public void GivenDebugMode_ThenCssUrlsAreExpanded()
         {
             settings.IsDebuggingEnabled = false;
-            pipeline.Process(bundle, settings);
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.Process(bundle);
             asset2.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(
                 transformer => transformer is ExpandCssUrlsAssetTransformer)
             ));
@@ -139,7 +155,8 @@ namespace Cassette.Stylesheets
         public void AssetsAreSortedByDependency()
         {
             settings.IsDebuggingEnabled = true;
-            pipeline.Process(bundle, settings);
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.Process(bundle);
             bundle.Assets.SequenceEqual(new[] { asset2.Object, asset1.Object }).ShouldBeTrue();
         }
     }
@@ -154,7 +171,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void AssetsAreConcatenated()
         {
-            pipeline.Process(bundle, settings);
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.Process(bundle);
 
             bundle.Assets.Count.ShouldEqual(1);
         }
@@ -162,7 +180,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void AssetsAreMinified()
         {
-            pipeline.Process(bundle, settings);
+            var pipeline = new StylesheetPipeline(container, settings);
+            pipeline.Process(bundle);
 
             using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
             {

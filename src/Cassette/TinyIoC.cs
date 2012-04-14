@@ -3116,6 +3116,11 @@ namespace TinyIoC
             if (IsIEnumerableRequest(registration.Type))
                 return GetIEnumerableRequest(registration.Type);
 
+            if (typeof(Delegate).IsAssignableFrom(registration.Type))
+            {
+                return GetDelegateFactory(registration.Type);
+            }
+
             // Attempt unregistered construction if possible and requested
             if ((options.UnregisteredResolutionAction == UnregisteredResolutionActions.AttemptResolve) || (registration.Type.IsGenericType && options.UnregisteredResolutionAction == UnregisteredResolutionActions.GenericsOnly))
             {
@@ -3125,6 +3130,50 @@ namespace TinyIoC
 
             // Unable to resolve - throw
             throw new TinyIoCResolutionException(registration.Type);
+        }
+
+        readonly SafeDictionary<Type, Delegate> delegateFactoryCache = new SafeDictionary<Type, Delegate>();
+
+        object GetDelegateFactory(Type delegateType)
+        {
+            Delegate factory;
+            if (delegateFactoryCache.TryGetValue(delegateType, out factory)) return factory;
+
+            var invokeMethod = delegateType.GetMethod("Invoke");
+            var returnType = invokeMethod.ReturnType;
+
+            var parameters = invokeMethod.GetParameters().Select(p => Expression.Parameter(p.ParameterType, p.Name)).ToArray();
+            var names = Expression.Variable(typeof(NamedParameterOverloads));
+            var statements = new List<Expression>();
+
+            // names = new NamedParameterOverloads();
+            statements.Add(Expression.Assign(names, Expression.New(typeof(NamedParameterOverloads).GetConstructor(new Type[0]))));
+
+            // names.Add("parameter", (object)parameter);
+            var add = typeof(NamedParameterOverloads).GetMethod("Add");
+            statements.AddRange(
+                parameters.Select(
+                    parameter => Expression.Call(
+                        names,
+                        add,
+                        Expression.Constant(parameter.Name),
+                        Expression.Convert(parameter, typeof(object))
+                    )
+                )
+            );
+
+            // this.Resolve<T>(names);
+            var resolve = typeof(TinyIoCContainer).GetMethod("Resolve", new[] { typeof(NamedParameterOverloads) });
+            resolve = resolve.MakeGenericMethod(returnType);
+            statements.Add(Expression.Call(Expression.Constant(this), resolve, names));
+
+            var block = Expression.Block(
+                new[] { names },
+                statements
+            );
+            factory = Expression.Lambda(delegateType, block, parameters).Compile();
+            delegateFactoryCache[delegateType] = factory;
+            return factory;
         }
 
 #if EXPRESSIONS

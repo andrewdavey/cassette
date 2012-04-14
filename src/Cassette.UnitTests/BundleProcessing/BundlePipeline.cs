@@ -1,5 +1,5 @@
-﻿using Cassette.Configuration;
-using Moq;
+﻿using Moq;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.BundleProcessing
@@ -11,7 +11,7 @@ namespace Cassette.BundleProcessing
 
         public BundlePipeline_Tests()
         {
-            pipeline = new BundlePipeline<TestableBundle>();
+            pipeline = new TestableBundlePipeline(new TinyIoCContainer());
             step = new Mock<IBundleProcessor<TestableBundle>>();
             pipeline.Add(step.Object);
         }
@@ -20,11 +20,10 @@ namespace Cassette.BundleProcessing
         public void ProcessCallsStep()
         {
             var bundle = new TestableBundle("~");
-            var settings = new CassetteSettings();
 
-            pipeline.Process(bundle, settings);
+            pipeline.Process(bundle);
 
-            step.Verify(s => s.Process(bundle, settings));
+            step.Verify(s => s.Process(bundle));
         }
     }
 }

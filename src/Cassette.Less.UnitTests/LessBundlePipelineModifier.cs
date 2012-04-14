@@ -4,6 +4,7 @@ using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -18,9 +19,15 @@ namespace Cassette.Stylesheets
             var minifier = Mock.Of<IStylesheetMinifier>();
             var urlGenerator = Mock.Of<IUrlGenerator>();
             var compiler = new Mock<ILessCompiler>();
-            var modifier = new LessBundlePipelineModifier(compiler.Object);
+	        var settings = new CassetteSettings();
+	        var modifier = new LessBundlePipelineModifier(compiler.Object, settings);
 
-            originalPipeline = new StylesheetPipeline(minifier, urlGenerator);
+	        var container = new TinyIoCContainer();
+	        container.Register(minifier);
+	        container.Register(urlGenerator);
+	        container.Register(settings);
+
+            originalPipeline = new StylesheetPipeline(container, settings);
             modifiedPipeline = modifier.Modify(originalPipeline);
 	    }
 
@@ -39,7 +46,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
 	        bundle.Assets.Add(asset.Object);
 
-	        modifiedPipeline.Process(bundle, new CassetteSettings());
+	        modifiedPipeline.Process(bundle);
 
             asset.Verify(a => a.AddReference("other.less", 1));
 	    }
@@ -53,7 +60,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
-            modifiedPipeline.Process(bundle, new CassetteSettings());
+            modifiedPipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CompileAsset)));
         }

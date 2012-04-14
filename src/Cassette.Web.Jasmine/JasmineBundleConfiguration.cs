@@ -1,3 +1,5 @@
+using System.Linq;
+using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
@@ -5,15 +7,13 @@ namespace Cassette.Web.Jasmine
 {
     public class JasmineBundleConfiguration : IConfiguration<BundleCollection>
     {
-        readonly IJavaScriptMinifier javaScriptMinifier;
-        readonly IStylesheetMinifier stylesheetMinifier;
-        readonly IUrlGenerator urlGenerator;
+        readonly IBundleFactory<ScriptBundle> scriptBundleFactory;
+        readonly IBundleFactory<StylesheetBundle> stylesheetBundleFactory;
 
-        public JasmineBundleConfiguration(IJavaScriptMinifier javaScriptMinifier, IStylesheetMinifier stylesheetMinifier, IUrlGenerator urlGenerator)
+        public JasmineBundleConfiguration(IBundleFactory<ScriptBundle> scriptBundleFactory, IBundleFactory<StylesheetBundle> stylesheetBundleFactory)
         {
-            this.javaScriptMinifier = javaScriptMinifier;
-            this.stylesheetMinifier = stylesheetMinifier;
-            this.urlGenerator = urlGenerator;
+            this.scriptBundleFactory = scriptBundleFactory;
+            this.stylesheetBundleFactory = stylesheetBundleFactory;
         }
 
         public void Configure(BundleCollection bundles)
@@ -27,20 +27,14 @@ namespace Cassette.Web.Jasmine
 
         ScriptBundle CreateScriptBundle()
         {
-            var script = new ScriptBundle("cassette.web.jasmine")
-            {
-                Processor = new ScriptPipeline(javaScriptMinifier, urlGenerator)
-            };
+            var script = scriptBundleFactory.CreateBundle("cassette.web.jasmine", Enumerable.Empty<IFile>(), new BundleDescriptor());
             script.Assets.Add(new ResourceAsset("Cassette.Web.Jasmine.jasmine.js", GetType().Assembly));
             return script;
         }
 
         StylesheetBundle CreateStylesheetBundle()
         {
-            var css = new StylesheetBundle("cassette.web.jasmine")
-            {
-                Processor = new StylesheetPipeline(stylesheetMinifier, urlGenerator)
-            };
+            var css = stylesheetBundleFactory.CreateBundle("cassette.web.jasmine", Enumerable.Empty<IFile>(), new BundleDescriptor());
             css.Assets.Add(new ResourceAsset("Cassette.Web.Jasmine.jasmine.css", GetType().Assembly));
             return css;
         }

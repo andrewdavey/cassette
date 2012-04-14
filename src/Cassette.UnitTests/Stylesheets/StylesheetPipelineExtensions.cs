@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using Cassette.BundleProcessing;
+using Cassette.Configuration;
 using Moq;
 using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -12,7 +14,12 @@ namespace Cassette.Stylesheets
 
         public StylesheetPipelineExtensions_Tests()
         {
-            pipeline = new StylesheetPipeline(Mock.Of<IStylesheetMinifier>(), Mock.Of<IUrlGenerator>());
+            var container = new TinyIoCContainer();
+            var settings = new CassetteSettings();
+            container.Register(Mock.Of<IStylesheetMinifier>());
+            container.Register(Mock.Of<IUrlGenerator>());
+            container.Register(settings);
+            pipeline = new StylesheetPipeline(container, settings);
         }
 
         [Fact]

@@ -1,10 +1,11 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
 
 namespace Cassette.HtmlTemplates
 {
     public class RegisterTemplatesWithHogan : AddTransformerToAssets<HtmlTemplateBundle>
     {
+        public delegate RegisterTemplatesWithHogan Factory(string javaScriptVariableName);
+
         readonly string javaScriptVariableName;
 
         public RegisterTemplatesWithHogan(string javaScriptVariableName)
@@ -12,7 +13,7 @@ namespace Cassette.HtmlTemplates
             this.javaScriptVariableName = javaScriptVariableName;
         }
 
-        protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle, CassetteSettings settings)
+        protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle)
         {
             return new RegisterTemplateWithHogan(bundle, javaScriptVariableName);
         }

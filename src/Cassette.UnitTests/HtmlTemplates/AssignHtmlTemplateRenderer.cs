@@ -1,5 +1,4 @@
-﻿using Cassette.Configuration;
-using Moq;
+﻿using Moq;
 using Should;
 using Xunit;
 
@@ -14,7 +13,7 @@ namespace Cassette.HtmlTemplates
             var processor = new AssignHtmlTemplateRenderer(renderer);
             var bundle = new HtmlTemplateBundle("~");
             
-            processor.Process(bundle, new CassetteSettings());
+            processor.Process(bundle);
 
             bundle.Renderer.ShouldBeSameAs(renderer);
         }

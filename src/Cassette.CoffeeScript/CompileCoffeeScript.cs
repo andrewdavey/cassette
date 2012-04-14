@@ -7,13 +7,15 @@ namespace Cassette.Scripts
     public class CompileCoffeeScript : IBundleProcessor<Bundle>
     {
         readonly ICompiler coffeeScriptCompiler;
+        readonly CassetteSettings settings;
 
-        public CompileCoffeeScript(ICompiler coffeeScriptCompiler)
+        public CompileCoffeeScript(ICompiler coffeeScriptCompiler, CassetteSettings settings)
         {
             this.coffeeScriptCompiler = coffeeScriptCompiler;
+            this.settings = settings;
         }
 
-        public void Process(Bundle bundle, CassetteSettings settings)
+        public void Process(Bundle bundle)
         {
             foreach (var asset in bundle.Assets)
             {

@@ -7,13 +7,15 @@ namespace Cassette.Stylesheets
     public class CompileLess : IBundleProcessor<StylesheetBundle>
     {
         readonly ICompiler lessCompiler;
+        readonly CassetteSettings settings;
 
-        public CompileLess(ICompiler lessCompiler)
+        public CompileLess(ICompiler lessCompiler, CassetteSettings settings)
         {
             this.lessCompiler = lessCompiler;
+            this.settings = settings;
         }
 
-        public void Process(StylesheetBundle bundle, CassetteSettings settings)
+        public void Process(StylesheetBundle bundle)
         {
             foreach (var asset in bundle.Assets)
             {

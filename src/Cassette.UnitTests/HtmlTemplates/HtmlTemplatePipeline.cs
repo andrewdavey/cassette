@@ -1,18 +1,24 @@
-﻿using Cassette.Configuration;
-using Should;
+﻿using Should;
+using TinyIoC;
 using Xunit;
 
 namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplatePipeline_Tests
     {
+        readonly HtmlTemplatePipeline pipeline;
+        readonly HtmlTemplateBundle bundle;
+
+        public HtmlTemplatePipeline_Tests()
+        {
+            bundle = new HtmlTemplateBundle("~");
+            pipeline = new HtmlTemplatePipeline(new TinyIoCContainer());   
+        }
+
         [Fact]
         public void WhenProcess_ThenItAssignsInlineHtmlTemplateBundleRenderer()
         {
-            var bundle = new HtmlTemplateBundle("~");
-            var pipeline = new HtmlTemplatePipeline();
-
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle);
 
             bundle.Renderer.ShouldBeType<InlineHtmlTemplateBundleRenderer>();
         }
@@ -20,10 +26,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void WhenProcessBundle_ThenHashIsAssigned()
         {
-            var pipeline = new HtmlTemplatePipeline();
-            var bundle = new HtmlTemplateBundle("~");
-
-            pipeline.Process(bundle, new CassetteSettings());
+            pipeline.Process(bundle);
 
             bundle.Hash.ShouldNotBeNull();
         }

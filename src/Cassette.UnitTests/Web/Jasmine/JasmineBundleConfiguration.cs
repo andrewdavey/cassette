@@ -1,4 +1,5 @@
 ﻿#if !NET35
+using Cassette.BundleProcessing;
 using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -14,7 +15,9 @@ namespace Cassette.Web.Jasmine
 
         public JasmineBundleConfiguration_WhenConfigure()
         {
-            var configuration = new JasmineBundleConfiguration(Mock.Of<IJavaScriptMinifier>(), Mock.Of<IStylesheetMinifier>(), Mock.Of<IUrlGenerator>());
+            var scriptBundleFactory = new ScriptBundleFactory(Mock.Of<IBundlePipeline<ScriptBundle>>());
+            var stylesheetBundleFactory = new StylesheetBundleFactory(Mock.Of<IBundlePipeline<StylesheetBundle>>());
+            var configuration = new JasmineBundleConfiguration(scriptBundleFactory, stylesheetBundleFactory);
             var settings = new CassetteSettings();
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
 

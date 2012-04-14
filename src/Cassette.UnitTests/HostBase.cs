@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Cassette.Configuration;
 using Should;
@@ -79,7 +80,7 @@ namespace Cassette
 
         protected override IEnumerable<Type> GetConfigurationTypes(IEnumerable<Type> typesToSearch)
         {
-            return ConfigurationTypes;
+            return ConfigurationTypes ?? Enumerable.Empty<Type>();
         }
 
         protected override bool CanCreateRequestLifetimeProvider

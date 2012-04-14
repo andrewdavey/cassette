@@ -1,18 +1,21 @@
 ﻿using Cassette.BundleProcessing;
+using TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {
     public class HoganPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        public HoganPipeline(HoganSettings settings, IUrlGenerator urlGenerator)
+        public HoganPipeline(TinyIoCContainer container, HoganSettings hoganSettings)
+            : base(container)
         {
+            var renderer = container.Resolve<RemoteHtmlTemplateBundleRenderer>();
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {
-                new AssignHtmlTemplateRenderer(new RemoteHtmlTemplateBundleRenderer(urlGenerator)),
+                new AssignHtmlTemplateRenderer(renderer),
                 new AssignContentType("text/javascript"),
                 new ParseHtmlTemplateReferences(),
-                new CompileHogan(),
-                new RegisterTemplatesWithHogan(settings.JavaScriptVariableName),
+                container.Resolve<CompileHogan>(),
+                container.Resolve<RegisterTemplatesWithHogan.Factory>()(hoganSettings.JavaScriptVariableName),
                 new AssignHash(),
                 new ConcatenateAssets()
             });

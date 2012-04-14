@@ -1,18 +1,21 @@
 ﻿using Cassette.BundleProcessing;
+using TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {
     public class JQueryTmplPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        public JQueryTmplPipeline(IUrlGenerator urlGenerator)
+        public JQueryTmplPipeline(TinyIoCContainer container)
+            : base(container)
         {
+            var renderer = container.Resolve<RemoteHtmlTemplateBundleRenderer>();
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {
-                new AssignHtmlTemplateRenderer(new RemoteHtmlTemplateBundleRenderer(urlGenerator)),
+                new AssignHtmlTemplateRenderer(renderer),
                 new AssignContentType("text/javascript"),
                 new ParseHtmlTemplateReferences(),
-                new CompileJQueryTmpl(),
-                new RegisterTemplatesWithJQueryTmpl(),
+                container.Resolve<CompileJQueryTmpl>(),
+                container.Resolve<RegisterTemplatesWithJQueryTmpl>(),
                 new AssignHash(),
                 new ConcatenateAssets()
             });

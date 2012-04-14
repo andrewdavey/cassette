@@ -30,7 +30,7 @@ namespace Cassette.Stylesheets
 
         protected override void ProcessCore(CassetteSettings settings)
         {
-            Processor.Process(this, settings);
+            Processor.Process(this);
         }
 
         internal override string Render()

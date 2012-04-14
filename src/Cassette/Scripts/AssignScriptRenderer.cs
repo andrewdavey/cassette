@@ -6,13 +6,15 @@ namespace Cassette.Scripts
     public class AssignScriptRenderer : IBundleProcessor<ScriptBundle>
     {
         readonly IUrlGenerator urlGenerator;
+        readonly CassetteSettings settings;
 
-        public AssignScriptRenderer(IUrlGenerator urlGenerator)
+        public AssignScriptRenderer(IUrlGenerator urlGenerator, CassetteSettings settings)
         {
             this.urlGenerator = urlGenerator;
+            this.settings = settings;
         }
 
-        public void Process(ScriptBundle bundle, CassetteSettings settings)
+        public void Process(ScriptBundle bundle)
         {
             if (settings.IsDebuggingEnabled)
             {

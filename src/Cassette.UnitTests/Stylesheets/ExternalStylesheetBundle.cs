@@ -38,7 +38,7 @@ namespace Cassette.Stylesheets
 
             bundle.Process(new CassetteSettings());
 
-            processor.Verify(p => p.Process(bundle, It.IsAny<CassetteSettings>()));
+            processor.Verify(p => p.Process(bundle));
         }
 
         [Fact]
