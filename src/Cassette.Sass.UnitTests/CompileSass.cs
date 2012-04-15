@@ -14,7 +14,7 @@ namespace Cassette.Stylesheets
 
         public CompileSass_Tests()
         {
-            processor = new CompileSass(Mock.Of<ICompiler>(), new CassetteSettings());
+            processor = new CompileSass(Mock.Of<ISassCompiler>(), new CassetteSettings());
             bundle = new StylesheetBundle("~");
             asset = new Mock<IAsset>();
         }

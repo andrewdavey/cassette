@@ -9,7 +9,7 @@ namespace Cassette.Scripts
     {
         public CompileCoffeeScript_Tests()
         {
-            var compiler = new Mock<ICompiler>();
+            var compiler = new Mock<ICoffeeScriptCompiler>();
             step = new CompileCoffeeScript(compiler.Object, new CassetteSettings());
         }
 
