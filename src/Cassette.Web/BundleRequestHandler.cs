@@ -30,23 +30,27 @@ namespace Cassette.Web
         public void ProcessRequest()
         {
             httpContext.DisableHtmlRewriting();
-            var bundle = FindBundle();
-            if (bundle == null)
+            using (bundles.GetReadLock())
             {
-                Trace.Source.TraceInformation("Bundle not found \"{0}\".", Path.Combine("~", routeData.GetRequiredString("path")));
-                response.StatusCode = 404;
-            }
-            else
-            {
-                var actualETag = "\"" + bundle.Hash.ToHexString() + "\"";
-                var givenETag = request.Headers["If-None-Match"];
-                if (givenETag == actualETag)
+                var bundle = FindBundle();
+                if (bundle == null)
                 {
-                    SendNotModified(actualETag);
+                    Trace.Source.TraceInformation("Bundle not found \"{0}\".",
+                                                  Path.Combine("~", routeData.GetRequiredString("path")));
+                    response.StatusCode = 404;
                 }
                 else
                 {
-                    SendBundle(bundle, actualETag);
+                    var actualETag = "\"" + bundle.Hash.ToHexString() + "\"";
+                    var givenETag = request.Headers["If-None-Match"];
+                    if (givenETag == actualETag)
+                    {
+                        SendNotModified(actualETag);
+                    }
+                    else
+                    {
+                        SendBundle(bundle, actualETag);
+                    }
                 }
             }
         }

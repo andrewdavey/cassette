@@ -32,44 +32,50 @@ namespace Cassette
         public void Reference<T>(string path, string location = null)
             where T : Bundle
         {
-            var factory = bundleFactoryProvider.GetBundleFactory<T>();
-            var bundles = GetBundles(path, () => factory.CreateExternalBundle(path));
-            Reference(bundles, location);
+            using (allBundles.GetReadLock())
+            {
+                var factory = bundleFactoryProvider.GetBundleFactory<T>();
+                var bundles = GetBundles(path, () => factory.CreateExternalBundle(path));
+                Reference(bundles, location);
+            }
         }
 
         public void Reference(string path, string location = null)
         {
-            var bundles = GetBundles(path, () =>
+            using (allBundles.GetReadLock())
             {
-                if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+                var bundles = GetBundles(path, () =>
                 {
-                    var factory = bundleFactoryProvider.GetBundleFactory<ScriptBundle>();
-                    return factory.CreateExternalBundle(path);
-                }
-                else if (path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
-                {
-                    var factory = bundleFactoryProvider.GetBundleFactory<StylesheetBundle>();
-                    return factory.CreateExternalBundle(path);
-                }
-                else
-                {
-                    throw new ArgumentException(
-                        string.Format(
-                            "Cannot determine the type of bundle for the URL \"{0}\". Specify the type using the generic type parameter.",
-                            path
-                        )
-                    );
-                }
-            });
+                    if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var factory = bundleFactoryProvider.GetBundleFactory<ScriptBundle>();
+                        return factory.CreateExternalBundle(path);
+                    }
+                    else if (path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var factory = bundleFactoryProvider.GetBundleFactory<StylesheetBundle>();
+                        return factory.CreateExternalBundle(path);
+                    }
+                    else
+                    {
+                        throw new ArgumentException(
+                            string.Format(
+                                "Cannot determine the type of bundle for the URL \"{0}\". Specify the type using the generic type parameter.",
+                                path
+                                )
+                            );
+                    }
+                });
 
-            Reference(bundles, location);
+                Reference(bundles, location);
+            }
         }
 
         IEnumerable<Bundle> GetBundles(string path, Func<Bundle> createExternalBundle)
         {
             path = PathUtilities.AppRelative(path);
 
-            var bundles = this.allBundles.FindBundlesContainingPath(path).ToArray();
+            var bundles = allBundles.FindBundlesContainingPath(path).ToArray();
             if (bundles.Length == 0 && path.IsUrl())
             {
                 var bundle = createExternalBundle();
@@ -87,7 +93,10 @@ namespace Cassette
 
         public void Reference(Bundle bundle, string location = null)
         {
-            Reference(new[] { bundle }, location);
+            using (allBundles.GetReadLock())
+            {
+                Reference(new[] { bundle }, location);
+            }
         }
 
         void Reference(IEnumerable<Bundle> bundles, string location = null)
@@ -142,7 +151,7 @@ namespace Cassette
         {
             var bundles = GetOrCreateBundleSet(location);
             var bundlesForLocation = GetOrCreateBundleSet(location);
-            return this.allBundles
+            return allBundles
                 .IncludeReferencesAndSortBundles(bundles)
                 .Where(b => bundlesForLocation.Contains(b) || BundlePageLocationIs(b, location));
         }

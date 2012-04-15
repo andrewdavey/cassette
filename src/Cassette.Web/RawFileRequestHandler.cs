@@ -81,10 +81,13 @@ namespace Cassette.Web
         bool IsRawFileReferencedByAsset(string filename)
         {
             var rawFileReferenceFinder = new RawFileReferenceFinder(filename);
-            foreach (var bundle in bundles)
+            using (bundles.GetReadLock())
             {
-                bundle.Accept(rawFileReferenceFinder);
-                if (rawFileReferenceFinder.IsRawFileReferenceFound) return true;
+                foreach (var bundle in bundles)
+                {
+                    bundle.Accept(rawFileReferenceFinder);
+                    if (rawFileReferenceFinder.IsRawFileReferenceFound) return true;
+                }
             }
             return false;
         }

@@ -26,17 +26,20 @@ namespace Cassette.Web
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             requestContext.HttpContext.DisableHtmlRewriting();
             var response = requestContext.HttpContext.Response;
-            IAsset asset;
-            Bundle bundle;
-            if (!bundles.TryGetAssetByPath(path, out asset, out bundle))
+            using (bundles.GetReadLock())
             {
-                Trace.Source.TraceInformation("Bundle asset not found with path \"{0}\".", path);
-                NotFound(response);
-                return;
-            }
+                Bundle bundle;
+                IAsset asset;
+                if (!bundles.TryGetAssetByPath(path, out asset, out bundle))
+                {
+                    Trace.Source.TraceInformation("Bundle asset not found with path \"{0}\".", path);
+                    NotFound(response);
+                    return;
+                }
 
-            var request = requestContext.HttpContext.Request;
-            SendAsset(request, response, bundle, asset);
+                var request = requestContext.HttpContext.Request;
+                SendAsset(request, response, bundle, asset);
+            }
         }
 
         void SendAsset(HttpRequestBase request, HttpResponseBase response, Bundle bundle, IAsset asset)

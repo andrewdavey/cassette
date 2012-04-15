@@ -78,13 +78,16 @@ namespace Cassette.Views
         public string Url<T>(string bundlePath)
             where T : Bundle
         {
-            var bundle = bundles.FindBundlesContainingPath(bundlePath).OfType<T>().FirstOrDefault();
-            if (bundle == null)
+            using (bundles.GetReadLock())
             {
-                throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
-            }
+                var bundle = bundles.FindBundlesContainingPath(bundlePath).OfType<T>().FirstOrDefault();
+                if (bundle == null)
+                {
+                    throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
+                }
 
-            return urlGenerator.CreateBundleUrl(bundle);
+                return urlGenerator.CreateBundleUrl(bundle);
+            }
         }
 
         static IEnumerable<IAsset> GetAllAssets(Bundle bundle)

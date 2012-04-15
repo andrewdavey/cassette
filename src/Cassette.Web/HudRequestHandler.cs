@@ -89,27 +89,30 @@ namespace Cassette.Web
 
         string CreateJson()
         {
-            var scripts = bundles.OfType<ScriptBundle>();
-            var stylesheets = bundles.OfType<StylesheetBundle>();
-            var htmlTemplates = bundles.OfType<HtmlTemplateBundle>();
-
-            var data = new
+            using (bundles.GetReadLock())
             {
-                Scripts = scripts.Select(ScriptData),
-                Stylesheets = stylesheets.Select(StylesheetData),
-                HtmlTemplates = htmlTemplates.Select(HtmlTemplateData),
-                StartupTrace = CassetteHttpModule.StartUpTrace,
-                Cassette = new
+                var scripts = bundles.OfType<ScriptBundle>();
+                var stylesheets = bundles.OfType<StylesheetBundle>();
+                var htmlTemplates = bundles.OfType<HtmlTemplateBundle>();
+
+                var data = new
                 {
-                    Version = new AssemblyName(typeof(Bundle).Assembly.FullName).Version.ToString(),
-                    CacheDirectory = GetCacheDirectory(settings),
-                    SourceDirectory = GetSourceDirectory(settings),
-                    settings.IsHtmlRewritingEnabled,
-                    settings.IsDebuggingEnabled
-                }
-            };
-            var json = new JavaScriptSerializer().Serialize(data);
-            return json;
+                    Scripts = scripts.Select(ScriptData),
+                    Stylesheets = stylesheets.Select(StylesheetData),
+                    HtmlTemplates = htmlTemplates.Select(HtmlTemplateData),
+                    StartupTrace = CassetteHttpModule.StartUpTrace,
+                    Cassette = new
+                    {
+                        Version = new AssemblyName(typeof(Bundle).Assembly.FullName).Version.ToString(),
+                        CacheDirectory = GetCacheDirectory(settings),
+                        SourceDirectory = GetSourceDirectory(settings),
+                        settings.IsHtmlRewritingEnabled,
+                        settings.IsDebuggingEnabled
+                    }
+                };
+                var json = new JavaScriptSerializer().Serialize(data);
+                return json;
+            }
         }
 
         static string GetSourceDirectory(CassetteSettings settings)
