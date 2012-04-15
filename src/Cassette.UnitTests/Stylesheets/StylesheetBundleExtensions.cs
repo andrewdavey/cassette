@@ -8,11 +8,12 @@ using Xunit;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetPipelineExtensions_Tests
+    public class StylesheetBundleExtensions_Tests
     {
         readonly StylesheetPipeline pipeline;
+        readonly StylesheetBundle bundle;
 
-        public StylesheetPipelineExtensions_Tests()
+        public StylesheetBundleExtensions_Tests()
         {
             var container = new TinyIoCContainer();
             var settings = new CassetteSettings();
@@ -20,33 +21,37 @@ namespace Cassette.Stylesheets
             container.Register(Mock.Of<IUrlGenerator>());
             container.Register(settings);
             pipeline = new StylesheetPipeline(container, settings);
+            bundle = new StylesheetBundle("~")
+            {
+                Pipeline = pipeline
+            };
         }
 
         [Fact]
         public void WhenEmbedImages_ThenPipelineContainsConvertImageUrlsToDataUris()
         {
-            pipeline.EmbedImages();
+            bundle.EmbedImages();
             AssertPipelineContains<ConvertImageUrlsToDataUris>();
         }
 
         [Fact]
         public void WhenEmbedImagesWithUrlPredicate_ThenPipelineContainsConvertImageUrlsToDataUris()
         {
-            pipeline.EmbedImages(url => true);
+            bundle.EmbedImages(url => true);
             AssertPipelineContains<ConvertImageUrlsToDataUris>();
         }
         
         [Fact]
         public void WhenEmbedFonts_ThenPipelineContainsConvertFontUrlsToDataUris()
         {
-            pipeline.EmbedFonts();
+            bundle.EmbedFonts();
             AssertPipelineContains<ConvertFontUrlsToDataUris>();
         }
 
         [Fact]
         public void WhenEmbedFontsWithUrlPredicate_ThenPipelineContainsConvertFontUrlsToDataUris()
         {
-            pipeline.EmbedFonts(url => true);
+            bundle.EmbedFonts(url => true);
             AssertPipelineContains<ConvertFontUrlsToDataUris>();
         }
 

@@ -16,7 +16,7 @@
         <p>Take a look at the Precompiled.csproj file, it contains the following addition:</p>
         <pre>&lt;UsingTask TaskName="CreateBundles" AssemblyFile="..\..\src\Cassette.MSBuild\bin\$(Configuration)\Cassette.MSBuild.dll" /&gt;
 &lt;Target Name="CreateBundles" AfterTargets="AfterBuild"&gt;
-    &lt;CreateBundles Assemblies="$(OutputPath)Precompiled.dll" Output="App_Data\cassette.xml" /&gt;
+    &lt;CreateBundles Input="$(OutputPath)" Output="App_Data\cassette.xml" /&gt;
 &lt;/Target&gt;</pre>
         
         <p>

@@ -1,5 +1,4 @@
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
@@ -8,21 +7,11 @@ namespace Cassette.Scripts
     /// </summary>
     public class CoffeeScriptBundlePipelineModifier : IBundlePipelineModifier<ScriptBundle>
     {
-        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
-        readonly CassetteSettings settings;
-
-        public CoffeeScriptBundlePipelineModifier(ICoffeeScriptCompiler coffeeScriptCompiler, CassetteSettings settings)
-        {
-            this.coffeeScriptCompiler = coffeeScriptCompiler;
-            this.settings = settings;
-        }
-
         public IBundlePipeline<ScriptBundle> Modify(IBundlePipeline<ScriptBundle> pipeline)
         {
-            pipeline.InsertAfter<ParseJavaScriptReferences, ScriptBundle>(
-                new ParseCoffeeScriptReferences(),
-                new CompileCoffeeScript(coffeeScriptCompiler, settings)
-            );
+            var index = pipeline.IndexOf<ParseJavaScriptReferences>();
+            pipeline.Insert<ParseCoffeeScriptReferences>(index + 1);
+            pipeline.Insert<CompileCoffeeScript>(index + 2);
             return pipeline;
         }
     }

@@ -20,14 +20,15 @@ namespace Cassette.Stylesheets
             var urlGenerator = Mock.Of<IUrlGenerator>();
             var compiler = new Mock<ILessCompiler>();
 	        var settings = new CassetteSettings();
-	        var modifier = new LessBundlePipelineModifier(compiler.Object, settings);
 
 	        var container = new TinyIoCContainer();
+	        container.Register(compiler.Object);
 	        container.Register(minifier);
 	        container.Register(urlGenerator);
 	        container.Register(settings);
 
             originalPipeline = new StylesheetPipeline(container, settings);
+            var modifier = new LessBundlePipelineModifier();
             modifiedPipeline = modifier.Modify(originalPipeline);
 	    }
 

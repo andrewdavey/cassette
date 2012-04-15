@@ -20,9 +20,10 @@ namespace Cassette.Stylesheets
             var urlGenerator = Mock.Of<IUrlGenerator>();
             var compiler = new Mock<ISassCompiler>();
             var settings = new CassetteSettings();
-            var modifier = new SassBundlePipelineModifier(compiler.Object, settings);
+            var modifier = new SassBundlePipelineModifier();
 
             var container = new TinyIoCContainer();
+            container.Register(compiler.Object);
             container.Register(minifier);
             container.Register(urlGenerator);
             container.Register(settings);

@@ -1,119 +1,37 @@
-﻿using System.Linq;
-using Moq;
-using Should;
+﻿using Should;
 using Xunit;
 
 namespace Cassette.BundleProcessing
 {
     public class BundlePipelineHelpers_Tests
     {
-        public class WhenInsertAfterSingleExistingStep
+        public class IndexOfType_Tests
         {
-            readonly BundlePipeline<TestableBundle> pipeline;
-            readonly AssignHash firstStep;
-            readonly Mock<IBundleProcessor<TestableBundle>> newStep;
-
-            public WhenInsertAfterSingleExistingStep()
+            [Fact]
+            public void IndexOfTypeNotInPipelineReturnsNegativeOne()
             {
-                pipeline = new TestableBundlePipeline();
-                firstStep = new AssignHash();
-                pipeline.Add(firstStep);
-
-                newStep = new Mock<IBundleProcessor<TestableBundle>>();
-                pipeline.InsertAfter<AssignHash, TestableBundle>(newStep.Object);
+                var pipeline = new TestableBundlePipeline();
+                var index = pipeline.IndexOf<AssignHash>();
+                index.ShouldEqual(-1);
             }
 
             [Fact]
-            public void PipelineCountEquals2()
+            public void IndexOfFirstTypeInPipelineEquals0()
             {
-                pipeline.Count.ShouldEqual(2);
+                var pipeline = new TestableBundlePipeline();
+                pipeline.Add(new AssignHash());
+                var index = pipeline.IndexOf<AssignHash>();
+                index.ShouldEqual(0);
             }
 
             [Fact]
-            public void NewStepIsAfterFirstStep()
+            public void IndexOfSecondTypeInPipelineEquals1()
             {
-                pipeline.ToArray()[0].ShouldBeSameAs(firstStep);
-                pipeline.ToArray()[1].ShouldBeSameAs(newStep.Object);
-            }
-        }
-
-        public class WhenInsertAfterWithMultipleNewSteps
-        {
-            readonly BundlePipeline<TestableBundle> pipeline;
-            readonly IBundleProcessor<TestableBundle> newStep1;
-            readonly IBundleProcessor<TestableBundle> newStep2;
-
-            public WhenInsertAfterWithMultipleNewSteps()
-            {
-                pipeline = new TestableBundlePipeline();
-                var firstStep = new AssignHash();
-                pipeline.Add(firstStep);
-
-                newStep1 = Mock.Of<IBundleProcessor<TestableBundle>>();
-                newStep2 = Mock.Of<IBundleProcessor<TestableBundle>>();
-                pipeline.InsertAfter<AssignHash, TestableBundle>(newStep1, newStep2);
-            }
-
-            [Fact]
-            public void NewStepsAreInsertedInOrder()
-            {
-                pipeline.ElementAt(1).ShouldBeSameAs(newStep1);
-                pipeline.ElementAt(2).ShouldBeSameAs(newStep2);
-            }
-        }
-
-        public class WhenInsertBeforeSingleExistingStep
-        {
-            readonly BundlePipeline<TestableBundle> pipeline;
-            readonly AssignHash firstStep;
-            readonly IBundleProcessor<TestableBundle> newStep;
-
-            public WhenInsertBeforeSingleExistingStep()
-            {
-                pipeline = new TestableBundlePipeline();
-                firstStep = new AssignHash();
-                pipeline.Add(firstStep);
-
-                newStep = Mock.Of<IBundleProcessor<TestableBundle>>();
-                pipeline.InsertBefore<AssignHash, TestableBundle>(newStep);
-            }
-
-            [Fact]
-            public void PipelineCountEquals2()
-            {
-                pipeline.Count.ShouldEqual(2);
-            }
-
-            [Fact]
-            public void NewStepIsBeforeFirstStep()
-            {
-                pipeline.ToArray()[0].ShouldBeSameAs(newStep);
-                pipeline.ToArray()[1].ShouldBeSameAs(firstStep);
-            }
-        }
-
-        public class WhenInsertBeforeWithMultipleNewSteps
-        {
-            readonly BundlePipeline<TestableBundle> pipeline;
-            readonly IBundleProcessor<TestableBundle> newStep1;
-            readonly IBundleProcessor<TestableBundle> newStep2;
-
-            public WhenInsertBeforeWithMultipleNewSteps()
-            {
-                pipeline = new TestableBundlePipeline();
-                var firstStep = new AssignHash();
-                pipeline.Add(firstStep);
-
-                newStep1 = Mock.Of<IBundleProcessor<TestableBundle>>();
-                newStep2 = Mock.Of<IBundleProcessor<TestableBundle>>();
-                pipeline.InsertBefore<AssignHash, TestableBundle>(newStep1, newStep2);
-            }
-
-            [Fact]
-            public void NewStepsAreInsertedInOrder()
-            {
-                pipeline.ElementAt(0).ShouldBeSameAs(newStep1);
-                pipeline.ElementAt(1).ShouldBeSameAs(newStep2);
+                var pipeline = new TestableBundlePipeline();
+                pipeline.Add(new AssignHash());
+                pipeline.Add(new AssignContentType("text/javascript"));
+                var index = pipeline.IndexOf<AssignContentType>();
+                index.ShouldEqual(1);
             }
         }
     }

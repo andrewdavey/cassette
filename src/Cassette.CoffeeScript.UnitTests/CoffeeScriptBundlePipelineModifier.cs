@@ -25,11 +25,12 @@ namespace Cassette.Scripts
 
             compiler = new Mock<ICoffeeScriptCompiler>();
             var settings = new CassetteSettings();
-            var modifier = new CoffeeScriptBundlePipelineModifier(compiler.Object, settings);
             var container = new TinyIoCContainer();
+            container.Register(compiler.Object);
             container.Register(Mock.Of<IJavaScriptMinifier>());
             container.Register(Mock.Of<IUrlGenerator>());
             container.Register(settings);
+            var modifier = new CoffeeScriptBundlePipelineModifier();
             pipeline = new ScriptPipeline(container, settings);
             pipeline = modifier.Modify(pipeline);
         }

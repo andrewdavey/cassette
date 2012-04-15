@@ -7,10 +7,10 @@ namespace Cassette.Stylesheets
 {
     public class CompileSass : IBundleProcessor<StylesheetBundle>
     {
-        readonly ICompiler sassCompiler;
+        readonly ISassCompiler sassCompiler;
         readonly CassetteSettings settings;
 
-        public CompileSass(ICompiler sassCompiler, CassetteSettings settings)
+        public CompileSass(ISassCompiler sassCompiler, CassetteSettings settings)
         {
             this.sassCompiler = sassCompiler;
             this.settings = settings;

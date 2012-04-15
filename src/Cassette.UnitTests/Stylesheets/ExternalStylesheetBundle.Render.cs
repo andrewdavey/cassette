@@ -19,7 +19,7 @@ namespace Cassette.Stylesheets
             fallbackRenderer = new Mock<IBundleHtmlRenderer<StylesheetBundle>>();
             bundle = new ExternalStylesheetBundle("http://test.com/")
             {
-                Processor = Mock.Of<IBundlePipeline<StylesheetBundle>>()
+                Pipeline = Mock.Of<IBundlePipeline<StylesheetBundle>>()
             };
         }
 

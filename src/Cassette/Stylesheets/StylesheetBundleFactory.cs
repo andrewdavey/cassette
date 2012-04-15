@@ -17,14 +17,14 @@ namespace Cassette.Stylesheets
             {
                 return new ExternalStylesheetBundle(bundleDescriptor.ExternalUrl, path)
                 {
-                    Processor = stylesheetPipeline
+                    Pipeline = stylesheetPipeline
                 };
             }
             else
             {
                 return new StylesheetBundle(path)
                 {
-                    Processor = stylesheetPipeline
+                    Pipeline = stylesheetPipeline
                 };
             }
         }

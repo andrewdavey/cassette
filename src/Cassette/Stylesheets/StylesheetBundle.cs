@@ -24,13 +24,13 @@ namespace Cassette.Stylesheets
         /// </summary>
         public string Condition { get; set; }
 
-        public IBundleProcessor<StylesheetBundle> Processor { get; set; }
+        public IBundlePipeline<StylesheetBundle> Pipeline { get; set; }
 
         public IBundleHtmlRenderer<StylesheetBundle> Renderer { get; set; }
 
         protected override void ProcessCore(CassetteSettings settings)
         {
-            Processor.Process(this);
+            Pipeline.Process(this);
         }
 
         internal override string Render()

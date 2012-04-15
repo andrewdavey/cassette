@@ -24,7 +24,7 @@ namespace Cassette.Scripts.Manifests
             {
                 PageLocation = "body",
                 Hash = new byte[] { 1, 2, 3 },
-                Processor = Mock.Of<IBundlePipeline<ScriptBundle>>()
+                Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>()
             };
             asset = new StubAsset
             {

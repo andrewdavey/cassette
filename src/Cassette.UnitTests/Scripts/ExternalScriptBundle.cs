@@ -58,13 +58,13 @@ namespace Cassette.Scripts
         public void ProcessCallsProcessor()
         {
             var bundle = new ExternalScriptBundle(Url);
-            var processor = new Mock<IBundleProcessor<ScriptBundle>>();
+            var pipeline = new Mock<IBundlePipeline<ScriptBundle>>();
             var settings = new CassetteSettings();
 
-            bundle.Processor = processor.Object;
+            bundle.Pipeline = pipeline.Object;
             bundle.Process(settings);
 
-            processor.Verify(p => p.Process(bundle));
+            pipeline.Verify(p => p.Process(bundle));
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace Cassette.Scripts
             var bundle = new ExternalScriptBundle(Url, "~/test", "condition")
             {
                 Renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object),
-                Processor = Mock.Of<IBundleProcessor<ScriptBundle>>()
+                Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>()
             };
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/test/asset.js");

@@ -21,14 +21,14 @@ namespace Cassette.Scripts
                     bundleDescriptor.FallbackCondition
                 )
                 {
-                    Processor = scriptPipeline
+                    Pipeline = scriptPipeline
                 };
             }
             else
             {
                 return new ScriptBundle(path)
                 {
-                    Processor = scriptPipeline
+                    Pipeline = scriptPipeline
                 };
             }
         }

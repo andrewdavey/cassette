@@ -63,7 +63,7 @@ namespace Cassette.Scripts
         {
             var factory = new ScriptBundleFactory(pipeline);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
-            bundle.Processor.ShouldBeSameAs(pipeline);
+            bundle.Pipeline.ShouldBeSameAs(pipeline);
         }
     }
 }

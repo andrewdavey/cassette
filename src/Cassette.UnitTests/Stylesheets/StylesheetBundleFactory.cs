@@ -40,7 +40,7 @@ namespace Cassette.Stylesheets
         public void CreateBundleAssignsSettingsDefaultProcessor()
         {
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
-            bundle.Processor.ShouldBeSameAs(pipeline);
+            bundle.Pipeline.ShouldBeSameAs(pipeline);
         }
     }
 }

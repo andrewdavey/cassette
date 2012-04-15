@@ -23,13 +23,13 @@ namespace Cassette.Scripts
         /// </summary>
         public string Condition { get; set; }
 
-        public IBundleProcessor<ScriptBundle> Processor { get; set; }
+        public IBundlePipeline<ScriptBundle> Pipeline { get; set; }
 
         public IBundleHtmlRenderer<ScriptBundle> Renderer { get; set; }
 
         protected override void ProcessCore(CassetteSettings settings)
         {
-            Processor.Process(this);
+            Pipeline.Process(this);
         }
 
         internal override string Render()

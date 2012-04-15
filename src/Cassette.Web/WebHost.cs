@@ -93,7 +93,8 @@ namespace Cassette.Web
 
         protected virtual CassetteConfigurationSection GetConfigurationSection()
         {
-            return WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection;
+            return (WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection)
+                ?? new CassetteConfigurationSection();
         }
 
         protected virtual bool IsAspNetDebuggingEnabled

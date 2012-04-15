@@ -6,10 +6,10 @@ namespace Cassette.Scripts
 {
     public class CompileCoffeeScript : IBundleProcessor<Bundle>
     {
-        readonly ICompiler coffeeScriptCompiler;
+        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
         readonly CassetteSettings settings;
 
-        public CompileCoffeeScript(ICompiler coffeeScriptCompiler, CassetteSettings settings)
+        public CompileCoffeeScript(ICoffeeScriptCompiler coffeeScriptCompiler, CassetteSettings settings)
         {
             this.coffeeScriptCompiler = coffeeScriptCompiler;
             this.settings = settings;

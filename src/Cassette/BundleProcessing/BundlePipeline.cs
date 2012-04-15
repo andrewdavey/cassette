@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TinyIoC;
 
 namespace Cassette.BundleProcessing
@@ -6,11 +7,25 @@ namespace Cassette.BundleProcessing
     public class BundlePipeline<T> : List<IBundleProcessor<T>>, IBundlePipeline<T>
         where T : Bundle
     {
-        public TinyIoCContainer Container { get; private set; }
+        readonly TinyIoCContainer container;
 
         protected BundlePipeline(TinyIoCContainer container)
         {
-            Container = container;
+            this.container = container;
+        }
+
+        public void Insert<TBundleProcessor>(int index)
+            where TBundleProcessor : class, IBundleProcessor<T>
+        {
+            var step = (IBundleProcessor<T>)container.Resolve<TBundleProcessor>();
+            Insert(index, step);
+        }
+
+        public void Insert<TBundleProcessorFactory>(int index, Func<TBundleProcessorFactory, IBundleProcessor<T>> create)
+            where TBundleProcessorFactory : class
+        {
+            var step = create(container.Resolve<TBundleProcessorFactory>());
+            Insert(index, step);
         }
 
         public virtual void Process(T bundle)

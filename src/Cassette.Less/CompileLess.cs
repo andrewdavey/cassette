@@ -6,10 +6,10 @@ namespace Cassette.Stylesheets
 {
     public class CompileLess : IBundleProcessor<StylesheetBundle>
     {
-        readonly ICompiler lessCompiler;
+        readonly ILessCompiler lessCompiler;
         readonly CassetteSettings settings;
 
-        public CompileLess(ICompiler lessCompiler, CassetteSettings settings)
+        public CompileLess(ILessCompiler lessCompiler, CassetteSettings settings)
         {
             this.lessCompiler = lessCompiler;
             this.settings = settings;

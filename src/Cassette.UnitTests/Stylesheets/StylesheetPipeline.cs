@@ -58,7 +58,8 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             var pipeline = new StylesheetPipeline(container, settings);
-            pipeline.EmbedImages();
+            bundle.Pipeline = pipeline;
+            bundle.EmbedImages();
             pipeline.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(It.Is<IAssetTransformer>(t => t is CssImageToDataUriTransformer)));

@@ -24,7 +24,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundle_ThenHtmlIsScriptElement()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/") { Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             var html = Render(bundle);
             html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\"></script>");
         }
@@ -32,7 +32,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithCondition_ThenHtmlIsScriptElementWithConditional()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "CONDITION", Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "CONDITION", Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             var html = Render(bundle);
 
             html.ShouldEqual(
@@ -44,7 +44,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithNotIECondition_ThenHtmlIsScriptElementWithConditionalButLeavesScriptVisibleToAllBrowsers()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "(gt IE 9)|!(IE)", Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "(gt IE 9)|!(IE)", Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
 
             var html = bundle.Render(bundle);
 
@@ -57,7 +57,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithHtmlAttributes_ThenHtmlIsScriptElementWithExtraAttributes()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/") { Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             bundle.HtmlAttributes["class"] = "foo";
 
             var html = Render(bundle);
@@ -68,7 +68,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithLocalAssetsAndIsDebugMode_ThenFallbackRendererUsed()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/", "test") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/", "test") { Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             bundle.Assets.Add(new StubAsset());
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns("FALLBACK");
@@ -82,7 +82,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlContainsFallbackScript()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION") { Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             bundle.Assets.Add(new StubAsset());
 
             fallbackRenderer.Setup(r => r.Render(bundle))
@@ -103,7 +103,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithFallbackAsset_ThenHtmlEscapesFallbackScriptTags()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION") { Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             bundle.Assets.Add(new StubAsset());
 
             fallbackRenderer.Setup(r => r.Render(bundle))
@@ -119,7 +119,7 @@ namespace Cassette.Scripts
         {
             settings.IsDebuggingEnabled = true;
 
-            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/", "test", "CONDITION") { Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             bundle.Assets.Add(new StubAsset());
 
             fallbackRenderer.Setup(r => r.Render(bundle))
@@ -133,7 +133,7 @@ namespace Cassette.Scripts
         [Fact]
         public void WhenRenderExternalScriptBundleWithNoLocalAssetsAndIsDebugMode_ThenNormalScriptElementIsReturned()
         {
-            var bundle = new ExternalScriptBundle("http://test.com/", "test") { Processor = Mock.Of<IBundleProcessor<ScriptBundle>>() };
+            var bundle = new ExternalScriptBundle("http://test.com/", "test") { Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
             settings.IsDebuggingEnabled = true;
 
             var html = Render(bundle);
