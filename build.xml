@@ -118,7 +118,16 @@
                    If it is an issue for 3.5-based projects, can maybe figure out a clean way to package tools for 3.5 and 4.0.
                    See: src\Cassette.MSBuild\Cassette.MSBuild.nuspec -->
         <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -NoPackageAnalysis"/>
+    </Target>
 
+    <Target Name="NugetPush" DependsOnTargets="NugetPack">
+        <ItemGroup>
+            <Packages Include="build\nuget\*.nupkg" Exclude="build\nuget\*.symbols.nupkg"/>
+        </ItemGroup>
+        <Exec Command="nuget push %(Packages.Identity)" />
+    </Target>
+
+    <Target Name="Zip35">
         <!-- TODO: Until we can multi-target within Nuget easily, we are packaging Fx35 as a zip file for release -->
         <ItemGroup>
             <Binary Include="src\Cassette\bin\Release-FX35\Cassette.dll" />
@@ -137,13 +146,7 @@
         <Copy SourceFiles="%(Binary.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\lib35" />
         <Copy SourceFiles="%(Content.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\content" />
         <Copy SourceFiles="%(Root.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)" />
+        
+        <!-- TODO: Zip the binaries -->
     </Target>
-
-    <Target Name="NugetPush" DependsOnTargets="NugetPack">
-        <ItemGroup>
-            <Packages Include="build\nuget\*.nupkg" Exclude="build\nuget\*.symbols.nupkg"/>
-        </ItemGroup>
-        <Exec Command="nuget push %(Packages.Identity)" />
-    </Target>
-    
 </Project>
