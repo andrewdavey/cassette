@@ -22,7 +22,7 @@
 
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <MSBuild Projects="@(Tests)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
-        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Core.dll"/>
+        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Compiler.dll"/>
     </Target>
 
     <Target Name="Build35">
@@ -39,7 +39,7 @@
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <MSBuild Projects="@(Tests35)" Targets="Clean;Build" Properties="Configuration=$(Configuration35)"/>
         <!-- merge dotless into Cassette.Less -->
-        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration35)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Core.dll"/>
+        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration35)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Compiler.dll"/>
     </Target>
     
     <Target Name="Test" DependsOnTargets="Build">

@@ -50,8 +50,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotless.Core">
-      <HintPath>..\..\lib\dotless.Core.dll</HintPath>
+    <Reference Include="dotless.Compiler">
+      <HintPath>..\..\lib\dotless.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
