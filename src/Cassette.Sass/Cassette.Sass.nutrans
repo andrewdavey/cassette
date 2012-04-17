@@ -11,6 +11,6 @@
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.Sass.dll" target="lib\net40-client" />
+    <file src="bin\Release\Cassette.Sass.dll" target="lib\net40-client" />
   </files>
 </package>

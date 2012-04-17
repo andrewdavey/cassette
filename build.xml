@@ -95,7 +95,7 @@
         </PropertyGroup>
 
         <!-- Get shared assembly version -->
-        <GetAssemblyInformationalVersion Assembly="build\bin\lib40\Cassette.dll">
+        <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\Release\Cassette.dll">
             <Output PropertyName="Version" TaskParameter="Version" />
         </GetAssemblyInformationalVersion>
 

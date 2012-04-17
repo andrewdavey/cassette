@@ -11,7 +11,6 @@
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.Web.Jasmine.dll" target="lib\net40" />
-    <!--<file src="..\..\build\bin\lib35\Cassette.Web.Jasmine.dll" target="lib\net35" />-->
+    <file src="bin\Release\Cassette.Web.Jasmine.dll" target="lib\net40" />
   </files>
 </package>
