@@ -47,7 +47,7 @@ namespace Cassette
             container.RegisterMultiple(
                 typeof(IFileSearchModifier<T>),
                 getImplementationTypes(typeof(IFileSearchModifier<T>))
-            );
+            ).AsMultiInstance();
         }
 
         void RegisterBundlePipelineServices(TinyIoCContainer container)
@@ -59,12 +59,12 @@ namespace Cassette
             container.RegisterMultiple(
                 typeof(IBundlePipelineModifier<T>),
                 getImplementationTypes(typeof(IBundlePipelineModifier<T>))
-            );
+            ).AsMultiInstance();
         }
 
         void RegisterBundleFactory(TinyIoCContainer container)
         {
-            container.Register(typeof(IBundleFactory<T>), BundleFactoryType);
+            container.Register(typeof(IBundleFactory<T>), BundleFactoryType).AsMultiInstance();
         }
 
         IFileSearch CreateFileSearch(TinyIoCContainer container)

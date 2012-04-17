@@ -20,6 +20,7 @@ namespace Cassette
             using (bundleCollection.GetWriteLock())
             {
                 bundles = bundleCollection;
+                bundles.Clear();
                 AddBundles();
                 ProcessBundles();
                 AddBundlesForUrlReferences();

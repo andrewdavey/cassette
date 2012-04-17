@@ -25,7 +25,8 @@ namespace Cassette
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             bundleConfiguration = new Mock<IConfiguration<BundleCollection>>();
 
-            rebuilder = new FileSystemWatchingBundleRebuilder(settings, bundles, new[] { bundleConfiguration.Object });
+            var initializer = new BundleCollectionInitializer(new[] { bundleConfiguration.Object }, new ExternalBundleGenerator(Mock.Of<IBundleFactoryProvider>(), settings));
+            rebuilder = new FileSystemWatchingBundleRebuilder(settings, bundles, initializer);
         }
 
         [Fact]

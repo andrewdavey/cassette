@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using Cassette.Configuration;
 
@@ -12,15 +11,15 @@ namespace Cassette
     {
         readonly CassetteSettings settings;
         readonly BundleCollection bundles;
-        readonly IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations;
+        readonly BundleCollectionInitializer initializer;
         IDisposable fileSystemWatcher;
         Timer rebuildDelayTimer;
 
-        public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations)
+        public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, BundleCollectionInitializer initializer)
         {
             this.settings = settings;
             this.bundles = bundles;
-            this.bundleConfigurations = bundleConfigurations;
+            this.initializer = initializer;
         }
 
         /// <summary>
@@ -49,11 +48,7 @@ namespace Cassette
 
         void RebuildBundles()
         {
-            using (bundles.GetWriteLock())
-            {
-                bundles.Clear();
-                bundles.AddRange(bundleConfigurations);
-            }
+            initializer.Initialize(bundles);
         }
 
         /// <summary>
