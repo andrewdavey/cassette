@@ -56,9 +56,8 @@ namespace Cassette.Configuration
 
         bool IsUrlReferenceNotYetSeen(string reference)
         {
-            var isUrl = reference.IsUrl() == false;
             var alreadySeenUrl = existingUrls.Contains(reference);
-            return isUrl && !alreadySeenUrl;
+            return reference.IsUrl() && !alreadySeenUrl;
         }
 
         void IBundleVisitor.Visit(IAsset asset)
