@@ -41,6 +41,13 @@ namespace Cassette.Views
         }
 
         [Fact]
+        public void WhenReferenceUrlSpecifyingTheBundleType_ThenReferenceBuilderIsCalledWithTypeParameter()
+        {
+            Bundles.Reference<ScriptBundle>("http://example.com/");
+            referenceBuilder.Verify(b => b.Reference<ScriptBundle>("http://example.com/", null));
+        }
+
+        [Fact]
         public void AddInlineScriptAddsReferenceToInlineScriptBundle()
         {
             Bundle bundle = null;

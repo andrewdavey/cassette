@@ -12,6 +12,13 @@ namespace Cassette
         void Reference(string path, string location = null);
 
         /// <summary>
+        /// Adds a reference to the asset bundle with the given path.
+        /// </summary>
+        /// <param name="path">The application relative path to the asset bundle.</param>
+        /// <param name="location">Optional page render location for the asset bundle.</param>
+        void Reference<T>(string path, string location = null) where T : Bundle;
+
+        /// <summary>
         /// Adds a reference to the asset bundle.
         /// </summary>
         /// <param name="bundle">The asset bundle.</param>

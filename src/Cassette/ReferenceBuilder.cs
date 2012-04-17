@@ -35,7 +35,7 @@ namespace Cassette
             using (allBundles.GetReadLock())
             {
                 var factory = bundleFactoryProvider.GetBundleFactory<T>();
-                var bundles = GetBundles(path, () => factory.CreateExternalBundle(path));
+                var bundles = GetBundles(path, () => factory.CreateExternalBundle(path)).OfType<T>();
                 Reference(bundles, location);
             }
         }

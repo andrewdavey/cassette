@@ -35,10 +35,31 @@ namespace Cassette.Views
         /// Adds a reference to a bundle for the current page.
         /// </summary>
         /// <param name="assetPathOrBundlePathOrUrl">Either an application relative path to an asset file or bundle. Or a URL of an external resource.</param>
+        public static void Reference<T>(string assetPathOrBundlePathOrUrl)
+            where T : Bundle
+        {
+            Reference<T>(assetPathOrBundlePathOrUrl, null);
+        }
+
+        /// <summary>
+        /// Adds a reference to a bundle for the current page.
+        /// </summary>
+        /// <param name="assetPathOrBundlePathOrUrl">Either an application relative path to an asset file or bundle. Or a URL of an external resource.</param>
         /// <param name="pageLocation">The optional page location of the referenced bundle. This controls where it will be rendered.</param>
         public static void Reference(string assetPathOrBundlePathOrUrl, string pageLocation)
         {
             Helper.Reference(assetPathOrBundlePathOrUrl, pageLocation);
+        }
+
+        /// <summary>
+        /// Adds a reference to a bundle for the current page.
+        /// </summary>
+        /// <param name="assetPathOrBundlePathOrUrl">Either an application relative path to an asset file or bundle. Or a URL of an external resource.</param>
+        /// <param name="pageLocation">The optional page location of the referenced bundle. This controls where it will be rendered.</param>
+        public static void Reference<T>(string assetPathOrBundlePathOrUrl, string pageLocation)
+            where T : Bundle
+        {
+            Helper.Reference<T>(assetPathOrBundlePathOrUrl, pageLocation);
         }
 
         /// <summary>

@@ -42,6 +42,12 @@ namespace Cassette.Views
             getReferenceBuilder().Reference(assetPathOrBundlePathOrUrl, pageLocation);
         }
 
+        public void Reference<T>(string assetPathOrBundlePathOrUrl, string pageLocation)
+            where T: Bundle
+        {
+            getReferenceBuilder().Reference<T>(assetPathOrBundlePathOrUrl, pageLocation);            
+        }
+
         public void Reference(Bundle bundle, string pageLocation)
         {
             getReferenceBuilder().Reference(bundle, pageLocation);
