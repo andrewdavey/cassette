@@ -45,11 +45,55 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenUrlIsNotExpanded()
+        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenUrlIsExpandedToAbsolutePath()
         {
+            urlGenerator
+                .Setup(g => g.CreateAbsolutePathUrl(It.IsAny<string>()))
+                .Returns("ABSOLUTE-URL");
+
             var output = TransformCssWhereUrlDoesNotExist();
 
-            output.ShouldEqual("p { background-image: url(test.png); }");
+            output.ShouldEqual("p { background-image: url(ABSOLUTE-URL); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsPathStartingWithSlash_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(/test.png); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsFullUrl_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(http://example.com/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(http://example.com/test.png); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsFullHttpsUrl_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(https://example.com/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(https://example.com/test.png); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsFullProtocolRelativeUrl_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(//example.com/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(//example.com/test.png); }");
         }
 
         [Fact]
@@ -58,22 +102,6 @@ namespace Cassette.Stylesheets
             TransformCssWhereUrlDoesNotExist();
 
             asset.Verify(a => a.AddRawFileReference(It.IsAny<string>()), Times.Never());
-        }
-
-        [Fact]
-        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenWarningWrittenToTrace()
-        {
-            var listener = new StringBuilderTraceListener
-            {
-                Filter = new EventTypeFilter(SourceLevels.All)
-            };
-            Trace.Source.Switch.Level = SourceLevels.All;
-            Trace.Source.Listeners.Add(listener);
-
-            TransformCssWhereUrlDoesNotExist();
-
-            Trace.Source.Flush();
-            listener.ToString().ShouldContain("The file ~/styles/test.png, referenced by ~/styles/asset.css, does not exist.");
         }
 
         string TransformCssWhereUrlDoesNotExist()

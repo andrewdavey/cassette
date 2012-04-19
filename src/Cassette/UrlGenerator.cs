@@ -11,7 +11,7 @@ namespace Cassette
         public UrlGenerator(IUrlModifier urlModifier)
         {
             this.urlModifier = urlModifier;
-            this.routePrefix = "_cassette";
+            routePrefix = "_cassette";
         }
 
         public string CreateBundleUrl(Bundle bundle)
@@ -23,7 +23,7 @@ namespace Cassette
         public string CreateAssetUrl(IAsset asset)
         {
             return urlModifier.Modify(
-                String.Format(
+                string.Format(
                     "{0}/asset/{1}?{2}",
                     routePrefix,
                     asset.Path.Substring(2),
@@ -45,7 +45,7 @@ namespace Cassette
             var extension = filename.Substring(dotIndex + 1);
 
             return urlModifier.Modify(
-                String.Format(
+                string.Format(
                     "{0}/file/{1}_{2}.{3}",
                     routePrefix,
                     ConvertToForwardSlashes(name),
@@ -53,6 +53,12 @@ namespace Cassette
                     extension
                 )
             );
+        }
+
+        public string CreateAbsolutePathUrl(string applicationRelativePath)
+        {
+            var url = applicationRelativePath.TrimStart('~', '/');
+            return urlModifier.Modify(url);
         }
 
         string ConvertToForwardSlashes(string path)
