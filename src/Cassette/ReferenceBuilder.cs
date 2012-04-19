@@ -36,7 +36,11 @@ namespace Cassette
             {
                 var factory = bundleFactoryProvider.GetBundleFactory<T>();
                 var bundles = GetBundles(path, () => factory.CreateExternalBundle(path)).OfType<T>();
+#if NET35
+                Reference(bundles.Cast<Bundle>(), location);
+#else
                 Reference(bundles, location);
+#endif
             }
         }
 
