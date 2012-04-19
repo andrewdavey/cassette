@@ -206,6 +206,22 @@ namespace Cassette
         }
 
         [Fact]
+        public void WhenAddReferenceToUrlWithJsFileExtensionAndQueryString_ThenGetBundlesReturnsAnExternalScriptBundle()
+        {
+            bundles.BuildReferences();
+            var bundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
+            bundleFactory.Setup(f => f.CreateBundle("http://test.com/test.js?querystring", It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+                         .Returns(new ExternalScriptBundle("http://test.com/test.js?querystring") { Pipeline = StubPipeline<ScriptBundle>() });
+
+            SetBundleFactory(bundleFactory);
+
+            builder.Reference("http://test.com/test.js?querystring");
+
+            var bundle = builder.GetBundles(null).First();
+            bundle.ShouldBeType<ExternalScriptBundle>();
+        }
+
+        [Fact]
         public void WhenAddReferenceToUnknownUrlWithBundleTypeAndUnexpectedExtension_ThenBundleCreatedInFactory()
         {
             bundles.BuildReferences();

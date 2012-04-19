@@ -48,31 +48,50 @@ namespace Cassette
         {
             using (allBundles.GetReadLock())
             {
-                var bundles = GetBundles(path, () =>
-                {
-                    if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var factory = bundleFactoryProvider.GetBundleFactory<ScriptBundle>();
-                        return factory.CreateExternalBundle(path);
-                    }
-                    else if (path.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var factory = bundleFactoryProvider.GetBundleFactory<StylesheetBundle>();
-                        return factory.CreateExternalBundle(path);
-                    }
-                    else
-                    {
-                        throw new ArgumentException(
-                            string.Format(
-                                "Cannot determine the type of bundle for the URL \"{0}\". Specify the type using the generic type parameter.",
-                                path
-                                )
-                            );
-                    }
-                });
-
+                var bundles = GetBundles(path, () => CreateExternalBundleByInferringTypeFromFileExtension(path));
                 Reference(bundles, location);
             }
+        }
+
+        Bundle CreateExternalBundleByInferringTypeFromFileExtension(string path)
+        {
+            var pathToExamine = path.IsUrl() ? RemoveQuerystring(path) : path;
+            if (pathToExamine.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+            {
+                return CreateExternalScriptBundle(path);
+            }
+            else if (pathToExamine.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            {
+                return CreateExternalStylesheetBundle(path);
+            }
+            else
+            {
+                throw new ArgumentException(
+                    string.Format(
+                        "Cannot determine the type of bundle for the URL \"{0}\". Specify the type using the generic type parameter.",
+                        path
+                    )
+                );
+            }
+        }
+
+        string RemoveQuerystring(string url)
+        {
+            var index = url.IndexOf('?');
+            if (index < 0) return url;
+            return url.Substring(0, index);
+        }
+
+        Bundle CreateExternalScriptBundle(string path)
+        {
+            var factory = bundleFactoryProvider.GetBundleFactory<ScriptBundle>();
+            return factory.CreateExternalBundle(path);
+        }
+
+        Bundle CreateExternalStylesheetBundle(string path)
+        {
+            var factory = bundleFactoryProvider.GetBundleFactory<StylesheetBundle>();
+            return factory.CreateExternalBundle(path);
         }
 
         IEnumerable<Bundle> GetBundles(string path, Func<Bundle> createExternalBundle)
