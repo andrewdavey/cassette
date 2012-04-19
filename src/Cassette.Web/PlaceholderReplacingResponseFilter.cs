@@ -25,7 +25,7 @@ namespace Cassette.Web
         {
             if (HttpRuntime.UsingIntegratedPipeline && response.Headers["Content-Encoding"] != null)
             {
-                throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set ICassetteApplication.IsHtmlRewritingEnabled to false in the Cassette configuration, or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
+                throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set <cassette rewriteHtml=\"false\" /> to disable rewriting or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
             }
 
             BufferOutput(buffer, offset, count);
