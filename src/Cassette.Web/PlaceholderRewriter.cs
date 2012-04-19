@@ -5,9 +5,9 @@ using Cassette.Configuration;
 namespace Cassette.Web
 {
     /// <summary>
-    /// Hooks into the ASP.NET HTTP request pipeline to rewrite HTML output so Cassette HTML placeholders will be replaced with their actual HTML.
+    /// Rewrites HTML output so Cassette HTML placeholders will be replaced with their actual HTML.
     /// </summary>
-    class PlaceholderReplacingResponseFilterInstaller
+    public class PlaceholderRewriter
     {
         readonly CassetteSettings settings;
         readonly Func<IPlaceholderTracker> createPlaceholderTracker;
@@ -15,31 +15,20 @@ namespace Cassette.Web
 
         static readonly string PlaceholderTrackerKey = typeof(IPlaceholderTracker).FullName;
 
-        public PlaceholderReplacingResponseFilterInstaller(CassetteSettings settings, Func<IPlaceholderTracker> createPlaceholderTracker, Func<HttpContextBase> getHttpContext)
+        public PlaceholderRewriter(CassetteSettings settings, Func<IPlaceholderTracker> createPlaceholderTracker, Func<HttpContextBase> getHttpContext)
         {
             this.settings = settings;
             this.createPlaceholderTracker = createPlaceholderTracker;
             this.getHttpContext = getHttpContext;
         }
 
-        public void Install(HttpApplication httpApplication)
-        {
-            httpApplication.PostMapRequestHandler += ApplicationOnPostMapRequestHandler;
-            httpApplication.PostRequestHandlerExecute += ApplicationOnPostRequestHandlerExecute;
-        }
-
-        void ApplicationOnPostMapRequestHandler(object sender, EventArgs eventArgs)
-        {
-            AddPlaceholderTrackerToHttpContextItems();
-        }
-
-        void AddPlaceholderTrackerToHttpContextItems()
+        public void AddPlaceholderTrackerToHttpContextItems()
         {
             var tracker = createPlaceholderTracker();
             getHttpContext().Items[PlaceholderTrackerKey] = tracker;
         }
 
-        void ApplicationOnPostRequestHandlerExecute(object sender, EventArgs eventArgs)
+        public void RewriteOutput()
         {
             var httpContext = getHttpContext();
             if (CanRewriteOutput(httpContext))

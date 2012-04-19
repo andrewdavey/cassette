@@ -67,8 +67,7 @@
     <Compile Include="WebHost.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="IsolatedStorageContainer.cs" />
-    <Compile Include="PlaceholderReplacingResponseFilterInstaller.cs" />
-    <Compile Include="ReferenceBuilderInstaller.cs" />
+    <Compile Include="PlaceholderRewriter.cs" />
     <Compile Include="StartUpTraceRecorder.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="StringBuilderTraceListener.cs" />

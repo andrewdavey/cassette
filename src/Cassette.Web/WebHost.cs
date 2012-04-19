@@ -106,10 +106,9 @@ namespace Cassette.Web
             }
         }
 
-        public void Hook(HttpApplication httpApplication)
+        public PlaceholderRewriter CreatePlaceholderRewriter()
         {
-            var installer = Container.Resolve<PlaceholderReplacingResponseFilterInstaller>();
-            installer.Install(httpApplication);
+            return Container.Resolve<PlaceholderRewriter>();
         }
     }
 }

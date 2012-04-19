@@ -13,6 +13,14 @@ namespace Cassette.Web
         static WebHost _host;
         internal static string StartUpTrace;
 
+        /// <summary>
+        /// Gets the <see cref="WebHost"/> for the web application.
+        /// </summary>
+        public static WebHost Host
+        {
+            get { return _host; }
+        }
+
         public void Init(HttpApplication httpApplication)
         {
             lock (Lock)
@@ -33,7 +41,14 @@ namespace Cassette.Web
                 }
             }
 
-            _host.Hook(httpApplication);
+            HandleHttpApplicationEvents(httpApplication);
+        }
+
+        void HandleHttpApplicationEvents(HttpApplication httpApplication)
+        {
+            var rewriter = _host.CreatePlaceholderRewriter();
+            httpApplication.PostMapRequestHandler += (s, e) => rewriter.AddPlaceholderTrackerToHttpContextItems();
+            httpApplication.PostRequestHandlerExecute += (s, e) => rewriter.RewriteOutput();
         }
 
         public void Dispose()

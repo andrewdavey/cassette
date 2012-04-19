@@ -245,6 +245,7 @@
     <Compile Include="Utilities\JavaScriptUtilities.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />
     <Compile Include="Web\BundleRequestHandler.cs" />
+    <Compile Include="Web\PlaceholderRewriter.cs" />
     <Compile Include="Web\RouteInstaller.cs" />
     <Compile Include="Web\RawFileRequestHandler.cs" />
   </ItemGroup>
