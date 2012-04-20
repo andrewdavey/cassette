@@ -128,7 +128,6 @@
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HostBase.cs" />
     <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
-    <Compile Include="HtmlTemplates\HoganFileSearchModifier.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatesContainerConfiguration.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
@@ -253,10 +252,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cassette.Hogan\Cassette.Hogan.csproj">
-      <Project>{4D64EC45-C42A-4601-9E80-2D166AC849F3}</Project>
-      <Name>Cassette.Hogan</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cassette.JQueryTmpl\Cassette.JQueryTmpl.csproj">
       <Project>{5B4D49A1-D849-43E3-8701-9CD56DC533BC}</Project>
       <Name>Cassette.JQueryTmpl</Name>
