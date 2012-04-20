@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using Cassette.Utilities;
-using Cassette.Web;
+﻿using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
