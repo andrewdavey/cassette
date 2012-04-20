@@ -77,11 +77,13 @@
     <Compile Include="AssemblyScanner.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />
+    <Compile Include="FileAccessAuthorization.cs" />
     <Compile Include="FileSearchProvider.cs" />
     <Compile Include="HostBase.cs" />
     <Compile Include="BundleCollection.cs" />
     <Compile Include="IBundleCollectionInitializer.cs" />
     <Compile Include="IConfiguration.cs" />
+    <Compile Include="IFileAccessAuthorization.cs" />
     <Compile Include="RuntimeBundleCollectionInitializer.cs" />
     <Compile Include="BundleFactoryProvider.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />

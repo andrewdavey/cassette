@@ -88,6 +88,7 @@ namespace Cassette
             RegisterSettings();
             RegisterBundleFactoryProvider();
             RegisterFileSearchProvider();
+            RegisterFileAccessAuthorization();
             RegisterPerRequestServices();
             RegisterConfigurationTypes();
 
@@ -157,6 +158,11 @@ namespace Cassette
                     bundleType => c.Resolve<IFileSearch>(FileSearchComponentName(bundleType))
                 )
             );
+        }
+
+        void RegisterFileAccessAuthorization()
+        {
+            container.Register<IFileAccessAuthorization, FileAccessAuthorization>().AsSingleton();
         }
 
         void RegisterPerRequestServices()
