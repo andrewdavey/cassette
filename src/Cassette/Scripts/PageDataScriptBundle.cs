@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using Newtonsoft.Json;
+using Cassette.Utilities;
+using Cassette.Utilities.Json;
 using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>;
 
 namespace Cassette.Scripts
@@ -42,7 +43,9 @@ namespace Cassette.Scripts
         {
             foreach (var pair in dictionary)
             {
-                builder.AppendFormat("d.{0}={1};", pair.Key, JsonConvert.SerializeObject(pair.Value)).AppendLine();
+                var json = new StringBuilder();
+                Json.Serialize(pair.Value, new JavaScriptSerializer(null, false, JsonSettings.MaxJsonLength, JsonSettings.MaxRecursions), json);
+                builder.AppendFormat("d.{0}={1};", pair.Key, json).AppendLine();
             }
         }
     }
