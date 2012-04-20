@@ -69,7 +69,6 @@
     <Compile Include="IsolatedStorageContainer.cs" />
     <Compile Include="PlaceholderRewriter.cs" />
     <Compile Include="StartUpTraceRecorder.cs" />
-    <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="StringBuilderTraceListener.cs" />
     <None Include="CassetteConfiguration.cs.pp" />
     <Compile Include="CassetteHttpModule.cs" />

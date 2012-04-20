@@ -6,23 +6,20 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
 using System.Diagnostics;
-using Cassette.Configuration;
 
 namespace Cassette.Web
 {
     class RawFileRequestHandler : IHttpHandler
     {
-        readonly BundleCollection bundles;
-        readonly CassetteSettings settings;
+        readonly IFileAccessAuthorization fileAccessAuthorization;
         readonly RouteData routeData;
         readonly HttpResponseBase response;
         readonly HttpRequestBase request;
         readonly HttpServerUtilityBase server;
         
-        public RawFileRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings)
+        public RawFileRequestHandler(RequestContext requestContext, IFileAccessAuthorization fileAccessAuthorization)
         {
-            this.bundles = bundles;
-            this.settings = settings;
+            this.fileAccessAuthorization = fileAccessAuthorization;
             routeData = requestContext.RouteData;
             response = requestContext.HttpContext.Response;
             request = requestContext.HttpContext.Request;
@@ -74,22 +71,7 @@ namespace Cassette.Web
 
         bool AllowGet(string filename)
         {
-            return IsRawFileReferencedByAsset(filename) ||
-                   settings.CanRequestRawFile(filename);
-        }
-
-        bool IsRawFileReferencedByAsset(string filename)
-        {
-            var rawFileReferenceFinder = new RawFileReferenceFinder(filename);
-            using (bundles.GetReadLock())
-            {
-                foreach (var bundle in bundles)
-                {
-                    bundle.Accept(rawFileReferenceFinder);
-                    if (rawFileReferenceFinder.IsRawFileReferenceFound) return true;
-                }
-            }
-            return false;
+            return fileAccessAuthorization.CanAccess(filename);
         }
 
         void NotFound(string path)

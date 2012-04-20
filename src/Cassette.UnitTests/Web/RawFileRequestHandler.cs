@@ -9,8 +9,8 @@ namespace Cassette.Web
 {
     public class RawFileRequestHandler_Tests
     {
-        readonly BundleCollection bundles;
         readonly CassetteSettings settings;
+        readonly Mock<IFileAccessAuthorization> fileAccessAuthorization;
 
         public RawFileRequestHandler_Tests()
         {
@@ -25,9 +25,10 @@ namespace Cassette.Web
             bundle.Assets.Add(asset.Object);
 
             settings = new CassetteSettings();
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>()) { bundle };
+            new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>()) { bundle };
 
-            settings = new CassetteSettings();
+            fileAccessAuthorization = new Mock<IFileAccessAuthorization>();
+            fileAccessAuthorization.Setup(a => a.CanAccess("~/test.png")).Returns(true);
         }
 
         [Fact]
@@ -40,7 +41,7 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
+                MapRouteForRequestHandler(http);
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
                 http.Get("~/test_hash.png");
@@ -64,7 +65,7 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
+                MapRouteForRequestHandler(http);
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
                 string eTag;
@@ -90,7 +91,7 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
+                MapRouteForRequestHandler(http);
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
                 http.Get("~/test_hash.png");
@@ -99,7 +100,7 @@ namespace Cassette.Web
         }
 
         [Fact]
-        public void WhenRequestFileThatIsNoReferencedByAssetAndNotExplicityAllowed_ThenDoNotReturnFile()
+        public void WhenRequestFileThatIsNotAllowed_ThenDoNotReturnFile()
         {
             using (var temp = new TempDirectory())
             using (var http = new HttpTestHarness())
@@ -108,7 +109,11 @@ namespace Cassette.Web
                 var content = new byte[] { 1, 2, 3 };
                 File.WriteAllBytes(filename, content);
 
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
+                fileAccessAuthorization
+                    .Setup(a => a.CanAccess("~/protected.png"))
+                    .Returns(false);
+
+                MapRouteForRequestHandler(http);
                 http.Server.Setup(s => s.MapPath("~/protected.png")).Returns(filename);
 
                 http.Get("~/protected_hash.png");
@@ -118,25 +123,9 @@ namespace Cassette.Web
             }
         }
 
-        [Fact]
-        public void WhenRequestFileThatIsNoReferencedByAssetButIsExplicityAllowed_ThenReturnFile()
+        void MapRouteForRequestHandler(HttpTestHarness http)
         {
-            using (var temp = new TempDirectory())
-            using (var http = new HttpTestHarness())
-            {
-                var filename = Path.Combine(temp, "image.png");
-                var content = new byte[] { 1, 2, 3 };
-                File.WriteAllBytes(filename, content);
-                
-                settings.AllowRawFileRequest(path => path == "~/image.png");
-
-                http.MapRoute("{*path}", c => new RawFileRequestHandler(c, bundles, settings));
-                http.Server.Setup(s => s.MapPath("~/image.png")).Returns(filename);
-
-                http.Get("~/image_hash.png");
-
-                http.Response.Verify(r => r.WriteFile(filename));
-            }
+            http.MapRoute("{*path}", c => new RawFileRequestHandler(c, fileAccessAuthorization.Object));
         }
     }
 }

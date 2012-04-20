@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Cassette.Web
+namespace Cassette
 {
     class RawFileReferenceFinder : IBundleVisitor
     {
@@ -23,7 +23,7 @@ namespace Cassette.Web
             if (IsRawFileReferenceFound) return;
 
             var found = asset.References.Any(
-                r => r.Type == AssetReferenceType.RawFilename 
+                r => r.Type == AssetReferenceType.RawFilename
                      && r.Path.Equals(filename, StringComparison.OrdinalIgnoreCase)
                 );
             if (found)

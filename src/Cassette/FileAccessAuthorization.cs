@@ -10,11 +10,13 @@ namespace Cassette
 {
     class FileAccessAuthorization : IFileAccessAuthorization
     {
+        readonly BundleCollection bundles;
         readonly HashedCompareSet<string> paths = new HashedCompareSet<string>(new string[0], StringComparer.OrdinalIgnoreCase);
         readonly List<Func<string, bool>> pathPredicates = new List<Func<string, bool>>();
 
-        public FileAccessAuthorization(IEnumerable<IConfiguration<IFileAccessAuthorization>> configurations)
+        public FileAccessAuthorization(IEnumerable<IConfiguration<IFileAccessAuthorization>> configurations, BundleCollection bundles)
         {
+            this.bundles = bundles;
             ApplyConfigurations(configurations);
         }
 
@@ -44,7 +46,21 @@ namespace Cassette
         public bool CanAccess(string path)
         {
             if (path == null) return false;
-            return paths.Contains(path) || pathPredicates.Any(predicate => predicate(path));
+
+            return 
+                paths.Contains(path) || 
+                pathPredicates.Any(predicate => predicate(path)) || 
+                BundlesContainRawFileReference(path);
+        }
+
+        bool BundlesContainRawFileReference(string path)
+        {
+            using (bundles.GetReadLock())
+            {
+                var finder = new RawFileReferenceFinder(path);
+                bundles.Accept(finder);
+                return finder.IsRawFileReferenceFound;
+            }
         }
     }
 }

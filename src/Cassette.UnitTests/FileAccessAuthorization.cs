@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -9,13 +10,15 @@ namespace Cassette
     {
         readonly FileAccessAuthorization authorization;
         readonly Mock<IConfiguration<IFileAccessAuthorization>> configuration;
+        readonly BundleCollection bundles;
 
         public FileAccessAuthorization_Tests()
         {
             configuration = new Mock<IConfiguration<IFileAccessAuthorization>>();
             var configurations = new[] { configuration.Object };
+            bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
 
-            authorization = new FileAccessAuthorization(configurations);
+            authorization = new FileAccessAuthorization(configurations, bundles);
         }
 
         [Fact]
@@ -48,6 +51,18 @@ namespace Cassette
         public void GivenAllowAccessToPathPredicate_ThenCanAccessPathMatchingPredicateReturnsTrue()
         {
             authorization.AllowAccess(path => path == "~/test.png");
+            authorization.CanAccess("~/test.png").ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenBundleWithAssetWithRawFileReference_ThenCanAccessTheRawFilePath()
+        {
+            var bundle = new TestableBundle("~");
+            var asset = new StubAsset("~/test.css");
+            asset.AddRawFileReference("~/test.png");
+            bundle.Assets.Add(asset);
+            bundles.Add(bundle);
+
             authorization.CanAccess("~/test.png").ShouldBeTrue();
         }
 

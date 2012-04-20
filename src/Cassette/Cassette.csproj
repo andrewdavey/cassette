@@ -84,6 +84,7 @@
     <Compile Include="IBundleCollectionInitializer.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IFileAccessAuthorization.cs" />
+    <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="RuntimeBundleCollectionInitializer.cs" />
     <Compile Include="BundleFactoryProvider.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
