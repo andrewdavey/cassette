@@ -3,6 +3,7 @@ using TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {
+    [ConfigurationOrder(20)]
     public class HoganServices : IConfiguration<TinyIoCContainer>
     {
         public void Configure(TinyIoCContainer container)

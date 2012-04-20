@@ -4,6 +4,7 @@ using TinyIoC;
 namespace Cassette.Scripts
 {
 #if NET35
+    [ConfigurationOrder(20)]
     public class CoffeeScriptServices : IConfiguration<TinyIoCContainer>
     {
         public void Configure(TinyIoCContainer container)
@@ -12,6 +13,7 @@ namespace Cassette.Scripts
         }
     }
 #else
+    [ConfigurationOrder(20)]
     public class CoffeeScriptServices : IConfiguration<TinyIoCContainer>
     {
         public void Configure(TinyIoCContainer container)
