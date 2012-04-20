@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Cassette.Configuration;
 using Cassette.HtmlTemplates;
-using Cassette.IO;
 using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -24,8 +23,6 @@ namespace Cassette
         Type[] allTypes;
         Type[] configurationTypes;
         AssemblyScanner assemblyScanner;
-        CassetteSettings settings;
-        readonly object createSettingsLock = new object();
 
         public void Initialize()
         {
@@ -71,7 +68,8 @@ namespace Cassette
             {
                 typeof(ScriptContainersConfiguration),
                 typeof(StylesheetsContainerConfiguration),
-                typeof(HtmlTemplatesContainerConfiguration)
+                typeof(HtmlTemplatesContainerConfiguration),
+                typeof(SettingsVersionAssigner)
             };
 
             return publicTypes.Concat(internalTypes);
@@ -133,9 +131,13 @@ namespace Cassette
 
         void RegisterSettings()
         {
-            container.Register(typeof(CassetteSettings), (c, p) => CreateSettings(c));
+            // Host specific settings configuration is named so that it's included when CassetteSettings asks for IEnumerable<IConfiguration<CassetteSettings>>.
+            container.Register(CreateHostSpecificSettingsConfiguration(), "HostSpecificSettingsConfiguration");
+            container.Register(typeof(CassetteSettings)).AsSingleton();
         }
 
+        protected abstract IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration();
+ 
         void RegisterBundleFactoryProvider()
         {
             container.Register(
@@ -291,42 +293,6 @@ namespace Cassette
                 Trace.Source.TraceInformation("Running start-up task: {0}", startUpTask.GetType().FullName);
                 startUpTask.Start();
             }
-        }
-
-        CassetteSettings CreateSettings(TinyIoCContainer currentContainer)
-        {
-            lock (createSettingsLock)
-            {
-                // Only create settings once, then reuse that instance.
-                if (settings != null) return settings;
-
-                settings = CreateSettings();
-                ConfigureSettings(settings, currentContainer);
-                return settings;
-            }
-        }
-
-        void ConfigureSettings(CassetteSettings settingsToConfigure, TinyIoCContainer currentContainer)
-        {
-            var configurations = currentContainer.ResolveAll<IConfiguration<CassetteSettings>>();
-            foreach (var configuration in configurations)
-            {
-                configuration.Configure(settingsToConfigure);
-            }
-        }
-
-        protected virtual CassetteSettings CreateSettings()
-        {
-            return new CassetteSettings
-            {
-                Version = GetHostVersion(),
-                PrecompiledManifestFile = new NonExistentFile("")
-            };
-        }
-
-        protected virtual string GetHostVersion()
-        {
-            return assemblyScanner.HashAssemblies();
         }
 
         /// <summary>

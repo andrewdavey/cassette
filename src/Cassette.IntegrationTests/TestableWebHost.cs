@@ -48,9 +48,9 @@ namespace Cassette
             return getHttpContext();
         }
 
-        protected override string AppDomainAppPath
+        protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()
         {
-            get { return sourceDirectory; }
+            return new TestableWebHostSettingsConfiguration(this);
         }
 
         protected override string AppDomainAppVirtualPath
@@ -63,17 +63,33 @@ namespace Cassette
             get { return routes; }
         }
 
-        protected override CassetteConfigurationSection GetConfigurationSection()
+        class TestableWebHostSettingsConfiguration : WebHostSettingsConfiguration
         {
-            return new CassetteConfigurationSection
-            {
-                RewriteHtml = false
-            };
-        }
+            readonly TestableWebHost host;
 
-        protected override bool IsAspNetDebuggingEnabled
-        {
-            get { return isAspNetDebuggingEnabled; }
+            public TestableWebHostSettingsConfiguration(TestableWebHost host) 
+                : base(host.AppDomainAppVirtualPath)
+            {
+                this.host = host;
+            }
+
+            protected override string AppDomainAppPath
+            {
+                get { return host.sourceDirectory; }
+            }
+
+            protected override CassetteConfigurationSection GetConfigurationSection()
+            {
+                return new CassetteConfigurationSection
+                {
+                    RewriteHtml = false
+                };
+            }
+
+            protected override bool IsAspNetDebuggingEnabled
+            {
+                get { return host.isAspNetDebuggingEnabled; }
+            }
         }
     }
 }

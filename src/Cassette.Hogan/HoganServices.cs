@@ -8,35 +8,11 @@ namespace Cassette.HtmlTemplates
     {
         public void Configure(TinyIoCContainer container)
         {
-            container.Register((c, p) => CreateHoganSettings(c));
+            container.Register<HoganSettings>().AsSingleton();
 
             container
                 .Register(typeof(IBundlePipeline<HtmlTemplateBundle>), typeof(HoganPipeline))
                 .AsMultiInstance();
-        }
-
-        HoganSettings settings;
-        readonly object settingsCreationLock = new object();
-
-        HoganSettings CreateHoganSettings(TinyIoCContainer container)
-        {
-            lock (settingsCreationLock)
-            {
-                if (settings != null) return settings;
-
-                settings = new HoganSettings();
-                ConfigureHoganSettings(container);
-                return settings;
-            }
-        }
-
-        void ConfigureHoganSettings(TinyIoCContainer container)
-        {
-            var configurations = container.ResolveAll<IConfiguration<HoganSettings>>();
-            foreach (var configuration in configurations)
-            {
-                configuration.Configure(settings);
-            }
         }
     }
 }

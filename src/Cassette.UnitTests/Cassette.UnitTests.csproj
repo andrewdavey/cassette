@@ -197,6 +197,7 @@
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
     <Compile Include="Stylesheets\StylesheetsContainerConfiguration.cs" />
     <Compile Include="Stylesheets\StylesheetBundleExtensions.cs" />
+    <Compile Include="Temp.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="BundleProcessing\CompileAsset.cs" />

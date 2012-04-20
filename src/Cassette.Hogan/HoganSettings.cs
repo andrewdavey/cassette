@@ -1,4 +1,6 @@
-﻿namespace Cassette.HtmlTemplates
+﻿using System.Collections.Generic;
+
+namespace Cassette.HtmlTemplates
 {
     public class HoganSettings
     {
@@ -8,9 +10,18 @@
         /// </summary>
         public string JavaScriptVariableName { get; set; }
 
-        public HoganSettings()
+        public HoganSettings(IEnumerable<IConfiguration<HoganSettings>> configurations)
         {
             JavaScriptVariableName = "JST";
+            ApplyConfigurations(configurations);
+        }
+
+        void ApplyConfigurations(IEnumerable<IConfiguration<HoganSettings>> configurations)
+        {
+            foreach (var configuration in configurations)
+            {
+                configuration.Configure(this);
+            }
         }
     }
 }

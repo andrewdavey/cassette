@@ -1,4 +1,5 @@
-﻿using Cassette.IO;
+﻿using System.Collections.Generic;
+using Cassette.IO;
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -10,6 +11,25 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
+        public CassetteSettings(IEnumerable<IConfiguration<CassetteSettings>> configurations)
+        {
+            ApplyConfigurations(configurations);
+            PrecompiledManifestFile = new NonExistentFile("");
+        }
+
+        internal CassetteSettings() // Tests don't usually need to specify configurations, so give them a default constructor to use.
+        {
+            PrecompiledManifestFile = new NonExistentFile("");
+        }
+
+        void ApplyConfigurations(IEnumerable<IConfiguration<CassetteSettings>> configurations)
+        {
+            foreach (var configuration in configurations)
+            {
+                configuration.Configure(this);
+            }    
+        }
+
         internal IFile PrecompiledManifestFile { get; set; }
 
         /// <summary>

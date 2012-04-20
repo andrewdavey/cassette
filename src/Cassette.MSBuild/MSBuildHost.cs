@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Cassette.Configuration;
-using Cassette.IO;
 using Cassette.Manifests;
 
 namespace Cassette.MSBuild
@@ -56,13 +55,6 @@ namespace Cassette.MSBuild
             }
         }
 
-        protected override CassetteSettings CreateSettings()
-        {
-            var settings = base.CreateSettings();
-            settings.SourceDirectory = new FileSystemDirectory(Environment.CurrentDirectory);
-            return settings;
-        }
-
         protected override void ConfigureContainer()
         {
             base.ConfigureContainer();
@@ -71,6 +63,11 @@ namespace Cassette.MSBuild
             // So this is *after* the base.RegisterContainerItems() call.
             // We must output specially wrapped URLs at compile-time. These are then modified by the application at run-time.
             Container.Register<IUrlModifier>(new UrlPlaceholderWrapper());
+        }
+
+        protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()
+        {
+            return new MsBuildHostSettingsConfiguration();
         }
     }
 }

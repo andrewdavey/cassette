@@ -209,6 +209,7 @@
     <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="ServicesConfiguration.cs" />
+    <Compile Include="SettingsVersionAssigner.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\ConvertFontUrlsToDataUris.cs" />

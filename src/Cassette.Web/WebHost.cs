@@ -4,10 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Compilation;
-using System.Web.Configuration;
 using System.Web.Routing;
 using Cassette.Configuration;
-using Cassette.IO;
 using TinyIoC;
 
 namespace Cassette.Web
@@ -38,6 +36,11 @@ namespace Cassette.Web
             base.ConfigureContainer();
         }
 
+        protected virtual string AppDomainAppVirtualPath
+        {
+            get { return HttpRuntime.AppDomainAppVirtualPath; }
+        }
+
         protected virtual HttpContextBase HttpContext()
         {
             return new HttpContextWrapper(System.Web.HttpContext.Current);
@@ -46,18 +49,6 @@ namespace Cassette.Web
         protected virtual RouteCollection Routes
         {
             get { return RouteTable.Routes; }
-        }
-
-        protected override string GetHostVersion()
-        {
-            // Include the virtual directory so that if the application is moved to 
-            // another virtual directory the bundles will be rebuilt with the updated URLs.
-            return base.GetHostVersion() + AppDomainAppVirtualPath;
-        }
-
-        protected virtual string AppDomainAppVirtualPath
-        {
-            get { return HttpRuntime.AppDomainAppVirtualPath; }
         }
 
         protected override IEnumerable<Type> GetStartUpTaskTypes()
@@ -70,45 +61,14 @@ namespace Cassette.Web
             });
         }
 
-        protected override CassetteSettings CreateSettings()
-        {
-            var settings = base.CreateSettings();
-            var configurationSection = GetConfigurationSection();
-            settings.IsDebuggingEnabled = configurationSection.Debug.HasValue ? configurationSection.Debug.Value : IsAspNetDebuggingEnabled;
-            settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
-            settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
-            settings.SourceDirectory = new FileSystemDirectory(AppDomainAppPath);
-            settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
-            var precompiledManifestFilename = string.IsNullOrEmpty(configurationSection.PrecompiledManifest) 
-                ? "~/App_Data/cassette.xml" 
-                : configurationSection.PrecompiledManifest;
-            settings.PrecompiledManifestFile = settings.SourceDirectory.GetFile(precompiledManifestFilename);
-            return settings;
-        }
-
-        protected virtual string AppDomainAppPath
-        {
-            get { return HttpRuntime.AppDomainAppPath; }
-        }
-
-        protected virtual CassetteConfigurationSection GetConfigurationSection()
-        {
-            return (WebConfigurationManager.GetSection("cassette") as CassetteConfigurationSection)
-                ?? new CassetteConfigurationSection();
-        }
-
-        protected virtual bool IsAspNetDebuggingEnabled
-        {
-            get
-            {
-                var compilation = WebConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-                return compilation != null && compilation.Debug;
-            }
-        }
-
         public PlaceholderRewriter CreatePlaceholderRewriter()
         {
             return Container.Resolve<PlaceholderRewriter>();
+        }
+
+        protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()
+        {
+            return new WebHostSettingsConfiguration(AppDomainAppVirtualPath);
         }
     }
 }

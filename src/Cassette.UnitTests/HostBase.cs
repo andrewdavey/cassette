@@ -93,18 +93,24 @@ namespace Cassette
             yield return typeof(HostBase).Assembly;
         }
 
-        protected override CassetteSettings CreateSettings()
-        {
-            var settings = base.CreateSettings();
-            settings.CacheDirectory = new FakeFileSystem();
-            return settings;
-        }
-
         protected override void ConfigureContainer()
         {
             base.ConfigureContainer();
             Container.Register<IUrlModifier>(new VirtualDirectoryPrepender("/"));
             Container.Register<IBundleCollectionInitializer, BundleCollectionInitializer>();
+        }
+
+        protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()
+        {
+            return new TestSettingsConfiguration();
+        }
+
+        class TestSettingsConfiguration : IConfiguration<CassetteSettings>
+        {
+            public void Configure(CassetteSettings settings)
+            {
+                settings.CacheDirectory = new FakeFileSystem();
+            }
         }
     }
 
