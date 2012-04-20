@@ -5,9 +5,9 @@ using TinyIoC;
 namespace Cassette.Stylesheets
 {
     [ConfigurationOrder(10)]
-    class StylesheetContainerConfiguration : ContainerConfiguration<StylesheetBundle>
+    class StylesheetsContainerConfiguration : ContainerConfiguration<StylesheetBundle>
     {
-        public StylesheetContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        public StylesheetsContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
         }
 

@@ -9,20 +9,20 @@ using Xunit;
 
 namespace Cassette.Scripts
 {
-    public class ScriptBundleContainerConfiguration_Tests
+    public class ScriptsContainerConfiguration_Tests
     {
         readonly TinyIoCContainer container;
-        readonly ScriptContainerConfiguration configuration;
+        readonly ScriptContainersConfiguration configuration;
         readonly FileSearch fileSearch;
 
-        public ScriptBundleContainerConfiguration_Tests()
+        public ScriptsContainerConfiguration_Tests()
         {
             container = new TinyIoCContainer();
             container.Register<IJavaScriptMinifier, MicrosoftJavaScriptMinifier>();
             container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
 
-            configuration = new ScriptContainerConfiguration(type => new Type[0]);
+            configuration = new ScriptContainersConfiguration(type => new Type[0]);
             configuration.Configure(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(ScriptBundle)));
@@ -62,7 +62,7 @@ namespace Cassette.Scripts
     public class ScriptBundleContainerModuleWithFileSearchModifierTests
     {
         readonly TinyIoCContainer container;
-        readonly ScriptContainerConfiguration configuration;
+        readonly ScriptContainersConfiguration configuration;
         readonly FileSearch fileSearch;
 
         public ScriptBundleContainerModuleWithFileSearchModifierTests()
@@ -79,7 +79,7 @@ namespace Cassette.Scripts
 
             container.Register(typeof(IFileSearchModifier<ScriptBundle>), modifier.Object);
 
-            configuration = new ScriptContainerConfiguration(type => new Type[0]);
+            configuration = new ScriptContainersConfiguration(type => new Type[0]);
             configuration.Configure(container);
 
             fileSearch = (FileSearch)container.Resolve<IFileSearch>(HostBase.FileSearchComponentName(typeof(ScriptBundle)));

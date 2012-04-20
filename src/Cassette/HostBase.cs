@@ -69,9 +69,9 @@ namespace Cassette
 
             var internalTypes = new[]
             {
-                typeof(ScriptContainerConfiguration),
-                typeof(HtmlTemplateContainerConfiguration),
-                typeof(StylesheetContainerConfiguration)
+                typeof(ScriptContainersConfiguration),
+                typeof(StylesheetsContainerConfiguration),
+                typeof(HtmlTemplatesContainerConfiguration)
             };
 
             return publicTypes.Concat(internalTypes);

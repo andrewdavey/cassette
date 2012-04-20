@@ -5,11 +5,10 @@ using TinyIoC;
 
 namespace Cassette.Scripts
 {
-    // TODO: Decide if this should be Script or ScriptBundle
     [ConfigurationOrder(10)]
-    class ScriptContainerConfiguration : ContainerConfiguration<ScriptBundle>
+    class ScriptContainersConfiguration : ContainerConfiguration<ScriptBundle>
     {
-        public ScriptContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        public ScriptContainersConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
         }
 

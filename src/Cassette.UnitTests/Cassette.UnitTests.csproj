@@ -129,7 +129,7 @@
     <Compile Include="HostBase.cs" />
     <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
     <Compile Include="HtmlTemplates\HoganFileSearchModifier.cs" />
-    <Compile Include="HtmlTemplates\HtmlTemplateBundleContainerConfiguration.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplatesContainerConfiguration.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateRenderer.cs" />
     <Compile Include="Manifests\AssetManifest.cs" />
     <Compile Include="Manifests\AssetManifestBuilder.cs" />
@@ -182,7 +182,7 @@
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
     <Compile Include="Scripts\ScriptBundle.cs" />
-    <Compile Include="Scripts\ScriptBundleContainerConfiguration.cs" />
+    <Compile Include="Scripts\ScriptsContainerConfiguration.cs" />
     <Compile Include="ServicesConfiguration.cs" />
     <Compile Include="StubAsset.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
@@ -196,7 +196,7 @@
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestBuilder.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />
     <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
-    <Compile Include="Stylesheets\StylesheetBundleContainerConfiguration.cs" />
+    <Compile Include="Stylesheets\StylesheetsContainerConfiguration.cs" />
     <Compile Include="Stylesheets\StylesheetBundleExtensions.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
