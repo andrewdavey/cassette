@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Cassette.Configuration;
 using Cassette.IO;
+using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
@@ -118,6 +119,67 @@ namespace Cassette
             bundles.Add<TestableBundle>("~");
 
             factory.Verify(f => f.CreateBundle(
+                "~",
+                It.IsAny<IEnumerable<IFile>>(),
+                It.Is<BundleDescriptor>(d => d.AssetFilenames.SequenceEqual(new[] { "~/b.js", "~/a.js" }))
+            ));
+        }
+
+        [Fact]
+        public void GivenScriptBundleDescriptor_WhenAdd_ThenScriptDescriptorPassedToFactory()
+        {
+            var scriptBundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
+            scriptBundleFactory
+                .Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+                .Returns<string, IEnumerable<IFile>, BundleDescriptor>(
+                    (path, files, d) => new ScriptBundle(path)
+                );
+            bundleFactoryProvider
+                .Setup(p => p.GetBundleFactory<ScriptBundle>())
+                .Returns(scriptBundleFactory.Object);
+
+            File.WriteAllText(Path.Combine(tempDirectory, "scriptbundle.txt"), "b.js\na.js");
+
+            var fileA = StubFile("~/a.js");
+            var fileB = StubFile("~/b.js");
+            fileSearch
+                .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(new[] { fileA, fileB });
+
+            bundles.Add<ScriptBundle>("~");
+
+            scriptBundleFactory.Verify(f => f.CreateBundle(
+                "~",
+                It.IsAny<IEnumerable<IFile>>(),
+                It.Is<BundleDescriptor>(d => d.AssetFilenames.SequenceEqual(new[] { "~/b.js", "~/a.js" }))
+            ));
+        }
+
+        [Fact]
+        public void GivenScriptBundleDescriptorAndBundleDescriptor_WhenAdd_ThenScriptBundleDescriptorIsUsed()
+        {
+            var scriptBundleFactory = new Mock<IBundleFactory<ScriptBundle>>();
+            scriptBundleFactory
+                .Setup(f => f.CreateBundle(It.IsAny<string>(), It.IsAny<IEnumerable<IFile>>(), It.IsAny<BundleDescriptor>()))
+                .Returns<string, IEnumerable<IFile>, BundleDescriptor>(
+                    (path, files, d) => new ScriptBundle(path)
+                );
+            bundleFactoryProvider
+                .Setup(p => p.GetBundleFactory<ScriptBundle>())
+                .Returns(scriptBundleFactory.Object);
+
+            File.WriteAllText(Path.Combine(tempDirectory, "scriptbundle.txt"), "b.js\na.js");
+            File.WriteAllText(Path.Combine(tempDirectory, "bundle.txt"), "");
+
+            var fileA = StubFile("~/a.js");
+            var fileB = StubFile("~/b.js");
+            fileSearch
+                .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(new[] { fileA, fileB });
+
+            bundles.Add<ScriptBundle>("~");
+
+            scriptBundleFactory.Verify(f => f.CreateBundle(
                 "~",
                 It.IsAny<IEnumerable<IFile>>(),
                 It.Is<BundleDescriptor>(d => d.AssetFilenames.SequenceEqual(new[] { "~/b.js", "~/a.js" }))
