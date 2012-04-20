@@ -14,6 +14,7 @@ namespace Cassette.Views
         readonly Mock<IUrlGenerator> urlGenerator;
         readonly FakeFileSystem fileSystem;
         readonly string hashOfFileContent;
+        readonly Mock<IFileAccessAuthorization> fileAccessAuthorization;
 
         public Bundles_FileUrl_Tests()
         {
@@ -32,11 +33,13 @@ namespace Cassette.Views
             {
                 SourceDirectory = fileSystem
             };
-            settings.AllowRawFileRequest(path => path == "~/test.png");
+
+            fileAccessAuthorization = new Mock<IFileAccessAuthorization>();
+            fileAccessAuthorization.Setup(a => a.CanAccess("~/test.png")).Returns(true);
 
             var referenceBuilder = new Mock<IReferenceBuilder>();
             var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
-            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object);
+            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object);
         }
 
         [Fact]
@@ -80,8 +83,9 @@ namespace Cassette.Views
         public void WhenSettingsDoNotAllowRawFileRequest_ThenThrowException()
         {
             fileSystem.Add("~/web.config");
+            fileAccessAuthorization.Setup(a => a.CanAccess("~/web.config")).Returns(false);
             var exception = Assert.Throws<Exception>(() => Bundles.FileUrl("~/web.config"));
-            exception.Message.ShouldEqual("The file ~/web.config cannot be requested. In CassetteConfiguration, use the settings.AllowRawFileAccess method to tell Cassette which files are safe to request.");
+            exception.Message.ShouldStartWith("The file ~/web.config cannot be requested.");
         }
     }
 }

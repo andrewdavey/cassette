@@ -20,13 +20,15 @@ namespace Cassette.Views
         readonly CassetteSettings settings;
         readonly IUrlGenerator urlGenerator;
         readonly Func<IReferenceBuilder> getReferenceBuilder;
+        readonly IFileAccessAuthorization fileAccessAuthorization;
 
-        public BundlesHelper(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, Func<IReferenceBuilder> getReferenceBuilder)
+        public BundlesHelper(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, Func<IReferenceBuilder> getReferenceBuilder, IFileAccessAuthorization fileAccessAuthorization)
         {
             this.bundles = bundles;
             this.settings = settings;
             this.urlGenerator = urlGenerator;
             this.getReferenceBuilder = getReferenceBuilder;
+            this.fileAccessAuthorization = fileAccessAuthorization;
         }
 
         void IStartUpTask.Start()
@@ -128,7 +130,7 @@ namespace Cassette.Views
 
             var file = settings.SourceDirectory.GetFile(applicationRelativeFilePath);
             ThrowIfFileNotFound(applicationRelativeFilePath, file);
-            ThrowIfCannotRequestRawFile(applicationRelativeFilePath, file, settings);
+            ThrowIfCannotRequestRawFile(applicationRelativeFilePath, file);
 
             using (var stream = file.OpenRead())
             {
@@ -137,14 +139,15 @@ namespace Cassette.Views
             }
         }
 
-        static void ThrowIfCannotRequestRawFile(string applicationRelativeFilePath, IFile file, CassetteSettings settings)
+        void ThrowIfCannotRequestRawFile(string applicationRelativeFilePath, IFile file)
         {
-            if (settings.CanRequestRawFile(file.FullPath)) return;
+            if (fileAccessAuthorization.CanAccess(file.FullPath)) return;
 
             throw new Exception(
                 string.Format(
-                    "The file {0} cannot be requested. In CassetteConfiguration, use the settings.AllowRawFileAccess method to tell Cassette which files are safe to request.",
-                    applicationRelativeFilePath
+                    "The file {0} cannot be requested. Implement {1} to configure which files are safe to request.",
+                    applicationRelativeFilePath,
+                    typeof(IConfiguration<IFileAccessAuthorization>).FullName
                 )
             );
         }

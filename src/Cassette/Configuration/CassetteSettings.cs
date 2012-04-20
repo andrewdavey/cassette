@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Cassette.IO;
+﻿using Cassette.IO;
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -13,8 +10,6 @@ namespace Cassette.Configuration
     /// </summary>
     public class CassetteSettings
     {
-        readonly List<Func<string, bool>> allowPathPredicates = new List<Func<string, bool>>();
- 
         internal IFile PrecompiledManifestFile { get; set; }
 
         /// <summary>
@@ -42,15 +37,5 @@ namespace Cassette.Configuration
         internal bool AllowRemoteDiagnostics { get; set; }
 
         internal string Version { get; set; }
-
-        internal bool CanRequestRawFile(string filePath)
-        {
-            return allowPathPredicates.Any(predicate => predicate(filePath));
-        }
-
-        public void AllowRawFileRequest(Func<string, bool> pathIsAllowed)
-        {
-            allowPathPredicates.Add(pathIsAllowed);
-        }
     }
 }

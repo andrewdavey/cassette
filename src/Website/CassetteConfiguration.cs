@@ -1,4 +1,5 @@
-﻿using Cassette;
+﻿using System;
+using Cassette;
 using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -21,6 +22,14 @@ namespace Website
                     Path = "assets/scripts/jquery"
                 }
             );
+        }
+    }
+
+    public class FileAccessAuthorizationConfiguration : IConfiguration<IFileAccessAuthorization>
+    {
+        public void Configure(IFileAccessAuthorization files)
+        {
+            files.AllowAccess(path => path.StartsWith("~/assets/styles/images", StringComparison.OrdinalIgnoreCase));
         }
     }
 }

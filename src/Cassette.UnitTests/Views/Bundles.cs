@@ -16,6 +16,7 @@ namespace Cassette.Views
         readonly Mock<IUrlGenerator> urlGenerator;
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
+        readonly Mock<IFileAccessAuthorization> fileAccessAuthorization;
 
         public Bundles_Test()
         {
@@ -23,7 +24,8 @@ namespace Cassette.Views
             referenceBuilder = new Mock<IReferenceBuilder>();
             settings = new CassetteSettings();
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
-            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object);
+            fileAccessAuthorization = new Mock<IFileAccessAuthorization>();
+            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object);
         }
 
         [Fact]
