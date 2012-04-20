@@ -125,6 +125,7 @@
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />
+    <Compile Include="FileAccessPermission.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HostBase.cs" />
     <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
