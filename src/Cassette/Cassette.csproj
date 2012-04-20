@@ -75,6 +75,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyScanner.cs" />
+    <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />
     <Compile Include="FileAccessAuthorization.cs" />

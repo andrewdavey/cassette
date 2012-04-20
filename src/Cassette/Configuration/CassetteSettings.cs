@@ -25,7 +25,7 @@ namespace Cassette.Configuration
 
         void ApplyConfigurations(IEnumerable<IConfiguration<CassetteSettings>> configurations)
         {
-            foreach (var configuration in configurations)
+            foreach (var configuration in configurations.OrderByConfigurationOrderAttribute())
             {
                 configuration.Configure(this);
             }    

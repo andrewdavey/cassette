@@ -246,7 +246,7 @@ namespace Cassette
             foreach (var configs in groupedByRegistrationType)
             {
                 var registrationType = configs.Key;
-                var implementationTypes = configs.OrderBy(ConfigurationOrderAttribute.GetOrder);
+                var implementationTypes = configs;
                 container.RegisterMultiple(registrationType, implementationTypes);
             }
         }

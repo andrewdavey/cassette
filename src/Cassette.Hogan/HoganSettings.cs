@@ -18,7 +18,7 @@ namespace Cassette.HtmlTemplates
 
         void ApplyConfigurations(IEnumerable<IConfiguration<HoganSettings>> configurations)
         {
-            foreach (var configuration in configurations)
+            foreach (var configuration in configurations.OrderByConfigurationOrderAttribute())
             {
                 configuration.Configure(this);
             }

@@ -22,7 +22,7 @@ namespace Cassette
 
         void ApplyConfigurations(IEnumerable<IConfiguration<IFileAccessAuthorization>> configurations)
         {
-            foreach (var configuration in configurations)
+            foreach (var configuration in configurations.OrderByConfigurationOrderAttribute())
             {
                 configuration.Configure(this);
             }
