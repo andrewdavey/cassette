@@ -30,6 +30,11 @@ namespace Cassette.Web
             // Include the virtual directory so that if the application is moved to 
             // another virtual directory the bundles will be rebuilt with the updated URLs.
             settings.Version += virtualDirectory;
+
+            if (settings.PrecompiledManifestFile.Exists)
+            {
+                settings.IsDebuggingEnabled = false;
+            }
         }
 
         protected virtual string AppDomainAppPath
