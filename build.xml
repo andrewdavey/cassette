@@ -11,9 +11,12 @@
     <Target Name="Build">
         <ItemGroup>
             <Tests Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.Aspnet.UnitTests\Cassette.Aspnet.UnitTests.csproj"/>
             <Tests Include="src\Cassette.CoffeeScript.UnitTests\Cassette.CoffeeScript.UnitTests.csproj"/>
             <Tests Include="src\Cassette.Less.UnitTests\Cassette.Less.UnitTests.csproj"/>
             <Tests Include="src\Cassette.Sass.UnitTests\Cassette.Sass.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.Hogan.UnitTests\Cassette.Hogan.UnitTests.csproj"/>
+            <Tests Include="src\Cassette.Aspnet.Jasmine.UnitTests\Cassette.Aspnet.Jasmine.UnitTests.csproj"/>
             <Tests Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
         <PropertyGroup>
@@ -27,8 +30,10 @@
     <Target Name="Build35">
         <ItemGroup>
             <Tests35 Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
+            <Tests35 Include="src\Cassette.Aspnet.UnitTests\Cassette.Aspnet.UnitTests.csproj"/>
             <Tests35 Include="src\Cassette.CoffeeScript.UnitTests\Cassette.CoffeeScript.UnitTests.csproj"/>
             <Tests35 Include="src\Cassette.Less.UnitTests\Cassette.Less.UnitTests.csproj"/>
+            <Tests35 Include="src\Cassette.Hogan.UnitTests\Cassette.Hogan.UnitTests.csproj"/>
             <Tests35 Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
         </ItemGroup>
         <PropertyGroup>
@@ -42,9 +47,12 @@
     <Target Name="Test" DependsOnTargets="Build">
         <ItemGroup>
             <TestProjects Include="UnitTests"/>
+            <TestProjects Include="Aspnet.UnitTests"/>
             <TestProjects Include="CoffeeScript.UnitTests"/>
             <TestProjects Include="Less.UnitTests"/>
             <TestProjects Include="Sass.UnitTests"/>
+            <TestProjects Include="Hogan.UnitTests"/>
+            <TestProjects Include="Aspnet.Jasmine.UnitTests"/>
             <TestProjects Include="IntegrationTests"/>
         </ItemGroup>
         <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
@@ -54,8 +62,10 @@
     <Target Name="Test35" DependsOnTargets="Build35">
         <ItemGroup>
             <TestProjects35 Include="UnitTests"/>
+            <TestProjects35 Include="Aspnet.UnitTests"/>
             <TestProjects35 Include="CoffeeScript.UnitTests"/>
             <TestProjects35 Include="Less.UnitTests"/>
+            <TestProjects35 Include="Hogan.UnitTests"/>
             <TestProjects35 Include="IntegrationTests"/>
         </ItemGroup>
         <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
@@ -73,8 +83,8 @@
             <MainNuspec Include="src\Cassette.JQueryTmpl\Cassette.JQueryTmpl.nuspec"/>
             <MainNuspec Include="src\Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.nuspec"/>
             <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
-            <MainNuspec Include="src\Cassette.Web\Cassette.Web.nuspec"/>
-	        <MainNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.nuspec"/>
+            <MainNuspec Include="src\Cassette.Aspnet\Cassette.Aspnet.nuspec"/>
+	        <MainNuspec Include="src\Cassette.Aspnet.Jasmine\Cassette.Aspnet.Jasmine.nuspec"/>
             <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Less\Cassette.Less.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Sass\Cassette.Sass.symbols.nuspec"/>
@@ -83,8 +93,8 @@
             <SymbolsNuspec Include="src\Cassette.JQueryTmpl\Cassette.JQueryTmpl.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.symbols.nuspec"/>
             <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.Web\Cassette.Web.symbols.nuspec"/>
-	        <SymbolsNuspec Include="src\Cassette.Web.Jasmine\Cassette.Web.Jasmine.symbols.nuspec"/>
+            <SymbolsNuspec Include="src\Cassette.Aspnet\Cassette.Aspnet.symbols.nuspec"/>
+	        <SymbolsNuspec Include="src\Cassette.Aspnet.Jasmine\Cassette.Aspnet.Jasmine.symbols.nuspec"/>
             <Transforms Include="src\**\*.nutrans" />
         </ItemGroup>        
         <PropertyGroup>
@@ -129,10 +139,10 @@
         <ItemGroup>
             <Binary Include="src\Cassette\bin\Release-FX35\Cassette.dll" />
             <Binary Include="src\Cassette.Views\bin\Release-FX35\Cassette.Views.dll" />
-            <Binary Include="src\Cassette.Web\bin\Release-FX35\Cassette.Web.dll" />
+            <Binary Include="src\Cassette.Aspnet\bin\Release-FX35\Cassette.Aspnet.dll" />
             <Binary Include="src\Cassette\bin\Release-FX35\Iesi.Collections.dll" />
-            <Content Include="src\Cassette.Web\CassetteConfiguration.cs.pp" />
-            <Content Include="src\Cassette.Web\web.config.transform" />
+            <Content Include="src\Cassette.Aspnet\CassetteConfiguration.cs.pp" />
+            <Content Include="src\Cassette.Aspnet\web.config.transform" />
             <Content Include="src\Cassette.Views\web.config.mvc2.transform" />
             <Root Include="license.txt" />
             <Root Include="readme_fx35.md" />
