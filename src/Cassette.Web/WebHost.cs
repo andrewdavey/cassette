@@ -29,6 +29,7 @@ namespace Cassette.Web
 
         protected override void ConfigureContainer()
         {
+            // These are before base.ConfigureContainer() so the application is able to override them - for example providing a different IUrlModifier.
             Container.Register(typeof(HttpContextBase), (c, p) => HttpContext());
             Container.Register(typeof(RouteCollection), Routes);
             Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(AppDomainAppVirtualPath));
