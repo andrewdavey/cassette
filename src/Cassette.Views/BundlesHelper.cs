@@ -14,7 +14,7 @@ namespace Cassette.Views
     /// <summary>
     /// Provides the implementation for the static <see cref="Bundles"/> class.
     /// </summary>
-    public class BundlesHelper : IStartUpTask
+    public class BundlesHelper : IStartUpTask, IBundlesHelper
     {
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
@@ -73,13 +73,34 @@ namespace Cassette.Views
             if (settings.IsDebuggingEnabled)
             {
                 return referencedBundles
-                    .SelectMany(GetAllAssets)
+                    .SelectMany(AssetCollector.GetAllAssets)
                     .Select(urlGenerator.CreateAssetUrl);
             }
             else
             {
                 return referencedBundles
                     .Select(urlGenerator.CreateBundleUrl);
+            }
+        }
+
+        class AssetCollector : IBundleVisitor
+        {
+            public static IEnumerable<IAsset> GetAllAssets(Bundle bundle)
+            {
+                var collector = new AssetCollector();
+                bundle.Accept(collector);
+                return collector.assets;
+            }
+
+            readonly List<IAsset> assets = new List<IAsset>();
+
+            public void Visit(Bundle bundle)
+            {
+            }
+
+            public void Visit(IAsset asset)
+            {
+                assets.Add(asset);
             }
         }
 
@@ -95,32 +116,6 @@ namespace Cassette.Views
                 }
 
                 return urlGenerator.CreateBundleUrl(bundle);
-            }
-        }
-
-        static IEnumerable<IAsset> GetAllAssets(Bundle bundle)
-        {
-            var collector = new AssetCollector();
-            bundle.Accept(collector);
-            return collector.Assets;
-        }
-
-        class AssetCollector : IBundleVisitor
-        {
-            public AssetCollector()
-            {
-                Assets = new List<IAsset>();
-            }
-
-            public List<IAsset> Assets { get; private set; }
-
-            public void Visit(Bundle bundle)
-            {
-            }
-
-            public void Visit(IAsset asset)
-            {
-                Assets.Add(asset);
             }
         }
 

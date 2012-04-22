@@ -61,6 +61,7 @@
     </Compile>
     <Compile Include="Bundles.cs" />
     <Compile Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Include="HtmlString.cs" />
+    <Compile Include="IBundlesHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BundlesHelper.cs" />
   </ItemGroup>

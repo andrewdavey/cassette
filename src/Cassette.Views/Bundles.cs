@@ -20,7 +20,7 @@ namespace Cassette.Views
         /// <summary>
         /// The helper implementation used by the static methods of this class.
         /// </summary>
-        public static BundlesHelper Helper { get; set; }
+        public static IBundlesHelper Helper { get; set; }
 
         /// <summary>
         /// Adds a reference to a bundle for the current page.
