@@ -6,28 +6,13 @@ namespace Cassette
 {
     class BundleContainsPathPredicate : IBundleVisitor
     {
-        public BundleContainsPathPredicate(string applicationRelativePath)
+        public BundleContainsPathPredicate(string path)
         {
-            if (!applicationRelativePath.StartsWith("~"))
-            {
-                throw new ArgumentException("Path must be application relative.", "applicationRelativePath");
-            }
-
-            pathToFind = applicationRelativePath;
+            originalPath = path;
         }
 
-        public BundleContainsPathPredicate()
-        {
-        }
-
-        public bool BundleContainsPath(string path, Bundle bundle)
-        {
-            pathToFind = path.IsUrl() ? path : NormalizePath(path, bundle);
-            bundle.Accept(this);
-            return isFound;
-        }
-
-        string pathToFind;
+        readonly string originalPath;
+        string normalizedPath;
         bool isFound;
 
         public bool AllowPartialAssetPaths { get; set; }
@@ -39,6 +24,8 @@ namespace Cassette
 
         void IBundleVisitor.Visit(Bundle bundle)
         {
+            normalizedPath = originalPath.IsUrl() ? originalPath : NormalizePath(originalPath, bundle);
+
             if (IsMatch(bundle.Path))
             {
                 isFound = true;
@@ -58,10 +45,10 @@ namespace Cassette
         /// </summary>
         bool IsPartialAssetPathMatch(string assetPath)
         {
-            if (assetPath.Length < pathToFind.Length) return false;
+            if (assetPath.Length < originalPath.Length) return false;
 
-            var partialPath = assetPath.Substring(0, pathToFind.Length);
-            return partialPath.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
+            var partialPath = assetPath.Substring(0, originalPath.Length);
+            return partialPath.Equals(originalPath, StringComparison.OrdinalIgnoreCase);
         }
 
         string NormalizePath(string path, Bundle bundle)
@@ -79,8 +66,7 @@ namespace Cassette
 
         bool IsMatch(string path)
         {
-            return PathUtilities.PathsEqual(path, pathToFind);
+            return PathUtilities.PathsEqual(path, normalizedPath);
         }
     }
 }
-

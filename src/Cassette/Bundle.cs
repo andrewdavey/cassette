@@ -133,7 +133,9 @@ namespace Cassette
 
         internal virtual bool ContainsPath(string pathToFind)
         {
-            return new BundleContainsPathPredicate().BundleContainsPath(pathToFind, this);
+            var predicate = new BundleContainsPathPredicate(pathToFind);
+            Accept(predicate);
+            return predicate.Result;
         }
 
         internal IAsset FindAssetByPath(string pathToFind)
