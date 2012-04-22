@@ -22,7 +22,6 @@
 
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <MSBuild Projects="@(Tests)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
-        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Compiler.dll"/>
     </Target>
 
     <Target Name="Build35">
@@ -38,8 +37,6 @@
 
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <MSBuild Projects="@(Tests35)" Targets="Clean;Build" Properties="Configuration=$(Configuration35)"/>
-        <!-- merge dotless into Cassette.Less -->
-        <Exec WorkingDirectory="src\Cassette.Less\bin\$(Configuration35)" Command="..\..\..\..\tools\ilrepack.exe /internalize /out:Cassette.Less.dll Cassette.Less.dll dotless.Compiler.dll"/>
     </Target>
     
     <Target Name="Test" DependsOnTargets="Build">
@@ -134,8 +131,6 @@
             <Binary Include="src\Cassette.Views\bin\Release-FX35\Cassette.Views.dll" />
             <Binary Include="src\Cassette.Web\bin\Release-FX35\Cassette.Web.dll" />
             <Binary Include="src\Cassette\bin\Release-FX35\Iesi.Collections.dll" />
-            <Binary Include="src\Cassette.Less\bin\Release-FX35\Pandora.dll" />
-            <Binary Include="src\Cassette.Less\bin\Release-FX35\Microsoft.Practices.ServiceLocation.dll" />
             <Content Include="src\Cassette.Web\CassetteConfiguration.cs.pp" />
             <Content Include="src\Cassette.Web\web.config.transform" />
             <Content Include="src\Cassette.Views\web.config.mvc2.transform" />

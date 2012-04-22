@@ -5,11 +5,10 @@
     <description xdt:Transform="Insert">Less CSS compiler support for Cassette.</description>
     <dependencies xdt:Transform="Insert">
       <dependency id="Cassette" version="$version$" />
-      <dependency id="CommonServiceLocator" version="1.0"/>
+      <dependency id="DotlessClientOnly" version="1.0"/>
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
     <file src="bin\Release\Cassette.Less.dll" target="lib\net40-client" />
-    <file src="bin\Release\Pandora.dll" target="lib\net40-client"/>
   </files>
 </package>
