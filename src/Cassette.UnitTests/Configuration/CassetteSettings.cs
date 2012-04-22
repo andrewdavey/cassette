@@ -1,3 +1,5 @@
+using Cassette.IO;
+using Moq;
 using Should;
 using Xunit;
 
@@ -26,6 +28,26 @@ namespace Cassette.Configuration
          
             // Each config appends a letter to Version so we can test the order that they were called.
             settings.Version.ShouldEqual("AB");
+        }
+
+        [Fact]
+        public void ConstructorAssignsPercompiledManifestFileToBeNonExistentInsteadOfNull()
+        {
+            var settings = new CassetteSettings(new IConfiguration<CassetteSettings>[0]);
+            settings.PrecompiledManifestFile.ShouldBeType<NonExistentFile>();
+        }
+
+        [Fact]
+        public void ConstructorHonoursPrecompiledManifestFileSetByConfiguration()
+        {
+            var file = Mock.Of<IFile>();
+            var config = new Mock<IConfiguration<CassetteSettings>>();
+            config
+                .Setup(c => c.Configure(It.IsAny<CassetteSettings>()))
+                .Callback<CassetteSettings>(s => s.PrecompiledManifestFile = file);
+
+            var settings = new CassetteSettings(new[] { config.Object });
+            settings.PrecompiledManifestFile.ShouldBeSameAs(file);
         }
 
         [ConfigurationOrder(1)]
