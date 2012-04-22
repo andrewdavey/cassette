@@ -13,6 +13,11 @@ namespace Cassette.IO
         bool DirectoryExists(string path);
         IEnumerable<IDirectory> GetDirectories();
         IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption);
-        IDisposable WatchForChanges(Action<string> pathChanged);
+        IDisposable WatchForChanges(
+            Action<string> pathCreated,
+            Action<string> pathChanged,
+            Action<string> pathDeleted,
+            Action<string, string> pathRenamed 
+        );
     }
 }

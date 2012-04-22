@@ -129,20 +129,25 @@ namespace Cassette.IO
                 : parent.GetRootDirectory();
         }
 
-        public IDisposable WatchForChanges(Action<string> pathChanged)
+        public IDisposable WatchForChanges(Action<string> pathCreated, Action<string> pathChanged, Action<string> pathDeleted, Action<string, string> pathRenamed)
         {
             var watcher = new FileSystemWatcher(fullSystemPath)
             {
                 IncludeSubdirectories = true
             };
 
-            watcher.Created += (sender, args) => pathChanged(args.FullPath);
-            watcher.Deleted += (sender, args) => pathChanged(args.FullPath);
-            watcher.Changed += (sender, args) => pathChanged(args.FullPath);
-            watcher.Renamed += (sender, args) => pathChanged(args.FullPath);
+            watcher.Created += (s, e) => pathCreated(ConvertSystemPathToAppPath(e.FullPath));
+            watcher.Deleted += (s, e) => pathDeleted(ConvertSystemPathToAppPath(e.FullPath));
+            watcher.Changed += (s, e) => pathChanged(ConvertSystemPathToAppPath(e.FullPath));
+            watcher.Renamed += (s, e) => pathRenamed(ConvertSystemPathToAppPath(e.OldFullPath), ConvertSystemPathToAppPath(e.FullPath));
             
             watcher.EnableRaisingEvents = true;
             return watcher;
+        }
+
+        string ConvertSystemPathToAppPath(string fullPath)
+        {
+            return "~/" + fullPath.Substring(fullSystemPath.Length).TrimStart('\\', '/').Replace('\\', '/');
         }
     }
 }

@@ -5,6 +5,13 @@ namespace Cassette
 {
     class RawFileReferenceFinder : IBundleVisitor
     {
+        public static bool RawFileReferenceExists(string filename, BundleCollection bundles)
+        {
+            var finder = new RawFileReferenceFinder(filename);
+            bundles.Accept(finder);
+            return finder.IsRawFileReferenceFound;
+        }
+
         readonly string filename;
 
         public RawFileReferenceFinder(string filename)

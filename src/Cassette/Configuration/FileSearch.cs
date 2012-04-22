@@ -40,6 +40,12 @@ namespace Cassette.Configuration
             return RemoveMinifiedFilesWhereNonMinExist(files);
         }
 
+        public bool IsMatch(string filename)
+        {
+            // TODO: Implement IsMatch
+            throw new NotImplementedException();
+        }
+
         IEnumerable<IFile> RemoveMinifiedFilesWhereNonMinExist(IEnumerable<IFile> files)
         {
             var filter = new ConventionalMinifiedFileFilter();

@@ -6,5 +6,6 @@ namespace Cassette.Configuration
     public interface IFileSearch
     {
         IEnumerable<IFile> FindFiles(IDirectory directory);
+        bool IsMatch(string filename);
     }
 }

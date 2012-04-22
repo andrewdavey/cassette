@@ -57,9 +57,7 @@ namespace Cassette
         {
             using (bundles.GetReadLock())
             {
-                var finder = new RawFileReferenceFinder(path);
-                bundles.Accept(finder);
-                return finder.IsRawFileReferenceFound;
+                return RawFileReferenceFinder.RawFileReferenceExists(path, bundles);
             }
         }
     }

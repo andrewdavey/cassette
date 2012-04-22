@@ -134,7 +134,7 @@ namespace Cassette
             );
         }
 
-        public IDisposable WatchForChanges(Action<string> pathChanged)
+        public IDisposable WatchForChanges(Action<string> pathCreated, Action<string> pathChanged, Action<string> pathDeleted, Action<string, string> pathRenamed)
         {
             throw new NotImplementedException();
         }
