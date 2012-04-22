@@ -2,46 +2,27 @@
 <Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">    
     <Import Project="Cassette.targets" />
     <PropertyGroup>
-        <Configuration>Release</Configuration>
-        <Configuration35>Release-FX35</Configuration35>
+        <Configuration Condition="'$(Configuration)' == ''">ReleaseNET40</Configuration>
     </PropertyGroup>
+    <ItemGroup>
+        <!-- Only need to build test projects as dependent projects will be automatically built. -->
+        <ProjectNames Include="UnitTests"/>
+        <ProjectNames Include="Aspnet.UnitTests"/>
+        <ProjectNames Include="CoffeeScript.UnitTests"/>
+        <ProjectNames Include="Less.UnitTests"/>
+        <ProjectNames Include="Sass.UnitTests" Condition="'$(Configuration)' == 'ReleaseNET40'"/>
+        <ProjectNames Include="Hogan.UnitTests"/>
+        <ProjectNames Include="Aspnet.Jasmine.UnitTests"/>
+        <ProjectNames Include="IntegrationTests"/>
+    </ItemGroup>
 
-    <Target Name="Default" DependsOnTargets="Test;Test35;NugetPack"></Target>
+    <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
 
     <Target Name="Build">
-        <ItemGroup>
-            <Tests Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
-            <Tests Include="src\Cassette.Aspnet.UnitTests\Cassette.Aspnet.UnitTests.csproj"/>
-            <Tests Include="src\Cassette.CoffeeScript.UnitTests\Cassette.CoffeeScript.UnitTests.csproj"/>
-            <Tests Include="src\Cassette.Less.UnitTests\Cassette.Less.UnitTests.csproj"/>
-            <Tests Include="src\Cassette.Sass.UnitTests\Cassette.Sass.UnitTests.csproj"/>
-            <Tests Include="src\Cassette.Hogan.UnitTests\Cassette.Hogan.UnitTests.csproj"/>
-            <Tests Include="src\Cassette.Aspnet.Jasmine.UnitTests\Cassette.Aspnet.Jasmine.UnitTests.csproj"/>
-            <Tests Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
-        </ItemGroup>
-        <PropertyGroup>
-            <OutputPath>..\..\build\bin\</OutputPath>
-        </PropertyGroup>
-
-        <!-- Only need to build test projects as dependent projects will be automatically built. -->
-        <MSBuild Projects="@(Tests)" Targets="Clean;Build" Properties="Configuration=$(Configuration)"/>
-    </Target>
-
-    <Target Name="Build35">
-        <ItemGroup>
-            <Tests35 Include="src\Cassette.UnitTests\Cassette.UnitTests.csproj"/>
-            <Tests35 Include="src\Cassette.Aspnet.UnitTests\Cassette.Aspnet.UnitTests.csproj"/>
-            <Tests35 Include="src\Cassette.CoffeeScript.UnitTests\Cassette.CoffeeScript.UnitTests.csproj"/>
-            <Tests35 Include="src\Cassette.Less.UnitTests\Cassette.Less.UnitTests.csproj"/>
-            <Tests35 Include="src\Cassette.Hogan.UnitTests\Cassette.Hogan.UnitTests.csproj"/>
-            <Tests35 Include="src\Cassette.IntegrationTests\Cassette.IntegrationTests.csproj"/>
-        </ItemGroup>
-        <PropertyGroup>
-            <OutputPath>..\..\build\bin\</OutputPath>
-        </PropertyGroup>
-
-        <!-- Only need to build test projects as dependent projects will be automatically built. -->
-        <MSBuild Projects="@(Tests35)" Targets="Clean;Build" Properties="Configuration=$(Configuration35)"/>
+        <MSBuild
+            Projects="src\Cassette.%(ProjectNames.Identity)\Cassette.%(ProjectNames.Identity).csproj"
+            Targets="Clean;Build"
+            Properties="Configuration=$(Configuration)"/>
     </Target>
     
     <Target Name="Test" DependsOnTargets="Build">
