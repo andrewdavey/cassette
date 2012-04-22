@@ -122,6 +122,7 @@
     <Compile Include="BundleCollection.AddUrl.cs" />
     <Compile Include="BundleCollection.AddPerIndividualFile.cs" />
     <Compile Include="Configuration\CassetteSettings.cs" />
+    <Compile Include="Configuration\FileSearch.IsMatch.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />

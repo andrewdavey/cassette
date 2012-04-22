@@ -42,8 +42,19 @@ namespace Cassette.Configuration
 
         public bool IsMatch(string filename)
         {
-            // TODO: Implement IsMatch
-            throw new NotImplementedException();
+            if (Exclude != null && Exclude.IsMatch(filename)) return false;
+
+            var patternRegexes = GetFilePatterns().Select(CreateRegexFromPattern);
+            return patternRegexes.Any(regex => regex.IsMatch(filename));
+        }
+
+        static Regex CreateRegexFromPattern(string filenamePattern)
+        {
+            var expression = filenamePattern
+                .Replace(".", "\\.")
+                .Replace("*", ".*?") 
+                + "$";
+            return new Regex(expression, RegexOptions.IgnoreCase);
         }
 
         IEnumerable<IFile> RemoveMinifiedFilesWhereNonMinExist(IEnumerable<IFile> files)
