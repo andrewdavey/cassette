@@ -134,7 +134,7 @@
         <Exec Command="nuget push %(Packages.Identity)" />
     </Target>
 
-    <Target Name="Zip35">
+    <Target Name="Zip35" DependsOnTargets="Test35">
         <!-- TODO: Until we can multi-target within Nuget easily, we are packaging Fx35 as a zip file for release -->
         <ItemGroup>
             <Binary Include="src\Cassette\bin\Release-FX35\Cassette.dll" />
