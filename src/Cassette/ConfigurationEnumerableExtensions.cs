@@ -9,5 +9,13 @@ namespace Cassette
         {
             return configurations.OrderBy(c => ConfigurationOrderAttribute.GetOrder(c.GetType()));
         }
+
+        public static void Configure<T>(this IEnumerable<IConfiguration<T>> configurations, T configurable)
+        {
+            foreach (var configuration in configurations)
+            {
+                configuration.Configure(configurable);
+            }
+        }
     }
 }

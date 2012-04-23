@@ -27,7 +27,7 @@ namespace Cassette
             bundles = bundleCollection;
             using (bundles.GetWriteLock())
             {
-                AddBundlesFromDefinitions();
+                AddBundlesFromConfigurations();
 
                 var cachedManifest = manifestCache.LoadCassetteManifest();
                 var currentManifest = CreateCurrentManifest();
@@ -43,9 +43,9 @@ namespace Cassette
             }
         }
 
-        void AddBundlesFromDefinitions()
+        void AddBundlesFromConfigurations()
         {
-            bundles.AddRange(bundleConfigurations);
+            bundleConfigurations.Configure(bundles);
         }
 
         void UseCurrentBundles()

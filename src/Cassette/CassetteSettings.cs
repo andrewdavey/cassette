@@ -25,10 +25,7 @@ namespace Cassette
 
         void ApplyConfigurations(IEnumerable<IConfiguration<CassetteSettings>> configurations)
         {
-            foreach (var configuration in configurations.OrderByConfigurationOrderAttribute())
-            {
-                configuration.Configure(this);
-            }    
+            configurations.OrderByConfigurationOrderAttribute().Configure(this);
         }
 
         internal IFile PrecompiledManifestFile { get; set; }

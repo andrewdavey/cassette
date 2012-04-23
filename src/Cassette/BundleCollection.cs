@@ -75,14 +75,6 @@ namespace Cassette
             }
         }
 
-        internal void AddRange(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations)
-        {
-            foreach (var configuration in bundleConfigurations)
-            {
-                configuration.Configure(this);
-            }
-        }
-
         internal void Process()
         {
             foreach (var bundle in bundles)

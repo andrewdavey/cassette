@@ -29,7 +29,7 @@ namespace Cassette
 
         void AddBundles()
         {
-            bundles.AddRange(bundleConfigurations);
+            bundleConfigurations.Configure(bundles);
         }
 
         void ProcessBundles()
