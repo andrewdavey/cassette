@@ -70,8 +70,7 @@
             TaskDirectory="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\" />
 
         <MakeDir Directories="$(OutputDir)"/>
-        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -Version $(Version) -OutputDirectory $(OutputDir)"/>
-        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).symbols.nuspec -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
+        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -symbols -Version $(Version) -OutputDirectory $(OutputDir)"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
