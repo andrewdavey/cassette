@@ -6,55 +6,48 @@
     </PropertyGroup>
     <ItemGroup>
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
-        <ProjectNames Include="UnitTests"/>
-        <ProjectNames Include="Views.UnitTests"/>
-        <ProjectNames Include="Aspnet.UnitTests"/>
-        <ProjectNames Include="MSBuild.UnitTests"/>
-        <ProjectNames Include="CoffeeScript.UnitTests"/>
-        <ProjectNames Include="Less.UnitTests"/>
-        <ProjectNames Include="Sass.UnitTests" Condition=" '$(Configuration)' != 'ReleaseNET35' "/>
-        <ProjectNames Include="Hogan.UnitTests"/>
-        <ProjectNames Include="Aspnet.Jasmine.UnitTests"/>
-        <ProjectNames Include="IntegrationTests"/>
+        <ProjectName Include="UnitTests"/>
+        <ProjectName Include="Views.UnitTests"/>
+        <ProjectName Include="Aspnet.UnitTests"/>
+        <ProjectName Include="MSBuild.UnitTests"/>
+        <ProjectName Include="CoffeeScript.UnitTests"/>
+        <ProjectName Include="Less.UnitTests"/>
+        <ProjectName Include="Sass.UnitTests" Condition=" '$(Configuration)' != 'ReleaseNET35' "/>
+        <ProjectName Include="Hogan.UnitTests"/>
+        <ProjectName Include="Aspnet.Jasmine.UnitTests"/>
+        <ProjectName Include="IntegrationTests"/>
+    </ItemGroup>
+    <ItemGroup>
+        <NugetProject Include="Cassette"/>
+        <NugetProject Include="Cassette.Aspnet"/>
+        <NugetProject Include="Cassette.Views"/>
+        <NugetProject Include="Cassette.MSBuild"/>
+        <NugetProject Include="Cassette.Less"/>
+        <NugetProject Include="Cassette.Sass"/>
+        <NugetProject Include="Cassette.CoffeeScript"/>
+        <NugetProject Include="Cassette.Hogan"/>
+        <NugetProject Include="Cassette.JQueryTmpl"/>
+        <NugetProject Include="Cassette.KnockoutJQueryTmpl"/>
+        <NugetProject Include="Cassette.Aspnet.Jasmine"/>
     </ItemGroup>
 
     <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
 
     <Target Name="Build">
         <MSBuild
-            Projects="src\Cassette.%(ProjectNames.Identity)\Cassette.%(ProjectNames.Identity).csproj"
+            Projects="src\Cassette.%(ProjectName.Identity)\Cassette.%(ProjectName.Identity).csproj"
             Targets="Clean;Build"
             Properties="Configuration=$(Configuration)"/>
     </Target>
     
     <Target Name="Test" DependsOnTargets="Build">
         <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
-        <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(ProjectNames.Identity)\bin\$(Configuration)\Cassette.%(ProjectNames.Identity).dll" />
+        <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(ProjectName.Identity)\bin\$(Configuration)\Cassette.%(ProjectName.Identity).dll" />
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
             <ExistingPackageFiles Include="build\nuget\*"/>
-            <MainNuspec Include="src\Cassette\Cassette.nuspec"/>
-            <MainNuspec Include="src\Cassette.Less\Cassette.Less.nuspec"/>
-            <MainNuspec Include="src\Cassette.Sass\Cassette.Sass.nuspec"/>
-            <MainNuspec Include="src\Cassette.CoffeeScript\Cassette.CoffeeScript.nuspec"/>
-            <MainNuspec Include="src\Cassette.Hogan\Cassette.Hogan.nuspec"/>
-            <MainNuspec Include="src\Cassette.JQueryTmpl\Cassette.JQueryTmpl.nuspec"/>
-            <MainNuspec Include="src\Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.nuspec"/>
-            <MainNuspec Include="src\Cassette.Views\Cassette.Views.nuspec"/>
-            <MainNuspec Include="src\Cassette.Aspnet\Cassette.Aspnet.nuspec"/>
-	        <MainNuspec Include="src\Cassette.Aspnet.Jasmine\Cassette.Aspnet.Jasmine.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette\Cassette.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.Less\Cassette.Less.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.Sass\Cassette.Sass.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.CoffeeScript\Cassette.CoffeeScript.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.Hogan\Cassette.Hogan.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.JQueryTmpl\Cassette.JQueryTmpl.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.Views\Cassette.Views.symbols.nuspec"/>
-            <SymbolsNuspec Include="src\Cassette.Aspnet\Cassette.Aspnet.symbols.nuspec"/>
-	        <SymbolsNuspec Include="src\Cassette.Aspnet.Jasmine\Cassette.Aspnet.Jasmine.symbols.nuspec"/>
             <Transforms Include="src\**\*.nutrans" />
         </ItemGroup>        
         <PropertyGroup>
@@ -62,7 +55,7 @@
         </PropertyGroup>
 
         <!-- Get shared assembly version -->
-        <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\Release\Cassette.dll">
+        <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\$(Configuration)\Cassette.dll">
             <Output PropertyName="Version" TaskParameter="Version" />
         </GetAssemblyInformationalVersion>
 
@@ -77,14 +70,8 @@
             TaskDirectory="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\" />
 
         <MakeDir Directories="$(OutputDir)"/>
-        <Exec Command="nuget pack %(MainNuspec.Identity) -Version $(Version) -OutputDirectory $(OutputDir)"/>
-        <Exec Command="nuget pack %(SymbolsNuspec.Identity) -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
-
-        <!-- The Cassette.MSBuild package is slightly different (-Tool, no symbols and -NoPackageAnalysis to avoid warning about DLLs in the Tools directory). -->
-        <!-- TODO: This is packaged as a 4.0 package, as it includes the 4.0 DLLs of its dependencies in the Tools folder.
-                   If it is an issue for 3.5-based projects, can maybe figure out a clean way to package tools for 3.5 and 4.0.
-                   See: src\Cassette.MSBuild\Cassette.MSBuild.nuspec -->
-        <Exec Command="nuget pack src\Cassette.MSBuild\Cassette.MSBuild.nuspec -Version $(Version) -Tool -OutputDirectory $(OutputDir) -NoPackageAnalysis"/>
+        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -Version $(Version) -OutputDirectory $(OutputDir)"/>
+        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).symbols.nuspec -Version $(Version) -Symbols -OutputDirectory $(OutputDir)"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
