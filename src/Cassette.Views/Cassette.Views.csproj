@@ -76,6 +76,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Cassette.Views.symbols.nutrans" />
+    <None Include="Views-Web.config.transform" />
     <None Include="Web.config.transform" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

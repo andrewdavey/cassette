@@ -13,5 +13,6 @@
         <file src="bin\Release\Cassette.Aspnet.dll" target="lib\net40" />      
         <file src="CassetteConfiguration.cs.pp" target="content"/>
         <file src="web.config.transform" target="content" />
+        <file src="nuget-readme.txt" target="readme.txt" />
     </files>
 </package>

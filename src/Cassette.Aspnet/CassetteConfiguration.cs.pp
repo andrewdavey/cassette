@@ -7,7 +7,7 @@ namespace $rootnamespace$
     /// <summary>
     /// Configures the Cassette asset bundles for the web application.
     /// </summary>
-    public class CassetteBundleConfiguration : IConfiguration<BundleConfiguration>
+    public class CassetteBundleConfiguration : IConfiguration<BundleCollection>
     {
         public void Configure(BundleCollection bundles)
         {
