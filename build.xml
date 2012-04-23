@@ -28,7 +28,7 @@
         <NugetProject Include="Cassette.Views"/>
         <NugetProject Include="Cassette.MSBuild"/>
         <NugetProject Include="Cassette.Less"/>
-        <NugetProject Include="Cassette.Sass"/>
+        <NugetProject Include="Cassette.Sass" Condition="'$(Configuration)' != 'ReleaseNET35'"/>
         <NugetProject Include="Cassette.CoffeeScript"/>
         <NugetProject Include="Cassette.Hogan"/>
         <NugetProject Include="Cassette.JQueryTmpl"/>
@@ -36,23 +36,39 @@
         <NugetProject Include="Cassette.Aspnet.Jasmine"/>
     </ItemGroup>
 
-    <Target Name="Default" DependsOnTargets="Test;NugetPack">
-        <Message Text="All projects build, tested and packaged. The packages are in $(PackageOutputDir)."/>
+    <Target Name="Default" DependsOnTargets="Build;Test;NugetPack">
+        <Message Text="All projects built, tested and packaged. See &quot;$(PackageOutputDir)&quot; for the output."/>
     </Target>
-    
+
+    <Target Name="Build">
+        <PropertyGroup>
+            <Destination>build\$(Configuration)</Destination>
+        </PropertyGroup>
+        
+        <MSBuild
+            Projects="src\Cassette.%(TestProject.Identity)\Cassette.%(TestProject.Identity).csproj"
+            Targets="Clean;Build"
+            Properties="Configuration=$(Configuration)"/>
+
+        <Copy SourceFiles="src\%(NugetProject.Identity)\bin\$(Configuration)\%(NugetProject.Identity).dll"
+              DestinationFolder="$(Destination)" />
+
+        <Copy SourceFiles="src\Cassette\bin\$(Configuration)\Iesi.Collections.dll"
+              DestinationFolder="$(Destination)"
+              Condition="'$(Configuration)' == 'ReleaseNET35'" />
+
+        <Copy SourceFiles="license.txt"
+              DestinationFolder="$(Destination)"/>
+        
+        <Message Text="Build completed. Output copied to &quot;$(Destination)&quot;."/>
+    </Target>
+
     <Target Name="Test" DependsOnTargets="Build">
         <!-- To run tests against 4.0 and 3.5 assemblies we must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
         <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(TestProject.Identity)\bin\$(Configuration)\Cassette.%(TestProject.Identity).dll" />
     </Target>
 
-    <Target Name="Build">
-        <MSBuild
-            Projects="src\Cassette.%(TestProject.Identity)\Cassette.%(TestProject.Identity).csproj"
-            Targets="Clean;Build"
-            Properties="Configuration=$(Configuration)"/>
-    </Target>
-
-    <Target Name="NugetPack" DependsOnTargets="Build">
+    <Target Name="NugetPack" DependsOnTargets="Build" Condition="'$(Configuration)' == 'Release'">
         <ItemGroup>
             <ExistingPackageFiles Include="build\nuget\*"/>
             <Transforms Include="src\**\*.nutrans" />
@@ -82,26 +98,5 @@
             <Packages Include="build\nuget\*.nupkg" Exclude="build\nuget\*.symbols.nupkg"/>
         </ItemGroup>
         <Exec Command="nuget push %(Packages.Identity)" />
-    </Target>
-
-    <Target Name="Zip35" DependsOnTargets="Test35">
-        <!-- TODO: Until we can multi-target within Nuget easily, we are packaging Fx35 as a zip file for release -->
-        <ItemGroup>
-            <Binary Include="src\Cassette\bin\Release-FX35\Cassette.dll" />
-            <Binary Include="src\Cassette.Views\bin\Release-FX35\Cassette.Views.dll" />
-            <Binary Include="src\Cassette.Aspnet\bin\Release-FX35\Cassette.Aspnet.dll" />
-            <Binary Include="src\Cassette\bin\Release-FX35\Iesi.Collections.dll" />
-            <Content Include="src\Cassette.Aspnet\CassetteConfiguration.cs.pp" />
-            <Content Include="src\Cassette.Aspnet\web.config.transform" />
-            <Content Include="src\Cassette.Views\web.config.mvc2.transform" />
-            <Root Include="license.txt" />
-            <Root Include="readme_fx35.md" />
-        </ItemGroup>
-
-        <Copy SourceFiles="%(Binary.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\lib35" />
-        <Copy SourceFiles="%(Content.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)\content" />
-        <Copy SourceFiles="%(Root.Identity)" DestinationFolder="build\Cassette.Fx35-$(Version)" />
-        
-        <!-- TODO: Zip the binaries -->
     </Target>
 </Project>
