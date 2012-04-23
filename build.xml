@@ -2,16 +2,17 @@
 <Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">    
     <Import Project="Cassette.targets" />
     <PropertyGroup>
-        <Configuration Condition="'$(Configuration)' == ''">ReleaseNET40</Configuration>
+        <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     </PropertyGroup>
     <ItemGroup>
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <ProjectNames Include="UnitTests"/>
         <ProjectNames Include="Views.UnitTests"/>
         <ProjectNames Include="Aspnet.UnitTests"/>
+        <ProjectNames Include="MSBuild.UnitTests"/>
         <ProjectNames Include="CoffeeScript.UnitTests"/>
         <ProjectNames Include="Less.UnitTests"/>
-        <ProjectNames Include="Sass.UnitTests" Condition="'$(Configuration)' == 'ReleaseNET40'"/>
+        <ProjectNames Include="Sass.UnitTests" Condition=" '$(Configuration)' != 'ReleaseNET35' "/>
         <ProjectNames Include="Hogan.UnitTests"/>
         <ProjectNames Include="Aspnet.Jasmine.UnitTests"/>
         <ProjectNames Include="IntegrationTests"/>
