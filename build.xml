@@ -6,6 +6,7 @@
     
     <PropertyGroup>
         <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+        <BuildOutputDir>build\$(Configuration)</BuildOutputDir>
         <PackageOutputDir>build\nuget</PackageOutputDir>
     </PropertyGroup>
     <ItemGroup>
@@ -37,30 +38,26 @@
     </ItemGroup>
 
     <Target Name="Default" DependsOnTargets="Build;Test;NugetPack">
-        <Message Text="All projects built, tested and packaged. See &quot;$(PackageOutputDir)&quot; for the output."/>
+        <Message Text="All projects built, tested and packaged. See &quot;build\&quot; for the output."/>
     </Target>
 
     <Target Name="Build">
-        <PropertyGroup>
-            <Destination>build\$(Configuration)</Destination>
-        </PropertyGroup>
-        
         <MSBuild
             Projects="src\Cassette.%(TestProject.Identity)\Cassette.%(TestProject.Identity).csproj"
             Targets="Clean;Build"
             Properties="Configuration=$(Configuration)"/>
 
         <Copy SourceFiles="src\%(NugetProject.Identity)\bin\$(Configuration)\%(NugetProject.Identity).dll"
-              DestinationFolder="$(Destination)" />
+              DestinationFolder="$(BuildOutputDir)" />
 
         <Copy SourceFiles="src\Cassette\bin\$(Configuration)\Iesi.Collections.dll"
-              DestinationFolder="$(Destination)"
+              DestinationFolder="$(BuildOutputDir)"
               Condition="'$(Configuration)' == 'ReleaseNET35'" />
 
         <Copy SourceFiles="license.txt"
-              DestinationFolder="$(Destination)"/>
+              DestinationFolder="$(BuildOutputDir)"/>
         
-        <Message Text="Build completed. Output copied to &quot;$(Destination)&quot;."/>
+        <Message Text="Build completed. Output copied to &quot;$(BuildOutputDir)&quot;."/>
     </Target>
 
     <Target Name="Test" DependsOnTargets="Build">
