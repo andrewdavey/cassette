@@ -1,23 +1,28 @@
 <?xml version="1.0"?>
-<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">    
+<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+    
+    <!-- Cassette.targets contains some helper tasks we'll use -->
     <Import Project="Cassette.targets" />
+    
     <PropertyGroup>
         <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+        <PackageOutputDir>build\nuget</PackageOutputDir>
     </PropertyGroup>
     <ItemGroup>
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
-        <ProjectName Include="UnitTests"/>
-        <ProjectName Include="Views.UnitTests"/>
-        <ProjectName Include="Aspnet.UnitTests"/>
-        <ProjectName Include="MSBuild.UnitTests"/>
-        <ProjectName Include="CoffeeScript.UnitTests"/>
-        <ProjectName Include="Less.UnitTests"/>
-        <ProjectName Include="Sass.UnitTests" Condition=" '$(Configuration)' != 'ReleaseNET35' "/>
-        <ProjectName Include="Hogan.UnitTests"/>
-        <ProjectName Include="Aspnet.Jasmine.UnitTests"/>
-        <ProjectName Include="IntegrationTests"/>
-    </ItemGroup>
-    <ItemGroup>
+        <TestProject Include="UnitTests"/>
+        <TestProject Include="Views.UnitTests"/>
+        <TestProject Include="Aspnet.UnitTests"/>
+        <TestProject Include="MSBuild.UnitTests"/>
+        <TestProject Include="CoffeeScript.UnitTests"/>
+        <TestProject Include="Less.UnitTests"/>
+        <TestProject Include="Hogan.UnitTests"/>
+        <TestProject Include="Aspnet.Jasmine.UnitTests"/>
+        <TestProject Include="IntegrationTests"/>
+        <!-- Sass is only support in .NET 4.0 and above -->
+        <TestProject Include="Sass.UnitTests" Condition="'$(Configuration)' != 'ReleaseNET35'"/>
+
+        <!-- Each of these will create nuget package -->
         <NugetProject Include="Cassette"/>
         <NugetProject Include="Cassette.Aspnet"/>
         <NugetProject Include="Cassette.Views"/>
@@ -31,30 +36,29 @@
         <NugetProject Include="Cassette.Aspnet.Jasmine"/>
     </ItemGroup>
 
-    <Target Name="Default" DependsOnTargets="Test;NugetPack"></Target>
-
-    <Target Name="Build">
-        <MSBuild
-            Projects="src\Cassette.%(ProjectName.Identity)\Cassette.%(ProjectName.Identity).csproj"
-            Targets="Clean;Build"
-            Properties="Configuration=$(Configuration)"/>
+    <Target Name="Default" DependsOnTargets="Test;NugetPack">
+        <Message Text="All projects build, tested and packaged. The packages are in $(PackageOutputDir)."/>
     </Target>
     
     <Target Name="Test" DependsOnTargets="Build">
-        <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
-        <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(ProjectName.Identity)\bin\$(Configuration)\Cassette.%(ProjectName.Identity).dll" />
+        <!-- To run tests against 4.0 and 3.5 assemblies we must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
+        <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(TestProject.Identity)\bin\$(Configuration)\Cassette.%(TestProject.Identity).dll" />
+    </Target>
+
+    <Target Name="Build">
+        <MSBuild
+            Projects="src\Cassette.%(TestProject.Identity)\Cassette.%(TestProject.Identity).csproj"
+            Targets="Clean;Build"
+            Properties="Configuration=$(Configuration)"/>
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">
         <ItemGroup>
             <ExistingPackageFiles Include="build\nuget\*"/>
             <Transforms Include="src\**\*.nutrans" />
-        </ItemGroup>        
-        <PropertyGroup>
-            <OutputDir>build\nuget</OutputDir>
-        </PropertyGroup>
+        </ItemGroup>
 
-        <!-- Get shared assembly version -->
+        <!-- Get the package version from Cassette.dll's AssemblyInformationalVersion attribute. -->
         <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\$(Configuration)\Cassette.dll">
             <Output PropertyName="Version" TaskParameter="Version" />
         </GetAssemblyInformationalVersion>
@@ -70,7 +74,7 @@
             TaskDirectory="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\" />
 
         <MakeDir Directories="$(OutputDir)"/>
-        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -symbols -Version $(Version) -OutputDirectory $(OutputDir)"/>
+        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -symbols -Version $(Version) -OutputDirectory $(PackageOutputDir)"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
