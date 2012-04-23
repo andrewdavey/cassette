@@ -10,13 +10,13 @@ using Xunit;
 
 namespace Cassette.Aspnet
 {
-    public abstract class RouteInstaller_Tests
+    public class RouteInstaller_Tests
     {
         readonly RouteInstaller routing;
         readonly RouteCollection routes = new RouteCollection();
         readonly Mock<HttpContextBase> httpContext;
 
-        protected RouteInstaller_Tests()
+        public RouteInstaller_Tests()
         {
             var urlGenerator = Mock.Of<IUrlGenerator>();
             var settings = new CassetteSettings();
@@ -26,7 +26,7 @@ namespace Cassette.Aspnet
             container.Register(bundles);
             container.Register(settings);
             container.Register(typeof(IUrlGenerator), urlGenerator);
-
+            container.Register(Mock.Of<IFileAccessAuthorization>());
             routing = new RouteInstaller(routes, container);
 
             routing.Start();
@@ -101,7 +101,7 @@ namespace Cassette.Aspnet
         [Fact]
         public void RawFileUrlIsMappedToRawFileHandler()
         {
-            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/file/test_coffee");
+            SetupAppRelativeCurrentExecutionFilePath("~/_cassette/file/test_hash_coffee");
 
             var routeData = routes.GetRouteData(httpContext.Object);
             var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(httpContext.Object, routeData));

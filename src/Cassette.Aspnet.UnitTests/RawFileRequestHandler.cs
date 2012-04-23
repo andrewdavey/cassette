@@ -43,7 +43,7 @@ namespace Cassette.Aspnet
                 MapRouteForRequestHandler(http);
                 http.Server.Setup(s => s.MapPath("~/test.png")).Returns(filename);
 
-                http.Get("~/test_hash.png");
+                http.Get("~/test_hash_png");
 
                 string expectedETag;
                 using (var hasher = SHA1.Create())
@@ -74,7 +74,7 @@ namespace Cassette.Aspnet
                 }
 
                 http.RequestHeaders["If-None-Match"] = eTag;
-                http.Get("~/test_hash.png");
+                http.Get("~/test_hash_png");
 
                 http.Response.VerifySet(r => r.StatusCode = 304);
             }
@@ -115,7 +115,7 @@ namespace Cassette.Aspnet
                 MapRouteForRequestHandler(http);
                 http.Server.Setup(s => s.MapPath("~/protected.png")).Returns(filename);
 
-                http.Get("~/protected_hash.png");
+                http.Get("~/protected_hash_png");
 
                 http.Response.Verify(r => r.WriteFile(It.IsAny<string>()), Times.Never());
                 http.Response.VerifySet(r => r.StatusCode = 404);

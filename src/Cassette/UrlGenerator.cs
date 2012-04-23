@@ -46,7 +46,7 @@ namespace Cassette
 
             return urlModifier.Modify(
                 string.Format(
-                    "{0}/file/{1}_{2}.{3}",
+                    "{0}/file/{1}_{2}_{3}",
                     routePrefix,
                     ConvertToForwardSlashes(name),
                     hash,

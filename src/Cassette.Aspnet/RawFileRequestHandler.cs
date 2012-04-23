@@ -48,7 +48,9 @@ namespace Cassette.Aspnet
         public void ProcessRequest(HttpContext unused)
         {
             var path = routeData.GetRequiredString("path");
-            var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+\.(?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
+            // Expected path format is "path/to/file_hash_extension".
+            // For backwards compatibility with v1.2 we also accept "path/to/file_hash.extension"
+            var match = Regex.Match(path, @"^(?<filename>.*)_[a-z0-9]+[._](?<extension>[a-z]+)$", RegexOptions.IgnoreCase);
             if (match.Success == false)
             {
                 NotFound(path);
