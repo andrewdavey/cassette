@@ -22,7 +22,7 @@ namespace Cassette.Aspnet
 
         public void ProcessRequest(HttpContext _)
         {
-            var path = "~/" + requestContext.RouteData.GetRequiredString("path");
+            var path = GetAssetPath();
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             requestContext.HttpContext.DisableHtmlRewriting();
             var response = requestContext.HttpContext.Response;
@@ -40,6 +40,21 @@ namespace Cassette.Aspnet
                 var request = requestContext.HttpContext.Request;
                 SendAsset(request, response, bundle, asset);
             }
+        }
+
+        string GetAssetPath()
+        {
+            var path = requestContext.RouteData.GetRequiredString("path");
+            var parts = path.Split('/');
+            var filename = parts[parts.Length - 1];
+            var underscoreIndex = filename.LastIndexOf('_');
+            if (underscoreIndex >= 0)
+            {
+                var filenameWithoutExtension = filename.Substring(0, underscoreIndex);
+                var extension = filename.Substring(underscoreIndex + 1);
+                parts[parts.Length - 1] = filenameWithoutExtension + "." + extension;
+            }
+            return "~/" + string.Join("/", parts);
         }
 
         void SendAsset(HttpRequestBase request, HttpResponseBase response, Bundle bundle, IAsset asset)

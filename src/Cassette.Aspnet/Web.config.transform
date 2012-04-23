@@ -6,7 +6,7 @@
         </httpModules>
     </system.web>
     <system.webServer>
-        <modules runAllManagedModulesForAllRequests="true">
+        <modules>
             <add name="CassetteHttpModule" type="Cassette.Aspnet.CassetteHttpModule, Cassette.Aspnet" />
         </modules>
     </system.webServer>

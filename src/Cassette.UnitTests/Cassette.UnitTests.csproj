@@ -230,9 +230,13 @@
     <Compile Include="BundleProcessing\SortAssetsByDependency.cs" />
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
+    <Compile Include="UrlGenerator_CreateAbsolutePathUrl_Tests.cs" />
+    <Compile Include="UrlGenerator_CreateAssetUrl_Tests.cs" />
+    <Compile Include="UrlGenerator_CreateBundleUrl_Tests.cs" />
+    <Compile Include="UrlGenerator_CreateRawFileUrl_Tests.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
-    <Compile Include="UrlGenerator.cs" />
+    <Compile Include="UrlGeneratorTestsBase.cs" />
     <Compile Include="PlaceholderTracker.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />

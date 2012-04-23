@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -22,11 +23,37 @@ namespace Cassette
 
         public string CreateAssetUrl(IAsset asset)
         {
+            // asset path will be something like:
+            // "~/directory/file.js"
+
+            var parts = asset.Path.Split('/');
+            // [ "~", "directory", "file.js" ]
+
+            parts = parts.Skip(1).ToArray(); // skip the "~"
+            // [ "directory", "file.js" ]
+
+            var filename = parts[parts.Length - 1]; // "file.js"
+            var periodIndex = filename.LastIndexOf('.');
+            string extension = null;
+            if (periodIndex >= 0)
+            {
+                var filenameWithoutExtension = filename.Substring(0, periodIndex);
+                parts[parts.Length - 1] = filenameWithoutExtension;
+                extension = filename.Substring(periodIndex + 1);
+                // parts == [ "directory", "file" ]
+                // extension == "js"
+            }
+            var path = string.Join("/", parts);
+            if (extension != null)
+            {
+                path += "_" + extension;
+            }
+
             return urlModifier.Modify(
                 string.Format(
                     "{0}/asset/{1}?{2}",
                     routePrefix,
-                    asset.Path.Substring(2),
+                    path,
                     asset.Hash.ToHexString()
                 )
             );

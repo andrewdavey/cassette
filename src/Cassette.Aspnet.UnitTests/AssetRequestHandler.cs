@@ -22,7 +22,7 @@ namespace Cassette.Aspnet
             cache = new Mock<HttpCachePolicyBase>();
             requestHeaders = new NameValueCollection();
 
-            routeData.Values.Add("path", "test/asset.js");
+            routeData.Values.Add("path", "test/asset_js");
 
             var httpContext = new Mock<HttpContextBase>();
             httpContext.SetupGet(r => r.Response)
