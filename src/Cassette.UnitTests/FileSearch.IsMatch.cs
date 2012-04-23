@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using Should;
 using Xunit;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class FileSearchIsMatchTests
     {

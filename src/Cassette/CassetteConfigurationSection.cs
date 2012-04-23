@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public sealed class CassetteConfigurationSection : ConfigurationSection
     {

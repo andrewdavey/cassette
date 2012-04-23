@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Stylesheets.Manifests;
 

@@ -1,4 +1,4 @@
-﻿namespace Cassette.Configuration
+﻿namespace Cassette
 {
     /// <summary>
     /// The local assets settings for an external bundle.

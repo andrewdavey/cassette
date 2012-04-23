@@ -3,7 +3,7 @@ using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class CassetteSettings_Tests
     {

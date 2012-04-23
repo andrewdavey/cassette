@@ -1,5 +1,4 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using TinyIoC;
 
 namespace Cassette.Stylesheets

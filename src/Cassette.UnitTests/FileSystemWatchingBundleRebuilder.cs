@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using Cassette.Configuration;
 using Cassette.IO;
 using Moq;
 using Xunit;

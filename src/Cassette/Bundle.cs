@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Cassette.Manifests;
 using Cassette.Utilities;
 #if NET35

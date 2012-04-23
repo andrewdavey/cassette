@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cassette.IO;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     class FilePathComparer : IEqualityComparer<IFile>
     {

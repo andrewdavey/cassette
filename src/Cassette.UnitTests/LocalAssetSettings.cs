@@ -1,7 +1,7 @@
 ﻿using Should;
 using Xunit;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class LocalAssetSettings_Defaults_Tests
     {

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Routing;
-using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;

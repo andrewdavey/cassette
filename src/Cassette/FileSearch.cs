@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using Cassette.IO;
 using Cassette.Utilities;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class FileSearch : IFileSearch
     {

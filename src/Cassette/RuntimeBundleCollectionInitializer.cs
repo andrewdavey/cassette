@@ -1,5 +1,3 @@
-using Cassette.Configuration;
-
 namespace Cassette
 {
     class RuntimeBundleCollectionInitializer : IBundleCollectionInitializer

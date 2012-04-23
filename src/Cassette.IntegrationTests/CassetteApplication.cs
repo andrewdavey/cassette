@@ -4,7 +4,6 @@ using System.IO;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Aspnet;
-using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.IO;
 using Cassette.Scripts;

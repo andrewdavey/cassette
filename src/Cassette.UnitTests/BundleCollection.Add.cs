@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Cassette.Configuration;
 using Cassette.IO;
 using Cassette.Scripts;
 using Moq;

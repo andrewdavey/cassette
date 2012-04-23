@@ -8,7 +8,7 @@ using Cassette.Utilities;
 using Should;
 using Xunit;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     public class FileSearch_Tests : IDisposable
     {

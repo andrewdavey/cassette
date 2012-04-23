@@ -1,4 +1,4 @@
-namespace Cassette.Configuration
+namespace Cassette
 {
 // ReSharper disable UnusedTypeParameter
 // The T type parameter makes it easy to distinguish between file search modifiers for the different type of bundles

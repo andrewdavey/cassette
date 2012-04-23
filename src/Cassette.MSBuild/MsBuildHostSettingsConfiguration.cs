@@ -1,5 +1,4 @@
 using System;
-using Cassette.Configuration;
 using Cassette.IO;
 
 namespace Cassette.MSBuild

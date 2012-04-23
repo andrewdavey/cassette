@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {

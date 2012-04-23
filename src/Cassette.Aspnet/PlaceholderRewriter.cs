@@ -1,6 +1,5 @@
 using System;
 using System.Web;
-using Cassette.Configuration;
 
 namespace Cassette.Aspnet
 {

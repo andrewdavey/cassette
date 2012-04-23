@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;

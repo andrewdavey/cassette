@@ -5,7 +5,7 @@ using Cassette.IO;
 using Cassette.Utilities;
 #endif
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     /// <summary>
     /// Settings that control Cassette's behavior.

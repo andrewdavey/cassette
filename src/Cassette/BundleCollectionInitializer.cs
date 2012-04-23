@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Cassette.Configuration;
 
 namespace Cassette
 {

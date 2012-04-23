@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Web;
 using System.Web.Compilation;
 using System.Web.Routing;
-using Cassette.Configuration;
 using TinyIoC;
 
 namespace Cassette.Aspnet

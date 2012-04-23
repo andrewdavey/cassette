@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cassette.Utilities;
 
-namespace Cassette.Configuration
+namespace Cassette
 {
     /// <summary>
     /// Modifies a <see cref="BundleCollection"/> by adding external bundles for any URL references made by existing bundles,

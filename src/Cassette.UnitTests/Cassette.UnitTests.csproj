@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -121,8 +121,8 @@
     <Compile Include="BundleCollection.AddPerSubDirectory.cs" />
     <Compile Include="BundleCollection.AddUrl.cs" />
     <Compile Include="BundleCollection.AddPerIndividualFile.cs" />
-    <Compile Include="Configuration\CassetteSettings.cs" />
-    <Compile Include="Configuration\FileSearch.IsMatch.cs" />
+    <Compile Include="CassetteSettings.cs" />
+    <Compile Include="FileSearch.IsMatch.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />
@@ -152,8 +152,8 @@
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
     <Compile Include="BundleCollection.cs" />
     <Compile Include="BundleCollection.AddExplicitFiles.cs" />
-    <Compile Include="Configuration\LocalAssetSettings.cs" />
-    <Compile Include="Configuration\FileSearch.cs" />
+    <Compile Include="LocalAssetSettings.cs" />
+    <Compile Include="FileSearch.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />

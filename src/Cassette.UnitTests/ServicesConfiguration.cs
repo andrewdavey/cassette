@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Should;

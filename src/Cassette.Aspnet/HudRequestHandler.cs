@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
-using Cassette.Configuration;
 using Cassette.HtmlTemplates;
 using Cassette.Manifests;
 using Cassette.Scripts;

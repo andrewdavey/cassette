@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Web;
-using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;

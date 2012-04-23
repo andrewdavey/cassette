@@ -1,6 +1,5 @@
 ﻿#if !NET35
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Moq;
 using Xunit;
 

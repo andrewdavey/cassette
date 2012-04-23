@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Aspnet;
-using Cassette.Configuration;
 
 namespace Cassette
 {

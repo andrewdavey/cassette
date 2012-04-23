@@ -1,4 +1,3 @@
-using Cassette.Configuration;
 using Should;
 using Xunit;
 

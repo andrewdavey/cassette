@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Cassette.Manifests;
 using Moq;
 using Should;

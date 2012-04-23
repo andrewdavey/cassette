@@ -1,7 +1,6 @@
 ﻿#if !NET35
 using Should;
 using Xunit;
-using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {

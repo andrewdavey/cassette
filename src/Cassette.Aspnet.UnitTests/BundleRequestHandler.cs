@@ -5,7 +5,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Web;
 using System.Web.Routing;
-using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;

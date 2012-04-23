@@ -1,15 +1,15 @@
-﻿using Cassette.Configuration;
+﻿using Cassette;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
 namespace $rootnamespace$
 {
     /// <summary>
-    /// Configures the Cassette asset modules for the web application.
+    /// Configures the Cassette asset bundles for the web application.
     /// </summary>
-    public class CassetteConfiguration : ICassetteConfiguration
+    public class CassetteBundleConfiguration : IConfiguration<BundleConfiguration>
     {
-        public void Configure(BundleCollection bundles, CassetteSettings settings)
+        public void Configure(BundleCollection bundles)
         {
             // TODO: Configure your bundles here...
             // Please read http://getcassette.net/documentation/configuration
@@ -28,9 +28,6 @@ namespace $rootnamespace$
             //   bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             // Each immediate sub-directory of ~/Scripts will be combined into its own bundle.
             // This is useful when there are lots of scripts for different areas of the website.
-
-            // *** TOP TIP: Delete all ".min.js" files now ***
-            // Cassette minifies scripts for you. So those files are never used.
         }
     }
 }

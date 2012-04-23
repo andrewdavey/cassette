@@ -1,6 +1,5 @@
 ﻿#if !NET35
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;

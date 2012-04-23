@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;

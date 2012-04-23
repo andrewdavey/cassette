@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Moq;

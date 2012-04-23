@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using Cassette.Configuration;
 using Moq;
 using Xunit;
 

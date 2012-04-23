@@ -1,4 +1,3 @@
-using Cassette.Configuration;
 
 namespace Cassette
 {

@@ -1,5 +1,4 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
