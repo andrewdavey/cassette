@@ -14,7 +14,7 @@ namespace Cassette.BundleProcessing
         public void GivenEmptyBundle_WhenConcatenateAssets_ThenNoAssetAddedToBundle()
         {
             var bundle = new TestableBundle("~");
-            bundle.ConcatenateAssets();
+            bundle.ConcatenateAssets("");
             bundle.Assets.Count.ShouldEqual(0);
         }
 
@@ -69,6 +69,26 @@ namespace Cassette.BundleProcessing
                 .SequenceEqual(new[] { "~\\other1.js", "~\\other1.js", "~\\other2.js" })
                 .ShouldBeTrue();
         }
+
+        [Fact]
+        public void ConcatenateAssetsWithSeparatorPutsSeparatorBetweenEachAsset()
+        {
+            var bundle = new TestableBundle("~");
+            var asset1 = new Mock<IAsset>();
+            var asset2 = new Mock<IAsset>();
+            asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
+            asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
+            bundle.Assets.Add(asset1.Object);
+            bundle.Assets.Add(asset2.Object);
+
+            var processor = new ConcatenateAssets { Separator = ";" };
+            processor.Process(bundle);
+
+            using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
+            {
+                reader.ReadToEnd().ShouldEqual("asset1;asset2");
+            }
+            (bundle.Assets[0] as IDisposable).Dispose();
+        }
     }
 }
-

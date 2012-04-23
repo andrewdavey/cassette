@@ -1,9 +1,11 @@
 ﻿using System.IO;
+using System.Linq;
 using Cassette.BundleProcessing;
 using Moq;
 using Should;
 using Xunit;
 using TinyIoC;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -51,15 +53,10 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenCompileCoffeeScriptIsFalse_WhenProcessBundle_ThenCompileAssetTransformerNotAddedToAsset()
+        public void GivenNotDebugMode_ThenConcatenateAssetsWithSemicolonSeparator()
         {
-            var bundle = new ScriptBundle("~");
-            var asset = StubCoffeeScriptAsset();
-            bundle.Assets.Add(asset.Object);
-            
-            pipeline.Process(bundle);
-
-            asset.Verify(a => a.AddAssetTransformer(It.IsAny<CompileAsset>()), Times.Never());
+            var step = pipeline.OfType<ConcatenateAssets>().First();
+            step.Separator.ShouldEqual(";");
         }
 
         [Fact]
@@ -72,13 +69,13 @@ namespace Cassette.Scripts
             bundle.Hash.ShouldNotBeNull();
         }
 
-        Mock<IAsset> StubCoffeeScriptAsset()
+        Mock<IAsset> StubAsset(string filename = null, string content = "")
         {
             var asset = new Mock<IAsset>();
             asset.Setup(f => f.OpenStream())
-                .Returns(Stream.Null);
+                .Returns(() => content.AsStream());
             asset.SetupGet(a => a.Path)
-                .Returns("~/test.coffee");
+                .Returns(filename ?? "~/test.js");
             return asset;
         }
     }

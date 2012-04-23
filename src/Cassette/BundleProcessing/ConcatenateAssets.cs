@@ -4,7 +4,9 @@
     {
         public void Process(Bundle bundle)
         {
-            bundle.ConcatenateAssets();
+            bundle.ConcatenateAssets(Separator);
         }
+
+        public string Separator { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Cassette.Scripts
 
             if (!settings.IsDebuggingEnabled)
             {
-                Add(new ConcatenateAssets());
+                Add(new ConcatenateAssets { Separator = ";" });
                 var minifier = container.Resolve<IJavaScriptMinifier>();
                 Add(new MinifyAssets(minifier));
             }

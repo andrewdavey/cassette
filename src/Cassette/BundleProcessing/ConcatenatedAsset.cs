@@ -11,10 +11,12 @@ namespace Cassette.BundleProcessing
         readonly byte[] hash;
         readonly IEnumerable<IAsset> children;
         readonly MemoryStream stream;
+        readonly string separator;
 
-        public ConcatenatedAsset(IEnumerable<IAsset> children)
+        public ConcatenatedAsset(IEnumerable<IAsset> children, string separator)
         {
             this.children = children.ToArray();
+            this.separator = separator ?? Environment.NewLine;
             stream = CopyAssetsIntoSingleStream(this.children);
             hash = stream.ComputeSHA1Hash();
         }
@@ -79,7 +81,7 @@ namespace Cassette.BundleProcessing
                 }
                 else
                 {
-                    writer.WriteLine();
+                    writer.Write(separator);
                 }
                 WriteAsset(asset, writer);
             }
@@ -111,4 +113,3 @@ namespace Cassette.BundleProcessing
         }
     }
 }
-
