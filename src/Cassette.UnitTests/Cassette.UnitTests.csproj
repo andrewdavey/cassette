@@ -142,7 +142,6 @@
     <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="Manifests\CassetteManifestCache.cs" />
     <Compile Include="Manifests\BundleManifestBuilder.cs" />
-    <Compile Include="MSBuild\UrlPlaceholderWrapper.cs" />
     <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
     <Compile Include="Manifests\CassetteManifestWriter.cs" />
@@ -250,14 +249,6 @@
     <ProjectReference Include="..\Cassette.KnockoutJQueryTmpl\Cassette.KnockoutJQueryTmpl.csproj">
       <Project>{C38D3ED4-367B-42E6-97A3-B8403DB528FF}</Project>
       <Name>Cassette.KnockoutJQueryTmpl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cassette.MSBuild\Cassette.MSBuild.csproj">
-      <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
-      <Name>Cassette.MSBuild</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
-      <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
-      <Name>Cassette.Views</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
