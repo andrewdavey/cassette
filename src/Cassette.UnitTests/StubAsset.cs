@@ -5,7 +5,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    class StubAsset : IAsset
+    public class StubAsset : IAsset
     {
         public StubAsset(string fullPath = "~/asset.js", string content = "")
         {

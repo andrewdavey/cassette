@@ -7,6 +7,7 @@
     <ItemGroup>
         <!-- Only need to build test projects as dependent projects will be automatically built. -->
         <ProjectNames Include="UnitTests"/>
+        <ProjectNames Include="Views.UnitTests"/>
         <ProjectNames Include="Aspnet.UnitTests"/>
         <ProjectNames Include="CoffeeScript.UnitTests"/>
         <ProjectNames Include="Less.UnitTests"/>
@@ -26,31 +27,8 @@
     </Target>
     
     <Target Name="Test" DependsOnTargets="Build">
-        <ItemGroup>
-            <TestProjects Include="UnitTests"/>
-            <TestProjects Include="Aspnet.UnitTests"/>
-            <TestProjects Include="CoffeeScript.UnitTests"/>
-            <TestProjects Include="Less.UnitTests"/>
-            <TestProjects Include="Sass.UnitTests"/>
-            <TestProjects Include="Hogan.UnitTests"/>
-            <TestProjects Include="Aspnet.Jasmine.UnitTests"/>
-            <TestProjects Include="IntegrationTests"/>
-        </ItemGroup>
         <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
-        <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(TestProjects.Identity)\bin\Release\Cassette.%(TestProjects.Identity).dll" />
-    </Target>
-
-    <Target Name="Test35" DependsOnTargets="Build35">
-        <ItemGroup>
-            <TestProjects35 Include="UnitTests"/>
-            <TestProjects35 Include="Aspnet.UnitTests"/>
-            <TestProjects35 Include="CoffeeScript.UnitTests"/>
-            <TestProjects35 Include="Less.UnitTests"/>
-            <TestProjects35 Include="Hogan.UnitTests"/>
-            <TestProjects35 Include="IntegrationTests"/>
-        </ItemGroup>
-        <!-- Run tests against 4.0 and 3.5 assemblies; must use CLR4 and 2.0 XUnit otherwise some 3.5 tests will fail -->
-        <Exec Command="tools\xunit.console.x86.exe src\Cassette.%(TestProjects35.Identity)\bin\Release-FX35\Cassette.%(TestProjects35.Identity).dll" />
+        <Exec Command="tools\xunit.console.clr4.x86.exe src\Cassette.%(ProjectNames.Identity)\bin\$(Configuration)\Cassette.%(ProjectNames.Identity).dll" />
     </Target>
 
     <Target Name="NugetPack" DependsOnTargets="Build">

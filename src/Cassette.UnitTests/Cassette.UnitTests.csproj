@@ -221,7 +221,6 @@
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="TestableBundle.cs" />
-    <Compile Include="Views\Bundles.cs" />
     <Compile Include="BundleProcessing\MinifyAssets.cs" />
     <Compile Include="Bundle.cs" />
     <Compile Include="Scripts\ParseJavaScriptReferences.cs" />
@@ -233,7 +232,6 @@
     <Compile Include="Stylesheets\StylesheetBundle.cs" />
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
     <Compile Include="Utilities\Graph.cs" />
-    <Compile Include="Views\Bundles_FileUrl_Tests.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="UrlGenerator.cs" />
     <Compile Include="PlaceholderTracker.cs" />
