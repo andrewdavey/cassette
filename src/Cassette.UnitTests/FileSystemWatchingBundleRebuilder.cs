@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Cassette.IO;
 using Moq;
+using Should;
 using Xunit;
 
 namespace Cassette
@@ -161,6 +163,62 @@ namespace Cassette
             DeleteFile("image.png");
 
             AssertBundleCollectionRebuilt();
+        }
+
+        [Fact]
+        public void GivenBundleCollectionThrowsException_WhenFileChanged_ThenExceptionIsSwallowedToAvoidKillingTheProcesses()
+        {
+            CreateFile("test.js");
+            var listener = new TestTraceListener();
+            Trace.Source.Switch = new SourceSwitch("Cassette") { Level = SourceLevels.All };
+            
+            try
+            {
+                Trace.Source.Listeners.Add(listener);
+                rebuilder.Start();
+
+                bundles.InitializationException = new Exception();
+                ChangeFile("test.js");
+
+                PauseForEvent();
+                Trace.Source.Flush();
+                listener.Flush();
+                listener.TraceDataObject.ShouldBeType<Exception>();
+            }
+            finally
+            {
+                Trace.Source.Listeners.Remove(listener);
+            }
+        }
+
+        class TestTraceListener : TraceListener
+        {
+            public TestTraceListener()
+            {
+                Filter = new EventTypeFilter(SourceLevels.All);
+            }
+
+            public object TraceDataObject { get; set; }
+
+            public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, object data)
+            {
+                base.TraceData(eventCache, source, eventType, id, data);
+                TraceDataObject = data;
+            }
+
+            public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, params object[] data)
+            {
+                base.TraceData(eventCache, source, eventType, id, data);
+                TraceDataObject = data;
+            }
+
+            public override void Write(string message)
+            {
+            }
+
+            public override void WriteLine(string message)
+            {
+            }
         }
 
         void CreateFile(string filename)

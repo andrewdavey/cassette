@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -73,18 +74,36 @@ namespace Cassette
 
         bool IsPotentialAssetFile(string path)
         {
-            using (bundles.GetReadLock())
+            try
             {
-                return fileSearches.Any(fileSearch => fileSearch.IsMatch(path));
+                using (bundles.GetReadLock())
+                {
+                    return fileSearches.Any(fileSearch => fileSearch.IsMatch(path));
+                }
+            }
+            catch (Exception exception)
+            {
+                // Swallow the exception, otherwise it will bubble up unhandled and kill the process!
+                Trace.Source.TraceData(TraceEventType.Error, 0, exception);
+                return false;
             }
         }
 
         bool IsKnownPath(string path)
         {
-            using (bundles.GetReadLock())
+            try
             {
-                return AnyBundleContainsPath(path) ||
-                       RawFileReferenceFinder.RawFileReferenceExists(path, bundles);
+                using (bundles.GetReadLock())
+                {
+                    return AnyBundleContainsPath(path) ||
+                           RawFileReferenceFinder.RawFileReferenceExists(path, bundles);
+                }
+            }
+            catch (Exception exception)
+            {
+                // Swallow the exception, otherwise it will bubble up unhandled and kill the process!
+                Trace.Source.TraceData(TraceEventType.Error, 0, exception);
+                return false;
             }
         }
 
