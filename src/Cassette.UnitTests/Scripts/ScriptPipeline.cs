@@ -1,11 +1,10 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Cassette.BundleProcessing;
+using Cassette.Utilities;
 using Moq;
 using Should;
-using Xunit;
 using TinyIoC;
-using Cassette.Utilities;
+using Xunit;
 
 namespace Cassette.Scripts
 {
