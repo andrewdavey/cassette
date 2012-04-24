@@ -12,12 +12,12 @@ namespace Cassette
     {
         readonly CassetteSettings settings;
         readonly BundleCollection bundles;
-        readonly BundleCollectionInitializer initializer;
+        readonly IBundleCollectionInitializer initializer;
         readonly IEnumerable<IFileSearch> fileSearches;
         IDisposable fileSystemWatcher;
         Timer rebuildDelayTimer;
 
-        public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, BundleCollectionInitializer initializer, IEnumerable<IFileSearch> fileSearches)
+        public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, IBundleCollectionInitializer initializer, IEnumerable<IFileSearch> fileSearches)
         {
             this.settings = settings;
             this.bundles = bundles;
