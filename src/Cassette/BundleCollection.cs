@@ -28,6 +28,17 @@ namespace Cassette
             this.bundleFactoryProvider = bundleFactoryProvider;
         }
 
+        internal Exception BuildException { get; private set; }
+
+        internal void BuildFailed(Exception exception)
+        {
+            using (GetWriteLock())
+            {
+                BuildException = exception;
+                Clear();
+            }
+        }
+
         public IDisposable GetReadLock()
         {
             readerWriterLock.EnterReadLock();

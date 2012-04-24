@@ -85,6 +85,7 @@
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />
+    <Compile Include="ExceptionCatchingBundleCollectionInitializer.cs" />
     <Compile Include="FileAccessAuthorization.cs" />
     <Compile Include="FileSearchProvider.cs" />
     <Compile Include="HostBase.cs" />
