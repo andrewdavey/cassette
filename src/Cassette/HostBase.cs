@@ -113,10 +113,14 @@ namespace Cassette
             });
         }
 
-        void RegisterBundleCollectionInitializer()
+        protected virtual void RegisterBundleCollectionInitializer()
         {
-            container.Register(typeof(IBundleCollectionInitializer), BundleCollectionInitializerType);
-            container.Register(typeof(PrecompiledBundleCollectionInitializer), (c, p) =>
+            container.Register<IBundleCollectionInitializer>(
+                (c, p) => new ExceptionCatchingBundleCollectionInitializer(
+                    c.Resolve<RuntimeBundleCollectionInitializer>()
+                )
+            );
+            container.Register((c, p) =>
             {
                 var file = container.Resolve<CassetteSettings>().PrecompiledManifestFile;
                 return new PrecompiledBundleCollectionInitializer(file, c.Resolve<IUrlModifier>());
@@ -253,11 +257,6 @@ namespace Cassette
         IEnumerable<Type> GetImplementationTypes(Type baseType)
         {
             return allTypes.Where(baseType.IsAssignableFrom); 
-        }
-
-        protected virtual Type BundleCollectionInitializerType
-        {
-            get { return typeof(RuntimeBundleCollectionInitializer); }
         }
 
         IPlaceholderTracker CreatePlaceholderTracker(TinyIoCContainer currentContainer)

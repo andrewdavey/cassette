@@ -26,6 +26,15 @@ namespace Cassette
         {
             initializerThatThrows.Verify(i => i.Initialize(bundleCollection));
         }
+
+        [Fact]
+        public void ItClearsBundleCollectionInitializationException()
+        {
+            bundleCollection.InitializationException = new Exception();
+            initializer.Initialize(bundleCollection);
+
+            bundleCollection.InitializationException.ShouldBeNull();
+        }
     }
 
     public class ExceptionCatchingBundleCollectionInitializer_WhereInitializerImplementationThrowsException
@@ -57,15 +66,9 @@ namespace Cassette
         }
 
         [Fact]
-        public void ItSetsBundleCollectionException()
+        public void ItSetsBundleCollectionInitializationException()
         {
-            bundleCollection.BuildException.ShouldBeSameAs(exception);
-        }
-
-        [Fact]
-        public void ItClearsBundleCollection()
-        {
-            bundleCollection.ShouldBeEmpty();
+            bundleCollection.InitializationException.ShouldBeSameAs(exception);
         }
     }
 }

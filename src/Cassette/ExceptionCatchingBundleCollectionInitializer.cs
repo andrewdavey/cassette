@@ -15,10 +15,11 @@ namespace Cassette
             try
             {
                 initializerImplementation.Initialize(bundleCollection);
+                bundleCollection.InitializationException = null;
             }
             catch (Exception exception)
             {
-                bundleCollection.BuildFailed(exception);
+                bundleCollection.InitializationException = exception;
             }
         }
     }

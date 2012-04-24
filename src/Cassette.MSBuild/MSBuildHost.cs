@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,9 +29,9 @@ namespace Cassette.MSBuild
             get { return false; }
         }
 
-        protected override Type BundleCollectionInitializerType
+        protected override void RegisterBundleCollectionInitializer()
         {
-            get { return typeof(BundleCollectionInitializer); }
+            Container.Register<IBundleCollectionInitializer, BundleCollectionInitializer>();
         }
 
         public void Execute()

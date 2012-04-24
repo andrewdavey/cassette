@@ -20,6 +20,7 @@ namespace Cassette
         readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
+        Exception initializationException;
         
         public BundleCollection(CassetteSettings settings, IFileSearchProvider fileSearchProvider, IBundleFactoryProvider bundleFactoryProvider)
         {
@@ -28,20 +29,35 @@ namespace Cassette
             this.bundleFactoryProvider = bundleFactoryProvider;
         }
 
-        internal Exception BuildException { get; private set; }
-
-        internal void BuildFailed(Exception exception)
+        /// <summary>
+        /// An exception occuring during bundle collection initialization can be stored here.
+        /// Then during GetReadLock it is thrown.
+        /// </summary>
+        internal Exception InitializationException
         {
-            using (GetWriteLock())
+            get
             {
-                BuildException = exception;
-                Clear();
+                return initializationException;
+            }
+            set
+            {
+                using (GetWriteLock())
+                {
+                    initializationException = value;
+                }
             }
         }
 
         public IDisposable GetReadLock()
         {
             readerWriterLock.EnterReadLock();
+
+            if (InitializationException != null)
+            {
+                readerWriterLock.ExitReadLock();
+                throw new Exception("Bundle collection rebuild failed. See inner exception for details.", InitializationException);
+            }
+
             return new DelegatingDisposable(() => readerWriterLock.ExitReadLock());
         }
 
