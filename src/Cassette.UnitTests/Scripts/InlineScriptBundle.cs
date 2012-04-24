@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Should;
 using Xunit;
 
@@ -61,6 +61,50 @@ namespace Cassette.Scripts
                 "var x = 1;" + Environment.NewLine +
                 "</script>" + Environment.NewLine +
                 "<!-- <![endif]-->"
+            );
+        }
+
+        [Fact]
+        public void GivenInlineScriptBundleWithScriptTag_WhenRender_ThenScriptNotCreated()
+        {
+            var bundle = new InlineScriptBundle("<script type=\"text/javascript\">var x = 1;</script>");
+            var html = bundle.Render();
+            html.ShouldEqual(
+                "<script type=\"text/javascript\">var x = 1;</script>"
+            );
+        }
+
+        [Fact]
+        public void GivenInlineScriptBundleWithScriptTagNoType_WhenRender_ThenScriptNotCreated()
+        {
+            var bundle = new InlineScriptBundle("<script>var x = 1;</script>");
+            var html = bundle.Render();
+            html.ShouldEqual(
+                "<script>var x = 1;</script>"
+            );
+        }
+
+        [Fact]
+        public void GivenInlineScriptBundleWithScriptTagAndAttributes_WhenRender_ThenScriptNotCreated()
+        {
+            var bundle = new InlineScriptBundle("<script type=\"text/javascript\">var x = 1;</script>");
+            bundle.HtmlAttributes.Add("class", "none");
+
+            var html = bundle.Render();
+            html.ShouldEqual(
+                "<script class=\"none\" type=\"text/javascript\">var x = 1;</script>"
+            );
+        }
+
+        [Fact]
+        public void GivenInlineScriptBundleWithScriptTagAndAttributesNoType_WhenRender_ThenScriptNotCreated()
+        {
+            var bundle = new InlineScriptBundle("<script>var x = 1;</script>");
+            bundle.HtmlAttributes.Add("class", "none");
+
+            var html = bundle.Render();
+            html.ShouldEqual(
+                "<script class=\"none\">var x = 1;</script>"
             );
         }
     }
