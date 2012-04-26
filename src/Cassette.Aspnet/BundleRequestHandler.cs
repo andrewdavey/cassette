@@ -8,11 +8,10 @@ using Cassette.Utilities;
 
 namespace Cassette.Aspnet
 {
-    class BundleRequestHandler<T> : IHttpHandler
+    class BundleRequestHandler<T> : ICassetteRequestHandler
         where T : Bundle
     {
         readonly BundleCollection bundles;
-        readonly RouteData routeData;
         readonly HttpResponseBase response;
         readonly HttpRequestBase request;
         readonly HttpContextBase httpContext;
@@ -20,23 +19,21 @@ namespace Cassette.Aspnet
         public BundleRequestHandler(BundleCollection bundles, RequestContext requestContext)
         {
             this.bundles = bundles;
-            
-            routeData = requestContext.RouteData;
+
             response = requestContext.HttpContext.Response;
             request = requestContext.HttpContext.Request;
             httpContext = requestContext.HttpContext;
         }
 
-        public void ProcessRequest()
+        public void ProcessRequest(string path)
         {
             httpContext.DisableHtmlRewriting();
             using (bundles.GetReadLock())
             {
-                var bundle = FindBundle();
+                var bundle = FindBundle(path);
                 if (bundle == null)
                 {
-                    Trace.Source.TraceInformation("Bundle not found \"{0}\".",
-                                                  Path.Combine("~", routeData.GetRequiredString("path")));
+                    Trace.Source.TraceInformation("Bundle not found \"{0}\".", path);
                     response.StatusCode = 404;
                 }
                 else
@@ -55,36 +52,10 @@ namespace Cassette.Aspnet
             }
         }
 
-        public bool IsReusable
+        Bundle FindBundle(string path)
         {
-            get { return false; }
-        }
-
-        void IHttpHandler.ProcessRequest(HttpContext unused)
-        {
-            // The HttpContext is unused because the constructor accepts a more test-friendly RequestContext object.
-            ProcessRequest();
-        }
-
-        Bundle FindBundle()
-        {
-            var path = "~/" + routeData.GetRequiredString("path");
             Trace.Source.TraceInformation("Handling bundle request for \"{0}\".", path);
-            path = RemoveTrailingHashFromPath(path);
             return bundles.FindBundlesContainingPath(path).OfType<T>().FirstOrDefault();
-        }
-
-        /// <summary>
-        /// A Bundle URL has the hash appended after an underscore character. This method removes the underscore and hash from the path.
-        /// </summary>
-        string RemoveTrailingHashFromPath(string path)
-        {
-            var index = path.LastIndexOf('_');
-            if (index >= 0)
-            {
-                return path.Substring(0, index);
-            }
-            return path;
         }
 
         void SendNotModified(string actualETag)

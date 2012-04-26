@@ -33,6 +33,11 @@ namespace Cassette.Aspnet
             Container.Register(typeof(RouteCollection), Routes);
             Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(AppDomainAppVirtualPath));
 
+            Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler");
+            Container.Register<ICassetteRequestHandler, BundleRequestHandler<Scripts.ScriptBundle>>("ScriptBundleRequestHandler");
+            Container.Register<ICassetteRequestHandler, BundleRequestHandler<Stylesheets.StylesheetBundle>>("StylesheetBundleRequestHandler");
+            Container.Register<ICassetteRequestHandler, BundleRequestHandler<HtmlTemplates.HtmlTemplateBundle>>("HtmlTemplateBundleRequestHandler");
+
             base.ConfigureContainer();
         }
 
@@ -56,7 +61,6 @@ namespace Cassette.Aspnet
             var startUpTaskTypes = base.GetStartUpTaskTypes();
             return startUpTaskTypes.Concat(new[]
             {
-                typeof(RouteInstaller),
                 typeof(FileSystemWatchingBundleRebuilder)
             });
         }

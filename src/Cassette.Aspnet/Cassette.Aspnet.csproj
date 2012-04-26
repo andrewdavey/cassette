@@ -78,7 +78,6 @@
     <Compile Include="CassetteHttpModule.cs" />
     <Compile Include="AssetRequestHandler.cs" />
     <Compile Include="CassetteRoute.cs" />
-    <Compile Include="RouteInstaller.cs" />
     <Compile Include="CassetteRouteHandler.cs" />
     <Compile Include="BundleRequestHandler.cs" />
     <Compile Include="HudRequestHandler.cs" />

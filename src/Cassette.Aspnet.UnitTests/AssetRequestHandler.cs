@@ -51,12 +51,6 @@ namespace Cassette.Aspnet
         MemoryStream outputStream;
 
         [Fact]
-        public void IsReusableIsFalse()
-        {
-            handler.IsReusable.ShouldBeFalse();
-        }
-
-        [Fact]
         public void GivenBundleNotFound_WhenProcessRequest_ThenNotFoundResponse()
         {
             bundles.Clear();
@@ -68,7 +62,7 @@ namespace Cassette.Aspnet
         public void GivenBundleFoundButAssetIsNull_WhenProcessRequest_ThenNotFoundResponse()
         {
             bundles.Add(new TestableBundle("~/test"));
-            handler.ProcessRequest(null);
+            handler.ProcessRequest("~/test/asset.js");
             response.VerifySet(r => r.StatusCode = 404);
         }
 
@@ -90,7 +84,7 @@ namespace Cassette.Aspnet
 
             using (outputStream = new MemoryStream())
             {
-                handler.ProcessRequest(null);
+                handler.ProcessRequest("~/test/asset.js");
             }
 
             response.VerifySet(r => r.ContentType = "CONTENT/TYPE");
@@ -114,7 +108,7 @@ namespace Cassette.Aspnet
 
             using (outputStream = new MemoryStream())
             {
-                handler.ProcessRequest(null);
+                handler.ProcessRequest("~/test/asset.js");
 
                 Encoding.UTF8.GetString(outputStream.ToArray()).ShouldEqual("output");
             }

@@ -4,7 +4,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Aspnet
 {
-    class AssetRequestHandler : IHttpHandler
+    class AssetRequestHandler : ICassetteRequestHandler
     {
         public AssetRequestHandler(RequestContext requestContext, BundleCollection bundles)
         {
@@ -15,14 +15,8 @@ namespace Cassette.Aspnet
         readonly RequestContext requestContext;
         readonly BundleCollection bundles;
 
-        public bool IsReusable
+        public void ProcessRequest(string path)
         {
-            get { return false; }
-        }
-
-        public void ProcessRequest(HttpContext _)
-        {
-            var path = GetAssetPath();
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             requestContext.HttpContext.DisableHtmlRewriting();
             var response = requestContext.HttpContext.Response;
@@ -40,21 +34,6 @@ namespace Cassette.Aspnet
                 var request = requestContext.HttpContext.Request;
                 SendAsset(request, response, bundle, asset);
             }
-        }
-
-        string GetAssetPath()
-        {
-            var path = requestContext.RouteData.GetRequiredString("path");
-            var parts = path.Split('/');
-            var filename = parts[parts.Length - 1];
-            var underscoreIndex = filename.LastIndexOf('_');
-            if (underscoreIndex >= 0)
-            {
-                var filenameWithoutExtension = filename.Substring(0, underscoreIndex);
-                var extension = filename.Substring(underscoreIndex + 1);
-                parts[parts.Length - 1] = filenameWithoutExtension + "." + extension;
-            }
-            return "~/" + string.Join("/", parts);
         }
 
         void SendAsset(HttpRequestBase request, HttpResponseBase response, Bundle bundle, IAsset asset)

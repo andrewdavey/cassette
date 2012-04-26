@@ -83,7 +83,6 @@
     <Compile Include="PlaceholderRewriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawFileRequestHandler.cs" />
-    <Compile Include="RouteInstaller.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette.Aspnet\Cassette.Aspnet.csproj">

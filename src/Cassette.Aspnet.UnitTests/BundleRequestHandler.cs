@@ -14,17 +14,17 @@ namespace Cassette.Aspnet
 {
     public class BundleRequestHandler_Tests : IDisposable
     {
-        protected Mock<HttpContextBase> httpContext;
-        protected Mock<HttpRequestBase> request;
-        protected Mock<HttpResponseBase> response;
-        protected Mock<HttpCachePolicyBase> responseCache;
-        protected NameValueCollection requestHeaders;
-        protected RouteData routeData;
-        protected RequestContext requestContext;
-        protected Stream outputStream;
-        protected BundleCollection bundles;
+        readonly Mock<HttpContextBase> httpContext;
+        readonly Mock<HttpRequestBase> request;
+        protected readonly Mock<HttpResponseBase> response;
+        protected readonly Mock<HttpCachePolicyBase> responseCache;
+        protected readonly NameValueCollection requestHeaders;
+        readonly RouteData routeData;
+        readonly RequestContext requestContext;
+        protected readonly Stream outputStream;
+        protected readonly BundleCollection bundles;
 
-        public BundleRequestHandler_Tests()
+        protected BundleRequestHandler_Tests()
         {
             httpContext = new Mock<HttpContextBase>();
             request = new Mock<HttpRequestBase>();
@@ -48,9 +48,8 @@ namespace Cassette.Aspnet
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
         }
 
-        internal BundleRequestHandler<TestableBundle> CreateRequestHandler(string bundlePath)
+        internal BundleRequestHandler<TestableBundle> CreateRequestHandler()
         {
-            routeData.Values.Add("path", bundlePath);
             return new BundleRequestHandler<TestableBundle>(
                 bundles,
                 requestContext
@@ -91,8 +90,8 @@ namespace Cassette.Aspnet
             bundles.BuildReferences();
             bundle.Process(new CassetteSettings());
 
-            var handler = CreateRequestHandler("test_010203");
-            handler.ProcessRequest();
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
         }
 
         readonly DateTime start = DateTime.UtcNow;
@@ -130,32 +129,14 @@ namespace Cassette.Aspnet
         }
     }
 
-    public class GivenBundlePathIsMissingHashPostfix_WhenProcessRequest : BundleRequestHandler_Tests
-    {
-        public GivenBundlePathIsMissingHashPostfix_WhenProcessRequest()
-        {
-            SetupTestBundle();
-
-            var handler = CreateRequestHandler("test");
-            handler.ProcessRequest();
-        }
-
-        [Fact]
-        public void BundleAssetContentReturned()
-        {
-            outputStream.Position = 0;
-            outputStream.ReadToEnd().ShouldEqual("asset-content");
-        }
-    }
-
     public class GivenBundleDoesNotExist : BundleRequestHandler_Tests
     {
         [Fact]
         public void HandlerReturns404()
         {
-            var handler = CreateRequestHandler("scripts/unknown-bundle");
+            var handler = CreateRequestHandler();
 
-            handler.ProcessRequest();
+            handler.ProcessRequest("~/notfound");
 
             response.VerifySet(r => r.StatusCode = 404);
         }
@@ -168,8 +149,8 @@ namespace Cassette.Aspnet
             SetupTestBundle();
 
             requestHeaders["If-None-Match"] = "\"010203\"";
-            var handler = CreateRequestHandler("test");
-            handler.ProcessRequest();
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
         }
 
         [Fact]
@@ -186,8 +167,8 @@ namespace Cassette.Aspnet
             SetupTestBundle();
 
             requestHeaders["If-None-Match"] = "xxxxxx";
-            var handler = CreateRequestHandler("test");
-            handler.ProcessRequest();
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
         }
 
         [Fact]
@@ -207,8 +188,8 @@ namespace Cassette.Aspnet
 
             SetupTestBundle();
 
-            var handler = CreateRequestHandler("test");
-            handler.ProcessRequest();
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
         }
 
         [Fact]
@@ -239,8 +220,8 @@ namespace Cassette.Aspnet
 
             SetupTestBundle();
 
-            var handler = CreateRequestHandler("test");
-            handler.ProcessRequest();
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
         }
 
         [Fact]
@@ -271,32 +252,14 @@ namespace Cassette.Aspnet
 
             SetupTestBundle();
 
-            var handler = CreateRequestHandler("test");
-            handler.ProcessRequest();
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
         }
 
         [Fact]
         public void ResponseFilterIsNotSet()
         {
             response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Once()); // Only set once in the test constructor.
-        }
-    }
-
-    public class BundleRequestHandler_OcdTests : BundleRequestHandler_Tests
-    {
-        [Fact]
-        public void IsReusableIsFalse()
-        {
-            var handler = CreateRequestHandler("test");
-            handler.IsReusable.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void IHttpHandlerIsExplicitlyImplemented()
-        {
-            var handler = CreateRequestHandler("test") as IHttpHandler;
-            var context = new HttpContext(new HttpRequest("", "http://localhost/", ""), new HttpResponse(new StringWriter()));
-            handler.ProcessRequest(context);
         }
     }
 }
