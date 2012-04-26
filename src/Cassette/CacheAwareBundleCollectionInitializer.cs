@@ -45,6 +45,7 @@ namespace Cassette
 
         void AddBundlesFromConfigurations()
         {
+            bundles.Clear();
             bundleConfigurations.Configure(bundles);
         }
 
