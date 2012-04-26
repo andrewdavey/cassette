@@ -43,7 +43,7 @@ namespace Cassette.HtmlTemplates
 
         protected override string UrlBundleTypeArgument
         {
-            get { return "htmltemplatebundle"; }
+            get { return "htmltemplate"; }
         }
     }
 }

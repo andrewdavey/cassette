@@ -45,7 +45,7 @@ namespace Cassette.Stylesheets
 
         protected override string UrlBundleTypeArgument
         {
-            get { return "stylesheetbundle"; }
+            get { return "stylesheet"; }
         }
     }
 }

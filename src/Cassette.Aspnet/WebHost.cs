@@ -34,10 +34,12 @@ namespace Cassette.Aspnet
             Container.Register(Routes);
             Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(AppDomainAppVirtualPath));
 
-            Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler");
-            Container.Register<ICassetteRequestHandler, BundleRequestHandler<Scripts.ScriptBundle>>("ScriptBundleRequestHandler");
-            Container.Register<ICassetteRequestHandler, BundleRequestHandler<Stylesheets.StylesheetBundle>>("StylesheetBundleRequestHandler");
-            Container.Register<ICassetteRequestHandler, BundleRequestHandler<HtmlTemplates.HtmlTemplateBundle>>("HtmlTemplateBundleRequestHandler");
+            Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
+            Container.Register<ICassetteRequestHandler, BundleRequestHandler<Scripts.ScriptBundle>>("ScriptBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
+            Container.Register<ICassetteRequestHandler, BundleRequestHandler<Stylesheets.StylesheetBundle>>("StylesheetBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
+            Container.Register<ICassetteRequestHandler, BundleRequestHandler<HtmlTemplates.HtmlTemplateBundle>>("HtmlTemplateBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
+
+            Container.Register<RawFileRequestRewriter>().AsPerRequestSingleton(CreateRequestLifetimeProvider());
 
             base.ConfigureContainer();
         }

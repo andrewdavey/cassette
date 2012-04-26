@@ -73,8 +73,9 @@ namespace Cassette
         {
             get
             {
-                var pathWithoutPrefix = path.TrimStart('~', '/');
-                return UrlBundleTypeArgument + "/" + pathWithoutPrefix + "_" + (Hash != null ? Hash.ToHexString() : "");
+                var hashString = Hash != null ? Hash.ToUrlSafeBase64String() : "";
+                var pathWithoutPrefix = path.TrimStart('~');
+                return UrlBundleTypeArgument + "/" + hashString + pathWithoutPrefix;
             }
         }
 

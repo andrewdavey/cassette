@@ -39,7 +39,7 @@ namespace Cassette
 
         protected override string UrlBundleTypeArgument
         {
-            get { return "testablebundle"; }
+            get { return "testable"; }
         }
 
         class TestableBundleManifest : BundleManifest

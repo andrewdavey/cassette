@@ -44,7 +44,7 @@ namespace Cassette.Scripts
 
         protected override string UrlBundleTypeArgument
         {
-            get { return "scriptbundle"; }
+            get { return "script"; }
         }
     }
 }
