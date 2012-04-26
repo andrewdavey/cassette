@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="AssetRequestHandler.cs" />
     <Compile Include="BundleRequestHandler.cs" />
+    <Compile Include="CassetteHttpHandler.cs" />
     <Compile Include="CassetteRoute.cs" />
     <Compile Include="CassetteRouteHandler.cs" />
     <Compile Include="HttpTestHarness.cs" />

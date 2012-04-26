@@ -70,5 +70,10 @@ namespace Cassette.Aspnet
         {
             return new WebHostSettingsConfiguration(AppDomainAppVirtualPath);
         }
+
+        public TinyIoCContainer RequestContainer
+        {
+            get { return null; }
+        }
     }
 }
