@@ -29,8 +29,9 @@ namespace Cassette.Aspnet
         protected override void ConfigureContainer()
         {
             // These are before base.ConfigureContainer() so the application is able to override them - for example providing a different IUrlModifier.
-            Container.Register(typeof(HttpContextBase), (c, p) => HttpContext());
-            Container.Register(typeof(RouteCollection), Routes);
+            Container.Register((c, p) => HttpContext());
+            Container.Register((c, p) => c.Resolve<HttpContextBase>().Request);
+            Container.Register(Routes);
             Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(AppDomainAppVirtualPath));
 
             Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler");
@@ -75,9 +76,28 @@ namespace Cassette.Aspnet
             return new WebHostSettingsConfiguration(AppDomainAppVirtualPath);
         }
 
+        const string RequestContainerKey = "CassetteRequestContainer";
+
+        public void StoreRequestContainerInHttpContextItems()
+        {
+            var context = HttpContext();
+            context.Items[RequestContainerKey] = Container.GetChildContainer();
+        }
+
         public TinyIoCContainer RequestContainer
         {
-            get { return null; }
+            get { return HttpContext().Items[RequestContainerKey] as TinyIoCContainer; }
+        }
+
+        public void RemoveRequestContainerFromHttpContextItems()
+        {
+            var context = HttpContext();
+            var container = context.Items[RequestContainerKey] as TinyIoCContainer;
+            if (container != null)
+            {
+                container.Dispose();
+                context.Items.Remove(RequestContainerKey);
+            }
         }
     }
 }

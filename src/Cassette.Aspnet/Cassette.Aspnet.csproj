@@ -67,6 +67,7 @@
     <Compile Include="HttpContextLifetimeProvider.cs" />
     <Compile Include="ICassetteRequestHandler.cs" />
     <Compile Include="IDiagnosticRequestHandler.cs" />
+    <Compile Include="RawFileRequestRewriter.cs" />
     <Compile Include="WebHost.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="IsolatedStorageContainer.cs" />
@@ -88,7 +89,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RawFileRequestHandler.cs" />
     <None Include="Cassette.Aspnet.symbols.nutrans">
       <SubType>Designer</SubType>
     </None>

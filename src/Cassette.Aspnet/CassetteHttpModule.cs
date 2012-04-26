@@ -1,5 +1,5 @@
-﻿using System.Web;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Web;
 
 namespace Cassette.Aspnet
 {
@@ -47,8 +47,19 @@ namespace Cassette.Aspnet
         void HandleHttpApplicationEvents(HttpApplication httpApplication)
         {
             var rewriter = _host.CreatePlaceholderRewriter();
+            httpApplication.BeginRequest += (s, e) => Host.StoreRequestContainerInHttpContextItems();
+            httpApplication.EndRequest += (s, e) => Host.RemoveRequestContainerFromHttpContextItems();
+
+            httpApplication.PostAuthorizeRequest += (s, e) => RewriteFileRequests();
+
             httpApplication.PostMapRequestHandler += (s, e) => rewriter.AddPlaceholderTrackerToHttpContextItems();
             httpApplication.PostRequestHandlerExecute += (s, e) => rewriter.RewriteOutput();
+        }
+
+        void RewriteFileRequests()
+        {
+            var rewriter = Host.RequestContainer.Resolve<RawFileRequestRewriter>();
+            rewriter.Rewrite();
         }
 
         public void Dispose()
