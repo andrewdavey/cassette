@@ -12,7 +12,7 @@ using Cassette.Stylesheets;
 
 namespace Cassette.Aspnet
 {
-    class HudRequestHandler : IHttpHandler
+    class DiagnosticRequestHandler : IDiagnosticRequestHandler
     {
         readonly RequestContext requestContext;
         readonly BundleCollection bundles;
@@ -21,7 +21,7 @@ namespace Cassette.Aspnet
         readonly ICassetteManifestCache cache;
         readonly IBundleCollectionInitializer bundleCollectionInitializer;
 
-        public HudRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, ICassetteManifestCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
+        public DiagnosticRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, ICassetteManifestCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
         {
             this.requestContext = requestContext;
             this.bundles = bundles;
@@ -31,7 +31,7 @@ namespace Cassette.Aspnet
             this.bundleCollectionInitializer = bundleCollectionInitializer;
         }
 
-        public void ProcessRequest(HttpContext _)
+        public void ProcessRequest()
         {
             var response = requestContext.HttpContext.Response;
             var request = requestContext.HttpContext.Request;
