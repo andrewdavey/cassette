@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Web;
-using System.Web.Routing;
+using Cassette.Aspnet;
 using Moq;
 
 namespace Cassette
 {
     class HttpTestHarness : IDisposable
     {
-        public HttpTestHarness(RouteCollection routes)
-        {
-            this.routes = routes;
+        readonly WebHost host;
 
+        public HttpTestHarness(WebHost host)
+        {
+            this.host = host;
             Context = new Mock<HttpContextBase>();
             Request = new Mock<HttpRequestBase>();
             Response = new Mock<HttpResponseBase>();
@@ -34,8 +35,6 @@ namespace Cassette
             Response.SetupProperty(r => r.ContentType);
         }
 
-        readonly RouteCollection routes;
-
         public Mock<HttpContextBase> Context;
         public Mock<HttpRequestBase> Request;
         public Mock<HttpResponseBase> Response;
@@ -45,19 +44,20 @@ namespace Cassette
 
         public void Get(string url)
         {
-            var queryStringStart = url.IndexOf('?');
-            if (queryStringStart >= 0) url = url.Substring(0, queryStringStart);
+            if (!url.StartsWith("/cassette.axd")) throw new ArgumentException("Must be a Cassette handler URL.", "url");
+
+            var pathInfo = url.Substring("/cassette.axd".Length);
 
             Request.SetupGet(r => r.RequestType).Returns("GET");
             Request.SetupGet(r => r.HttpMethod).Returns("GET");
-            Request.SetupGet(r => r.AppRelativeCurrentExecutionFilePath)
-                .Returns("~" + url);
+            Request.SetupGet(r => r.AppRelativeCurrentExecutionFilePath).Returns("~/cassette.axd");
+            Request.SetupGet(r => r.PathInfo).Returns(pathInfo);
 
-            var routeData = routes.GetRouteData(Context.Object);
-            if (routeData == null) throw new Exception("Route not found for URL: " + url);
-            var httpHandler = routeData.RouteHandler.GetHttpHandler(new RequestContext(Context.Object, routeData));
-            httpHandler.ProcessRequest(null);
+            host.StoreRequestContainerInHttpContextItems();
+            var httpHandler = new CassetteHttpHandler(host.RequestContainer, Request.Object);
+            httpHandler.ProcessRequest();
             ResponseOutputStream.Position = 0;
+            host.RemoveRequestContainerFromHttpContextItems();
         }
 
         public void Dispose()

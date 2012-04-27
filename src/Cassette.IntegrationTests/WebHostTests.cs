@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Routing;
 using System.Xml.Linq;
+using Cassette.Aspnet;
 using Cassette.IntegrationTests;
 using Cassette.Scripts;
 using Cassette.Views;
@@ -19,65 +19,64 @@ namespace Cassette
     public class WebHostTests
     {
         HttpContextBase httpContext;
-        readonly RouteCollection routes = new RouteCollection();
 
         [Fact]
         public void PageThatReferencesScriptsBundleAGetsScriptsBundleBAndScriptsBundleA()
         {
-            using (var host = new TestableWebHost("assets", routes, () => httpContext))
+            using (var host = new TestableWebHost("assets", () => httpContext))
             {
                 host.AddBundleConfiguration(new BundleConfiguration(bundles => 
                     bundles.AddPerSubDirectory<ScriptBundle>("scripts")
                 ));
                 host.Initialize();
 
-                var scriptUrls = GetPageHtmlResourceUrls("scripts/bundle-a");
+                var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-a");
 
-                scriptUrls[0].ShouldMatch(new Regex("^/_cassette/scriptbundle/scripts/bundle-b_"));
-                Download(scriptUrls[0]).ShouldEqual(@"function asset3(){}");
+                scriptUrls[0].ShouldMatch(new Regex("^/cassette.axd/script/[^/]+/scripts/bundle-b"));
+                Download(host, scriptUrls[0]).ShouldEqual(@"function asset3(){}");
 
-                scriptUrls[1].ShouldMatch(new Regex("^/_cassette/scriptbundle/scripts/bundle-a_"));
-                Download(scriptUrls[1]).ShouldEqual(@"function asset2(){}function asset1(){}");
+                scriptUrls[1].ShouldMatch(new Regex("^/cassette.axd/script/[^/]+/scripts/bundle-a"));
+                Download(host, scriptUrls[1]).ShouldEqual(@"function asset2(){}function asset1(){}");
             }
         }
 
         [Fact]
         public void GivenDebugMode_PageThatReferencesScriptsBundleAGetsAssetsForScriptsBundleBAndScriptsBundleA()
         {
-            using (var host = new TestableWebHost("assets", routes, () => httpContext, isAspNetDebuggingEnabled: true))
+            using (var host = new TestableWebHost("assets", () => httpContext, isAspNetDebuggingEnabled: true))
             {
                 host.AddBundleConfiguration(new BundleConfiguration(bundles =>
                     bundles.AddPerSubDirectory<ScriptBundle>("scripts")
                 ));
                 host.Initialize();
 
-                var scriptUrls = GetPageHtmlResourceUrls("scripts/bundle-a");
+                var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-a");
 
-                scriptUrls[0].ShouldMatch(new Regex("^/_cassette/asset/scripts/bundle-b/asset-3.js"));
-                Download(scriptUrls[0]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-b\\asset-3.js"));
+                scriptUrls[0].ShouldMatch(new Regex("^/cassette.axd/asset/[^/]+/scripts/bundle-b/asset-3.js"));
+                Download(host, scriptUrls[0]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-b\\asset-3.js"));
 
-                scriptUrls[1].ShouldMatch(new Regex("^/_cassette/asset/scripts/bundle-a/asset-2.js"));
-                Download(scriptUrls[1]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-a\\asset-2.js"));
+                scriptUrls[1].ShouldMatch(new Regex("^/cassette.axd/asset/[^/]+/scripts/bundle-a/asset-2.js"));
+                Download(host, scriptUrls[1]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-a\\asset-2.js"));
 
-                scriptUrls[2].ShouldMatch(new Regex("^/_cassette/asset/scripts/bundle-a/asset-1.js"));
-                Download(scriptUrls[2]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-a\\asset-1.js"));
+                scriptUrls[2].ShouldMatch(new Regex("^/cassette.axd/asset/[^/]+/scripts/bundle-a/asset-1.js"));
+                Download(host, scriptUrls[2]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-a\\asset-1.js"));
             }
         }
 
         [Fact]
         public void PageThatReferencesScriptsBundleCGetsScriptsBundleBAndScriptsBundleC()
         {
-            using (var host = new TestableWebHost("assets", routes, () => httpContext))
+            using (var host = new TestableWebHost("assets", () => httpContext))
             {
                 host.AddBundleConfiguration(new BundleConfiguration(bundles =>
                     bundles.AddPerSubDirectory<ScriptBundle>("scripts")
                 ));
                 host.Initialize();
 
-                var scriptUrls = GetPageHtmlResourceUrls("scripts/bundle-c");
+                var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-c");
 
-                scriptUrls[0].ShouldMatch(new Regex("^/_cassette/scriptbundle/scripts/bundle-c_"));
-                Download(scriptUrls[0]).ShouldEqual(@"(function(){var n;n=1}).call(this)");
+                scriptUrls[0].ShouldMatch(new Regex("^/cassette.axd/script/[^/]+/scripts/bundle-c"));
+                Download(host, scriptUrls[0]).ShouldEqual(@"(function(){var n;n=1}).call(this)");
             }
         }
 
@@ -86,23 +85,23 @@ namespace Cassette
         [Fact]
         public void PageThatReferencesStylesBundleAGetsStylesBundleA()
         {
-            using (var host = new TestableWebHost("assets", routes, () => httpContext))
+            using (var host = new TestableWebHost("assets", () => httpContext))
             {
                 host.AddBundleConfiguration(new BundleConfiguration(bundles =>
                     bundles.AddPerSubDirectory<StylesheetBundle>("styles")
                 ));
                 host.Initialize();
 
-                var urls = GetPageHtmlResourceUrls("styles/bundle-a");
+                var urls = GetPageHtmlResourceUrls(host, "styles/bundle-a");
 
-                Download(urls[0]).ShouldEqual("a{color:red}p{border:1px solid red}body{color:#abc}");
+                Download(host, urls[0]).ShouldEqual("a{color:red}p{border:1px solid red}body{color:#abc}");
             }
         }
 #endif
 
-        string[] GetPageHtmlResourceUrls(params string[] references)
+        string[] GetPageHtmlResourceUrls(WebHost host, params string[] references)
         {
-            using (var http = new HttpTestHarness(routes))
+            using (var http = new HttpTestHarness(host))
             {
                 httpContext = http.Context.Object;
 
@@ -124,9 +123,9 @@ namespace Cassette
             }
         }
 
-        string Download(string url)
+        string Download(WebHost host, string url)
         {
-            using (var http = new HttpTestHarness(routes))
+            using (var http = new HttpTestHarness(host))
             {
                 httpContext = http.Context.Object;
 

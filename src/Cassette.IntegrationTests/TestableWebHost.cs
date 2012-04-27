@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
-using System.Web.Routing;
 using Cassette.Aspnet;
 
 namespace Cassette
@@ -12,15 +11,13 @@ namespace Cassette
     class TestableWebHost : WebHost
     {
         readonly string sourceDirectory;
-        readonly RouteCollection routes;
         readonly Func<HttpContextBase> getHttpContext;
         readonly bool isAspNetDebuggingEnabled;
         readonly List<IConfiguration<BundleCollection>> bundleConfigurations = new List<IConfiguration<BundleCollection>>();
 
-        public TestableWebHost(string sourceDirectory, RouteCollection routes, Func<HttpContextBase> getHttpContext, bool isAspNetDebuggingEnabled = false)
+        public TestableWebHost(string sourceDirectory, Func<HttpContextBase> getHttpContext, bool isAspNetDebuggingEnabled = false)
         {
             this.sourceDirectory = Path.GetFullPath(sourceDirectory);
-            this.routes = routes;
             this.getHttpContext = getHttpContext;
             this.isAspNetDebuggingEnabled = isAspNetDebuggingEnabled;
         }
@@ -55,11 +52,6 @@ namespace Cassette
         protected override string AppDomainAppVirtualPath
         {
             get { return "/"; }
-        }
-
-        protected override RouteCollection Routes
-        {
-            get { return routes; }
         }
 
         class TestableWebHostSettingsConfiguration : WebHostSettingsConfiguration

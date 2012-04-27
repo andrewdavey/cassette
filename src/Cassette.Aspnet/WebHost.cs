@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Compilation;
-using System.Web.Routing;
 using TinyIoC;
 
 namespace Cassette.Aspnet
@@ -31,7 +30,6 @@ namespace Cassette.Aspnet
             // These are before base.ConfigureContainer() so the application is able to override them - for example providing a different IUrlModifier.
             Container.Register((c, p) => HttpContext());
             Container.Register((c, p) => c.Resolve<HttpContextBase>().Request);
-            Container.Register(Routes);
             Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(AppDomainAppVirtualPath));
 
             Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
@@ -52,11 +50,6 @@ namespace Cassette.Aspnet
         protected virtual HttpContextBase HttpContext()
         {
             return new HttpContextWrapper(System.Web.HttpContext.Current);
-        }
-
-        protected virtual RouteCollection Routes
-        {
-            get { return RouteTable.Routes; }
         }
 
         protected override IEnumerable<Type> GetStartUpTaskTypes()
