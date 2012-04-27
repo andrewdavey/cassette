@@ -4,6 +4,7 @@ using System.Linq;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -280,13 +281,14 @@ namespace Cassette
         }
 
         [Fact]
-        public void UrlIsBundleTypePathAndHash()
+        public void UrlIsBundleTypeAndBase64HashAndPath()
         {
             var bundle = new TestableBundle("~/path")
             {
                 Hash = new byte[] { 1, 2, 3 }
             };
-            bundle.Url.ShouldEqual("testablebundle/path_010203");
+            var hash = bundle.Hash.ToUrlSafeBase64String();
+            bundle.Url.ShouldEqual("testable/" + hash + "/path");
         }
     }
 

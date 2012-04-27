@@ -7,17 +7,17 @@ namespace Cassette
     public class UrlGenerator_CreateRawFileUrl_Tests : UrlGeneratorTestsBase
     {
         [Fact]
-        public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndPathWithoutTildeAndHash()
+        public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndHashAndPathWithoutTilde()
         {
             var url = UrlGenerator.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldEqual("_cassette/file/test_hash_png");
+            url.ShouldEqual("cassette.axd/file/hash/test.png");
         }
 
         [Fact]
         public void ConvertsToForwardSlashes()
         {
             var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("_cassette/file/test/foo_hash_png");
+            url.ShouldEqual("cassette.axd/file/hash/test/foo.png");
         }
 
         [Fact]

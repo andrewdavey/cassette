@@ -25,7 +25,7 @@ namespace Cassette
             // "~/directory/file.js" --> "cassette.axd/asset/hash/directory/file.js"
             var url = handlerPath + 
                       "/asset/" + 
-                      asset.Hash.ToHexString() + 
+                      asset.Hash.ToUrlSafeBase64String() + 
                       asset.Path.Substring(1);
 
             return urlModifier.Modify(url);
