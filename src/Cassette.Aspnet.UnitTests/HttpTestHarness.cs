@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Web;
 using System.Web.Routing;
-using Cassette.Aspnet;
 using Moq;
 
 namespace Cassette
@@ -51,12 +50,6 @@ namespace Cassette
         public NameValueCollection ResponseHeaders;
         public Mock<HttpCachePolicyBase> ResponseCache;
         public Stream ResponseOutputStream;
-
-        public void MapRoute(string url, Func<RequestContext, IHttpHandler> createHandler)
-        {
-            var route = new CassetteRoute(url, new DelegateRouteHandler(createHandler));
-            routes.Add(route);
-        }
 
         class DelegateRouteHandler : IRouteHandler
         {

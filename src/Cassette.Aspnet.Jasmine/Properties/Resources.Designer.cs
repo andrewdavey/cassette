@@ -72,6 +72,24 @@ namespace Cassette.Aspnet.Jasmine.Properties {
         ///&lt;/body&gt;
         ///&lt;/html&gt;.
         /// </summary>
+        internal static string help {
+            get {
+                return ResourceManager.GetString("help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///&lt;head&gt;
+        ///    &lt;title&gt;Jasmine Spec Runner&lt;/title&gt;
+        ///    $styles$
+        ///    $scripts$
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///&lt;/body&gt;
+        ///&lt;/html&gt;.
+        /// </summary>
         internal static string runner {
             get {
                 return ResourceManager.GetString("runner", resourceCulture);

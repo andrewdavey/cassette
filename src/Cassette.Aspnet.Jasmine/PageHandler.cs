@@ -1,38 +1,53 @@
+using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Routing;
 using Cassette.Views;
 
 namespace Cassette.Aspnet.Jasmine
 {
-    class PageHandler : IHttpHandler
+    public class PageHandler : IHttpHandler
     {
-        readonly HttpResponseBase response;
-        readonly RouteData routeData;
-
-        public PageHandler(RequestContext context)
+        public void ProcessRequest(HttpContext context)
         {
-            response = context.HttpContext.Response;
-            routeData = context.RouteData;
+            ProcessRequest(new HttpContextWrapper(context));
         }
 
-        public void ProcessRequest(HttpContext _)
+        public void ProcessRequest(HttpContextBase context)
         {
-            ProcessRequest();
+            var match = Regex.Match(context.Request.PathInfo, "/run/(.*)", RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                SendRunnerPage(context, match);
+            }
+            else
+            {
+                SendHelpPage(context);
+            }
         }
 
-        void ProcessRequest()
+        void SendHelpPage(HttpContextBase context)
         {
-            ReferencePageBundles();
+            // baseUrl is probably jasmine.axd, but could have been changed in web.config handler definition.
+            // So build it from the request data.
+            var baseUrl = context.Request.ApplicationPath.TrimEnd('/') +
+                          context.Request.AppRelativeCurrentExecutionFilePath.Substring(1);
+
+            var html = Properties.Resources.help.Replace("$baseUrl$", baseUrl);
+            context.Response.Write(html);
+        }
+
+        void SendRunnerPage(HttpContextBase context, Match match)
+        {
+            var specBundlePath = match.Groups[1].Value;
+            ReferencePageBundles(specBundlePath);
 
             var html = GetPageHtml();
-            response.Write(html);
+            context.Response.Write(html);
         }
 
-        void ReferencePageBundles()
+        void ReferencePageBundles(string specBundlePath)
         {
             Bundles.Reference("~/cassette.aspnet.jasmine");
-            var spec = routeData.GetRequiredString("specbundle");
-            Bundles.Reference(spec);
+            Bundles.Reference(specBundlePath);
         }
 
         string GetPageHtml()
