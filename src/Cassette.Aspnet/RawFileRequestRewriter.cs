@@ -32,12 +32,12 @@ namespace Cassette.Aspnet
 
         bool IsCassetteRequest()
         {
-            return request.AppRelativeCurrentExecutionFilePath.StartsWith("~/cassette.axd/file", StringComparison.OrdinalIgnoreCase);
+            return request.AppRelativeCurrentExecutionFilePath.StartsWith("~/cassette.axd", StringComparison.OrdinalIgnoreCase);
         }
 
         bool TryGetFilePath(out string path)
         {
-            var match = Regex.Match(request.AppRelativeCurrentExecutionFilePath, "/file/[^/]+/(.*)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(request.PathInfo, "/file/[^/]+/(.*)", RegexOptions.IgnoreCase);
             if (match.Success)
             {
                 path = "~/" + match.Groups[1].Value;
