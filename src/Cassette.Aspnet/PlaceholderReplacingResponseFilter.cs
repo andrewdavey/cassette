@@ -54,7 +54,10 @@ namespace Cassette.Aspnet
             var encoding = response.Output.Encoding;
             var output = placeholderTracker.ReplacePlaceholders(htmlBuffer.ToString());
             var outputBytes = encoding.GetBytes(output);
-            outputStream.Write(outputBytes, 0, outputBytes.Length);
+            if (outputBytes.Length > 0)
+            {
+                outputStream.Write(outputBytes, 0, outputBytes.Length);
+            }
         }
     }
 }
