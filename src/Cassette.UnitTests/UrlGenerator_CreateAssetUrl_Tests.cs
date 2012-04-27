@@ -34,7 +34,7 @@ namespace Cassette
 
             var url = UrlGenerator.CreateAssetUrl(asset.Object);
 
-            url.ShouldEqual("cassette.axd/asset/" + expectedHash + "/test/asset.coffee");
+            url.ShouldEqual("cassette.axd/asset/test/asset.coffee?" + expectedHash);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Cassette
 
             var url = UrlGenerator.CreateAssetUrl(asset.Object);
 
-            url.ShouldEqual("cassette.axd/asset/" + expectedHash + "/asset.coffee");
+            url.ShouldEqual("cassette.axd/asset/asset.coffee?" + expectedHash);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace Cassette
 
             var url = UrlGenerator.CreateAssetUrl(asset.Object);
 
-            url.ShouldEqual("cassette.axd/asset/" + expectedHash + "/test/asset");
+            url.ShouldEqual("cassette.axd/asset/test/asset?" + expectedHash);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace Cassette
 
             var url = UrlGenerator.CreateAssetUrl(asset.Object);
 
-            url.ShouldEqual("cassette.axd/asset/" + expectedHash + "/test.test/asset.coffee");
+            url.ShouldEqual("cassette.axd/asset/test.test/asset.coffee?" + expectedHash);
         }
     }
 }

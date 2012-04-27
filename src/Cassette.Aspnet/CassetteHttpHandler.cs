@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using System.Web;
 using TinyIoC;
@@ -50,6 +51,25 @@ namespace Cassette.Aspnet
 
         void CallPathInfoHandler(string pathInfo)
         {
+            if (pathInfo.StartsWith("/asset/", StringComparison.OrdinalIgnoreCase))
+            {
+                CallAssetHandler(pathInfo);
+            }
+            else
+            {
+                CallBundleHandler(pathInfo);
+            }
+        }
+
+        void CallAssetHandler(string pathInfo)
+        {
+            var path = "~" + pathInfo.Substring("/asset".Length);
+            var assetHandler = requestContainer.Resolve<ICassetteRequestHandler>("AssetRequestHandler");
+            assetHandler.ProcessRequest(path);
+        }
+
+        void CallBundleHandler(string pathInfo)
+        {
             var match = Regex.Match(pathInfo, "/(?<type>[^/]+)/(?<hash>[^/]+)/(?<path>.*)");
             var type = match.Groups["type"].Value;
             var handler = CreateRequestHandler(type);
@@ -73,9 +93,6 @@ namespace Cassette.Aspnet
                 case "htmltemplate":
                     return requestContainer.Resolve<ICassetteRequestHandler>("HtmlTemplateBundleRequestHandler");
 
-                case "asset":
-                    return requestContainer.Resolve<ICassetteRequestHandler>("AssetRequestHandler");
-                    
                 default:
                     throw new HttpException(404, "Resource not found.");
             }

@@ -46,7 +46,7 @@ namespace Cassette.Aspnet
         [Fact]
         public void AssetRequestIsProcessedUsingAssetRequestHandler()
         {
-            AssertMapping("/asset/hash/test.js", "AssetRequestHandler", "~/test.js");
+            AssertMapping("/asset/test.js", "AssetRequestHandler", "~/test.js");
         }
 
         [Fact]
@@ -77,13 +77,13 @@ namespace Cassette.Aspnet
 
         void AssertMapping(string pathInfo, string handlerServiceName, string expectedPath)
         {
-            var scriptBundleRequestHandler = new Mock<ICassetteRequestHandler>();
-            container.Register(scriptBundleRequestHandler.Object, handlerServiceName);
+            var handlerToDelegateTo = new Mock<ICassetteRequestHandler>();
+            container.Register(handlerToDelegateTo.Object, handlerServiceName);
 
             GivenRequestPathInfo(pathInfo);
             handler.ProcessRequest();
 
-            scriptBundleRequestHandler.Verify(h => h.ProcessRequest(expectedPath));
+            handlerToDelegateTo.Verify(h => h.ProcessRequest(expectedPath));
         }
 
         void Assert404()

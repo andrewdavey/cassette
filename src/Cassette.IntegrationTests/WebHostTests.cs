@@ -32,10 +32,10 @@ namespace Cassette
 
                 var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-a");
 
-                scriptUrls[0].ShouldMatch(new Regex("^/cassette.axd/script/[^/]+/scripts/bundle-b"));
+                scriptUrls[0].ShouldMatch(new Regex(@"^/cassette\.axd/script/[^/]+/scripts/bundle-b"));
                 Download(host, scriptUrls[0]).ShouldEqual(@"function asset3(){}");
 
-                scriptUrls[1].ShouldMatch(new Regex("^/cassette.axd/script/[^/]+/scripts/bundle-a"));
+                scriptUrls[1].ShouldMatch(new Regex(@"^/cassette\.axd/script/[^/]+/scripts/bundle-a"));
                 Download(host, scriptUrls[1]).ShouldEqual(@"function asset2(){}function asset1(){}");
             }
         }
@@ -52,13 +52,13 @@ namespace Cassette
 
                 var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-a");
 
-                scriptUrls[0].ShouldMatch(new Regex("^/cassette.axd/asset/[^/]+/scripts/bundle-b/asset-3.js"));
+                scriptUrls[0].ShouldStartWith("/cassette.axd/asset/scripts/bundle-b/asset-3.js?");
                 Download(host, scriptUrls[0]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-b\\asset-3.js"));
 
-                scriptUrls[1].ShouldMatch(new Regex("^/cassette.axd/asset/[^/]+/scripts/bundle-a/asset-2.js"));
+                scriptUrls[1].ShouldStartWith("/cassette.axd/asset/scripts/bundle-a/asset-2.js?");
                 Download(host, scriptUrls[1]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-a\\asset-2.js"));
 
-                scriptUrls[2].ShouldMatch(new Regex("^/cassette.axd/asset/[^/]+/scripts/bundle-a/asset-1.js"));
+                scriptUrls[2].ShouldStartWith("/cassette.axd/asset/scripts/bundle-a/asset-1.js?");
                 Download(host, scriptUrls[2]).ShouldEqual(File.ReadAllText("assets\\scripts\\bundle-a\\asset-1.js"));
             }
         }
@@ -75,7 +75,7 @@ namespace Cassette
 
                 var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-c");
 
-                scriptUrls[0].ShouldMatch(new Regex("^/cassette.axd/script/[^/]+/scripts/bundle-c"));
+                scriptUrls[0].ShouldMatch(new Regex(@"^/cassette\.axd/script/[^/]+/scripts/bundle-c"));
                 Download(host, scriptUrls[0]).ShouldEqual(@"(function(){var n;n=1}).call(this)");
             }
         }

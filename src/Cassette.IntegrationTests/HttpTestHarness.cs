@@ -46,6 +46,8 @@ namespace Cassette
         {
             if (!url.StartsWith("/cassette.axd")) throw new ArgumentException("Must be a Cassette handler URL.", "url");
 
+            if (url.Contains("?")) url = url.Substring(0, url.IndexOf('?'));
+
             var pathInfo = url.Substring("/cassette.axd".Length);
 
             Request.SetupGet(r => r.RequestType).Returns("GET");
