@@ -4,10 +4,16 @@
         <httpModules>
             <add name="CassetteHttpModule" type="Cassette.Aspnet.CassetteHttpModule, Cassette.Aspnet" />
         </httpModules>
+        <httpHandlers>
+            <add path="cassette.axd" verb="*" type="Cassette.Aspnet.CassetteHttpHandler, Cassette.Aspnet"/>
+        </httpHandlers>
     </system.web>
     <system.webServer>
         <modules>
             <add name="CassetteHttpModule" type="Cassette.Aspnet.CassetteHttpModule, Cassette.Aspnet" />
         </modules>
+        <handlers>
+            <add name="CassetteHttpHandler" path="cassette.axd" verb="*" allowPathInfo="true" type="Cassette.Aspnet.CassetteHttpHandler, Cassette.Aspnet"/>
+        </handlers>
     </system.webServer>
 </configuration>

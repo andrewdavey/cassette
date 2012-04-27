@@ -7,7 +7,7 @@
     </system.web>
     <system.webServer>
         <handlers>
-            <add name="Cassette.Aspnet.Jasmine" path="jasmine.axd" verb="GET" type="Cassette.Aspnet.Jasmine.PageHandler, Cassette.Aspnet.Jasmine"/>
+            <add name="Cassette.Aspnet.Jasmine" path="jasmine.axd" verb="GET" allowPathInfo="true" type="Cassette.Aspnet.Jasmine.PageHandler, Cassette.Aspnet.Jasmine"/>
         </handlers>
     </system.webServer>
 </configuration>
