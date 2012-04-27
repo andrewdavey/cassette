@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -138,13 +138,17 @@
     <Content Include="Styles\color-picker\saved-colors.less" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Cassette.Aspnet\Cassette.Aspnet.csproj">
+      <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>
+      <Name>Cassette.Aspnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Cassette.Less\Cassette.Less.csproj">
+      <Project>{EC1BE4F4-A2A7-4154-9F4D-F75D1B1FD976}</Project>
+      <Name>Cassette.Less</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
       <Name>Cassette.Views</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Cassette.Web\Cassette.Web.csproj">
-      <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>
-      <Name>Cassette.Web</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>

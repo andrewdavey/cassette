@@ -1,16 +1,14 @@
-﻿using Cassette.Configuration;
+﻿using Cassette;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
 namespace DotNet35
 {
-    public class CassetteConfiguration : ICassetteConfiguration
+    public class CassetteConfiguration : IConfiguration<BundleCollection>
     {
-        public void Configure(BundleCollection bundles, CassetteSettings settings)
+        public void Configure(BundleCollection bundles)
         {
-            settings.IsDebuggingEnabled = false;
-
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             bundles.AddUrlWithAlias(
                 "http://platform.twitter.com/widgets.js",

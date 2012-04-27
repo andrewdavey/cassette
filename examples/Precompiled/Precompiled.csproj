@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -88,6 +88,10 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Cassette.Aspnet\Cassette.Aspnet.csproj">
+      <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>
+      <Name>Cassette.Aspnet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Cassette.MSBuild\Cassette.MSBuild.csproj">
       <Project>{F8ED179C-E38B-4EF4-A5E8-52AC1611425E}</Project>
       <Name>Cassette.MSBuild</Name>
@@ -96,10 +100,6 @@
     <ProjectReference Include="..\..\src\Cassette.Views\Cassette.Views.csproj">
       <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
       <Name>Cassette.Views</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Cassette.Web\Cassette.Web.csproj">
-      <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>
-      <Name>Cassette.Web</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
