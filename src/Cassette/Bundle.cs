@@ -216,6 +216,32 @@ namespace Cassette
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            var other = obj as Bundle;
+            return other != null &&
+                   TypesEqual(this, other) &&
+                   PathsEqual(this, other) &&
+                   AllAssetsEqual(this, other);
+        }
+
+        static bool TypesEqual(Bundle x, Bundle y)
+        {
+            return x.GetType() == y.GetType();
+        }
+
+        static bool PathsEqual(Bundle x, Bundle y)
+        {
+            return x.Path.Equals(y.Path);
+        }
+
+        static bool AllAssetsEqual(Bundle x, Bundle y)
+        {
+            var assetsX = x.Assets.OrderBy(a => a.Path);
+            var assetsY = y.Assets.OrderBy(a => a.Path);
+            return assetsX.SequenceEqual(assetsY, new AssetPathComparer());
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing) return;

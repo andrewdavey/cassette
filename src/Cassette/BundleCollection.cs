@@ -835,6 +835,16 @@ namespace Cassette
             );
         }
 
+        public override bool Equals(object obj)
+        {
+            var other = obj as BundleCollection;
+            if (other == null) return false;
+
+            var thisSorted = this.OrderBy(b => b.GetType().FullName).ThenBy(b => b.Path);
+            var otherSorted = other.OrderBy(b => b.GetType().FullName).ThenBy(b => b.Path);
+            return thisSorted.SequenceEqual(otherSorted);
+        }
+
         public IEnumerator<Bundle> GetEnumerator()
         {
             return bundles.GetEnumerator();

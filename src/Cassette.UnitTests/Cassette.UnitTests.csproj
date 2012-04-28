@@ -109,10 +109,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asset.cs" />
+    <Compile Include="AssetPathComparer.cs" />
     <Compile Include="BundleCollection.FindBundlesContainingPath.cs" />
     <Compile Include="BundleCollection.BuildReferences.cs" />
     <Compile Include="BundleCollection.IncludeReferencesAndSortBundles.cs" />
+    <Compile Include="BundleCollection.Equals.cs" />
     <Compile Include="BundleCollectionTestsBase.cs" />
+    <Compile Include="Bundle.Equals.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
     <Compile Include="BundleProcessing\TestableBundlePipeline.cs" />
