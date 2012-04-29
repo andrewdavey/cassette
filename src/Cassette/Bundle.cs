@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.BundleProcessing;
-using Cassette.Manifests;
 using Cassette.Utilities;
 #if NET35
 using Iesi.Collections.Generic;
@@ -124,13 +123,6 @@ namespace Cassette
 
         internal abstract string Render();
 
-        internal BundleManifest CreateBundleManifest()
-        {
-            return CreateBundleManifest(IsProcessed);
-        }
-
-        internal abstract BundleManifest CreateBundleManifest(bool includeProcessedBundleContent);
-
         internal virtual bool ContainsPath(string pathToFind)
         {
             var predicate = new BundleContainsPathPredicate(pathToFind);
@@ -166,7 +158,7 @@ namespace Cassette
                 Assets,
                 asset => asset.References
                     .Where(reference => reference.Type == AssetReferenceType.SameBundle)
-                    .Select(reference => assetsByFilename[reference.Path])
+                    .Select(reference => assetsByFilename[reference.ToPath])
             );
             var cycles = graph.FindCycles().ToArray();
             if (cycles.Length > 0)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace Cassette
 {
@@ -33,5 +34,10 @@ namespace Cassette
         /// </summary>
         /// <returns>A readable <see cref="Stream"/>.</returns>
         Stream OpenStream();
+
+        /// <summary>
+        /// Gets a type of <see cref="IAssetCacheValidator"/> used to validate if a cache is valid.
+        /// </summary>
+        Type AssetCacheValidatorType { get; }
     }
 }

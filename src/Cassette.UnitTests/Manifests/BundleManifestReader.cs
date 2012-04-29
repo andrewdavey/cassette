@@ -1,5 +1,5 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
+using Cassette.IO;
 using Should;
 using Xunit;
 
@@ -7,45 +7,38 @@ namespace Cassette.Manifests
 {
     public class BundleManifestReader_Tests
     {
-        readonly XElement manifestElement;
-        readonly TestableBundleManifestReader reader;
+        readonly XElement bundleElement;
+        readonly TestableBundleDeserializer deserializer;
 
         public BundleManifestReader_Tests()
         {
-            manifestElement = new XElement(
+            bundleElement = new XElement(
                 "Bundle",
                 new XAttribute("Path", "~"),
-                new XAttribute("Hash", "")
+                new XAttribute("Hash", ""),
+                new XElement("Html", "EXPECTED-HTML")
             );
-            reader = new TestableBundleManifestReader(manifestElement);
+            var directory = new FakeFileSystem();
+            var urlModifier = new VirtualDirectoryPrepender("/");
+            deserializer = new TestableBundleDeserializer(directory, urlModifier);
         }
 
         [Fact]
-        public void GivenXmlHasHtmlElement_ThenReadManifestHtmlEqualsElementContent()
+        public void BundleRenderReturnsHtmlFromElement()
         {
-            manifestElement.Add(new XElement("Html", "EXPECTED-HTML"));
-            reader.Read().Html().ShouldEqual("EXPECTED-HTML");
+            deserializer.Deserialize(bundleElement).Render().ShouldEqual("EXPECTED-HTML");
         }
 
-        [Fact]
-        public void GivenXmlHasNoHtmlElement_ThenReadManifestHtmlIsEmptyString()
+        class TestableBundleDeserializer : BundleDeserializer<TestableBundle>
         {
-            reader.Read().Html().ShouldEqual("");
-        }
-
-        class TestableBundleManifestReader : BundleManifestReader<TestableBundleManifest>
-        {
-            public TestableBundleManifestReader(XElement element)
-                : base(element)
+            public TestableBundleDeserializer(IDirectory directory, IUrlModifier urlModifier)
+                : base(directory, urlModifier)
             {
             }
-        }
 
-        class TestableBundleManifest : BundleManifest
-        {
-            protected override Bundle CreateBundleCore(IUrlModifier urlModifier)
+            protected override TestableBundle CreateBundle(XElement element)
             {
-                throw new NotImplementedException();
+                return new TestableBundle(GetPathAttribute());
             }
         }
     }

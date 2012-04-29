@@ -3,9 +3,9 @@ using Cassette.Manifests;
 
 namespace Cassette.HtmlTemplates.Manifests
 {
-    class HtmlTemplateBundleManifestWriter : BundleManifestWriter<HtmlTemplateBundleManifest>
+    class HtmlTemplateBundleSerializer : BundleSerializer<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundleManifestWriter(XContainer container) : base(container)
+        public HtmlTemplateBundleSerializer(XContainer container) : base(container)
         {
         }
     }

@@ -678,7 +678,7 @@ namespace Cassette
             }
             var notFound = from reference in collector.CollectedReferences
                            where !reference.SourceBundle.IsFromDescriptorFile
-                              && NoBundlesContainPath(reference.AssetReference.Path)
+                              && NoBundlesContainPath(reference.AssetReference.ToPath)
                            select CreateAssetReferenceNotFoundMessage(reference.AssetReference);
 
             var message = string.Join(Environment.NewLine, notFound.ToArray());
@@ -701,7 +701,7 @@ namespace Cassette
                 {
                     bundle,
                     references = new HashedSet<Bundle>(GetNonSameBundleAssetReferences(bundle)
-                        .Select(r => r.Path)
+                        .Select(r => r.ToPath)
                         .Concat(bundle.References)
                         .SelectMany(FindBundlesContainingPath).ToList()
                     )
@@ -722,14 +722,14 @@ namespace Cassette
             {
                 return string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    reference.SourceAsset.Path, reference.SourceLineNumber, reference.Path
+                    reference.FromAssetPath, reference.SourceLineNumber, reference.ToPath
                 );
             }
             else
             {
                 return string.Format(
                     "Reference error in \"{0}\". Cannot find \"{1}\".",
-                    reference.SourceAsset.Path, reference.Path
+                    reference.FromAssetPath, reference.ToPath
                 );
             }
         }

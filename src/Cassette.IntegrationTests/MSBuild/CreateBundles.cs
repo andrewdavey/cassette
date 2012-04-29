@@ -7,8 +7,9 @@ using System.Reflection.Emit;
 using System.Security;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
+using Cassette.Caching;
+using Cassette.IO;
 using Cassette.IntegrationTests;
-using Cassette.Manifests;
 using Cassette.Stylesheets;
 using Moq;
 using Should;
@@ -19,7 +20,7 @@ namespace Cassette.MSBuild
     public class GivenConfigurationClassInAssembly_WhenExecute : IDisposable
     {
         readonly TempDirectory path;
-        readonly string manifestFilename;
+        readonly string cachePath;
         readonly string originalDirectory;
 
         public GivenConfigurationClassInAssembly_WhenExecute()
@@ -37,9 +38,9 @@ namespace Cassette.MSBuild
             {
                 var task = container.Value;
                 task.Input = path;
-                manifestFilename = Path.Combine(path, "cassette.xml");
+                cachePath = Path.Combine(path, "cache");
                 Environment.CurrentDirectory = path;
-                task.Output = manifestFilename;
+                task.Output = cachePath;
                 task.Execute();
             }
         }
@@ -47,7 +48,7 @@ namespace Cassette.MSBuild
         [Fact]
         public void ManifestFileSavedToOutput()
         {
-            File.Exists(manifestFilename).ShouldBeTrue();
+            File.Exists(cachePath).ShouldBeTrue();
         }
 
         [Fact]
@@ -68,11 +69,8 @@ namespace Cassette.MSBuild
 
         IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
         {
-            using (var file = File.OpenRead(manifestFilename))
-            {
-                var reader = new CassetteManifestReader(file);
-                return reader.Read().CreateBundles(urlModifier);
-            }
+            var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath));
+            return cache.Read().Bundles;
         }
 
         class AppDomainInstance<T> : IDisposable

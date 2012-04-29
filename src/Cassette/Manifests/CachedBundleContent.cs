@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 
 namespace Cassette.Manifests
 {
@@ -12,16 +13,16 @@ namespace Cassette.Manifests
         readonly byte[] content;
         readonly IEnumerable<IAsset> originalAssets;
 
-        public CachedBundleContent(byte[] content, IEnumerable<IAsset> originalAssets, IUrlModifier urlModifier)
+        public CachedBundleContent(IFile file, IEnumerable<IAsset> originalAssets, IUrlModifier urlModifier)
         {
-            this.content = TransformUrls(content, urlModifier);
+            content = TransformUrls(file, urlModifier);
             this.originalAssets = originalAssets.ToArray();
         }
 
-        byte[] TransformUrls(byte[] bytes, IUrlModifier urlModifier)
+        byte[] TransformUrls(IFile file, IUrlModifier urlModifier)
         {
-            using (var memoryStream = new MemoryStream(bytes))
-            using (var reader = new StreamReader(memoryStream))
+            using (var stream = file.OpenRead())
+            using (var reader = new StreamReader(stream))
             {
                 var input = reader.ReadToEnd();
                 var output = Regex.Replace(
@@ -48,6 +49,11 @@ namespace Cassette.Manifests
                 throw new InvalidOperationException("Cannot open stream. Bundle was created from a manifest without any content.");
             }
             return new MemoryStream(content);
+        }
+
+        public Type AssetCacheValidatorType
+        {
+            get { throw new NotImplementedException(); }
         }
 
         public byte[] Hash

@@ -204,5 +204,10 @@ namespace Cassette
         {
             return value.Replace("\"", "&quot;");
         }
+
+        public void Clear()
+        {
+            attributeStorage.Clear();
+        }
     }
 }

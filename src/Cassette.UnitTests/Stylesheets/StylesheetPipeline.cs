@@ -111,7 +111,7 @@ namespace Cassette.Stylesheets
             asset2.Setup(a => a.OpenStream())
                   .Returns(() => "p { color: White; }".AsStream());
             asset1.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/asset2.css", asset1.Object, -1, AssetReferenceType.SameBundle) });
+                  .Returns(new[] { new AssetReference(asset1.Object.Path, "~/asset2.css", -1, AssetReferenceType.SameBundle) });
 
             minifier = new MicrosoftStylesheetMinifier();
             urlGenerator = new Mock<IUrlGenerator>();

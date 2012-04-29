@@ -5,12 +5,13 @@ using Xunit;
 
 namespace Cassette.Stylesheets.Manifests
 {
-    public class ExternalStylesheetBundleManifestReader_Tests
+    public class ExternalStylesheetBundleDeserializer_Tests
     {
+        readonly ExternalStylesheetBundleDeserializer reader;
         readonly XElement element;
-        ExternalStylesheetBundleManifest readManifest;
+        ExternalStylesheetBundle bundle;
 
-        public ExternalStylesheetBundleManifestReader_Tests()
+        public ExternalStylesheetBundleDeserializer_Tests()
         {
             element = new XElement(
                 "ExternalStylesheetBundle",
@@ -20,40 +21,44 @@ namespace Cassette.Stylesheets.Manifests
                 new XAttribute("Media", "MEDIA"),
                 new XAttribute("Condition", "CONDITION")
             );
-            ReadManifestFromElement();
+            var directory = new FakeFileSystem();
+            var urlModifier = new VirtualDirectoryPrepender("/");
+            
+            reader = new ExternalStylesheetBundleDeserializer(directory, urlModifier);
+
+            DeserializeElement();
         }
 
         [Fact]
         public void ReadManifestUrlEqualsUrlAttribute()
         {
-            readManifest.Url.ShouldEqual("http://example.com/");
+            bundle.Url.ShouldEqual("http://example.com/");
         }
 
         [Fact]
         public void ThrowsExceptionWhenUrlAttributeIsMissing()
         {
             element.SetAttributeValue("Url", null);
-            Assert.Throws<InvalidCassetteManifestException>(
-                () => ReadManifestFromElement()
+            Assert.Throws<CassetteDeserializationException>(
+                () => DeserializeElement()
             );
         }
 
         [Fact]
         public void ReadManifestMediaEqualsMediaAttribute()
         {
-            readManifest.Media.ShouldEqual("MEDIA");
+            bundle.Media.ShouldEqual("MEDIA");
         }
 
         [Fact]
         public void ReadManifestConditionEqualsConditionAttribute()
         {
-            readManifest.Condition.ShouldEqual("CONDITION");
+            bundle.Condition.ShouldEqual("CONDITION");
         }
 
-        void ReadManifestFromElement()
+        void DeserializeElement()
         {
-            var reader = new ExternalStylesheetBundleManifestReader(element);
-            readManifest = reader.Read();
+            bundle = reader.Deserialize(element);
         }
     }
 }

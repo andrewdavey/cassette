@@ -34,6 +34,8 @@ namespace Cassette
 
         public abstract byte[] Hash { get; }
 
+        public abstract Type AssetCacheValidatorType { get; }
+
         public abstract IEnumerable<AssetReference> References { get; }
 
         public abstract void AddReference(string path, int lineNumber);

@@ -1,6 +1,4 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Manifests;
-using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {
@@ -35,12 +33,6 @@ namespace Cassette.Stylesheets
         internal override string Render()
         {
             return Renderer.Render(this);
-        }
-
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
-        {
-            var builder = new StylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
         }
 
         protected override string UrlBundleTypeArgument

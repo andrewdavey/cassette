@@ -2,19 +2,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Cassette.Manifests;
+using Cassette.Caching;
+using Cassette.IO;
 
 namespace Cassette.MSBuild
 {
     public class MSBuildHost : HostBase
     {
         readonly string inputDirectory;
-        readonly string outputFilename;
+        readonly string outputDirectory;
 
-        public MSBuildHost(string inputDirectory, string outputFilename)
+        public MSBuildHost(string inputDirectory, string outputDirectory)
         {
             this.inputDirectory = inputDirectory;
-            this.outputFilename = outputFilename;
+            this.outputDirectory = outputDirectory;
         }
 
         protected override IEnumerable<Assembly> LoadAssemblies()
@@ -38,19 +39,14 @@ namespace Cassette.MSBuild
         {
             var bundles = Container.Resolve<BundleCollection>();
             var settings = Container.Resolve<CassetteSettings>();
-            WriteManifest(bundles, settings);
+            var cacheDirectory = settings.SourceDirectory.GetDirectory(outputDirectory);
+            WriteCache(bundles, cacheDirectory);
         }
 
-        void WriteManifest(BundleCollection bundles, CassetteSettings settings)
+        void WriteCache(BundleCollection bundles, IDirectory cacheDirectory)
         {
-            var file = settings.SourceDirectory.GetFile(outputFilename);
-            using (var outputStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                var writer = new CassetteManifestWriter(outputStream);
-                var manifest = new CassetteManifest("", bundles.Select(bundle => bundle.CreateBundleManifest(true)));
-                writer.Write(manifest);
-                outputStream.Flush();
-            }
+            var cache = new BundleCollectionCache(cacheDirectory);
+            cache.Write(bundles);
         }
 
         protected override void ConfigureContainer()

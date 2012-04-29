@@ -2,11 +2,11 @@ using System.Xml.Linq;
 
 namespace Cassette.Scripts.Manifests
 {
-    class ExternalScriptBundleManifestWriter : ScriptBundleManifestWriter<ExternalScriptBundleManifest>
+    class ExternalScriptBundleSerializer : ScriptBundleSerializerBase<ExternalScriptBundle>
     {
         XElement element;
 
-        public ExternalScriptBundleManifestWriter(XContainer container) : base(container)
+        public ExternalScriptBundleSerializer(XContainer container) : base(container)
         {
         }
 
@@ -22,14 +22,14 @@ namespace Cassette.Scripts.Manifests
 
         void AddUrlAttribute()
         {
-            element.Add(new XAttribute("Url", Manifest.Url));
+            element.Add(new XAttribute("Url", Bundle.Url));
         }
 
         void AddFallbackConditionIfNotNull()
         {
-            if (Manifest.FallbackCondition != null)
+            if (Bundle.FallbackCondition != null)
             {
-                element.Add(new XAttribute("FallbackCondition", Manifest.FallbackCondition));
+                element.Add(new XAttribute("FallbackCondition", Bundle.FallbackCondition));
             }
         }
     }

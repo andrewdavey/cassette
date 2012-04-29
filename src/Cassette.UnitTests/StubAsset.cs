@@ -43,12 +43,17 @@ namespace Cassette
 
         public void AddRawFileReference(string relativeFilename)
         {
-            References.Add(new AssetReference(relativeFilename, this, -1, AssetReferenceType.RawFilename));
+            References.Add(new AssetReference(Path, relativeFilename, -1, AssetReferenceType.RawFilename));
         }
 
         public Stream OpenStream()
         {
             return CreateStream();
+        }
+
+        public Type AssetCacheValidatorType
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Cassette
 
             var found = asset.References.Any(
                 r => r.Type == AssetReferenceType.RawFilename
-                     && r.Path.Equals(filename, StringComparison.OrdinalIgnoreCase)
+                     && r.ToPath.Equals(filename, StringComparison.OrdinalIgnoreCase)
                 );
             if (found)
             {

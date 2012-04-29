@@ -5,12 +5,13 @@ using Xunit;
 
 namespace Cassette.Scripts.Manifests
 {
-    public class ExternalScriptBundleManifestReader_Tests
+    public class ExternalScriptBundleDeserializer_Tests
     {
+        readonly ExternalScriptBundleDeserializer reader;
         readonly XElement element;
-        ExternalScriptBundleManifest readManifest;
+        ExternalScriptBundle bundle;
 
-        public ExternalScriptBundleManifestReader_Tests()
+        public ExternalScriptBundleDeserializer_Tests()
         {
             element = new XElement(
                 "ExternalScriptBundle",
@@ -19,20 +20,23 @@ namespace Cassette.Scripts.Manifests
                 new XAttribute("Url", "http://example.com/"),
                 new XAttribute("FallbackCondition", "CONDITION")
             );
+            var directory = new FakeFileSystem();
+            var urlModifier = new VirtualDirectoryPrepender("/");
+            reader = new ExternalScriptBundleDeserializer(directory, urlModifier);
             ReadManifestFromElement();
         }
 
         [Fact]
         public void ReadManifestUrlEqualsUrlAttribute()
         {
-            readManifest.Url.ShouldEqual("http://example.com/");
+            bundle.Url.ShouldEqual("http://example.com/");
         }
 
         [Fact]
         public void ThrowsExceptionWhenUrlAttributeIsMissing()
         {
             element.SetAttributeValue("Url", null);
-            Assert.Throws<InvalidCassetteManifestException>(
+            Assert.Throws<CassetteDeserializationException>(
                 () => ReadManifestFromElement()
             );
         }
@@ -40,7 +44,7 @@ namespace Cassette.Scripts.Manifests
         [Fact]
         public void ReadManifestFallbackConditionEqualsFallbackConditionAttribute()
         {
-            readManifest.FallbackCondition.ShouldEqual("CONDITION");
+            bundle.FallbackCondition.ShouldEqual("CONDITION");
         }
 
         [Fact]
@@ -48,13 +52,12 @@ namespace Cassette.Scripts.Manifests
         {
             element.SetAttributeValue("FallbackCondition", null);
             ReadManifestFromElement();
-            readManifest.FallbackCondition.ShouldBeNull();
+            bundle.FallbackCondition.ShouldBeNull();
         }
 
         void ReadManifestFromElement()
         {
-            var reader = new ExternalScriptBundleManifestReader(element);
-            readManifest = reader.Read();
+            bundle = reader.Deserialize(element);
         }
     }
 }

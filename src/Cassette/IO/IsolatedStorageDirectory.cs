@@ -21,9 +21,20 @@ namespace Cassette.IO
             basePath = "~/";
         }
 
+        IsolatedStorageDirectory(Func<Storage> getStorage, string basePath)
+        {
+            this.getStorage = getStorage;
+            this.basePath = basePath;
+        }
+
         public string FullPath
         {
             get { return basePath; }
+        }
+
+        public bool Exists
+        {
+            get { return getStorage().DirectoryExists(basePath); }
         }
 
         public IFile GetFile(string filename)
@@ -48,7 +59,7 @@ namespace Cassette.IO
 
         public IDirectory GetDirectory(string path)
         {
-            throw new NotSupportedException();
+            return new IsolatedStorageDirectory(getStorage, Path.Combine(basePath, path));
         }
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
@@ -68,6 +79,11 @@ namespace Cassette.IO
         public IEnumerable<IDirectory> GetDirectories()
         {
             throw new NotSupportedException();
+        }
+
+        public void Create()
+        {
+            getStorage().CreateDirectory(basePath);
         }
 
         public IDisposable WatchForChanges(Action<string> pathCreated, Action<string> pathChanged, Action<string> pathDeleted, Action<string, string> pathRenamed)

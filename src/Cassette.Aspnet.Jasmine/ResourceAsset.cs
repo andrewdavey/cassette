@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -64,6 +65,11 @@ namespace Cassette.Aspnet.Jasmine
         public Stream OpenStream()
         {
             return assembly.GetManifestResourceStream(resourceName);
+        }
+
+        public Type AssetCacheValidatorType
+        {
+            get { return typeof(ResourceAssetCacheValidator); }
         }
     }
 }

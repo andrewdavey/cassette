@@ -58,6 +58,11 @@ namespace Cassette
 
         public string FullPath { get; set; }
 
+        public bool Exists
+        {
+            get { return true; }
+        }
+
         public IFile GetFile(string filename)
         {
             if (filename.StartsWith("~"))
@@ -135,6 +140,11 @@ namespace Cassette
         }
 
         public IDisposable WatchForChanges(Action<string> pathCreated, Action<string> pathChanged, Action<string> pathDeleted, Action<string, string> pathRenamed)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Create()
         {
             throw new NotImplementedException();
         }

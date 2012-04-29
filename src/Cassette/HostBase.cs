@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Cassette.HtmlTemplates;
-using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using TinyIoC;
+using Cassette.Caching;
 #if NET35
 using System.Reflection.Emit;
 #endif
@@ -79,7 +79,7 @@ namespace Cassette
             // REGISTER ALL THE THINGS!
             RegisterBundleCollection();
             RegisterUrlGenerator();
-            RegisterManifestCache();
+            RegisterCache();
             RegisterBundleCollectionInitializer();
             RegisterStartUpTasks();
             RegisterSettings();
@@ -104,12 +104,13 @@ namespace Cassette
             container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
         }
 
-        void RegisterManifestCache()
+        void RegisterCache()
         {
-            container.Register(typeof(ICassetteManifestCache), (c, p) =>
+            container.Register<IBundleCollectionCache>((c, p) =>
             {
-                var cacheFile = c.Resolve<CassetteSettings>().CacheDirectory.GetFile("cassette.xml");
-                return new CassetteManifestCache(cacheFile);
+                // TODO: Switch to precompiled directory if exists
+                var cacheDirectory = c.Resolve<CassetteSettings>().CacheDirectory;
+                return new BundleCollectionCache(cacheDirectory);
             });
         }
 
@@ -120,11 +121,6 @@ namespace Cassette
                     c.Resolve<RuntimeBundleCollectionInitializer>()
                 )
             );
-            container.Register((c, p) =>
-            {
-                var file = container.Resolve<CassetteSettings>().PrecompiledManifestFile;
-                return new PrecompiledBundleCollectionInitializer(file, c.Resolve<IUrlModifier>());
-            });
         }
 
         void RegisterStartUpTasks()

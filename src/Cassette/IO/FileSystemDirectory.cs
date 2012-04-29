@@ -31,24 +31,22 @@ namespace Cassette.IO
             }
         }
 
+        public bool Exists
+        {
+            get { return Directory.Exists(fullSystemPath); }
+        }
+
         public IFile GetFile(string filename)
         {
-            try
+            if (filename.Replace('\\', '/').StartsWith(fullSystemPath))
             {
-                if (filename.Replace('\\', '/').StartsWith(fullSystemPath))
-                {
-                    filename = filename.Substring(fullSystemPath.Length + 1);
-                }
+                filename = filename.Substring(fullSystemPath.Length + 1);
+            }
 
-                var subDirectoryPath = Path.GetDirectoryName(filename);
-                var subDirectory = GetDirectory(subDirectoryPath);
-                var path = GetAbsolutePath(filename);
-                return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return new NonExistentFile(filename);
-            }
+            var subDirectoryPath = Path.GetDirectoryName(filename);
+            var subDirectory = GetDirectory(subDirectoryPath);
+            var path = GetAbsolutePath(filename);
+            return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
         }
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
@@ -98,10 +96,6 @@ namespace Cassette.IO
             }
 
             var fullPath = GetAbsolutePath(path);
-            if (Directory.Exists(fullPath) == false)
-            {
-                throw new DirectoryNotFoundException("Directory not found: " + fullPath);
-            }
             return new FileSystemDirectory(fullPath)
             {
                 parent = this
@@ -127,6 +121,11 @@ namespace Cassette.IO
             return (parent == null)
                 ? this 
                 : parent.GetRootDirectory();
+        }
+
+        public void Create()
+        {
+            Directory.CreateDirectory(fullSystemPath);
         }
 
         public IDisposable WatchForChanges(Action<string> pathCreated, Action<string> pathChanged, Action<string> pathDeleted, Action<string, string> pathRenamed)

@@ -1,36 +1,24 @@
-using Cassette.IO;
-using Cassette.Manifests;
+using Cassette.Caching;
 
 namespace Cassette
 {
     class PrecompiledBundleCollectionInitializer
     {
-        readonly IFile precompiledManifestFile;
-        readonly IUrlModifier urlModifier;
+        readonly IBundleCollectionCache cache;
 
-        public PrecompiledBundleCollectionInitializer(IFile precompiledManifestFile, IUrlModifier urlModifier)
+        public PrecompiledBundleCollectionInitializer(IBundleCollectionCache cache)
         {
-            this.precompiledManifestFile = precompiledManifestFile;
-            this.urlModifier = urlModifier;
+            this.cache = cache;
         }
 
         public void Initialize(BundleCollection bundles)
         {
             using (bundles.GetWriteLock())
             {
-                var manifest = ReadManifest();
-                var createdBundles = manifest.CreateBundles(urlModifier);
-                bundles.AddRange(createdBundles);
+                var cacheReadResult = cache.Read();
+                bundles.Clear();
+                bundles.AddRange(cacheReadResult.Bundles);
                 bundles.BuildReferences();
-            }
-        }
-
-        CassetteManifest ReadManifest()
-        {
-            using (var stream = precompiledManifestFile.OpenRead())
-            {
-                var reader = new CassetteManifestReader(stream);
-                return reader.Read();
             }
         }
     }

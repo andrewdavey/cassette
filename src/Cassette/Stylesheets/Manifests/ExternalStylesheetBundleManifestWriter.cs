@@ -2,9 +2,9 @@ using System.Xml.Linq;
 
 namespace Cassette.Stylesheets.Manifests
 {
-    class ExternalStylesheetBundleManifestWriter : StylesheetBundleManifestWriter<ExternalStylesheetBundleManifest>
+    class ExternalStylesheetBundleSerializer : StylesheetBundleSerializerBase<ExternalStylesheetBundle>
     {
-        public ExternalStylesheetBundleManifestWriter(XContainer container)
+        public ExternalStylesheetBundleSerializer(XContainer container)
             : base(container)
         {
         }
@@ -12,7 +12,7 @@ namespace Cassette.Stylesheets.Manifests
         protected override XElement CreateElement()
         {
             var element = base.CreateElement();
-            element.Add(new XAttribute("Url", Manifest.Url));
+            element.Add(new XAttribute("Url", Bundle.Url));
 
             return element;
         }

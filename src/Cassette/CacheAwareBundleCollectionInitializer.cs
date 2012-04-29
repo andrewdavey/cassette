@@ -1,25 +1,23 @@
 using System.Collections.Generic;
-using System.Linq;
-using Cassette.Manifests;
+using Cassette.Caching;
 
 namespace Cassette
 {
     class CacheAwareBundleCollectionInitializer
     {
         readonly IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations;
-        readonly ICassetteManifestCache manifestCache;
-        readonly IUrlModifier urlModifier;
-        readonly CassetteSettings settings;
+        readonly IBundleCollectionCache cache;
         readonly ExternalBundleGenerator externalBundleGenerator;
+        readonly BundleCollectionCacheValidator cacheValidator;
         BundleCollection bundles;
+        CacheReadResult cacheReadResult;
 
-        public CacheAwareBundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, ICassetteManifestCache manifestCache, IUrlModifier urlModifier, CassetteSettings settings, ExternalBundleGenerator externalBundleGenerator)
+        public CacheAwareBundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, IBundleCollectionCache cache, ExternalBundleGenerator externalBundleGenerator, BundleCollectionCacheValidator cacheValidator)
         {
             this.bundleConfigurations = bundleConfigurations;
-            this.manifestCache = manifestCache;
-            this.urlModifier = urlModifier;
-            this.settings = settings;
+            this.cache = cache;
             this.externalBundleGenerator = externalBundleGenerator;
+            this.cacheValidator = cacheValidator;
         }
 
         public void Initialize(BundleCollection bundleCollection)
@@ -27,68 +25,65 @@ namespace Cassette
             bundles = bundleCollection;
             using (bundles.GetWriteLock())
             {
+                ClearBundles();
                 AddBundlesFromConfigurations();
-
-                var cachedManifest = manifestCache.LoadCassetteManifest();
-                var currentManifest = CreateCurrentManifest();
-                if (CanUseCachedBundles(cachedManifest, currentManifest))
+                ReadCache();
+                if (IsCacheValid())
                 {
-                    ReplaceBundlesWithCachedBundles(cachedManifest);
+                    UseCachedBundles();
                 }
                 else
                 {
-                    UseCurrentBundles();
+                    ProcessBundles();
+                    WriteToCache();
                 }
+
                 bundles.BuildReferences();
             }
         }
 
-        void AddBundlesFromConfigurations()
+        void ClearBundles()
         {
             bundles.Clear();
+        }
+
+        void AddBundlesFromConfigurations()
+        {
             bundleConfigurations.Configure(bundles);
         }
 
-        void UseCurrentBundles()
+        void ReadCache()
         {
-            ProcessBundles();
-            AddBundlesForUrlReferences();
-            SaveManifestToCache();
+            cacheReadResult = cache.Read();
         }
 
-        void AddBundlesForUrlReferences()
+        bool IsCacheValid()
         {
-            externalBundleGenerator.AddBundlesForUrlReferences(bundles);
+            return cacheReadResult.IsSuccess && 
+                   bundles.Equals(cacheReadResult.Bundles) && 
+                   cacheValidator.IsValid(cacheReadResult);
         }
 
-        void SaveManifestToCache()
+        void WriteToCache()
         {
-            var recreatedCurrentManifest = CreateCurrentManifest();
-            manifestCache.SaveCassetteManifest(recreatedCurrentManifest);
-            ReplaceBundlesWithCachedBundles(recreatedCurrentManifest);
+            cache.Write(bundles);
         }
 
-        void ReplaceBundlesWithCachedBundles(CassetteManifest cachedManifest)
+        void UseCachedBundles()
         {
-            bundles.Clear();
-            var cachedBundles = cachedManifest.CreateBundles(urlModifier);
-            bundles.AddRange(cachedBundles);
-        }
-
-        CassetteManifest CreateCurrentManifest()
-        {
-            return new CassetteManifest(settings.Version, bundles.Select(bundle => bundle.CreateBundleManifest()));
-        }
-
-        bool CanUseCachedBundles(CassetteManifest cachedManifest, CassetteManifest currentManifest)
-        {
-            return cachedManifest.Equals(currentManifest) &&
-                   cachedManifest.IsUpToDateWithFileSystem(settings.SourceDirectory);
+            ClearBundles();
+            bundles.AddRange(cacheReadResult.Bundles);
         }
 
         void ProcessBundles()
         {
             bundles.Process();
+            AddBundlesForUrlReferences();
+        }
+
+        void AddBundlesForUrlReferences()
+        {
+            externalBundleGenerator.AddBundlesForUrlReferences(bundles);
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Cassette.Manifests;
-using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {
@@ -35,12 +33,6 @@ namespace Cassette.Stylesheets
         internal override bool ContainsPath(string pathToFind)
         {
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
-        }
-
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
-        {
-            var builder = new ExternalStylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
         }
 
         public string ExternalUrl

@@ -39,6 +39,11 @@ namespace Cassette.BundleProcessing
             get { return hash; }
         }
 
+        public override Type AssetCacheValidatorType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public override IEnumerable<AssetReference> References
         {
             get { return children.SelectMany(c => c.References); }
