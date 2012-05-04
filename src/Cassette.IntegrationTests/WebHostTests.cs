@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.Linq;
 using Cassette.Aspnet;
-using Cassette.IntegrationTests;
 using Cassette.Scripts;
 using Cassette.Views;
 using Should;

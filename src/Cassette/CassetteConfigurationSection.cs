@@ -32,11 +32,13 @@ namespace Cassette
             set { this["watchFileSystem"] = value; }
         }
 
-        [ConfigurationProperty("precompiledManifest", DefaultValue = null)]
+        // TODO: Remove this in favour of simply "cacheDirectory"
+        // But add way to mark the cache as "compile-time" so we can skip checking it against the source directory.
+        [ConfigurationProperty("precompiledCacheDirectory", DefaultValue = null)]
         public string PrecompiledManifest
         {
-            get { return (string)this["precompiledManifest"]; }
-            set { this["precompiledManifest"] = value; }
+            get { return (string)this["precompiledCacheDirectory"]; }
+            set { this["precompiledCacheDirectory"] = value; }
         }
     }
 }

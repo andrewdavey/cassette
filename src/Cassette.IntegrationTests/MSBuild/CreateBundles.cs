@@ -9,7 +9,6 @@ using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using Cassette.Caching;
 using Cassette.IO;
-using Cassette.IntegrationTests;
 using Cassette.Stylesheets;
 using Moq;
 using Should;
@@ -48,7 +47,7 @@ namespace Cassette.MSBuild
         [Fact]
         public void ManifestFileSavedToOutput()
         {
-            File.Exists(cachePath).ShouldBeTrue();
+            Directory.Exists(cachePath).ShouldBeTrue();
         }
 
         [Fact]

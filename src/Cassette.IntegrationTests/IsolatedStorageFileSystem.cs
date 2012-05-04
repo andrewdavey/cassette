@@ -7,7 +7,7 @@ using IsolatedStorageFile = System.IO.IsolatedStorage.IsolatedStorageFile;
 using Cassette.Utilities;
 #endif
 
-namespace Cassette.IntegrationTests
+namespace Cassette
 {
     public class IsolatedStorageFileSystem_Tests
     {

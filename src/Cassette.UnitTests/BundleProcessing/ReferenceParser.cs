@@ -1,10 +1,9 @@
 ﻿using System.Linq;
-using Cassette.BundleProcessing;
 using Cassette.Scripts;
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.BundleProcessing
 {
     public class ReferenceParser_Test
     {

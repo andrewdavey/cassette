@@ -41,7 +41,7 @@ namespace Cassette.IO
             {
                 var dir = new FileSystemDirectory(path);
                 var file = dir.GetFile("sub\\test.txt");
-                file.ShouldBeType<NonExistentFile>();
+                file.Exists.ShouldBeFalse();
             }
         }
     }

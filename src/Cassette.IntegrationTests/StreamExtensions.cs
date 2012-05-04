@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Cassette.IntegrationTests
+namespace Cassette
 {
     static class StreamExtensions
     {

@@ -229,8 +229,13 @@ namespace Cassette
 
         static bool AllAssetsEqual(Bundle x, Bundle y)
         {
-            var assetsX = x.Assets.OrderBy(a => a.Path);
-            var assetsY = y.Assets.OrderBy(a => a.Path);
+            var collectorX = new CollectLeafAssets();
+            x.Accept(collectorX);
+            var collectorY = new CollectLeafAssets();
+            y.Accept(collectorY);
+
+            var assetsX = collectorX.Assets.OrderBy(a => a.Path);
+            var assetsY = collectorY.Assets.OrderBy(a => a.Path);
             return assetsX.SequenceEqual(assetsY, new AssetPathComparer());
         }
 
@@ -246,6 +251,25 @@ namespace Cassette
         void IDisposable.Dispose()
         {
             Dispose(true);
+        }
+
+        class CollectLeafAssets : IBundleVisitor
+        {
+            public CollectLeafAssets()
+            {
+                Assets = new List<IAsset>();
+            }
+
+            public List<IAsset> Assets { get; private set; }
+
+            public void Visit(Bundle bundle)
+            {
+            }
+
+            public void Visit(IAsset asset)
+            {
+                Assets.Add(asset);
+            }
         }
     }
 }
