@@ -6,7 +6,7 @@ namespace Cassette.HtmlTemplates
     class HtmlTemplateBundleDeserializer : BundleDeserializer<HtmlTemplateBundle>
     {
         public HtmlTemplateBundleDeserializer(IDirectory directory, IUrlModifier urlModifier)
-            : base(directory, urlModifier)
+            : base(urlModifier)
         {
         }
 

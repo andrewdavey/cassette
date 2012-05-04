@@ -18,7 +18,10 @@ namespace Cassette.Caching
         {
             asOfDateTime = cacheReadResult.CacheCreationDate;
             isValid = true;
-            cacheReadResult.Bundles.Accept(this);
+            foreach (var bundle in cacheReadResult.Bundles)
+            {
+                bundle.Accept(this);
+            }
             return isValid;
         }
 

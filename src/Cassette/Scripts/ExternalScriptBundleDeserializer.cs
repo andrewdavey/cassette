@@ -7,7 +7,7 @@ namespace Cassette.Scripts
     class ExternalScriptBundleDeserializer : ScriptBundleDeserializerBase<ExternalScriptBundle>
     {
         public ExternalScriptBundleDeserializer(IDirectory directory, IUrlModifier urlModifier)
-            : base(directory, urlModifier)
+            : base(urlModifier)
         {
         }
 

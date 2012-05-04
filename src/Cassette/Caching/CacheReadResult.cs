@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Cassette.Caching
 {
     class CacheReadResult
     {
-        readonly BundleCollection bundles;
+        readonly IEnumerable<Bundle> bundles;
         readonly DateTime cacheCreationDate;
 
-        CacheReadResult(BundleCollection bundles, DateTime cacheCreationDate)
+        CacheReadResult(IEnumerable<Bundle> bundles, DateTime cacheCreationDate)
         {
             this.bundles = bundles;
             this.cacheCreationDate = cacheCreationDate;
@@ -22,7 +23,7 @@ namespace Cassette.Caching
             get { return Bundles != null; }
         }
 
-        public BundleCollection Bundles
+        public IEnumerable<Bundle> Bundles
         {
             get { return bundles; }
         }
@@ -32,7 +33,7 @@ namespace Cassette.Caching
             get { return cacheCreationDate; }
         }
 
-        public static CacheReadResult Success(BundleCollection bundles, DateTime cacheCreationDate)
+        public static CacheReadResult Success(IEnumerable<Bundle> bundles, DateTime cacheCreationDate)
         {
             return new CacheReadResult(bundles, cacheCreationDate);
         }

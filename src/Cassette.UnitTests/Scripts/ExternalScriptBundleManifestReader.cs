@@ -9,6 +9,7 @@ namespace Cassette.Scripts
         readonly ExternalScriptBundleDeserializer reader;
         readonly XElement element;
         ExternalScriptBundle bundle;
+        readonly FakeFileSystem directory;
 
         public ExternalScriptBundleDeserializer_Tests()
         {
@@ -19,7 +20,7 @@ namespace Cassette.Scripts
                 new XAttribute("Url", "http://example.com/"),
                 new XAttribute("FallbackCondition", "CONDITION")
             );
-            var directory = new FakeFileSystem
+            directory = new FakeFileSystem
             {
                 { "~/010203.js", "content" }
             };
@@ -59,7 +60,7 @@ namespace Cassette.Scripts
 
         void DeserializeToBundle()
         {
-            bundle = reader.Deserialize(element);
+            bundle = reader.Deserialize(element, directory);
         }
     }
 }

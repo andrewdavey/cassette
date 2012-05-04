@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -118,6 +119,12 @@ namespace Cassette.Scripts
         static string Escape(string script)
         {
             return script.Replace("<", "%3C").Replace(">", "%3E");
+        }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new ExternalScriptBundleSerializer(container);
+            serializer.Serialize(this);
         }
     }
 }

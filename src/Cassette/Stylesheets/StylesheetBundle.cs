@@ -1,4 +1,5 @@
-﻿using Cassette.BundleProcessing;
+﻿using System.Xml.Linq;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
@@ -33,6 +34,12 @@ namespace Cassette.Stylesheets
         internal override string Render()
         {
             return Renderer.Render(this);
+        }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new StylesheetBundleSerializer(container);
+            serializer.Serialize(this);
         }
 
         protected override string UrlBundleTypeArgument

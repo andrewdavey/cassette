@@ -10,21 +10,21 @@ namespace Cassette
     abstract class BundleDeserializer<T> : IBundleDeserializer<T>
         where T : Bundle
     {
-        readonly IDirectory directory;
         readonly IUrlModifier urlModifier;
+        IDirectory directory;
         XElement element;
 
-        protected BundleDeserializer(IDirectory directory, IUrlModifier urlModifier)
+        protected BundleDeserializer(IUrlModifier urlModifier)
         {
-            this.directory = directory;
             this.urlModifier = urlModifier;
         }
 
         protected abstract T CreateBundle(XElement element);
 
-        public T Deserialize(XElement element)
+        public T Deserialize(XElement element, IDirectory cacheDirectory)
         {
             this.element = element;
+            this.directory = cacheDirectory;
             var bundle = CreateBundle(element);
             bundle.Hash = GetHashAttribute();
             bundle.ContentType = GetOptionalAttribute("ContentType");

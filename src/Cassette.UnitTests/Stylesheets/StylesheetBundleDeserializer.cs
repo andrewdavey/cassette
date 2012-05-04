@@ -9,6 +9,7 @@ namespace Cassette.Stylesheets
         readonly StylesheetBundleDeserializer reader;
         readonly XElement element;
         StylesheetBundle bundle;
+        readonly FakeFileSystem directory;
 
         public StylesheetBundleDeserializer_Tests()
         {
@@ -19,12 +20,12 @@ namespace Cassette.Stylesheets
                 new XAttribute("Media", "expected-media"),
                 new XAttribute("Condition", "expected-condition")
             );
-            var directory = new FakeFileSystem
+            directory = new FakeFileSystem
             {
                 { "~/010203.css", "content" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
-            reader = new StylesheetBundleDeserializer(directory, urlModifier);
+            reader = new StylesheetBundleDeserializer(urlModifier);
             DeserializeBundle();
         }
 
@@ -58,7 +59,7 @@ namespace Cassette.Stylesheets
 
         void DeserializeBundle()
         {
-            bundle = reader.Deserialize(element);
+            bundle = reader.Deserialize(element, directory);
         }
     }
 }

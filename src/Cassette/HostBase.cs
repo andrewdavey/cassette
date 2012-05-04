@@ -110,8 +110,17 @@ namespace Cassette
             {
                 // TODO: Switch to precompiled directory if exists
                 var cacheDirectory = c.Resolve<CassetteSettings>().CacheDirectory;
-                return new BundleCollectionCache(cacheDirectory);
+                return new BundleCollectionCache(
+                    cacheDirectory,
+                    bundleTypeName => ResolveBundleDeserializer(bundleTypeName, c)
+                );
             });
+        }
+
+        internal static IBundleDeserializer<Bundle> ResolveBundleDeserializer(string bundleTypeName, TinyIoCContainer container)
+        {
+            var deserializerTypeName = Type.GetType(bundleTypeName + "Deserializer");
+            return (IBundleDeserializer<Bundle>)container.Resolve(deserializerTypeName);
         }
 
         protected virtual void RegisterBundleCollectionInitializer()

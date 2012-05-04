@@ -119,6 +119,9 @@
     <Compile Include="BundleProcessing\AssignHash.cs" />
     <Compile Include="BundleProcessing\BundlePipelineHelpers.cs" />
     <Compile Include="BundleProcessing\TestableBundlePipeline.cs" />
+    <Compile Include="Caching\BundleCollectionCache.Write.cs" />
+    <Compile Include="Caching\BundleCollectionCache.Clear.cs" />
+    <Compile Include="Caching\BundleCollectionCache.Read.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="BundleCollection.Add.cs" />
     <Compile Include="BundleCollection.AddPerSubDirectory.cs" />
@@ -139,6 +142,7 @@
     <Compile Include="AssetDeserializer.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetSerializer.cs" />
+    <Compile Include="NullModifier.cs" />
     <Compile Include="Scripts\ExternalScriptBundleManifestReader.cs" />
     <Compile Include="Scripts\ScriptBundleDeserializer.cs" />
     <Compile Include="BundleSerializer.cs" />
@@ -184,7 +188,6 @@
     <Compile Include="Stylesheets\StylesheetBundleSerializer.cs" />
     <Compile Include="Stylesheets\StylesheetsContainerConfiguration.cs" />
     <Compile Include="Stylesheets\StylesheetBundleExtensions.cs" />
-    <Compile Include="Temp.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="ConcatenatedAsset.cs" />
     <Compile Include="BundleProcessing\CompileAsset.cs" />

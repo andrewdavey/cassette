@@ -9,15 +9,17 @@ namespace Cassette
         readonly IBundleCollectionCache cache;
         readonly ExternalBundleGenerator externalBundleGenerator;
         readonly BundleCollectionCacheValidator cacheValidator;
+        readonly CassetteSettings settings;
         BundleCollection bundles;
         CacheReadResult cacheReadResult;
 
-        public CacheAwareBundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, IBundleCollectionCache cache, ExternalBundleGenerator externalBundleGenerator, BundleCollectionCacheValidator cacheValidator)
+        public CacheAwareBundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, IBundleCollectionCache cache, ExternalBundleGenerator externalBundleGenerator, BundleCollectionCacheValidator cacheValidator, CassetteSettings settings)
         {
             this.bundleConfigurations = bundleConfigurations;
             this.cache = cache;
             this.externalBundleGenerator = externalBundleGenerator;
             this.cacheValidator = cacheValidator;
+            this.settings = settings;
         }
 
         public void Initialize(BundleCollection bundleCollection)
@@ -66,7 +68,7 @@ namespace Cassette
 
         void WriteToCache()
         {
-            cache.Write(bundles);
+            cache.Write(bundles, settings.Version);
         }
 
         void UseCachedBundles()

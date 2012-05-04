@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Cassette.Stylesheets
 {
@@ -79,6 +80,12 @@ namespace Cassette.Stylesheets
                 Media,
                 HtmlAttributes.CombinedAttributes
                 );
+        }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new ExternalStylesheetBundleSerializer(container);
+            serializer.Serialize(this);
         }
     }
 }

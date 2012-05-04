@@ -33,5 +33,10 @@
         {
             get { return "testable"; }
         }
+
+        internal override void SerializeInto(System.Xml.Linq.XContainer container)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

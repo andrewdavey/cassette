@@ -131,7 +131,6 @@
     <Compile Include="BundleFactoryExtensions.cs" />
     <Compile Include="AssetSerializer.cs" />
     <Compile Include="BundleDeserializer.cs" />
-    <Compile Include="BundleCollectionSerializer.cs" />
     <Compile Include="BundleSerializer.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />

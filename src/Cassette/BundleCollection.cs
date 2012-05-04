@@ -94,9 +94,9 @@ namespace Cassette
             bundles.Add(bundle);
         }
 
-        public void AddRange(IEnumerable<Bundle> bundles)
+        public void AddRange(IEnumerable<Bundle> bundlesToAdd)
         {
-            foreach (var bundle in bundles)
+            foreach (var bundle in bundlesToAdd)
             {
                 Add(bundle);
             }
@@ -835,15 +835,18 @@ namespace Cassette
             );
         }
 
-        public override bool Equals(object obj)
+        public bool Equals(IEnumerable<Bundle> otherBundles)
         {
-            var other = obj as BundleCollection;
-            if (other == null) return false;
-
-            var thisSorted = this.OrderBy(b => b.GetType().FullName).ThenBy(b => b.Path);
-            var otherSorted = other.OrderBy(b => b.GetType().FullName).ThenBy(b => b.Path);
-            return thisSorted.SequenceEqual(otherSorted);
+            return Enumerable.SequenceEqual(
+                OrderForEqualityComparison(bundles),
+                OrderForEqualityComparison(otherBundles)
+            );
         }
+
+        static IEnumerable<Bundle> OrderForEqualityComparison(IEnumerable<Bundle> bundlesToOrder)
+        {
+            return bundlesToOrder.OrderBy(b => b.GetType().FullName).ThenBy(b => b.Path);
+        } 
 
         public IEnumerator<Bundle> GetEnumerator()
         {

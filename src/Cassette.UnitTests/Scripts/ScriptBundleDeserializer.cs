@@ -12,6 +12,7 @@ namespace Cassette.Scripts
         readonly ScriptBundleDeserializer deserializer;
         readonly XElement element;
         ScriptBundle bundle;
+        readonly FakeFileSystem directory;
 
         public ScriptBundleDeserializer_Tests()
         {
@@ -37,12 +38,12 @@ namespace Cassette.Scripts
                 )
             );
 
-            var directory = new FakeFileSystem
+            directory = new FakeFileSystem
             {
                 { "~/010203.js", "CONTENT" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
-            deserializer = new ScriptBundleDeserializer(directory, urlModifier);
+            deserializer = new ScriptBundleDeserializer(urlModifier);
 
             DeserializeBundle();
         }
@@ -157,7 +158,7 @@ namespace Cassette.Scripts
 
         void DeserializeBundle()
         {
-            bundle = deserializer.Deserialize(element);
+            bundle = deserializer.Deserialize(element, directory);
         }
 
         void DeserializeThrowsInvalidCassetteManifestException()

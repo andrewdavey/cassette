@@ -33,20 +33,21 @@ namespace Cassette.MSBuild
         protected override void RegisterBundleCollectionInitializer()
         {
             Container.Register<IBundleCollectionInitializer, BundleCollectionInitializer>();
+            Container.Register<IBundleCollectionCache>((c, p) =>
+            {
+                var cacheDirectory = new FileSystemDirectory(Path.GetFullPath(outputDirectory));
+                return new BundleCollectionCache(
+                    cacheDirectory,
+                    bundleTypeName => ResolveBundleDeserializer(bundleTypeName, c)
+                );
+            });
         }
 
         public void Execute()
         {
             var bundles = Container.Resolve<BundleCollection>();
-            var settings = Container.Resolve<CassetteSettings>();
-            var cacheDirectory = settings.SourceDirectory.GetDirectory(outputDirectory);
-            WriteCache(bundles, cacheDirectory);
-        }
-
-        void WriteCache(BundleCollection bundles, IDirectory cacheDirectory)
-        {
-            var cache = new BundleCollectionCache(cacheDirectory);
-            cache.Write(bundles);
+            var cache = Container.Resolve<IBundleCollectionCache>();
+            cache.Write(bundles, "");
         }
 
         protected override void ConfigureContainer()

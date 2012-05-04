@@ -1,12 +1,10 @@
-using Cassette.IO;
-
 namespace Cassette.Stylesheets
 {
     abstract class StylesheetBundleDeserializerBase<T> : BundleDeserializer<T>
         where T : StylesheetBundle
     {
-        protected StylesheetBundleDeserializerBase(IDirectory directory, IUrlModifier urlModifier) 
-            : base(directory, urlModifier)
+        protected StylesheetBundleDeserializerBase(IUrlModifier urlModifier) 
+            : base(urlModifier)
         {
         }
 

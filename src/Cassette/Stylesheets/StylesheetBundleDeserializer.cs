@@ -1,12 +1,11 @@
 using System.Xml.Linq;
-using Cassette.IO;
 
 namespace Cassette.Stylesheets
 {
     class StylesheetBundleDeserializer : StylesheetBundleDeserializerBase<StylesheetBundle>
     {
-        public StylesheetBundleDeserializer(IDirectory directory, IUrlModifier urlModifier) 
-            : base(directory, urlModifier)
+        public StylesheetBundleDeserializer(IUrlModifier urlModifier) 
+            : base(urlModifier)
         {
         }
 

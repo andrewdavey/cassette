@@ -1,4 +1,5 @@
-﻿using Cassette.BundleProcessing;
+﻿using System.Xml.Linq;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
@@ -32,6 +33,12 @@ namespace Cassette.Scripts
         internal override string Render()
         {
             return Renderer.Render(this);
+        }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new ScriptBundleSerializer(container);
+            serializer.Serialize(this);
         }
 
         protected override string UrlBundleTypeArgument

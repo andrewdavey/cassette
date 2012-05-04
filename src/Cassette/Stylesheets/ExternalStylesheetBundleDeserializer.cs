@@ -1,13 +1,12 @@
 using System.Xml.Linq;
-using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
     class ExternalStylesheetBundleDeserializer : StylesheetBundleDeserializerBase<ExternalStylesheetBundle>
     {
-        public ExternalStylesheetBundleDeserializer(IDirectory directory, IUrlModifier urlModifier) 
-            : base(directory, urlModifier)
+        public ExternalStylesheetBundleDeserializer(IUrlModifier urlModifier) 
+            : base(urlModifier)
         {
         }
 

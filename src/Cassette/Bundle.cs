@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.Utilities;
+using System.Xml.Linq;
 #if NET35
 using Iesi.Collections.Generic;
 #endif
@@ -208,6 +209,8 @@ namespace Cassette
             }
         }
 
+        internal abstract void SerializeInto(XContainer container);
+ 
         public override bool Equals(object obj)
         {
             var other = obj as Bundle;

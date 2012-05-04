@@ -1,4 +1,5 @@
-﻿using Cassette.BundleProcessing;
+﻿using System.Xml.Linq;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
@@ -22,6 +23,12 @@ namespace Cassette.HtmlTemplates
         internal override string Render()
         {
             return Renderer.Render(this);
+        }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new HtmlTemplateBundleSerializer(container);
+            serializer.Serialize(this);
         }
 
         internal string GetTemplateId(IAsset asset)

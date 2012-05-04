@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -7,8 +6,8 @@ namespace Cassette.Scripts
     abstract class ScriptBundleDeserializerBase<T> : BundleDeserializer<T>
         where T : ScriptBundle
     {
-        protected ScriptBundleDeserializerBase(IDirectory directory, IUrlModifier urlModifier)
-            : base(directory, urlModifier)
+        protected ScriptBundleDeserializerBase(IUrlModifier urlModifier)
+            : base(urlModifier)
         {
         }
 
