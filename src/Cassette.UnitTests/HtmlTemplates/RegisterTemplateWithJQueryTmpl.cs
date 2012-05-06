@@ -18,7 +18,7 @@ namespace Cassette.HtmlTemplates
 
             var getResult = transformer.Transform(() => "TEMPLATE".AsStream(), asset.Object);
 
-            getResult().ReadToEnd().ShouldEqual("$.template('asset', TEMPLATE);" + Environment.NewLine);
+            getResult().ReadToEnd().ShouldEqual("jQuery.template('asset', TEMPLATE);" + Environment.NewLine);
         }
     }
 }
