@@ -1,5 +1,5 @@
-﻿using Should;
-using TinyIoC;
+﻿using Cassette.TinyIoC;
+using Should;
 using Xunit;
 
 namespace Cassette.HtmlTemplates

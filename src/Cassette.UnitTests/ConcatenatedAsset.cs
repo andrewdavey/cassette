@@ -2,11 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using Cassette.BundleProcessing;
 using Moq;
 using Should;
 using Xunit;
-using System.Text;
 
 namespace Cassette
 {

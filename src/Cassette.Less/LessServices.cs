@@ -1,4 +1,4 @@
-using TinyIoC;
+using Cassette.TinyIoC;
 
 namespace Cassette.Stylesheets
 {

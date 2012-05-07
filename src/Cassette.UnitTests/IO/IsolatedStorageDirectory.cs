@@ -1,8 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Should;
 using Xunit;
-using System.IO;
+
 #if NET35
 using Cassette.Utilities;
 #endif

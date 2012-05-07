@@ -1,5 +1,5 @@
 using Cassette.BundleProcessing;
-using TinyIoC;
+using Cassette.TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {

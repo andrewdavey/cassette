@@ -1,4 +1,4 @@
-﻿//===============================================================================
+//===============================================================================
 // TinyIoC
 //
 // An easy to use, hassle free, Inversion of Control Container for small projects
@@ -6,7 +6,7 @@
 //
 // https://github.com/grumpydev/TinyIoC
 //===============================================================================
-// Copyright © Steven Robbins.  All rights reserved.
+// Copyright � Steven Robbins.  All rights reserved.
 // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY
 // OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT
 // LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
@@ -21,6 +21,12 @@
 // Preprocessor directives for enabling/disabling functionality
 // depending on platform features. If the platform has an appropriate
 // #DEFINE then these should be set automatically below.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+
 #define EXPRESSIONS                         // Platform supports System.Linq.Expressions
 #define APPDOMAIN_GETASSEMBLIES             // Platform supports getting all assemblies from the AppDomain object
 #define UNBOUND_GENERICS_GETCONSTRUCTORS    // Platform supports GetConstructors on unbound generic types
@@ -48,14 +54,10 @@
 #endif
 
 #endregion
-namespace TinyIoC
+namespace Cassette.TinyIoC
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-#if EXPRESSIONS
-    using System.Linq.Expressions;
+    #if EXPRESSIONS
+
 #endif
 
     #region SafeDictionary

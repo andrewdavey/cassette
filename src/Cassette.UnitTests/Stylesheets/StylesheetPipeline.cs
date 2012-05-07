@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
+using Cassette.TinyIoC;
 using Cassette.Utilities;
 using Moq;
 using Should;
-using TinyIoC;
 using Xunit;
 
 namespace Cassette.Stylesheets

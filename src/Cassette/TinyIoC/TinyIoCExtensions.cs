@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace TinyIoC
+namespace Cassette.TinyIoC
 {
     public static class TinyIoCExtensions
     {

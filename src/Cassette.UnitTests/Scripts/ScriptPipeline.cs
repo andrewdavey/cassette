@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using Cassette.BundleProcessing;
+using Cassette.TinyIoC;
 using Cassette.Utilities;
 using Moq;
 using Should;
-using TinyIoC;
 using Xunit;
 
 namespace Cassette.Scripts

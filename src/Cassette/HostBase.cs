@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Cassette.Caching;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-using TinyIoC;
-using Cassette.Caching;
+using Cassette.TinyIoC;
+
 #if NET35
 using System.Reflection.Emit;
 #endif

@@ -2,9 +2,9 @@
 using System.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.TinyIoC;
 using Should;
 using Xunit;
-using TinyIoC;
 
 namespace Cassette
 {

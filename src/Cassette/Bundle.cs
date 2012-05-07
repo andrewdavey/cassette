@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Cassette.BundleProcessing;
 using Cassette.Utilities;
-using System.Xml.Linq;
+
 #if NET35
 using Iesi.Collections.Generic;
 #endif

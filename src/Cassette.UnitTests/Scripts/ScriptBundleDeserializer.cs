@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using Cassette.Caching;
 using Cassette.Utilities;
 using Should;
 using Xunit;
-using Cassette.Caching;
 
 namespace Cassette.Scripts
 {

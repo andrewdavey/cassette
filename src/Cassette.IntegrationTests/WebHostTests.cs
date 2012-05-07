@@ -6,11 +6,12 @@ using System.Web;
 using System.Xml.Linq;
 using Cassette.Aspnet;
 using Cassette.Scripts;
+using Cassette.Stylesheets;
 using Cassette.Views;
 using Should;
 using Xunit;
 #if !NET35
-using Cassette.Stylesheets;
+
 #endif
 
 namespace Cassette

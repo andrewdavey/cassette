@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using Cassette.BundleProcessing;
+using Cassette.TinyIoC;
 using Moq;
-using TinyIoC;
 using Xunit;
 
 namespace Cassette.Scripts

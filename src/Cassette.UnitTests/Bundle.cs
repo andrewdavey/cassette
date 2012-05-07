@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Utilities;
 
 namespace Cassette
 {
