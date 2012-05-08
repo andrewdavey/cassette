@@ -27,12 +27,13 @@ namespace Cassette.Caching
             this.cacheDirectory = cacheDirectory;
             this.getDeserializerForBundleTypeName = getDeserializerForBundleTypeName;
         }
-
+        
         public CacheReadResult Read()
         {
             var file = cacheDirectory.GetFile(ManifestFilename);
             if (file.Exists)
             {
+                // TODO: Maybe catch exception and return CachReadResults.Failed?
                 return CacheReadResult.Success(DeserializeBundles(file), file.LastWriteTimeUtc);
             }
             else
