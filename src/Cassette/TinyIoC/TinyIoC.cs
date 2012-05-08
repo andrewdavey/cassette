@@ -21,11 +21,6 @@
 // Preprocessor directives for enabling/disabling functionality
 // depending on platform features. If the platform has an appropriate
 // #DEFINE then these should be set automatically below.
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 
 #define EXPRESSIONS                         // Platform supports System.Linq.Expressions
 #define APPDOMAIN_GETASSEMBLIES             // Platform supports getting all assemblies from the AppDomain object
@@ -56,9 +51,11 @@ using System.Reflection;
 #endregion
 namespace Cassette.TinyIoC
 {
-    #if EXPRESSIONS
-
-#endif
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
 
     #region SafeDictionary
     public class SafeDictionary<TKey, TValue> : IDisposable
