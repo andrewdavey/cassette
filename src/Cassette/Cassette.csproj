@@ -85,12 +85,13 @@
     <Compile Include="AssetPathComparer.cs" />
     <Compile Include="Caching\BundleCollectionCache.cs" />
     <Compile Include="Caching\BundleCollectionCacheReader.cs" />
-    <Compile Include="Caching\BundleCollectionCacheValidator.cs" />
+    <Compile Include="Caching\ManifestValidator.cs" />
     <Compile Include="Caching\BundleCollectionCacheWriter.cs" />
     <Compile Include="Caching\CacheReadResult.cs" />
     <Compile Include="Caching\FileAssetCacheValidator.cs" />
     <Compile Include="Caching\IAssetCacheValidator.cs" />
     <Compile Include="Caching\IBundleCollectionCache.cs" />
+    <Compile Include="Caching\Manifest.cs" />
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />

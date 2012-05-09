@@ -26,7 +26,8 @@ namespace Cassette.Caching
             {
                 try
                 {
-                    return CacheReadResult.Success(DeserializeBundles(file), file.LastWriteTimeUtc);
+                    // TODO: read IsPrecompiled
+                    return CacheReadResult.Success(CreateManifest(file));
                 }
                 catch
                 {
@@ -36,6 +37,29 @@ namespace Cassette.Caching
             else
             {
                 return CacheReadResult.Failed();
+            }
+        }
+
+        Manifest CreateManifest(IFile manifestFile)
+        {
+            var manifestElement = ManifestElement(manifestFile);
+            var bundles = DeserializeBundles(manifestFile);
+            var version = manifestElement.Attribute("Version").Value;
+            var isPrecompiled = bool.Parse(manifestElement.Attribute("IsPrecompiled").Value);
+            return new Manifest(
+                bundles,
+                version,
+                manifestFile.LastWriteTimeUtc,
+                isPrecompiled
+            );
+        }
+
+        XElement ManifestElement(IFile manifestFile)
+        {
+            using (var manifestStream = manifestFile.OpenRead())
+            {
+                var manifestDocument = XDocument.Load(manifestStream);
+                return manifestDocument.Root;
             }
         }
 

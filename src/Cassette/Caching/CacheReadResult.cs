@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Cassette.Caching
+﻿namespace Cassette.Caching
 {
     class CacheReadResult
     {
-        readonly IEnumerable<Bundle> bundles;
-        readonly DateTime cacheCreationDate;
-
-        CacheReadResult(IEnumerable<Bundle> bundles, DateTime cacheCreationDate)
+        public static CacheReadResult Success(Manifest manifest)
         {
-            this.bundles = bundles;
-            this.cacheCreationDate = cacheCreationDate;
+            return new CacheReadResult(manifest);
+        }
+
+        public static CacheReadResult Failed()
+        {
+            return new CacheReadResult();
+        }
+
+        CacheReadResult(Manifest manifest)
+        {
+            Manifest = manifest;
         }
 
         CacheReadResult()
@@ -20,27 +23,9 @@ namespace Cassette.Caching
 
         public bool IsSuccess
         {
-            get { return Bundles != null; }
+            get { return Manifest != null; }
         }
 
-        public IEnumerable<Bundle> Bundles
-        {
-            get { return bundles; }
-        }
-
-        public DateTime CacheCreationDate
-        {
-            get { return cacheCreationDate; }
-        }
-
-        public static CacheReadResult Success(IEnumerable<Bundle> bundles, DateTime cacheCreationDate)
-        {
-            return new CacheReadResult(bundles, cacheCreationDate);
-        }
-
-        public static CacheReadResult Failed()
-        {
-            return new CacheReadResult();
-        }
+        public Manifest Manifest { get; private set; }
     }
 }

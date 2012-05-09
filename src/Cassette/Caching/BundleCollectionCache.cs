@@ -22,11 +22,11 @@ namespace Cassette.Caching
             return reader.Read();
         }
 
-        public void Write(BundleCollection bundles, string version)
+        public void Write(Manifest manifest)
         {
             var writer = new BundleCollectionCacheWriter(cacheDirectory, ManifestFilename);
-            writer.WriteManifestFile(bundles, version);
-            writer.WriteBundleContentFiles(bundles);
+            writer.WriteManifestFile(manifest);
+            writer.WriteBundleContentFiles(manifest.Bundles);
         }
 
         public void Clear()

@@ -17,7 +17,7 @@ namespace Cassette
             {
                 var cacheReadResult = cache.Read();
                 bundles.Clear();
-                bundles.AddRange(cacheReadResult.Bundles);
+                bundles.AddRange(cacheReadResult.Manifest.Bundles);
                 bundles.BuildReferences();
             }
         }

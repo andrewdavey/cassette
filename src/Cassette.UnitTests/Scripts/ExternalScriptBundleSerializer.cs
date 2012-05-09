@@ -20,10 +20,10 @@ namespace Cassette.Scripts
             SerializeToElement();
         }
 
-        [Fact]  
-        public void UrlAttributeEqualsManifestUrl()
+        [Fact]
+        public void UrlAttributeEqualsManifestExternalUrl()
         {
-            element.Attribute("Url").Value.ShouldEqual(bundle.Url);
+            element.Attribute("Url").Value.ShouldEqual(bundle.ExternalUrl);
         }
 
         [Fact]

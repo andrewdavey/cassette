@@ -8,17 +8,17 @@ namespace Cassette
         readonly IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations;
         readonly IBundleCollectionCache cache;
         readonly ExternalBundleGenerator externalBundleGenerator;
-        readonly BundleCollectionCacheValidator cacheValidator;
+        readonly ManifestValidator manifestValidator;
         readonly CassetteSettings settings;
         BundleCollection bundles;
         CacheReadResult cacheReadResult;
 
-        public CacheAwareBundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, IBundleCollectionCache cache, ExternalBundleGenerator externalBundleGenerator, BundleCollectionCacheValidator cacheValidator, CassetteSettings settings)
+        public CacheAwareBundleCollectionInitializer(IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations, IBundleCollectionCache cache, ExternalBundleGenerator externalBundleGenerator, ManifestValidator manifestValidator, CassetteSettings settings)
         {
             this.bundleConfigurations = bundleConfigurations;
             this.cache = cache;
             this.externalBundleGenerator = externalBundleGenerator;
-            this.cacheValidator = cacheValidator;
+            this.manifestValidator = manifestValidator;
             this.settings = settings;
         }
 
@@ -63,19 +63,19 @@ namespace Cassette
         bool IsCacheValid()
         {
             return cacheReadResult.IsSuccess && 
-                   bundles.Equals(cacheReadResult.Bundles) && 
-                   cacheValidator.IsValid(cacheReadResult);
+                   bundles.Equals(cacheReadResult.Manifest.Bundles) && 
+                   manifestValidator.IsValid(cacheReadResult.Manifest);
         }
 
         void WriteToCache()
         {
-            cache.Write(bundles, settings.Version);
+            cache.Write(new Manifest(bundles, settings.Version));
         }
 
         void UseCachedBundles()
         {
             ClearBundles();
-            bundles.AddRange(cacheReadResult.Bundles);
+            bundles.AddRange(cacheReadResult.Manifest.Bundles);
         }
 
         void ProcessBundles()

@@ -47,7 +47,7 @@ namespace Cassette.Caching
             {
                 File.WriteAllText(
                     Path.Combine(path, "manifest.xml"),
-                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\"></BundleCollection>"
+                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\" IsPrecompiled=\"false\"></BundleCollection>"
                 );
 
                 var directory = new FileSystemDirectory(path);
@@ -58,20 +58,20 @@ namespace Cassette.Caching
         }
 
         [Fact]
-        public void CacheCreationDateEqualsManifestFileLastWriteTimeUtc()
+        public void CreationDateTimeEqualsManifestFileLastWriteTimeUtc()
         {
             using (var path = new TempDirectory())
             {
                 var manifestFilename = Path.Combine(path, "manifest.xml");
                 File.WriteAllText(
                     manifestFilename,
-                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\"></BundleCollection>"
+                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\" IsPrecompiled=\"false\"></BundleCollection>"
                 );
 
                 var directory = new FileSystemDirectory(path);
                 var cache = new BundleCollectionCache(directory, b => deserializers[b]);
                 var result = cache.Read();
-                result.CacheCreationDate.ShouldEqual(File.GetLastWriteTimeUtc(manifestFilename));
+                result.Manifest.CreationDateTime.ShouldEqual(File.GetLastWriteTimeUtc(manifestFilename));
             }
         }
 
@@ -84,7 +84,7 @@ namespace Cassette.Caching
                 File.WriteAllText(
                     Path.Combine(path, "manifest.xml"),
                     "<?xml version=\"1.0\"?>" +
-                    "<BundleCollection Version=\"1\">" +
+                    "<BundleCollection Version=\"1\" IsPrecompiled=\"false\">" +
                     "<ScriptBundle Path=\"~/test\" Hash=\"010203\"/>" +
                     "</BundleCollection>"
                 );

@@ -23,9 +23,9 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]  
-        public void UrlAttributeEqualsBundleUrl()
+        public void UrlAttributeEqualsBundleExternalUrl()
         {
-            element.Attribute("Url").Value.ShouldEqual(bundle.Url);
+            element.Attribute("Url").Value.ShouldEqual(bundle.ExternalUrl);
         }
 
         [Fact]

@@ -2,22 +2,24 @@ using System;
 
 namespace Cassette.Caching
 {
-    class BundleCollectionCacheValidator : IBundleVisitor
+    class ManifestValidator : IBundleVisitor
     {
         readonly Func<Type, IAssetCacheValidator> createAssetCacheValidator;
         DateTime asOfDateTime;
         bool isValid;
 
-        public BundleCollectionCacheValidator(Func<Type, IAssetCacheValidator> createAssetCacheValidator)
+        public ManifestValidator(Func<Type, IAssetCacheValidator> createAssetCacheValidator)
         {
             this.createAssetCacheValidator = createAssetCacheValidator;
         }
 
-        public bool IsValid(CacheReadResult cacheReadResult)
+        public bool IsValid(Manifest manifest)
         {
-            asOfDateTime = cacheReadResult.CacheCreationDate;
+            // TODO: Are precompiled manifests always true?
+
+            asOfDateTime = manifest.CreationDateTime;
             isValid = true;
-            foreach (var bundle in cacheReadResult.Bundles)
+            foreach (var bundle in manifest.Bundles)
             {
                 bundle.Accept(this);
             }

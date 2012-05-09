@@ -38,7 +38,7 @@ namespace Cassette.Caching
             bundles.Add(stylesheetBundle.Object);
 
             var cache = new BundleCollectionCache(directory, b => null);
-            cache.Write(bundles, "VERSION");
+            cache.Write(new Manifest(bundles, "VERSION"));
         }
 
         [Fact]

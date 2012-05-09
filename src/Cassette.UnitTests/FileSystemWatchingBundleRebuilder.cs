@@ -22,7 +22,8 @@ namespace Cassette
             tempDirectory = new TempDirectory();
             var settings = new CassetteSettings
             {
-                SourceDirectory = new FileSystemDirectory(tempDirectory)
+                SourceDirectory = new FileSystemDirectory(tempDirectory),
+                CacheDirectory = new FakeFileSystem()
             };
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             bundleConfiguration = new Mock<IConfiguration<BundleCollection>>();

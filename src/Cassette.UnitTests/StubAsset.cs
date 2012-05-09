@@ -53,7 +53,7 @@ namespace Cassette
 
         public Type AssetCacheValidatorType
         {
-            get { throw new NotImplementedException(); }
+            get { return typeof(Caching.FileAssetCacheValidator); }
         }
     }
 }

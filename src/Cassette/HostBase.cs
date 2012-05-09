@@ -116,7 +116,7 @@ namespace Cassette
                     bundleTypeName => ResolveBundleDeserializer(bundleTypeName, c)
                 );
             });
-            container.Register((c, p) => new BundleCollectionCacheValidator(type => (IAssetCacheValidator)c.Resolve(type)));
+            container.Register((c, p) => new ManifestValidator(type => (IAssetCacheValidator)c.Resolve(type)));
             container.Register((c, p) =>
             {
                 var directory = c.Resolve<CassetteSettings>().SourceDirectory;

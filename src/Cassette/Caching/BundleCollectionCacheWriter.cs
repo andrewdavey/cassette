@@ -16,12 +16,16 @@ namespace Cassette.Caching
             this.manifestFilename = manifestFilename;
         }
 
-        public void WriteManifestFile(IEnumerable<Bundle> bundles, string version)
+        public void WriteManifestFile(Manifest manifest)
         {
             var manifestDocuent = new XDocument(
-                new XElement("BundleCollection", new XAttribute("Version", version))
+                new XElement(
+                    "BundleCollection",
+                    new XAttribute("Version", manifest.Version),
+                    new XAttribute("IsPrecompiled", manifest.IsPrecompiled)
+                )
             );
-            SerializeBundlesIntoManifest(bundles, manifestDocuent);
+            SerializeBundlesIntoManifest(manifest.Bundles, manifestDocuent);
             using (var manifestStream = OpenManifestFileForWriting())
             {
                 manifestDocuent.Save(manifestStream);
