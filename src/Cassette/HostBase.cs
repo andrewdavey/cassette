@@ -118,10 +118,19 @@ namespace Cassette
             });
         }
 
+        static readonly Dictionary<string, Type> BundleDeserializers = new Dictionary<string, Type>
+        {
+            { typeof(ScriptBundle).Name, typeof(ScriptBundleDeserializer) },
+            { typeof(StylesheetBundle).Name, typeof(StylesheetBundleDeserializer) },
+            { typeof(HtmlTemplateBundle).Name, typeof(HtmlTemplateBundleDeserializer) },
+            { typeof(ExternalScriptBundle).Name, typeof(ExternalScriptBundleDeserializer) },
+            { typeof(ExternalStylesheetBundle).Name, typeof(ExternalStylesheetBundleDeserializer) }
+        };
+
         internal static IBundleDeserializer<Bundle> ResolveBundleDeserializer(string bundleTypeName, TinyIoCContainer container)
         {
-            var deserializerTypeName = Type.GetType(bundleTypeName + "Deserializer");
-            return (IBundleDeserializer<Bundle>)container.Resolve(deserializerTypeName);
+            var deserializerType = BundleDeserializers[bundleTypeName];
+            return (IBundleDeserializer<Bundle>)container.Resolve(deserializerType);
         }
 
         protected virtual void RegisterBundleCollectionInitializer()

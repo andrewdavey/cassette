@@ -149,6 +149,11 @@ namespace Cassette
             throw new NotImplementedException();
         }
 
+        public void Delete()
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool Equals(object obj)
         {
             return FullPath == ((FakeFileSystem)obj).FullPath;

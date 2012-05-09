@@ -6,13 +6,22 @@ using System.Xml.Linq;
 
 namespace Cassette
 {
-    class AssetSerializer
+    class AssetSerializer : IBundleVisitor
     {
         readonly XElement container;
 
         public AssetSerializer(XElement container)
         {
             this.container = container;
+        }
+
+        void IBundleVisitor.Visit(Bundle bundle)
+        {
+        }
+
+        void IBundleVisitor.Visit(IAsset asset)
+        {
+            Serialize(asset);
         }
 
         public void Serialize(IAsset asset)
@@ -25,6 +34,7 @@ namespace Cassette
             return new XElement(
                 "Asset",
                 new XAttribute("Path", asset.Path),
+                new XAttribute("AssetCacheValidatorType", asset.AssetCacheValidatorType.AssemblyQualifiedName),
                 ReferenceElements(asset.References)
             );
         }

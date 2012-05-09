@@ -12,9 +12,11 @@ namespace Cassette.Caching
         {
             using (var path = new TempDirectory())
             {
+                Directory.CreateDirectory(Path.Combine(path, "script/test1"));
+                Directory.CreateDirectory(Path.Combine(path, "stylesheet/test2"));
                 File.WriteAllText(Path.Combine(path, "manifest.xml"), "");
-                File.WriteAllText(Path.Combine(path, "010203.js"), "");
-                File.WriteAllText(Path.Combine(path, "040506.css"), "");
+                File.WriteAllText(Path.Combine(path, "script/test1/010203.js"), "");
+                File.WriteAllText(Path.Combine(path, "stylesheet/test2/040506.css"), "");
 
                 var directory = new FileSystemDirectory(path);
 
@@ -22,6 +24,7 @@ namespace Cassette.Caching
                 cache.Clear();
                 
                 Directory.GetFiles(path).Length.ShouldEqual(0);
+                Directory.GetDirectories(path).Length.ShouldEqual(0);
             }
         }
     }

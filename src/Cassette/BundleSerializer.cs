@@ -88,10 +88,7 @@ namespace Cassette
         void WriteAssetElements(XElement bundleElement)
         {
             var assetSerializer = new AssetSerializer(bundleElement);
-            foreach (var asset in bundle.Assets)
-            {
-                assetSerializer.Serialize(asset);
-            }
+            bundle.Accept(assetSerializer);
         }
 
         XElement SerializeReference(string path)

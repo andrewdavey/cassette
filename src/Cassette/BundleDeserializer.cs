@@ -27,7 +27,8 @@ namespace Cassette
             this.directory = cacheDirectory;
             var bundle = CreateBundle(element);
             bundle.Hash = GetHashAttribute();
-            bundle.ContentType = GetOptionalAttribute("ContentType");
+            var contentType = GetOptionalAttribute("ContentType");
+            if (contentType != null) bundle.ContentType = contentType;
             bundle.PageLocation = GetOptionalAttribute("PageLocation");
             AddAssets(bundle);
             AddReferences(bundle);
@@ -81,11 +82,9 @@ namespace Cassette
         {
             var assetElements = element.Elements("Asset");
             var assets = assetElements.Select(e => new AssetDeserializer().Deserialize(e));
-            var contentFile = directory.GetFile(bundle.Hash.ToHexString() + ContentFileExtension);
+            var contentFile = directory.GetFile(bundle.CacheFilename);
             bundle.Assets.Add(new CachedBundleContent(contentFile, assets, urlModifier));
         }
-
-        protected abstract string ContentFileExtension { get; }
 
         void AddReferences(Bundle bundle)
         {

@@ -14,10 +14,5 @@ namespace Cassette.Stylesheets
             bundle.Media = GetOptionalAttribute("Media");
             bundle.Renderer = CreateHtmlRenderer<StylesheetBundle>();
         }
-
-        protected override string ContentFileExtension
-        {
-            get { return ".css"; }
-        }
     }
 }

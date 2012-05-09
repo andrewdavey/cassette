@@ -80,6 +80,7 @@ namespace Cassette.Caching
         {
             using (var path = new TempDirectory())
             {
+                Directory.CreateDirectory(Path.Combine(path, "script/test"));
                 File.WriteAllText(
                     Path.Combine(path, "manifest.xml"),
                     "<?xml version=\"1.0\"?>" +
@@ -87,7 +88,7 @@ namespace Cassette.Caching
                     "<ScriptBundle Path=\"~/test\" Hash=\"010203\"/>" +
                     "</BundleCollection>"
                 );
-                File.WriteAllText(Path.Combine(path, "010203.js"), "");
+                File.WriteAllText(Path.Combine(path, "script/test/010203.js"), "");
 
                 var directory = new FileSystemDirectory(path);
                 var cache = new BundleCollectionCache(directory, b => deserializers[b]);

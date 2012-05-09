@@ -22,5 +22,6 @@ namespace Cassette.IO
         );
 
         void Create();
+        void Delete();
     }
 }

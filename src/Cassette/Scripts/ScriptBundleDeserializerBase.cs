@@ -16,10 +16,5 @@ namespace Cassette.Scripts
             bundle.Condition = element.AttributeValueOrNull("Condition");
             bundle.Renderer = CreateHtmlRenderer<ScriptBundle>();
         }
-
-        protected override string ContentFileExtension
-        {
-            get { return ".js"; }
-        }
     }
 }

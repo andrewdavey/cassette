@@ -84,7 +84,9 @@
     <Compile Include="AssemblyScanner.cs" />
     <Compile Include="AssetPathComparer.cs" />
     <Compile Include="Caching\BundleCollectionCache.cs" />
+    <Compile Include="Caching\BundleCollectionCacheReader.cs" />
     <Compile Include="Caching\BundleCollectionCacheValidator.cs" />
+    <Compile Include="Caching\BundleCollectionCacheWriter.cs" />
     <Compile Include="Caching\CacheReadResult.cs" />
     <Compile Include="Caching\FileAssetCacheValidator.cs" />
     <Compile Include="Caching\IAssetCacheValidator.cs" />

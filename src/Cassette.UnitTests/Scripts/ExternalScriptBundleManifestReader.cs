@@ -22,7 +22,7 @@ namespace Cassette.Scripts
             );
             directory = new FakeFileSystem
             {
-                { "~/010203.js", "content" }
+                { "~/script/010203.js", "content" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
             reader = new ExternalScriptBundleDeserializer(directory, urlModifier);

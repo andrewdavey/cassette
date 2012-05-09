@@ -62,26 +62,6 @@ namespace Cassette.IO
         }
     }
 
-    public class FileSystemDirectory_DeleteAll_Tests
-    {
-        [Fact]
-        public void GivenFilesAndSubDirectories_WhenDeleteAll_ThenEverythingIsDeleted()
-        {
-            using (var path = new TempDirectory())
-            {
-                Directory.CreateDirectory(Path.Combine(path, "sub"));
-                File.WriteAllText(Path.Combine(path, "file1.txt"), "1");
-                File.WriteAllText(Path.Combine(path, "sub\\file2.txt"), "2");
-
-                var dir = new FileSystemDirectory(path);
-                dir.DeleteContents();
-
-                Directory.GetFiles(path).Length.ShouldEqual(0);
-                Directory.GetDirectories(path).Length.ShouldEqual(0);
-            }
-        }
-    }
-
     public class FileSystemDirectory_GetDirectory_Tests
     {
         [Fact]

@@ -20,7 +20,7 @@ namespace Cassette.Scripts
                 new XAttribute("Path", "~"),
                 new XAttribute("Hash", "010203"),
                 new XAttribute("Condition", "expected-condition"),
-                new XAttribute("ContentType", "CONTENT-TYPE"),
+                new XAttribute("ContentType", "text/javascript"),
                 new XAttribute("PageLocation", "PAGE-LOCATION"),
                 new XElement("Asset", new XAttribute("Path", "~/asset-1"), new XAttribute("AssetCacheValidatorType", typeof(FileAssetCacheValidator).FullName)),
                 new XElement("Asset", new XAttribute("Path", "~/asset-2"), new XAttribute("AssetCacheValidatorType", typeof(FileAssetCacheValidator).FullName)),
@@ -40,7 +40,7 @@ namespace Cassette.Scripts
 
             directory = new FakeFileSystem
             {
-                { "~/010203.js", "CONTENT" }
+                { "~/script/010203.js", "CONTENT" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
             deserializer = new ScriptBundleDeserializer(urlModifier);
@@ -105,15 +105,15 @@ namespace Cassette.Scripts
         [Fact]
         public void ManifestContentTypeEqualsContentTypeAttribute()
         {
-            bundle.ContentType.ShouldEqual("CONTENT-TYPE");
+            bundle.ContentType.ShouldEqual("text/javascript");
         }
 
         [Fact]
-        public void GivenNoContentTypeAttributeThenManifestContentTypeIsNull()
+        public void GivenNoContentTypeAttributeThenManifestContentTypeIsDefault()
         {
             element.SetAttributeValue("ContentType", null);
             DeserializeBundle();
-            bundle.ContentType.ShouldBeNull();
+            bundle.ContentType.ShouldEqual("text/javascript");
         }
 
         [Fact]

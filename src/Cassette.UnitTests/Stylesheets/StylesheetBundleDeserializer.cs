@@ -22,7 +22,7 @@ namespace Cassette.Stylesheets
             );
             directory = new FakeFileSystem
             {
-                { "~/010203.css", "content" }
+                { "~/stylesheet/010203.css", "content" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
             reader = new StylesheetBundleDeserializer(urlModifier);

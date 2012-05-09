@@ -17,10 +17,5 @@ namespace Cassette.HtmlTemplates
                 Renderer = CreateHtmlRenderer<HtmlTemplateBundle>()
             };
         }
-
-        protected override string ContentFileExtension
-        {
-            get { return ".htm"; }
-        }
     }
 }

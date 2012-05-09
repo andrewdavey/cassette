@@ -82,6 +82,24 @@ namespace Cassette
 
         protected abstract string UrlBundleTypeArgument { get; }
 
+        internal string CacheFilename
+        {
+            get
+            {
+                return UrlBundleTypeArgument + 
+                       Path.Substring(1) + 
+                       "/" + Hash.ToHexString() + 
+                       "." + FileExtensionsByContentType[ContentType];
+            }
+        }
+
+        static readonly Dictionary<string, string> FileExtensionsByContentType = new Dictionary<string, string>
+        {
+            { "text/javascript", "js" },
+            { "text/css", "css" },
+            { "text/html", "htm" }
+        };
+
         internal IEnumerable<string> References
         {
             get { return references; }

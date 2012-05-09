@@ -69,7 +69,9 @@ namespace Cassette.MSBuild
         IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
         {
             var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath), b => new StylesheetBundleDeserializer(urlModifier));
-            return cache.Read().Bundles;
+            var result = cache.Read();
+            result.IsSuccess.ShouldBeTrue();
+            return result.Bundles;
         }
 
         class AppDomainInstance<T> : IDisposable

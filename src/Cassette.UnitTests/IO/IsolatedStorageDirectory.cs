@@ -62,5 +62,40 @@ namespace Cassette.IO
             files[1].ShouldBeType<IsolatedStorageFile>();
             files[1].FullPath.ShouldEqual("~/test2.js");
         }
+
+        [Fact]
+        public void CanDeleteSubDirectoryWithContents()
+        {
+            storage.CreateDirectory("test");
+            WriteFile("test/file.txt");
+            storage.CreateDirectory("test/sub");
+            WriteFile("test/sub/file.txt");
+
+            var directory = new IsolatedStorageDirectory(() => storage);
+            var subDirectory = directory.GetDirectory("test");
+            subDirectory.Delete();
+
+            storage.DirectoryExists("test").ShouldBeFalse();
+        }
+
+        void WriteFile(string filename)
+        {
+            using (var file = storage.CreateFile(filename))
+            {
+                file.Write(new byte[] { 1 }, 0, 1);
+                file.Flush(true);
+            }
+        }
+
+        [Fact]
+        public void WhenGetFileInSubDirectoryFromRoot_ThenFilesDirectoryIsTheSubDirectory()
+        {
+            storage.CreateDirectory("test/sub");
+            WriteFile("test/sub/file.txt");
+
+            var root = new IsolatedStorageDirectory(() => storage);
+            var file = root.GetFile("test/sub/file.txt");
+            file.Directory.FullPath.ShouldEqual("~/test/sub");
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace Cassette
         {
             asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/asset");
+            asset.SetupGet(a => a.AssetCacheValidatorType).Returns(typeof(Caching.FileAssetCacheValidator));
             asset.SetupGet(a => a.References).Returns(new[]
             {
                 new AssetReference("~/asset", "~/bundle", 1, AssetReferenceType.DifferentBundle),
@@ -39,6 +40,13 @@ namespace Cassette
         public void AssetElementPathAttributeEqualsManifestPath()
         {
             assetElement.Attribute("Path").Value.ShouldEqual("~/asset");
+        }
+
+        [Fact]
+        public void AssetElementAssetCacheValidatorTypeAttributeEqualsValidatorTypeName()
+        {
+            var typeName = typeof(Caching.FileAssetCacheValidator).AssemblyQualifiedName;
+            assetElement.Attribute("AssetCacheValidatorType").Value.ShouldEqual(typeName);
         }
 
         [Fact]

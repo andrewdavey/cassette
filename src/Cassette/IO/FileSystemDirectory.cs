@@ -60,16 +60,9 @@ namespace Cassette.IO
             return Directory.Exists(GetAbsolutePath(path));
         }
 
-        public void DeleteContents()
+        public void Delete()
         {
-            foreach (var directory in Directory.GetDirectories(fullSystemPath))
-            {
-                Directory.Delete(directory, true);
-            }
-            foreach (var filename in Directory.GetFiles(fullSystemPath))
-            {
-                File.Delete(filename);
-            }
+            Directory.Delete(fullSystemPath, true);
         }
 
         string GetAbsolutePath(string filename)

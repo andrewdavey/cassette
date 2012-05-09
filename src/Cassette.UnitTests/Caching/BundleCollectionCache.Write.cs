@@ -24,13 +24,17 @@ namespace Cassette.Caching
 
             var bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             scriptBundle = new Mock<ScriptBundle>("~/test1");
+            scriptBundle.CallBase = true;
             scriptBundle.Object.Hash = new byte[] { 1, 2, 3 };
             scriptBundle.Object.Assets.Add(new StubAsset("~/test/asset.js", "script-bundle-content"));
+            scriptBundle.Setup(b => b.Render()).Returns("");
             bundles.Add(scriptBundle.Object);
             
             stylesheetBundle = new Mock<StylesheetBundle>("~/test2");
+            stylesheetBundle.CallBase = true;
             stylesheetBundle.Object.Hash = new byte[] { 4, 5, 6 };
             stylesheetBundle.Object.Assets.Add(new StubAsset("~/test2/asset.css", "stylesheet-bundle-content"));
+            stylesheetBundle.Setup(b => b.Render()).Returns("");
             bundles.Add(stylesheetBundle.Object);
 
             var cache = new BundleCollectionCache(directory, b => null);
@@ -60,7 +64,7 @@ namespace Cassette.Caching
         [Fact]
         public void ItCreatesScriptBundleContentFile()
         {
-            var file = directory.GetFile("~/010203.js");
+            var file = directory.GetFile("~/script/test1/010203.js");
             var content = file.OpenRead().ReadToEnd();
             content.ShouldEqual("script-bundle-content");
         }
@@ -68,7 +72,7 @@ namespace Cassette.Caching
         [Fact]
         public void ItCreatesStylesheetBundleContentFile()
         {
-            var file = directory.GetFile("~/040506.css");
+            var file = directory.GetFile("~/stylesheet/test2/040506.css");
             var content = file.OpenRead().ReadToEnd();
             content.ShouldEqual("stylesheet-bundle-content");
         }
