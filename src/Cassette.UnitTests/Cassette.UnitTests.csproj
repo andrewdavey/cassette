@@ -143,7 +143,7 @@
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetSerializer.cs" />
     <Compile Include="NullModifier.cs" />
-    <Compile Include="Scripts\ExternalScriptBundleManifestReader.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleDeserializer.cs" />
     <Compile Include="Scripts\ScriptBundleDeserializer.cs" />
     <Compile Include="BundleSerializer.cs" />
     <Compile Include="HtmlAttributeDictionary.cs" />

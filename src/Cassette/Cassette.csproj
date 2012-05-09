@@ -123,7 +123,7 @@
     <Compile Include="DelegatingDisposable.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatesContainerConfiguration.cs" />
-    <Compile Include="HtmlTemplates\HtmlTemplateBundleManifestWriter.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleSerializer.cs" />
     <Compile Include="IFileSearchProvider.cs" />
     <Compile Include="IBundleFactoryProvider.cs" />
     <Compile Include="IExternalBundle.cs" />
@@ -201,12 +201,12 @@
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\IJavaScriptMinifier.cs" />
     <Compile Include="Scripts\ExternalScriptBundleDeserializer.cs" />
-    <Compile Include="Scripts\ExternalScriptBundleManifestWriter.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleSerializer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
     <Compile Include="Scripts\ScriptBundleDeserializerBase.cs" />
-    <Compile Include="Scripts\ScriptBundleManifestWriter.cs" />
+    <Compile Include="Scripts\ScriptBundleSerializer.cs" />
     <Compile Include="Scripts\ScriptBundleSerializerBase.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptContainersConfiguration.cs" />
