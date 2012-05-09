@@ -8,7 +8,6 @@ namespace Cassette.Caching
         DateTime asOfDateTime;
         bool isValid;
 
-        // TODO: Setup IoC container to create this
         public BundleCollectionCacheValidator(Func<Type, IAssetCacheValidator> createAssetCacheValidator)
         {
             this.createAssetCacheValidator = createAssetCacheValidator;

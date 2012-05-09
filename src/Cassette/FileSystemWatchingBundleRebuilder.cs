@@ -74,6 +74,7 @@ namespace Cassette
 
         bool IsPotentialAssetFile(string path)
         {
+            if (IsCacheFile(path)) return false;
             try
             {
                 using (bundles.GetReadLock())
@@ -91,6 +92,7 @@ namespace Cassette
 
         bool IsKnownPath(string path)
         {
+            if (IsCacheFile(path)) return false;
             try
             {
                 using (bundles.GetReadLock())
@@ -112,6 +114,11 @@ namespace Cassette
             var predicate = new BundleContainsPathPredicate(path) { AllowPartialAssetPaths = true };
             bundles.Accept(predicate);
             return predicate.Result;
+        }
+
+        bool IsCacheFile(string path)
+        {
+            return settings.CacheDirectory.GetFile(path).Exists;
         }
 
         void QueueRebuild()

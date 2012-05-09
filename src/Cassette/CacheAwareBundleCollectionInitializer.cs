@@ -40,6 +40,7 @@ namespace Cassette
                     WriteToCache();
                 }
 
+                AddBundlesForUrlReferences();
                 bundles.BuildReferences();
             }
         }
@@ -80,7 +81,6 @@ namespace Cassette
         void ProcessBundles()
         {
             bundles.Process();
-            AddBundlesForUrlReferences();
         }
 
         void AddBundlesForUrlReferences()

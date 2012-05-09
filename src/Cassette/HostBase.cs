@@ -116,6 +116,12 @@ namespace Cassette
                     bundleTypeName => ResolveBundleDeserializer(bundleTypeName, c)
                 );
             });
+            container.Register((c, p) => new BundleCollectionCacheValidator(type => (IAssetCacheValidator)c.Resolve(type)));
+            container.Register((c, p) =>
+            {
+                var directory = c.Resolve<CassetteSettings>().SourceDirectory;
+                return new FileAssetCacheValidator(directory);
+            });
         }
 
         static readonly Dictionary<string, Type> BundleDeserializers = new Dictionary<string, Type>

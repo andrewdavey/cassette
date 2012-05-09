@@ -12,7 +12,7 @@ namespace Cassette.Stylesheets
         protected override XElement CreateElement()
         {
             var element = base.CreateElement();
-            element.Add(new XAttribute("Url", Bundle.Url));
+            element.Add(new XAttribute("Url", Bundle.ExternalUrl));
 
             return element;
         }

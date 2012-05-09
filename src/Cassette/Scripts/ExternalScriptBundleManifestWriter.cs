@@ -22,7 +22,7 @@ namespace Cassette.Scripts
 
         void AddUrlAttribute()
         {
-            element.Add(new XAttribute("Url", Bundle.Url));
+            element.Add(new XAttribute("Url", Bundle.ExternalUrl));
         }
 
         void AddFallbackConditionIfNotNull()

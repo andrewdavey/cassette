@@ -1,12 +1,11 @@
 using System.Xml.Linq;
-using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
     class ExternalScriptBundleDeserializer : ScriptBundleDeserializerBase<ExternalScriptBundle>
     {
-        public ExternalScriptBundleDeserializer(IDirectory directory, IUrlModifier urlModifier)
+        public ExternalScriptBundleDeserializer(IUrlModifier urlModifier)
             : base(urlModifier)
         {
         }
