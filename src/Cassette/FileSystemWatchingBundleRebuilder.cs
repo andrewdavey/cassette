@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Cassette.IO;
 
 namespace Cassette
 {
@@ -118,7 +119,20 @@ namespace Cassette
 
         bool IsCacheFile(string path)
         {
-            return settings.CacheDirectory.GetFile(path).Exists;
+            // path is relative to source directory. So to be a path in cache, cache needs to be contained within source.
+            // The following is a bit of hack.
+            var cache = settings.CacheDirectory as FileSystemDirectory;
+            var source = settings.SourceDirectory as FileSystemDirectory;
+            if (cache == null || source == null) return false;
+            var subDirectory = source.TryGetAsSubDirectory(cache);
+            if (subDirectory != null)
+            {
+                return path.StartsWith(subDirectory.FullPath, StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         void QueueRebuild()

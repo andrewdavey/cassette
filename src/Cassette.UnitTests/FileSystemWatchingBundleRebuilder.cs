@@ -20,10 +20,11 @@ namespace Cassette
         public FileSystemWatchingBundleRebuilder_Tests()
         {
             tempDirectory = new TempDirectory();
+            Directory.CreateDirectory(Path.Combine(tempDirectory, "cache"));
             var settings = new CassetteSettings
             {
                 SourceDirectory = new FileSystemDirectory(tempDirectory),
-                CacheDirectory = new FakeFileSystem()
+                CacheDirectory = new FileSystemDirectory(Path.Combine(tempDirectory, "cache"))
             };
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             bundleConfiguration = new Mock<IConfiguration<BundleCollection>>();
@@ -190,6 +191,16 @@ namespace Cassette
             {
                 Trace.Source.Listeners.Remove(listener);
             }
+        }
+
+        [Fact]
+        public void WhenCacheFileIsChanged_ThenDontRebuild()
+        {
+            rebuilder.Start();
+
+            CreateFile("cache/cached-file.js");
+
+            AssertBundleCollectionNotRebuilt();
         }
 
         class TestTraceListener : TraceListener

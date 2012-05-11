@@ -141,5 +141,31 @@ namespace Cassette.IO
         {
             return "~/" + fullPath.Substring(fullSystemPath.Length).TrimStart('\\', '/').Replace('\\', '/');
         }
+
+        /// <remarks>
+        /// This method is a bit of a hack. An independently created FileSystemDirectory could be a sub-directory.
+        /// This method converts it to a proper sub-directory object if possible, otherwise returns null.
+        /// </remarks>
+        internal IDirectory TryGetAsSubDirectory(FileSystemDirectory directory)
+        {
+            // Example:
+            // fullSystemPath == "c:\example"
+            // directory.fullSystemPath == "c:\example\sub"
+            // return GetDirectory("sub")
+
+            var isSubDirectory = 
+                directory.fullSystemPath.Length >= fullSystemPath.Length &&
+                directory.fullSystemPath.Substring(0, fullSystemPath.Length).Equals(fullSystemPath, StringComparison.OrdinalIgnoreCase);
+
+            if (isSubDirectory)
+            {
+                var subPath = directory.fullSystemPath.Substring(fullSystemPath.Length + 1);
+                return GetDirectory(subPath);
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
