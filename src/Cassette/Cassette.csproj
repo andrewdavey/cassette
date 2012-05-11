@@ -195,7 +195,6 @@
     <Compile Include="IUrlModifier.cs" />
     <Compile Include="NullPlaceholderTracker.cs" />
     <Compile Include="PlaceholderTracker.cs" />
-    <Compile Include="PrecompiledBundleCollectionInitializer.cs" />
     <Compile Include="CacheAwareBundleCollectionInitializer.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\AssignScriptRenderer.cs" />

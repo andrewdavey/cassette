@@ -15,7 +15,6 @@ namespace Cassette
     {
         public CassetteSettings(IEnumerable<IConfiguration<CassetteSettings>> configurations)
         {
-            PrecompiledManifestFile = new NonExistentFile("");
             ApplyConfigurations(configurations);
         }
 
@@ -28,8 +27,6 @@ namespace Cassette
         {
             configurations.OrderByConfigurationOrderAttribute().Configure(this);
         }
-
-        internal IFile PrecompiledManifestFile { get; set; }
 
         /// <summary>
         /// When this property is true, Cassette will output debug-friendly assets. When false, combined, minified bundles are used instead.

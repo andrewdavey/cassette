@@ -22,7 +22,7 @@ namespace Cassette.Caching
                 new XElement(
                     "BundleCollection",
                     new XAttribute("Version", manifest.Version),
-                    new XAttribute("IsPrecompiled", manifest.IsPrecompiled)
+                    new XAttribute("IsPrecompiled", manifest.IsStatic)
                 )
             );
             SerializeBundlesIntoManifest(manifest.Bundles, manifestDocuent);

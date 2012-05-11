@@ -24,18 +24,33 @@ namespace Cassette
 
         public void Initialize(BundleCollection bundleCollection)
         {
-            bundles = bundleCollection;
-            using (bundles.GetWriteLock())
+            using (bundleCollection.GetWriteLock())
             {
+                bundles = bundleCollection;
                 ClearBundles();
-                AddBundlesFromConfigurations();
-                ReadCache();
-                if (IsCacheValid())
+                if (ReadCache())
                 {
-                    UseCachedBundles();
+                    if (IsStaticCache)
+                    {
+                        UseCachedBundles();
+                    }
+                    else
+                    {
+                        AddBundlesFromConfigurations();
+                        if (IsCacheValid)
+                        {
+                            UseCachedBundles();
+                        }
+                        else
+                        {
+                            ProcessBundles();
+                            WriteToCache();
+                        }
+                    }
                 }
                 else
                 {
+                    AddBundlesFromConfigurations();
                     ProcessBundles();
                     WriteToCache();
                 }
@@ -55,16 +70,24 @@ namespace Cassette
             bundleConfigurations.Configure(bundles);
         }
 
-        void ReadCache()
+        bool ReadCache()
         {
             cacheReadResult = cache.Read();
+            return cacheReadResult.IsSuccess;
         }
 
-        bool IsCacheValid()
+        bool IsStaticCache
         {
-            return cacheReadResult.IsSuccess && 
-                   bundles.Equals(cacheReadResult.Manifest.Bundles) && 
-                   manifestValidator.IsValid(cacheReadResult.Manifest);
+            get { return cacheReadResult.Manifest.IsStatic; }
+        }
+
+        bool IsCacheValid
+        {
+            get
+            {
+                return bundles.Equals(cacheReadResult.Manifest.Bundles) &&
+                       manifestValidator.IsValid(cacheReadResult.Manifest);
+            }
         }
 
         void WriteToCache()

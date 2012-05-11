@@ -47,7 +47,7 @@ namespace Cassette.MSBuild
         {
             var bundles = Container.Resolve<BundleCollection>();
             var cache = Container.Resolve<IBundleCollectionCache>();
-            cache.Write(Manifest.Precompiled(bundles));
+            cache.Write(Manifest.Static(bundles));
         }
 
         protected override void ConfigureContainer()

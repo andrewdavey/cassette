@@ -25,6 +25,7 @@ namespace Cassette
             set { this["allowRemoteDiagnostics"] = value; }
         }
 
+        // TODO: Use it or lose it!
         [ConfigurationProperty("watchFileSystem", DefaultValue = null)]
         public bool? WatchFileSystem
         {
@@ -32,13 +33,11 @@ namespace Cassette
             set { this["watchFileSystem"] = value; }
         }
 
-        // TODO: Remove this in favour of simply "cacheDirectory"
-        // But add way to mark the cache as "compile-time" so we can skip checking it against the source directory.
-        [ConfigurationProperty("precompiledCacheDirectory", DefaultValue = null)]
-        public string PrecompiledManifest
+        [ConfigurationProperty("cacheDirectory", DefaultValue = null)]
+        public string CacheDirectory
         {
-            get { return (string)this["precompiledCacheDirectory"]; }
-            set { this["precompiledCacheDirectory"] = value; }
+            get { return (string)this["cacheDirectory"]; }
+            set { this["cacheDirectory"] = value; }
         }
     }
 }

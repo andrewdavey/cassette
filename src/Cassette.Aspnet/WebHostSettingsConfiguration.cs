@@ -1,6 +1,7 @@
 using System.Web;
 using System.Web.Configuration;
 using Cassette.IO;
+using System.IO;
 
 namespace Cassette.Aspnet
 {
@@ -20,19 +21,28 @@ namespace Cassette.Aspnet
             settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
             settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
             settings.SourceDirectory = new FileSystemDirectory(AppDomainAppPath);
-            settings.CacheDirectory = new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
-            var precompiledManifestFilename = string.IsNullOrEmpty(configurationSection.PrecompiledManifest)
-                                                  ? "~/App_Data/cassette.xml"
-                                                  : configurationSection.PrecompiledManifest;
-            settings.PrecompiledManifestFile = settings.SourceDirectory.GetFile(precompiledManifestFilename);
+            settings.CacheDirectory = GetCacheDirectory(configurationSection);
 
             // Include the virtual directory so that if the application is moved to 
             // another virtual directory the bundles will be rebuilt with the updated URLs.
             settings.Version += virtualDirectory;
+        }
 
-            if (settings.PrecompiledManifestFile.Exists)
+        IDirectory GetCacheDirectory(CassetteConfigurationSection configurationSection)
+        {
+            var path = configurationSection.CacheDirectory;
+            if (string.IsNullOrEmpty(path))
             {
-                settings.IsDebuggingEnabled = false;
+                return new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
+            }
+            else if (Path.IsPathRooted(path))
+            {
+                return new FileSystemDirectory(path);
+            }
+            else
+            {
+                path = path.TrimStart('~', '/');
+                return new FileSystemDirectory(Path.Combine(AppDomainAppPath, path));
             }
         }
 
