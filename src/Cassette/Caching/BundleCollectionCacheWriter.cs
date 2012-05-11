@@ -22,7 +22,7 @@ namespace Cassette.Caching
                 new XElement(
                     "BundleCollection",
                     new XAttribute("Version", manifest.Version),
-                    new XAttribute("IsPrecompiled", manifest.IsStatic)
+                    new XAttribute("IsStatic", manifest.IsStatic)
                 )
             );
             SerializeBundlesIntoManifest(manifest.Bundles, manifestDocuent);
@@ -58,6 +58,8 @@ namespace Cassette.Caching
 
         void WriteBundleContentFile(Bundle bundle)
         {
+            if (bundle.Assets.Count == 0) return;
+
             var file = cacheDirectory.GetFile(bundle.CacheFilename);
             file.Directory.Create();
             using (var contentFileStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))

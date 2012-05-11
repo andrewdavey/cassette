@@ -45,12 +45,12 @@ namespace Cassette.Caching
             var manifestElement = ManifestElement(manifestFile);
             var bundles = DeserializeBundles(manifestFile);
             var version = manifestElement.Attribute("Version").Value;
-            var isPrecompiled = bool.Parse(manifestElement.Attribute("IsPrecompiled").Value);
+            var isStatic = bool.Parse(manifestElement.Attribute("IsStatic").Value);
             return new Manifest(
                 bundles,
                 version,
                 manifestFile.LastWriteTimeUtc,
-                isPrecompiled
+                isStatic
             );
         }
 

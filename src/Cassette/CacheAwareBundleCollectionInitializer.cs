@@ -44,6 +44,7 @@ namespace Cassette
                         else
                         {
                             ProcessBundles();
+                            AddBundlesForUrlReferences();
                             WriteToCache();
                         }
                     }
@@ -52,10 +53,10 @@ namespace Cassette
                 {
                     AddBundlesFromConfigurations();
                     ProcessBundles();
+                    AddBundlesForUrlReferences();
                     WriteToCache();
                 }
 
-                AddBundlesForUrlReferences();
                 bundles.BuildReferences();
             }
         }

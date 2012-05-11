@@ -79,7 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Cassette.MSBuild.symbols.nutrans" />
-    <None Include="Cassette.targets" />
+    <None Include="Cassette.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="uninstall.ps1" />
     <None Include="install.ps1" />
     <None Include="Web.config.transform" />

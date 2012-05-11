@@ -81,7 +81,8 @@ namespace Cassette
         void AddAssets(Bundle bundle)
         {
             var assetElements = element.Elements("Asset");
-            var assets = assetElements.Select(e => new AssetDeserializer().Deserialize(e));
+            var assets = assetElements.Select(e => new AssetDeserializer().Deserialize(e)).ToArray();
+            if (assets.Length == 0) return;
             var contentFile = directory.GetFile(bundle.CacheFilename);
             bundle.Assets.Add(new CachedBundleContent(contentFile, assets, urlModifier));
         }

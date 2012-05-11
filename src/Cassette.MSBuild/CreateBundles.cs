@@ -9,17 +9,17 @@ namespace Cassette.MSBuild
     public class CreateBundles : AppDomainIsolatedTask
     {
         [Required]
-        public string Input { get; set; }
+        public string Source { get; set; }
 
-        /// <summary>
-        /// File name to save the Cassette manifest as.
-        /// </summary>
+        [Required]
+        public string Assemblies { get; set; }
+
         [Required]
         public string Output { get; set; }
 
         public override bool Execute()
         {
-            using (var host = new MSBuildHost(Input, Output))
+            using (var host = new MSBuildHost(Source, Assemblies, Output))
             {
                 host.Initialize();
                 host.Execute();

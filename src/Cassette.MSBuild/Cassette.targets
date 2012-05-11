@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--
     The web application csproj file has been modified to import this file.
-    So after a build, the Cassette bundles will be created and a cache file written to App_Data\cassette.xml.
+    So after a build, the Cassette bundles will be saved into a cache directory.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">    
     <UsingTask AssemblyFile="$(OutputPath)\Cassette.MSBuild.dll" TaskName="CreateBundles"/>
     <Target Name="Bundle" AfterTargets="Build">
-        <MakeDir Directories="App_Data"/>
-        <CreateBundles Assemblies="$(OutputPath)$(AssemblyName).dll" Output="App_Data\cassette.xml"/>
+        <MakeDir Directories="cassette-cache"/>
+        <CreateBundles Source="$(MSBuildProjectDirectory)" Assemblies="$(OutputPath)" Output="$(MSBuildProjectDirectory)\cassette-cache"/>
     </Target>
 </Project>

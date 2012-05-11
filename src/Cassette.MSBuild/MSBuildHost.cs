@@ -10,18 +10,20 @@ namespace Cassette.MSBuild
     public class MSBuildHost : HostBase
     {
         readonly string inputDirectory;
+        readonly string assemblies;
         readonly string outputDirectory;
 
-        public MSBuildHost(string inputDirectory, string outputDirectory)
+        public MSBuildHost(string inputDirectory, string assemblies, string outputDirectory)
         {
             this.inputDirectory = inputDirectory;
+            this.assemblies = assemblies;
             this.outputDirectory = outputDirectory;
         }
 
         protected override IEnumerable<Assembly> LoadAssemblies()
         {
             return Directory
-                .GetFiles(inputDirectory, "*.dll")
+                .GetFiles(Path.Combine(inputDirectory, assemblies), "*.dll")
                 .Select(Assembly.LoadFrom);
         }
 

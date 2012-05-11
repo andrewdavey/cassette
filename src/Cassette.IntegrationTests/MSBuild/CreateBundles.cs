@@ -36,7 +36,8 @@ namespace Cassette.MSBuild
             using (var container = new AppDomainInstance<CreateBundles>())
             {
                 var task = container.Value;
-                task.Input = path;
+                task.Source = path;
+                task.Assemblies = path;
                 cachePath = Path.Combine(path, "cache");
                 Environment.CurrentDirectory = path;
                 task.Output = cachePath;
