@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,21 +11,38 @@ namespace Cassette.MSBuild
     public class MSBuildHost : HostBase
     {
         readonly string inputDirectory;
-        readonly string assemblies;
+        readonly string binDirectory;
         readonly string outputDirectory;
 
-        public MSBuildHost(string inputDirectory, string assemblies, string outputDirectory)
+        public MSBuildHost(string inputDirectory, string binDirectory, string outputDirectory)
         {
+            if (!Path.IsPathRooted(inputDirectory)) throw new ArgumentException("inputDirectory must be an absolute path.", "inputDirectory");
+            if (!Path.IsPathRooted(binDirectory)) throw new ArgumentException("binDirectory must be an absolute path.", "binDirectory");
+            if (!Path.IsPathRooted(outputDirectory)) throw new ArgumentException("outputDirectory must be an absolute path.", "outputDirectory");
+
             this.inputDirectory = inputDirectory;
-            this.assemblies = assemblies;
+            this.binDirectory = binDirectory;
             this.outputDirectory = outputDirectory;
         }
 
         protected override IEnumerable<Assembly> LoadAssemblies()
         {
             return Directory
-                .GetFiles(Path.Combine(inputDirectory, assemblies), "*.dll")
-                .Select(Assembly.LoadFrom);
+                .GetFiles(binDirectory, "*.dll")
+                .Select(TryLoadAssembly)
+                .Where(assembly => assembly != null);
+        }
+
+        Assembly TryLoadAssembly(string assemblyFilename)
+        {
+            try
+            {
+                return Assembly.LoadFrom(assemblyFilename);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         protected override bool CanCreateRequestLifetimeProvider

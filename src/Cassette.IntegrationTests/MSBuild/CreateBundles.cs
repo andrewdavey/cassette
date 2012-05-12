@@ -33,13 +33,14 @@ namespace Cassette.MSBuild
             File.WriteAllText(Path.Combine(path, "test.css"), "p { background-image: url(test.png); }");
             File.WriteAllText(Path.Combine(path, "test.png"), "");
 
+            Environment.CurrentDirectory = path;
+
             using (var container = new AppDomainInstance<CreateBundles>())
             {
                 var task = container.Value;
                 task.Source = path;
-                task.Assemblies = path;
+                task.Bin = path;
                 cachePath = Path.Combine(path, "cache");
-                Environment.CurrentDirectory = path;
                 task.Output = cachePath;
                 task.Execute();
             }
@@ -144,6 +145,7 @@ namespace Cassette.MSBuild
                 var parentAssembly = typeof(BundleConfiguration).Assembly.Location;
                 File.Copy(parentAssembly, Path.Combine(directory, Path.GetFileName(parentAssembly)));
                 File.Copy("Cassette.dll", Path.Combine(directory, "Cassette.dll"));
+                File.Copy("AjaxMin.dll", Path.Combine(directory, "AjaxMin.dll"));
                 File.Copy("Cassette.CoffeeScript.dll", Path.Combine(directory, "Cassette.CoffeeScript.dll"));
                 File.Copy("Cassette.Less.dll", Path.Combine(directory, "Cassette.Less.dll"));
 #if !NET35
