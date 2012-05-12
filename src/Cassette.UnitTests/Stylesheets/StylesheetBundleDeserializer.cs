@@ -10,15 +10,17 @@ namespace Cassette.Stylesheets
         readonly XElement element;
         StylesheetBundle bundle;
         readonly FakeFileSystem directory;
+        XElement mediaElement;
 
         public StylesheetBundleDeserializer_Tests()
         {
+            mediaElement = new XElement("HtmlAttribute", new XAttribute("Name", "media"), new XAttribute("Value", "expected-media"));
             element = new XElement(
                 "StylesheetBundle",
                 new XAttribute("Path", "~"),
                 new XAttribute("Hash", "010203"),
-                new XAttribute("Media", "expected-media"),
-                new XAttribute("Condition", "expected-condition")
+                new XAttribute("Condition", "expected-condition"),
+                mediaElement
             );
             directory = new FakeFileSystem
             {
@@ -36,9 +38,9 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void DeserializedBundleMediaIsNullIfMediaAttributeMissing()
+        public void DeserializedBundleMediaIsNullIfMediaHtmlAttributeMissing()
         {
-            element.SetAttributeValue("Media", null);
+            mediaElement.Remove();
             DeserializeBundle();
             bundle.Media.ShouldBeNull();
         }

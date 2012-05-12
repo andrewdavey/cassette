@@ -100,6 +100,7 @@ namespace Cassette
 
         void AddHtmlAttributes(Bundle bundle)
         {
+            bundle.HtmlAttributes.Clear();
             var attributeElements = element.Elements("HtmlAttribute");
             foreach (var attributeElement in attributeElements)
             {

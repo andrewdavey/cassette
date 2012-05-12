@@ -12,6 +12,7 @@ using Iesi.Collections.Generic;
 
 namespace Cassette
 {
+#pragma warning disable 659
     [System.Diagnostics.DebuggerDisplay("{Path}")]
     public abstract class Bundle : IDisposable
     {
@@ -300,4 +301,5 @@ namespace Cassette
             }
         }
     }
+#pragma warning restore 659
 }

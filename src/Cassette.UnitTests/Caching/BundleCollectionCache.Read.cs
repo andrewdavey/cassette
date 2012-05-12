@@ -47,7 +47,7 @@ namespace Cassette.Caching
             {
                 File.WriteAllText(
                     Path.Combine(path, "manifest.xml"),
-                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\" IsPrecompiled=\"false\"></BundleCollection>"
+                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\" IsStatic=\"false\"></BundleCollection>"
                 );
 
                 var directory = new FileSystemDirectory(path);
@@ -65,7 +65,7 @@ namespace Cassette.Caching
                 var manifestFilename = Path.Combine(path, "manifest.xml");
                 File.WriteAllText(
                     manifestFilename,
-                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\" IsPrecompiled=\"false\"></BundleCollection>"
+                    "<?xml version=\"1.0\"?><BundleCollection Version=\"1\" IsStatic=\"false\"></BundleCollection>"
                 );
 
                 var directory = new FileSystemDirectory(path);
@@ -84,7 +84,7 @@ namespace Cassette.Caching
                 File.WriteAllText(
                     Path.Combine(path, "manifest.xml"),
                     "<?xml version=\"1.0\"?>" +
-                    "<BundleCollection Version=\"1\" IsPrecompiled=\"false\">" +
+                    "<BundleCollection Version=\"1\" IsStatic=\"false\">" +
                     "<ScriptBundle Path=\"~/test\" Hash=\"010203\"/>" +
                     "</BundleCollection>"
                 );

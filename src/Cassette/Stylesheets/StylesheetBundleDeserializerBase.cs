@@ -11,7 +11,6 @@ namespace Cassette.Stylesheets
         protected void AssignStylesheetBundleProperties(T bundle)
         {
             bundle.Condition = GetOptionalAttribute("Condition");
-            bundle.Media = GetOptionalAttribute("Media");
             bundle.Renderer = CreateHtmlRenderer<StylesheetBundle>();
         }
     }

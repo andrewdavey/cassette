@@ -18,8 +18,8 @@ namespace Cassette.Stylesheets
                 new XAttribute("Path", "~"),
                 new XAttribute("Hash", "010203"),
                 new XAttribute("Url", "http://example.com/"),
-                new XAttribute("Media", "MEDIA"),
-                new XAttribute("Condition", "CONDITION")
+                new XAttribute("Condition", "CONDITION"),
+                new XElement("HtmlAttribute", new XAttribute("Name", "media"), new XAttribute("Value", "MEDIA"))
             );
             directory = new FakeFileSystem
             {

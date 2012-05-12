@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using Should;
 using Xunit;
 
@@ -35,9 +36,13 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void MediaAttributeEqualsBundleMedia()
+        public void MediaHtmlAttributeEqualsBundleMedia()
         {
-            element.Attribute("Media").Value.ShouldEqual(bundle.Media);
+            var media = element
+                .Elements("HtmlAttribute")
+                .First(e => e.Attribute("Name").Value == "media")
+                .Attribute("Value").Value;
+            media.ShouldEqual(bundle.Media);
         }
 
         [Fact]

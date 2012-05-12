@@ -27,6 +27,11 @@ namespace Cassette.Scripts
                 new XElement("Reference", new XAttribute("Path", "~/reference-1")),
                 new XElement("Reference", new XAttribute("Path", "~/reference-2")),
                 new XElement(
+                    "HtmlAttribute",
+                    new XAttribute("Name", "type"),
+                    new XAttribute("Value", "text/javascript")
+                ),
+                new XElement(
                     "HtmlAttribute", 
                     new XAttribute("Name", "attribute1"),
                     new XAttribute("Value", "value1")
@@ -49,7 +54,7 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void ReadManifestPathEqualsPathAttibute()
+        public void ReadBundlePathEqualsPathAttibute()
         {
             bundle.Path.ShouldEqual("~");
         }
@@ -58,44 +63,44 @@ namespace Cassette.Scripts
         public void ThrowsExceptionWhenPathAttributeMissing()
         {
             element.SetAttributeValue("Path", null);
-            DeserializeThrowsInvalidCassetteManifestException();
+            DeserializeThrowsInvalidCassetteBundleException();
         }
 
         [Fact]
-        public void ReadManifestHashEqualsHashAttribute()
+        public void ReadBundleHashEqualsHashAttribute()
         {
             bundle.Hash.ShouldEqual(new byte[] { 1, 2, 3 });
         }
 
         [Fact]
-        public void GivenNoHashAttributeThenThrowInvalidCassetteManifestException()
+        public void GivenNoHashAttributeThenThrowInvalidCassetteBundleException()
         {
             element.SetAttributeValue("Hash", null);
-            DeserializeThrowsInvalidCassetteManifestException();
+            DeserializeThrowsInvalidCassetteBundleException();
         }
 
         [Fact]
-        public void GivenWrongLengthHashHexStringThenThrowInvalidCassetteManifestException()
+        public void GivenWrongLengthHashHexStringThenThrowInvalidCassetteBundleException()
         {
             element.SetAttributeValue("Hash", "012");
-            DeserializeThrowsInvalidCassetteManifestException();
+            DeserializeThrowsInvalidCassetteBundleException();
         }
 
         [Fact]
-        public void GivenInvalidHashHexStringThenThrowInvalidCassetteManifestException()
+        public void GivenInvalidHashHexStringThenThrowInvalidCassetteBundleException()
         {
             element.SetAttributeValue("Hash", "qq");
-            DeserializeThrowsInvalidCassetteManifestException();
+            DeserializeThrowsInvalidCassetteBundleException();
         }
 
         [Fact]
-        public void ManifestConditionEqualsConditionAttribute()
+        public void BundleConditionEqualsConditionAttribute()
         {
             bundle.Condition.ShouldEqual("expected-condition");
         }
 
         [Fact]
-        public void ManifestConditionIsNulIfConditionAttributeMissing()
+        public void BundleConditionIsNulIfConditionAttributeMissing()
         {
             element.SetAttributeValue("Condition", null);
             DeserializeBundle();
@@ -103,13 +108,13 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void ManifestContentTypeEqualsContentTypeAttribute()
+        public void BundleContentTypeEqualsContentTypeAttribute()
         {
             bundle.ContentType.ShouldEqual("text/javascript");
         }
 
         [Fact]
-        public void GivenNoContentTypeAttributeThenManifestContentTypeIsDefault()
+        public void GivenNoContentTypeAttributeThenBundleContentTypeIsDefault()
         {
             element.SetAttributeValue("ContentType", null);
             DeserializeBundle();
@@ -117,13 +122,13 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void ManifestPageLocationEqualsPageLocationAttribute()
+        public void BundlePageLocationEqualsPageLocationAttribute()
         {
             bundle.PageLocation.ShouldEqual("PAGE-LOCATION");
         }
 
         [Fact]
-        public void GivenNoPageLocationAttributeThenManifestPageLocationIsNull()
+        public void GivenNoPageLocationAttributeThenBundlePageLocationIsNull()
         {
             element.SetAttributeValue("PageLocation", null);
             DeserializeBundle();
@@ -131,27 +136,33 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void ReadManifestAssetCountEqualsAssetElementCount()
+        public void ReadBundleAssetCountEqualsAssetElementCount()
         {
             var asset = bundle.Assets[0].ShouldBeType<CachedBundleContent>();
             asset.OriginalAssets.Count().ShouldEqual(2);
         }
 
         [Fact]
-        public void ReadManifestReferencesEqualReferenceElements()
+        public void ReadBundleReferencesEqualReferenceElements()
         {
             var references = bundle.References.ToArray();
             references.ShouldEqual(new[] { "~/reference-1", "~/reference-2" });
         }
 
         [Fact]
-        public void ReadManifestHasTwoHtmlAttributes()
+        public void ReadBundleHas3HtmlAttributes()
         {
-            bundle.HtmlAttributes.Count.ShouldEqual(2);
+            bundle.HtmlAttributes.Count.ShouldEqual(3);
         }
 
         [Fact]
-        public void ReadManifestContentEqualsBase64DecodedContentElement()
+        public void ReadBundleHtmlAttributeTypeEqualsTextJavaScript()
+        {
+            bundle.HtmlAttributes["type"].ShouldEqual("text/javascript");
+        }
+
+        [Fact]
+        public void ReadBundleContentEqualsBase64DecodedContentElement()
         {
             bundle.OpenStream().ReadToEnd().ShouldEqual("CONTENT");
         }
@@ -161,7 +172,7 @@ namespace Cassette.Scripts
             bundle = deserializer.Deserialize(element, directory);
         }
 
-        void DeserializeThrowsInvalidCassetteManifestException()
+        void DeserializeThrowsInvalidCassetteBundleException()
         {
             Assert.Throws<CassetteDeserializationException>(() => DeserializeBundle());
         }
