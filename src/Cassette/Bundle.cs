@@ -253,7 +253,7 @@ namespace Cassette
 
         static bool PathsEqual(Bundle x, Bundle y)
         {
-            return x.Path.Equals(y.Path);
+            return string.Equals(x.Path, y.Path, StringComparison.OrdinalIgnoreCase);
         }
 
         static bool AllAssetsEqual(Bundle x, Bundle y)
