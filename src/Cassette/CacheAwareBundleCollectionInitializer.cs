@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Cassette.Caching;
 
 namespace Cassette
@@ -32,6 +33,7 @@ namespace Cassette
                 {
                     if (IsStaticCache)
                     {
+                        Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer using static cache");
                         UseCachedBundles();
                     }
                     else
@@ -39,40 +41,45 @@ namespace Cassette
                         AddBundlesFromConfigurations();
                         if (IsCacheValid)
                         {
+                            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer using runtime cache");
                             UseCachedBundles();
                         }
                         else
                         {
+                            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer runtime cache is invalid");
                             ProcessBundles();
-                            AddBundlesForUrlReferences();
                             WriteToCache();
                         }
                     }
                 }
                 else
                 {
+                    Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer failed to read from cache");
                     AddBundlesFromConfigurations();
                     ProcessBundles();
-                    AddBundlesForUrlReferences();
                     WriteToCache();
                 }
 
+                AddBundlesForUrlReferences();
                 bundles.BuildReferences();
             }
         }
 
         void ClearBundles()
         {
+            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer.ClearBundles");
             bundles.Clear();
         }
 
         void AddBundlesFromConfigurations()
         {
+            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer.AddBundlesFromConfigurations");
             bundleConfigurations.Configure(bundles);
         }
 
         bool ReadCache()
         {
+            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer.ReadCache");
             cacheReadResult = cache.Read();
             return cacheReadResult.IsSuccess;
         }
@@ -93,18 +100,31 @@ namespace Cassette
 
         void WriteToCache()
         {
+            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer.WriteToCache");
             cache.Write(new Manifest(bundles, settings.Version));
         }
 
         void UseCachedBundles()
         {
+            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer.UseCacheBundles");
             ClearBundles();
             bundles.AddRange(cacheReadResult.Manifest.Bundles);
         }
 
         void ProcessBundles()
         {
+            Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer.ProcessBundles");
             bundles.Process();
+            FixAssets();
+        }
+
+        void FixAssets()
+        {
+            var bundlesWithAsset = bundles.Where(bundle => bundle.Assets.Count == 1);
+            foreach (var bundle in bundlesWithAsset)
+            {
+                bundle.Assets[0] = new FixedAsset(bundle.Assets[0]);
+            }
         }
 
         void AddBundlesForUrlReferences()

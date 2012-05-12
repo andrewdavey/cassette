@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Cassette.Caching;
 
 namespace Cassette
 {
     public interface IAsset
     {
         /// <summary>
-        /// Gets the hash of the original asset contents, before any transformations are applied.
+        /// Gets a type of <see cref="IAssetCacheValidator"/> used to validate if a cache.
+        /// </summary>
+        Type AssetCacheValidatorType { get; }
+
+        /// <summary>
+        /// Gets the hash of the transformed asset content.
         /// </summary>
         byte[] Hash { get; }
 
@@ -34,10 +40,5 @@ namespace Cassette
         /// </summary>
         /// <returns>A readable <see cref="Stream"/>.</returns>
         Stream OpenStream();
-
-        /// <summary>
-        /// Gets a type of <see cref="IAssetCacheValidator"/> used to validate if a cache is valid.
-        /// </summary>
-        Type AssetCacheValidatorType { get; }
     }
 }
