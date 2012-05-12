@@ -300,9 +300,6 @@ namespace Cassette
 
             if (!descriptorFile.Exists) descriptorFile = directory.GetFile("bundle.txt");
 
-            // TODO: Remove this legacy support for module.txt
-            if (!descriptorFile.Exists) descriptorFile = directory.GetFile("module.txt");
-
             return descriptorFile;
         }
 

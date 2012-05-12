@@ -119,7 +119,9 @@ namespace Cassette
             var search = new FileSearch();
             CreateDirectory("test");
             CreateFile("test", "bundle.txt");
-            CreateFile("test", "module.txt"); // Legacy support - module.txt synonymous to bundle.txt
+            CreateFile("test", "scriptbundle.txt");
+            CreateFile("test", "stylesheetbundle.txt");
+            CreateFile("test", "htmltemplatebundle.txt");
 
             var files = search.FindFiles(directory.GetDirectory("test"));
             
