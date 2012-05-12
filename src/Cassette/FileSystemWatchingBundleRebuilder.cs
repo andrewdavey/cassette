@@ -40,7 +40,7 @@ namespace Cassette
                 typeof(Stylesheets.StylesheetBundle),
                 typeof(HtmlTemplates.HtmlTemplateBundle)
             };
-            return new HashedCompareSet<string>(bundleTypes.Select(type => type.Name + ".txt"), StringComparer.OrdinalIgnoreCase);
+            return new HashedCompareSet<string>(bundleTypes.Select(type => type.Name + ".txt").ToArray(), StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

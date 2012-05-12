@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using Cassette.IO;
 
@@ -42,7 +43,7 @@ namespace Cassette.Caching
         Manifest CreateManifest(IFile manifestFile)
         {
             var manifestElement = ManifestElement(manifestFile);
-            var bundles = DeserializeBundles(manifestFile);
+            var bundles = DeserializeBundles(manifestElement);
             var version = manifestElement.Attribute("Version").Value;
             var isStatic = bool.Parse(manifestElement.Attribute("IsStatic").Value);
             return new Manifest(
@@ -57,19 +58,16 @@ namespace Cassette.Caching
         {
             using (var manifestStream = manifestFile.OpenRead())
             {
-                var manifestDocument = XDocument.Load(manifestStream);
+                var reader = XmlReader.Create(manifestStream);
+                var manifestDocument = XDocument.Load(reader);
                 return manifestDocument.Root;
             }
         }
 
-        IEnumerable<Bundle> DeserializeBundles(IFile manifestFile)
+        IEnumerable<Bundle> DeserializeBundles(XElement manifestElement)
         {
-            using (var manifestStream = manifestFile.OpenRead())
-            {
-                var manifestDocument = XDocument.Load(manifestStream);
-                var bundleElements = manifestDocument.Root.Elements();
-                return CreateBundles(bundleElements).ToArray();
-            }
+            var bundleElements = manifestElement.Elements();
+            return CreateBundles(bundleElements).ToArray();
         }
 
         IEnumerable<Bundle> CreateBundles(IEnumerable<XElement> bundleElements)

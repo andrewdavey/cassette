@@ -34,8 +34,33 @@ namespace Cassette.IO
 
         public bool Exists
         {
-            get { return getStorage().DirectoryExists(basePath); }
+            get
+            {
+#if NET35
+                var all = RecursiveGetAllDirectories("");
+                return all.Any(path => path.Equals(basePath, StringComparison.OrdinalIgnoreCase));
+#else
+                return getStorage().DirectoryExists(basePath);
+#endif
+            }
         }
+
+#if NET35
+        IEnumerable<string> RecursiveGetAllDirectories(string path)
+        {
+            var storage = getStorage();
+            var directoryNames = storage.GetDirectoryNames(path.Length == 0 ? "*" : (path + "/*"));
+            foreach (var directoryName in directoryNames)
+            {
+                var subPath = path + "/" + directoryName;
+                yield return subPath;
+                foreach (var subSubPath in RecursiveGetAllDirectories(subPath))
+                {
+                    yield return subSubPath;
+                }
+            }
+        } 
+#endif
 
         public IFile GetFile(string filename)
         {
@@ -44,7 +69,7 @@ namespace Cassette.IO
             IsolatedStorageDirectory directory;
             if (parts.Length > 2)
             {
-                var subDirectory = string.Join("/", parts.Reverse().Skip(1).Reverse());
+                var subDirectory = string.Join("/", parts.Reverse().Skip(1).Reverse().ToArray());
                 directory = new IsolatedStorageDirectory(getStorage, subDirectory);
             }
             else

@@ -75,7 +75,7 @@ namespace Cassette.IO
             var subDirectory = directory.GetDirectory("test");
             subDirectory.Delete();
 
-            storage.DirectoryExists("test").ShouldBeFalse();
+            storage.GetDirectoryNames("*").ShouldBeEmpty();
         }
 
         void WriteFile(string filename)
@@ -83,7 +83,11 @@ namespace Cassette.IO
             using (var file = storage.CreateFile(filename))
             {
                 file.Write(new byte[] { 1 }, 0, 1);
+#if NET35
+                file.Flush();
+#else
                 file.Flush(true);
+#endif
             }
         }
 

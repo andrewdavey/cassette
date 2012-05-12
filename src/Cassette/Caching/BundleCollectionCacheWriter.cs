@@ -1,7 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 using System.Xml.Linq;
 using Cassette.IO;
+
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette.Caching
 {
@@ -28,8 +33,9 @@ namespace Cassette.Caching
             SerializeBundlesIntoManifest(manifest.Bundles, manifestDocuent);
             using (var manifestStream = OpenManifestFileForWriting())
             {
-                manifestDocuent.Save(manifestStream);
-                manifestStream.Flush();
+                var writer = XmlWriter.Create(manifestStream);
+                manifestDocuent.Save(writer);
+                writer.Flush();
             }
         }
 
