@@ -6,8 +6,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">    
     <UsingTask AssemblyFile="$(OutputPath)\Cassette.MSBuild.dll" TaskName="CreateBundles"/>
     <Target Name="Bundle"> 
-        <MakeDir Directories="App_Data"/>
-        <CreateBundles Input="$(OutputPath)" Output="App_Data\cassette.xml"/>
+        <MakeDir Directories="cassette-cache"/>
+        <CreateBundles Source="$(MSBuildProjectDirectory)" Assemblies="$(OutputPath)" Output="cassette-cache"/>
     </Target>
 
     <!-- 
