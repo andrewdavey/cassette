@@ -9,10 +9,12 @@ namespace Cassette.Scripts
             : base(applicationRelativePath)
         {
             ContentType = "text/javascript";
+            HtmlAttributes["type"] = "text/javascript";
         }
 
         protected ScriptBundle()
         {
+            HtmlAttributes["type"] = "text/javascript";
         }
 
         /// <summary>
