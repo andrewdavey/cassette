@@ -1,9 +1,27 @@
 ﻿using Cassette.BundleProcessing;
 using Moq;
+using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets
 {
+    public class StylesheetBundle_Tests
+    {
+        [Fact]
+        public void HtmlAttributesTypeIsTextCss()
+        {
+            var bundle = new StylesheetBundle("~");
+            bundle.HtmlAttributes["type"].ShouldEqual("text/css");
+        }
+
+        [Fact]
+        public void HtmlAttributesRelIsStylesheet()
+        {
+            var bundle = new StylesheetBundle("~");
+            bundle.HtmlAttributes["rel"].ShouldEqual("stylesheet");
+        }
+    }
+
     public class StylesheetBundle_Render_Tests
     {
         [Fact]

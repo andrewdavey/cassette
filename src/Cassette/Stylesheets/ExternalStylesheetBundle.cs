@@ -50,17 +50,7 @@ namespace Cassette.Stylesheets
 
             var conditionalRenderer = new ConditionalRenderer();
 
-            return conditionalRenderer.Render(Condition, html =>
-            {
-                if (string.IsNullOrEmpty(Media))
-                {
-                    RenderLink(html);
-                }
-                else
-                {
-                    RenderLinkWithMedia(html);
-                }
-            });
+            return conditionalRenderer.Render(Condition, RenderLink);
         }
 
         void RenderLink(StringBuilder html)
@@ -69,17 +59,7 @@ namespace Cassette.Stylesheets
                 HtmlConstants.LinkHtml,
                 url,
                 HtmlAttributes.CombinedAttributes
-                );
-        }
-
-        void RenderLinkWithMedia(StringBuilder html)
-        {
-            html.AppendFormat(
-                HtmlConstants.LinkWithMediaHtml,
-                url,
-                Media,
-                HtmlAttributes.CombinedAttributes
-                );
+            );
         }
 
         internal override void SerializeInto(XContainer container)

@@ -9,12 +9,22 @@ namespace Cassette.Stylesheets
             : base(applicationRelativePath)
         {
             ContentType = "text/css";
+            HtmlAttributes["type"] = "text/css";
+            HtmlAttributes["rel"] = "stylesheet";
         }
 
         /// <summary>
         /// The value of the media attribute for this stylesheet's link element. For example, <example>print</example>.
         /// </summary>
-        public string Media { get; set; }
+        public string Media
+        {
+            get
+            {
+                string value;
+                return HtmlAttributes.TryGetValue("media", out value) ? value : null;
+            }
+            set { HtmlAttributes["media"] = value; }
+        }
 
         /// <summary>
         /// The Internet Explorer specific condition used control if the stylesheet should be loaded using an HTML conditional comment.

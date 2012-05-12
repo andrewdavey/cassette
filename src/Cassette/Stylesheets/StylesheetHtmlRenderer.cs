@@ -1,4 +1,6 @@
-﻿namespace Cassette.Stylesheets
+﻿using System.Text;
+
+namespace Cassette.Stylesheets
 {
     class StylesheetHtmlRenderer : IBundleHtmlRenderer<StylesheetBundle>
     {
@@ -13,26 +15,16 @@
         {
             var url = urlGenerator.CreateBundleUrl(bundle);
             var conditionalRenderer = new ConditionalRenderer();
-            return conditionalRenderer.Render(bundle.Condition, html =>
-            {
-                if (string.IsNullOrEmpty(bundle.Media))
-                {
-                    html.AppendFormat(
-                        HtmlConstants.LinkHtml,
-                        url,
-                        bundle.HtmlAttributes.CombinedAttributes
-                        );
-                }
-                else
-                {
-                    html.AppendFormat(
-                        HtmlConstants.LinkWithMediaHtml,
-                        url,
-                        bundle.Media,
-                        bundle.HtmlAttributes.CombinedAttributes
-                        );
-                }
-            });
+            return conditionalRenderer.Render(bundle.Condition, html => RenderLink(bundle, html, url));
+        }
+
+        static StringBuilder RenderLink(StylesheetBundle bundle, StringBuilder html, string url)
+        {
+            return html.AppendFormat(
+                HtmlConstants.LinkHtml,
+                url,
+                bundle.HtmlAttributes.CombinedAttributes
+            );
         }
     }
 }

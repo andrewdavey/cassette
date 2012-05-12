@@ -17,10 +17,6 @@ namespace Cassette.Stylesheets
             {
                 element.Add(new XAttribute("Condition", Bundle.Condition));
             }
-            if (Bundle.Media != null)
-            {
-                element.Add(new XAttribute("Media", Bundle.Media));
-            }
             return element;
         }
     }

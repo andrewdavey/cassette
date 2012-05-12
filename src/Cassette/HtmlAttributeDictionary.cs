@@ -209,5 +209,10 @@ namespace Cassette
         {
             attributeStorage.Clear();
         }
+
+        public bool TryGetValue(string attributeName, out string value)
+        {
+            return attributeStorage.TryGetValue(attributeName, out value);
+        }
     }
 }
