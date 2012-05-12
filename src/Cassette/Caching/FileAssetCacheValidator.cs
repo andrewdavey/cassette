@@ -7,7 +7,6 @@ namespace Cassette.Caching
     {
         readonly IDirectory sourceDirectory;
 
-        // TODO: Setup IoC container to create this
         public FileAssetCacheValidator(IDirectory sourceDirectory)
         {
             this.sourceDirectory = sourceDirectory;

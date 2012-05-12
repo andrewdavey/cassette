@@ -109,18 +109,22 @@ namespace Cassette
         {
             container.Register<IBundleCollectionCache>((c, p) =>
             {
-                // TODO: Switch to precompiled directory if exists
                 var cacheDirectory = c.Resolve<CassetteSettings>().CacheDirectory;
                 return new BundleCollectionCache(
                     cacheDirectory,
                     bundleTypeName => ResolveBundleDeserializer(bundleTypeName, c)
                 );
             });
-            container.Register((c, p) => new ManifestValidator(type => (IAssetCacheValidator)c.Resolve(type)));
             container.Register((c, p) =>
             {
-                var directory = c.Resolve<CassetteSettings>().SourceDirectory;
-                return new FileAssetCacheValidator(directory);
+                Func<Type, IAssetCacheValidator> assetCacheValidatorFactory = type => (IAssetCacheValidator)c.Resolve(type);
+                var sourceDirectory = c.Resolve<CassetteSettings>().SourceDirectory;
+                return new ManifestValidator(assetCacheValidatorFactory, sourceDirectory);
+            });
+            container.Register((c, p) =>
+            {
+                var sourceDirectory = c.Resolve<CassetteSettings>().SourceDirectory;
+                return new FileAssetCacheValidator(sourceDirectory);
             });
         }
 

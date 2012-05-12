@@ -10,7 +10,7 @@ namespace Cassette
 
         public BundleCollection_BuildReferences()
         {
-            collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            var bundleCollection = collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace Cassette
             var badReference = new AssetReference(asset.Path, "~/NOT-FOUND.js", 1, AssetReferenceType.DifferentBundle);
             asset.References.Add(badReference);
             bundle.Assets.Add(asset);
-            bundle.IsFromDescriptorFile = true;
+            bundle.DescriptorFilePath = "~/bundle.txt";
             collection.Add(bundle);
 
             Assert.DoesNotThrow(

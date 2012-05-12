@@ -24,8 +24,10 @@ namespace Cassette
         public T Deserialize(XElement element, IDirectory cacheDirectory)
         {
             this.element = element;
-            this.directory = cacheDirectory;
+            directory = cacheDirectory;
             var bundle = CreateBundle(element);
+            var descriptorFilePath = GetOptionalAttribute("DescriptorFilePath");
+            bundle.DescriptorFilePath = descriptorFilePath;
             bundle.Hash = GetHashAttribute();
             var contentType = GetOptionalAttribute("ContentType");
             if (contentType != null) bundle.ContentType = contentType;

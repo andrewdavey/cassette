@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cassette.IO;
 
 namespace Cassette
 {
@@ -14,6 +15,11 @@ namespace Cassette
         public List<string> References { get; private set; }
         public string ExternalUrl { get; set; }
         public string FallbackCondition { get; set; }
-        public bool IsFromFile { get; set; }
+        public IFile File { get; set; }
+
+        public bool IsFromFile
+        {
+            get { return File != null; }
+        }
     }
 }

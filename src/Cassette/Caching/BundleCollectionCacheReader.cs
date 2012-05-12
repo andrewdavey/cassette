@@ -26,7 +26,6 @@ namespace Cassette.Caching
             {
                 try
                 {
-                    // TODO: read IsPrecompiled
                     return CacheReadResult.Success(CreateManifest(file));
                 }
                 catch

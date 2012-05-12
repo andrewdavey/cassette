@@ -139,7 +139,13 @@ namespace Cassette
         protected abstract void ProcessCore(CassetteSettings settings);
 
         internal bool IsProcessed { get; private set; }
-        internal bool IsFromDescriptorFile { get; set; }
+
+        internal string DescriptorFilePath { get; set; }
+
+        internal bool IsFromDescriptorFile
+        {
+            get { return DescriptorFilePath != null; }
+        }
 
         internal abstract string Render();
 

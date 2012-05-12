@@ -26,6 +26,7 @@ namespace Cassette
         {
             var element = new XElement(
                 ConventionalXElementName(),
+                DescriptorFilePathAttribute(),
                 PathAttribute(),
                 HashAttribute(),
                 ContentTypeAttribute(),
@@ -48,6 +49,13 @@ namespace Cassette
         string ConventionalXElementName()
         {
             return bundle.GetType().Name;
+        }
+
+        XAttribute DescriptorFilePathAttribute()
+        {
+            return bundle.IsFromDescriptorFile 
+                ? new XAttribute("DescriptorFilePath", bundle.DescriptorFilePath)
+                : null;
         }
 
         XAttribute PathAttribute()

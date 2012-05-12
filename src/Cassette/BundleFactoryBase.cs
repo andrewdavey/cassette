@@ -23,7 +23,7 @@ namespace Cassette
             SetIsSortedIfExplicitFilenames(bundle, bundleDescriptor.AssetFilenames);
             if (bundleDescriptor.IsFromFile)
             {
-                bundle.IsFromDescriptorFile = true;
+                bundle.DescriptorFilePath = bundleDescriptor.File.FullPath;
             }
             return bundle;
         }

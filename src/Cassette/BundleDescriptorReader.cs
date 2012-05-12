@@ -47,7 +47,7 @@ namespace Cassette
             {
                 ExternalUrl = externalUrl,
                 FallbackCondition = fallbackCondition,
-                IsFromFile = true
+                File = sourceFile
             };
             descriptor.AssetFilenames.AddRange(assetFilenames);
             descriptor.References.AddRange(references);

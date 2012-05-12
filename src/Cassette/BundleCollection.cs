@@ -279,15 +279,14 @@ namespace Cassette
         {
             if (descriptor == null)
             {
-                descriptor = ReadOrCreateBundleDescriptor<T>(directory);
+                var descriptorFile = TryGetDescriptorFile<T>(directory);
+                descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
             }
             return bundleFactory.CreateBundle(applicationRelativePath, allFiles, descriptor);
         }
 
-        BundleDescriptor ReadOrCreateBundleDescriptor<T>(IDirectory directory)
-            where T : Bundle
+        BundleDescriptor ReadOrCreateBundleDescriptor(IFile descriptorFile)
         {
-            var descriptorFile = TryGetDescriptorFile<T>(directory);
             return descriptorFile.Exists
                 ? new BundleDescriptorReader(descriptorFile).Read()
                 : new BundleDescriptor { AssetFilenames = { "*" } };
@@ -382,7 +381,8 @@ namespace Cassette
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
                 var allFiles = fileSearch.FindFiles(directory).ToArray();
 
-                var descriptor = ReadOrCreateBundleDescriptor<T>(directory);
+                var descriptorFile = TryGetDescriptorFile<T>(directory);
+                var descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
 
                 if (!allFiles.Any() && descriptor.ExternalUrl == null) continue;
 
@@ -431,7 +431,8 @@ namespace Cassette
                 var directory = sourceDirectory.GetDirectory(localAssetSettings.Path);
                 files = fileSearch.FindFiles(directory);
 
-                bundleDescriptor = ReadOrCreateBundleDescriptor<T>(directory);
+                var descriptorFile = TryGetDescriptorFile<T>(directory);
+                bundleDescriptor = ReadOrCreateBundleDescriptor(descriptorFile);
             }
             else
             {

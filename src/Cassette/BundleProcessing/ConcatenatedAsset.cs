@@ -61,11 +61,7 @@ namespace Cassette.BundleProcessing
 
         protected override Stream OpenStreamCore()
         {
-            var newStream = new MemoryStream();
-            stream.Position = 0;
-            stream.CopyTo(newStream);
-            newStream.Position = 0;
-            return newStream;
+            return new MemoryStream(stream.ToArray());
         }
 
         public void Dispose()

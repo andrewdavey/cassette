@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Cassette.Caching;
 
 namespace Cassette
@@ -115,16 +114,6 @@ namespace Cassette
         {
             Trace.Source.TraceInformation("CacheAwareBundleCollectionInitializer.ProcessBundles");
             bundles.Process();
-            FixAssets();
-        }
-
-        void FixAssets()
-        {
-            var bundlesWithAsset = bundles.Where(bundle => bundle.Assets.Count == 1);
-            foreach (var bundle in bundlesWithAsset)
-            {
-                bundle.Assets[0] = new FixedAsset(bundle.Assets[0]);
-            }
         }
 
         void AddBundlesForUrlReferences()

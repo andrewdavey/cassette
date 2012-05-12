@@ -47,7 +47,7 @@ namespace Cassette.Scripts
             var factory = new ScriptBundleFactory(pipeline);
             var descriptor = new BundleDescriptor
             {
-                IsFromFile = true,
+                File = Mock.Of<IFile>(),
                 AssetFilenames = { "*" }
             };
             var bundle = factory.CreateBundle(
