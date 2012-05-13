@@ -57,6 +57,7 @@ namespace Cassette.MSBuild
 
         void MakePathsAbsolute()
         {
+            Source = Path.Combine(Environment.CurrentDirectory, Source);
             Bin = Path.Combine(Source, Bin);
             Output = Path.Combine(Source, Output);
         }
