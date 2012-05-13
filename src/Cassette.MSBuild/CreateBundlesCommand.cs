@@ -45,7 +45,8 @@ namespace Cassette.MSBuild
         {
             var setup = new AppDomainSetup
             {
-                ApplicationBase = command.bin
+                ApplicationBase = command.bin,
+                ShadowCopyFiles = "true"
             };
             AssignConfigurationFile(command, setup);
             return setup;
