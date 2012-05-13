@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using Cassette.Caching;
 using Cassette.IO;
+using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Microsoft.Build.Framework;
 using Moq;
@@ -30,6 +31,7 @@ namespace Cassette.MSBuild
             BundleConfiguration.GenerateAssembly(assemblyPath);
 
             File.WriteAllText(Path.Combine(path, "test.css"), "p { background-image: url(test.png); }");
+            File.WriteAllText(Path.Combine(path, "test.coffee"), "x = 1");
             File.WriteAllText(Path.Combine(path, "test.png"), "");
 
             Environment.CurrentDirectory = path;
@@ -39,9 +41,9 @@ namespace Cassette.MSBuild
             {
                 Source = path,
                 Bin = path,
-                Output = cachePath
+                Output = cachePath,
+                BuildEngine = Mock.Of<IBuildEngine>()
             };
-            task.BuildEngine = Mock.Of<IBuildEngine>();
             task.Execute();
         }
 
@@ -52,6 +54,13 @@ namespace Cassette.MSBuild
         }
 
         [Fact]
+        public void CoffeeScriptIsCompiled()
+        {
+            var filename = Directory.GetFiles(Path.Combine(cachePath, "script"))[0];
+            File.ReadAllText(filename).ShouldEqual("(function(){var n;n=1}).call(this)");
+        }
+   
+        [Fact]
         public void CssUrlIsRewrittenToBeApplicationRooted()
         {
             var passThroughModifier = new Mock<IUrlModifier>();
@@ -61,7 +70,7 @@ namespace Cassette.MSBuild
                 .Verifiable();
 
             var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
-            var content = bundles.First().OpenStream().ReadToEnd();
+            var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
 
             Regex.IsMatch(content, @"url\(cassette.axd/file/[^/]+/test.png\)").ShouldBeTrue();
             passThroughModifier.Verify();
@@ -69,7 +78,7 @@ namespace Cassette.MSBuild
 
         IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
         {
-            var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath), b => new StylesheetBundleDeserializer(urlModifier));
+            var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath), b => b == "StylesheetBundle" ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier) : new ScriptBundleDeserializer(urlModifier));
             var result = cache.Read();
             result.IsSuccess.ShouldBeTrue();
             return result.Manifest.Bundles;
@@ -80,6 +89,7 @@ namespace Cassette.MSBuild
             public void Configure(BundleCollection bundles)
             {
                 bundles.Add<StylesheetBundle>("~");
+                bundles.Add<ScriptBundle>("~");
             }
 
             public static void GenerateAssembly(string fullAssemblyPath)
