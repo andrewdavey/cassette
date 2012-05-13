@@ -10,17 +10,17 @@ namespace Cassette.MSBuild
 {
     public class MSBuildHost : HostBase
     {
-        readonly string inputDirectory;
+        readonly string sourceDirectory;
         readonly string binDirectory;
         readonly string outputDirectory;
 
-        public MSBuildHost(string inputDirectory, string binDirectory, string outputDirectory)
+        public MSBuildHost(string sourceDirectory, string binDirectory, string outputDirectory)
         {
-            if (!Path.IsPathRooted(inputDirectory)) throw new ArgumentException("inputDirectory must be an absolute path.", "inputDirectory");
+            if (!Path.IsPathRooted(sourceDirectory)) throw new ArgumentException("sourceDirectory must be an absolute path.", "sourceDirectory");
             if (!Path.IsPathRooted(binDirectory)) throw new ArgumentException("binDirectory must be an absolute path.", "binDirectory");
             if (!Path.IsPathRooted(outputDirectory)) throw new ArgumentException("outputDirectory must be an absolute path.", "outputDirectory");
 
-            this.inputDirectory = inputDirectory;
+            this.sourceDirectory = sourceDirectory;
             this.binDirectory = binDirectory;
             this.outputDirectory = outputDirectory;
         }
@@ -82,7 +82,7 @@ namespace Cassette.MSBuild
 
         protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()
         {
-            return new MsBuildHostSettingsConfiguration();
+            return new MsBuildHostSettingsConfiguration(sourceDirectory);
         }
     }
 }
