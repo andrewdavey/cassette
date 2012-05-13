@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO;
-using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
-    [Serializable]
-    [LoadInSeparateAppDomain]
-    public class CreateBundles : AppDomainIsolatedTask
+    public class CreateBundles : Task
     {
         /// <summary>
         /// The root directory of the web application.
@@ -29,11 +26,15 @@ namespace Cassette.MSBuild
             AssignPropertyDefaultsIfMissing();
             MakePathsAbsolute();
 
-            using (var host = new MSBuildHost(Source, Bin, Output))
-            {
-                host.Initialize();
-                host.Execute();
-            }
+            Log.LogMessage("Source directory = {0}", Source);
+            Log.LogMessage("Bin directory = {0}", Bin);
+            Log.LogMessage("Output directory = {0}", Output);
+
+            // Execution will load assemblies. When running this task from a Visual Studio build, the DLLs would then be locked.
+            // So we must run the command in a separate AppDomain.
+            // This means the assemblies can be unlocked by unloading the new AppDomain when finished.
+            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output));
+            
             return true;
         }
 

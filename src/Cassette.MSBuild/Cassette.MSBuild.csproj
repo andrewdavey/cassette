@@ -66,6 +66,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CreateBundles.cs" />
+    <Compile Include="CreateBundlesCommand.cs" />
     <Compile Include="MSBuildHost.cs" />
     <Compile Include="MsBuildHostSettingsConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

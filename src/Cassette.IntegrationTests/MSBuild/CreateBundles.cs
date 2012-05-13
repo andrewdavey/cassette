@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Security;
-using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using Cassette.Caching;
 using Cassette.IO;
@@ -34,16 +32,15 @@ namespace Cassette.MSBuild
             File.WriteAllText(Path.Combine(path, "test.png"), "");
 
             Environment.CurrentDirectory = path;
+            cachePath = Path.Combine(path, "cache");
 
-            using (var container = new AppDomainInstance<CreateBundles>())
+            var task = new CreateBundles
             {
-                var task = container.Value;
-                task.Source = path;
-                task.Bin = path;
-                cachePath = Path.Combine(path, "cache");
-                task.Output = cachePath;
-                task.Execute();
-            }
+                Source = path,
+                Bin = path,
+                Output = cachePath
+            };
+            task.Execute();
         }
 
         [Fact]
@@ -74,53 +71,6 @@ namespace Cassette.MSBuild
             var result = cache.Read();
             result.IsSuccess.ShouldBeTrue();
             return result.Manifest.Bundles;
-        }
-
-        class AppDomainInstance<T> : IDisposable
-            where T : MarshalByRefObject
-        {
-            readonly AppDomain domain;
-            readonly T value;
-
-            /// <summary>
-            /// Creates a new AppDomain instance that is sandboxed with full trust permissions
-            /// See: http://blogs.msdn.com/b/shawnfa/archive/2006/05/01/587654.aspx
-            /// </summary>
-            public AppDomainInstance()
-            {
-                // Create a new Sandboxed App Domain
-                var pset = new PermissionSet(PermissionState.Unrestricted);
-
-                // Full trust execution
-                pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-
-                // Set base to current directory
-                var setup = new AppDomainSetup
-                {
-                    ApplicationBase = Path.GetDirectoryName(typeof(T).Assembly.Location)
-                };
-
-                // Sandbox app domain constructor
-                domain = AppDomain.CreateDomain("temp", AppDomain.CurrentDomain.Evidence, setup, pset);
-
-                // This will not demand a FileIOPermission and is a safe way to load an assembly
-                // from an app domain
-                value = (T)Activator.CreateInstanceFrom(
-                    domain,
-                    Path.GetFileName(typeof(T).Assembly.Location),
-                    typeof(T).FullName
-                ).Unwrap();
-            }
-
-            public T Value
-            {
-                get { return value; }
-            }
-
-            public void Dispose()
-            {
-                AppDomain.Unload(domain);
-            }
         }
 
         public abstract class BundleConfiguration : IConfiguration<BundleCollection>
