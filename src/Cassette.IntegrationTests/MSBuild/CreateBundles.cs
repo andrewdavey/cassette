@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Cassette.Caching;
 using Cassette.IO;
 using Cassette.Stylesheets;
+using Microsoft.Build.Framework;
 using Moq;
 using Should;
 using Xunit;
@@ -40,6 +41,7 @@ namespace Cassette.MSBuild
                 Bin = path,
                 Output = cachePath
             };
+            task.BuildEngine = Mock.Of<IBuildEngine>();
             task.Execute();
         }
 
