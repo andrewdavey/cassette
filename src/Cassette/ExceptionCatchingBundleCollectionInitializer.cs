@@ -1,4 +1,5 @@
 using System;
+
 namespace Cassette
 {
     class ExceptionCatchingBundleCollectionInitializer : IBundleCollectionInitializer

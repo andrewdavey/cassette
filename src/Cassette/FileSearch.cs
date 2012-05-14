@@ -78,9 +78,10 @@ namespace Cassette
 
         static bool IsDescriptorFilename(IFile file)
         {
-            // TODO: Remove legacy support for module.txt
-            return file.FullPath.EndsWith("/bundle.txt", StringComparison.OrdinalIgnoreCase)
-                   || file.FullPath.EndsWith("/module.txt", StringComparison.OrdinalIgnoreCase);
+            return file.FullPath.EndsWith("/bundle.txt", StringComparison.OrdinalIgnoreCase) ||
+                   file.FullPath.EndsWith("/scriptbundle.txt", StringComparison.OrdinalIgnoreCase) ||
+                   file.FullPath.EndsWith("/stylesheetbundle.txt", StringComparison.OrdinalIgnoreCase) ||
+                   file.FullPath.EndsWith("/htmltemplatebundle.txt", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using Cassette.IO;
 using Cassette.Utilities;
+
 #if NET35
 using Iesi.Collections.Generic;
 #endif
@@ -94,9 +95,9 @@ namespace Cassette
             bundles.Add(bundle);
         }
 
-        public void AddRange(IEnumerable<Bundle> bundles)
+        public void AddRange(IEnumerable<Bundle> bundlesToAdd)
         {
-            foreach (var bundle in bundles)
+            foreach (var bundle in bundlesToAdd)
             {
                 Add(bundle);
             }
@@ -278,15 +279,14 @@ namespace Cassette
         {
             if (descriptor == null)
             {
-                descriptor = ReadOrCreateBundleDescriptor<T>(directory);
+                var descriptorFile = TryGetDescriptorFile<T>(directory);
+                descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
             }
             return bundleFactory.CreateBundle(applicationRelativePath, allFiles, descriptor);
         }
 
-        BundleDescriptor ReadOrCreateBundleDescriptor<T>(IDirectory directory)
-            where T : Bundle
+        BundleDescriptor ReadOrCreateBundleDescriptor(IFile descriptorFile)
         {
-            var descriptorFile = TryGetDescriptorFile<T>(directory);
             return descriptorFile.Exists
                 ? new BundleDescriptorReader(descriptorFile).Read()
                 : new BundleDescriptor { AssetFilenames = { "*" } };
@@ -299,9 +299,6 @@ namespace Cassette
             var descriptorFile = directory.GetFile(typeSpecificDescriptorFilename);
 
             if (!descriptorFile.Exists) descriptorFile = directory.GetFile("bundle.txt");
-
-            // TODO: Remove this legacy support for module.txt
-            if (!descriptorFile.Exists) descriptorFile = directory.GetFile("module.txt");
 
             return descriptorFile;
         }
@@ -381,7 +378,8 @@ namespace Cassette
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
                 var allFiles = fileSearch.FindFiles(directory).ToArray();
 
-                var descriptor = ReadOrCreateBundleDescriptor<T>(directory);
+                var descriptorFile = TryGetDescriptorFile<T>(directory);
+                var descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
 
                 if (!allFiles.Any() && descriptor.ExternalUrl == null) continue;
 
@@ -430,7 +428,8 @@ namespace Cassette
                 var directory = sourceDirectory.GetDirectory(localAssetSettings.Path);
                 files = fileSearch.FindFiles(directory);
 
-                bundleDescriptor = ReadOrCreateBundleDescriptor<T>(directory);
+                var descriptorFile = TryGetDescriptorFile<T>(directory);
+                bundleDescriptor = ReadOrCreateBundleDescriptor(descriptorFile);
             }
             else
             {
@@ -678,7 +677,7 @@ namespace Cassette
             }
             var notFound = from reference in collector.CollectedReferences
                            where !reference.SourceBundle.IsFromDescriptorFile
-                              && NoBundlesContainPath(reference.AssetReference.Path)
+                              && NoBundlesContainPath(reference.AssetReference.ToPath)
                            select CreateAssetReferenceNotFoundMessage(reference.AssetReference);
 
             var message = string.Join(Environment.NewLine, notFound.ToArray());
@@ -701,7 +700,7 @@ namespace Cassette
                 {
                     bundle,
                     references = new HashedSet<Bundle>(GetNonSameBundleAssetReferences(bundle)
-                        .Select(r => r.Path)
+                        .Select(r => r.ToPath)
                         .Concat(bundle.References)
                         .SelectMany(FindBundlesContainingPath).ToList()
                     )
@@ -722,14 +721,14 @@ namespace Cassette
             {
                 return string.Format(
                     "Reference error in \"{0}\", line {1}. Cannot find \"{2}\".",
-                    reference.SourceAsset.Path, reference.SourceLineNumber, reference.Path
+                    reference.FromAssetPath, reference.SourceLineNumber, reference.ToPath
                 );
             }
             else
             {
                 return string.Format(
                     "Reference error in \"{0}\". Cannot find \"{1}\".",
-                    reference.SourceAsset.Path, reference.Path
+                    reference.FromAssetPath, reference.ToPath
                 );
             }
         }
@@ -834,6 +833,19 @@ namespace Cassette
                 details
             );
         }
+
+        public bool Equals(IEnumerable<Bundle> otherBundles)
+        {
+            return Enumerable.SequenceEqual(
+                OrderForEqualityComparison(bundles),
+                OrderForEqualityComparison(otherBundles)
+            );
+        }
+
+        static IEnumerable<Bundle> OrderForEqualityComparison(IEnumerable<Bundle> bundlesToOrder)
+        {
+            return bundlesToOrder.OrderBy(b => b.GetType().FullName).ThenBy(b => b.Path);
+        } 
 
         public IEnumerator<Bundle> GetEnumerator()
         {

@@ -10,7 +10,7 @@ namespace Cassette
 
         public BundleCollection_BuildReferences()
         {
-            collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            var bundleCollection = collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace Cassette
             AssetAcceptsVisitor(asset);
             asset.SetupGet(a => a.Path).Returns("bundle-1\\a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 0, AssetReferenceType.DifferentBundle) });
+                  .Returns(new[] { new AssetReference(asset.Object.Path, "~\\fail\\fail.js", 0, AssetReferenceType.DifferentBundle) });
             bundle.Assets.Add(asset.Object);
             collection.Add(bundle);
             
@@ -41,7 +41,7 @@ namespace Cassette
             AssetAcceptsVisitor(asset);
             asset.SetupGet(a => a.Path).Returns("~/bundle-1/a.js");
             asset.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~\\fail\\fail.js", asset.Object, 42, AssetReferenceType.DifferentBundle) });
+                  .Returns(new[] { new AssetReference(asset.Object.Path, "~\\fail\\fail.js", 42, AssetReferenceType.DifferentBundle) });
             bundle.Assets.Add(asset.Object);
             collection.Add(bundle);
 
@@ -71,10 +71,10 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~");
             var asset = new StubAsset();
-            var badReference = new AssetReference("~/NOT-FOUND.js", asset, 1, AssetReferenceType.DifferentBundle);
+            var badReference = new AssetReference(asset.Path, "~/NOT-FOUND.js", 1, AssetReferenceType.DifferentBundle);
             asset.References.Add(badReference);
             bundle.Assets.Add(asset);
-            bundle.IsFromDescriptorFile = true;
+            bundle.DescriptorFilePath = "~/bundle.txt";
             collection.Add(bundle);
 
             Assert.DoesNotThrow(

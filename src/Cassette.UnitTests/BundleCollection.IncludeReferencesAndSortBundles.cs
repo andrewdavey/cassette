@@ -18,8 +18,8 @@ namespace Cassette
             SetupAsset("~/bundle-1/a.js", asset1);
             asset1.SetupGet(a => a.References)
                   .Returns(new[] { 
-                      new AssetReference("~/bundle-2/b.js", asset1.Object, 1, AssetReferenceType.DifferentBundle),
-                      new AssetReference("~/bundle-3/c.js", asset1.Object, 1, AssetReferenceType.DifferentBundle)
+                      new AssetReference(asset1.Object.Path, "~/bundle-2/b.js", 1, AssetReferenceType.DifferentBundle),
+                      new AssetReference(asset1.Object.Path, "~/bundle-3/c.js", 1, AssetReferenceType.DifferentBundle)
                   });
             bundle1.Assets.Add(asset1.Object);
 
@@ -27,14 +27,14 @@ namespace Cassette
             var asset2 = new Mock<IAsset>();
             SetupAsset("~/bundle-2/b.js", asset2);
             asset2.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/bundle-4/d.js", asset2.Object, 1, AssetReferenceType.DifferentBundle) });
+                  .Returns(new[] { new AssetReference(asset2.Object.Path, "~/bundle-4/d.js", 1, AssetReferenceType.DifferentBundle) });
             bundle2.Assets.Add(asset2.Object);
 
             var bundle3 = new TestableBundle("~/bundle-3");
             var asset3 = new Mock<IAsset>();
             SetupAsset("~/bundle-3/c.js", asset3);
             asset3.SetupGet(a => a.References)
-                  .Returns(new[] { new AssetReference("~/bundle-4/d.js", asset3.Object, 1, AssetReferenceType.DifferentBundle) });
+                  .Returns(new[] { new AssetReference(asset3.Object.Path, "~/bundle-4/d.js", 1, AssetReferenceType.DifferentBundle) });
             bundle3.Assets.Add(asset3.Object);
 
             var bundle4 = new TestableBundle("~/bundle-4");

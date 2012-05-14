@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using Jurassic;
 using System.Linq;
+using Jurassic;
+
 #if NET35
 using Cassette.Utilities;
 #endif

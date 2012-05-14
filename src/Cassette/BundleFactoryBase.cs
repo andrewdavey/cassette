@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
+
 #if NET35
 using Iesi.Collections.Generic;
 #endif
@@ -22,7 +23,7 @@ namespace Cassette
             SetIsSortedIfExplicitFilenames(bundle, bundleDescriptor.AssetFilenames);
             if (bundleDescriptor.IsFromFile)
             {
-                bundle.IsFromDescriptorFile = true;
+                bundle.DescriptorFilePath = bundleDescriptor.File.FullPath;
             }
             return bundle;
         }

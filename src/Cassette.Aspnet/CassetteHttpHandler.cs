@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Web;
-using TinyIoC;
+using Cassette.TinyIoC;
 
 namespace Cassette.Aspnet
 {

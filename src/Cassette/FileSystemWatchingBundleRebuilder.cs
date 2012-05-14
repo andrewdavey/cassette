@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Cassette.IO;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -15,6 +17,7 @@ namespace Cassette
         readonly BundleCollection bundles;
         readonly IBundleCollectionInitializer initializer;
         readonly IEnumerable<IFileSearch> fileSearches;
+        readonly HashedCompareSet<string> bundleDescriptorFilenames;
         IDisposable fileSystemWatcher;
         Timer rebuildDelayTimer;
 
@@ -24,6 +27,20 @@ namespace Cassette
             this.bundles = bundles;
             this.initializer = initializer;
             this.fileSearches = fileSearches;
+
+            bundleDescriptorFilenames = GetBundleDescriptorFilenames();
+        }
+
+        static HashedCompareSet<string> GetBundleDescriptorFilenames()
+        {
+            var bundleTypes = new[]
+            {
+                typeof(Bundle),
+                typeof(Scripts.ScriptBundle),
+                typeof(Stylesheets.StylesheetBundle),
+                typeof(HtmlTemplates.HtmlTemplateBundle)
+            };
+            return new HashedCompareSet<string>(bundleTypes.Select(type => type.Name + ".txt").ToArray(), StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -74,6 +91,8 @@ namespace Cassette
 
         bool IsPotentialAssetFile(string path)
         {
+            if (IsBundleDescriptorFile(path)) return true;
+            if (IsCacheFile(path)) return false;
             try
             {
                 using (bundles.GetReadLock())
@@ -89,8 +108,16 @@ namespace Cassette
             }
         }
 
+        bool IsBundleDescriptorFile(string path)
+        {
+            var filename = path.Split('/', '\\').Last();
+            return bundleDescriptorFilenames.Contains(filename);
+        }
+
         bool IsKnownPath(string path)
         {
+            if (IsBundleDescriptorFile(path)) return true;
+            if (IsCacheFile(path)) return false;
             try
             {
                 using (bundles.GetReadLock())
@@ -112,6 +139,24 @@ namespace Cassette
             var predicate = new BundleContainsPathPredicate(path) { AllowPartialAssetPaths = true };
             bundles.Accept(predicate);
             return predicate.Result;
+        }
+
+        bool IsCacheFile(string path)
+        {
+            // path is relative to source directory. So to be a path in cache, cache needs to be contained within source.
+            // The following is a bit of hack.
+            var cache = settings.CacheDirectory as FileSystemDirectory;
+            var source = settings.SourceDirectory as FileSystemDirectory;
+            if (cache == null || source == null) return false;
+            var subDirectory = source.TryGetAsSubDirectory(cache);
+            if (subDirectory != null)
+            {
+                return path.StartsWith(subDirectory.FullPath, StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         void QueueRebuild()

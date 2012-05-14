@@ -1,6 +1,6 @@
 using System;
 using System.Web;
-using TinyIoC;
+using Cassette.TinyIoC;
 
 namespace Cassette.Aspnet
 {

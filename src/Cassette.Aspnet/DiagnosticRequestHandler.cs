@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
+using Cassette.Caching;
 using Cassette.HtmlTemplates;
-using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
@@ -18,10 +18,10 @@ namespace Cassette.Aspnet
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
         readonly IUrlGenerator urlGenerator;
-        readonly ICassetteManifestCache cache;
+        readonly IBundleCollectionCache cache;
         readonly IBundleCollectionInitializer bundleCollectionInitializer;
 
-        public DiagnosticRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, ICassetteManifestCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
+        public DiagnosticRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, IBundleCollectionCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
         {
             this.requestContext = requestContext;
             this.bundles = bundles;

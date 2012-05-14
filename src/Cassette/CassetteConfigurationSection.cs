@@ -25,18 +25,11 @@ namespace Cassette
             set { this["allowRemoteDiagnostics"] = value; }
         }
 
-        [ConfigurationProperty("watchFileSystem", DefaultValue = null)]
-        public bool? WatchFileSystem
+        [ConfigurationProperty("cacheDirectory", DefaultValue = null)]
+        public string CacheDirectory
         {
-            get { return (bool?)this["watchFileSystem"]; }
-            set { this["watchFileSystem"] = value; }
-        }
-
-        [ConfigurationProperty("precompiledManifest", DefaultValue = null)]
-        public string PrecompiledManifest
-        {
-            get { return (string)this["precompiledManifest"]; }
-            set { this["precompiledManifest"] = value; }
+            get { return (string)this["cacheDirectory"]; }
+            set { this["cacheDirectory"] = value; }
         }
     }
 }

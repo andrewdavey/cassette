@@ -8,6 +8,7 @@ namespace Cassette.IO
     {
         FileAttributes Attributes { get; }
         string FullPath { get; }
+        bool Exists { get; }
         IFile GetFile(string filename);
         IDirectory GetDirectory(string path);
         bool DirectoryExists(string path);
@@ -19,5 +20,8 @@ namespace Cassette.IO
             Action<string> pathDeleted,
             Action<string, string> pathRenamed 
         );
+
+        void Create();
+        void Delete();
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.Utilities;
+
 #if NET35
 using Iesi.Collections.Generic;
 #endif

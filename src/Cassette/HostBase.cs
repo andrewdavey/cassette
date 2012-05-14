@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Cassette.Caching;
 using Cassette.HtmlTemplates;
-using Cassette.Manifests;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-using TinyIoC;
+using Cassette.TinyIoC;
+
 #if NET35
 using System.Reflection.Emit;
 #endif
@@ -79,7 +80,7 @@ namespace Cassette
             // REGISTER ALL THE THINGS!
             RegisterBundleCollection();
             RegisterUrlGenerator();
-            RegisterManifestCache();
+            RegisterCache();
             RegisterBundleCollectionInitializer();
             RegisterStartUpTasks();
             RegisterSettings();
@@ -104,13 +105,42 @@ namespace Cassette
             container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
         }
 
-        void RegisterManifestCache()
+        void RegisterCache()
         {
-            container.Register(typeof(ICassetteManifestCache), (c, p) =>
+            container.Register<IBundleCollectionCache>((c, p) =>
             {
-                var cacheFile = c.Resolve<CassetteSettings>().CacheDirectory.GetFile("cassette.xml");
-                return new CassetteManifestCache(cacheFile);
+                var cacheDirectory = c.Resolve<CassetteSettings>().CacheDirectory;
+                return new BundleCollectionCache(
+                    cacheDirectory,
+                    bundleTypeName => ResolveBundleDeserializer(bundleTypeName, c)
+                );
             });
+            container.Register((c, p) =>
+            {
+                Func<Type, IAssetCacheValidator> assetCacheValidatorFactory = type => (IAssetCacheValidator)c.Resolve(type);
+                var sourceDirectory = c.Resolve<CassetteSettings>().SourceDirectory;
+                return new ManifestValidator(assetCacheValidatorFactory, sourceDirectory);
+            });
+            container.Register((c, p) =>
+            {
+                var sourceDirectory = c.Resolve<CassetteSettings>().SourceDirectory;
+                return new FileAssetCacheValidator(sourceDirectory);
+            });
+        }
+
+        static readonly Dictionary<string, Type> BundleDeserializers = new Dictionary<string, Type>
+        {
+            { typeof(ScriptBundle).Name, typeof(ScriptBundleDeserializer) },
+            { typeof(StylesheetBundle).Name, typeof(StylesheetBundleDeserializer) },
+            { typeof(HtmlTemplateBundle).Name, typeof(HtmlTemplateBundleDeserializer) },
+            { typeof(ExternalScriptBundle).Name, typeof(ExternalScriptBundleDeserializer) },
+            { typeof(ExternalStylesheetBundle).Name, typeof(ExternalStylesheetBundleDeserializer) }
+        };
+
+        internal static IBundleDeserializer<Bundle> ResolveBundleDeserializer(string bundleTypeName, TinyIoCContainer container)
+        {
+            var deserializerType = BundleDeserializers[bundleTypeName];
+            return (IBundleDeserializer<Bundle>)container.Resolve(deserializerType);
         }
 
         protected virtual void RegisterBundleCollectionInitializer()
@@ -120,11 +150,6 @@ namespace Cassette
                     c.Resolve<RuntimeBundleCollectionInitializer>()
                 )
             );
-            container.Register((c, p) =>
-            {
-                var file = container.Resolve<CassetteSettings>().PrecompiledManifestFile;
-                return new PrecompiledBundleCollectionInitializer(file, c.Resolve<IUrlModifier>());
-            });
         }
 
         void RegisterStartUpTasks()

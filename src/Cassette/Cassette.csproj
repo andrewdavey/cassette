@@ -54,22 +54,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">..\packages\Newtonsoft.Json.4.0.8\lib\net35\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin, Version=4.46.4422.26284, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
+    <Reference Include="AjaxMin, Version=4.51.4507.18296, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AjaxMin.4.46.4422.26284\lib\net20\AjaxMin.dll</HintPath>
+      <HintPath>..\packages\AjaxMin.4.51.4507.18296\lib\net20\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.5\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -82,6 +78,16 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyScanner.cs" />
+    <Compile Include="AssetPathComparer.cs" />
+    <Compile Include="Caching\BundleCollectionCache.cs" />
+    <Compile Include="Caching\BundleCollectionCacheReader.cs" />
+    <Compile Include="Caching\ManifestValidator.cs" />
+    <Compile Include="Caching\BundleCollectionCacheWriter.cs" />
+    <Compile Include="Caching\CacheReadResult.cs" />
+    <Compile Include="Caching\FileAssetCacheValidator.cs" />
+    <Compile Include="Caching\IAssetCacheValidator.cs" />
+    <Compile Include="Caching\IBundleCollectionCache.cs" />
+    <Compile Include="Caching\Manifest.cs" />
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />
@@ -93,6 +99,8 @@
     <Compile Include="IBundleCollectionInitializer.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IFileAccessAuthorization.cs" />
+    <Compile Include="DeserializedAsset.cs" />
+    <Compile Include="IBundleDeserializer.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="RuntimeBundleCollectionInitializer.cs" />
     <Compile Include="BundleFactoryProvider.cs" />
@@ -112,34 +120,23 @@
     <Compile Include="DelegatingDisposable.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplatesContainerConfiguration.cs" />
-    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleSerializer.cs" />
     <Compile Include="IFileSearchProvider.cs" />
     <Compile Include="IBundleFactoryProvider.cs" />
     <Compile Include="IExternalBundle.cs" />
     <Compile Include="IStartUpTask.cs" />
-    <Compile Include="Manifests\AssetManifestBuilder.cs" />
-    <Compile Include="Manifests\AssetReferenceManifest.cs" />
-    <Compile Include="Manifests\CassetteManifestCache.cs" />
-    <Compile Include="Manifests\ICassetteManifestCache.cs" />
-    <Compile Include="Manifests\ICassetteManifestWriter.cs" />
-    <Compile Include="Manifests\InvalidCassetteManifestException.cs" />
-    <Compile Include="Manifests\AssetFromManifest.cs" />
-    <Compile Include="Manifests\AssetManifest.cs" />
-    <Compile Include="Manifests\AssetManifestReader.cs" />
+    <Compile Include="CassetteDeserializationException.cs" />
+    <Compile Include="AssetDeserializer.cs" />
     <Compile Include="BundleFactoryExtensions.cs" />
-    <Compile Include="Manifests\AssetManifestWriter.cs" />
-    <Compile Include="Manifests\BundleManifest.cs" />
-    <Compile Include="Manifests\BundleManifestBuilder.cs" />
-    <Compile Include="Manifests\BundleManifestReader.cs" />
-    <Compile Include="Manifests\CassetteManifestReader.cs" />
-    <Compile Include="Manifests\CassetteManifestWriter.cs" />
-    <Compile Include="Manifests\BundleManifestWriter.cs" />
+    <Compile Include="AssetSerializer.cs" />
+    <Compile Include="BundleDeserializer.cs" />
+    <Compile Include="BundleSerializer.cs" />
     <Compile Include="BundleProcessing\AssignContentType.cs" />
     <Compile Include="BundleProcessing\Comment.cs" />
     <Compile Include="BundleProcessing\ICommentParser.cs" />
     <Compile Include="BundleProcessing\ParseReferences.cs" />
     <Compile Include="BundleProcessing\ReferenceParser.cs" />
-    <Compile Include="Manifests\CachedBundleContent.cs" />
+    <Compile Include="CachedBundleContent.cs" />
     <Compile Include="CassetteConfigurationSection.cs" />
     <Compile Include="ConventionalMinifiedFileFilter.cs" />
     <Compile Include="LocalAssetSettings.cs" />
@@ -150,10 +147,8 @@
     <Compile Include="FileSearch.cs" />
     <Compile Include="CassetteSettings.cs" />
     <Compile Include="HtmlAttributeDictionary.cs" />
-    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestBuilder.cs" />
-    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifest.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateCommentParser.cs" />
-    <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestReader.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleDeserializer.cs" />
     <Compile Include="HtmlTemplates\ParseHtmlTemplateReferences.cs" />
     <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
     <Compile Include="HtmlTemplates\InlineHtmlTemplateBundleRenderer.cs" />
@@ -194,29 +189,25 @@
     <Compile Include="BundleProcessing\AddTransformerToAssets.cs" />
     <Compile Include="BundleProcessing\BundlePipeline.cs" />
     <Compile Include="IUrlModifier.cs" />
-    <Compile Include="Manifests\CassetteManifest.cs" />
     <Compile Include="NullPlaceholderTracker.cs" />
     <Compile Include="PlaceholderTracker.cs" />
-    <Compile Include="PrecompiledBundleCollectionInitializer.cs" />
     <Compile Include="CacheAwareBundleCollectionInitializer.cs" />
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="Scripts\AssignScriptRenderer.cs" />
     <Compile Include="Scripts\DebugScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\IJavaScriptMinifier.cs" />
-    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifest.cs" />
-    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestBuilder.cs" />
-    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestReader.cs" />
-    <Compile Include="Scripts\Manifests\ExternalScriptBundleManifestWriter.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleDeserializer.cs" />
+    <Compile Include="Scripts\ExternalScriptBundleSerializer.cs" />
     <Compile Include="Scripts\HtmlConstants.cs" />
     <Compile Include="Scripts\JavaScriptCommentParser.cs" />
     <Compile Include="Scripts\JavaScriptReferenceParser.cs" />
-    <Compile Include="Scripts\Manifests\ScriptBundleManifestWriter.cs" />
+    <Compile Include="Scripts\ScriptBundleDeserializerBase.cs" />
+    <Compile Include="Scripts\ScriptBundleSerializer.cs" />
+    <Compile Include="Scripts\ScriptBundleSerializerBase.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
     <Compile Include="Scripts\ScriptContainersConfiguration.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
-    <Compile Include="Scripts\Manifests\ScriptBundleManifest.cs" />
-    <Compile Include="Scripts\Manifests\ScriptBundleManifestBuilder.cs" />
-    <Compile Include="Scripts\Manifests\ScriptBundleManifestReader.cs" />
+    <Compile Include="Scripts\ScriptBundleDeserializer.cs" />
     <Compile Include="ServicesConfiguration.cs" />
     <Compile Include="SettingsVersionAssigner.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
@@ -225,21 +216,19 @@
     <Compile Include="Stylesheets\CssUrlMatchTransformer.cs" />
     <Compile Include="Stylesheets\CssUrlToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\IStylesheetMinifier.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleDeserializerBase.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleSerializerBase.cs" />
     <Compile Include="Stylesheets\StylesheetsContainerConfiguration.cs" />
     <Compile Include="Stylesheets\StylesheetBundleExtensions.cs" />
     <Compile Include="Stylesheets\CssFontToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\CssCommentParser.cs" />
     <Compile Include="Stylesheets\CssImageToDataUriTransformer.cs" />
     <Compile Include="Stylesheets\DebugStylesheetHtmlRenderer.cs" />
-    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifest.cs" />
-    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestBuilder.cs" />
-    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestReader.cs" />
-    <Compile Include="Stylesheets\Manifests\ExternalStylesheetBundleManifestWriter.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundleDeserializer.cs" />
+    <Compile Include="Stylesheets\ExternalStylesheetBundleSerializer.cs" />
     <Compile Include="Stylesheets\HtmlConstants.cs" />
-    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifest.cs" />
-    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestBuilder.cs" />
-    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestReader.cs" />
-    <Compile Include="Stylesheets\Manifests\StylesheetBundleManifestWriter.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleDeserializer.cs" />
+    <Compile Include="Stylesheets\StylesheetBundleSerializer.cs" />
     <Compile Include="Stylesheets\StylesheetHtmlRenderer.cs" />
     <Compile Include="Stylesheets\StylesheetPipeline.cs" />
     <Compile Include="ICompiler.cs" />
@@ -250,8 +239,8 @@
     <Compile Include="BundleProcessing\CompileAsset.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
-    <Compile Include="TinyIoC.cs" />
-    <Compile Include="TinyIoCExtensions.cs" />
+    <Compile Include="TinyIoC\TinyIoC.cs" />
+    <Compile Include="TinyIoC\TinyIoCExtensions.cs" />
     <Compile Include="Trace.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />

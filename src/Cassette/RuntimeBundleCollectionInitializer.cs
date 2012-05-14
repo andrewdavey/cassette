@@ -2,26 +2,23 @@ namespace Cassette
 {
     class RuntimeBundleCollectionInitializer : IBundleCollectionInitializer
     {
+        readonly CassetteSettings settings;
         readonly CacheAwareBundleCollectionInitializer cacheAwareBundleCollectionInitializer;
         readonly BundleCollectionInitializer bundleCollectionInitializer;
-        readonly PrecompiledBundleCollectionInitializer precompiledBundleCollectionInitializer;
-        readonly CassetteSettings settings;
 
-        public RuntimeBundleCollectionInitializer(CassetteSettings settings, CacheAwareBundleCollectionInitializer cacheAwareBundleCollectionInitializer, BundleCollectionInitializer bundleCollectionInitializer, PrecompiledBundleCollectionInitializer precompiledBundleCollectionInitializer)
+        public RuntimeBundleCollectionInitializer(
+            CassetteSettings settings,
+            CacheAwareBundleCollectionInitializer cacheAwareBundleCollectionInitializer,
+            BundleCollectionInitializer bundleCollectionInitializer)
         {
             this.settings = settings;
             this.cacheAwareBundleCollectionInitializer = cacheAwareBundleCollectionInitializer;
             this.bundleCollectionInitializer = bundleCollectionInitializer;
-            this.precompiledBundleCollectionInitializer = precompiledBundleCollectionInitializer;
         }
 
         public void Initialize(BundleCollection bundles)
         {
-            if (settings.PrecompiledManifestFile.Exists)
-            {
-                precompiledBundleCollectionInitializer.Initialize(bundles);
-            }
-            else if (settings.IsDebuggingEnabled)
+            if (settings.IsDebuggingEnabled)
             {
                 bundleCollectionInitializer.Initialize(bundles);
             }

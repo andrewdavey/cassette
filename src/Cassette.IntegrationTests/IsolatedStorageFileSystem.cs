@@ -3,11 +3,12 @@ using Cassette.IO;
 using Should;
 using Xunit;
 using IsolatedStorageFile = System.IO.IsolatedStorage.IsolatedStorageFile;
+
 #if NET35
 using Cassette.Utilities;
 #endif
 
-namespace Cassette.IntegrationTests
+namespace Cassette
 {
     public class IsolatedStorageFileSystem_Tests
     {

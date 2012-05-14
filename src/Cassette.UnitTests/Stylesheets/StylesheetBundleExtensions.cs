@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Cassette.BundleProcessing;
+using Cassette.TinyIoC;
 using Moq;
 using Should;
-using TinyIoC;
 using Xunit;
 
 namespace Cassette.Stylesheets

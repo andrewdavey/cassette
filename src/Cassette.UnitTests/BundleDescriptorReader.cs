@@ -3,9 +3,9 @@ using System.IO;
 using System.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
+using Moq;
 using Should;
 using Xunit;
-using Moq;
 
 namespace Cassette
 {

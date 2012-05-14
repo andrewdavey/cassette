@@ -20,9 +20,11 @@ namespace Cassette
         public FileSystemWatchingBundleRebuilder_Tests()
         {
             tempDirectory = new TempDirectory();
+            Directory.CreateDirectory(Path.Combine(tempDirectory, "cache"));
             var settings = new CassetteSettings
             {
-                SourceDirectory = new FileSystemDirectory(tempDirectory)
+                SourceDirectory = new FileSystemDirectory(tempDirectory),
+                CacheDirectory = new FileSystemDirectory(Path.Combine(tempDirectory, "cache"))
             };
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             bundleConfiguration = new Mock<IConfiguration<BundleCollection>>();
@@ -189,6 +191,58 @@ namespace Cassette
             {
                 Trace.Source.Listeners.Remove(listener);
             }
+        }
+
+        [Fact]
+        public void WhenCacheFileIsChanged_ThenDontRebuild()
+        {
+            rebuilder.Start();
+
+            CreateFile("cache/cached-file.js");
+
+            AssertBundleCollectionNotRebuilt();
+        }
+
+        [Fact]
+        public void WhenBundleTxtCreated_ThenRebuild()
+        {
+            rebuilder.Start();
+            CreateFile("bundle.txt");
+            AssertBundleCollectionRebuilt();
+        }
+
+        [Fact]
+        public void WhenBundleTxtChanged_ThenRebuild()
+        {
+            CreateFile("bundle.txt");
+            rebuilder.Start();
+            ChangeFile("bundle.txt");
+            AssertBundleCollectionRebuilt();
+        }
+
+        [Fact]
+        public void WhenBundleTxtDeleted_ThenRebuild()
+        {
+            CreateFile("bundle.txt");
+            rebuilder.Start();
+            DeleteFile("bundle.txt");
+            AssertBundleCollectionRebuilt();
+        }
+
+        [Fact]
+        public void WhenScriptBundleTxtCreated_ThenRebuild()
+        {
+            rebuilder.Start();
+            CreateFile("scriptbundle.txt");
+            AssertBundleCollectionRebuilt();
+        }
+
+        [Fact]
+        public void WhenOtherBundleTxtCreated_ThenDontRebuild()
+        {
+            rebuilder.Start();
+            CreateFile("other-bundle.txt");
+            AssertBundleCollectionNotRebuilt();
         }
 
         class TestTraceListener : TraceListener

@@ -1,5 +1,5 @@
 using Cassette.Interop;
-using TinyIoC;
+using Cassette.TinyIoC;
 
 namespace Cassette.Scripts
 {

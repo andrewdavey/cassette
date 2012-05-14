@@ -45,9 +45,11 @@ namespace Cassette.Scripts
         public void GivenDescriptorIsFromFile_WhenCreateBundle_ThenBundleIsFromDescriptorFileEqualsTrue()
         {
             var factory = new ScriptBundleFactory(pipeline);
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath).Returns("~/bundle.txt");
             var descriptor = new BundleDescriptor
             {
-                IsFromFile = true,
+                File = file.Object,
                 AssetFilenames = { "*" }
             };
             var bundle = factory.CreateBundle(

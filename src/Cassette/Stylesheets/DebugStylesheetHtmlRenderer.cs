@@ -33,23 +33,11 @@ namespace Cassette.Stylesheets
 
         Func<string, string> GetCreateLinkFunc(StylesheetBundle bundle)
         {
-            if (string.IsNullOrEmpty(bundle.Media))
-            {
-                return url => string.Format(
-                    HtmlConstants.LinkHtml,
-                    url,
-                    bundle.HtmlAttributes.CombinedAttributes
-                );
-            }
-            else
-            {
-                return url => string.Format(
-                    HtmlConstants.LinkWithMediaHtml,
-                    url,
-                    bundle.Media,
-                    bundle.HtmlAttributes.CombinedAttributes
-                );
-            }
+            return url => string.Format(
+                HtmlConstants.LinkHtml,
+                url,
+                bundle.HtmlAttributes.CombinedAttributes
+            );
         }
     }
 }

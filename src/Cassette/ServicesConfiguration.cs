@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using TinyIoC;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.TinyIoC;
 
 namespace Cassette
 {

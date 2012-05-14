@@ -120,7 +120,7 @@ namespace Cassette
         {
             asset.AddReference("another.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~/bundle/another.js");
+            asset.References.First().ToPath.ShouldEqual("~/bundle/another.js");
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Cassette
 
             asset.AddReference("sub\\another.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~/bundle/sub/another.js");
+            asset.References.First().ToPath.ShouldEqual("~/bundle/sub/another.js");
         }
 
         [Fact]
@@ -157,7 +157,7 @@ namespace Cassette
         {
             asset.AddReference("../another/test.js", 1);
 
-            asset.References.First().Path.ShouldEqual("~/another/test.js");
+            asset.References.First().ToPath.ShouldEqual("~/another/test.js");
         }
 
         [Fact]
@@ -182,7 +182,7 @@ namespace Cassette
             asset.AddReference("/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~/another/test.js");
+            reference.ToPath.ShouldEqual("~/another/test.js");
             reference.Type.ShouldEqual(AssetReferenceType.DifferentBundle);
         }
 
@@ -192,7 +192,7 @@ namespace Cassette
             asset.AddReference("~/another/test.js", 1);
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~/another/test.js");
+            reference.ToPath.ShouldEqual("~/another/test.js");
         }
 
         [Fact]
@@ -201,7 +201,7 @@ namespace Cassette
             asset.AddRawFileReference("../test.png");
 
             var reference = asset.References.First();
-            reference.Path.ShouldEqual("~/test.png");
+            reference.ToPath.ShouldEqual("~/test.png");
         }
 
         [Fact]
@@ -226,7 +226,7 @@ namespace Cassette
         public void WhenAddRawFileReferenceStartingWithForwardSlash_ThenReferencePathhasTildePrefixAdded()
         {
             asset.AddRawFileReference("/test.png");
-            asset.References.First().Path.ShouldEqual("~/test.png");
+            asset.References.First().ToPath.ShouldEqual("~/test.png");
         }
 
         [Fact]
@@ -234,7 +234,7 @@ namespace Cassette
         {
             var url = "http://maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
-            asset.References.First().Path.ShouldEqual(url);
+            asset.References.First().ToPath.ShouldEqual(url);
             asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
         }
 
@@ -243,7 +243,7 @@ namespace Cassette
         {
             var url = "https://maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
-            asset.References.First().Path.ShouldEqual(url);
+            asset.References.First().ToPath.ShouldEqual(url);
             asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
         }
 
@@ -252,7 +252,7 @@ namespace Cassette
         {
             var url = "//maps.google.com/maps/api/js?v=3.2&sensor=false";
             asset.AddReference(url, 1);
-            asset.References.First().Path.ShouldEqual(url);
+            asset.References.First().ToPath.ShouldEqual(url);
             asset.References.First().Type.ShouldEqual(AssetReferenceType.Url);
         }
 

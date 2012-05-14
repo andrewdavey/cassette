@@ -2,7 +2,7 @@
 using Should;
 using Xunit;
 
-namespace Cassette
+namespace Cassette.Compilation
 {
     public class JurassicCoffeeScriptCompiler_Tests
     {

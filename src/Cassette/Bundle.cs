@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Cassette.BundleProcessing;
-using Cassette.Manifests;
 using Cassette.Utilities;
+
 #if NET35
 using Iesi.Collections.Generic;
 #endif
 
 namespace Cassette
 {
+#pragma warning disable 659
     [System.Diagnostics.DebuggerDisplay("{Path}")]
     public abstract class Bundle : IDisposable
     {
@@ -81,6 +83,24 @@ namespace Cassette
 
         protected abstract string UrlBundleTypeArgument { get; }
 
+        internal string CacheFilename
+        {
+            get
+            {
+                return UrlBundleTypeArgument + 
+                       Path.Substring(1) + 
+                       "/" + Hash.ToHexString() + 
+                       "." + FileExtensionsByContentType[ContentType];
+            }
+        }
+
+        static readonly Dictionary<string, string> FileExtensionsByContentType = new Dictionary<string, string>
+        {
+            { "text/javascript", "js" },
+            { "text/css", "css" },
+            { "text/html", "htm" }
+        };
+
         internal IEnumerable<string> References
         {
             get { return references; }
@@ -120,16 +140,15 @@ namespace Cassette
         protected abstract void ProcessCore(CassetteSettings settings);
 
         internal bool IsProcessed { get; private set; }
-        internal bool IsFromDescriptorFile { get; set; }
 
-        internal abstract string Render();
+        internal string DescriptorFilePath { get; set; }
 
-        internal BundleManifest CreateBundleManifest()
+        internal bool IsFromDescriptorFile
         {
-            return CreateBundleManifest(IsProcessed);
+            get { return DescriptorFilePath != null; }
         }
 
-        internal abstract BundleManifest CreateBundleManifest(bool includeProcessedBundleContent);
+        internal abstract string Render();
 
         internal virtual bool ContainsPath(string pathToFind)
         {
@@ -166,7 +185,7 @@ namespace Cassette
                 Assets,
                 asset => asset.References
                     .Where(reference => reference.Type == AssetReferenceType.SameBundle)
-                    .Select(reference => assetsByFilename[reference.Path])
+                    .Select(reference => assetsByFilename[reference.ToPath])
             );
             var cycles = graph.FindCycles().ToArray();
             if (cycles.Length > 0)
@@ -216,6 +235,39 @@ namespace Cassette
             }
         }
 
+        internal abstract void SerializeInto(XContainer container);
+ 
+        public override bool Equals(object obj)
+        {
+            var other = obj as Bundle;
+            return other != null &&
+                   TypesEqual(this, other) &&
+                   PathsEqual(this, other) &&
+                   AllAssetsEqual(this, other);
+        }
+
+        static bool TypesEqual(Bundle x, Bundle y)
+        {
+            return x.GetType() == y.GetType();
+        }
+
+        static bool PathsEqual(Bundle x, Bundle y)
+        {
+            return string.Equals(x.Path, y.Path, StringComparison.OrdinalIgnoreCase);
+        }
+
+        static bool AllAssetsEqual(Bundle x, Bundle y)
+        {
+            var collectorX = new CollectLeafAssets();
+            x.Accept(collectorX);
+            var collectorY = new CollectLeafAssets();
+            y.Accept(collectorY);
+
+            var assetsX = collectorX.Assets.OrderBy(a => a.Path);
+            var assetsY = collectorY.Assets.OrderBy(a => a.Path);
+            return assetsX.SequenceEqual(assetsY, new AssetPathComparer());
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing) return;
@@ -229,5 +281,25 @@ namespace Cassette
         {
             Dispose(true);
         }
+
+        class CollectLeafAssets : IBundleVisitor
+        {
+            public CollectLeafAssets()
+            {
+                Assets = new List<IAsset>();
+            }
+
+            public List<IAsset> Assets { get; private set; }
+
+            public void Visit(Bundle bundle)
+            {
+            }
+
+            public void Visit(IAsset asset)
+            {
+                Assets.Add(asset);
+            }
+        }
     }
+#pragma warning restore 659
 }

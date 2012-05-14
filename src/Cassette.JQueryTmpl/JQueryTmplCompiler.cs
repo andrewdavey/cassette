@@ -1,5 +1,5 @@
-﻿using Jurassic;
-using System.Linq;
+﻿using System.Linq;
+using Jurassic;
 
 namespace Cassette.HtmlTemplates
 {

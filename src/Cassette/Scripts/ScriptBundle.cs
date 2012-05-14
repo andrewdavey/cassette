@@ -1,6 +1,5 @@
-﻿using Cassette.BundleProcessing;
-using Cassette.Manifests;
-using Cassette.Scripts.Manifests;
+﻿using System.Xml.Linq;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
@@ -10,10 +9,12 @@ namespace Cassette.Scripts
             : base(applicationRelativePath)
         {
             ContentType = "text/javascript";
+            HtmlAttributes["type"] = "text/javascript";
         }
 
         protected ScriptBundle()
         {
+            HtmlAttributes["type"] = "text/javascript";
         }
 
         /// <summary>
@@ -36,10 +37,10 @@ namespace Cassette.Scripts
             return Renderer.Render(this);
         }
 
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
+        internal override void SerializeInto(XContainer container)
         {
-            var builder = new ScriptBundleManifestBuilder { IncludeContent = includeProcessedBundleContent};
-            return builder.BuildManifest(this);
+            var serializer = new ScriptBundleSerializer(container);
+            serializer.Serialize(this);
         }
 
         protected override string UrlBundleTypeArgument

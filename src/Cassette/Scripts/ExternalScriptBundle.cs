@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Cassette.Manifests;
-using Cassette.Scripts.Manifests;
+using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -51,12 +50,6 @@ namespace Cassette.Scripts
         internal override bool ContainsPath(string pathToFind)
         {
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
-        }
-
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
-        {
-            var builder = new ExternalScriptBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
         }
 
         public string ExternalUrl
@@ -126,6 +119,12 @@ namespace Cassette.Scripts
         static string Escape(string script)
         {
             return script.Replace("<", "%3C").Replace(">", "%3E");
+        }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new ExternalScriptBundleSerializer(container);
+            serializer.Serialize(this);
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Cassette.Manifests;
-using Cassette.Stylesheets.Manifests;
+using System.Xml.Linq;
 
 namespace Cassette.Stylesheets
 {
@@ -37,12 +36,6 @@ namespace Cassette.Stylesheets
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
-        {
-            var builder = new ExternalStylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
-        }
-
         public string ExternalUrl
         {
             get { return url; }
@@ -57,17 +50,7 @@ namespace Cassette.Stylesheets
 
             var conditionalRenderer = new ConditionalRenderer();
 
-            return conditionalRenderer.Render(Condition, html =>
-            {
-                if (string.IsNullOrEmpty(Media))
-                {
-                    RenderLink(html);
-                }
-                else
-                {
-                    RenderLinkWithMedia(html);
-                }
-            });
+            return conditionalRenderer.Render(Condition, RenderLink);
         }
 
         void RenderLink(StringBuilder html)
@@ -76,17 +59,13 @@ namespace Cassette.Stylesheets
                 HtmlConstants.LinkHtml,
                 url,
                 HtmlAttributes.CombinedAttributes
-                );
+            );
         }
 
-        void RenderLinkWithMedia(StringBuilder html)
+        internal override void SerializeInto(XContainer container)
         {
-            html.AppendFormat(
-                HtmlConstants.LinkWithMediaHtml,
-                url,
-                Media,
-                HtmlAttributes.CombinedAttributes
-                );
+            var serializer = new ExternalStylesheetBundleSerializer(container);
+            serializer.Serialize(this);
         }
     }
 }

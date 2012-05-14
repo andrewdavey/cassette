@@ -1,7 +1,7 @@
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
-using Cassette.Utilities;
 
 namespace Cassette
 {

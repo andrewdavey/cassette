@@ -64,8 +64,8 @@ namespace Cassette
         {
             foreach (var assetReference in asset.References.Where(IsUrlReferenceNotYetSeen))
             {
-                RecordUrlAsSeen(assetReference.Path);
-                AddNewExternalBundle(assetReference.Path);
+                RecordUrlAsSeen(assetReference.ToPath);
+                AddNewExternalBundle(assetReference.ToPath);
             }
         }
 
@@ -77,7 +77,7 @@ namespace Cassette
         bool IsUrlReferenceNotYetSeen(AssetReference reference)
         {
             var isUrl = reference.Type == AssetReferenceType.Url;
-            var alreadySeenUrl = existingUrls.Contains(reference.Path);
+            var alreadySeenUrl = existingUrls.Contains(reference.ToPath);
             return isUrl && !alreadySeenUrl;
         }
 

@@ -1,6 +1,5 @@
-﻿using Cassette.BundleProcessing;
-using Cassette.Manifests;
-using Cassette.Stylesheets.Manifests;
+﻿using System.Xml.Linq;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
@@ -10,12 +9,22 @@ namespace Cassette.Stylesheets
             : base(applicationRelativePath)
         {
             ContentType = "text/css";
+            HtmlAttributes["type"] = "text/css";
+            HtmlAttributes["rel"] = "stylesheet";
         }
 
         /// <summary>
         /// The value of the media attribute for this stylesheet's link element. For example, <example>print</example>.
         /// </summary>
-        public string Media { get; set; }
+        public string Media
+        {
+            get
+            {
+                string value;
+                return HtmlAttributes.TryGetValue("media", out value) ? value : null;
+            }
+            set { HtmlAttributes["media"] = value; }
+        }
 
         /// <summary>
         /// The Internet Explorer specific condition used control if the stylesheet should be loaded using an HTML conditional comment.
@@ -37,10 +46,10 @@ namespace Cassette.Stylesheets
             return Renderer.Render(this);
         }
 
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
+        internal override void SerializeInto(XContainer container)
         {
-            var builder = new StylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
+            var serializer = new StylesheetBundleSerializer(container);
+            serializer.Serialize(this);
         }
 
         protected override string UrlBundleTypeArgument

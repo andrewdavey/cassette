@@ -39,6 +39,11 @@ namespace Cassette.BundleProcessing
             get { return hash; }
         }
 
+        public override Type AssetCacheValidatorType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public override IEnumerable<AssetReference> References
         {
             get { return children.SelectMany(c => c.References); }
@@ -56,11 +61,7 @@ namespace Cassette.BundleProcessing
 
         protected override Stream OpenStreamCore()
         {
-            var newStream = new MemoryStream();
-            stream.Position = 0;
-            stream.CopyTo(newStream);
-            newStream.Position = 0;
-            return newStream;
+            return new MemoryStream(stream.ToArray());
         }
 
         public void Dispose()

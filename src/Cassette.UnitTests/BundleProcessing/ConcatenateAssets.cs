@@ -49,13 +49,13 @@ namespace Cassette.BundleProcessing
             asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
             asset1.SetupGet(a => a.References).Returns(new[] 
             {
-                new AssetReference("~\\other1.js", asset1.Object, 0, AssetReferenceType.DifferentBundle)
+                new AssetReference(asset1.Object.Path, "~\\other1.js", 0, AssetReferenceType.DifferentBundle)
             });
             asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
             asset2.SetupGet(a => a.References).Returns(new[]
             { 
-                new AssetReference("~\\other1.js", asset2.Object, 0, AssetReferenceType.DifferentBundle),
-                new AssetReference("~\\other2.js", asset2.Object, 0, AssetReferenceType.DifferentBundle) 
+                new AssetReference(asset2.Object.Path, "~\\other1.js", 0, AssetReferenceType.DifferentBundle),
+                new AssetReference(asset2.Object.Path, "~\\other2.js", 0, AssetReferenceType.DifferentBundle) 
             });
             bundle.Assets.Add(asset1.Object);
             bundle.Assets.Add(asset2.Object);
@@ -64,7 +64,7 @@ namespace Cassette.BundleProcessing
             processor.Process(bundle);
 
             bundle.Assets[0].References
-                .Select(r => r.Path)
+                .Select(r => r.ToPath)
                 .OrderBy(f => f)
                 .SequenceEqual(new[] { "~\\other1.js", "~\\other1.js", "~\\other2.js" })
                 .ShouldBeTrue();

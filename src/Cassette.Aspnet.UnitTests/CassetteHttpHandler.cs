@@ -1,7 +1,7 @@
 ﻿using System.Web;
+using Cassette.TinyIoC;
 using Moq;
 using Should;
-using TinyIoC;
 using Xunit;
 
 namespace Cassette.Aspnet

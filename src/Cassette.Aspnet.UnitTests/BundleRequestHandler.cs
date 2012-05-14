@@ -59,11 +59,8 @@ namespace Cassette.Aspnet
         protected void SetupTestBundle()
         {
             var bundle = new TestableBundle("~/test");
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.OpenStream())
-                    .Returns(() => "asset-content".AsStream());
-            asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 3 });
-            bundle.Assets.Add(asset.Object);
+            var asset = new StubAsset("~/asset.js", "asset-content");
+            bundle.Assets.Add(asset);
             bundle.Hash = new byte[] { 1, 2, 3 };
             bundles.Add(bundle);
             bundles.BuildReferences();
@@ -81,11 +78,9 @@ namespace Cassette.Aspnet
         public GivenBundleExists_WhenProcessRequest()
         {
             var bundle = new TestableBundle("~/test") { ContentType = "expected-content-type" };
-            var asset = new Mock<IAsset>();
-            asset.Setup(a => a.OpenStream())
-                    .Returns(() => "asset-content".AsStream());
+            var asset = new StubAsset("~/asset.js", "asset-content");
             bundle.Hash = new byte[] { 1, 2, 3 };
-            bundle.Assets.Add(asset.Object);
+            bundle.Assets.Add(asset);
             bundles.Add(bundle);
             bundles.BuildReferences();
             bundle.Process(new CassetteSettings());

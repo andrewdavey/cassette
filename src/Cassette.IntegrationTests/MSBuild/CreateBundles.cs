@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Security;
-using System.Security.Permissions;
 using System.Text.RegularExpressions;
-using Cassette.IntegrationTests;
-using Cassette.Manifests;
+using Cassette.Caching;
+using Cassette.IO;
+using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Microsoft.Build.Framework;
 using Moq;
 using Should;
 using Xunit;
@@ -19,7 +19,7 @@ namespace Cassette.MSBuild
     public class GivenConfigurationClassInAssembly_WhenExecute : IDisposable
     {
         readonly TempDirectory path;
-        readonly string manifestFilename;
+        readonly string cachePath;
         readonly string originalDirectory;
 
         public GivenConfigurationClassInAssembly_WhenExecute()
@@ -31,25 +31,35 @@ namespace Cassette.MSBuild
             BundleConfiguration.GenerateAssembly(assemblyPath);
 
             File.WriteAllText(Path.Combine(path, "test.css"), "p { background-image: url(test.png); }");
+            File.WriteAllText(Path.Combine(path, "test.coffee"), "x = 1");
             File.WriteAllText(Path.Combine(path, "test.png"), "");
 
-            using (var container = new AppDomainInstance<CreateBundles>())
+            Environment.CurrentDirectory = path;
+            cachePath = Path.Combine(path, "cache");
+
+            var task = new CreateBundles
             {
-                var task = container.Value;
-                task.Input = path;
-                manifestFilename = Path.Combine(path, "cassette.xml");
-                Environment.CurrentDirectory = path;
-                task.Output = manifestFilename;
-                task.Execute();
-            }
+                Source = path,
+                Bin = path,
+                Output = cachePath,
+                BuildEngine = Mock.Of<IBuildEngine>()
+            };
+            task.Execute();
         }
 
         [Fact]
         public void ManifestFileSavedToOutput()
         {
-            File.Exists(manifestFilename).ShouldBeTrue();
+            Directory.Exists(cachePath).ShouldBeTrue();
         }
 
+        [Fact]
+        public void CoffeeScriptIsCompiled()
+        {
+            var filename = Directory.GetFiles(Path.Combine(cachePath, "script"))[0];
+            File.ReadAllText(filename).ShouldEqual("(function(){var n;n=1}).call(this)");
+        }
+   
         [Fact]
         public void CssUrlIsRewrittenToBeApplicationRooted()
         {
@@ -60,7 +70,7 @@ namespace Cassette.MSBuild
                 .Verifiable();
 
             var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
-            var content = bundles.First().OpenStream().ReadToEnd();
+            var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
 
             Regex.IsMatch(content, @"url\(cassette.axd/file/[^/]+/test.png\)").ShouldBeTrue();
             passThroughModifier.Verify();
@@ -68,58 +78,10 @@ namespace Cassette.MSBuild
 
         IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
         {
-            using (var file = File.OpenRead(manifestFilename))
-            {
-                var reader = new CassetteManifestReader(file);
-                return reader.Read().CreateBundles(urlModifier);
-            }
-        }
-
-        class AppDomainInstance<T> : IDisposable
-            where T : MarshalByRefObject
-        {
-            readonly AppDomain domain;
-            readonly T value;
-
-            /// <summary>
-            /// Creates a new AppDomain instance that is sandboxed with full trust permissions
-            /// See: http://blogs.msdn.com/b/shawnfa/archive/2006/05/01/587654.aspx
-            /// </summary>
-            public AppDomainInstance()
-            {
-                // Create a new Sandboxed App Domain
-                var pset = new PermissionSet(PermissionState.Unrestricted);
-
-                // Full trust execution
-                pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-
-                // Set base to current directory
-                var setup = new AppDomainSetup
-                {
-                    ApplicationBase = Path.GetDirectoryName(typeof(T).Assembly.Location)
-                };
-
-                // Sandbox app domain constructor
-                domain = AppDomain.CreateDomain("temp", AppDomain.CurrentDomain.Evidence, setup, pset);
-
-                // This will not demand a FileIOPermission and is a safe way to load an assembly
-                // from an app domain
-                value = (T)Activator.CreateInstanceFrom(
-                    domain,
-                    Path.GetFileName(typeof(T).Assembly.Location),
-                    typeof(T).FullName
-                ).Unwrap();
-            }
-
-            public T Value
-            {
-                get { return value; }
-            }
-
-            public void Dispose()
-            {
-                AppDomain.Unload(domain);
-            }
+            var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath), b => b == "StylesheetBundle" ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier) : new ScriptBundleDeserializer(urlModifier));
+            var result = cache.Read();
+            result.IsSuccess.ShouldBeTrue();
+            return result.Manifest.Bundles;
         }
 
         public abstract class BundleConfiguration : IConfiguration<BundleCollection>
@@ -127,6 +89,7 @@ namespace Cassette.MSBuild
             public void Configure(BundleCollection bundles)
             {
                 bundles.Add<StylesheetBundle>("~");
+                bundles.Add<ScriptBundle>("~");
             }
 
             public static void GenerateAssembly(string fullAssemblyPath)
@@ -144,6 +107,7 @@ namespace Cassette.MSBuild
                 var parentAssembly = typeof(BundleConfiguration).Assembly.Location;
                 File.Copy(parentAssembly, Path.Combine(directory, Path.GetFileName(parentAssembly)));
                 File.Copy("Cassette.dll", Path.Combine(directory, "Cassette.dll"));
+                File.Copy("AjaxMin.dll", Path.Combine(directory, "AjaxMin.dll"));
                 File.Copy("Cassette.CoffeeScript.dll", Path.Combine(directory, "Cassette.CoffeeScript.dll"));
                 File.Copy("Cassette.Less.dll", Path.Combine(directory, "Cassette.Less.dll"));
 #if !NET35

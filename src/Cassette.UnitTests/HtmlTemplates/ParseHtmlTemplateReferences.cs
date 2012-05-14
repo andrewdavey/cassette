@@ -1,6 +1,6 @@
-﻿using Moq;
+﻿using Cassette.Utilities;
+using Moq;
 using Xunit;
-using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
