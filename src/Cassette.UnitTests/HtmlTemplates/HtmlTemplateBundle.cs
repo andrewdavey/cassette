@@ -1,5 +1,4 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Moq;
 using Xunit;
 
@@ -12,12 +11,12 @@ namespace Cassette.HtmlTemplates
         {
             var bundle = new HtmlTemplateBundle("~");
             var processor = new Mock<IBundleProcessor<HtmlTemplateBundle>>();
-            var settings = new CassetteSettings("");
+            var settings = new CassetteSettings();
             bundle.Processor = processor.Object;
 
             bundle.Process(settings);
 
-            processor.Verify(p => p.Process(bundle, settings));
+            processor.Verify(p => p.Process(bundle));
         }
 
         [Fact]

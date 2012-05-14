@@ -1,4 +1,1 @@
-DotNet35 Notes
---------------
-
-Use Debug-FX35 solution configuration.
+To run the DotNet35 project, change to the DebugNET35 solution configuration (Build > Configuration Manager...)

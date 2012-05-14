@@ -27,12 +27,19 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.KnockoutJQueryTmpl")]
 [assembly: InternalsVisibleTo("Cassette.Less")]
 [assembly: InternalsVisibleTo("Cassette.Sass")]
-[assembly: InternalsVisibleTo("Cassette.Web")]
+[assembly: InternalsVisibleTo("Cassette.Aspnet")]
 [assembly: InternalsVisibleTo("Cassette.Views")]
-[assembly: InternalsVisibleTo("Cassette.UnitTests")]
-[assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
 [assembly: InternalsVisibleTo("Cassette.MSBuild")]
 [assembly: InternalsVisibleTo("Cassette.Nancy")]
+
+[assembly: InternalsVisibleTo("Cassette.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Views.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Aspnet.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Aspnet.Jasmine.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.CoffeeScript.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Less.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Sass.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
 
 // To allow mocking of internal types, using Moq, the following is required.
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

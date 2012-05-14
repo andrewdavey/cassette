@@ -1,7 +1,7 @@
-﻿using Should;
-using Xunit;
+﻿using System;
 using Moq;
-using System;
+using Should;
+using Xunit;
 
 namespace Cassette.Stylesheets
 {

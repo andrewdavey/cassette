@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using Cassette.IO;
+using System.Linq;
 using Jurassic;
+
 #if NET35
 using Cassette.Utilities;
 #endif
 
 namespace Cassette.Scripts
 {
-    public class JurassicCoffeeScriptCompiler : ICompiler
+    public class JurassicCoffeeScriptCompiler : ICoffeeScriptCompiler
     {
         static JurassicCoffeeScriptCompiler()
         {
@@ -17,21 +18,22 @@ namespace Cassette.Scripts
 
         readonly static Lazy<ScriptEngine> LazyScriptEngine;
 
-        public string Compile(string coffeeScriptSource, IFile sourceFile)
+        public CompileResult Compile(string coffeeScriptSource, CompileContext context)
         {
-            Trace.Source.TraceInformation("Compiling {0}", sourceFile.FullPath);
+            Trace.Source.TraceInformation("Compiling {0}", context.SourceFilePath);
             lock (ScriptEngine) // ScriptEngine is NOT thread-safe, so we MUST lock.
             {
                 try
                 {
-                    Trace.Source.TraceInformation("Compiled {0}", sourceFile.FullPath);
-                    return ScriptEngine.CallGlobalFunction<string>("compile", coffeeScriptSource);
+                    Trace.Source.TraceInformation("Compiled {0}", context.SourceFilePath);
+                    var javascript = ScriptEngine.CallGlobalFunction<string>("compile", coffeeScriptSource);
+                    return new CompileResult(javascript, Enumerable.Empty<string>());
                 }
                 catch (Exception ex)
                 {
-                    var message = ex.Message + " in " + sourceFile.FullPath;
+                    var message = ex.Message + " in " + context.SourceFilePath;
                     Trace.Source.TraceEvent(TraceEventType.Critical, 0, message);
-                    throw new CoffeeScriptCompileException(message, sourceFile.FullPath, ex);
+                    throw new CoffeeScriptCompileException(message, context.SourceFilePath, ex);
                 }
             }
         }

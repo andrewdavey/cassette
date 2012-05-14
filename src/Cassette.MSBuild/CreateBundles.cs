@@ -1,69 +1,66 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using Cassette.IO;
-using Cassette.Manifests;
-using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
-    [Serializable]
-    [LoadInSeparateAppDomain]
-    public class CreateBundles : AppDomainIsolatedTask
+    public class CreateBundles : Task
     {
         /// <summary>
-        /// File names of assemblies containing Cassette configuration classes.
+        /// The root directory of the web application.
         /// </summary>
-        [Required]
-        public string[] Assemblies { get; set; }
+        public string Source { get; set; }
 
         /// <summary>
-        /// File name to save the Cassette manifest as.
+        /// The directory containing the web application assemblies. Default is "bin".
         /// </summary>
-        [Required]
+        public string Bin { get; set; }
+
+        /// <summary>
+        /// The directory to save the created bundles to. Default is "cassette-cache".
+        /// </summary>
         public string Output { get; set; }
 
         public override bool Execute()
         {
-            using (var outputStream = OpenOutputFile())
-            {
-                var task = CreateTaskImplementation(outputStream);
-                task.Execute();
-            }
+            AssignPropertyDefaultsIfMissing();
+            MakePathsAbsolute();
+
+            Log.LogMessage("Source directory = {0}", Source);
+            Log.LogMessage("Bin directory = {0}", Bin);
+            Log.LogMessage("Output directory = {0}", Output);
+
+            // Execution will load assemblies. When running this task from a Visual Studio build, the DLLs would then be locked.
+            // So we must run the command in a separate AppDomain.
+            // This means the assemblies can be unlocked by unloading the new AppDomain when finished.
+            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output));
+            
             return true;
         }
 
-        FileStream OpenOutputFile()
+        void AssignPropertyDefaultsIfMissing()
         {
-            return File.Open(Output, FileMode.Create, FileAccess.Write, FileShare.None);
+            if (string.IsNullOrEmpty(Source))
+            {
+                Source = Environment.CurrentDirectory;
+            }
+
+            if (string.IsNullOrEmpty(Bin))
+            {
+                Bin = "bin";
+            }
+
+            if (string.IsNullOrEmpty(Output))
+            {
+                Output = "cassette-cache";
+            }
         }
 
-        CreateBundlesImplementation CreateTaskImplementation(Stream outputStream)
+        void MakePathsAbsolute()
         {
-            var configurationFactory = CreateConfigurationFactory();
-            var writer = new CassetteManifestWriter(outputStream);
-            return new CreateBundlesImplementation(
-                configurationFactory,
-                writer,
-                new FileSystemDirectory(Environment.CurrentDirectory)
-            );
-        }
-
-        AssemblyScanningCassetteConfigurationFactory CreateConfigurationFactory()
-        {
-            var assemblies = LoadAssemblies();
-            return new AssemblyScanningCassetteConfigurationFactory(assemblies);
-        }
-
-        IEnumerable<Assembly> LoadAssemblies()
-        {
-            return (
-                from assembly in Assemblies
-                select Assembly.LoadFrom(assembly)
-            ).ToArray();
+            Source = Path.Combine(Environment.CurrentDirectory, Source);
+            Bin = Path.Combine(Source, Bin);
+            Output = Path.Combine(Source, Output);
         }
     }
 }

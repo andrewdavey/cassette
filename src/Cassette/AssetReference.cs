@@ -5,12 +5,12 @@ namespace Cassette
 {
     public class AssetReference
     {
-        public AssetReference(string path, IAsset sourceAsset, int sourceLineNumber, AssetReferenceType type)
+        public AssetReference(string fromAssetPath, string toPath, int sourceLineNumber, AssetReferenceType type)
         {
-            ValidatePath(path, type);
+            ValidatePath(toPath, type);
 
-            Path = path;
-            SourceAsset = sourceAsset;
+            ToPath = toPath;
+            FromAssetPath = fromAssetPath;
             SourceLineNumber = sourceLineNumber;
             Type = type;
         }
@@ -37,19 +37,19 @@ namespace Cassette
         }
 
         /// <summary>
-        /// Path to an asset or bundle.
+        /// The path of the asset that made this reference.
         /// </summary>
-        public string Path { get; private set; }
+        public string FromAssetPath { get; private set; }
+
+        /// <summary>
+        /// Path to an asset, bundle or a URL.
+        /// </summary>
+        public string ToPath { get; private set; }
 
         /// <summary>
         /// The type of reference.
         /// </summary>
         public AssetReferenceType Type { get; private set; }
-
-        /// <summary>
-        /// The asset that made this reference.
-        /// </summary>
-        public IAsset SourceAsset { get; private set; }
 
         /// <summary>
         /// The line number in the asset file that made this reference.

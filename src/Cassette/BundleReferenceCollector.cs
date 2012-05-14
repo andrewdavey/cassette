@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cassette.Utilities;
 #if NET35
 using Iesi.Collections.Generic;
 #endif
 #if !NET35
-using Cassette.Utilities;
+
 #endif
 
 namespace Cassette

@@ -21,7 +21,7 @@ namespace Cassette
         {
             if (FoundAsset != null) return;
 
-            if (PathUtilities.PathsEqual(asset.SourceFile.FullPath, pathToFind))
+            if (PathUtilities.PathsEqual(asset.Path, pathToFind))
             {
                 FoundAsset = asset;
             }

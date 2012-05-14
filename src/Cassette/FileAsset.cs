@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Cassette.Caching;
 using Cassette.IO;
 using Cassette.Utilities;
 
@@ -23,14 +24,19 @@ namespace Cassette
         readonly Lazy<byte[]> hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
-        public override IFile SourceFile
+        public override string Path
         {
-            get { return sourceFile; }
+            get { return sourceFile.FullPath; }
         }
 
         public override byte[] Hash
         {
             get { return hash.Value; }
+        }
+
+        public override Type AssetCacheValidatorType
+        {
+            get { return typeof(FileAssetCacheValidator); }
         }
 
         public override IEnumerable<AssetReference> References
@@ -57,7 +63,7 @@ namespace Cassette
                 }
                 else
                 {
-                    var subDirectory = SourceFile.Directory.FullPath;
+                    var subDirectory = sourceFile.Directory.FullPath;
                     appRelativeFilename = PathUtilities.CombineWithForwardSlashes(
                         subDirectory,
                         assetRelativePath
@@ -73,12 +79,12 @@ namespace Cassette
             var type = parentBundle.ContainsPath(appRelativeFilename)
                            ? AssetReferenceType.SameBundle
                            : AssetReferenceType.DifferentBundle;
-            references.Add(new AssetReference(appRelativeFilename, this, lineNumber, type));
+            references.Add(new AssetReference(Path, appRelativeFilename, lineNumber, type));
         }
 
         void AddUrlReference(string url, int sourceLineNumber)
         {
-            references.Add(new AssetReference(url, this, sourceLineNumber, AssetReferenceType.Url));
+            references.Add(new AssetReference(Path, url, sourceLineNumber, AssetReferenceType.Url));
         }
 
         public override void AddRawFileReference(string relativeFilename)
@@ -90,15 +96,15 @@ namespace Cassette
             else if (!relativeFilename.StartsWith("~"))
             {
                 relativeFilename = PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(
-                    SourceFile.Directory.FullPath,
+                    sourceFile.Directory.FullPath,
                     relativeFilename
-                                                                   ));
+                ));
             }
 
-            var alreadyExists = references.Any(r => r.Path.Equals(relativeFilename, StringComparison.OrdinalIgnoreCase));
+            var alreadyExists = references.Any(r => r.ToPath.Equals(relativeFilename, StringComparison.OrdinalIgnoreCase));
             if (alreadyExists) return;
 
-            references.Add(new AssetReference(relativeFilename, this, -1, AssetReferenceType.RawFilename));
+            references.Add(new AssetReference(Path, relativeFilename, -1, AssetReferenceType.RawFilename));
         }
 
         byte[] ComputeHash()

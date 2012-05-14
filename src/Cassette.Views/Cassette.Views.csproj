@@ -31,17 +31,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-FX35|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugNET35|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug-FX35\</OutputPath>
+    <OutputPath>bin\DebugNET35\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NET35</DefineConstants>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release-FX35|AnyCPU'">
-    <OutputPath>bin\Release-FX35\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseNET35|AnyCPU'">
+    <OutputPath>bin\ReleaseNET35\</OutputPath>
     <DefineConstants>TRACE;NET35</DefineConstants>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Optimize>true</Optimize>
@@ -61,7 +61,9 @@
     </Compile>
     <Compile Include="Bundles.cs" />
     <Compile Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Include="HtmlString.cs" />
+    <Compile Include="IBundlesHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BundlesHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
@@ -74,7 +76,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Cassette.Views.symbols.nutrans" />
-    <None Include="Web.config.mvc2.transform" />
+    <None Include="Views-Web.config.transform" />
     <None Include="Web.config.transform" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

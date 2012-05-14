@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cassette.Utilities;
@@ -30,24 +31,22 @@ namespace Cassette.IO
             }
         }
 
+        public bool Exists
+        {
+            get { return Directory.Exists(fullSystemPath); }
+        }
+
         public IFile GetFile(string filename)
         {
-            try
+            if (filename.Replace('\\', '/').StartsWith(fullSystemPath))
             {
-                if (filename.Replace('\\', '/').StartsWith(fullSystemPath))
-                {
-                    filename = filename.Substring(fullSystemPath.Length + 1);
-                }
+                filename = filename.Substring(fullSystemPath.Length + 1);
+            }
 
-                var subDirectoryPath = Path.GetDirectoryName(filename);
-                var subDirectory = GetDirectory(subDirectoryPath);
-                var path = GetAbsolutePath(filename);
-                return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return new NonExistentFile(filename);
-            }
+            var subDirectoryPath = Path.GetDirectoryName(filename);
+            var subDirectory = GetDirectory(subDirectoryPath);
+            var path = GetAbsolutePath(filename);
+            return new FileSystemFile(Path.GetFileName(filename), subDirectory, path);
         }
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
@@ -61,16 +60,9 @@ namespace Cassette.IO
             return Directory.Exists(GetAbsolutePath(path));
         }
 
-        public void DeleteContents()
+        public void Delete()
         {
-            foreach (var directory in Directory.GetDirectories(fullSystemPath))
-            {
-                Directory.Delete(directory, true);
-            }
-            foreach (var filename in Directory.GetFiles(fullSystemPath))
-            {
-                File.Delete(filename);
-            }
+            Directory.Delete(fullSystemPath, true);
         }
 
         string GetAbsolutePath(string filename)
@@ -97,10 +89,6 @@ namespace Cassette.IO
             }
 
             var fullPath = GetAbsolutePath(path);
-            if (Directory.Exists(fullPath) == false)
-            {
-                throw new DirectoryNotFoundException("Directory not found: " + fullPath);
-            }
             return new FileSystemDirectory(fullPath)
             {
                 parent = this
@@ -126,6 +114,58 @@ namespace Cassette.IO
             return (parent == null)
                 ? this 
                 : parent.GetRootDirectory();
+        }
+
+        public void Create()
+        {
+            Directory.CreateDirectory(fullSystemPath);
+        }
+
+        public IDisposable WatchForChanges(Action<string> pathCreated, Action<string> pathChanged, Action<string> pathDeleted, Action<string, string> pathRenamed)
+        {
+            var watcher = new FileSystemWatcher(fullSystemPath)
+            {
+                IncludeSubdirectories = true
+            };
+
+            watcher.Created += (s, e) => pathCreated(ConvertSystemPathToAppPath(e.FullPath));
+            watcher.Deleted += (s, e) => pathDeleted(ConvertSystemPathToAppPath(e.FullPath));
+            watcher.Changed += (s, e) => pathChanged(ConvertSystemPathToAppPath(e.FullPath));
+            watcher.Renamed += (s, e) => pathRenamed(ConvertSystemPathToAppPath(e.OldFullPath), ConvertSystemPathToAppPath(e.FullPath));
+            
+            watcher.EnableRaisingEvents = true;
+            return watcher;
+        }
+
+        string ConvertSystemPathToAppPath(string fullPath)
+        {
+            return "~/" + fullPath.Substring(fullSystemPath.Length).TrimStart('\\', '/').Replace('\\', '/');
+        }
+
+        /// <remarks>
+        /// This method is a bit of a hack. An independently created FileSystemDirectory could be a sub-directory.
+        /// This method converts it to a proper sub-directory object if possible, otherwise returns null.
+        /// </remarks>
+        internal IDirectory TryGetAsSubDirectory(FileSystemDirectory directory)
+        {
+            // Example:
+            // fullSystemPath == "c:\example"
+            // directory.fullSystemPath == "c:\example\sub"
+            // return GetDirectory("sub")
+
+            var isSubDirectory = 
+                directory.fullSystemPath.Length >= fullSystemPath.Length &&
+                directory.fullSystemPath.Substring(0, fullSystemPath.Length).Equals(fullSystemPath, StringComparison.OrdinalIgnoreCase);
+
+            if (isSubDirectory)
+            {
+                var subPath = directory.fullSystemPath.Substring(fullSystemPath.Length + 1);
+                return GetDirectory(subPath);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

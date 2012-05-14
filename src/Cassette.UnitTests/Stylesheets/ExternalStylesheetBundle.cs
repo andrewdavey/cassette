@@ -1,5 +1,4 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -33,12 +32,12 @@ namespace Cassette.Stylesheets
         public void ProcessCallsProcessor()
         {
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css");
-            var processor = new Mock<IBundleProcessor<StylesheetBundle>>();
-            bundle.Processor = processor.Object;
+            var pipeline = new Mock<IBundlePipeline<StylesheetBundle>>();
+            bundle.Pipeline = pipeline.Object;
 
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
 
-            processor.Verify(p => p.Process(bundle, It.IsAny<CassetteSettings>()));
+            pipeline.Verify(p => p.Process(bundle));
         }
 
         [Fact]

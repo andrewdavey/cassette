@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package inherits="../Cassette.Shared.nuspec" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <metadata>
+    <id xdt:Transform="Insert">Cassette.Aspnet.Jasmine</id>
+    <description xdt:Transform="Insert">Jasmine specification runner support for Cassette.</description>
+    <tags xdt:Transform="Replace">jasmine testing bdd web javascript</tags>
+    <dependencies xdt:Transform="Insert">
+      <dependency id="Cassette" version="$version$" />
+      <dependency id="Cassette.Views" version="$version$" />
+      <dependency id="Cassette.Aspnet" version="$version$" />
+    </dependencies>
+  </metadata>
+  <files xdt:Transform="Insert">
+    <file src="bin\Release\Cassette.Aspnet.Jasmine.dll" target="lib\net40" />
+    <file src="Web.config.transform" target="content"/>
+  </files>
+</package>

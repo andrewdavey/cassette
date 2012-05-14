@@ -2,11 +2,18 @@
 
 namespace Cassette.HtmlTemplates
 {
-    public class CompileHogan : AddTransformerToAssets
+    public class CompileHogan : AddTransformerToAssets<HtmlTemplateBundle>
     {
-        public CompileHogan()
-            : base(new CompileAsset(new HoganCompiler()))
+        readonly CassetteSettings settings;
+
+        public CompileHogan(CassetteSettings settings)
         {
+            this.settings = settings;
+        }
+
+        protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle)
+        {
+            return new CompileAsset(new HoganCompiler(), settings.SourceDirectory);
         }
     }
 }

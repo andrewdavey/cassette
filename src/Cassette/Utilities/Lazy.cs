@@ -7,6 +7,9 @@ namespace Cassette.Utilities
     /// Provides support for lazy initialization.
     /// </summary>
     /// <typeparam name="T">Specifies the type of object that is being lazily initialized.</typeparam>
+    /// <remarks>
+    /// Source: http://stackoverflow.com/a/3207743/109458 (ChaosPandion)
+    /// </remarks>
     public class Lazy<T>
     {
         private readonly object padlock = new object();

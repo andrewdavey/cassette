@@ -1,5 +1,4 @@
-﻿using Cassette.Configuration;
-using Moq;
+﻿using Moq;
 using Xunit;
 
 namespace Cassette.BundleProcessing
@@ -22,7 +21,7 @@ namespace Cassette.BundleProcessing
             var asset = new Mock<IAsset>();
             bundle.Assets.Add(asset.Object);
 
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddAssetTransformer(minifier.Object));
         }

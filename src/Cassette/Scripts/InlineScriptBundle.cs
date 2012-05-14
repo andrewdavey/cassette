@@ -1,5 +1,4 @@
 ﻿using System;
-using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {

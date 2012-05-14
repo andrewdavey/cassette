@@ -1,7 +1,6 @@
-﻿using Cassette.Configuration;
+﻿using Cassette.Utilities;
 using Moq;
 using Xunit;
-using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
@@ -11,7 +10,7 @@ namespace Cassette.HtmlTemplates
         public void GivenHtmAsset_WhenProcess_ThenItAddsReferencesToHtmlTemplateAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.htm");
+            asset.SetupGet(a => a.Path).Returns("~/asset.htm");
 
             var javaScriptSource = @"
 <!-- @reference ""another1.js""
@@ -24,7 +23,7 @@ namespace Cassette.HtmlTemplates
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseHtmlTemplateReferences();
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.js", 3));
@@ -36,7 +35,7 @@ namespace Cassette.HtmlTemplates
         public void GivenHtmlAsset_WhenProcess_ThenItAddsReferencesToHtmlTemplateAssetInBundle()
         {
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/asset.html");
+            asset.SetupGet(a => a.Path).Returns("~/asset.html");
 
             var javaScriptSource = @"
 <!-- @reference ""another1.js""
@@ -49,7 +48,7 @@ namespace Cassette.HtmlTemplates
             bundle.Assets.Add(asset.Object);
 
             var processor = new ParseHtmlTemplateReferences();
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle);
 
             asset.Verify(a => a.AddReference("another1.js", 2));
             asset.Verify(a => a.AddReference("another2.js", 3));

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
 {
-    class StubAsset : IAsset
+    public class StubAsset : IAsset
     {
         public StubAsset(string fullPath = "~/asset.js", string content = "")
         {
             Hash = new byte[] {1};
             CreateStream = () => content.AsStream();
-            SourceFile = new StubFile { FullPath = fullPath };
+            Path = fullPath;
             References = new List<AssetReference>();
         }
 
@@ -20,7 +19,7 @@ namespace Cassette
  
         public byte[] Hash { get; set; }
 
-        public IFile SourceFile { get; set; }
+        public string Path { get; set; }
 
         public List<AssetReference> References { get; set; }
 
@@ -44,6 +43,7 @@ namespace Cassette
 
         public void AddRawFileReference(string relativeFilename)
         {
+            References.Add(new AssetReference(Path, relativeFilename, -1, AssetReferenceType.RawFilename));
         }
 
         public Stream OpenStream()
@@ -51,34 +51,9 @@ namespace Cassette
             return CreateStream();
         }
 
-        class StubFile : IFile
+        public Type AssetCacheValidatorType
         {
-            public IDirectory Directory
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public bool Exists
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public DateTime LastWriteTimeUtc
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public string FullPath { get; set; }
-
-            public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Delete()
-            {
-                throw new NotImplementedException();
-            }
+            get { return typeof(Caching.FileAssetCacheValidator); }
         }
     }
 }

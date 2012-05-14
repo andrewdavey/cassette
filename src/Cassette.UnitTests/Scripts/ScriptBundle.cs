@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Should;
 using Xunit;
 
 namespace Cassette.Scripts
@@ -15,6 +16,13 @@ namespace Cassette.Scripts
             bundle.Render();
 
             renderer.Verify(r => r.Render(bundle));
+        }
+
+        [Fact]
+        public void HtmlAttributesTypeIsTextJavaScript()
+        {
+            var bundle = new ScriptBundle("~");
+            bundle.HtmlAttributes["type"].ShouldEqual("text/javascript");
         }
     }
 }

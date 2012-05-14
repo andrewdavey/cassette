@@ -1,24 +1,20 @@
 ﻿using System.Linq;
+using Cassette.BundleProcessing;
 using Cassette.IO;
+using Moq;
 using Should;
 using Xunit;
-using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
     public class ScriptBundleFactory_Tests
     {
-        readonly CassetteSettings settings;
-
-        public ScriptBundleFactory_Tests()
-        {
-            settings = new CassetteSettings("");
-        }
+        readonly IBundlePipeline<ScriptBundle> pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>();
 
         [Fact]
         public void CreateBundleReturnsScriptBundle()
         {
-            var factory = new ScriptBundleFactory(settings);
+            var factory = new ScriptBundleFactory(pipeline);
             var bundle = factory.CreateBundle(
                 "~/test",
                 Enumerable.Empty<IFile>(),
@@ -30,7 +26,7 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleAssignsScriptBundleDirectory()
         {
-            var factory = new ScriptBundleFactory(settings);
+            var factory = new ScriptBundleFactory(pipeline);
             var bundle = factory.CreateBundle(
                 "~/test",
                 Enumerable.Empty<IFile>(),
@@ -42,16 +38,18 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleWithUrlCreatesExternalScriptBundle()
         {
-            new ScriptBundleFactory(settings).CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
+            new ScriptBundleFactory(pipeline).CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
         }
 
         [Fact]
         public void GivenDescriptorIsFromFile_WhenCreateBundle_ThenBundleIsFromDescriptorFileEqualsTrue()
         {
-            var factory = new ScriptBundleFactory(settings);
+            var factory = new ScriptBundleFactory(pipeline);
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath).Returns("~/bundle.txt");
             var descriptor = new BundleDescriptor
             {
-                IsFromFile = true,
+                File = file.Object,
                 AssetFilenames = { "*" }
             };
             var bundle = factory.CreateBundle(
@@ -63,13 +61,11 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void CreateBundleAssignsSettingsDefaultProcessor()
+        public void CreateBundleAssignsPipelineToBundleProcessor()
         {
-            var processor = new ScriptPipeline();
-            settings.SetDefaultBundleProcessor(processor);
-            var factory = new ScriptBundleFactory(settings);
+            var factory = new ScriptBundleFactory(pipeline);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
-            bundle.Processor.ShouldBeSameAs(processor);
+            bundle.Pipeline.ShouldBeSameAs(pipeline);
         }
     }
 }

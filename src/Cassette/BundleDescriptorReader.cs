@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Cassette.IO;
 using Cassette.Utilities;
+
 #if NET35
 using Iesi.Collections.Generic;
 #endif
@@ -46,7 +47,7 @@ namespace Cassette
             {
                 ExternalUrl = externalUrl,
                 FallbackCondition = fallbackCondition,
-                IsFromFile = true
+                File = sourceFile
             };
             descriptor.AssetFilenames.AddRange(assetFilenames);
             descriptor.References.AddRange(references);
@@ -110,31 +111,37 @@ namespace Cassette
                 RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
             );
             var match = keyValueRegex.Match(line);
-            if (match.Success)
-            {
-                var key = match.Groups["key"].Value;
-                var value = match.Groups["value"].Value;
-                switch (key)
-                {
-                    case "url":
-                        if (externalUrl != null) throw new Exception("The [external] section of bundle descriptor can only contain one \"url\".");
-                        if (value.IsUrl() == false) throw new Exception("The value \"url\" in bundle descriptor [external] section must be a URL.");
-                        externalUrl = value;
-                        break;
-
-                    case "fallbackCondition":
-                        if (externalUrl==null) throw new Exception("The [external] section of bundle descriptor must contain a \"url\" property before the \"fallbackCondition\" property.");
-                        if (fallbackCondition != null) throw new Exception("The [external] section of bundle descriptor can only contain one \"fallbackCondition\".");
-                        fallbackCondition = value;
-                        break;
-
-                    default:
-                        throw new Exception("Unexpected property in bundle descriptor [external] section: " + line);
-                }
-            }
-            else
+            if (!match.Success)
             {
                 throw new Exception("The [external] section of bundle descriptor must contain key value pairs.");
+            }
+
+            var key = match.Groups["key"].Value;
+            var value = match.Groups["value"].Value;
+            switch (key)
+            {
+                case "url":
+                    if (externalUrl != null)
+                        throw new Exception(
+                            "The [external] section of bundle descriptor can only contain one \"url\".");
+                    if (value.IsUrl() == false)
+                        throw new Exception(
+                            "The value \"url\" in bundle descriptor [external] section must be a URL.");
+                    externalUrl = value;
+                    break;
+
+                case "fallbackCondition":
+                    if (externalUrl == null)
+                        throw new Exception(
+                            "The [external] section of bundle descriptor must contain a \"url\" property before the \"fallbackCondition\" property.");
+                    if (fallbackCondition != null)
+                        throw new Exception(
+                            "The [external] section of bundle descriptor can only contain one \"fallbackCondition\".");
+                    fallbackCondition = value;
+                    break;
+
+                default:
+                    throw new Exception("Unexpected property in bundle descriptor [external] section: " + line);
             }
         }
 

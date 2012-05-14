@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Cassette.Configuration;
-using Cassette.Manifests;
-using Cassette.Stylesheets.Manifests;
+using System.Xml.Linq;
 
 namespace Cassette.Stylesheets
 {
@@ -11,6 +9,7 @@ namespace Cassette.Stylesheets
     {
         readonly string url;
         bool isDebuggingEnabled;
+        IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer;
 
         public ExternalStylesheetBundle(string url)
             : base(url)
@@ -27,7 +26,7 @@ namespace Cassette.Stylesheets
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            FallbackRenderer = Renderer;
+            fallbackRenderer = Renderer;
             isDebuggingEnabled = settings.IsDebuggingEnabled;
             Renderer = this;
         }
@@ -37,39 +36,21 @@ namespace Cassette.Stylesheets
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
-        {
-            var builder = new ExternalStylesheetBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
-        }
-
         public string ExternalUrl
         {
             get { return url; }
         }
 
-        internal IBundleHtmlRenderer<StylesheetBundle> FallbackRenderer { get; set; } 
-
         public string Render(StylesheetBundle unusedParameter)
         {
             if (isDebuggingEnabled && Assets.Any())
             {
-                return FallbackRenderer.Render(this);
+                return fallbackRenderer.Render(this);
             }
 
             var conditionalRenderer = new ConditionalRenderer();
 
-            return conditionalRenderer.Render(Condition, html =>
-            {
-                if (string.IsNullOrEmpty(Media))
-                {
-                    RenderLink(html);
-                }
-                else
-                {
-                    RenderLinkWithMedia(html);
-                }
-            });
+            return conditionalRenderer.Render(Condition, RenderLink);
         }
 
         void RenderLink(StringBuilder html)
@@ -78,17 +59,13 @@ namespace Cassette.Stylesheets
                 HtmlConstants.LinkHtml,
                 url,
                 HtmlAttributes.CombinedAttributes
-                );
+            );
         }
 
-        void RenderLinkWithMedia(StringBuilder html)
+        internal override void SerializeInto(XContainer container)
         {
-            html.AppendFormat(
-                HtmlConstants.LinkWithMediaHtml,
-                url,
-                Media,
-                HtmlAttributes.CombinedAttributes
-                );
+            var serializer = new ExternalStylesheetBundleSerializer(container);
+            serializer.Serialize(this);
         }
     }
 }

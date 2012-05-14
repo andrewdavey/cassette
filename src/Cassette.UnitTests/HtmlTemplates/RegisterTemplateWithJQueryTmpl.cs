@@ -13,7 +13,7 @@ namespace Cassette.HtmlTemplates
         {
             var bundle = new HtmlTemplateBundle("~");
             var asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/asset.htm");
+            asset.Setup(a => a.Path).Returns("~/asset.htm");
             var transformer = new RegisterTemplateWithJQueryTmpl(bundle);
 
             var getResult = transformer.Transform(() => "TEMPLATE".AsStream(), asset.Object);

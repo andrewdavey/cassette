@@ -1,7 +1,7 @@
-﻿using Should;
-using Xunit;
+﻿using System;
 using System.Linq;
-using System;
+using Should;
+using Xunit;
 
 namespace Cassette
 {

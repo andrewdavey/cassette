@@ -1,25 +1,26 @@
 ﻿using System;
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
     public class CompileCoffeeScript : IBundleProcessor<Bundle>
     {
-        readonly ICompiler coffeeScriptCompiler;
+        readonly ICoffeeScriptCompiler coffeeScriptCompiler;
+        readonly CassetteSettings settings;
 
-        public CompileCoffeeScript(ICompiler coffeeScriptCompiler)
+        public CompileCoffeeScript(ICoffeeScriptCompiler coffeeScriptCompiler, CassetteSettings settings)
         {
             this.coffeeScriptCompiler = coffeeScriptCompiler;
+            this.settings = settings;
         }
 
-        public void Process(Bundle bundle, CassetteSettings settings)
+        public void Process(Bundle bundle)
         {
             foreach (var asset in bundle.Assets)
             {
-                if (asset.SourceFile.FullPath.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
+                if (asset.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase))
                 {
-                    asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler));                    
+                    asset.AddAssetTransformer(new CompileAsset(coffeeScriptCompiler, settings.SourceDirectory));                    
                 }
             }
         }

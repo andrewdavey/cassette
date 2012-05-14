@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -15,7 +14,7 @@ namespace Cassette.BundleProcessing
         public void GivenEmptyBundle_WhenConcatenateAssets_ThenNoAssetAddedToBundle()
         {
             var bundle = new TestableBundle("~");
-            bundle.ConcatenateAssets();
+            bundle.ConcatenateAssets("");
             bundle.Assets.Count.ShouldEqual(0);
         }
 
@@ -31,7 +30,7 @@ namespace Cassette.BundleProcessing
             bundle.Assets.Add(asset2.Object);
 
             var processor = new ConcatenateAssets();
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle);
 
             bundle.Assets.Count.ShouldEqual(1);
             using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
@@ -50,26 +49,46 @@ namespace Cassette.BundleProcessing
             asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
             asset1.SetupGet(a => a.References).Returns(new[] 
             {
-                new AssetReference("~\\other1.js", asset1.Object, 0, AssetReferenceType.DifferentBundle)
+                new AssetReference(asset1.Object.Path, "~\\other1.js", 0, AssetReferenceType.DifferentBundle)
             });
             asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
             asset2.SetupGet(a => a.References).Returns(new[]
             { 
-                new AssetReference("~\\other1.js", asset2.Object, 0, AssetReferenceType.DifferentBundle),
-                new AssetReference("~\\other2.js", asset2.Object, 0, AssetReferenceType.DifferentBundle) 
+                new AssetReference(asset2.Object.Path, "~\\other1.js", 0, AssetReferenceType.DifferentBundle),
+                new AssetReference(asset2.Object.Path, "~\\other2.js", 0, AssetReferenceType.DifferentBundle) 
             });
             bundle.Assets.Add(asset1.Object);
             bundle.Assets.Add(asset2.Object);
 
             var processor = new ConcatenateAssets();
-            processor.Process(bundle, new CassetteSettings(""));
+            processor.Process(bundle);
 
             bundle.Assets[0].References
-                .Select(r => r.Path)
+                .Select(r => r.ToPath)
                 .OrderBy(f => f)
                 .SequenceEqual(new[] { "~\\other1.js", "~\\other1.js", "~\\other2.js" })
                 .ShouldBeTrue();
         }
+
+        [Fact]
+        public void ConcatenateAssetsWithSeparatorPutsSeparatorBetweenEachAsset()
+        {
+            var bundle = new TestableBundle("~");
+            var asset1 = new Mock<IAsset>();
+            var asset2 = new Mock<IAsset>();
+            asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
+            asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
+            bundle.Assets.Add(asset1.Object);
+            bundle.Assets.Add(asset2.Object);
+
+            var processor = new ConcatenateAssets { Separator = ";" };
+            processor.Process(bundle);
+
+            using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
+            {
+                reader.ReadToEnd().ShouldEqual("asset1;asset2");
+            }
+            (bundle.Assets[0] as IDisposable).Dispose();
+        }
     }
 }
-

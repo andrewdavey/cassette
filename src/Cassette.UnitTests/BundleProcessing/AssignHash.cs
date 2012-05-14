@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Cryptography;
-using Cassette.Configuration;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -66,7 +65,7 @@ namespace Cassette.BundleProcessing
 
         void ProcessBundleWithAssignHash()
         {
-            assignHash.Process(bundle, new CassetteSettings(""));
+            assignHash.Process(bundle);
         }
 
         void AssertHashIsSha1Of(string expected)

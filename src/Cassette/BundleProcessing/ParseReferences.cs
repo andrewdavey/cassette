@@ -1,12 +1,11 @@
 ﻿using System.IO;
-using Cassette.Configuration;
 
 namespace Cassette.BundleProcessing
 {
     public abstract class ParseReferences<T> : IBundleProcessor<T>
         where T : Bundle
     {
-        public void Process(T bundle, CassetteSettings settings)
+        public void Process(T bundle)
         {
             foreach (var asset in bundle.Assets)
             {

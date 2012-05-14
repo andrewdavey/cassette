@@ -1,28 +1,26 @@
-﻿using System.Collections.Generic;
-using Cassette.BundleProcessing;
-using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
+using Cassette.TinyIoC;
 
 namespace Cassette.Scripts
 {
-    public class ScriptPipeline : MutablePipeline<ScriptBundle>
+    public class ScriptPipeline : BundlePipeline<ScriptBundle>
     {
-        public ScriptPipeline()
+        public ScriptPipeline(TinyIoCContainer container, CassetteSettings settings)
+            : base(container)
         {
-            Minifier = new MicrosoftJavaScriptMinifier();
-        }
+            AddRange(new IBundleProcessor<ScriptBundle>[]
+            {
+                container.Resolve<AssignScriptRenderer>(),
+                new ParseJavaScriptReferences(),
+                new SortAssetsByDependency(),
+                new AssignHash()
+            });
 
-        public IAssetTransformer Minifier { get; set; }
-
-        protected override IEnumerable<IBundleProcessor<ScriptBundle>> CreatePipeline(ScriptBundle bundle, CassetteSettings settings)
-        {
-            yield return new AssignScriptRenderer();
-            yield return new ParseJavaScriptReferences();
-            yield return new SortAssetsByDependency();
-            yield return new AssignHash();
             if (!settings.IsDebuggingEnabled)
             {
-                yield return new ConcatenateAssets();
-                yield return new MinifyAssets(Minifier);
+                Add(new ConcatenateAssets { Separator = ";" });
+                var minifier = container.Resolve<IJavaScriptMinifier>();
+                Add(new MinifyAssets(minifier));
             }
         }
     }

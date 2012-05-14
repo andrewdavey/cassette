@@ -15,5 +15,5 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("1840d0a1-ecc6-4029-a404-c3c9c10c6fb9")]
 
-[assembly: InternalsVisibleTo("Cassette.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.CoffeeScript.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.IntegrationTests")]

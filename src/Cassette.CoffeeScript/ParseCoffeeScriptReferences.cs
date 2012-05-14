@@ -7,7 +7,7 @@ namespace Cassette.Scripts
     {
         protected override bool ShouldParseAsset(IAsset asset)
         {
-            return asset.SourceFile.FullPath.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase);
+            return asset.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase);
         }
 
         internal override ICommentParser CreateCommentParser()
