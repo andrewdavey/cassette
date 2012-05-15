@@ -4,7 +4,16 @@ namespace Website.Controllers
 {
     public class DocumentationController : Controller
     {
-        public ActionResult Index(string path)
+        public ActionResult OldIndex(string path)
+        {
+            return RedirectToRoute("Documentation", new
+            {
+                version = "v1",
+                path
+            });
+        }
+
+        public ActionResult Index(string version, string path)
         {
             string viewName;
             if (string.IsNullOrEmpty(path))
@@ -15,6 +24,8 @@ namespace Website.Controllers
             {
                 viewName = path.Replace('/', '_').Replace("-", "");
             }
+            
+            viewName = "~/Views/Documentation/" + version + "/" + viewName + ".cshtml";
 
             var result = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
             if (result.View == null)

@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Cassette | File Search";
+    ViewBag.Description = "How to define the types of files Cassette will bundle.";
+}
+
+<h1>File search</h1>
+
+<p>
+    To when adding bundles to a <code>BundleCollection</code>, you can control which assets
+    are added. The <code>Cassette.IFileSearch</code> interface is used find files. The default
+    implementation is <code>Cassette.FileSearch</code>.
+</p>
+
+<p>Here's an example usage:</p>
+
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles)
+    {
+        bundles.AddPerSubDirectory&lt;<span class="code-type">ScriptBundle</span>&gt;(<span class="string">"Scripts"</span>, <span class="keyword">new</span> <span class="code-type">FileSearch</span>
+        {
+            Pattern = <span class="string">"*.js;*.coffee"</span>,
+            SearchOption = <span class="code-type">SearchOption</span>.AllDirectories, <span class="comment">// The default</span>
+            Exclude = <span class="keyword">new</span> <span class="code-type">Regex</span>(<span class="string">"-vsdoc\\.js$"</span>) <span class="comment">// The default</span>
+        });
+    }
+}</code></pre>

@@ -1,0 +1,18 @@
+﻿<div class="tree">
+    <ul>
+        <li>
+            @DocLink("", "Index")            
+        </li>
+    </ul>
+</div>
+@helper DocLink(string path, string text)
+{
+    if (Request.Url.AbsolutePath.EndsWith("documentation/" + path))
+    {
+    <a class="activedoc" href=@Url.DocumentationUrl(path)>@text</a>
+    }
+    else
+    {
+    <a href=@Url.DocumentationUrl(path)>@text</a>
+    }
+}

@@ -30,7 +30,7 @@
                             <img alt="Visit the Download Page" src="@Bundles.FileUrl("assets/styles/images/download-icon.png")" /></a>
                     </li>
                     <li @ActiveClassIf("documentation")>
-                        <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "" })">
+                        <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "", version = "v2" })">
                             <img alt="Visit the Docs Page" src="@Bundles.FileUrl("assets/styles/images/docs-icon.png")" /></a>
                     </li>
                     <li @ActiveClassIf("support")>

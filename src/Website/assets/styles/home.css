@@ -100,6 +100,18 @@ p.tweeter {
     vertical-align: top;
     padding: 30px 10px 20px 20px;
     border-radius: 0px 10px 10px 0;
+    max-width: 600px;
+    overflow-x: auto;
+}
+
+.file pre {
+    clear: left;
+    float: left;
+    white-space: pre;
+}
+
+.file p {
+    clear: left;
 }
 
 .section ul {

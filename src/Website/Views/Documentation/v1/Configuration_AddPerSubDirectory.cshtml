@@ -21,7 +21,7 @@
 
 <p>We can turn this into three bundles using the <code>AddPerSubDirectory</code> method.</p>
 
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
 {
     <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
     {
@@ -37,9 +37,9 @@ drop their scripts into ~/Scripts. So it's sensible to move your own scripts int
 <h2>FileSearch</h2>
 <p>To control which assets are included in the bundle, use an overload of the AddPerSubDirectory method.</p>
 
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
 {
-    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles)
     {
         bundles.AddPerSubDirectory&lt;<span class="code-type">ScriptBundle</span>&gt;(<span class="string">"Scripts"</span>, <span class="keyword">new</span> <span class="code-type">FileSearch</span>
         {
@@ -54,9 +54,9 @@ drop their scripts into ~/Scripts. So it's sensible to move your own scripts int
 <p>The <code>Bundle</code> object created by Cassette can be customized by providing an action delegate.</p>
 <p>This is useful for changing the pipeline used to process the bundle.</p>
 
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
 {
-    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles)
     {
         bundles.AddPerSubDirectory&lt;<span class="code-type">ScriptBundle</span>&gt;(
             <span class="string">"Scripts"</span>,
