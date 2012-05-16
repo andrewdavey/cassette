@@ -2,6 +2,7 @@
 
 namespace Cassette.Scripts
 {
+#pragma warning disable 659
     class InlineScriptBundle : ScriptBundle
     {
         readonly string scriptContent;
@@ -27,5 +28,11 @@ namespace Cassette.Scripts
             var conditionalRenderer = new ConditionalRenderer();
             return conditionalRenderer.Render(Condition, html => html.Append(content));
         }
+
+        public override bool Equals(object obj)
+        {
+            return Object.ReferenceEquals(obj, this);
+        }
     }
+#pragma warning restore 659
 }

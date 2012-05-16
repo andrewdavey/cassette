@@ -142,6 +142,7 @@
     <Compile Include="AssetDeserializer.cs" />
     <Compile Include="AssetReference.cs" />
     <Compile Include="AssetSerializer.cs" />
+    <Compile Include="Scripts\InlineScriptBundle.Equals.cs" />
     <Compile Include="Scripts\ExternalScriptBundleDeserializer.cs" />
     <Compile Include="Scripts\ScriptBundleDeserializer.cs" />
     <Compile Include="BundleSerializer.cs" />
