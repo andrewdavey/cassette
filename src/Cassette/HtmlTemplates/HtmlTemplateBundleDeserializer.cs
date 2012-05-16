@@ -1,11 +1,10 @@
 using System.Xml.Linq;
-using Cassette.IO;
 
 namespace Cassette.HtmlTemplates
 {
     class HtmlTemplateBundleDeserializer : BundleDeserializer<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundleDeserializer(IDirectory directory, IUrlModifier urlModifier)
+        public HtmlTemplateBundleDeserializer(IUrlModifier urlModifier)
             : base(urlModifier)
         {
         }
