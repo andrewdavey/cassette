@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "JavaScript Minification";
+    ViewBag.Description = "Cassette uses the Microsoft Ajax Minifier to minify JavaScript. The minifier can be modified or even completely replaced.";
+}
+
+<h1>JavaScript Minification</h1>
+
+<p>
+    Cassette uses the Microsoft Ajax Minifier library to minify JavaScript.
+    This performs a set of optimizations, such as removing whitespace and shortening variable names,
+    to reduce the size of JavaScript. Smaller JavaScript means faster downloads.
+</p>
+
+<h2>Customizing the minifier</h2>
+
+<p>
+    Cassette registers the minifier in the IoC container. So your application is able to 
+    override this registration by implementing <code>IConfiguration&lt;TinyIoCContainer&gt;</code>.
+</p>
+    
+<pre><code>public class CustomCassetteServices : IConfiguration&lt;TinyIoCContainer&gt;
+{
+    public void Configure(TinyIoCContainer container)
+    {
+        var settings = new CodeSettings();
+        codeSettings.LineBreakThreshold = 60;
+        container.Register&lt;IJavaScriptMinifier&gt;(new MicrosoftJavaScriptMinifier(settings));
+    }
+}</code></pre>
+
+<p>
+    Alternatively, you can provide a completely new implementation of the <code>IJavaScriptMinifier</code>
+    interface.
+</p>
+
+<pre><code>public class CustomCassetteServices : IConfiguration&lt;TinyIoCContainer&gt;
+{
+    public void Configure(TinyIoCContainer container)
+    {
+        container.Register&lt;IJavaScriptMinifier&gt;(new MyCustomJavaScriptMinifier());
+    }
+}
+
+public class MyCustomJavaScriptMinifier : IJavaScriptMinifier
+{
+    public Func&lt;Stream&gt; Transform(Func&lt;Stream&gt; openSourceStream, IAsset asset)
+    {
+        return delegate
+        {
+            using (var reader = new StreamReader(openSourceStream()))
+            {
+                var output = MinifyJavaScript(reader.ReadToEnd());
+                return output.AsStream();
+            }
+        };
+    }
+    
+    string MinifyJavaScript(string input)
+    {
+        // TODO: call minifier here...
+    }
+}</code></pre>
+
+<p>The Cassette project would welcome some additional JavaScript minifier contributions!</p>
