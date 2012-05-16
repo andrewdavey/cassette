@@ -87,6 +87,7 @@
             TaskDirectory="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\" />
 
         <MakeDir Directories="$(OutputDir)"/>
+        <MakeDir Directories="$(PackageOutputDir)"/>
         <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -symbols -Version $(Version) -OutputDirectory $(PackageOutputDir)"/>
     </Target>
 
