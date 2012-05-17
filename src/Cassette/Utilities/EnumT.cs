@@ -21,6 +21,7 @@ namespace Cassette.Utilities
         /// <summary>
         /// Check to see if a flags enumeration has a specific flag set.
         /// </summary>
+        /// <remarks>Code based on http://stackoverflow.com/a/4108907 </remarks>
         /// <param name="variable">Flags enumeration to check</param>
         /// <param name="value">Flag to check for</param>
         public static bool HasFlag(this Enum variable, Enum value)
