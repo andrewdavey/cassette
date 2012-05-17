@@ -19,7 +19,7 @@ namespace Cassette.HtmlTemplates
             {
                 var id = bundle.GetTemplateId(asset);
                 var template = openSourceStream().ReadToEnd();
-                return string.Format("$.template('{0}', {1});{2}", id, template, Environment.NewLine).AsStream();
+                return string.Format("jQuery.template('{0}', {1});{2}", id, template, Environment.NewLine).AsStream();
             };
         }
     }
