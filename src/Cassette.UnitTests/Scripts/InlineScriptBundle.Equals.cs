@@ -1,5 +1,4 @@
-﻿using System;
-using Should;
+﻿using Should;
 using Xunit;
 
 namespace Cassette.Scripts
