@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -65,11 +66,16 @@ namespace Cassette.Aspnet
 
         static bool IsRunningInCassini()
         {
-            return AppDomain.CurrentDomain
-                .GetAssemblies()
-                .Any(
-                    a => a.FullName.StartsWith("WebDev.WebHost")
-                );
+            try
+            {
+                // detects cassini or drop in replacement cassinidev (which does not have a managed assembly we can sniff)
+                return Process.GetCurrentProcess().ProcessName.StartsWith("WebDev.WebServer");
+            }
+            catch(SecurityException)
+            {
+                // assume if not in full trust then we're not using cassini
+                return false;
+            }
         }
 
         void RewriteFileRequests()
