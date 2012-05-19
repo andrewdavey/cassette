@@ -92,7 +92,8 @@ namespace Cassette
         {
             get
             {
-                return bundles.Equals(cacheReadResult.Manifest.Bundles) &&
+                return settings.Version == cacheReadResult.Manifest.Version &&
+                       bundles.Equals(cacheReadResult.Manifest.Bundles) &&
                        manifestValidator.IsValid(cacheReadResult.Manifest);
             }
         }
