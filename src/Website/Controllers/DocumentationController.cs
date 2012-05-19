@@ -6,7 +6,7 @@ namespace Website.Controllers
     {
         public ActionResult OldIndex(string path)
         {
-            return RedirectToRoute("Documentation", new
+            return RedirectToRoutePermanent("Documentation", new
             {
                 version = "v1",
                 path
@@ -22,7 +22,7 @@ namespace Website.Controllers
             }
             else
             {
-                viewName = path.Replace('/', '_').Replace("-", "");
+                viewName = path.Replace("-", "");
             }
             
             viewName = "~/Views/Documentation/" + version + "/" + viewName + ".cshtml";

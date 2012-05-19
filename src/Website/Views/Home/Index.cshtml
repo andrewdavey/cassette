@@ -110,9 +110,8 @@ Install-Package Cassette.CoffeeScript</code></pre>
         <div class="file-details">
             <h2>Reference and Render</h2>
             <p>Cassette's <code>Bundles</code> helper works in view pages, layouts and partials.</p>
-            <p>Reference the scripts you directly require.</p>
-            <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
-            <p class="minor"><a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new { path = "html-templates" })">HTML Templates</a> are also supported</p>
+            <p>Reference the assets or bundles you directly require.</p>
+            <p>Tell Cassette where to render the HTML.</p>
         </div>
 
         <div class="file">
@@ -205,9 +204,10 @@ Install-Package Cassette.CoffeeScript</code></pre>
             <h2>So much more...</h2>
             <p>This introduction has only scratched the surface of what Cassette can do.</p>
             <ul>
-                <li>CoffeeScript is built-in. Just add <code>.coffee</code> files to your project and Cassette will compile them.</li>
-                <li>LESS files are automatically compiled into CSS.</li>
-                <li>Cassette has an extensible "asset pipeline". Learn how to extend and customize asset processing.</li>
+                <li>Treat your client-side HTML templates as bundles.</li>
+                <li>Add CoffeeScript support by installing the <code>Cassette.CoffeeScript</code> nuget package.</li>
+                <li>Add <a href="http://www.dotlesscss.org/" target="_blank">Less</a> and <a href="http://sass-lang.com/">Sass</a> support by installing <code>Cassette.Less</code> and <code>Cassette.Sass</code>.</li>
+                <li>Cassette provides extensible bundle "pipelines" that allow full control over how bundles are processed.</li>
             </ul>
             <p><strong>Get Cassette!</strong> It's free, open source software, distributed under the <a href="@Url.RouteUrl("Licensing")">MIT License</a>.
             </p>

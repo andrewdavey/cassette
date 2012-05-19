@@ -33,18 +33,3 @@
 
 <p>Also, a bundle is created for just top-level assets of the path. This is useful because many third-party nuget packages
 drop their scripts into ~/Scripts. So it's sensible to move your own scripts into sub-directories.</p>
-
-<h2>Customizing bundles</h2>
-<p>The <code>Bundle</code> object created by Cassette can be customized by providing an action delegate.</p>
-<p>This is useful for changing the pipeline used to process the bundle.</p>
-
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
-{
-    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles)
-    {
-        bundles.AddPerSubDirectory&lt;<span class="code-type">ScriptBundle</span>&gt;(
-            <span class="string">"Scripts"</span>,
-            bundle => bundle.PageLocation = <span class="string">"body"</span>
-        );
-    }
-}</code></pre>

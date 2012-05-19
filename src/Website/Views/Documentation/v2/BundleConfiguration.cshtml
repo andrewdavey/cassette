@@ -2,7 +2,7 @@
 
 <p>
     Cassette bundles are defined using a code-based configuration API.
-    Your web application should implement <code>Cassette.IConfiguration&lt;BundleCollection&gt;</code>.
+    Your web application should contain a public class that implements <code>Cassette.IConfiguration&lt;BundleCollection&gt;</code>.
 </p>
 
 <pre><code>using Cassette;
@@ -20,3 +20,4 @@ public class CassetteConfiguration : IConfiguration&lt;BundleCollection&gt;
 <h2>Adding bundles</h2>
 
 <p>The <code>BundleCollection</code> has a set of <code>Add</code> methods to add bundles.</p>
+

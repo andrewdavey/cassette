@@ -1,0 +1,53 @@
+﻿<h1>Adding external URLs</h1>
+
+<p>
+    In addition to local files, you can define bundles based on external URLs.
+    Cassette won't process these bundles, however the URLs are used when rendering the HTML.
+</p>
+
+<pre><code>bundles.AddUrl("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js");</code></pre>
+
+<p>Then another script can reference this bundle.</p>
+
+<pre><code>/// &lt;reference path="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/&gt;
+$(function() {
+    ...
+});</code></pre>
+
+<p>However, it can be easier to define an alias for the bundle.</p>
+
+<pre><code>bundles.AddUrlWithAlias(
+    "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
+    "~/jquery"
+);</code></pre>
+
+<p>Then the reference can use the alias instead.</p>
+
+<pre><code>/// &lt;reference path="~/jquery"/&gt;
+$(function() {
+    ...
+});</code></pre>
+
+<h2>URL with local fallback assets</h2>
+
+<p>
+    If a remote URL fails to load you can fallback to using a local bundle.
+</p>
+
+<pre><code>bundles.AddUrlWithLocalAssets(
+    "//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
+    new LocalAssetSettings
+    {
+        FallbackCondition = "!window.jQuery",
+        Path = "scripts/jquery.js"
+    }
+);</code></pre>
+
+<p>This will generate the following HTML.</p>
+
+<pre><code>&lt;script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+    if (!window.jQuery) {
+        document.write(unescape('%3Cscript src="/cassette.axd/script/PlxtfG4Jll0234wePZ3KZGLEHsE=/scripts/jquery.js" type="text/javascript"%3E%3C/script%3E'));
+    }
+&lt;/script&gt;</code></pre>

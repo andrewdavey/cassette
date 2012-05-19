@@ -1,18 +1,37 @@
 ﻿<div class="tree">
     <ul>
         <li>
-            @DocLink("", "Index")            
+            @DocLink("", "Introduction")
+        </li>
+        <li>
+            @DocLink("bundle-configuration", "Bundle configuration")
+            <ul>
+                <li>@DocLink("bundle-configuration/add", "Add")</li>
+                <li>@DocLink("bundle-configuration/add-per-sub-directory", "AddPerSubDirectory")</li>
+                <li>@DocLink("bundle-configuration/add-per-individual-file", "AddPerIndividualFile")</li>
+                <li>@DocLink("bundle-configuration/add-urls", "Adding external URLs")</li>
+                <li>@DocLink("bundle-configuration/file-search", "File search")</li>
+                <li>@DocLink("bundle-configuration/customize-bundles", "Customize bundles")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("bundles-helper", "Bundles helper")
+            <ul>
+                <li>@DocLink("bundles-helper/reference", "Reference")</li>
+                <li>@DocLink("bundles-helper/render", "Render")</li>
+                <li>@DocLink("bundles-helper/page-locations", "Page locations")</li>
+            </ul>
         </li>
     </ul>
 </div>
 @helper DocLink(string path, string text)
-{
-    if (Request.Url.AbsolutePath.EndsWith("documentation/" + path))
     {
+        if (Request.Url.AbsolutePath.EndsWith("documentation/v2/" + path))
+        {
     <a class="activedoc" href=@Url.DocumentationUrl(path)>@text</a>
-    }
-    else
-    {
+        }
+        else
+        {
     <a href=@Url.DocumentationUrl(path)>@text</a>
-    }
+        }
 }

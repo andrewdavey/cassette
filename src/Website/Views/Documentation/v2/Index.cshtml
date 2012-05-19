@@ -1,6 +1,4 @@
-﻿<h1>Cassette Documentation</h1>
-
-<h2>Introduction</h2>
+﻿<h1>Introduction</h1>
 
 <p>
     Cassette is an web asset management library. An asset is typically a file, such as script
@@ -8,19 +6,38 @@
     an optimized output that improves the performance of your web application.
 </p>
 
-<table>
-    <caption>Cassette supports three types of bundles.</caption>
-    <tr>
-        <th> </th>
-        <th>Scripts</th>
-        <th>Stylesheets</th>
-        <th>HTML Templates</th>
-    </tr>
-    <tr>
-        <th>File types</th>
-        <td><code>.js</code> <br/> <code>.coffee</code></td>
-        <td><code>.css</code><br/> <code>.sass</code><br/><code>.scss</code><br/> <code>.less</code></td>
-        <td><code>.htm</code></td>
-    </tr>
-</table>
+<p>
+    Cassette supports three types of bundle: scripts, stylesheets and HTML templates.
+</p>
 
+<p>
+    Script bundles contain JavaScript assets, such as <code>.js</code> and <code>.coffee</code> files.
+</p>
+<p>
+    Stylesheet bundles contain CSS assets, such as <code>.css</code>, <code>.less</code> and <code>.scss</code> files.
+</p>
+<p>
+    HTML template bundles contain <code>.htm</code> files used by client-side HTML templating libraries, such as jQuery-tmpl and Hogan.
+</p>
+
+<h2>Getting started</h2>
+<p>Install the <code>Cassette.Aspnet</code> nuget package into your ASP.NET web application project.</p>
+<p>This will update <code>Web.config</code> and create a new file called <code>CassetteConfiguration.cs</code>.</p>
+
+<h2>Configuration</h2>
+<p>
+    Cassette needs to know what files to bundle. This requires implementing a small class using the Cassette configuration API.
+</p>
+<p>
+    <a href="#">Learn about Configuration &raquo;</a>
+</p>
+
+<h2>Bundles helper class</h2>
+<p>
+    Cassette provides a simple in-page helper class called <code>Bundles</code>.
+    The <code>Bundles</code> class allows a page/master/view/partial/etc to reference bundles.
+    Next, the <code>Render</code> methods are used to actually generate the required HTML, such as <code>&lt;script&gt;</code> tags.
+</p>
+<p>
+    <a href="#">Learn about the Bundles helper &raquo;</a>
+</p>
