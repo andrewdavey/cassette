@@ -102,7 +102,7 @@ namespace Cassette
 
         void RegisterUrlGenerator()
         {
-            container.Register(typeof(IUrlGenerator), typeof(UrlGenerator));
+            container.Register<IUrlGenerator, UrlGenerator>();
         }
 
         void RegisterCache()

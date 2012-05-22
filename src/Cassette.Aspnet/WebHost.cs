@@ -30,7 +30,7 @@ namespace Cassette.Aspnet
             // These are before base.ConfigureContainer() so the application is able to override them - for example providing a different IUrlModifier.
             Container.Register((c, p) => HttpContext());
             Container.Register((c, p) => c.Resolve<HttpContextBase>().Request);
-            Container.Register(typeof(IUrlModifier), new VirtualDirectoryPrepender(AppDomainAppVirtualPath));
+            Container.Register(typeof(IUrlModifier), CreateUrlModifier());
 
             Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
             Container.Register<ICassetteRequestHandler, BundleRequestHandler<Scripts.ScriptBundle>>("ScriptBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
@@ -40,6 +40,14 @@ namespace Cassette.Aspnet
             Container.Register<RawFileRequestRewriter>().AsPerRequestSingleton(CreateRequestLifetimeProvider());
 
             base.ConfigureContainer();
+        }
+
+        IUrlModifier CreateUrlModifier()
+        {
+            return new AggregateUrlModifier(
+                new HandlerPathPrepender(),
+                new VirtualDirectoryPrepender(AppDomainAppVirtualPath)
+            );
         }
 
         protected virtual string AppDomainAppVirtualPath

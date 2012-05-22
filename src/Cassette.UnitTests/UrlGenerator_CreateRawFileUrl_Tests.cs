@@ -10,14 +10,14 @@ namespace Cassette
         public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndHashAndPathWithoutTilde()
         {
             var url = UrlGenerator.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldEqual("cassette.axd/file/hash/test.png");
+            url.ShouldEqual("file/hash/test.png");
         }
 
         [Fact]
         public void ConvertsToForwardSlashes()
         {
             var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("cassette.axd/file/hash/test/foo.png");
+            url.ShouldEqual("file/hash/test/foo.png");
         }
 
         [Fact]

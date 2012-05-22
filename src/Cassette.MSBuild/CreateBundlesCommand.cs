@@ -6,20 +6,22 @@ namespace Cassette.MSBuild
     [Serializable]
     public class CreateBundlesCommand : MarshalByRefObject
     {        
-        public CreateBundlesCommand(string source, string bin, string output)
+        public CreateBundlesCommand(string source, string bin, string output, bool includeRawFiles)
         {
             this.source = source;
             this.bin = bin;
             this.output = output;
+            this.includeRawFiles = includeRawFiles;
         }
 
         readonly string source;
         readonly string bin;
         readonly string output;
+        readonly bool includeRawFiles;
 
         public void Execute()
         {
-            using (var host = new MSBuildHost(source, bin, output))
+            using (var host = new MSBuildHost(source, bin, output, includeRawFiles))
             {
                 host.Initialize();
                 host.Execute();
@@ -67,7 +69,7 @@ namespace Cassette.MSBuild
             //   new CreateBundlesCommand(command.source, command.bin, command.output);
             // but the object lives in the other AppDomain.
 
-            var constructorArguments = new object[] { command.source, command.bin, command.output };
+            var constructorArguments = new object[] { command.source, command.bin, command.output, command.includeRawFiles };
             var objectHandle = Activator.CreateInstanceFrom(
                 appDomain,
                 typeof(CreateBundlesCommand).Assembly.Location,

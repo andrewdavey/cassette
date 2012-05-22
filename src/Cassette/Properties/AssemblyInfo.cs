@@ -33,6 +33,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.Nancy")]
 
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.MSBuild.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Views.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Aspnet.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Aspnet.Jasmine.UnitTests")]

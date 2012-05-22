@@ -21,6 +21,11 @@ namespace Cassette.MSBuild
         /// </summary>
         public string Output { get; set; }
 
+        /// <summary>
+        /// When true, non-bundled files such as images referenced by stylesheets are also copied to the output directory. Default is false.
+        /// </summary>
+        public bool IncludeOtherFiles { get; set; }
+
         public override bool Execute()
         {
             AssignPropertyDefaultsIfMissing();
@@ -33,7 +38,7 @@ namespace Cassette.MSBuild
             // Execution will load assemblies. When running this task from a Visual Studio build, the DLLs would then be locked.
             // So we must run the command in a separate AppDomain.
             // This means the assemblies can be unlocked by unloading the new AppDomain when finished.
-            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output));
+            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output, IncludeOtherFiles));
             
             return true;
         }

@@ -22,14 +22,14 @@ namespace Cassette
             
             var url = UrlGenerator.CreateBundleUrl(bundle);
 
-            url.ShouldEqual("cassette.axd/" + bundle.Url);
+            url.ShouldEqual(bundle.Url);
         }
 
         [Fact]
         public void UrlModifierModifyIsCalled()
         {
             UrlGenerator.CreateBundleUrl(StubScriptBundle("~/test"));
-            var expectedUrl = "cassette.axd/script/" + expectedHash + "/test";
+            var expectedUrl = "script/" + expectedHash + "/test";
             UrlModifier.Verify(m => m.Modify(expectedUrl));
         }
 
@@ -37,14 +37,14 @@ namespace Cassette
         public void CreateScriptBundleUrlReturnsUrlWithRoutePrefixAndBundleTypeAndHashAndPath()
         {
             var url = UrlGenerator.CreateBundleUrl(StubScriptBundle("~/test/foo"));
-            url.ShouldEqual("cassette.axd/script/" + expectedHash + "/test/foo");
+            url.ShouldEqual("script/" + expectedHash + "/test/foo");
         }
 
         [Fact]
         public void CreateStylesheetBundleUrlReturnsUrlWithRoutePrefixAndBundleTypeAndHashAndPath()
         {
             var url = UrlGenerator.CreateBundleUrl(StubStylesheetBundle("~/test/foo"));
-            url.ShouldEqual("cassette.axd/stylesheet/" + expectedHash + "/test/foo");
+            url.ShouldEqual("stylesheet/" + expectedHash + "/test/foo");
         }
 
         static ScriptBundle StubScriptBundle(string path)

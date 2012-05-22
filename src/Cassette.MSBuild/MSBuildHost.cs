@@ -13,8 +13,9 @@ namespace Cassette.MSBuild
         readonly string sourceDirectory;
         readonly string binDirectory;
         readonly string outputDirectory;
+        readonly bool includeRawFiles;
 
-        public MSBuildHost(string sourceDirectory, string binDirectory, string outputDirectory)
+        public MSBuildHost(string sourceDirectory, string binDirectory, string outputDirectory, bool includeRawFiles)
         {
             if (!Path.IsPathRooted(sourceDirectory)) throw new ArgumentException("sourceDirectory must be an absolute path.", "sourceDirectory");
             if (!Path.IsPathRooted(binDirectory)) throw new ArgumentException("binDirectory must be an absolute path.", "binDirectory");
@@ -23,6 +24,7 @@ namespace Cassette.MSBuild
             this.sourceDirectory = sourceDirectory;
             this.binDirectory = binDirectory;
             this.outputDirectory = outputDirectory;
+            this.includeRawFiles = includeRawFiles;
         }
 
         protected override IEnumerable<Assembly> LoadAssemblies()
@@ -66,8 +68,22 @@ namespace Cassette.MSBuild
         public void Execute()
         {
             var bundles = Container.Resolve<BundleCollection>();
+            WriteCache(bundles);
+            if (includeRawFiles)
+            {
+                CopyRawFileToOutputDirectory(bundles);
+            }
+        }
+
+        void WriteCache(IEnumerable<Bundle> bundles)
+        {
             var cache = Container.Resolve<IBundleCollectionCache>();
             cache.Write(Manifest.Static(bundles));
+        }
+
+        void CopyRawFileToOutputDirectory(BundleCollection bundles)
+        {
+            bundles.Accept(new RawFileCopier(sourceDirectory, outputDirectory));
         }
 
         protected override void ConfigureContainer()

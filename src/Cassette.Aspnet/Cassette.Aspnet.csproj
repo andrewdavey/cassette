@@ -63,6 +63,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="HandlerPathPrepender.cs" />
     <Compile Include="CassetteHttpHandler.cs" />
     <Compile Include="HttpContextLifetimeProvider.cs" />
     <Compile Include="ICassetteRequestHandler.cs" />
