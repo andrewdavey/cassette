@@ -13,7 +13,7 @@
             <add name="CassetteHttpModule" type="Cassette.Aspnet.CassetteHttpModule, Cassette.Aspnet" />
         </modules>
         <handlers>
-            <add name="CassetteHttpHandler" path="cassette.axd" verb="*" allowPathInfo="true" type="Cassette.Aspnet.CassetteHttpHandler, Cassette.Aspnet"/>
+            <add name="CassetteHttpHandler" path="cassette.axd" preCondition="integratedMode" verb="*" allowPathInfo="true" type="Cassette.Aspnet.CassetteHttpHandler, Cassette.Aspnet"/>
         </handlers>
     </system.webServer>
 </configuration>
