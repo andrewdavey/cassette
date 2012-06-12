@@ -13,7 +13,7 @@ namespace Cassette
         readonly IBundleCollectionCache cache;
         readonly IBundleCollectionInitializer bundleCollectionInitializer;
 
-        BundleCacheRebuilder(BundleCollection bundles, IBundleCollectionCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
+        public BundleCacheRebuilder(BundleCollection bundles, IBundleCollectionCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
         {
             this.bundles = bundles;
             this.cache = cache;
