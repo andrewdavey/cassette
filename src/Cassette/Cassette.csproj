@@ -80,6 +80,7 @@
     <Compile Include="AggregateUrlModifier.cs" />
     <Compile Include="AssemblyScanner.cs" />
     <Compile Include="AssetPathComparer.cs" />
+    <Compile Include="BundleCacheRebuilder.cs" />
     <Compile Include="Caching\BundleCollectionCache.cs" />
     <Compile Include="Caching\BundleCollectionCacheReader.cs" />
     <Compile Include="Caching\ManifestValidator.cs" />
