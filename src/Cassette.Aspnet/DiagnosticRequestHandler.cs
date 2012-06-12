@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
-using Cassette.Caching;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
@@ -18,17 +17,15 @@ namespace Cassette.Aspnet
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
         readonly IUrlGenerator urlGenerator;
-        readonly IBundleCollectionCache cache;
-        readonly IBundleCollectionInitializer bundleCollectionInitializer;
+        readonly IBundleCacheRebuilder bundleCacheRebuilder;
 
-        public DiagnosticRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, IBundleCollectionCache cache, IBundleCollectionInitializer bundleCollectionInitializer)
+        public DiagnosticRequestHandler(RequestContext requestContext, BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, IBundleCacheRebuilder bundleCacheRebuilder)
         {
             this.requestContext = requestContext;
             this.bundles = bundles;
             this.settings = settings;
             this.urlGenerator = urlGenerator;
-            this.cache = cache;
-            this.bundleCollectionInitializer = bundleCollectionInitializer;
+            this.bundleCacheRebuilder = bundleCacheRebuilder;
         }
 
         public void ProcessRequest()
@@ -67,17 +64,7 @@ namespace Cassette.Aspnet
         {
             if (requestContext.HttpContext.Request.Form["action"] == "rebuild-cache")
             {
-                RebuildCache();
-            }
-        }
-
-        void RebuildCache()
-        {
-            cache.Clear();
-            using (bundles.GetWriteLock())
-            {
-                bundles.Clear();
-                bundleCollectionInitializer.Initialize(bundles);
+                bundleCacheRebuilder.RebuildCache();
             }
         }
 

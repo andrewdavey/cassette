@@ -24,7 +24,8 @@ namespace Cassette.Views
             settings = new CassetteSettings();
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             fileAccessAuthorization = new Mock<IFileAccessAuthorization>();
-            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object);
+            var bundleCacheRebuilder = new Mock<IBundleCacheRebuilder>();
+            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object, bundleCacheRebuilder.Object);
         }
 
         [Fact]

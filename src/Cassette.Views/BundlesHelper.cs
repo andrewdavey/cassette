@@ -21,14 +21,16 @@ namespace Cassette.Views
         readonly IUrlGenerator urlGenerator;
         readonly Func<IReferenceBuilder> getReferenceBuilder;
         readonly IFileAccessAuthorization fileAccessAuthorization;
+        readonly IBundleCacheRebuilder bundleCacheRebuilder;
 
-        public BundlesHelper(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, Func<IReferenceBuilder> getReferenceBuilder, IFileAccessAuthorization fileAccessAuthorization)
+        public BundlesHelper(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, Func<IReferenceBuilder> getReferenceBuilder, IFileAccessAuthorization fileAccessAuthorization, IBundleCacheRebuilder bundleCacheRebuilder)
         {
             this.bundles = bundles;
             this.settings = settings;
             this.urlGenerator = urlGenerator;
             this.getReferenceBuilder = getReferenceBuilder;
             this.fileAccessAuthorization = fileAccessAuthorization;
+            this.bundleCacheRebuilder = bundleCacheRebuilder;
         }
 
         void IStartUpTask.Start()
@@ -132,6 +134,11 @@ namespace Cassette.Views
                 var hash = stream.ComputeSHA1Hash().ToHexString();
                 return urlGenerator.CreateRawFileUrl(applicationRelativeFilePath, hash);
             }
+        }
+
+        public void RebuildBundleCache()
+        {
+            bundleCacheRebuilder.RebuildCache();
         }
 
         void ThrowIfCannotRequestRawFile(string applicationRelativeFilePath, IFile file)

@@ -126,6 +126,8 @@ namespace Cassette
                 var sourceDirectory = c.Resolve<CassetteSettings>().SourceDirectory;
                 return new FileAssetCacheValidator(sourceDirectory);
             });
+
+            container.Register(typeof(IBundleCacheRebuilder), typeof(BundleCacheRebuilder));
         }
 
         static readonly Dictionary<string, Type> BundleDeserializers = new Dictionary<string, Type>

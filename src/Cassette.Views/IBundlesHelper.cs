@@ -23,5 +23,7 @@ namespace Cassette.Views
             where T : Bundle;
 
         string FileUrl(string applicationRelativeFilePath);
+
+        void RebuildBundleCache();
     }
 }
