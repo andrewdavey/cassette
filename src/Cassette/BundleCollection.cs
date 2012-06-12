@@ -19,7 +19,7 @@ namespace Cassette
         readonly CassetteSettings settings;
         readonly IFileSearchProvider fileSearchProvider;
         readonly IBundleFactoryProvider bundleFactoryProvider;
-        readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
+        readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
         Exception initializationException;
         
