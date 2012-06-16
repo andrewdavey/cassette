@@ -38,7 +38,8 @@ namespace Cassette.Views
 
             var referenceBuilder = new Mock<IReferenceBuilder>();
             var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
-            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object);
+            var bundleCacheRebuilder = new Mock<IBundleCacheRebuilder>();
+            Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object, bundleCacheRebuilder.Object);
         }
 
         [Fact]

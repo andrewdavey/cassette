@@ -22,7 +22,7 @@ namespace Cassette.Views
         /// The helper implementation used by the static methods of this class.
         /// </summary>
         public static IBundlesHelper Helper { get; set; }
-
+        
         /// <summary>
         /// Adds a reference to a bundle for the current page.
         /// </summary>
@@ -347,6 +347,11 @@ namespace Cassette.Views
         public static string FileUrl(string applicationRelativeFilePath)
         {
             return Helper.FileUrl(applicationRelativeFilePath);
+        }
+
+        public static void RebuidCache()
+        {
+            Helper.RebuildBundleCache();
         }
     }
 }
