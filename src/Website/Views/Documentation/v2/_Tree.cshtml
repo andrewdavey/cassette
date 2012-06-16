@@ -1,9 +1,8 @@
 ﻿<div class="tree">
     <p>Documentation version: <a href="@Url.RouteUrl("Documentation", new { version = "v1", path = "" })">v1</a> &bull; <strong>v2</strong></p>
     <ul>
-        <li>
-            @DocLink("", "Introduction")
-        </li>
+        <li>@DocLink("", "Introduction")</li>
+        <li>@DocLink("upgrading-from-v1-to-v2", "Upgrading from Cassette v1")</li>
         <li>
             @DocLink("bundle-configuration", "Bundle configuration")
             <ul>
