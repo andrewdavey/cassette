@@ -50,13 +50,13 @@
     </ul>
 </div>
 @helper DocLink(string path, string text)
+{
+    if (Request.Url.AbsolutePath.EndsWith("documentation/v2/" + path))
     {
-        if (Request.Url.AbsolutePath.EndsWith("documentation/v2/" + path))
-        {
-    <a class="activedoc" href=@Url.DocumentationUrl(path)>@text</a>
-        }
-        else
-        {
-    <a href=@Url.DocumentationUrl(path)>@text</a>
-        }
+    <a class="activedoc" href="@Url.DocumentationUrl(path)">@text</a>
+    }
+    else
+    {
+    <a href="@Url.DocumentationUrl(path)">@text</a>
+    }
 }
