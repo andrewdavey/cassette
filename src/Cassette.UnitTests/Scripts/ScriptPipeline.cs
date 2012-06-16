@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.TinyIoC;
-using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -66,16 +65,6 @@ namespace Cassette.Scripts
             pipeline.Process(bundle);
 
             bundle.Hash.ShouldNotBeNull();
-        }
-
-        Mock<IAsset> StubAsset(string filename = null, string content = "")
-        {
-            var asset = new Mock<IAsset>();
-            asset.Setup(f => f.OpenStream())
-                .Returns(() => content.AsStream());
-            asset.SetupGet(a => a.Path)
-                .Returns(filename ?? "~/test.js");
-            return asset;
         }
     }
 }
