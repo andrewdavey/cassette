@@ -15,7 +15,7 @@ namespace Cassette.HtmlTemplates
                 new AssignContentType("text/javascript"),
                 new ParseHtmlTemplateReferences(),
                 container.Resolve<CompileHogan>(),
-                container.Resolve<RegisterTemplatesWithHogan.Factory>()(hoganSettings.JavaScriptVariableName),
+                new RegisterTemplatesWithHogan(hoganSettings.JavaScriptVariableName),
                 new AssignHash(),
                 new ConcatenateAssets()
             });

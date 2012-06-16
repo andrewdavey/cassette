@@ -76,6 +76,7 @@
     <Compile Include="HoganFileSearchModifier.cs" />
     <Compile Include="HoganServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="HoganPipeline.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -84,6 +85,10 @@
     <ProjectReference Include="..\Cassette.Hogan\Cassette.Hogan.csproj">
       <Project>{4D64EC45-C42A-4601-9E80-2D166AC849F3}</Project>
       <Name>Cassette.Hogan</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette.UnitTests\Cassette.UnitTests.csproj">
+      <Project>{F200A67A-D7B5-441B-AB36-69AA5C87577E}</Project>
+      <Name>Cassette.UnitTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>

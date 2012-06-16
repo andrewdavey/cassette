@@ -5,55 +5,60 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    public class StubAsset : IAsset
+    public class StubAsset : AssetBase
     {
+        readonly byte[] hash;
+        readonly string path;
+
         public StubAsset(string fullPath = "~/asset.js", string content = "")
         {
-            Hash = new byte[] {1};
+            hash = new byte[] {1};
             CreateStream = () => content.AsStream();
-            Path = fullPath;
-            References = new List<AssetReference>();
+            path = fullPath;
+            ReferenceList = new List<AssetReference>();
         }
 
         public Func<Stream> CreateStream { get; set; }
  
-        public byte[] Hash { get; set; }
-
-        public string Path { get; set; }
-
-        public List<AssetReference> References { get; set; }
-
-        IEnumerable<AssetReference> IAsset.References
+        public override byte[] Hash
         {
-            get { return References; }
+            get { return hash; }
         }
 
-        public void Accept(IBundleVisitor visitor)
+        public override string Path
+        {
+            get { return path; }
+        }
+
+        public List<AssetReference> ReferenceList { get; set; }
+
+        public override IEnumerable<AssetReference> References
+        {
+            get { return ReferenceList; }
+        }
+
+        public override void Accept(IBundleVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public void AddAssetTransformer(IAssetTransformer transformer)
+        public override void AddReference(string assetRelativePath, int lineNumber)
         {
         }
 
-        public void AddReference(string assetRelativePath, int lineNumber)
+        public override void AddRawFileReference(string relativeFilename)
         {
+            ReferenceList.Add(new AssetReference(Path, relativeFilename, -1, AssetReferenceType.RawFilename));
         }
 
-        public void AddRawFileReference(string relativeFilename)
-        {
-            References.Add(new AssetReference(Path, relativeFilename, -1, AssetReferenceType.RawFilename));
-        }
-
-        public Stream OpenStream()
-        {
-            return CreateStream();
-        }
-
-        public Type AssetCacheValidatorType
+        public override Type AssetCacheValidatorType
         {
             get { return typeof(Caching.FileAssetCacheValidator); }
+        }
+
+        protected override Stream OpenStreamCore()
+        {
+            return CreateStream();
         }
     }
 }

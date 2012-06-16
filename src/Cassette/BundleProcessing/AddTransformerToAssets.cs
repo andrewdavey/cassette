@@ -3,7 +3,7 @@
     public abstract class AddTransformerToAssets<T> : IBundleProcessor<T>
         where T : Bundle
     {
-        public void Process(T bundle)
+        public virtual void Process(T bundle)
         {
             var assetTransformer = CreateAssetTransformer(bundle);
             foreach (var asset in bundle.Assets)

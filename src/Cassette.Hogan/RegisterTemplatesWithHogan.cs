@@ -10,7 +10,21 @@ namespace Cassette.HtmlTemplates
 
         public RegisterTemplatesWithHogan(string javaScriptVariableName)
         {
-            this.javaScriptVariableName = javaScriptVariableName;
+            this.javaScriptVariableName = javaScriptVariableName ?? "JST";
+        }
+
+        public override void Process(HtmlTemplateBundle bundle)
+        {
+            base.Process(bundle);
+            DefineJavaScriptVariableInFirstAsset(bundle);
+        }
+
+        void DefineJavaScriptVariableInFirstAsset(HtmlTemplateBundle bundle)
+        {
+            if (bundle.Assets.Count > 0)
+            {
+                bundle.Assets[0].AddAssetTransformer(new DefineJavaScriptVariable(javaScriptVariableName));
+            }
         }
 
         protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle)

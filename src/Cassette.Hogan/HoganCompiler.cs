@@ -9,6 +9,12 @@ namespace Cassette.HtmlTemplates
         {
             scriptEngine = new ScriptEngine();
             scriptEngine.Execute(Properties.Resources.hogan);
+            
+            // Create a global compile function that returns the template compiled into javascript source.
+            scriptEngine.Execute(@"
+var compile = function (template) {
+  return Hogan.compile(template, { asString: true });
+};");
         }
 
         readonly ScriptEngine scriptEngine;

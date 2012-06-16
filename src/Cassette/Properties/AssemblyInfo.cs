@@ -40,6 +40,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.CoffeeScript.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Less.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Sass.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Hogan.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
 
 // To allow mocking of internal types, using Moq, the following is required.

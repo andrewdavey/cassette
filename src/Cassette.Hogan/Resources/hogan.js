@@ -574,9 +574,3 @@ var Hogan = {};
         return this.cache[key] = t;
     };
 })(typeof exports !== 'undefined' ? exports : Hogan);
-
-
-// Create a global function and pass asString option.
-var compile = function (template) {
-  return Hogan.compile(template, { asString: true });
-};

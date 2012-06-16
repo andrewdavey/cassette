@@ -72,7 +72,7 @@ namespace Cassette
             var bundle = new TestableBundle("~");
             var asset = new StubAsset();
             var badReference = new AssetReference(asset.Path, "~/NOT-FOUND.js", 1, AssetReferenceType.DifferentBundle);
-            asset.References.Add(badReference);
+            asset.ReferenceList.Add(badReference);
             bundle.Assets.Add(asset);
             bundle.DescriptorFilePath = "~/bundle.txt";
             collection.Add(bundle);

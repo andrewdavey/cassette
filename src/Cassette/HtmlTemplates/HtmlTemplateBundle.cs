@@ -11,6 +11,7 @@ namespace Cassette.HtmlTemplates
             ContentType = "text/html";
         }
 
+        // TODO: rename to Pipeline?
         public IBundleProcessor<HtmlTemplateBundle> Processor { get; set; }
         
         public IBundleHtmlRenderer<HtmlTemplateBundle> Renderer { get; set; }

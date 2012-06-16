@@ -28,7 +28,7 @@ namespace Cassette
                     {
                         new StubAsset("~/asset", "asset-content")
                         {
-                            References =
+                            ReferenceList =
                                 {
                                     new AssetReference("~/asset", "~/raw-file/reference", -1, AssetReferenceType.RawFilename)
                                 }
