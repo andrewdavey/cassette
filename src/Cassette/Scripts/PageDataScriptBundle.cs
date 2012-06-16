@@ -41,7 +41,7 @@ namespace Cassette.Scripts
         {
             foreach (var pair in dictionary)
             {
-                var value = SimpleJson.SimpleJson.SerializeObject(pair.Value);
+                var value = SimpleJson.SerializeObject(pair.Value);
                 builder.AppendFormat("d.{0}={1};", pair.Key, value).AppendLine();
             }
         }

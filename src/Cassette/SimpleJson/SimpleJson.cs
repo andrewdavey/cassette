@@ -1,4 +1,6 @@
-﻿//-----------------------------------------------------------------------
+﻿// Changed the namespace to be Cassette instead of SimpleJson
+
+//-----------------------------------------------------------------------
 // <copyright file="SimpleJson.cs" company="The Outercurve Foundation">
 //    Copyright (c) 2011, The Outercurve Foundation.
 //
@@ -58,9 +60,9 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 #endif
 using System.Text;
-using SimpleJson.Reflection;
+using Cassette.Reflection;
 
-namespace SimpleJson
+namespace Cassette
 {
     #region JsonArray
 
@@ -469,7 +471,7 @@ namespace SimpleJson
     #endregion
 }
 
-namespace SimpleJson
+namespace Cassette
 {
     #region JsonParser
 
