@@ -5,7 +5,6 @@
     <description xdt:Transform="Insert">Important: This is just the core library for Cassette. You probably want to install the Cassette.Aspnet package for ASP.NET support.</description>
     <dependencies xdt:Transform="Insert">
       <dependency id="AjaxMin" version="4.51" />
-      <dependency id="Newtonsoft.Json" version="4.5" />
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
