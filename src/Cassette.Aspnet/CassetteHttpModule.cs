@@ -32,19 +32,36 @@ namespace Cassette.Aspnet
                 _initializedModuleCount++;
                 if (isFirstModuleInitForAppDomain)
                 {
-                    var startupTimer = Stopwatch.StartNew();
-                    using (var recorder = new StartUpTraceRecorder())
+                    if (TrustLevel.IsFullTrust())
                     {
-                        _host = new WebHost();
-                        _host.Initialize();
-
-                        Trace.Source.TraceInformation("Total time elapsed: {0}ms", startupTimer.ElapsedMilliseconds);
-                        StartUpTrace = recorder.TraceOutput;
+                        InitWithTraceLogging();
+                    }
+                    else
+                    {
+                        InitWithoutTraceLogging();
                     }
                 }
             }
 
             HandleHttpApplicationEvents(httpApplication);
+        }
+
+        void InitWithoutTraceLogging()
+        {
+            _host = new WebHost();
+            _host.Initialize();
+        }
+
+        void InitWithTraceLogging()
+        {
+            var startupTimer = Stopwatch.StartNew();
+            using (var recorder = new StartUpTraceRecorder())
+            {
+                InitWithoutTraceLogging();
+
+                Trace.Source.TraceInformation("Total time elapsed: {0}ms", startupTimer.ElapsedMilliseconds);
+                StartUpTrace = recorder.TraceOutput;
+            }
         }
 
         void HandleHttpApplicationEvents(HttpApplication httpApplication)
@@ -53,7 +70,7 @@ namespace Cassette.Aspnet
             httpApplication.BeginRequest += (s, e) => Host.StoreRequestContainerInHttpContextItems();
             httpApplication.EndRequest += (s, e) => Host.RemoveRequestContainerFromHttpContextItems();
 
-            if (IsRunningInCassini())
+            if (TrustLevel.IsFullTrust() && IsRunningInCassini())
             {
                 httpApplication.PostAuthorizeRequest += (s, e) => RewriteRequestsForCassini();
             }
@@ -70,7 +87,7 @@ namespace Cassette.Aspnet
                 // detects cassini or drop in replacement cassinidev (which does not have a managed assembly we can sniff)
                 return Process.GetCurrentProcess().ProcessName.StartsWith("WebDev.WebServer");
             }
-            catch(SecurityException)
+            catch
             {
                 // assume if not in full trust then we're not using cassini
                 return false;

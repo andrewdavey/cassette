@@ -7,7 +7,7 @@ namespace Cassette.Aspnet
     {
         public static AspNetHostingPermissionLevel GetCurrentTrustLevel()
         {
-            var trusLevels = new[]
+            var trustLevels = new[]
             {
                 AspNetHostingPermissionLevel.Unrestricted,
                 AspNetHostingPermissionLevel.High,
@@ -15,7 +15,7 @@ namespace Cassette.Aspnet
                 AspNetHostingPermissionLevel.Low,
                 AspNetHostingPermissionLevel.Minimal
             };
-            foreach (var trustLevel in trusLevels)
+            foreach (var trustLevel in trustLevels)
             {
                 try
                 {
