@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.TinyIoC;
 using Moq;
@@ -51,10 +52,10 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenNotDebugMode_ThenConcatenateAssetsWithSemicolonSeparator()
+        public void GivenNotDebugMode_ThenConcatenateAssetsWithNewLineSemicolonNewLineSeparator()
         {
             var step = pipeline.OfType<ConcatenateAssets>().First();
-            step.Separator.ShouldEqual(";");
+            step.Separator.ShouldEqual(Environment.NewLine + ";" + Environment.NewLine);
         }
 
         [Fact]

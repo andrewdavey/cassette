@@ -1,4 +1,5 @@
-﻿using Cassette.BundleProcessing;
+﻿using System;
+using Cassette.BundleProcessing;
 using Cassette.TinyIoC;
 
 namespace Cassette.Scripts
@@ -16,12 +17,11 @@ namespace Cassette.Scripts
                 new AssignHash()
             });
 
-            if (!settings.IsDebuggingEnabled)
-            {
-                Add(new ConcatenateAssets { Separator = ";" });
-                var minifier = container.Resolve<IJavaScriptMinifier>();
-                Add(new MinifyAssets(minifier));
-            }
+            if (settings.IsDebuggingEnabled) return;
+
+            Add(new ConcatenateAssets { Separator = Environment.NewLine + ";" + Environment.NewLine });
+            var minifier = container.Resolve<IJavaScriptMinifier>();
+            Add(new MinifyAssets(minifier));
         }
     }
 }
