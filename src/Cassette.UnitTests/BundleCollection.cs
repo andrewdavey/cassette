@@ -90,5 +90,16 @@ namespace Cassette
 
             bundles["OTHER"].ShouldBeSameAs(bundle.Object);
         }
+
+        [Fact]
+        public void GivenWriteLockIsAlreadyHeld_GetWriteLockAllowsARecursiveLock() // refs #267
+        {
+            using(bundles.GetWriteLock())
+            {
+                using (bundles.GetWriteLock())
+                {
+                }
+            }
+        }
     }
 }
