@@ -11,14 +11,13 @@ namespace Cassette.HtmlTemplates
             ContentType = "text/html";
         }
 
-        // TODO: rename to Pipeline?
-        public IBundleProcessor<HtmlTemplateBundle> Processor { get; set; }
+        public IBundlePipeline<HtmlTemplateBundle> Pipeline { get; set; }
         
         public IBundleHtmlRenderer<HtmlTemplateBundle> Renderer { get; set; }
 
         protected override void ProcessCore(CassetteSettings settings)
         {
-            Processor.Process(this);
+            Pipeline.Process(this);
         }
 
         internal override string Render()

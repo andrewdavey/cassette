@@ -15,7 +15,7 @@ namespace Cassette.HtmlTemplates
         {
             return new HtmlTemplateBundle(path)
             {
-                Processor = bundlePipeline
+                Pipeline = bundlePipeline
             };
         }
     }

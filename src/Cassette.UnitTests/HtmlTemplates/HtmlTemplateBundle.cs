@@ -10,13 +10,13 @@ namespace Cassette.HtmlTemplates
         public void ProcessCallsProcessor()
         {
             var bundle = new HtmlTemplateBundle("~");
-            var processor = new Mock<IBundleProcessor<HtmlTemplateBundle>>();
+            var pipeline = new Mock<IBundlePipeline<HtmlTemplateBundle>>();
             var settings = new CassetteSettings();
-            bundle.Processor = processor.Object;
+            bundle.Pipeline = pipeline.Object;
 
             bundle.Process(settings);
 
-            processor.Verify(p => p.Process(bundle));
+            pipeline.Verify(p => p.Process(bundle));
         }
 
         [Fact]
