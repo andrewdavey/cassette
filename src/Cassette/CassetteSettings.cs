@@ -53,5 +53,7 @@ namespace Cassette
         internal bool AllowRemoteDiagnostics { get; set; }
 
         internal string Version { get; set; }
+
+        internal bool IsFileSystemWatchingEnabled { get; set; }
     }
 }

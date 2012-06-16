@@ -48,6 +48,8 @@ namespace Cassette
         /// </summary>
         public void Start()
         {
+            if (!settings.IsFileSystemWatchingEnabled) return;
+
             rebuildDelayTimer = new Timer(RebuildDelayTimerCallback);
             fileSystemWatcher = settings.SourceDirectory.WatchForChanges(
                 HandleCreated,

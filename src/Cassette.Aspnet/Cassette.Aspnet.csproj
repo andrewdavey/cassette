@@ -69,6 +69,7 @@
     <Compile Include="ICassetteRequestHandler.cs" />
     <Compile Include="IDiagnosticRequestHandler.cs" />
     <Compile Include="RawFileRequestRewriter.cs" />
+    <Compile Include="TrustLevel.cs" />
     <Compile Include="WebHost.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="IsolatedStorageContainer.cs" />

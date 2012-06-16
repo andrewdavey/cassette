@@ -19,6 +19,7 @@ namespace Cassette.Aspnet
             var configurationSection = GetConfigurationSection();
             settings.IsDebuggingEnabled = configurationSection.Debug.HasValue ? configurationSection.Debug.Value : IsAspNetDebuggingEnabled;
             settings.IsHtmlRewritingEnabled = configurationSection.RewriteHtml;
+            settings.IsFileSystemWatchingEnabled = TrustLevel.IsFullTrust();
             settings.AllowRemoteDiagnostics = configurationSection.AllowRemoteDiagnostics;
             settings.SourceDirectory = new FileSystemDirectory(AppDomainAppPath);
             settings.CacheDirectory = GetCacheDirectory(configurationSection);
