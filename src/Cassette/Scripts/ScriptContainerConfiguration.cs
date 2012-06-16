@@ -6,9 +6,9 @@ using Cassette.TinyIoC;
 namespace Cassette.Scripts
 {
     [ConfigurationOrder(10)]
-    class ScriptContainersConfiguration : ContainerConfiguration<ScriptBundle>
+    class ScriptContainerConfiguration : ContainerConfiguration<ScriptBundle>
     {
-        public ScriptContainersConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
+        public ScriptContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes) : base(getImplementationTypes)
         {
         }
 

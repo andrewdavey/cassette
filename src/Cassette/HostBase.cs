@@ -66,7 +66,7 @@ namespace Cassette
 
             var internalTypes = new[]
             {
-                typeof(ScriptContainersConfiguration),
+                typeof(ScriptContainerConfiguration),
                 typeof(StylesheetsContainerConfiguration),
                 typeof(HtmlTemplatesContainerConfiguration),
                 typeof(SettingsVersionAssigner)

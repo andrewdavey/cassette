@@ -207,7 +207,7 @@
     <Compile Include="Scripts\ScriptBundleSerializer.cs" />
     <Compile Include="Scripts\ScriptBundleSerializerBase.cs" />
     <Compile Include="Scripts\PageDataScriptBundle.cs" />
-    <Compile Include="Scripts\ScriptContainersConfiguration.cs" />
+    <Compile Include="Scripts\ScriptContainerConfiguration.cs" />
     <Compile Include="Scripts\ScriptBundleHtmlRenderer.cs" />
     <Compile Include="Scripts\ScriptBundleDeserializer.cs" />
     <Compile Include="ServicesConfiguration.cs" />
