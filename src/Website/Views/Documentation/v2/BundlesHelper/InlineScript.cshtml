@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Inline scripts";
+}
+
+<h1>Inline Scripts</h1>
+<p>Ad-hoc inline page scripts can be managed by using the <code>AddInlineScript</code> method.</p>
+<pre><code>@@{
+    var message = "Hello World!";
+    Bundles.AddInlineScript(
+      @@&lt;text&gt;
+        alert('@@message');
+      &lt;/text&gt;);
+}</code></pre>
+<p>This will add a <code>&lt;script&gt;</code> block to the page that displays a witty message to visitors.</p>

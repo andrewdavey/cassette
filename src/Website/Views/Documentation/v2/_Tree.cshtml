@@ -1,5 +1,5 @@
 ﻿<div class="tree">
-    <p>Documentation version: <a href="@Url.RouteUrl("Documentation", new{version="v1",path=""})">v1</a> &bull; <strong>v2</strong></p>
+    <p>Documentation version: <a href="@Url.RouteUrl("Documentation", new { version = "v1", path = "" })">v1</a> &bull; <strong>v2</strong></p>
     <ul>
         <li>
             @DocLink("", "Introduction")
@@ -21,8 +21,20 @@
                 <li>@DocLink("bundles-helper/reference", "Reference")</li>
                 <li>@DocLink("bundles-helper/render", "Render")</li>
                 <li>@DocLink("bundles-helper/page-locations", "Page locations")</li>
+                <li>@DocLink("bundles-helper/inline-script", "Inline scripts")</li>
+                <li>@DocLink("bundles-helper/page-data", "Page data scripts")</li>
             </ul>
         </li>
+        <li>@DocLink("asset-references", "Asset References")</li>
+        <li>
+            <span>Scripts</span>
+            <ul>
+                <li>@DocLink("scripts/minification", "Minification")</li>
+            </ul>
+        </li>
+        <li>@DocLink("plugins", "Plugins")</li>
+        <li>@DocLink("bundle-pipelines", "Bundle Pipelines")</li>
+        <li>@DocLink("web-config", "Web.config")</li>
     </ul>
 </div>
 @helper DocLink(string path, string text)

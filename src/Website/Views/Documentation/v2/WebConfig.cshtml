@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Web.config for Cassette";
+}
+
+<h1>Web.config</h1>
+
+<p>Cassette provides the following configuration section for use in your application's <code>web.config</code> file:</p>
+
+<pre><code>&lt;configuration&gt;
+    &lt;configSections&gt;
+        &lt;section name="cassette" type="Cassette.CassetteConfigurationSection, Cassette" /&gt;
+    &lt;/configSections&gt;
+
+    &lt;cassette
+        debug="true|false"
+        rewriteHtml="true|false"
+        allowRemoteDiagnostics="true|false"
+        cacheDirectory="directory-path" /&gt;
+        
+    ...
+&lt;/configuration&gt;</code></pre>
+
+<p>The entire configuration section is optional.</p>
+
+<h2>The <code>debug</code> property</h2>
+<p>When false, bundles are optimized (concatenated, minified, etc).</p>
+<p>When true, the original, un-optimized assets are used to make debugging easy.</p>
+<p>When missing, the value of <code>&lt;system.web&gt;/&lt;compilation debug="true|false"&gt;</code> is used.</p>
+
+<h2>The <code>rewriteHtml</code> property</h2>
+<p>When true (the default), Cassette will rewrite HTML page output to allow bundles to be referenced in the <code>&lt;head&gt;</code> even after it has been rendered.</p>
+
+<h2>The <code>allowRemoteDiagnostics</code> property</h2>
+<p>Defaults to false.</p>
+<p>When true, the <code>/cassette.axd</code> diagnostics page is accessible from clients other than the current localhost.</p>
+
+<h2>The <code>cacheDirectory</code> property</h2>
+<p>Configures where Cassette will cache optimized bundle content.</p>
+<p>When empty (the default) Isolated Storage is used. Otherwise, this should be a file system path. It can be relative to the web application's root directory.</p>
