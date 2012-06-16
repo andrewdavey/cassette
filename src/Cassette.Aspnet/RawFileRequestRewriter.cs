@@ -37,15 +37,52 @@ namespace Cassette.Aspnet
 
         bool TryGetFilePath(out string path)
         {
-            var match = Regex.Match(request.PathInfo, "/file/[^/]+/(.*)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(request.PathInfo, "/file/(.*)", RegexOptions.IgnoreCase);
             if (match.Success)
             {
-                path = "~/" + match.Groups[1].Value;
+                path = match.Groups[1].Value;
+                path = "~/" + RemoveHashFromPath(path);
                 return true;
             }
 
             path = null;
             return false;
+        }
+
+        string RemoveHashFromPath(string path)
+        {
+            // "example/image-hash.png" -> "example/image.png"
+            // "example/image-hash.png-foo" -> "example/image.png-foo"
+            // "example/image-hash" -> "example/image"
+
+            var periodIndex = path.LastIndexOf('.');
+            if (periodIndex >= 0)
+            {
+                var extension = path.Substring(periodIndex);
+                var name = path.Substring(0, periodIndex);
+                var hyphenIndex = name.LastIndexOf('-');
+                if (hyphenIndex >= 0)
+                {
+                    name = name.Substring(0, hyphenIndex);
+                    return name + extension;
+                }
+                else
+                {
+                    return path;
+                }
+            }
+            else
+            {
+                var hyphenIndex = path.LastIndexOf('-');
+                if (hyphenIndex >= 0)
+                {
+                    return path.Substring(0, hyphenIndex);
+                }
+                else
+                {
+                    return path;
+                }
+            }
         }
 
         void EnsureFileCanBeAccessed(string path)

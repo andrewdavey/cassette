@@ -37,9 +37,19 @@ namespace Cassette
                 throw new ArgumentException("Image filename must be application relative (starting with '~').");
             }
 
+            // "~\example\image.png" --> "/example/image-hash.png"
             var path = ConvertToForwardSlashes(filename).Substring(1);
-            var url = "file/" + hash + path;
-            
+            var index = path.LastIndexOf('.');
+            if (index >= 0)
+            {
+                path = path.Insert(index, "-" + hash);
+            }
+            else
+            {
+                path = path + "-" + hash;
+            }
+
+            var url = "file" + path;
             return urlModifier.Modify(url);
         }
 

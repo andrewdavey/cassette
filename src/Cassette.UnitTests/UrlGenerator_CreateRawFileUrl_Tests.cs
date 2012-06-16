@@ -10,14 +10,28 @@ namespace Cassette
         public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndHashAndPathWithoutTilde()
         {
             var url = UrlGenerator.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldEqual("file/hash/test.png");
+            url.ShouldEqual("file/test-hash.png");
         }
 
         [Fact]
         public void ConvertsToForwardSlashes()
         {
             var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("file/hash/test/foo.png");
+            url.ShouldEqual("file/test/foo-hash.png");
+        }
+
+        [Fact]
+        public void ToleratesFilenameWithoutExtension()
+        {
+            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo", "hash");
+            url.ShouldEqual("file/test/foo-hash");
+        }
+
+        [Fact]
+        public void InsertsHashBeforeLastPeriod()
+        {
+            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.bar.png", "hash");
+            url.ShouldEqual("file/test/foo.bar-hash.png");
         }
 
         [Fact]

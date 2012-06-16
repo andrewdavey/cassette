@@ -64,7 +64,7 @@ public class Configuration : IConfiguration<BundleCollection>
         [Fact]
         public void ImageFileIsCopiedToOutput()
         {
-            var imageOutputilename = Path.Combine(root, "output", "file", HashFileContent("test.png"), "test.png");
+            var imageOutputilename = Path.Combine(root, "output", "file", "test-" + HashFileContent("test.png") + ".png");
             File.Exists(imageOutputilename).ShouldBeTrue();
         }
 

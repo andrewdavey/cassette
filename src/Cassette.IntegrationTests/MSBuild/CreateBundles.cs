@@ -72,7 +72,7 @@ namespace Cassette.MSBuild
             var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
             var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
 
-            Regex.IsMatch(content, @"url\(file/[^/]+/test.png\)").ShouldBeTrue();
+            Regex.IsMatch(content, @"url\(file/test-.*?\.png\)").ShouldBeTrue();
             passThroughModifier.Verify();
         }
 

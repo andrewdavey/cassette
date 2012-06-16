@@ -34,6 +34,7 @@ namespace Cassette.MSBuild
             Log.LogMessage("Source directory = {0}", Source);
             Log.LogMessage("Bin directory = {0}", Bin);
             Log.LogMessage("Output directory = {0}", Output);
+            Log.LogMessage("Include other files = {0}", IncludeOtherFiles);
 
             // Execution will load assemblies. When running this task from a Visual Studio build, the DLLs would then be locked.
             // So we must run the command in a separate AppDomain.
