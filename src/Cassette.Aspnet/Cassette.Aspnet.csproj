@@ -128,7 +128,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\diagnostic-page.js" />
-    <EmbeddedResource Include="Resources\jquery-ui.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

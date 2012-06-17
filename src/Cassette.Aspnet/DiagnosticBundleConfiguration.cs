@@ -22,7 +22,6 @@ namespace Cassette.Aspnet
                 new BundleDescriptor { AssetFilenames = { "*" } }
                 );
             scriptBundle.Assets.Add(new ResourceAsset("Cassette.Aspnet.Resources.jquery.js", Assembly.GetExecutingAssembly()));
-            scriptBundle.Assets.Add(new ResourceAsset("Cassette.Aspnet.Resources.jquery-ui.js", Assembly.GetExecutingAssembly()));
             scriptBundle.Assets.Add(new ResourceAsset("Cassette.Aspnet.Resources.knockout.js", Assembly.GetExecutingAssembly()));
             scriptBundle.Assets.Add(new ResourceAsset("Cassette.Aspnet.Resources.diagnostic-page.js", Assembly.GetExecutingAssembly()));
             bundles.Add(scriptBundle);
