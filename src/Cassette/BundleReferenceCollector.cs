@@ -4,9 +4,6 @@ using Cassette.Utilities;
 #if NET35
 using Iesi.Collections.Generic;
 #endif
-#if !NET35
-
-#endif
 
 namespace Cassette
 {

@@ -4,9 +4,6 @@ using System.Web;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-#if !NET35
-
-#endif
 
 namespace Cassette.Views
 {

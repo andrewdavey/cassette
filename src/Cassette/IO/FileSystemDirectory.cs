@@ -16,6 +16,11 @@ namespace Cassette.IO
         readonly string fullSystemPath;
         FileSystemDirectory parent;
 
+        internal string FullSystemPath
+        {
+            get { return fullSystemPath; }
+        }
+
         public string FullPath
         {
             get

@@ -2,11 +2,6 @@
 
 namespace Cassette
 {
-    public interface IBundleCacheRebuilder
-    {
-        void RebuildCache();
-    }
-
     class BundleCacheRebuilder : IBundleCacheRebuilder
     {
         readonly BundleCollection bundles;

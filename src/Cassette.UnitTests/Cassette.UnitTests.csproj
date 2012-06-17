@@ -128,6 +128,7 @@
     <Compile Include="BundleCollection.AddUrl.cs" />
     <Compile Include="BundleCollection.AddPerIndividualFile.cs" />
     <Compile Include="CassetteSettings.cs" />
+    <Compile Include="DisposableLazy.cs" />
     <Compile Include="ExceptionCatchingBundleCollectionInitializer.cs" />
     <Compile Include="FileSearch.IsMatch.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />

@@ -113,5 +113,21 @@ namespace Cassette.Aspnet
                 Encoding.UTF8.GetString(outputStream.ToArray()).ShouldEqual("output");
             }
         }
+
+        [Fact]
+        public void GivenRequestWithMatchingETag_WhenProcessRequest_ThenReturn304NotModifiedResponse()
+        {
+            bundles.Add(new TestableBundle("~/test"));
+            var asset = new StubAsset("~/test/asset.js", hash: new byte[] { 1, 2, 3 });
+            bundles.First().Assets.Add(asset);
+
+            using (outputStream = new MemoryStream())
+            {
+                requestHeaders.Add("If-None-Match", "\"010203\"");
+                handler.ProcessRequest("~/test/asset.js");
+            }
+
+            response.VerifySet(r => r.StatusCode = 304);
+        }
     }
 }

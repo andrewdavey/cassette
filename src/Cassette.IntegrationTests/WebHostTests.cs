@@ -10,9 +10,6 @@ using Cassette.Stylesheets;
 using Cassette.Views;
 using Should;
 using Xunit;
-#if !NET35
-
-#endif
 
 namespace Cassette
 {

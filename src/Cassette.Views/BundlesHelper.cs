@@ -5,9 +5,6 @@ using System.Linq;
 using System.Web;
 using Cassette.IO;
 using Cassette.Utilities;
-#if !NET35
-
-#endif
 
 namespace Cassette.Views
 {

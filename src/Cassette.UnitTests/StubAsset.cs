@@ -10,9 +10,9 @@ namespace Cassette
         readonly byte[] hash;
         readonly string path;
 
-        public StubAsset(string fullPath = "~/asset.js", string content = "")
+        public StubAsset(string fullPath = "~/asset.js", string content = "", byte[] hash = null)
         {
-            hash = new byte[] {1};
+            this.hash = hash ?? new byte[] {1};
             CreateStream = () => content.AsStream();
             path = fullPath;
             ReferenceList = new List<AssetReference>();

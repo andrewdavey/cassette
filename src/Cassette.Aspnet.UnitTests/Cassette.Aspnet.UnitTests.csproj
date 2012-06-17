@@ -59,6 +59,7 @@
       <HintPath>..\packages\Should.1.1.12.0\lib\Should.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
@@ -76,11 +77,14 @@
     <Compile Include="AssetRequestHandler.cs" />
     <Compile Include="BundleRequestHandler.cs" />
     <Compile Include="CassetteHttpHandler.cs" />
+    <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="HttpTestHarness.cs" />
     <Compile Include="PlaceholderReplacingResponseFilter.cs" />
     <Compile Include="PlaceholderRewriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawFileRequestRewriter.cs" />
+    <Compile Include="StringBuilderTraceListener.cs" />
+    <Compile Include="WebHostSettingsConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette.Aspnet\Cassette.Aspnet.csproj">
