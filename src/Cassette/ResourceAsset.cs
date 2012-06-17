@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
+using Cassette.Caching;
 
-namespace Cassette.Aspnet.Jasmine
+namespace Cassette
 {
     /// <summary>
     /// Partial implementation of IAsset that reads from an assembly resource stream.
     /// </summary>
-    class ResourceAsset : IAsset
+    public class ResourceAsset : IAsset
     {
         readonly string resourceName;
         readonly Assembly assembly;
@@ -64,7 +65,21 @@ namespace Cassette.Aspnet.Jasmine
 
         public Stream OpenStream()
         {
-            return assembly.GetManifestResourceStream(resourceName);
+            var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream != null)
+            {
+                return stream;
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        "Resource {0} not found in assembly {1}.",
+                        resourceName, 
+                        assembly.FullName
+                    )
+                );
+            }
         }
 
         public Type AssetCacheValidatorType

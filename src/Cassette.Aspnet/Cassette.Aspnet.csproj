@@ -63,6 +63,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DiagnosticBundleConfiguration.cs" />
     <Compile Include="HandlerPathPrepender.cs" />
     <Compile Include="CassetteHttpHandler.cs" />
     <Compile Include="HttpContextLifetimeProvider.cs" />
@@ -117,10 +118,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\hud.htm" />
-    <None Include="Resources\knockout.js" />
+    <EmbeddedResource Include="Resources\knockout.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nuget-readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\jquery.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\diagnostic-page.js" />
+    <EmbeddedResource Include="Resources\jquery-ui.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

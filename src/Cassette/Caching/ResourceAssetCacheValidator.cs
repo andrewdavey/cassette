@@ -1,9 +1,8 @@
 using System;
-using Cassette.Caching;
 
-namespace Cassette.Aspnet.Jasmine
+namespace Cassette.Caching
 {
-    class ResourceAssetCacheValidator : IAssetCacheValidator
+    public class ResourceAssetCacheValidator : IAssetCacheValidator
     {
         public bool IsValid(string assetPath, DateTime asOfDateTime)
         {

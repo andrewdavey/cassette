@@ -65,8 +65,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ResourceAsset.cs" />
-    <Compile Include="ResourceAssetCacheValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="jasmine.css" />

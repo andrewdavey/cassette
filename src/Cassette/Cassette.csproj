@@ -86,6 +86,7 @@
     <Compile Include="Caching\IAssetCacheValidator.cs" />
     <Compile Include="Caching\IBundleCollectionCache.cs" />
     <Compile Include="Caching\Manifest.cs" />
+    <Compile Include="Caching\ResourceAssetCacheValidator.cs" />
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="DeserializedAsset.cs" />
     <Compile Include="IBundleDeserializer.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
+    <Compile Include="ResourceAsset.cs" />
     <Compile Include="RuntimeBundleCollectionInitializer.cs" />
     <Compile Include="BundleFactoryProvider.cs" />
     <Compile Include="BundleProcessing\AssignHash.cs" />

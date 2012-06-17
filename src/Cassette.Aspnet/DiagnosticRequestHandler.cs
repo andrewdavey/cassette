@@ -4,10 +4,10 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Routing;
-using System.Web.Script.Serialization;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.Views;
 
 namespace Cassette.Aspnet
 {
@@ -39,23 +39,17 @@ namespace Cassette.Aspnet
                 return;
             }
 
-            if (request.Url.Query == "?knockout.js")
-            {
-                response.ContentType = "application/json";
-                response.Write(Properties.Resources.knockout);
-                return;
-            }
-
             if (request.HttpMethod.Equals("post", StringComparison.OrdinalIgnoreCase))
             {
                 ProcessPost();
                 return;
             }
 
-            var html = Properties.Resources.hud;
-            var json = CreateJson();
-            html = html.Replace("$json$", json);
+            Bundles.AddPageData("data", PageData());
+            Bundles.Reference("~/Cassette.Aspnet.Resources");
 
+            var html = Properties.Resources.hud;
+            html = html.Replace("$scripts$", Bundles.RenderScripts().ToHtmlString());
             response.ContentType = "text/html";
             response.Write(html);
         }
@@ -73,7 +67,7 @@ namespace Cassette.Aspnet
             return request.IsLocal || settings.AllowRemoteDiagnostics;
         }
 
-        string CreateJson()
+        object PageData()
         {
             using (bundles.GetReadLock())
             {
@@ -96,8 +90,7 @@ namespace Cassette.Aspnet
                         settings.IsDebuggingEnabled
                     }
                 };
-                var json = new JavaScriptSerializer().Serialize(data);
-                return json;
+                return data;
             }
         }
 
