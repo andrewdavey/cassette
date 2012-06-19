@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Cassette.IO;
 using Cassette.Utilities;
 using dotless.Core;
@@ -27,7 +28,7 @@ namespace Cassette.Stylesheets
                 Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory, importedFilePaths))
             };
             var errorLogger = new ErrorLogger();
-            var engine = new LessEngine(parser, errorLogger, false);
+            var engine = new LessEngine(parser, errorLogger, false, false);
 
             string css;
             try
@@ -94,9 +95,20 @@ namespace Cassette.Stylesheets
                 Trace.Source.TraceInformation(message);
             }
 
+            public void Error(string message, params object[] args)
+            {
+                errors.Add(string.Format(message, args));
+                Trace.Source.TraceInformation(message, args);
+            }
+
             public void Info(string message)
             {
                 Trace.Source.TraceInformation(message);
+            }
+
+            public void Info(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
             }
 
             public void Debug(string message)
@@ -104,9 +116,19 @@ namespace Cassette.Stylesheets
                 Trace.Source.TraceInformation(message);
             }
 
+            public void Debug(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
+            }
+
             public void Warn(string message)
             {
                 Trace.Source.TraceInformation(message);
+            }
+
+            public void Warn(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
             }
         }
 
@@ -119,6 +141,20 @@ namespace Cassette.Stylesheets
             {
                 this.directory = directory;
                 this.importFilePaths = importFilePaths;
+            }
+
+            public byte[] GetBinaryFileContents(string fileName)
+            {
+                var file = directory.GetFile(fileName);
+                importFilePaths.Add(file.FullPath);
+                using (var buffer = new MemoryStream())
+                {
+                    using (var fileStream = file.OpenRead())
+                    {
+                        fileStream.CopyTo(buffer);
+                    }
+                    return buffer.ToArray();
+                }
             }
 
             public string GetFileContents(string fileName)
