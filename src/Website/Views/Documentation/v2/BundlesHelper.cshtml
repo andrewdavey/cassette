@@ -4,3 +4,30 @@
     The static helper class <code>Bundles</code> provides methods to reference bundles
     and render HTML.
 </p>
+
+<p>To use the <code>Bundles</code> helper in views/pages, you'll need the following in <code>Web.config</code>:</p>
+
+<pre><code>&lt;configuration&gt;
+    &lt;!-- For Razor views (cshtml/vbhtml) --&gt;
+    &lt;system.web.webPages.razor&gt;
+        &lt;pages&gt;
+            &lt;namespaces&gt;
+                &lt;add namespace="Cassette.Views"/&gt;
+            &lt;/namespaces&gt;
+        &lt;/pages&gt;
+    &lt;/system.web.webPages.razor&gt;
+
+    &lt;!-- For WebForm pages (aspx) --&gt;
+    &lt;system.web&gt;
+        &lt;pages&gt;
+            &lt;namespaces&gt;
+                &lt;add namespace="Cassette.Views" /&gt;
+            &lt;/namespaces&gt;
+        &lt;/pages&gt;
+    &lt;/system.web&gt;
+&lt;/configuration&gt;</code></pre>
+
+<p>
+    The <code>Cassette.Views</code> nuget package will add these for you. 
+    However, if using MVC areas, you will need to manually add the namespace in each per-area web.config file.
+</p>
