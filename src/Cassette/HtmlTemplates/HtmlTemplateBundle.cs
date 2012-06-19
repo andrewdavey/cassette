@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
@@ -33,11 +34,22 @@ namespace Cassette.HtmlTemplates
 
         internal string GetTemplateId(IAsset asset)
         {
-            var path = asset.Path
-                .Substring(Path.Length + 1)
-                .Replace(System.IO.Path.DirectorySeparatorChar, '-')
-                .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
-            return System.IO.Path.GetFileNameWithoutExtension(path);
+            string id;
+            if (asset.Path.StartsWith(Path, StringComparison.OrdinalIgnoreCase))
+            {
+                id = asset.Path
+                    .Substring(Path.Length + 1)
+                    .Replace(System.IO.Path.DirectorySeparatorChar, '-')
+                    .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
+            }
+            else
+            {
+                id = asset.Path
+                    .Substring(2) // Skips the "~/" prefix
+                    .Replace(System.IO.Path.DirectorySeparatorChar, '-')
+                    .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
+            }
+            return System.IO.Path.GetFileNameWithoutExtension(id);
         }
 
         protected override string UrlBundleTypeArgument
