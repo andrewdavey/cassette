@@ -77,6 +77,7 @@
     <Compile Include="AssetRequestHandler.cs" />
     <Compile Include="BundleRequestHandler.cs" />
     <Compile Include="CassetteHttpHandler.cs" />
+    <Compile Include="DiagnosticRequestHandler.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="HttpTestHarness.cs" />
     <Compile Include="PlaceholderReplacingResponseFilter.cs" />
@@ -94,6 +95,10 @@
     <ProjectReference Include="..\Cassette.UnitTests\Cassette.UnitTests.csproj">
       <Project>{F200A67A-D7B5-441B-AB36-69AA5C87577E}</Project>
       <Name>Cassette.UnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
+      <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
+      <Name>Cassette.Views</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
