@@ -16,6 +16,7 @@ namespace Cassette.Views
         readonly BundleCollection bundles;
         readonly CassetteSettings settings;
         readonly Mock<IFileAccessAuthorization> fileAccessAuthorization;
+        readonly Mock<IBundleCacheRebuilder> bundleCacheRebuilder;
 
         public Bundles_Test()
         {
@@ -24,7 +25,7 @@ namespace Cassette.Views
             settings = new CassetteSettings();
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
             fileAccessAuthorization = new Mock<IFileAccessAuthorization>();
-            var bundleCacheRebuilder = new Mock<IBundleCacheRebuilder>();
+            bundleCacheRebuilder = new Mock<IBundleCacheRebuilder>();
             Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object, bundleCacheRebuilder.Object);
         }
 
@@ -91,6 +92,34 @@ namespace Cassette.Views
         }
 
         [Fact]
+        public void AddInlineWithLambdaAndNoLocationCreatesBundleWithPageLocationNull()
+        {
+            Bundle bundle = null;
+            referenceBuilder.Setup(b => b.Reference(It.IsAny<Bundle>(), null))
+                            .Callback<Bundle, string>((b, s) => bundle = b);
+
+            Bundles.AddInlineScript(_ => "content");
+
+            bundle.ShouldBeType<InlineScriptBundle>();
+            bundle.Render().ShouldContain("content");
+            bundle.PageLocation.ShouldBeNull();
+        }
+
+        [Fact]
+        public void AddInlineWithStringAndNoLocationCreatesBundleWithPageLocationNull()
+        {
+            Bundle bundle = null;
+            referenceBuilder.Setup(b => b.Reference(It.IsAny<Bundle>(), null))
+                            .Callback<Bundle, string>((b, s) => bundle = b);
+
+            Bundles.AddInlineScript("content");
+
+            bundle.ShouldBeType<InlineScriptBundle>();
+            bundle.Render().ShouldContain("content");
+            bundle.PageLocation.ShouldBeNull();
+        }
+
+        [Fact]
         public void AddPageDataWithDataObjectAddsReferenceToPageDataScriptBundle()
         {
             Bundles.AddPageData("content", new { data = 1 }, "location");
@@ -117,6 +146,20 @@ namespace Cassette.Views
             Bundles.AddPageData("content", new { data = 1 }, "location", action);
 
             customizedBundle.ShouldNotBeNull().ShouldBeSameAs(bundle);
+        }
+
+        [Fact]
+        public void AddPageDataWithObjectAddsReference()
+        {
+            Bundles.AddPageData("content", new { test = "test" });
+            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is PageDataScriptBundle), null));
+        }
+
+        [Fact]
+        public void AddPageDataWithDictionaryAddsReference()
+        {
+            Bundles.AddPageData("content", new Dictionary<string, object>());
+            referenceBuilder.Verify(b => b.Reference(It.Is<Bundle>(bundle => bundle is PageDataScriptBundle), null));
         }
 
         [Fact]
@@ -286,6 +329,13 @@ namespace Cassette.Views
             var returnedUrls = Bundles.GetReferencedBundleUrls<TestableBundle>();
 
             returnedUrls.ShouldEqual(new[] { "/asset1", "/asset2" });
+        }
+
+        [Fact]
+        public void RebuildCacheCallsBundleCacheRebuilder()
+        {
+            Bundles.RebuidCache();
+            bundleCacheRebuilder.Verify(r => r.RebuildCache());
         }
     }
 }
