@@ -5,7 +5,8 @@ using System.Xml.Linq;
 
 namespace Cassette.Stylesheets
 {
-    internal class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
+#pragma warning disable 659
+    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
     {
         readonly string url;
         bool isDebuggingEnabled;
@@ -68,14 +69,13 @@ namespace Cassette.Stylesheets
             serializer.Serialize(this);
         }
 
-#pragma warning disable 659
         public override bool Equals(object obj)
-#pragma warning restore 659
         {
             var other = obj as ExternalStylesheetBundle;
             return base.Equals(obj)
                    && other != null
                    && other.url == url;
         }
+#pragma warning restore 659
     }
 }

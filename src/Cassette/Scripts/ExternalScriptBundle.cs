@@ -6,6 +6,7 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
+#pragma warning disable 659
     class ExternalScriptBundle : ScriptBundle, IExternalBundle, IBundleHtmlRenderer<ScriptBundle>
     {
         readonly string url;
@@ -127,9 +128,7 @@ namespace Cassette.Scripts
             serializer.Serialize(this);
         }
 
-#pragma warning disable 659
         public override bool Equals(object obj)
-#pragma warning restore 659
         {
             var other = obj as ExternalScriptBundle;
             return base.Equals(obj)
@@ -137,4 +136,5 @@ namespace Cassette.Scripts
                    && other.url == url;
         }
     }
+#pragma warning restore 659
 }
