@@ -45,13 +45,15 @@ namespace Cassette.Utilities
                     stack.Push(part);
                 }
             }
+
             if (isNetworkSharePath)
             {
                 return @"\\" + string.Join(@"\", stack.Reverse().ToArray());
             }
             else
             {
-                return string.Join("/", stack.Reverse().ToArray());
+                var returnPath = string.Join("/", stack.Reverse().ToArray());
+                return (path[0] == '/' ? "/" : "") + returnPath;
             }
         }
 

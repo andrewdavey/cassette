@@ -44,6 +44,12 @@ namespace Cassette.Utilities
         {
             PathUtilities.NormalizePath(@"\\mbp\Users").ShouldEqual(@"\\mbp\Users");
         }
+
+        [Fact]
+        public void PathStartingWithForwardSlashIsMaintained()
+        {
+            PathUtilities.NormalizePath("/test/foo").ShouldEqual("/test/foo");
+        }
     }
 
     public class PathUtilities_AppRelative_Tests
