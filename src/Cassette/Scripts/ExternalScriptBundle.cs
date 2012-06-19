@@ -126,5 +126,15 @@ namespace Cassette.Scripts
             var serializer = new ExternalScriptBundleSerializer(container);
             serializer.Serialize(this);
         }
+
+#pragma warning disable 659
+        public override bool Equals(object obj)
+#pragma warning restore 659
+        {
+            var other = obj as ExternalScriptBundle;
+            return base.Equals(obj)
+                   && other != null
+                   && other.url == url;
+        }
     }
 }

@@ -46,5 +46,13 @@ namespace Cassette.Stylesheets
             var bundle = new ExternalStylesheetBundle("http://test.com/asset.css", "test");
             bundle.ContainsPath("http://test.com/asset.css").ShouldBeTrue();
         }
+
+        [Fact]
+        public void GivenDifferentUrls_ThenExternalStylesheetBundlesNotEqual()
+        {
+            var b1 = new ExternalStylesheetBundle("http://test1.com/a", "a");
+            var b2 = new ExternalStylesheetBundle("http://test2.com/a", "a");
+            b1.Equals(b2).ShouldBeFalse();
+        }
     }
 }

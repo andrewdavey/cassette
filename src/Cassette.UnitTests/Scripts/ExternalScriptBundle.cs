@@ -126,5 +126,13 @@ document.write(unescape('%3Cscript src=""/"" type=""text/javascript""%3E%3C/scri
 }
 </script>");
         }
+
+        [Fact]
+        public void GivenDifferentUrls_ThenExternalScriptBundlesNotEqual()
+        {
+            var b1 = new ExternalScriptBundle("http://test1.com/a", "a");
+            var b2 = new ExternalScriptBundle("http://test2.com/a", "a");
+            b1.Equals(b2).ShouldBeFalse();
+        }
     }
 }

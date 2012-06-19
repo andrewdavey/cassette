@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Cassette.Stylesheets
 {
-    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
+    internal class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
     {
         readonly string url;
         bool isDebuggingEnabled;
@@ -17,7 +17,7 @@ namespace Cassette.Stylesheets
             this.url = url;
         }
 
-        public ExternalStylesheetBundle(string url, string applicationRelativePath) 
+        public ExternalStylesheetBundle(string url, string applicationRelativePath)
             : base(applicationRelativePath)
         {
             this.url = url;
@@ -59,13 +59,23 @@ namespace Cassette.Stylesheets
                 HtmlConstants.LinkHtml,
                 url,
                 HtmlAttributes.CombinedAttributes
-            );
+                );
         }
 
         internal override void SerializeInto(XContainer container)
         {
             var serializer = new ExternalStylesheetBundleSerializer(container);
             serializer.Serialize(this);
+        }
+
+#pragma warning disable 659
+        public override bool Equals(object obj)
+#pragma warning restore 659
+        {
+            var other = obj as ExternalStylesheetBundle;
+            return base.Equals(obj)
+                   && other != null
+                   && other.url == url;
         }
     }
 }
