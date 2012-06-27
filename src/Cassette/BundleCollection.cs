@@ -740,11 +740,31 @@ namespace Cassette
                 throw new InvalidOperationException("BuildReferences must be called once before IncludeReferencesAndSortBundles can be called.");
             }
 
-            var bundlesArray = bundlesToSort.ToArray();
-            var references = GetBundleReferencesWithImplicitOrderingIncluded(bundlesArray);
-            var all = GetAllRequiredBundles(bundlesArray);
-            var graph = BuildBundleGraph(references, all);
-            return graph.TopologicalSort();
+            var partitioned = PartitionByBaseType(bundlesToSort);
+            var sortedPartitions = partitioned.Select(bundlesOfSameType =>
+            {
+                var bundlesArray = bundlesOfSameType.ToArray();
+                var all = GetAllRequiredBundles(bundlesArray);
+                var graph = BuildBundleGraph(bundleImmediateReferences, all);
+                return graph.TopologicalSort();
+            });
+
+            return sortedPartitions.Aggregate(Enumerable.Empty<Bundle>(), (a, b) => a.Concat(b));
+        }
+
+        IEnumerable<IEnumerable<Bundle>> PartitionByBaseType(IEnumerable<Bundle> bundlesToSort)
+        {
+            return bundlesToSort.GroupBy(GetBundleBaseType);
+        }
+
+        Type GetBundleBaseType(Bundle bundle)
+        {
+            var type = bundle.GetType();
+            while (type.BaseType != typeof(Bundle))
+            {
+                type = type.BaseType;
+            }
+            return type;
         }
 
         IEnumerable<Bundle> GetAllRequiredBundles(IEnumerable<Bundle> bundlesArray)
@@ -768,36 +788,6 @@ namespace Cassette
                     return Enumerable.Empty<Bundle>();
                 }
             );
-        }
-
-        Dictionary<Bundle, HashedSet<Bundle>> GetBundleReferencesWithImplicitOrderingIncluded(IEnumerable<Bundle> initialBundles)
-        {
-            var roots = initialBundles.Where(m =>
-            {
-                HashedSet<Bundle> set;
-                if (bundleImmediateReferences.TryGetValue(m, out set)) return set.Count == 0;
-                return true;
-            }).ToList();
-
-            // Clone the original references dictionary, so we can add the extra
-            // implicit references based on array order.
-            var references = new Dictionary<Bundle, HashedSet<Bundle>>();
-            foreach (var reference in bundleImmediateReferences)
-            {
-                references[reference.Key] = new HashedSet<Bundle>(reference.Value);
-            }
-            for (var i = 1; i < roots.Count; i++)
-            {
-                var bundle = roots[i];
-                var previous = roots[i - 1];
-                HashedSet<Bundle> set;
-                if (!references.TryGetValue(bundle, out set))
-                {
-                    references[bundle] = set = new HashedSet<Bundle>();
-                }
-                set.Add(previous);
-            }
-            return references;
         }
 
         void AddReferencedBundlesToSet(Bundle referencer, ISet<Bundle> all)

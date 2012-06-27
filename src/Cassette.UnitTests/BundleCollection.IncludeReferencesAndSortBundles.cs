@@ -5,6 +5,7 @@ using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Stylesheets;
 
 namespace Cassette
 {
@@ -116,10 +117,10 @@ namespace Cassette
             var sorted = collection.IncludeReferencesAndSortBundles(ms).ToArray();
 
             sorted[0].ShouldBeSameAs(ms[0]);
-            sorted[1].ShouldBeSameAs(ms[2]);
-            sorted[2].ShouldBeSameAs(ms[3]);
-            sorted[3].ShouldBeSameAs(ms[4]);
-            sorted[4].ShouldBeSameAs(ms[1]);
+            sorted[1].ShouldBeSameAs(ms[3]);
+            sorted[2].ShouldBeSameAs(ms[4]);
+            sorted[3].ShouldBeSameAs(ms[1]);
+            sorted[4].ShouldBeSameAs(ms[2]);
         }
 
         [Fact]
@@ -136,6 +137,26 @@ namespace Cassette
             );
             exception.Message.ShouldContain("~/a");
             exception.Message.ShouldContain("~/b");
+        }
+
+        [Fact]
+        public void WhenSortDifferentTypesOfBundle_ThenSortsArePartitioned()
+        {
+            var bundleA = new ScriptBundle("~/a");
+            var bundleB = new StylesheetBundle("~/b");
+            var bundleC = new ScriptBundle("~/c");
+
+            var bundles = new Bundle[] { bundleA, bundleB, bundleC };
+            var collection = CreateBundleCollection(bundles);
+            collection.BuildReferences();
+            var sorted = collection.IncludeReferencesAndSortBundles(bundles);
+
+            sorted.ShouldEqual(new Bundle[]
+            {
+                bundleA,
+                bundleC,
+                bundleB
+            });
         }
 
         BundleCollection CreateBundleCollection(IEnumerable<Bundle> bundles)
