@@ -214,7 +214,7 @@ namespace Cassette
             Trace.Source.TraceInformation("Concatenated assets of {0}", path);
         }
 
-        string ConvertReferenceToAppRelative(string reference)
+        protected virtual string ConvertReferenceToAppRelative(string reference)
         {
             if (reference.IsUrl()) return reference;
 

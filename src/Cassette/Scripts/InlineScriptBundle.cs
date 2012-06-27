@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -60,6 +61,24 @@ namespace Cassette.Scripts
         public override bool Equals(object obj)
         {
             return ReferenceEquals(obj, this);
+        }
+
+        protected override string ConvertReferenceToAppRelative(string reference)
+        {
+            if (reference.IsUrl()) return reference;
+
+            if (reference.StartsWith("~"))
+            {
+                return PathUtilities.NormalizePath(reference);
+            }
+            else if (reference.StartsWith("/"))
+            {
+                return PathUtilities.NormalizePath("~" + reference);
+            }
+            else
+            {
+                return "~/" + reference;
+            }
         }
     }
 #pragma warning restore 659
