@@ -346,7 +346,7 @@ namespace Cassette.Views
             return Helper.FileUrl(applicationRelativeFilePath);
         }
 
-        public static void RebuidCache()
+        public static void RebuildCache()
         {
             Helper.RebuildBundleCache();
         }

@@ -334,7 +334,7 @@ namespace Cassette.Views
         [Fact]
         public void RebuildCacheCallsBundleCacheRebuilder()
         {
-            Bundles.RebuidCache();
+            Bundles.RebuildCache();
             bundleCacheRebuilder.Verify(r => r.RebuildCache());
         }
     }
