@@ -15,7 +15,7 @@ namespace Cassette.Stylesheets
         public StylesheetBundleFactory_Tests()
         {
             pipeline = Mock.Of<IBundlePipeline<StylesheetBundle>>();
-            factory = new StylesheetBundleFactory(pipeline);
+            factory = new StylesheetBundleFactory(() => pipeline);
         }
 
         [Fact]

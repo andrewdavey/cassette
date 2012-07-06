@@ -14,8 +14,8 @@ namespace Cassette.Aspnet.Jasmine
 
         public JasmineBundleConfiguration_WhenConfigure()
         {
-            var scriptBundleFactory = new ScriptBundleFactory(Mock.Of<IBundlePipeline<ScriptBundle>>());
-            var stylesheetBundleFactory = new StylesheetBundleFactory(Mock.Of<IBundlePipeline<StylesheetBundle>>());
+            var scriptBundleFactory = new ScriptBundleFactory(() => Mock.Of<IBundlePipeline<ScriptBundle>>());
+            var stylesheetBundleFactory = new StylesheetBundleFactory(() => Mock.Of<IBundlePipeline<StylesheetBundle>>());
             var configuration = new JasmineBundleConfiguration(scriptBundleFactory, stylesheetBundleFactory);
             var settings = new CassetteSettings();
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());

@@ -1,10 +1,12 @@
 using System;
 using System.IO;
 using Cassette.BundleProcessing;
+using Cassette.IO;
 using Cassette.TinyIoC;
 using Moq;
 using Should;
 using Xunit;
+using System.Linq;
 
 namespace Cassette.Scripts
 {
@@ -55,6 +57,15 @@ namespace Cassette.Scripts
         public void BundlePipelineIsScriptPipeline()
         {
             container.Resolve<IBundlePipeline<ScriptBundle>>().ShouldBeType<ScriptPipeline>();
+        }
+
+        [Fact]
+        public void CreatedBundlesMustHaveTheirOwnPipelines()
+        {
+            var factory = container.Resolve<IBundleFactory<ScriptBundle>>();
+            var a = factory.CreateBundle("~/1", Enumerable.Empty<IFile>(), new BundleDescriptor());
+            var b = factory.CreateBundle("~/2", Enumerable.Empty<IFile>(), new BundleDescriptor());
+            a.Pipeline.ShouldNotBeSameAs(b.Pipeline);
         }
     }
 

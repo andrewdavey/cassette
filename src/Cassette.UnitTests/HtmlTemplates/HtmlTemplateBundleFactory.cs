@@ -17,7 +17,7 @@ namespace Cassette.HtmlTemplates
         public HtmlTemplateBundleFactory_Tests()
         {
             pipeline = Mock.Of<IBundlePipeline<HtmlTemplateBundle>>();
-            factory = new HtmlTemplateBundleFactory(pipeline);
+            factory = new HtmlTemplateBundleFactory(() => pipeline);
         }
 
         void FilesExist(params string[] paths)

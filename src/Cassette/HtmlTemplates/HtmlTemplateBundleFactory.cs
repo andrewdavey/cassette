@@ -1,12 +1,13 @@
-﻿using Cassette.BundleProcessing;
+﻿using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
     class HtmlTemplateBundleFactory : BundleFactoryBase<HtmlTemplateBundle>
     {
-        readonly IBundlePipeline<HtmlTemplateBundle> bundlePipeline;
+        readonly Func<IBundlePipeline<HtmlTemplateBundle>> bundlePipeline;
 
-        public HtmlTemplateBundleFactory(IBundlePipeline<HtmlTemplateBundle> bundlePipeline)
+        public HtmlTemplateBundleFactory(Func<IBundlePipeline<HtmlTemplateBundle>> bundlePipeline)
         {
             this.bundlePipeline = bundlePipeline;
         }
@@ -15,7 +16,7 @@ namespace Cassette.HtmlTemplates
         {
             return new HtmlTemplateBundle(path)
             {
-                Pipeline = bundlePipeline
+                Pipeline = bundlePipeline()
             };
         }
     }

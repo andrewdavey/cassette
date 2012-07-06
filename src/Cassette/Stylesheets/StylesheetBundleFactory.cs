@@ -1,12 +1,13 @@
-﻿using Cassette.BundleProcessing;
+﻿using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
     class StylesheetBundleFactory : BundleFactoryBase<StylesheetBundle>
     {
-        readonly IBundlePipeline<StylesheetBundle> stylesheetPipeline;
+        readonly Func<IBundlePipeline<StylesheetBundle>> stylesheetPipeline;
 
-        public StylesheetBundleFactory(IBundlePipeline<StylesheetBundle> stylesheetPipeline)
+        public StylesheetBundleFactory(Func<IBundlePipeline<StylesheetBundle>> stylesheetPipeline)
         {
             this.stylesheetPipeline = stylesheetPipeline;
         }
@@ -17,14 +18,14 @@ namespace Cassette.Stylesheets
             {
                 return new ExternalStylesheetBundle(bundleDescriptor.ExternalUrl, path)
                 {
-                    Pipeline = stylesheetPipeline
+                    Pipeline = stylesheetPipeline()
                 };
             }
             else
             {
                 return new StylesheetBundle(path)
                 {
-                    Pipeline = stylesheetPipeline
+                    Pipeline = stylesheetPipeline()
                 };
             }
         }

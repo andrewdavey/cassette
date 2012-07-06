@@ -17,11 +17,11 @@ namespace Cassette
         {
             bundleFactoryProvider
                 .Setup(f => f.GetBundleFactory<ScriptBundle>())
-                .Returns(new ScriptBundleFactory(Mock.Of<IBundlePipeline<ScriptBundle>>()));
+                .Returns(new ScriptBundleFactory(() => Mock.Of<IBundlePipeline<ScriptBundle>>()));
 
             bundleFactoryProvider
                 .Setup(f => f.GetBundleFactory<StylesheetBundle>())
-                .Returns(new StylesheetBundleFactory(Mock.Of<IBundlePipeline<StylesheetBundle>>()));
+                .Returns(new StylesheetBundleFactory(() => Mock.Of<IBundlePipeline<StylesheetBundle>>()));
         }
 
         [Fact]

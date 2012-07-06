@@ -14,7 +14,7 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleReturnsScriptBundle()
         {
-            var factory = new ScriptBundleFactory(pipeline);
+            var factory = new ScriptBundleFactory(() => pipeline);
             var bundle = factory.CreateBundle(
                 "~/test",
                 Enumerable.Empty<IFile>(),
@@ -26,7 +26,7 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleAssignsScriptBundleDirectory()
         {
-            var factory = new ScriptBundleFactory(pipeline);
+            var factory = new ScriptBundleFactory(() => pipeline);
             var bundle = factory.CreateBundle(
                 "~/test",
                 Enumerable.Empty<IFile>(),
@@ -38,13 +38,13 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleWithUrlCreatesExternalScriptBundle()
         {
-            new ScriptBundleFactory(pipeline).CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
+            new ScriptBundleFactory(() => pipeline).CreateExternalBundle("http://test.com/api.js").ShouldBeType<ExternalScriptBundle>();
         }
 
         [Fact]
         public void GivenDescriptorIsFromFile_WhenCreateBundle_ThenBundleIsFromDescriptorFileEqualsTrue()
         {
-            var factory = new ScriptBundleFactory(pipeline);
+            var factory = new ScriptBundleFactory(() => pipeline);
             var file = new Mock<IFile>();
             file.SetupGet(f => f.FullPath).Returns("~/bundle.txt");
             var descriptor = new BundleDescriptor
@@ -63,7 +63,7 @@ namespace Cassette.Scripts
         [Fact]
         public void CreateBundleAssignsPipelineToBundleProcessor()
         {
-            var factory = new ScriptBundleFactory(pipeline);
+            var factory = new ScriptBundleFactory(() => pipeline);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
             bundle.Pipeline.ShouldBeSameAs(pipeline);
         }

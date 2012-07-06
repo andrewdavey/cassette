@@ -1,12 +1,13 @@
-﻿using Cassette.BundleProcessing;
+﻿using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
     class ScriptBundleFactory : BundleFactoryBase<ScriptBundle>
     {
-        readonly IBundlePipeline<ScriptBundle> scriptPipeline;
+        readonly Func<IBundlePipeline<ScriptBundle>> scriptPipeline;
 
-        public ScriptBundleFactory(IBundlePipeline<ScriptBundle> scriptPipeline)
+        public ScriptBundleFactory(Func<IBundlePipeline<ScriptBundle>> scriptPipeline)
         {
             this.scriptPipeline = scriptPipeline;
         }
@@ -21,14 +22,14 @@ namespace Cassette.Scripts
                     bundleDescriptor.FallbackCondition
                 )
                 {
-                    Pipeline = scriptPipeline
+                    Pipeline = scriptPipeline()
                 };
             }
             else
             {
                 return new ScriptBundle(path)
                 {
-                    Pipeline = scriptPipeline
+                    Pipeline = scriptPipeline()
                 };
             }
         }
