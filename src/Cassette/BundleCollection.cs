@@ -30,6 +30,8 @@ namespace Cassette
             this.bundleFactoryProvider = bundleFactoryProvider;
         }
 
+        public event EventHandler Changed = delegate { };
+
         /// <summary>
         /// An exception occuring during bundle collection initialization can be stored here.
         /// Then during GetReadLock it is thrown.
@@ -65,7 +67,14 @@ namespace Cassette
         public IDisposable GetWriteLock()
         {
             readerWriterLock.EnterWriteLock();
-            return new DelegatingDisposable(() => readerWriterLock.ExitWriteLock());
+            return new DelegatingDisposable(() =>
+            {
+                readerWriterLock.ExitWriteLock();
+                // Make the sweeping assumption that if someone asked for a write lock
+                // then they changed the collection in some way.
+                // In future we can look at actually checking for changes.
+                Changed(this, EventArgs.Empty);
+            });
         }
 
         public void Accept(IBundleVisitor bundleVisitor)

@@ -233,6 +233,7 @@
     <Compile Include="Utilities\PathUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BundleCollection.ChangedEvent.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
