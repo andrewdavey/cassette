@@ -1,4 +1,6 @@
-﻿using Should;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Should;
 using Xunit;
 
 namespace Cassette
@@ -20,6 +22,25 @@ namespace Cassette
             }
 
             changeEventRaised.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void ChangeEventArgsContainsReadOnlyCopyOfBundlesCollection()
+        {
+            IEnumerable<Bundle> readOnlyBundleCollection = null;
+            bundles.Changed += (sender, args) =>
+            {
+                readOnlyBundleCollection = args.Bundles;
+            };
+
+            var bundle = new TestableBundle("~");
+
+            using (bundles.GetWriteLock())
+            {
+                bundles.Add(bundle);
+            }
+
+            readOnlyBundleCollection.First().ShouldBeSameAs(bundle);
         }
     }
 }

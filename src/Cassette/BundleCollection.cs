@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -30,7 +31,7 @@ namespace Cassette
             this.bundleFactoryProvider = bundleFactoryProvider;
         }
 
-        public event EventHandler Changed = delegate { };
+        public event EventHandler<BundleCollectionChangedEventArgs> Changed = delegate { };
 
         /// <summary>
         /// An exception occuring during bundle collection initialization can be stored here.
@@ -73,7 +74,7 @@ namespace Cassette
                 // Make the sweeping assumption that if someone asked for a write lock
                 // then they changed the collection in some way.
                 // In future we can look at actually checking for changes.
-                Changed(this, EventArgs.Empty);
+                Changed(this, new BundleCollectionChangedEventArgs(new ReadOnlyCollection<Bundle>(bundles)));
             });
         }
 
