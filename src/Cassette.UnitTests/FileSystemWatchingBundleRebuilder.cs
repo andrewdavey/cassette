@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using Cassette.IO;
 using Moq;
-using Should;
 using Xunit;
 
 namespace Cassette
@@ -166,32 +165,6 @@ namespace Cassette
             DeleteFile("image.png");
 
             AssertBundleCollectionRebuilt();
-        }
-
-        [Fact]
-        public void GivenBundleCollectionThrowsException_WhenFileChanged_ThenExceptionIsSwallowedToAvoidKillingTheProcesses()
-        {
-            CreateFile("test.js");
-            var listener = new TestTraceListener();
-            Trace.Source.Switch = new SourceSwitch("Cassette") { Level = SourceLevels.All };
-            
-            try
-            {
-                Trace.Source.Listeners.Add(listener);
-                rebuilder.Start();
-
-                bundles.InitializationException = new Exception();
-                ChangeFile("test.js");
-
-                PauseForEvent();
-                Trace.Source.Flush();
-                listener.Flush();
-                listener.TraceDataObject.ShouldBeType<Exception>();
-            }
-            finally
-            {
-                Trace.Source.Listeners.Remove(listener);
-            }
         }
 
         [Fact]

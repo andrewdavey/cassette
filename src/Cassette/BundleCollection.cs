@@ -78,14 +78,6 @@ namespace Cassette
             });
         }
 
-        public void Accept(IBundleVisitor bundleVisitor)
-        {
-            foreach (var bundle in bundles)
-            {
-                bundle.Accept(bundleVisitor);
-            }
-        }
-
         /// <summary>
         /// Adds a <see cref="Bundle"/> to the collection.
         /// </summary>

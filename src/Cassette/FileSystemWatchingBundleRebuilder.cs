@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Cassette.IO;
@@ -20,6 +19,7 @@ namespace Cassette
         readonly HashedCompareSet<string> bundleDescriptorFilenames;
         IDisposable fileSystemWatcher;
         Timer rebuildDelayTimer;
+        IEnumerable<Bundle> readOnlyBundles;
 
         public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, IBundleCollectionInitializer initializer, IEnumerable<IFileSearch> fileSearches)
         {
@@ -29,6 +29,15 @@ namespace Cassette
             this.fileSearches = fileSearches;
 
             bundleDescriptorFilenames = GetBundleDescriptorFilenames();
+
+            bundles.Changed += HandleBundlesChanged;
+            // Initially use the bundles collection, but this will get updated in the Changed event handler.
+            readOnlyBundles = bundles;
+        }
+
+        void HandleBundlesChanged(object sender, BundleCollectionChangedEventArgs e)
+        {
+            readOnlyBundles = e.Bundles;
         }
 
         static HashedCompareSet<string> GetBundleDescriptorFilenames()
@@ -95,19 +104,7 @@ namespace Cassette
         {
             if (IsBundleDescriptorFile(path)) return true;
             if (IsCacheFile(path)) return false;
-            try
-            {
-                using (bundles.GetReadLock())
-                {
-                    return fileSearches.Any(fileSearch => fileSearch.IsMatch(path));
-                }
-            }
-            catch (Exception exception)
-            {
-                // Swallow the exception, otherwise it will bubble up unhandled and kill the process!
-                Trace.Source.TraceData(TraceEventType.Error, 0, exception);
-                return false;
-            }
+            return fileSearches.Any(fileSearch => fileSearch.IsMatch(path));
         }
 
         bool IsBundleDescriptorFile(string path)
@@ -120,27 +117,20 @@ namespace Cassette
         {
             if (IsBundleDescriptorFile(path)) return true;
             if (IsCacheFile(path)) return false;
-            try
-            {
-                using (bundles.GetReadLock())
-                {
-                    return AnyBundleContainsPath(path) ||
-                           RawFileReferenceFinder.RawFileReferenceExists(path, bundles);
-                }
-            }
-            catch (Exception exception)
-            {
-                // Swallow the exception, otherwise it will bubble up unhandled and kill the process!
-                Trace.Source.TraceData(TraceEventType.Error, 0, exception);
-                return false;
-            }
+            return AnyBundleContainsPath(path) ||
+                   RawFileReferenceExists(path);
         }
 
         bool AnyBundleContainsPath(string path)
         {
             var predicate = new BundleContainsPathPredicate(path) { AllowPartialAssetPaths = true };
-            bundles.Accept(predicate);
+            readOnlyBundles.Accept(predicate);
             return predicate.Result;
+        }
+
+        bool RawFileReferenceExists(string path)
+        {
+            return RawFileReferenceFinder.RawFileReferenceExists(path, readOnlyBundles);
         }
 
         bool IsCacheFile(string path)

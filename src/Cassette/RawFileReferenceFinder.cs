@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cassette
 {
     class RawFileReferenceFinder : IBundleVisitor
     {
-        public static bool RawFileReferenceExists(string filename, BundleCollection bundles)
+        public static bool RawFileReferenceExists(string filename, IEnumerable<Bundle> bundles)
         {
             var finder = new RawFileReferenceFinder(filename);
             bundles.Accept(finder);
