@@ -20,6 +20,10 @@ namespace Cassette
         IDisposable fileSystemWatcher;
         Timer rebuildDelayTimer;
         IEnumerable<Bundle> readOnlyBundles;
+        /// <summary>
+        /// This lock protects the readOnlyBundles field.
+        /// </summary>
+        readonly ReaderWriterLockSlim readOnlyBundlesLock = new ReaderWriterLockSlim();
 
         public FileSystemWatchingBundleRebuilder(CassetteSettings settings, BundleCollection bundles, IBundleCollectionInitializer initializer, IEnumerable<IFileSearch> fileSearches)
         {
@@ -30,14 +34,22 @@ namespace Cassette
 
             bundleDescriptorFilenames = GetBundleDescriptorFilenames();
 
-            bundles.Changed += HandleBundlesChanged;
             // Initially use the bundles collection, but this will get updated in the Changed event handler.
             readOnlyBundles = bundles;
+            bundles.Changed += HandleBundlesChanged;
         }
 
         void HandleBundlesChanged(object sender, BundleCollectionChangedEventArgs e)
         {
-            readOnlyBundles = e.Bundles;
+            readOnlyBundlesLock.EnterWriteLock();
+            try
+            {
+                readOnlyBundles = e.Bundles;
+            }
+            finally
+            {
+                readOnlyBundlesLock.ExitWriteLock();
+            }
         }
 
         static HashedCompareSet<string> GetBundleDescriptorFilenames()
@@ -123,14 +135,30 @@ namespace Cassette
 
         bool AnyBundleContainsPath(string path)
         {
-            var predicate = new BundleContainsPathPredicate(path) { AllowPartialAssetPaths = true };
-            readOnlyBundles.Accept(predicate);
-            return predicate.Result;
+            readOnlyBundlesLock.EnterReadLock();
+            try
+            {
+                var predicate = new BundleContainsPathPredicate(path) { AllowPartialAssetPaths = true };
+                readOnlyBundles.Accept(predicate);
+                return predicate.Result;
+            }
+            finally
+            {
+                readOnlyBundlesLock.ExitReadLock();
+            }
         }
 
         bool RawFileReferenceExists(string path)
         {
-            return RawFileReferenceFinder.RawFileReferenceExists(path, readOnlyBundles);
+            readOnlyBundlesLock.EnterReadLock();
+            try
+            {
+                return RawFileReferenceFinder.RawFileReferenceExists(path, readOnlyBundles);
+            }
+            finally
+            {
+                readOnlyBundlesLock.ExitReadLock();                
+            }
         }
 
         bool IsCacheFile(string path)
