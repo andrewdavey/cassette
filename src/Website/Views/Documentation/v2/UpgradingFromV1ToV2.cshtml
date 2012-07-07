@@ -29,6 +29,10 @@ public class CassetteConfiguration : IConfiguration&lt;BundleCollection&gt;
 }</code></pre>
     </li>
     <li>
+        If you want to configure <code>CassetteSettings</code> then create another class
+        that implements <code>IConfiguration&lt;CassetteSettings&gt;</code>.
+    </li>
+    <li>
         If using CoffeeScript, Less, Sass, etc, install the <a href="@Url.DocumentationUrl("plugins")">plug-ins</a> you require.
     </li>
     <li>
@@ -39,5 +43,12 @@ public class CassetteConfiguration : IConfiguration&lt;BundleCollection&gt;
 
 <h2>Other changes</h2>
 <p>The diagnostic page that used to be at <code>/_cassette</code> is now at <code>/cassette.axd</code>.</p>
+
+<p>
+    Cassette v2 uses SimpleJson instead of Newtonsoft.Json.
+    This affects the <code>Bundles.AddPageData</code> method.
+    The noteable difference is in JSON date formatting.
+    SimpleJson defaults to using ISO 8601 date format.
+</p>
 
 <p>If you run into problems upgrading, please ask for help in the <a href="http://groups.google.com/group/cassette">Cassette Google Group</a>.</p>
