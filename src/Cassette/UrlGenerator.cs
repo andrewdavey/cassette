@@ -6,10 +6,12 @@ namespace Cassette
     class UrlGenerator : IUrlGenerator
     {
         readonly IUrlModifier urlModifier;
+        private readonly IApplicationRootPrepender applicationRootPrepender;
 
-        public UrlGenerator(IUrlModifier urlModifier)
+        public UrlGenerator(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
         {
             this.urlModifier = urlModifier;
+            this.applicationRootPrepender = applicationRootPrepender;
         }
 
         public string CreateBundleUrl(Bundle bundle)
@@ -56,7 +58,7 @@ namespace Cassette
         public string CreateAbsolutePathUrl(string applicationRelativePath)
         {
             var url = applicationRelativePath.TrimStart('~', '/');
-            return urlModifier.Modify(url);
+            return applicationRootPrepender.Modify(url);
         }
 
         string ConvertToForwardSlashes(string path)

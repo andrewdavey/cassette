@@ -14,7 +14,7 @@ namespace Cassette
         [Fact]
         public void ItCallsUrlModifier()
         {
-            UrlModifier.Setup(m => m.Modify("test.png")).Returns("/app/test.png");
+            ApplicationRootPrepender.Setup(m => m.Modify("test.png")).Returns("/app/test.png");
             UrlGenerator.CreateAbsolutePathUrl("~/test.png").ShouldEqual("/app/test.png");
         }
     }

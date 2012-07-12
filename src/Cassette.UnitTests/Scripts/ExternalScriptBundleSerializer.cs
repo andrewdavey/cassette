@@ -11,10 +11,11 @@ namespace Cassette.Scripts
 
         public ExternalScriptBundleSerializer_Tests()
         {
+            var prepender = new VirtualDirectoryPrepender("/");
             bundle = new ExternalScriptBundle("http://example.com/", "~", "condition")
             {
                 Hash = new byte[0],
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", new VirtualDirectoryPrepender("/"))
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", prepender, prepender)
             };
 
             SerializeToElement();
@@ -35,10 +36,11 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenManifestFallbackConditionIsNullThenElementHasNoFallbackConditionAttribute()
         {
+            var urlModifier = new VirtualDirectoryPrepender("/");
             bundle = new ExternalScriptBundle("http://example.com/")
             {
                 Hash = new byte[0],
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", new VirtualDirectoryPrepender("/"))
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", urlModifier, urlModifier)
             };
             SerializeToElement();
             element.Attribute("FallbackCondition").ShouldBeNull();

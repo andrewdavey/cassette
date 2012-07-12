@@ -11,12 +11,14 @@ namespace Cassette
         where T : Bundle
     {
         readonly IUrlModifier urlModifier;
+        private readonly IApplicationRootPrepender applicationRootPrepender;
         IDirectory directory;
         XElement element;
 
-        protected BundleDeserializer(IUrlModifier urlModifier)
+        protected BundleDeserializer(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
         {
             this.urlModifier = urlModifier;
+            this.applicationRootPrepender = applicationRootPrepender;
         }
 
         protected abstract T CreateBundle(XElement element);
@@ -86,7 +88,7 @@ namespace Cassette
             var assets = assetElements.Select(e => new AssetDeserializer().Deserialize(e)).ToArray();
             if (assets.Length == 0) return;
             var contentFile = directory.GetFile(bundle.CacheFilename);
-            bundle.Assets.Add(new CachedBundleContent(contentFile, assets, urlModifier));
+            bundle.Assets.Add(new CachedBundleContent(contentFile, assets, urlModifier, applicationRootPrepender));
         }
 
         void AddReferences(Bundle bundle)
@@ -139,7 +141,7 @@ namespace Cassette
 
         protected ConstantHtmlRenderer<TBundle> CreateHtmlRenderer<TBundle>() where TBundle : Bundle
         {
-            return new ConstantHtmlRenderer<TBundle>(GetHtml(), urlModifier);
+            return new ConstantHtmlRenderer<TBundle>(GetHtml(), urlModifier, applicationRootPrepender);
         }
     }
 }

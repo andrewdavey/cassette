@@ -22,6 +22,7 @@ namespace Cassette.Stylesheets
             container.Register<IStylesheetMinifier, MicrosoftStylesheetMinifier>();
             container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
+            container.Register(typeof(IApplicationRootPrepender), Mock.Of<IApplicationRootPrepender>());
 
             configuration = new StylesheetsContainerConfiguration(type => new Type[0]);
             configuration.Configure(container);

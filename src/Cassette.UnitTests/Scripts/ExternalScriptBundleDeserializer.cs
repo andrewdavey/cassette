@@ -25,7 +25,7 @@ namespace Cassette.Scripts
                 { "~/script/010203.js", "content" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
-            reader = new ExternalScriptBundleDeserializer(urlModifier);
+            reader = new ExternalScriptBundleDeserializer(urlModifier, urlModifier);
             DeserializeToBundle();
         }
 

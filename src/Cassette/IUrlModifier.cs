@@ -12,4 +12,7 @@
         /// <returns>The modified URL.</returns>
         string Modify(string url);
     }
+
+    public interface IApplicationRootPrepender : IUrlModifier
+    {}
 }

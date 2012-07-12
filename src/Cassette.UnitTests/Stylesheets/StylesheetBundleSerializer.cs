@@ -12,12 +12,13 @@ namespace Cassette.Stylesheets
 
         public StylesheetBundleSerializer_Tests()
         {
+            var prepender = new VirtualDirectoryPrepender("/");
             bundle = new StylesheetBundle("~")
             {
                 Hash = new byte[0],
                 Media = "MEDIA",
                 Condition = "CONDITION",
-                Renderer = new ConstantHtmlRenderer<StylesheetBundle>("", new VirtualDirectoryPrepender("/"))
+                Renderer = new ConstantHtmlRenderer<StylesheetBundle>("", prepender, prepender)
             };
 
             WriteToElement();

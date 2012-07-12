@@ -96,6 +96,22 @@ namespace Cassette
         }
 #endif
 
+        [Fact]
+        public void DynamicallyGeneratedAssetInStyleSheetDoesNotGetRewritten_Refs234()
+        {
+            using (var host = new TestableWebHost("assets", () => httpContext))
+            {
+                host.AddBundleConfiguration(new BundleConfiguration(bundles =>
+                    bundles.AddPerSubDirectory<StylesheetBundle>("styles")
+                ));
+                host.Initialize();
+
+                var urls = GetPageHtmlResourceUrls(host, "styles/bundle-c");
+
+                Download(host, urls[0]).ShouldEqual("a{background:url(/styles/bundle-c/../Dynamically/Generated/Asset.gif)}");
+            }
+        }
+
         string[] GetPageHtmlResourceUrls(WebHost host, params string[] references)
         {
             using (var http = new HttpTestHarness(host))

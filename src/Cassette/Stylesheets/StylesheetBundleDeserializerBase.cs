@@ -3,8 +3,8 @@ namespace Cassette.Stylesheets
     abstract class StylesheetBundleDeserializerBase<T> : BundleDeserializer<T>
         where T : StylesheetBundle
     {
-        protected StylesheetBundleDeserializerBase(IUrlModifier urlModifier) 
-            : base(urlModifier)
+        protected StylesheetBundleDeserializerBase(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
+            : base(urlModifier, applicationRootPrepender)
         {
         }
 

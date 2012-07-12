@@ -4,8 +4,8 @@ namespace Cassette.HtmlTemplates
 {
     class HtmlTemplateBundleDeserializer : BundleDeserializer<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundleDeserializer(IUrlModifier urlModifier)
-            : base(urlModifier)
+        public HtmlTemplateBundleDeserializer(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
+            : base(urlModifier, applicationRootPrepender)
         {
         }
 

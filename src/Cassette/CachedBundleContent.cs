@@ -13,9 +13,9 @@ namespace Cassette
         readonly byte[] content;
         readonly IEnumerable<IAsset> originalAssets;
 
-        public CachedBundleContent(IFile file, IEnumerable<IAsset> originalAssets, IUrlModifier urlModifier)
+        public CachedBundleContent(IFile file, IEnumerable<IAsset> originalAssets, IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
         {
-            content = TransformUrls(file, urlModifier);
+            content = TransformUrls(file, urlModifier, applicationRootPrepender);
             this.originalAssets = originalAssets.ToArray();
         }
 
@@ -24,7 +24,7 @@ namespace Cassette
             get { return originalAssets; }
         }
 
-        byte[] TransformUrls(IFile file, IUrlModifier urlModifier)
+        byte[] TransformUrls(IFile file, IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
         {
             using (var stream = file.OpenRead())
             using (var reader = new StreamReader(stream))
@@ -34,6 +34,11 @@ namespace Cassette
                     input,
                     "<CASSETTE_URL_ROOT>(.*?)</CASSETTE_URL_ROOT>",
                     match => urlModifier.Modify(match.Groups[1].Value)
+                );
+                output = Regex.Replace(
+                    output,
+                    "<CASSETTE_APPLICATION_ROOT>(.*?)</CASSETTE_APPLICATION_ROOT>",
+                    match => applicationRootPrepender.Modify(match.Groups[1].Value)
                 );
                 return Encoding.UTF8.GetBytes(output);
             }
