@@ -331,7 +331,11 @@ namespace Cassette
 
         public virtual void Dispose()
         {
-            container.Dispose();
+            var local = container;
+            if (local != null) 
+            {
+                local.Dispose();
+            }
         }
     }
 }
