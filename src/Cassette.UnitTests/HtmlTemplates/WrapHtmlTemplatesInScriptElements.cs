@@ -16,7 +16,7 @@ namespace Cassette.HtmlTemplates
             bundle = new HtmlTemplateBundle("~/test");
             
             asset = new Mock<IAsset>();
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.htm");
+            asset.Setup(a => a.Path).Returns("~/test/asset.htm");
             bundle.Assets.Add(asset.Object);
         }
 
@@ -51,7 +51,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void GivenAssetInSubDirectory_WhenTransform_ThenScriptIdHasSlashesReplacedWithDashes()
         {
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/sub/asset.htm");
+            asset.Setup(a => a.Path).Returns("~/test/sub/asset.htm");
 
             var html = TransformToHtml();
 

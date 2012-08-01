@@ -1,6 +1,4 @@
-﻿using Cassette.Configuration;
-
-namespace Cassette.BundleProcessing
+﻿namespace Cassette.BundleProcessing
 {
     public class MinifyAssets : IBundleProcessor<Bundle>
     {
@@ -11,7 +9,7 @@ namespace Cassette.BundleProcessing
 
         readonly IAssetTransformer minifier;
 
-        public void Process(Bundle bundle, CassetteSettings settings)
+        public void Process(Bundle bundle)
         {
             foreach (var asset in bundle.Assets)
             {

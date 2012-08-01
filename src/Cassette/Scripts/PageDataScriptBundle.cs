@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>;
 
 namespace Cassette.Scripts
@@ -42,7 +41,8 @@ namespace Cassette.Scripts
         {
             foreach (var pair in dictionary)
             {
-                builder.AppendFormat("d.{0}={1};", pair.Key, JsonConvert.SerializeObject(pair.Value)).AppendLine();
+                var value = SimpleJson.SerializeObject(pair.Value);
+                builder.AppendFormat("d.{0}={1};", pair.Key, value).AppendLine();
             }
         }
     }

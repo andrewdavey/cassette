@@ -1,36 +1,26 @@
-﻿using System.Collections.Generic;
-using Cassette.BundleProcessing;
-using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
+using Cassette.TinyIoC;
 
 namespace Cassette.Stylesheets
 {
-    public class StylesheetPipeline : MutablePipeline<StylesheetBundle>
+    public class StylesheetPipeline : BundlePipeline<StylesheetBundle>
     {
-        public StylesheetPipeline()
+        public StylesheetPipeline(TinyIoCContainer container, CassetteSettings settings) : base(container)
         {
-            StylesheetMinifier = new MicrosoftStylesheetMinifier();
-        }
-
-        public IAssetTransformer StylesheetMinifier { get; set; }
-       
-        // TODO: Delete this property
-        public bool ConvertImageUrlsToDataUris { get; set; }
-
-        protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, CassetteSettings settings)
-        {
-            yield return new AssignStylesheetRenderer();
-            yield return new ParseCssReferences();
-            if (ConvertImageUrlsToDataUris)
+            AddRange(new IBundleProcessor<StylesheetBundle>[]
             {
-                yield return new ConvertImageUrlsToDataUris();
-            }
-            yield return new ExpandCssUrls();
-            yield return new SortAssetsByDependency();
-            yield return new AssignHash();
+                container.Resolve<AssignStylesheetRenderer>(),
+                new ParseCssReferences(), 
+                container.Resolve<ExpandCssUrls>(),
+                new SortAssetsByDependency(),
+                new AssignHash()
+            });
+
             if (!settings.IsDebuggingEnabled)
             {
-                yield return new ConcatenateAssets();
-                yield return new MinifyAssets(StylesheetMinifier);
+                Add(container.Resolve<ConcatenateAssets>());
+                var minifier = container.Resolve<IStylesheetMinifier>();
+                Add(new MinifyAssets(minifier));
             }
         }
     }

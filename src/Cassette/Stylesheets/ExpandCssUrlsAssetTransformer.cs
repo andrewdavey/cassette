@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -41,13 +40,13 @@ namespace Cassette.Stylesheets
                 {
                     var matchedUrlGroup = match.Groups["url"];
                     var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory);
-                    if (ExpandUrl(builder, matchedUrlGroup, relativeFilename))
+                    if (ReplaceUrlWithCassetteRawFileUrl(builder, matchedUrlGroup, relativeFilename))
                     {
                         asset.AddRawFileReference(relativeFilename);
                     }
                     else
                     {
-                        Trace.Source.TraceEvent(TraceEventType.Warning, 0, "The file {0}, referenced by {1}, does not exist.", relativeFilename, asset.SourceFile.FullPath);
+                        ReplaceUrlWithAbsoluteUrl(builder, matchedUrlGroup, currentDirectory);
                     }
                 }
                 return builder.ToString().AsStream();
@@ -64,7 +63,8 @@ namespace Cassette.Stylesheets
 
         string GetCurrentDirectory(IAsset asset)
         {
-            return asset.SourceFile.Directory.FullPath;
+            var file = sourceDirectory.GetFile(asset.Path);
+            return file.Directory.FullPath;
         }
 
         /// <remarks>
@@ -86,17 +86,17 @@ namespace Cassette.Stylesheets
             return !AbsoluteUrlRegex.IsMatch(match.Groups["url"].Value);
         }
 
-        bool ExpandUrl(StringBuilder builder, Group matchedUrlGroup, string relativeFilename)
+        bool ReplaceUrlWithCassetteRawFileUrl(StringBuilder builder, Group matchedUrlGroup, string filename)
         {
-            relativeFilename = RemoveFragment(relativeFilename);
-            var file = sourceDirectory.GetFile(relativeFilename.TrimStart('~', '/'));
+            filename = RemoveFragment(filename);
+            var file = sourceDirectory.GetFile(filename);
             if (!file.Exists)
             {
                 return false;
             }
 
             var hash = HashFileContents(file);
-            var absoluteUrl = urlGenerator.CreateRawFileUrl(relativeFilename, hash);
+            var absoluteUrl = urlGenerator.CreateRawFileUrl(filename, hash);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
             return true;
@@ -126,6 +126,18 @@ namespace Cassette.Stylesheets
             }
             return PathUtilities.NormalizePath(PathUtilities.CombineWithForwardSlashes(currentDirectory, originalUrl));
         }
+
+        void ReplaceUrlWithAbsoluteUrl(StringBuilder builder, Group matchedUrlGroup, string currentDirectory)
+        {
+            var url = matchedUrlGroup.Value;
+
+            // URLs that start with a "/" are assumed to be rooted, not relative to the virtual directory.
+            // So leave them as they are.
+            if (url.StartsWith("/")) return;
+
+            var absoluteUrl = urlGenerator.CreateAbsolutePathUrl(currentDirectory + "/" + url);
+            builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
+            builder.Insert(matchedUrlGroup.Index, absoluteUrl);
+        }
     }
 }
-

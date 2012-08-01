@@ -1,6 +1,7 @@
 ﻿using System.Linq;
-using Cassette.Configuration;
+using Cassette.BundleProcessing;
 using Cassette.IO;
+using Moq;
 using Should;
 using Xunit;
 
@@ -9,12 +10,12 @@ namespace Cassette.Stylesheets
     public class StylesheetBundleFactory_Tests
     {
         readonly StylesheetBundleFactory factory;
-        readonly CassetteSettings settings;
+        readonly IBundlePipeline<StylesheetBundle> pipeline;
 
         public StylesheetBundleFactory_Tests()
         {
-            settings = new CassetteSettings("");
-            factory = new StylesheetBundleFactory(settings);
+            pipeline = Mock.Of<IBundlePipeline<StylesheetBundle>>();
+            factory = new StylesheetBundleFactory(() => pipeline);
         }
 
         [Fact]
@@ -38,10 +39,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CreateBundleAssignsSettingsDefaultProcessor()
         {
-            var processor = new StylesheetPipeline();
-            settings.SetDefaultBundleProcessor(processor);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
-            bundle.Processor.ShouldBeSameAs(processor);
+            bundle.Pipeline.ShouldBeSameAs(pipeline);
         }
     }
 }

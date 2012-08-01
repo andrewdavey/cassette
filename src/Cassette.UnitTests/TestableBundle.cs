@@ -1,7 +1,4 @@
-﻿using Cassette.Configuration;
-using Cassette.Manifests;
-
-namespace Cassette
+﻿namespace Cassette
 {
     // Subclass so we can test the non-abstract implementation.
     public class TestableBundle : Bundle
@@ -32,23 +29,14 @@ namespace Cassette
             WasDisposed = true;
         }
 
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
-        {
-            var builder = new BundleManifestBuilder<TestableBundle, TestableBundleManifest> { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
-        }
-
         protected override string UrlBundleTypeArgument
         {
-            get { return "testablebundle"; }
+            get { return "testable"; }
         }
 
-        class TestableBundleManifest : BundleManifest
+        internal override void SerializeInto(System.Xml.Linq.XContainer container)
         {
-            protected override Bundle CreateBundleCore(CassetteSettings settings)
-            {
-                return new TestableBundle(Path) { Hash = Hash };
-            }
+            throw new System.NotImplementedException();
         }
     }
 }

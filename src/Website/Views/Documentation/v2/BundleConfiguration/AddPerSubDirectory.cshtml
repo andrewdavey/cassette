@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Cassette | Add Per Sub-Directory";
+    ViewBag.Description = "How to add bundles quickly when you've got lots of directories.";
+}
+
+<h1>Add Per Sub-Directory</h1>
+
+<p>In a large application it's good to separate related assets into directories. Each directory can then be a Cassette bundle.</p>
+
+<p>Here's an example directory structure:</p>
+
+<pre>Scripts/
+- Dashboard/
+  - header.js
+  - popup.js
+- Widgets/
+  - datepicker.js
+  - autocomplete.js
+- jquery.js
+- underscore.js</pre>
+
+<p>We can turn this into three bundles using the <code>AddPerSubDirectory</code> method.</p>
+
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles)
+    {
+        bundles.AddPerSubDirectory&lt;<code class="code-type">ScriptBundle</code>&gt;(<span class="string">"Scripts"</span>);
+    }
+}</code></pre>
+
+<p>A bundle is added for each immediate sub-directory of the given path.</p>
+
+<p>Also, a bundle is created for just top-level assets of the path. This is useful because many third-party nuget packages
+drop their scripts into ~/Scripts. So it's sensible to move your own scripts into sub-directories.</p>

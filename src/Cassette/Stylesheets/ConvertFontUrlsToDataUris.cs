@@ -3,16 +3,22 @@ using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
-    public class ConvertFontUrlsToDataUris : AddTransformerToAssets
+    public class ConvertFontUrlsToDataUris : AddTransformerToAssets<StylesheetBundle>
     {
-        public ConvertFontUrlsToDataUris()
-            : base(new CssFontToDataUriTransformer(anyUrl => true))
+        public delegate ConvertFontUrlsToDataUris Factory(Func<string, bool> shouldEmbedUrl);
+
+        readonly Func<string, bool> shouldEmbedUrl;
+        readonly CassetteSettings settings;
+
+        public ConvertFontUrlsToDataUris(Func<string, bool> shouldEmbedUrl, CassetteSettings settings)
         {
+            this.shouldEmbedUrl = shouldEmbedUrl;
+            this.settings = settings;
         }
 
-        public ConvertFontUrlsToDataUris(Func<string, bool> shouldEmbedUrl)
-            : base(new CssFontToDataUriTransformer(shouldEmbedUrl))
+        protected override IAssetTransformer CreateAssetTransformer(StylesheetBundle bundle)
         {
+            return new CssFontToDataUriTransformer(shouldEmbedUrl, settings.SourceDirectory);
         }
     }
 }

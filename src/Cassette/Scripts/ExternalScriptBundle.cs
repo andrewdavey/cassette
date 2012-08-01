@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Cassette.Configuration;
-using Cassette.Manifests;
-using Cassette.Scripts.Manifests;
+using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
+#pragma warning disable 659
     class ExternalScriptBundle : ScriptBundle, IExternalBundle, IBundleHtmlRenderer<ScriptBundle>
     {
         readonly string url;
         readonly string fallbackCondition;
         bool isDebuggingEnabled;
+        IBundleHtmlRenderer<ScriptBundle> fallbackRenderer;
 
         public ExternalScriptBundle(string url)
             : base(url)
@@ -40,12 +40,10 @@ namespace Cassette.Scripts
             get { return fallbackCondition; }
         }
 
-        internal IBundleHtmlRenderer<ScriptBundle> FallbackRenderer { get; set; } 
-
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            FallbackRenderer = Renderer;
+            fallbackRenderer = Renderer;
             isDebuggingEnabled = settings.IsDebuggingEnabled;
             Renderer = this;
         }
@@ -53,12 +51,6 @@ namespace Cassette.Scripts
         internal override bool ContainsPath(string pathToFind)
         {
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
-        }
-
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
-        {
-            var builder = new ExternalScriptBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
         }
 
         public string ExternalUrl
@@ -70,7 +62,7 @@ namespace Cassette.Scripts
         {
             if (isDebuggingEnabled && Assets.Any())
             {
-                return FallbackRenderer.Render(this);
+                return fallbackRenderer.Render(this);
             }
 
             var conditionalRenderer = new ConditionalRenderer();
@@ -110,7 +102,7 @@ namespace Cassette.Scripts
 
         string CreateFallbackScripts()
         {
-            var scripts = FallbackRenderer.Render(this);
+            var scripts = fallbackRenderer.Render(this);
             return ConvertToDocumentWriteCalls(scripts);
         }
 
@@ -129,5 +121,20 @@ namespace Cassette.Scripts
         {
             return script.Replace("<", "%3C").Replace(">", "%3E");
         }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new ExternalScriptBundleSerializer(container);
+            serializer.Serialize(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ExternalScriptBundle;
+            return base.Equals(obj)
+                   && other != null
+                   && other.url == url;
+        }
     }
+#pragma warning restore 659
 }

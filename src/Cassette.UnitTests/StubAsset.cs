@@ -1,84 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
 {
-    class StubAsset : IAsset
+    public class StubAsset : AssetBase
     {
-        public StubAsset(string fullPath = "~/asset.js", string content = "")
+        readonly byte[] hash;
+        readonly string path;
+
+        public StubAsset(string fullPath = "~/asset.js", string content = "", byte[] hash = null)
         {
-            Hash = new byte[] {1};
+            this.hash = hash ?? new byte[] {1};
             CreateStream = () => content.AsStream();
-            SourceFile = new StubFile { FullPath = fullPath };
-            References = new List<AssetReference>();
+            path = fullPath;
+            ReferenceList = new List<AssetReference>();
         }
 
         public Func<Stream> CreateStream { get; set; }
  
-        public byte[] Hash { get; set; }
-
-        public IFile SourceFile { get; set; }
-
-        public List<AssetReference> References { get; set; }
-
-        IEnumerable<AssetReference> IAsset.References
+        public override byte[] Hash
         {
-            get { return References; }
+            get { return hash; }
         }
 
-        public void Accept(IBundleVisitor visitor)
+        public override string Path
+        {
+            get { return path; }
+        }
+
+        public List<AssetReference> ReferenceList { get; set; }
+
+        public override IEnumerable<AssetReference> References
+        {
+            get { return ReferenceList; }
+        }
+
+        public override void Accept(IBundleVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public void AddAssetTransformer(IAssetTransformer transformer)
+        public override void AddReference(string assetRelativePath, int lineNumber)
         {
         }
 
-        public void AddReference(string assetRelativePath, int lineNumber)
+        public override void AddRawFileReference(string relativeFilename)
         {
+            ReferenceList.Add(new AssetReference(Path, relativeFilename, -1, AssetReferenceType.RawFilename));
         }
 
-        public void AddRawFileReference(string relativeFilename)
+        public override Type AssetCacheValidatorType
         {
+            get { return typeof(Caching.FileAssetCacheValidator); }
         }
 
-        public Stream OpenStream()
+        protected override Stream OpenStreamCore()
         {
             return CreateStream();
-        }
-
-        class StubFile : IFile
-        {
-            public IDirectory Directory
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public bool Exists
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public DateTime LastWriteTimeUtc
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public string FullPath { get; set; }
-
-            public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Delete()
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

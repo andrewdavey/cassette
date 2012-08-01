@@ -1,0 +1,23 @@
+﻿<h1>Bundle Configuration</h1>
+
+<p>
+    Cassette bundles are defined using a code-based configuration API.
+    Your web application should contain a public class that implements <code>Cassette.IConfiguration&lt;BundleCollection&gt;</code>.
+</p>
+
+<pre><code>using Cassette;
+
+public class CassetteConfiguration : IConfiguration&lt;BundleCollection&gt;
+{
+    public void Configure(BundleCollection bundles)
+    {
+        // Put configuration here
+        // Add bundles to the bundles collection.
+    }
+}</code></pre>
+<p class="minor">The Cassette.Aspnet nuget package adds the CassetteConfiguration.cs file to your project.</p>
+
+<h2>Adding bundles</h2>
+
+<p>The <code>BundleCollection</code> has a set of <code>Add</code> methods to add bundles.</p>
+

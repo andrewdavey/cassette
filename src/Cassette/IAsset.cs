@@ -1,20 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using Cassette.IO;
+using Cassette.Caching;
 
 namespace Cassette
 {
     public interface IAsset
     {
         /// <summary>
-        /// Gets the hash of the original asset contents, before any transformations are applied.
+        /// Gets a type of <see cref="IAssetCacheValidator"/> used to validate if a cache.
+        /// </summary>
+        Type AssetCacheValidatorType { get; }
+
+        /// <summary>
+        /// Gets the hash of the transformed asset content.
         /// </summary>
         byte[] Hash { get; }
 
         /// <summary>
-        /// Gets the file containing the source of this asset.
+        /// Gets the application relative path of the asset.
         /// </summary>
-        IFile SourceFile { get; }
+        string Path { get; }
 
         /// <summary>
         /// Gets the references made by this asset.

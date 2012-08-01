@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 
 namespace Cassette.Stylesheets
 {
@@ -11,20 +12,20 @@ namespace Cassette.Stylesheets
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
-        public CssFontToDataUriTransformer(Func<string, bool> shouldEmbedUrl)
-            : base(shouldEmbedUrl, UrlRegex)
+        public CssFontToDataUriTransformer(Func<string, bool> shouldEmbedUrl, IDirectory rootDirectory)
+            : base(shouldEmbedUrl, UrlRegex, rootDirectory)
         {
         }
 
-        protected override CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset)
+        protected override CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset, IDirectory rootDirectory)
         {
-            return new CssFontUrlMatchTransformer(match, asset);
+            return new CssFontUrlMatchTransformer(match, asset, rootDirectory);
         }
 
         class CssFontUrlMatchTransformer : CssUrlMatchTransformer
         {
-            public CssFontUrlMatchTransformer(Match match, IAsset asset)
-                : base(match, asset)
+            public CssFontUrlMatchTransformer(Match match, IAsset asset, IDirectory rootDirectory)
+                : base(match, asset, rootDirectory)
             {
             }
 

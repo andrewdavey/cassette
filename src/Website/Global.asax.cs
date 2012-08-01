@@ -21,7 +21,13 @@ namespace Website
             routes.MapRoute("Support", "support", new { controller = "Home", action = "Support" });
             routes.MapRoute("Contact", "contact", new { controller = "Home", action = "Contact" });
             routes.MapRoute("Donate", "donate", new { controller = "Home", action = "Donate" });
-            routes.MapRoute("Documentation", "documentation/{*path}", new { controller = "Documentation", action = "Index", path = "" });
+            routes.MapRoute(
+                "Documentation", 
+                "documentation/{version}/{*path}",
+                new { controller = "Documentation", action = "Index", path = "" },
+                new { version = @"v\d+" }
+            );
+            routes.MapRoute("OldDocumentation", "documentation/{*path}", new { controller = "Documentation", action = "OldIndex", path = "" });
             routes.MapRoute("Licensing", "licensing", new { controller = "Home", action = "Licensing" });
             routes.MapRoute("Resources", "resources", new { controller = "Home", action = "Resources" });
 
@@ -30,7 +36,6 @@ namespace Website
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
-
         }
 
         protected void Application_Start()

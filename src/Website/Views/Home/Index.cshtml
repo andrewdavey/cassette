@@ -72,29 +72,62 @@
 </div>
 
 <div class="home-main">
+    
+    <div class="section">
+        <div class="file-details">
+            <h2>Simple install via nuget</h2>
+            <p>Also choose from a wide selection of plug-ins that enhance Cassette.</p>
+        </div>
+        <div class="file">
+            <pre style="font-size: 1.5em; margin-bottom: 1em"><code>Install-Package Cassette.Aspnet</code></pre>
+            <pre><code>Install-Package Cassette.Less
+Install-Package Cassette.Sass
+Install-Package Cassette.CoffeeScript</code></pre>
+            <p><a href="@Url.RouteUrl("Documentation", new{version="v2",path="plugins"})">View all plug-ins</a></p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="file-details">
+            <h2>Elegant configuration API</h2>
+            <p>Tell Cassette how to bundle your assets with just a few lines of code.</p>
+            <p>Cassette does the hard work of finding the files, sorting, compiling and minifying.</p>
+        </div>
+        <div class="file">
+            <pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles)
+    {
+        bundles.Add&lt;<code class="code-type">StylesheetBundle</code>&gt;(<span class="string">"Content"</span>, bundle => bundle.EmbedImages());
+        bundles.AddPerSubDirectory&lt;<code class="code-type">ScriptBundle</code>&gt;(<span class="string">"Scripts"</span>);
+    }
+}</code></pre>
+        </div>
+    </div>
 
     <div class="section">
-
+        
         <div class="file-details">
-            <h2>Easy to use</h2>
+            <h2>Reference and Render</h2>
             <p>Cassette's <code>Bundles</code> helper works in view pages, layouts and partials.</p>
-            <p>Reference the scripts you directly require.</p>
-            <p>Tell Cassette where to render the <code>&lt;script&gt;</code> tags.</p>
-            <p class="minor"><a href="@Url.DocumentationUrl("stylesheets")">Stylesheets</a> and <a href="@Url.RouteUrl("Documentation", new { path = "html-templates" })">HTML Templates</a> are also supported</p>
+            <p>Reference the assets or bundles you directly require.</p>
+            <p>Tell Cassette where to render the HTML.</p>
         </div>
 
         <div class="file">
             <pre><code><span class="code-tag">@@{</span>
-  <span class="code-type">Bundles</span>.Reference(<span class="string">"Scripts/app/page.js"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"content"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/app/page.js"</span>);
 <span class="code-tag">}</span>
 <span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
   <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-  <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderScripts()</span>
+  <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderStylesheets()</span>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
   ...
+  <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderScripts()</span>
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
         </div>
@@ -111,7 +144,7 @@
                 <li>All the required scripts are included in the correct order.</li>
                 <li>The hash of each file is appended to each URL as a "cache-breaker".</li>
             </ul>
-            <p class="minor">The SHA-1 hash is used. The output here has been shortened to fit on screen.</p>
+            <p class="minor">The base-64 encoded SHA-1 hash is used.</p>
         </div>
 
         <div class="file">
@@ -119,14 +152,16 @@
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
   <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/lib/jquery.js?a4babad4b"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
-  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/lib/jquery-ui.js?53dd39212"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
-  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/app/tools.js?4d03ae0b"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
-  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/app/widgets.js?cf319fe0b"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
-  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/Scripts/app/page.js?485f05e21"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">link</span> <span class="attribute">href</span><span class="attribute-value">="/cassette.axd/asset/content/reset.css?3W7p4f6HTcITLRa0Cxw2tJxQQAM="</span> <span class="attribute">rel</span><span class="attribute-value">="stylesheet"</span> <span class="attribute">type</span><span class="attribute-value">="text/css"</span><span class="close-tag">/&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">link</span> <span class="attribute">href</span><span class="attribute-value">="/cassette.axd/asset/content/site.css?X4W1S2W16tuRbadn-SKWmE_nJT0="</span> <span class="attribute">rel</span><span class="attribute-value">="stylesheet"</span> <span class="attribute">type</span><span class="attribute-value">="text/css"</span><span class="close-tag">/&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
   ...
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/lib/jquery.js?JD8viSwogmMYMx55J-RsipVxTjo="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/lib/jquery-ui.js?PlxtfG4Jll0234wePZ3KZGLEHsE="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/app/tools.js?hxLaF5kjfuSZPND55dxgnv8BVos="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/app/widgets.js?vDM6NPLt8F_cyE-4QxtJE-Jj9RY="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/app/page.js?idIQWW6yfM-kcZLxL4w8sJbmMYA="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
         </div>
@@ -151,11 +186,12 @@
 <span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
   <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
-  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/_assets/scripts/Scripts/lib_4bad47afb"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
-  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/_assets/scripts/Scripts/app_b7c29fecc"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">link</span> <span class="attribute">href</span><span class="attribute-value">="/cassette.axd/style/1mN6dL9x3GVgFSN2kzWWoPiWukg=/content"</span> <span class="attribute">rel</span><span class="attribute-value">="stylesheet"</span> <span class="attribute">type</span><span class="attribute-value">="text/css"</span><span class="close-tag">/&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
   ...
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/LNWSFkY-CptfRoJ5Tr7AWA3obwY=/scripts/lib"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/rAcu6xcghTyKVFDzaXr8obTTJ6Y=/scripts/app"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
 <span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
         </div>
@@ -168,9 +204,10 @@
             <h2>So much more...</h2>
             <p>This introduction has only scratched the surface of what Cassette can do.</p>
             <ul>
-                <li>CoffeeScript is built-in. Just add <code>.coffee</code> files to your project and Cassette will compile them.</li>
-                <li>LESS files are automatically compiled into CSS.</li>
-                <li>Cassette has an extensible "asset pipeline". Learn how to extend and customize asset processing.</li>
+                <li>Treat your client-side HTML templates as bundles.</li>
+                <li>Add CoffeeScript support by installing the <code>Cassette.CoffeeScript</code> nuget package.</li>
+                <li>Add <a href="http://www.dotlesscss.org/" target="_blank">Less</a> and <a href="http://sass-lang.com/">Sass</a> support by installing <code>Cassette.Less</code> and <code>Cassette.Sass</code>.</li>
+                <li>Cassette provides extensible bundle "pipelines" that allow full control over how bundles are processed.</li>
             </ul>
             <p><strong>Get Cassette!</strong> It's free, open source software, distributed under the <a href="@Url.RouteUrl("Licensing")">MIT License</a>.
             </p>

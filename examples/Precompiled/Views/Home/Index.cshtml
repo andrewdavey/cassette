@@ -13,10 +13,11 @@
     <body>
         <h1>Compile-time bundling example</h1>
         <p>This web application is using Cassette's MSBuild task to build the asset bundles at compile time.</p>
-        <p>Take a look at the Precompiled.csproj file, it contains the following addition:</p>
-        <pre>&lt;UsingTask TaskName="CreateBundles" AssemblyFile="..\..\src\Cassette.MSBuild\bin\$(Configuration)\Cassette.MSBuild.dll" /&gt;
-&lt;Target Name="CreateBundles" AfterTargets="AfterBuild"&gt;
-    &lt;CreateBundles Assemblies="$(OutputPath)Precompiled.dll" Output="App_Data\cassette.xml" /&gt;
+        <p>Take a look at Cassette.targets file, it contains:</p>
+        <pre>&lt;UsingTask TaskName="CreateBundles" AssemblyFile="$(OutputPath)\Cassette.MSBuild.dll" /&gt;
+&lt;Target Name="Bundle"&gt;
+    &lt;MakeDir Directories="App_Data" /&gt;
+    &lt;CreateBundles Input="$(OutputPath)" Output="App_Data\cassette.xml" /&gt;
 &lt;/Target&gt;</pre>
         
         <p>
@@ -24,7 +25,7 @@
             This executes the <code>CassetteConfiguration</code> and generates all the application's bundles.
             The output of this is saved to a file in App_Data.
         </p>
-
+        
         <p>Then in the Web.config file, there is this:</p>
         <pre>&lt;configuration&gt;
     &lt;configSections&gt;
@@ -36,23 +37,5 @@
 
         <p>When the web application starts, Cassette will load the pre-compiled bundles
             from the file in App_Data. This removes just about all of Cassette's start-up overhead.</p>
-            
-        <h2>Important CassetteConfiguration Note</h2>
-        <p>The application's <code>CassetteConfiguration</code> is used at both compile-time and run-time.</p>
-        <p>However, at runtime the bundles will be added from the manifest, so you MUST NOT try to add them in the configuration. Use the follow code to handle this scenario:</p>
-        <pre>public class CassetteConfiguration : ICassetteConfiguration
-{
-    public void Configure(BundleCollection bundles, CassetteSettings settings)
-    {
-        // Put any code that runs at both compile-time and run-time here.
-        // For example, assigning settings.UrlModifier
-
-        <strong>if (settings.IsUsingPrecompiledManifest) return;</strong>
-        
-        // Add your bundles here - this only runs at compile-time.
-        bundles.Add&lt;StylesheetBundle&gt;("Content");
-        bundles.Add&lt;ScriptBundle&gt;("Scripts");
-    }
-}</pre>
     </body>
 </html>

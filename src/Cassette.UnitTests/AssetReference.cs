@@ -10,10 +10,10 @@ namespace Cassette
         public void ConstructorAssignsProperties()
         {
             var asset = new StubAsset();
-            var reference = new AssetReference("~/path", asset, 1, AssetReferenceType.DifferentBundle);
+            var reference = new AssetReference(asset.Path, "~/path", 1, AssetReferenceType.DifferentBundle);
 
-            reference.Path.ShouldEqual("~/path");
-            reference.SourceAsset.ShouldBeSameAs(asset);
+            reference.FromAssetPath.ShouldBeSameAs(asset.Path);
+            reference.ToPath.ShouldEqual("~/path");
             reference.SourceLineNumber.ShouldEqual(1);
             reference.Type.ShouldEqual(AssetReferenceType.DifferentBundle);
         }
@@ -22,7 +22,7 @@ namespace Cassette
         public void WhenCreateWithDifferentBundleTypeAndPathNotStartingWithTilde_ThrowArgumentException()
         {
             Assert.Throws<ArgumentException>(
-                () => new AssetReference("fail", null, -1, AssetReferenceType.DifferentBundle)
+                () => new AssetReference(null, "fail", -1, AssetReferenceType.DifferentBundle)
             );
         }
 
@@ -30,7 +30,7 @@ namespace Cassette
         public void WhenCreateWithSameBundleTypeAndPathNotStartingWithTilde_ThrowArgumentException()
         {
             Assert.Throws<ArgumentException>(
-                () => new AssetReference("fail", null, -1, AssetReferenceType.SameBundle)
+                () => new AssetReference(null, "fail", -1, AssetReferenceType.SameBundle)
             );
         }
 
@@ -38,7 +38,7 @@ namespace Cassette
         public void WhenCreateWithRawFilenameTypeAndPathNotStartingWithTilde_ThrowArgumentException()
         {
             Assert.Throws<ArgumentException>(
-                () => new AssetReference("fail", null, -1, AssetReferenceType.RawFilename)
+                () => new AssetReference(null, "fail", -1, AssetReferenceType.RawFilename)
             );
         }
 
@@ -46,7 +46,7 @@ namespace Cassette
         public void WhenCreateWithUrlTypeAndPathIsNotUrl_ThrowArgumentException()
         {
             Assert.Throws<ArgumentException>(
-                () => new AssetReference("not-a-url", null, -1, AssetReferenceType.Url)
+                () => new AssetReference(null, "not-a-url", -1, AssetReferenceType.Url)
             );
         }
     }

@@ -9,3 +9,4 @@ _ReSharper*
 App_Bundles/
 *.ncrunch*
 src/**/*.nuspec
+*.dotCover

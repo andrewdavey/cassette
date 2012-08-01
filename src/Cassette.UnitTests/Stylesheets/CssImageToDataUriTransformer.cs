@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
-using Cassette.IO;
 using Cassette.Utilities;
 using Moq;
 using Should;
@@ -12,27 +11,25 @@ namespace Cassette.Stylesheets
     {
         public CssImageToDataUriTransformer_Tests()
         {
-            transformer = new CssImageToDataUriTransformer(url => true);
+            fileSystem = new FakeFileSystem
+            {
+                "~/asset.css"
+            };
 
-            directory = new Mock<IDirectory>();
             asset = new Mock<IAsset>();
-            var file = new Mock<IFile>();
-            asset.SetupGet(a => a.SourceFile.FullPath)
-                 .Returns("asset.css");
-            asset.SetupGet(a => a.SourceFile)
-                 .Returns(file.Object);
-            file.SetupGet(f => f.Directory)
-                .Returns(directory.Object);
+            asset.SetupGet(a => a.Path).Returns("~/asset.css");
+
+            transformer = new CssImageToDataUriTransformer(url => true, fileSystem);
         }
 
         readonly Mock<IAsset> asset;
-        readonly Mock<IDirectory> directory;
+        readonly FakeFileSystem fileSystem;
         CssImageToDataUriTransformer transformer;
 
         [Fact]
         public void TransformInsertsImageUrlWithDataUriAfterTheExistingImage()
         {
-            StubFile("test.png", new byte[] { 1, 2, 3 });
+            fileSystem.Add("~/test.png", new byte[] { 1, 2, 3 });
             
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -46,8 +43,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void TransformInsertsImageUrlWithDataUriAfterEachExistingImage()
         {
-            StubFile("test1.png", new byte[] { 1, 2, 3 });
-            StubFile("test2.png", new byte[] { 1, 2, 3 });
+            fileSystem.Add("~/test1.png", new byte[] { 1, 2, 3 });
+            fileSystem.Add("~/test2.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(test1.png); } " +
                       "a { background-image: url(test2.png); }";
@@ -63,9 +60,9 @@ namespace Cassette.Stylesheets
         [Fact]
         public void ImageUrlCanHaveSubDirectory()
         {
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/styles/jquery-ui/jquery-ui.css");
-            asset.SetupGet(a => a.SourceFile.Directory).Returns(directory.Object);
-            StubFile("images/test.png", new byte[] { 1, 2, 3 });
+            asset.SetupGet(a => a.Path).Returns("~/styles/jquery-ui/jquery-ui.css");
+            fileSystem.Add("~/styles/jquery-ui/jquery-ui.css");
+            fileSystem.Add("~/styles/jquery-ui/images/test.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(images/test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -79,7 +76,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void FileWithJpgExtensionCreatesImageJpegDataUri()
         {
-            StubFile("test.jpg", new byte[] { 1, 2, 3 });
+            fileSystem.Add("~/test.jpg", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(test.jpg); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -90,37 +87,32 @@ namespace Cassette.Stylesheets
         [Fact]
         public void AssetAddRawFileReferenceIsCalled()
         {
-            StubFile("test.png", new byte[] { 1, 2, 3 });
+            fileSystem.Add("~/test.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             getResult();
 
-            asset.Verify(a => a.AddRawFileReference("test.png"));
+            asset.Verify(a => a.AddRawFileReference("~/test.png"));
         }
 
         [Fact]
         public void GivenFileDoesNotExists_WhenTransform_ThenUrlIsNotChanged()
         {
-            var file = new Mock<IFile>();
-            file.SetupGet(f => f.Exists).Returns(false);
-            directory.Setup(d => d.GetFile(It.IsAny<string>()))
-                     .Returns(file.Object);
-
-            var css = "p { background-image: url(test.png); }";
+            var css = "p { background-image: url(FILE_NOT_FOUND.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
 
             getResult().ReadToEnd().ShouldEqual(
-                "p { background-image: url(test.png); }"
+                "p { background-image: url(FILE_NOT_FOUND.png); }"
             );
         }
 
         [Fact]
         public void GivenPredicateToTestImagePathReturnsFalse_WhenTransform_ThenImageIsNotTransformedToDataUri()
         {
-            transformer = new CssImageToDataUriTransformer(path => false);
+            transformer = new CssImageToDataUriTransformer(path => false, fileSystem);
 
-            StubFile("test.png", new byte[] { 1, 2, 3 });
+            fileSystem.Add("~/test.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -134,7 +126,7 @@ namespace Cassette.Stylesheets
         public void GivenFileIsLargerThan32768bytesAndIE8SupportEnabled_WhenTransform_ThenUrlIsNotTransformedIntoDataUri()
         {
             // IE 8 doesn't work with data-uris larger than 32768 bytes.
-            StubFile("test.png", new byte[32768 + 1]);
+            fileSystem.Add("~/test.png", new byte[32768 + 1]);
 
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -148,7 +140,7 @@ namespace Cassette.Stylesheets
         public void GivenFileIs32768bytes_WhenTransform_ThenUrlIsTransformedIntoDataUri()
         {
             // IE 8 will work with data-uris up to and including 32768 bytes in length.
-            StubFile("test.png", new byte[32768]);
+            fileSystem.Add("~/test.png", new byte[32768]);
 
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -174,19 +166,6 @@ namespace Cassette.Stylesheets
                 var reader = new StreamReader(output);
                 return reader.ReadToEnd();
             }
-        }
-
-        void StubFile(string filename, byte[] bytes)
-        {
-            var file = new Mock<IFile>();
-            directory.Setup(d => d.GetFile(filename))
-                .Returns(file.Object);
-            file.SetupGet(f => f.Directory)
-                .Returns(directory.Object);
-            file.SetupGet(f => f.Exists)
-                .Returns(true);
-            file.Setup(d => d.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                .Returns(() => new MemoryStream(bytes));
         }
     }
 }

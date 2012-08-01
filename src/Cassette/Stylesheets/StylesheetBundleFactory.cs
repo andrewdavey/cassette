@@ -1,14 +1,15 @@
-﻿using Cassette.Configuration;
+﻿using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.Stylesheets
 {
     class StylesheetBundleFactory : BundleFactoryBase<StylesheetBundle>
     {
-        readonly CassetteSettings settings;
+        readonly Func<IBundlePipeline<StylesheetBundle>> stylesheetPipeline;
 
-        public StylesheetBundleFactory(CassetteSettings settings)
+        public StylesheetBundleFactory(Func<IBundlePipeline<StylesheetBundle>> stylesheetPipeline)
         {
-            this.settings = settings;
+            this.stylesheetPipeline = stylesheetPipeline;
         }
 
         protected override StylesheetBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
@@ -17,14 +18,14 @@ namespace Cassette.Stylesheets
             {
                 return new ExternalStylesheetBundle(bundleDescriptor.ExternalUrl, path)
                 {
-                    Processor = settings.GetDefaultBundleProcessor<StylesheetBundle>()
+                    Pipeline = stylesheetPipeline()
                 };
             }
             else
             {
                 return new StylesheetBundle(path)
                 {
-                    Processor = settings.GetDefaultBundleProcessor<StylesheetBundle>()
+                    Pipeline = stylesheetPipeline()
                 };
             }
         }

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package inherits="Cassette.Views.nutrans" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <files>
-    <file src="..\..\build\bin\lib40\Cassette.Views.pdb" target="lib\net40" xdt:Transform="Insert" />    
+    <file src="bin\Release\Cassette.Views.pdb" target="lib\net40" xdt:Transform="Insert" />    
     <file src="**\*.cs" target="src" xdt:Transform="Insert" />
   </files>
 </package>

@@ -1,6 +1,4 @@
-﻿using Cassette.Configuration;
-
-namespace Cassette.BundleProcessing
+﻿namespace Cassette.BundleProcessing
 {
     public class AssignContentType : IBundleProcessor<Bundle>
     {
@@ -11,7 +9,7 @@ namespace Cassette.BundleProcessing
             this.contentType = contentType;
         }
 
-        public void Process(Bundle bundle, CassetteSettings settings)
+        public void Process(Bundle bundle)
         {
             bundle.ContentType = contentType;
         }

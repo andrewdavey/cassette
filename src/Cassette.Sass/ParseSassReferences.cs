@@ -8,7 +8,7 @@ namespace Cassette.Stylesheets
     {
         protected override bool ShouldParseAsset(IAsset asset)
         {
-            var path = asset.SourceFile.FullPath;
+            var path = asset.Path;
             return path.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".sass", StringComparison.OrdinalIgnoreCase);
         }

@@ -1,10 +1,8 @@
-﻿using Cassette.Configuration;
-
-namespace Cassette.BundleProcessing
+﻿namespace Cassette.BundleProcessing
 {
     public class SortAssetsByDependency : IBundleProcessor<Bundle>
     {
-        public void Process(Bundle bundle, CassetteSettings settings)
+        public void Process(Bundle bundle)
         {
             bundle.SortAssetsByDependency();
         }

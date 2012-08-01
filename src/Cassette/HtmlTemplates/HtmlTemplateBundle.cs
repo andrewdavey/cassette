@@ -1,7 +1,6 @@
-﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
-using Cassette.HtmlTemplates.Manifests;
-using Cassette.Manifests;
+﻿using System;
+using System.Xml.Linq;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
@@ -13,13 +12,13 @@ namespace Cassette.HtmlTemplates
             ContentType = "text/html";
         }
 
-        public IBundleProcessor<HtmlTemplateBundle> Processor { get; set; }
+        public IBundlePipeline<HtmlTemplateBundle> Pipeline { get; set; }
         
         public IBundleHtmlRenderer<HtmlTemplateBundle> Renderer { get; set; }
 
         protected override void ProcessCore(CassetteSettings settings)
         {
-            Processor.Process(this, settings);
+            Pipeline.Process(this);
         }
 
         internal override string Render()
@@ -27,24 +26,35 @@ namespace Cassette.HtmlTemplates
             return Renderer.Render(this);
         }
 
-        internal string GetTemplateId(IAsset asset)
+        internal override void SerializeInto(XContainer container)
         {
-            var path = asset.SourceFile.FullPath
-                .Substring(Path.Length + 1)
-                .Replace(System.IO.Path.DirectorySeparatorChar, '-')
-                .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
-            return System.IO.Path.GetFileNameWithoutExtension(path);
+            var serializer = new HtmlTemplateBundleSerializer(container);
+            serializer.Serialize(this);
         }
 
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
+        internal string GetTemplateId(IAsset asset)
         {
-            var builder = new HtmlTemplateBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
+            string id;
+            if (asset.Path.StartsWith(Path, StringComparison.OrdinalIgnoreCase))
+            {
+                id = asset.Path
+                    .Substring(Path.Length + 1)
+                    .Replace(System.IO.Path.DirectorySeparatorChar, '-')
+                    .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
+            }
+            else
+            {
+                id = asset.Path
+                    .Substring(2) // Skips the "~/" prefix
+                    .Replace(System.IO.Path.DirectorySeparatorChar, '-')
+                    .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
+            }
+            return System.IO.Path.GetFileNameWithoutExtension(id);
         }
 
         protected override string UrlBundleTypeArgument
         {
-            get { return "htmltemplatebundle"; }
+            get { return "htmltemplate"; }
         }
     }
 }

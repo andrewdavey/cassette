@@ -1,6 +1,6 @@
 using System.IO;
 using System.Security.Cryptography;
-using Cassette.Configuration;
+
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -9,7 +9,7 @@ namespace Cassette.BundleProcessing
 {
     public class AssignHash : IBundleProcessor<Bundle>
     {
-        public void Process(Bundle bundle, CassetteSettings settings)
+        public void Process(Bundle bundle)
         {
             using (var concatenatedStream = new MemoryStream())
             {

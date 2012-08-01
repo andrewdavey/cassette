@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
@@ -11,8 +12,9 @@ namespace Cassette.Stylesheets
     {
         readonly Func<string, bool> shouldEmbedUrl;
         readonly Regex urlRegex;
+        readonly IDirectory rootDirectory;
 
-        protected CssUrlToDataUriTransformer(Func<string, bool> shouldEmbedUrl, Regex urlRegex)
+        protected CssUrlToDataUriTransformer(Func<string, bool> shouldEmbedUrl, Regex urlRegex, IDirectory rootDirectory)
         {
             if (shouldEmbedUrl == null)
             {
@@ -22,9 +24,14 @@ namespace Cassette.Stylesheets
             {
                 throw new ArgumentNullException("urlRegex");
             }
+            if (rootDirectory == null)
+            {
+                throw new ArgumentNullException("rootDirectory");
+            }
 
             this.shouldEmbedUrl = shouldEmbedUrl;
             this.urlRegex = urlRegex;
+            this.rootDirectory = rootDirectory;
         }
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
@@ -35,7 +42,7 @@ namespace Cassette.Stylesheets
                 var matches = urlRegex
                     .Matches(css)
                     .Cast<Match>()
-                    .Select(match => CreateCssUrlMatchTransformer(match, asset))
+                    .Select(match => CreateCssUrlMatchTransformer(match, asset, rootDirectory))
                     .Where(match => match.CanTransform && shouldEmbedUrl(match.Url))
                     .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
 
@@ -44,12 +51,12 @@ namespace Cassette.Stylesheets
                 {
                     match.Transform(output);
 
-                    asset.AddRawFileReference(match.Url);
+                    asset.AddRawFileReference(match.File.FullPath);
                 }
                 return output.ToString().AsStream();
             };
         }
 
-        protected abstract CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset);
+        protected abstract CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset, IDirectory rootDirectory);
     }
 }

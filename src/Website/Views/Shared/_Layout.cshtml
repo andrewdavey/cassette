@@ -23,23 +23,23 @@
                 <ul class="links">
                     <li @ActiveClassIf("benefits")>
                         <a id="benefits-link" href="@Url.RouteUrl("Benefits")">
-                            <img alt="Visit the Benefits Page" src="/assets/styles/images/benefits-icon.png" /></a>
+                            <img alt="Visit the Benefits Page" src="@Bundles.FileUrl("assets/styles/images/benefits-icon.png")" /></a>
                     </li>
                     <li @ActiveClassIf("download")>
                         <a id="download-link" href="@Url.RouteUrl("Download")">
-                            <img alt="Visit the Download Page" src="/assets/styles/images/download-icon.png" /></a>
+                            <img alt="Visit the Download Page" src="@Bundles.FileUrl("assets/styles/images/download-icon.png")" /></a>
                     </li>
                     <li @ActiveClassIf("documentation")>
-                        <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "" })">
-                            <img alt="Visit the Docs Page" src="/assets/styles/images/docs-icon.png" /></a>
+                        <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "", version = "v2" })">
+                            <img alt="Visit the Docs Page" src="@Bundles.FileUrl("assets/styles/images/docs-icon.png")" /></a>
                     </li>
                     <li @ActiveClassIf("support")>
                         <a id="support-link" href="@Url.RouteUrl("Support")">
-                            <img  alt="Visit the Support Page" src="/assets/styles/images/support-icon.png" /></a>
+                            <img  alt="Visit the Support Page" src="@Bundles.FileUrl("assets/styles/images/support-icon.png")" /></a>
                     </li>
                     <li @ActiveClassIf("donate")>
                         <a id="donate-link" href="@Url.RouteUrl("Donate")">
-                            <img  alt="Visit the Donate Page" src="/assets/styles/images/donate-icon.png" /></a>
+                            <img  alt="Visit the Donate Page" src="@Bundles.FileUrl("assets/styles/images/donate-icon.png")" /></a>
                     </li>
                 </ul>
         </div>

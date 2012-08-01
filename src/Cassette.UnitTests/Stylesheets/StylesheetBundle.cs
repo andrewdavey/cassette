@@ -1,10 +1,27 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Moq;
+using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets
 {
+    public class StylesheetBundle_Tests
+    {
+        [Fact]
+        public void HtmlAttributesTypeIsTextCss()
+        {
+            var bundle = new StylesheetBundle("~");
+            bundle.HtmlAttributes["type"].ShouldEqual("text/css");
+        }
+
+        [Fact]
+        public void HtmlAttributesRelIsStylesheet()
+        {
+            var bundle = new StylesheetBundle("~");
+            bundle.HtmlAttributes["rel"].ShouldEqual("stylesheet");
+        }
+    }
+
     public class StylesheetBundle_Render_Tests
     {
         [Fact]
@@ -28,12 +45,12 @@ namespace Cassette.Stylesheets
         public void ProcessCallsProcessor()
         {
             var bundle = new StylesheetBundle("~");
-            var processor = new Mock<IBundleProcessor<StylesheetBundle>>();
-            bundle.Processor = processor.Object;
+            var pipeline = new Mock<IBundlePipeline<StylesheetBundle>>();
+            bundle.Pipeline = pipeline.Object;
             
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
 
-            processor.Verify(p => p.Process(bundle, It.IsAny<CassetteSettings>()));
+            pipeline.Verify(p => p.Process(bundle));
         }
     }
 }

@@ -1,22 +1,17 @@
-﻿using Cassette.Configuration;
-
-namespace Cassette.BundleProcessing
+﻿namespace Cassette.BundleProcessing
 {
-    public abstract class AddTransformerToAssets : IBundleProcessor<Bundle>
+    public abstract class AddTransformerToAssets<T> : IBundleProcessor<T>
+        where T : Bundle
     {
-        protected AddTransformerToAssets(IAssetTransformer assetTransformer)
+        public virtual void Process(T bundle)
         {
-            this.assetTransformer = assetTransformer;
-        }
-
-        readonly IAssetTransformer assetTransformer;
-
-        public void Process(Bundle bundle, CassetteSettings settings)
-        {
+            var assetTransformer = CreateAssetTransformer(bundle);
             foreach (var asset in bundle.Assets)
             {
                 asset.AddAssetTransformer(assetTransformer);
             }
         }
+
+        protected abstract IAssetTransformer CreateAssetTransformer(T bundle);
     }
 }

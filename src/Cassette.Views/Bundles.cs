@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Web;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
-#if !NET35
-using System.Web;
-#endif
 
 namespace Cassette.Views
 {
@@ -18,6 +15,11 @@ namespace Cassette.Views
     /// </remarks>
     public static class Bundles
     {
+        /// <summary>
+        /// The helper implementation used by the static methods of this class.
+        /// </summary>
+        public static IBundlesHelper Helper { get; set; }
+        
         /// <summary>
         /// Adds a reference to a bundle for the current page.
         /// </summary>
@@ -31,10 +33,31 @@ namespace Cassette.Views
         /// Adds a reference to a bundle for the current page.
         /// </summary>
         /// <param name="assetPathOrBundlePathOrUrl">Either an application relative path to an asset file or bundle. Or a URL of an external resource.</param>
+        public static void Reference<T>(string assetPathOrBundlePathOrUrl)
+            where T : Bundle
+        {
+            Reference<T>(assetPathOrBundlePathOrUrl, null);
+        }
+
+        /// <summary>
+        /// Adds a reference to a bundle for the current page.
+        /// </summary>
+        /// <param name="assetPathOrBundlePathOrUrl">Either an application relative path to an asset file or bundle. Or a URL of an external resource.</param>
         /// <param name="pageLocation">The optional page location of the referenced bundle. This controls where it will be rendered.</param>
         public static void Reference(string assetPathOrBundlePathOrUrl, string pageLocation)
         {
-            ReferenceBuilder.Reference(assetPathOrBundlePathOrUrl, pageLocation);
+            Helper.Reference(assetPathOrBundlePathOrUrl, pageLocation);
+        }
+
+        /// <summary>
+        /// Adds a reference to a bundle for the current page.
+        /// </summary>
+        /// <param name="assetPathOrBundlePathOrUrl">Either an application relative path to an asset file or bundle. Or a URL of an external resource.</param>
+        /// <param name="pageLocation">The optional page location of the referenced bundle. This controls where it will be rendered.</param>
+        public static void Reference<T>(string assetPathOrBundlePathOrUrl, string pageLocation)
+            where T : Bundle
+        {
+            Helper.Reference<T>(assetPathOrBundlePathOrUrl, pageLocation);
         }
 
         /// <summary>
@@ -189,7 +212,7 @@ namespace Cassette.Views
                 customizeBundle(bundle);
             }
 
-            ReferenceBuilder.Reference(bundle, pageLocation);
+            Helper.Reference(bundle, pageLocation);
         }
 
         /// <summary>
@@ -256,13 +279,7 @@ namespace Cassette.Views
         /// <returns>The URL of the bundle.</returns>
         public static string Url(string bundlePath)
         {
-            var bundle = Application.FindBundleContainingPath<Bundle>(bundlePath);
-            if (bundle == null)
-            {
-                throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
-            }
-
-            return Application.Settings.UrlGenerator.CreateBundleUrl(bundle);
+            return Helper.Url<Bundle>(bundlePath);
         }
 
         /// <summary>
@@ -274,13 +291,7 @@ namespace Cassette.Views
         public static string Url<T>(string bundlePath)
             where T : Bundle
         {
-            var bundle = Application.FindBundleContainingPath<T>(bundlePath);
-            if (bundle == null)
-            {
-                throw new ArgumentException(string.Format("Bundle not found with path \"{0}\".", bundlePath));
-            }
-
-            return Application.Settings.UrlGenerator.CreateBundleUrl(bundle);
+            return Helper.Url<T>(bundlePath);
         }
 
         /// <summary>
@@ -297,7 +308,7 @@ namespace Cassette.Views
         /// <param name="pageLocation">Optional. The page location of bundles to return.</param>
         public static IEnumerable<Bundle> GetReferencedBundles(string pageLocation)
         {
-            return ReferenceBuilder.GetBundles(pageLocation);
+            return Helper.GetReferencedBundles(pageLocation);
         }
 
         /// <summary>
@@ -318,63 +329,26 @@ namespace Cassette.Views
         public static IEnumerable<string> GetReferencedBundleUrls<T>(string pageLocation)
             where T : Bundle
         {
-            var bundles = ReferenceBuilder.GetBundles(pageLocation).OfType<T>();
-
-            if (Application.Settings.IsDebuggingEnabled)
-            {
-                return bundles
-                    .SelectMany(GetAllAssets)
-                    .Select(Application.Settings.UrlGenerator.CreateAssetUrl);
-            }
-            else
-            {
-                return bundles
-                    .Select(Application.Settings.UrlGenerator.CreateBundleUrl);
-            }
+            return Helper.GetReferencedBundleUrls<T>(pageLocation);
         }
 
         static IHtmlString Render<T>(string location) where T : Bundle
         {
-            return new HtmlString(ReferenceBuilder.Render<T>(location));
+            return Helper.Render<T>(location);
         }
 
-        static IReferenceBuilder ReferenceBuilder
+        /// <summary>
+        /// Returns the Cassette cache-friendly URL for a file, such as an image.
+        /// </summary>
+        /// <param name="applicationRelativeFilePath">The application relative file path of the file.</param>
+        public static string FileUrl(string applicationRelativeFilePath)
         {
-            get
-            {
-                return Application.GetReferenceBuilder();
-            }
+            return Helper.FileUrl(applicationRelativeFilePath);
         }
 
-        static ICassetteApplication Application
+        public static void RebuildCache()
         {
-            get { return CassetteApplicationContainer.Application; }
-        }
-
-        static IEnumerable<IAsset> GetAllAssets(Bundle bundle)
-        {
-            var collector = new AssetCollector();
-            bundle.Accept(collector);
-            return collector.Assets;
-        }
-
-        class AssetCollector : IBundleVisitor
-        {
-            public AssetCollector()
-            {
-                Assets = new List<IAsset>();
-            }
-
-            public List<IAsset> Assets { get; private set; }
-
-            public void Visit(Bundle bundle)
-            {
-            }
-
-            public void Visit(IAsset asset)
-            {
-                Assets.Add(asset);
-            }
+            Helper.RebuildBundleCache();
         }
     }
 }

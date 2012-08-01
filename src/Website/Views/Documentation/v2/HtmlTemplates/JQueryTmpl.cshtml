@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Cassette | jQuery-tmpl Template Compilation";
+}
+
+<h1>jQuery-tmpl Template Compilation</h1>
+<p>jQuery-tmpl templates are usually embedded into a page using non-executing script blocks.
+The browser then compiles these into JavaScript functions at runtime. This may be fast in modern
+browsers, but given a lot of templates and a slower mobile browser, you may notice the slow down.</p>
+<p>Cassette enables you to pre-compile jQuery-tmpl templates into JavaScript on the server-side.
+The compiled templates are cached and served to the browser as a regular script. This also provides all the 
+benefits of Cassette's bundle versioning and caching.
+</p>
+<p>The compiled template functions are loaded directly into jQuery-tmpl, with no runtime overhead.</p>
+
+<h2>Bundle configuration</h2>
+<p>To enable this feature, use the following bundle configuration:</p>
+<pre><code>bundles.Add&lt;<span class="code-type">HtmlTemplate</span>&gt;(
+    <span class="string">"HtmlTemplates"</span>
+    <span class="comment">// Assign the jQuery-tmpl processor to the HTML template bundles</span>
+    bundle => bundle.Pipeline = <span class="keyword">new</span> <span class="code-type">JQueryTmplPipeline</span>()
+);</code></pre>
+
+<h2>Using in pages</h2>
+<p>In a view page, reference your templates just like any other bundle:</p>
+<pre><code><span class="code-tag">@@{</span>
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"HtmlTemplates"</span>);
+}</code></pre>
+<p>Also, tell Cassette where to render the HTML required to include the templates:</p>
+<pre><code><span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderHtmlTemplates()</span></code></pre>
+
+<p>Now when the page runs, instead of embedding the template sources into the page, a single script include is generated:</p>
+<pre><code><span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/htmltemplate/HtmlTemplates_7d879cec"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span></code></pre>
+
+<p>This script will return the templates compiled into JavaScript. Like all Cassette bundles, it is versioned and cached aggresively. 
+So a browser only needs to download it once.</p>

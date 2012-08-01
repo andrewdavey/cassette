@@ -1,22 +1,24 @@
-﻿using System.Collections.Generic;
-using Cassette.BundleProcessing;
-using Cassette.Configuration;
+﻿using Cassette.BundleProcessing;
+using Cassette.TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {
-    public class JQueryTmplPipeline : MutablePipeline<HtmlTemplateBundle>
+    public class JQueryTmplPipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        protected override IEnumerable<IBundleProcessor<HtmlTemplateBundle>> CreatePipeline(HtmlTemplateBundle bundle, CassetteSettings settings)
+        public JQueryTmplPipeline(TinyIoCContainer container)
+            : base(container)
         {
-            yield return new AssignHtmlTemplateRenderer(
-                new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator)
-            );
-            yield return new AssignContentType("text/javascript");
-            yield return new ParseHtmlTemplateReferences();
-            yield return new CompileJQueryTmpl();
-            yield return new RegisterTemplatesWithJQueryTmpl(bundle);
-            yield return new AssignHash();
-            yield return new ConcatenateAssets();
+            var renderer = container.Resolve<RemoteHtmlTemplateBundleRenderer>();
+            AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
+            {
+                new AssignHtmlTemplateRenderer(renderer),
+                new AssignContentType("text/javascript"),
+                new ParseHtmlTemplateReferences(),
+                container.Resolve<CompileJQueryTmpl>(),
+                container.Resolve<RegisterTemplatesWithJQueryTmpl>(),
+                new AssignHash(),
+                new ConcatenateAssets()
+            });
         }
     }
 }
