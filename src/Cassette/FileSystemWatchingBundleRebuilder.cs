@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Cassette.IO;
@@ -35,7 +36,7 @@ namespace Cassette
             bundleDescriptorFilenames = GetBundleDescriptorFilenames();
 
             // Initially use the bundles collection, but this will get updated in the Changed event handler.
-            readOnlyBundles = bundles;
+            readOnlyBundles = new ReadOnlyCollection<Bundle>(bundles.ToList());
             bundles.Changed += HandleBundlesChanged;
         }
 
