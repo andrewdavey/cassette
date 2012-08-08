@@ -26,6 +26,8 @@ namespace Cassette.Configuration
             { typeof(StylesheetBundle), new StylesheetPipeline() },
             { typeof(HtmlTemplateBundle), new HtmlTemplatePipeline() },
         };
+
+        static public Dictionary<string, Bundle> bundles = new Dictionary<string, Bundle>();
  
         public CassetteSettings(string cacheVersion)
         {

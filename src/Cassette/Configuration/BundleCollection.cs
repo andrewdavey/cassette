@@ -9,7 +9,7 @@ namespace Cassette.Configuration
     /// <summary>
     /// A collection of asset bundles.
     /// </summary>
-    public class BundleCollection : IEnumerable<Bundle>
+    public class BundleCollection : IList<Bundle>
     {
         readonly CassetteSettings settings;
         readonly List<Bundle> bundles = new List<Bundle>();
@@ -111,6 +111,58 @@ namespace Cassette.Configuration
         internal void Remove(Bundle bundle)
         {
             bundles.Remove(bundle);
+        }
+
+        public int IndexOf(Bundle item)
+        {
+            return bundles.IndexOf(item);
+        }
+
+        public void Insert(int index, Bundle item)
+        {
+            bundles.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            bundles.RemoveAt(index);
+        }
+
+        public Bundle this[int index]
+        {
+            get { return bundles[index]; }
+            set { bundles[index] = value; }
+        }
+
+
+        public void Clear()
+        {
+            bundles.Clear();
+        }
+
+        public bool Contains(Bundle item)
+        {
+            return bundles.Contains(item);
+        }
+
+        public void CopyTo(Bundle[] array, int arrayIndex)
+        {
+            bundles.CopyTo(array, arrayIndex);
+        }
+
+        public int Count
+        {
+            get { return bundles.Count; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        bool ICollection<Bundle>.Remove(Bundle item)
+        {
+            return bundles.Remove(item);
         }
     }
 }
