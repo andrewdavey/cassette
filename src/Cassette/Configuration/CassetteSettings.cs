@@ -27,8 +27,13 @@ namespace Cassette.Configuration
             { typeof(HtmlTemplateBundle), new HtmlTemplatePipeline() },
         };
 
+<<<<<<< HEAD
         static public Dictionary<string, Bundle> bundles = new Dictionary<string, Bundle>();
  
+=======
+        public static DiskBackedBundleCache bundles = new DiskBackedBundleCache();
+        
+>>>>>>> Part of the way to caching on disk
         public CassetteSettings(string cacheVersion)
         {
             Version = cacheVersion;

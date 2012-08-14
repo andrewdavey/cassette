@@ -3,8 +3,10 @@ using Cassette.Configuration;
 
 namespace Cassette.Scripts
 {
+    [ProtoBuf.ProtoContract]
     class InlineScriptBundle : ScriptBundle
     {
+        [ProtoBuf.ProtoMember(1)]
         readonly string scriptContent;
 
         public InlineScriptBundle(string scriptContent)

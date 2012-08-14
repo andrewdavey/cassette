@@ -9,8 +9,10 @@ namespace Cassette
     /// <remarks>
     /// Contains a collection of html attribute name/value pairs.
     /// </remarks>
+    [ProtoBuf.ProtoContract]
     public class HtmlAttributeDictionary : IEnumerable<KeyValuePair<string, string>>
     {
+        [ProtoBuf.ProtoMember(1)]
         readonly Dictionary<string, string> attributeStorage = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
@@ -45,6 +47,11 @@ namespace Cassette
                 var name = property.Name.Replace('_', '-');
                 Add(name, propertyValue);
             }
+        }
+
+        public HtmlAttributeDictionary Add(KeyValuePair<string, string> value)
+        {
+            return Add(value.Key, value.Value);
         }
 
         /// <summary>

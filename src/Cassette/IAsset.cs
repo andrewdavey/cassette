@@ -4,16 +4,19 @@ using Cassette.IO;
 
 namespace Cassette
 {
+    [ProtoBuf.ProtoContract]
     public interface IAsset
     {
         /// <summary>
         /// Gets the hash of the original asset contents, before any transformations are applied.
         /// </summary>
+        [ProtoBuf.ProtoMember(1)]
         byte[] Hash { get; }
 
         /// <summary>
         /// Gets the file containing the source of this asset.
         /// </summary>
+        [ProtoBuf.ProtoMember(2)]
         IFile SourceFile { get; }
 
         /// <summary>

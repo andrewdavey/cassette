@@ -3,6 +3,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
+    [ProtoBuf.ProtoContract]
     public class AssetReference
     {
         public AssetReference(string path, IAsset sourceAsset, int sourceLineNumber, AssetReferenceType type)
@@ -39,11 +40,13 @@ namespace Cassette
         /// <summary>
         /// Path to an asset or bundle.
         /// </summary>
+        [ProtoBuf.ProtoMember(1)]
         public string Path { get; private set; }
 
         /// <summary>
         /// The type of reference.
         /// </summary>
+        [ProtoBuf.ProtoMember(2)]
         public AssetReferenceType Type { get; private set; }
 
         /// <summary>
@@ -54,6 +57,7 @@ namespace Cassette
         /// <summary>
         /// The line number in the asset file that made this reference.
         /// </summary>
+        [ProtoBuf.ProtoMember(3)]
         public int SourceLineNumber { get; private set; }
     }
 }

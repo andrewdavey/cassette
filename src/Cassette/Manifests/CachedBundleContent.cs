@@ -9,8 +9,10 @@ using Cassette.Configuration;
 
 namespace Cassette.Manifests
 {
+    [ProtoBuf.ProtoContract]
     class CachedBundleContent : IAsset
     {
+        [ProtoBuf.ProtoMember(1)]
         readonly byte[] content;
         readonly IEnumerable<IAsset> originalAssets;
 
