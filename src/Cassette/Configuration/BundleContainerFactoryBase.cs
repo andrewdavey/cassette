@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-<<<<<<< HEAD
-using Cassette.BundleProcessing;
-=======
-using System.Reflection;
 using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
->>>>>>> Part of the way to caching on disk
 
 namespace Cassette.Configuration
 {
@@ -24,34 +18,7 @@ namespace Cassette.Configuration
 
         public abstract IBundleContainer CreateBundleContainer();
 
-<<<<<<< HEAD
-        protected void ProcessAllBundles(IList<Bundle> bundles)
-        {
-            var hasher = new AssignHash();
-            Trace.Source.TraceInformation("Processing bundles...");
-            for (var i = 0; i < bundles.Count; i++)
-            {
-                Trace.Source.TraceInformation("Processing {0} {1}", bundles[i].GetType().Name, bundles[i].Path);
-                if (settings.IsDebuggingEnabled)
-                {
-                    hasher.Process(bundles[i], settings);
-                    var bundleUrl = bundles[i].Url;
-                    if (CassetteSettings.bundles.ContainsKey(bundleUrl))
-                    {
-                        Bundle tempBundle;
-                        CassetteSettings.bundles.TryGetValue(bundleUrl, out tempBundle);
-                        bundles[i] = tempBundle;
-                    }
-                    else
-                    {
-                        bundles[i].Process(settings);
-                        CassetteSettings.bundles.Add(bundleUrl, bundles[i]);
-                    }
-                }
-                else
-                {
-                    bundles[i].Process(settings);
-=======
+
         protected T ProcessSingleBundle<T>(T bundle, AssignHash hasher) 
             where T : Bundle
         {
@@ -133,7 +100,6 @@ namespace Cassette.Configuration
                     {
                         ((ScriptBundle)bundles[i]).Renderer = new DebugScriptBundleHtmlRenderer(settings.UrlGenerator);
                     }
->>>>>>> Part of the way to caching on disk
                 }
             }
             Trace.Source.TraceInformation("Bundle processing completed.");

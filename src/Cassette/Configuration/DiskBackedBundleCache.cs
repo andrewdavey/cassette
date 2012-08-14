@@ -113,7 +113,7 @@ namespace Cassette.Configuration
                 foreach (var asset in dehydratedBundle.Assets)
                 { 
                     var systemAbsoluteFilename = CACHE_DIRECTORY + key +
-                                             Convert.ToBase64String(asset.Hash).Replace("/", "_").Replace("+", "_");
+                                             Convert.ToBase64String(asset.Hash).Replace("/", "_").Replace("+", "_").Replace("?", "_");
                     using (var file = new FileStream(systemAbsoluteFilename, FileMode.Create))
                     { 
                         ((AssetBase)asset).PreparePostProcessingStream();
@@ -128,6 +128,7 @@ namespace Cassette.Configuration
                                 {
                                     path = assetReference.Path, 
                                     lineNumber = assetReference.SourceLineNumber,
+                                    assetReferenceType = assetReference.Type
                                 });
                             }
                             ProtoBuf.Serializer.Serialize(referencesForFile, refHolderList);
@@ -155,7 +156,7 @@ namespace Cassette.Configuration
             foreach (var asset in dehydratedBundle.Assets)
             {
                 var systemAbsoluteFilename = CACHE_DIRECTORY + key +
-                                             Convert.ToBase64String(asset.Hash).Replace("/", "_").Replace("+", "_");
+                                             Convert.ToBase64String(asset.Hash).Replace("/", "_").Replace("+", "_").Replace("?", "_");
                 if (!File.Exists(systemAbsoluteFilename))
                 { 
                     retValue = false;
@@ -166,21 +167,24 @@ namespace Cassette.Configuration
                     File.Delete(CACHE_DIRECTORY + key);
                     retValue = false;
                     continue;
-                }
+                } 
                 var file = new FileSystemFile(Path.GetFileName(systemAbsoluteFilename),
                    new FileSystemDirectory(Path.GetDirectoryName(systemAbsoluteFilename)),
                    systemAbsoluteFilename);
                 var fileAsset = new FileAsset(file, dehydratedBundle);
                 //hydratedAssetList.Add(new CachedConcatenatedAsset(file, fileAsset));
-                
+                //if (Settings)
                 using (var referencesForFile = new FileStream(systemAbsoluteFilename + "references", FileMode.Open))
                 {
                     var refHolderList = ProtoBuf.Serializer.Deserialize<List<ReferenceHolder>>(referencesForFile);
                     foreach (var refHolder in refHolderList) 
                     {
-                        fileAsset.AddReference(refHolder.path, refHolder.lineNumber);
+                        if (refHolder.assetReferenceType == AssetReferenceType.RawFilename)
+                        {
+                            fileAsset.AddRawFileReference(refHolder.path);
+                        }
                     }
-                } 
+                }  
                 hydratedAssetList.Add(fileAsset);
                 //asset.postProcessingStream = ProtoBuf.Serializer.Deserialize<Stream>(file);
             }
@@ -200,6 +204,7 @@ namespace Cassette.Configuration
         {
             [ProtoBuf.ProtoMember(1)] public string path;
             [ProtoBuf.ProtoMember(2)] public int lineNumber;
+            [ProtoBuf.ProtoMember(3)] public AssetReferenceType assetReferenceType;
         }
     }
 }

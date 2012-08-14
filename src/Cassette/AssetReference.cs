@@ -46,7 +46,6 @@ namespace Cassette
         /// <summary>
         /// The type of reference.
         /// </summary>
-        [ProtoBuf.ProtoMember(2)]
         public AssetReferenceType Type { get; private set; }
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace Cassette
         /// <summary>
         /// The line number in the asset file that made this reference.
         /// </summary>
-        [ProtoBuf.ProtoMember(3)]
+        [ProtoBuf.ProtoMember(2)]
         public int SourceLineNumber { get; private set; }
     }
 }

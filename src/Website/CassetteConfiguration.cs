@@ -48,11 +48,7 @@ namespace Website
         /// </summary>
         public string PostCacheModify(string url)
         {
-<<<<<<< HEAD
-            return "//" + "www.google.com" + url;
-=======
             return baseModifier.PreCacheModify(url);
->>>>>>> Part of the way to caching on disk
         }
     }
 }
