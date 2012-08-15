@@ -55,13 +55,17 @@ namespace Cassette.Configuration
                 for (var i = 0; i < bundles.Count; i++)
                 {
                     bundles[i] = ProcessSingleBundle(diskBacker, CassetteSettings.uncachedToCachedFiles, bundles[i], hasher);
-                    if (settings.IsDebuggingEnabled && typeof(StylesheetBundle).IsAssignableFrom(bundles[i].GetType()))
+                    if (typeof(StylesheetBundle).IsAssignableFrom(bundles[i].GetType()))
                     {
                         ((StylesheetBundle)bundles[i]).Renderer = new DebugStylesheetHtmlRenderer(settings.UrlGenerator);
                     }
-                    else if (settings.IsDebuggingEnabled && typeof(ScriptBundle).IsAssignableFrom(bundles[i].GetType()))
+                    else if (typeof(ScriptBundle).IsAssignableFrom(bundles[i].GetType()))
                     {
                         ((ScriptBundle)bundles[i]).Renderer = new DebugScriptBundleHtmlRenderer(settings.UrlGenerator);
+                    }
+                    else if (typeof(HtmlTemplateBundle).IsAssignableFrom(bundles[i].GetType()) && ((HtmlTemplateBundle)bundles[i]).Renderer == null)
+                    {
+                        ((HtmlTemplateBundle)bundles[i]).Renderer = new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator);
                     }
                 }
                 CassetteSettings.bundles.FixReferences(bundles);
