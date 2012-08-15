@@ -11,5 +11,6 @@ namespace Cassette.Configuration
         void Delete(string fileName);
         string GetFileName(IAsset asset, Bundle bundle, string cacheDirectory);
         string GetCachebleString(string bundleUrl);
+        string GetCachebleHash(string hash);
     }
 }

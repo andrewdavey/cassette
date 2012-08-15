@@ -23,8 +23,8 @@ namespace Cassette.Configuration
             Bundle bundle, AssignHash hasher) 
         {
             Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
-            hasher.Process(bundle, settings);
-            var bundleKey = fileHelper.GetCachebleString(bundle.Url);
+            hasher.Process(bundle, settings); 
+            var bundleKey = fileHelper.GetCachebleHash(bundle.Url);
             if (CassetteSettings.bundles.ContainsKey(fileHelper, uncachedToCachedFiles, bundleKey, bundle))
             {
                 bundle = CassetteSettings.bundles.GetBundle(fileHelper, uncachedToCachedFiles, bundleKey, bundle);

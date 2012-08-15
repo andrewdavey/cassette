@@ -83,9 +83,13 @@ namespace Cassette.Configuration
         {
             var assetPath = (asset.GetType() != typeof(ConcatenatedAsset))
                                 ? GetCachebleString(asset.SourceFile.FullPath)
-                                : GetCachebleString(bundle.Path);
-            return cacheDirectory + assetPath +
-                Convert.ToBase64String(asset.Hash).Replace("/", "1").Replace("+", "1").Replace("?", "1");
+                                : GetCachebleString(bundle.Path) + GetCachebleHash(bundle.Path);
+            return cacheDirectory + assetPath + GetCachebleHash(Convert.ToBase64String(asset.Hash));
+        }
+
+        public string GetCachebleHash(string hash)
+        {
+            return hash.Replace("/", "1").Replace("+", "1").Replace("?", "1");
         }
 
         [ProtoBuf.ProtoContract]
