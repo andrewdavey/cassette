@@ -19,31 +19,21 @@ namespace Cassette.Configuration
         public abstract IBundleContainer CreateBundleContainer();
 
 
-        protected T ProcessSingleBundle<T>(T bundle, AssignHash hasher) 
-            where T : Bundle
+        protected Bundle ProcessSingleBundle(Bundle bundle, AssignHash hasher) 
         {
             Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
-            bool loadedFromCache = false;
-            if (settings.IsDebuggingEnabled || true)
+            hasher.Process(bundle, settings);
+            var bundleKey = CassetteSettings.bundles.GetCachebleString(bundle.Url);
+            if (CassetteSettings.bundles.ContainsKey(bundleKey, bundle))
             {
-                hasher.Process(bundle, settings);
-                var bundleKey = CassetteSettings.bundles.GetCachebleString(bundle.Url);
-                if (CassetteSettings.bundles.ContainsKey(bundleKey, bundle))
-                {
-                    bundle = CassetteSettings.bundles.GetBundle(bundleKey, bundle);
-                    loadedFromCache = true;
-                } 
-                else
-                {
-                    var unprocessedAssetPaths = CassetteSettings.bundles.getAssetPaths(bundle);
-                    bundle.Process(settings);
-                    CassetteSettings.bundles.AddBundle(bundleKey, bundle, unprocessedAssetPaths);
-                }
+                bundle = CassetteSettings.bundles.GetBundle(bundleKey, bundle);
             }
             else
-           {
+            {
+                var unprocessedAssetPaths = CassetteSettings.bundles.getAssetPaths(bundle);
                 bundle.Process(settings);
-           }
+                CassetteSettings.bundles.AddBundle(bundleKey, bundle, unprocessedAssetPaths);
+            }
             return bundle;
         }
 
@@ -62,36 +52,7 @@ namespace Cassette.Configuration
                 var hasher = new AssignHash();
                 for (var i = 0; i < bundles.Count; i++)
                 {
-                    var type = bundles[i].GetType();
-                    if (type == typeof(HtmlTemplateBundle))
-                    {
-                        bundles[i] = ProcessSingleBundle((HtmlTemplateBundle)bundles[i], hasher);
-                    }
-                    else if (type == typeof(ScriptBundle))
-                    {
-                        bundles[i] = ProcessSingleBundle((ScriptBundle)bundles[i], hasher);
-                    }
-                    else if (type == typeof(StylesheetBundle))
-                    {
-                        bundles[i] = ProcessSingleBundle((StylesheetBundle)bundles[i], hasher);
-                    }
-                    else if (type == typeof(ExternalScriptBundle))
-                    {
-                        bundles[i] = ProcessSingleBundle((ExternalScriptBundle)bundles[i], hasher);
-                    }
-                    else if (type == typeof(ExternalStylesheetBundle))
-                    {
-                        bundles[i] = ProcessSingleBundle((ExternalStylesheetBundle)bundles[i], hasher);
-                    }
-                    else if (type == typeof(InlineScriptBundle))
-                    {
-                        bundles[i] = ProcessSingleBundle((InlineScriptBundle)bundles[i], hasher);
-                    }
-                    else if (type == typeof(PageDataScriptBundle))
-                    {
-                        bundles[i] = ProcessSingleBundle((PageDataScriptBundle)bundles[i], hasher);
-                    }
-
+                    bundles[i] = ProcessSingleBundle(bundles[i], hasher);
                     if (settings.IsDebuggingEnabled && typeof(StylesheetBundle).IsAssignableFrom(bundles[i].GetType()))
                     {
                         ((StylesheetBundle)bundles[i]).Renderer = new DebugStylesheetHtmlRenderer(settings.UrlGenerator);

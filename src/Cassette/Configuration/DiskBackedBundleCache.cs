@@ -17,7 +17,6 @@ namespace Cassette.Configuration
     {
         const string CACHE_DIRECTORY = @"C:\DiskCachedBundles\";
         Dictionary<string, Bundle> _bundles;
-        Dictionary<string, object> _locks;
         
         /// <summary>
         /// Creates the directory if needed.
@@ -29,9 +28,7 @@ namespace Cassette.Configuration
                 Directory.CreateDirectory(CACHE_DIRECTORY);
             }
             _bundles = new Dictionary<string, Bundle>();
-            _locks = new Dictionary<string, object>();
         }
-
         
         /// <summary>
         /// Adds it to the cache if not in there, will not overwrite already existing
@@ -39,8 +36,7 @@ namespace Cassette.Configuration
         /// <typeparam name="T">A descendent of Bundle</typeparam>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void AddBundle<T>(string key, T value, IEnumerable<string> unprocessedAssetPaths)
-            where T : Bundle
+        public void AddBundle(string key, Bundle value, IEnumerable<string> unprocessedAssetPaths)
         {
             if (!_bundles.ContainsKey(key))
             {
@@ -59,42 +55,41 @@ namespace Cassette.Configuration
             return assetPaths;
         }
 
-        public T GetBundle<T>(string key, T dehydratedBundle)
-            where T : Bundle
+        public Bundle GetBundle(string key, Bundle bundle)
         {
-            if (!ContainsKey(key, dehydratedBundle))
+            if (!ContainsKey(key, bundle))
             {
                 return null;
             }
-            return (T)_bundles[key];
+            return _bundles[key];
         }
 
-        public bool ContainsKey<T>(string key, T dehydratedBundle) 
-            where T : Bundle
+        /// <summary>
+        /// Check if the cache contains the key on disk or in memory. Load it
+        /// from disk 
+        /// </summary>
+        /// <param name="key">The key to check</param>
+        /// <param name="bundle"></param>
+        /// <returns></returns>
+        public bool ContainsKey(string key, Bundle bundle) 
         {
             if (_bundles.ContainsKey(key))
             {
                 return true;
             }
-            var returnValue = GetFromDisk(key, dehydratedBundle);
+            var returnValue = GetFromDisk(key, bundle);
             if (returnValue)
             {
-                _bundles.Add(key, dehydratedBundle);
+                _bundles.Add(key, bundle);
             }
             return returnValue;
         }
-
-        public bool Remove(string key)
-        {
-            if (!File.Exists(CACHE_DIRECTORY + key))
-            {
-                return false;
-            }
-            _bundles.Remove(key);
-            File.Delete(CACHE_DIRECTORY + key);
-            return true;
-        }
-
+        
+        /// <summary>
+        /// Scan all references in bundles and make sure that they match the assets
+        /// that are actually loaded.
+        /// </summary>
+        /// <param name="bundles">The bundles to scan.</param>
         public void FixReferences(IList<Bundle> bundles) 
         {
             foreach (var bundle in bundles)
@@ -145,55 +140,46 @@ namespace Cassette.Configuration
         /// </summary>
         /// <param name="key">The key of the file</param>
         /// <param name="value">The cached bundle.</param>
-        private void AddToDisk(string key, Bundle dehydratedBundle, IEnumerable<string> unprocessedAssetPaths)
+        private void AddToDisk(string key, Bundle bundle, IEnumerable<string> unprocessedAssetPaths)
         {
-            if (!_locks.ContainsKey(key))
+            foreach (var asset in bundle.Assets)
             {
-                _locks.Add(key, new object());
-            }
-            //lock (_locks[key])
-            {
-                foreach (var asset in dehydratedBundle.Assets)
-                { 
-                    var systemAbsoluteFilename = CACHE_DIRECTORY + key +
-                                             Convert.ToBase64String(asset.Hash).Replace("/", "1").Replace("+", "1").Replace("?", "1");
-                    var relativeFileName = "~" + key +
-                                             Convert.ToBase64String(asset.Hash).Replace("/", "1").Replace("+", "1").Replace("?", "1");
-                    using (var file = new FileStream(systemAbsoluteFilename, FileMode.Create))
-                    { 
-                        ((AssetBase)asset).PreparePostProcessingStream();
-                        var postProcessingByteArray = ((AssetBase)asset).postProcessingByteArray;
-                        file.Write(postProcessingByteArray, 0, postProcessingByteArray.Length);
-                        using (var referencesForFile = new FileStream(systemAbsoluteFilename + "references", FileMode.Create))
-                        {
-                            var refHolderList = new List<ReferenceHolder>();
-                            foreach (var assetReference in asset.References)
-                            {
-                                refHolderList.Add(new ReferenceHolder
-                                {
-                                    path = assetReference.Path, 
-                                    lineNumber = assetReference.SourceLineNumber,
-                                    assetReferenceType = assetReference.Type
-                                });
-                            }
-                            ProtoBuf.Serializer.Serialize(referencesForFile, refHolderList);
-                        }
-                        if (asset.GetType() == typeof(ConcatenatedAsset) && !CassetteSettings.uncachedToCachedFiles.ContainsKey(dehydratedBundle.Path))
-                        {
-                            CassetteSettings.uncachedToCachedFiles.Add(dehydratedBundle.Path, dehydratedBundle.Path);
-                        }
-                        else if (!CassetteSettings.uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
-                        {
-                            CassetteSettings.uncachedToCachedFiles.Add(asset.SourceFile.FullPath, asset.SourceFile.FullPath);
-                        }
-                    } 
-                    foreach (var assetPath in unprocessedAssetPaths)
+                var systemAbsoluteFilename = CACHE_DIRECTORY + key +
+                                         Convert.ToBase64String(asset.Hash).Replace("/", "1").Replace("+", "1").Replace("?", "1");
+                using (var file = new FileStream(systemAbsoluteFilename, FileMode.Create))
+                {
+                    ((AssetBase)asset).PreparePostProcessingStream();
+                    var postProcessingByteArray = ((AssetBase)asset).postProcessingByteArray;
+                    file.Write(postProcessingByteArray, 0, postProcessingByteArray.Length);
+                    using (var referencesForFile = new FileStream(systemAbsoluteFilename + "references", FileMode.Create))
                     {
-                        if (!CassetteSettings.uncachedToCachedFiles.ContainsKey(assetPath))
+                        var refHolderList = new List<ReferenceHolder>();
+                        foreach (var assetReference in asset.References)
                         {
-                            CassetteSettings.uncachedToCachedFiles.Add(assetPath, dehydratedBundle.Path);
+                            refHolderList.Add(new ReferenceHolder
+                            {
+                                path = assetReference.Path,
+                                lineNumber = assetReference.SourceLineNumber,
+                                assetReferenceType = assetReference.Type
+                            });
                         }
-                    } 
+                        ProtoBuf.Serializer.Serialize(referencesForFile, refHolderList);
+                    }
+                    if (asset.GetType() == typeof(ConcatenatedAsset) && !CassetteSettings.uncachedToCachedFiles.ContainsKey(bundle.Path))
+                    {
+                        CassetteSettings.uncachedToCachedFiles.Add(bundle.Path, bundle.Path);
+                    }
+                    else if (!CassetteSettings.uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
+                    {
+                        CassetteSettings.uncachedToCachedFiles.Add(asset.SourceFile.FullPath, asset.SourceFile.FullPath);
+                    }
+                }
+                foreach (var assetPath in unprocessedAssetPaths)
+                {
+                    if (!CassetteSettings.uncachedToCachedFiles.ContainsKey(assetPath))
+                    {
+                        CassetteSettings.uncachedToCachedFiles.Add(assetPath, bundle.Path);
+                    }
                 }
             }
         }
@@ -203,17 +189,11 @@ namespace Cassette.Configuration
         /// </summary>
         /// <param name="key">The bundles key, which is also the file name</param>
         /// <returns>The bundle that has been has been cached in a file.</returns>
-        private bool GetFromDisk<T>(string key, T dehydratedBundle) 
-            where T : Bundle
+        private bool GetFromDisk(string key, Bundle bundle) 
         {
-            /*
-            if (!_locks.ContainsKey(key))
-            { 
-                _locks.Add(key, new object()); 
-            }*/
             var retValue = true;
             var hydratedAssetList = new List<IAsset>(); 
-            foreach (var asset in dehydratedBundle.Assets)
+            foreach (var asset in bundle.Assets)
             {
                 var systemAbsoluteFilename = CACHE_DIRECTORY + key +
                                              Convert.ToBase64String(asset.Hash).Replace("/", "1").Replace("+", "1").Replace("?", "1");
@@ -231,9 +211,7 @@ namespace Cassette.Configuration
                 var file = new FileSystemFile(Path.GetFileName(systemAbsoluteFilename), 
                    new FileSystemDirectory(Path.GetDirectoryName(systemAbsoluteFilename)),
                    systemAbsoluteFilename);
-                var fileAsset = new FileAsset(file, dehydratedBundle);
-                //hydratedAssetList.Add(new CachedConcatenatedAsset(file, fileAsset));
-                //if (Settings)
+                var fileAsset = new FileAsset(file, bundle);
                 using (var referencesForFile = new FileStream(systemAbsoluteFilename + "references", FileMode.Open))
                 {
                     var refHolderList = ProtoBuf.Serializer.Deserialize<List<ReferenceHolder>>(referencesForFile);
@@ -254,15 +232,13 @@ namespace Cassette.Configuration
                 {
                     CassetteSettings.uncachedToCachedFiles.Add(asset.SourceFile.FullPath, fileAsset.SourceFile.FullPath);
                 }
-
-                //asset.postProcessingStream = ProtoBuf.Serializer.Deserialize<Stream>(file);
             }
-            if (hydratedAssetList.Count == dehydratedBundle.Assets.Count)
+            if (hydratedAssetList.Count == bundle.Assets.Count)
             {
-                dehydratedBundle.Assets.Clear();
+                bundle.Assets.Clear();
                 foreach (var asset in hydratedAssetList)
                 {
-                    dehydratedBundle.Assets.Add(asset);
+                    bundle.Assets.Add(asset);
                 }
             }
             return retValue; 
