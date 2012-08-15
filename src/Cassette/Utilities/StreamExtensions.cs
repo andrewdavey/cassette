@@ -55,7 +55,7 @@ namespace Cassette.Utilities
             return new IsolatedStorageFileStream(path, mode, access, storage);
         }
 
-        public static bool FileExists(this IsolatedStorageFile storage, string fileName)
+        public static bool Exists(this IsolatedStorageFile storage, string fileName)
         {
             return storage.GetFileNames(fileName).Length > 0;
         }

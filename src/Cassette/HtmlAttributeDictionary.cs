@@ -9,10 +9,8 @@ namespace Cassette
     /// <remarks>
     /// Contains a collection of html attribute name/value pairs.
     /// </remarks>
-    [ProtoBuf.ProtoContract]
     public class HtmlAttributeDictionary : IEnumerable<KeyValuePair<string, string>>
     {
-        [ProtoBuf.ProtoMember(1)]
         readonly Dictionary<string, string> attributeStorage = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>

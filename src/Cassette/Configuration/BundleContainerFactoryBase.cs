@@ -19,20 +19,21 @@ namespace Cassette.Configuration
         public abstract IBundleContainer CreateBundleContainer();
 
 
-        protected Bundle ProcessSingleBundle(Bundle bundle, AssignHash hasher) 
+        protected Bundle ProcessSingleBundle(IFileHelper fileHelper, Dictionary<string, string> uncachedToCachedFiles, 
+            Bundle bundle, AssignHash hasher) 
         {
             Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
             hasher.Process(bundle, settings);
-            var bundleKey = CassetteSettings.bundles.GetCachebleString(bundle.Url);
-            if (CassetteSettings.bundles.ContainsKey(bundleKey, bundle))
+            var bundleKey = fileHelper.GetCachebleString(bundle.Url);
+            if (CassetteSettings.bundles.ContainsKey(fileHelper, uncachedToCachedFiles, bundleKey, bundle))
             {
-                bundle = CassetteSettings.bundles.GetBundle(bundleKey, bundle);
+                bundle = CassetteSettings.bundles.GetBundle(fileHelper, uncachedToCachedFiles, bundleKey, bundle);
             }
             else
             {
                 var unprocessedAssetPaths = CassetteSettings.bundles.getAssetPaths(bundle);
                 bundle.Process(settings);
-                CassetteSettings.bundles.AddBundle(bundleKey, bundle, unprocessedAssetPaths);
+                CassetteSettings.bundles.AddBundle(fileHelper, uncachedToCachedFiles, bundleKey, bundle, unprocessedAssetPaths);
             }
             return bundle;
         }
@@ -40,8 +41,8 @@ namespace Cassette.Configuration
         protected void ProcessAllBundles(IList<Bundle> bundles)
         {
             Trace.Source.TraceInformation("Processing bundles...");
-            if (!settings.IsDebuggingEnabled)
-            {
+            if (!settings.IsDebuggingEnabled) 
+            { 
                 foreach (var bundle in bundles)
                 {
                     bundle.Process(settings);
@@ -50,9 +51,10 @@ namespace Cassette.Configuration
             else
             {
                 var hasher = new AssignHash();
+                var diskBacker = new FileHelper();
                 for (var i = 0; i < bundles.Count; i++)
                 {
-                    bundles[i] = ProcessSingleBundle(bundles[i], hasher);
+                    bundles[i] = ProcessSingleBundle(diskBacker, CassetteSettings.uncachedToCachedFiles, bundles[i], hasher);
                     if (settings.IsDebuggingEnabled && typeof(StylesheetBundle).IsAssignableFrom(bundles[i].GetType()))
                     {
                         ((StylesheetBundle)bundles[i]).Renderer = new DebugStylesheetHtmlRenderer(settings.UrlGenerator);

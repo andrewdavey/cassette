@@ -82,9 +82,11 @@
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="Configuration\DiskBackedBundleCache.cs" />
     <Compile Include="Configuration\CompileTimeManifestBundleContainerFactory.cs" />
+    <Compile Include="Configuration\FileHelper.cs" />
     <Compile Include="Configuration\ExternalBundleGenerator.cs" />
     <Compile Include="Configuration\FilePathComparer.cs" />
     <Compile Include="Configuration\ICassetteConfigurationFactory.cs" />
+    <Compile Include="Configuration\IFileHelper.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="HtmlTemplates\Manifests\HtmlTemplateBundleManifestWriter.cs" />
     <Compile Include="IExternalBundle.cs" />
