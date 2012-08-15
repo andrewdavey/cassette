@@ -41,7 +41,7 @@ namespace Cassette
         /// Path to an asset or bundle.
         /// </summary>
         [ProtoBuf.ProtoMember(1)]
-        public string Path { get; private set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// The type of reference.

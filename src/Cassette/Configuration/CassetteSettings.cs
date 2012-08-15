@@ -29,7 +29,7 @@ namespace Cassette.Configuration
 
         public static DiskBackedBundleCache bundles = new DiskBackedBundleCache();
 
-        public Bundle uncachedFileAssets = null;
+        public static Dictionary<string, string> uncachedToCachedFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         
         public CassetteSettings(string cacheVersion)
         {

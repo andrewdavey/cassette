@@ -27,7 +27,6 @@ namespace Cassette.Configuration
             if (settings.IsDebuggingEnabled || true)
             {
                 hasher.Process(bundle, settings);
-                CassetteSettings.bundles.Settings = settings;
                 var bundleKey = CassetteSettings.bundles.GetCachebleString(bundle.Url);
                 if (CassetteSettings.bundles.ContainsKey(bundleKey, bundle))
                 {
@@ -36,8 +35,9 @@ namespace Cassette.Configuration
                 } 
                 else
                 {
+                    var unprocessedAssetPaths = CassetteSettings.bundles.getAssetPaths(bundle);
                     bundle.Process(settings);
-                    CassetteSettings.bundles.AddBundle(bundleKey, bundle);
+                    CassetteSettings.bundles.AddBundle(bundleKey, bundle, unprocessedAssetPaths);
                 }
             }
             else
@@ -101,6 +101,7 @@ namespace Cassette.Configuration
                         ((ScriptBundle)bundles[i]).Renderer = new DebugScriptBundleHtmlRenderer(settings.UrlGenerator);
                     }
                 }
+                CassetteSettings.bundles.FixReferences(bundles);
             }
             Trace.Source.TraceInformation("Bundle processing completed.");
         }
