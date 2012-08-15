@@ -78,7 +78,6 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BundleProcessing\AssignHash.cs" />
-    <Compile Include="BundleProcessing\CachedConcatenatedAsset.cs" />
     <Compile Include="BundleReferenceCollector.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="Configuration\DiskBackedBundleCache.cs" />

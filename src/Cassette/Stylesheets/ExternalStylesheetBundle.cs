@@ -7,12 +7,9 @@ using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {
-    [ProtoBuf.ProtoContract]
     class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
     {
-        [ProtoBuf.ProtoMember(1)]
         readonly string url;
-        [ProtoBuf.ProtoMember(2)]
         bool isDebuggingEnabled;
 
         public ExternalStylesheetBundle(string url)

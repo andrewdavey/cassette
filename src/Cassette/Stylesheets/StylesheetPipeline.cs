@@ -4,7 +4,6 @@ using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
-    [ProtoBuf.ProtoContract]
     public class StylesheetPipeline : MutablePipeline<StylesheetBundle>
     {
         public StylesheetPipeline()
@@ -12,11 +11,9 @@ namespace Cassette.Stylesheets
             StylesheetMinifier = new MicrosoftStylesheetMinifier();
         }
 
-        [ProtoBuf.ProtoMember(1)]
         public IAssetTransformer StylesheetMinifier { get; set; }
        
         // TODO: Delete this property
-        [ProtoBuf.ProtoMember(2)]
         public bool ConvertImageUrlsToDataUris { get; set; }
 
         protected override IEnumerable<IBundleProcessor<StylesheetBundle>> CreatePipeline(StylesheetBundle bundle, CassetteSettings settings)

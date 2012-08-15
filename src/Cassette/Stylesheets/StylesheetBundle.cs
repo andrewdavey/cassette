@@ -5,7 +5,6 @@ using Cassette.Stylesheets.Manifests;
 
 namespace Cassette.Stylesheets
 {
-    [ProtoBuf.ProtoContract(SkipConstructor = true)]
     public class StylesheetBundle : Bundle
     {
         public StylesheetBundle(string applicationRelativePath)
@@ -17,14 +16,12 @@ namespace Cassette.Stylesheets
         /// <summary>
         /// The value of the media attribute for this stylesheet's link element. For example, <example>print</example>.
         /// </summary>
-        [ProtoBuf.ProtoMember(1)]
         public string Media { get; set; }
 
         /// <summary>
         /// The Internet Explorer specific condition used control if the stylesheet should be loaded using an HTML conditional comment.
         /// For example, <example>"lt IE 9"</example>.
         /// </summary>
-        [ProtoBuf.ProtoMember(2)]
         public string Condition { get; set; }
 
         public IBundleProcessor<StylesheetBundle> Processor { get; set; }

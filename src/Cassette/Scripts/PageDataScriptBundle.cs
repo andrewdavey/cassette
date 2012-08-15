@@ -7,7 +7,6 @@ using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collectio
 
 namespace Cassette.Scripts
 {
-    [ProtoBuf.ProtoContract]
     class PageDataScriptBundle : InlineScriptBundle
     {
         public PageDataScriptBundle(string globalVariable, object data)

@@ -8,14 +8,10 @@ using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
-    [ProtoBuf.ProtoContract]
     class ExternalScriptBundle : ScriptBundle, IExternalBundle, IBundleHtmlRenderer<ScriptBundle>
     {
-        [ProtoBuf.ProtoMember(1)]
         readonly string url;
-        [ProtoBuf.ProtoMember(2)]
         readonly string fallbackCondition;
-        [ProtoBuf.ProtoMember(3)]
         bool isDebuggingEnabled;
 
         public ExternalScriptBundle(string url)

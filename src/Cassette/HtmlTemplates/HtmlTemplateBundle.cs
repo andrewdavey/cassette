@@ -5,7 +5,6 @@ using Cassette.Manifests;
 
 namespace Cassette.HtmlTemplates
 {
-    [ProtoBuf.ProtoContract]
     public class HtmlTemplateBundle : Bundle
     {
         public HtmlTemplateBundle(string applicationRelativePath)

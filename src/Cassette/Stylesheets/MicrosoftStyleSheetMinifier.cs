@@ -5,7 +5,6 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.Stylesheets
 {
-    [ProtoBuf.ProtoContract]
     public class MicrosoftStylesheetMinifier : IAssetTransformer
     {
         public MicrosoftStylesheetMinifier()
@@ -18,7 +17,6 @@ namespace Cassette.Stylesheets
             this.cssSettings = cssSettings;
         }
 
-        [ProtoBuf.ProtoMember(1)]
         readonly CssSettings cssSettings;
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)

@@ -64,13 +64,6 @@ namespace Cassette.Configuration
             return _bundles[key];
         }
 
-        /// <summary>
-        /// Check if the cache contains the key on disk or in memory. Load it
-        /// from disk 
-        /// </summary>
-        /// <param name="key">The key to check</param>
-        /// <param name="bundle"></param>
-        /// <returns></returns>
         public bool ContainsKey(string key, Bundle bundle) 
         {
             if (_bundles.ContainsKey(key))
