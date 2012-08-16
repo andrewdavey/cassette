@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Cassette.BundleProcessing;
+using Newtonsoft.Json;
 
 namespace Cassette.Configuration
 {
@@ -25,12 +26,12 @@ namespace Cassette.Configuration
                         {
                             path = assetReference.Path,
                             lineNumber = assetReference.SourceLineNumber,
-                            assetReferenceType = assetReference.Type
+                            assetReferenceType = assetReference.Type 
                         });
                     }
-                    ProtoBuf.Serializer.Serialize(referencesForFile, refHolderList);
+                    var output = Encoding.Default.GetBytes(JsonConvert.SerializeObject(refHolderList));
+                    referencesForFile.Write(output, 0, output.Length);
                 }
-                
             }
         }
 
@@ -38,7 +39,9 @@ namespace Cassette.Configuration
         {
             using (var referencesForFile = new FileStream(systemAbsoluteFilename + "references", FileMode.Open))
             {
-                var refHolderList = ProtoBuf.Serializer.Deserialize<List<ReferenceHolder>>(referencesForFile);
+                var input = new byte[referencesForFile.Length];
+                referencesForFile.Read(input, 0, input.Length);
+                var refHolderList = JsonConvert.DeserializeObject<List<ReferenceHolder>>(Encoding.Default.GetString(input));
                 foreach (var refHolder in refHolderList)
                 {
                     if (refHolder.assetReferenceType == AssetReferenceType.RawFilename)
@@ -92,14 +95,10 @@ namespace Cassette.Configuration
             return hash.Replace("/", "1").Replace("+", "1").Replace("?", "1");
         }
 
-        [ProtoBuf.ProtoContract]
         private class ReferenceHolder
         {
-            [ProtoBuf.ProtoMember(1)]
             public string path;
-            [ProtoBuf.ProtoMember(2)]
             public int lineNumber;
-            [ProtoBuf.ProtoMember(3)]
             public AssetReferenceType assetReferenceType;
         }
     }

@@ -63,7 +63,7 @@ namespace Cassette.Configuration
         #region AddBundle
 
         [Fact]
-        public void DiskBackedBundleCache_AddBundle_EmptyBundleCachedAndNotCached()
+        public void AddBundle_EmptyBundleCachedAndNotCached()
         {
             fileHelper.Setup(fh => fh.CreateFileOnDiskFromAsset(It.IsAny<Bundle>(),
                                                                 It.IsAny<IAsset>(), It.IsAny<string>()))
@@ -79,7 +79,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void DiskBackedBundleCache_AddBundle_ConcatenatedAsset()
+        public void AddBundle_ConcatenatedAsset()
         {
             fileHelper.Setup(fh => fh.CreateFileOnDiskFromAsset(It.IsAny<Bundle>(),
                                                                 It.IsAny<IAsset>(), It.IsAny<string>()))
@@ -94,7 +94,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void DiskBackedBundleCache_AddBundle_FileAsset()
+        public void AddBundle_FileAsset()
         {
             fileHelper.Setup(fh => fh.CreateFileOnDiskFromAsset(It.IsAny<Bundle>(),
                                                                 It.IsAny<IAsset>(), It.IsAny<string>()))
@@ -113,7 +113,7 @@ namespace Cassette.Configuration
         #region GetAssetPaths
 
         [Fact]
-        public void DiskBackedBundleCache_GetAssetPaths_EmptyConcatenatedFile()
+        public void GetAssetPaths_EmptyConcatenatedFile()
         {
             diskBackedBundleCache.GetAssetPaths(emptyBundle).ShouldBeEmpty();
             diskBackedBundleCache.GetAssetPaths(fileBundle).ShouldContain(fileAsset.SourceFile.FullPath);
@@ -125,7 +125,7 @@ namespace Cassette.Configuration
         #region GetBundle
 
         [Fact]
-        public void DiskBackedBundleCache_GetBundle_NotPresent()
+        public void GetBundle_NotPresent()
         {
             fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
                 .Returns(false)
@@ -135,7 +135,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void DiskBackedBundleCache_GetBundle_PresentIfNoAssets()
+        public void GetBundle_PresentIfNoAssets()
         {
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                 .Returns(false)
@@ -145,7 +145,7 @@ namespace Cassette.Configuration
         }
         
         [Fact]
-        public void DiskBackedBundleCache_GetBundle_PresentWithFileBundle()
+        public void GetBundle_PresentWithFileBundle()
         {
             /*fileHelper.Setup(fh => fh.GetAssetReferencesFromDisk(It.IsAny<FileAsset>(), It.IsAny<string>()))
                                                                 .Verifiable();*/
@@ -172,7 +172,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void DiskBackedBundleCache_GetBundle_FailWithConcatenatedBundle()
+        public void GetBundle_FailWithConcatenatedBundle()
         {
             /*fileHelper.Setup(fh => fh.GetAssetReferencesFromDisk(It.IsAny<FileAsset>(), It.IsAny<string>()))
                                                                 .Verifiable();*/
@@ -194,7 +194,7 @@ namespace Cassette.Configuration
         /// Will not check if a bundle is present or not present as that is covered with GetBundle testing.
       
         [Fact]
-        public void DiskBackedBundleCache_ContainsKey_PresentInMemory()
+        public void ContainsKey_PresentInMemory()
         {
             fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
                 .Returns(true);
@@ -219,7 +219,7 @@ namespace Cassette.Configuration
         }
 
         [Fact]
-        public void DiskBackedBundleCache_ContainsKey_FailWithConcatenatedBundle()
+        public void ContainsKey_FailWithConcatenatedBundle()
         {
             /*fileHelper.Setup(fh => fh.GetAssetReferencesFromDisk(It.IsAny<FileAsset>(), It.IsAny<string>()))
                                                                 .Verifiable();*/
@@ -239,7 +239,7 @@ namespace Cassette.Configuration
         #region FixReferences
 
         [Fact]
-        public void DiskBackedBundleCache_FixReferences_FileAndEmptyBundles()
+        public void FixReferences_FileAndEmptyBundles()
         {
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                                                                 .Returns(true);
@@ -258,7 +258,7 @@ namespace Cassette.Configuration
         ///just checking unprocessedAssetPath as other code paths checked by AddBundle tests
         
         [Fact]
-        public void DiskBackedBundleCache_AddToDisk_UnprocessedAssetPaths()
+        public void AddToDisk_UnprocessedAssetPaths()
         {
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.Is<string>(s => s.Equals(fileAsset.SourceFile.FullPath))))
                 .Returns(false)
@@ -271,13 +271,19 @@ namespace Cassette.Configuration
             uncachedToCachedFiles.Verify();
             uncachedToCachedFiles.Verify(d => d.Add(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
         }
-
+        
         #endregion
 
         #region GetFromDisk
-
-        ///None necessary. All code paths are checked by the GetBundle and ContainsKey test
+        ///Many code paths are checked by the GetBundle and ContainsKey test
+         
+        [Fact]
+        public void GetFromDisk_CheckProperRehydration()
+        {
+            
+        }
 
         #endregion
+
     }
 }
