@@ -31,7 +31,7 @@ namespace Cassette.Configuration
             }
             else
             {
-                var unprocessedAssetPaths = CassetteSettings.bundles.getAssetPaths(bundle);
+                var unprocessedAssetPaths = CassetteSettings.bundles.GetAssetPaths(bundle);
                 bundle.Process(settings);
                 CassetteSettings.bundles.AddBundle(fileHelper, uncachedToCachedFiles, bundleKey, bundle, unprocessedAssetPaths);
             }

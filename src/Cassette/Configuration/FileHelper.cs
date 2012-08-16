@@ -34,7 +34,7 @@ namespace Cassette.Configuration
             }
         }
 
-        public void GetAssetFromDisk(FileAsset fileAsset, string systemAbsoluteFilename)
+        public void GetAssetReferencesFromDisk(FileAsset fileAsset, string systemAbsoluteFilename)
         {
             using (var referencesForFile = new FileStream(systemAbsoluteFilename + "references", FileMode.Open))
             {

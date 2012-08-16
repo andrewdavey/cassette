@@ -16,7 +16,7 @@ namespace Cassette.Configuration
     public class DiskBackedBundleCache
     {
         const string CACHE_DIRECTORY = @"C:\DiskCachedBundles\";
-        Dictionary<string, Bundle> _bundles;
+        IDictionary<string, Bundle> _bundles;
 
         /// <summary>
         /// Creates the directory if needed.
@@ -36,27 +36,35 @@ namespace Cassette.Configuration
         /// <typeparam name="T">A descendent of Bundle</typeparam>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void AddBundle(IFileHelper fileHelper, Dictionary<string, string> uncachedToCachedFiles, string key, 
+        public void AddBundle(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key, 
             Bundle value, IEnumerable<string> unprocessedAssetPaths)
         {
             if (!_bundles.ContainsKey(key))
             {
                 _bundles.Add(key, value);
-                AddToDisk(fileHelper, uncachedToCachedFiles, key, value, unprocessedAssetPaths);
+                AddToDisk(fileHelper, uncachedToCachedFiles, value, unprocessedAssetPaths);
             }
         }
 
-        public IEnumerable<string> getAssetPaths(Bundle bundle)
+        public IEnumerable<string> GetAssetPaths(Bundle bundle)
         {
             var assetPaths = new List<string>();
             foreach (var asset in bundle.Assets)
             {
+                if (asset is ConcatenatedAsset)
+                {
+                    continue;
+                }
                 assetPaths.Add(asset.SourceFile.FullPath);
             }
             return assetPaths;
         }
 
-        public Bundle GetBundle(IFileHelper fileHelper, Dictionary<string, string> uncachedToCachedFiles, string key, 
+        /// <summary>
+        /// Assumes runs before processing, so no concatenated bundles. May throw if it receives
+        /// a concatenated bundle.
+        /// </summary>
+        public Bundle GetBundle(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key, 
             Bundle bundle)
         {
             if (!ContainsKey(fileHelper, uncachedToCachedFiles, key, bundle))
@@ -66,14 +74,18 @@ namespace Cassette.Configuration
             return _bundles[key];
         }
 
-        public bool ContainsKey(IFileHelper fileHelper, Dictionary<string, string> uncachedToCachedFiles, string key, 
+        /// <summary>
+        /// Assumes runs before processing, so no concatenated bundles. May throw if it receives
+        /// a concatenated bundle.
+        /// </summary>
+        public bool ContainsKey(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key, 
             Bundle bundle)
         {
             if (_bundles.ContainsKey(key))
             {
                 return true;
             }
-            var returnValue = GetFromDisk(fileHelper, uncachedToCachedFiles, key, bundle);
+            var returnValue = GetFromDisk(fileHelper, uncachedToCachedFiles, bundle);
             if (returnValue)
             {
                 _bundles.Add(key, bundle);
@@ -129,7 +141,7 @@ namespace Cassette.Configuration
         /// </summary>
         /// <param name="key">The key of the file</param>
         /// <param name="value">The cached bundle.</param>
-        void AddToDisk(IFileHelper fileHelper, Dictionary<string, string> uncachedToCachedFiles, string key, Bundle bundle, 
+        void AddToDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle, 
             IEnumerable<string> unprocessedAssetPaths)
         {
             foreach (var asset in bundle.Assets)
@@ -157,46 +169,46 @@ namespace Cassette.Configuration
 
 
         /// <summary>
-        /// Gets the given bundle from the disk.
+        /// Gets the given bundle from the disk. Should not take any concatenated assets as should run
+        /// before the processing the generates those assets.
         /// </summary>
         /// <param name="key">The bundles key, which is also the file name</param>
         /// <returns>The bundle that has been has been cached in a file.</returns>
-        bool GetFromDisk(IFileHelper fileHelper, Dictionary<string, string> uncachedToCachedFiles, string key, Bundle bundle)
+        bool GetFromDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle)
         {
-            var retValue = true;
-            var hydratedAssetList = new List<IAsset>();
+            var retValue = false;
+            var assetList = new List<IAsset>();
             foreach (var asset in bundle.Assets)
             {
                 var systemAbsoluteFilename = fileHelper.GetFileName(asset, bundle, CACHE_DIRECTORY);
                 if (!fileHelper.Exists(systemAbsoluteFilename))
                 {
-                    retValue = false;
                     continue;
                 }
                 if (fileHelper.GetLastAccessTime(systemAbsoluteFilename).Date != DateTime.Today)
                 {
                     fileHelper.Delete(systemAbsoluteFilename);
-                    retValue = false;
                     continue;
                 }
                 var file = new FileSystemFile(Path.GetFileName(systemAbsoluteFilename),
                                               new FileSystemDirectory(Path.GetDirectoryName(systemAbsoluteFilename)),
                                               systemAbsoluteFilename);
                 var fileAsset = new FileAsset(file, bundle);
-                fileHelper.GetAssetFromDisk(fileAsset, systemAbsoluteFilename);
-                hydratedAssetList.Add(fileAsset);
+                fileHelper.GetAssetReferencesFromDisk(fileAsset, systemAbsoluteFilename);
+                assetList.Add(fileAsset);
                 if (!uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
                 {
                     uncachedToCachedFiles.Add(asset.SourceFile.FullPath, fileAsset.SourceFile.FullPath);
                 }
             }
-            if (hydratedAssetList.Count == bundle.Assets.Count)
+            if (assetList.Count == bundle.Assets.Count)
             {
                 bundle.Assets.Clear();
-                foreach (var asset in hydratedAssetList)
+                foreach (var asset in assetList)
                 {
                     bundle.Assets.Add(asset);
                 }
+                retValue = true;
             }
             return retValue;
         }
