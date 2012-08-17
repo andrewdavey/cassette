@@ -53,9 +53,9 @@ namespace Cassette.Configuration
                                        { fileHelper, uncachedToCachedFiles, bundle, unprocessedAssetPaths });
         }
 
-        bool GetFromDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle)
+        void GetFromDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle)
         {
-            return (bool) GetFromDiskMethodInfo.Invoke(diskBackedBundleCache,
+            GetFromDiskMethodInfo.Invoke(diskBackedBundleCache,
                                          new object[] { fileHelper, uncachedToCachedFiles, bundle });
         }
 
@@ -75,20 +75,6 @@ namespace Cassette.Configuration
             diskBackedBundleCache.AddBundle(fileHelper.Object, uncachedToCachedFiles.Object, emptyBundle.Path, emptyBundle, unprocessedAssetPaths);
             diskBackedBundleCache.AddBundle(fileHelper.Object, uncachedToCachedFiles.Object, emptyBundle.Path, emptyBundle, unprocessedAssetPaths);
             uncachedToCachedFiles.Verify(d => d.ContainsKey(unprocessedAssetPaths.First()), Times.Once());
-        }
-
-        
-        public void AddBundle_ConcatenatedAsset()
-        {
-            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), It.IsAny<string>()))
-                                                                .Verifiable();
-            uncachedToCachedFiles.Setup(d => d.ContainsKey(concatenatedBundle.Path))
-                .Returns(false)
-                .Verifiable();
-            uncachedToCachedFiles.Setup(d => d.Add(concatenatedBundle.Path, concatenatedBundle.Path))
-                .Verifiable();
-            diskBackedBundleCache.AddBundle(fileHelper.Object, uncachedToCachedFiles.Object, concatenatedBundle.Path, concatenatedBundle, unprocessedAssetPaths);
-            fileHelper.Verify();
         }
 
         [Fact]
@@ -167,21 +153,6 @@ namespace Cassette.Configuration
             uncachedToCachedFiles.Verify();
         }
 
-        
-        public void GetBundle_FailWithConcatenatedBundle()
-        {
-            fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
-                .Returns(true);
-            fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
-                .Returns(DateTime.Today);
-            uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
-                .Returns(false);
-            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
-                .Returns("[]");
-            uncachedToCachedFiles.Setup(d => d.Add(It.IsAny<string>(), It.IsAny<string>()));
-            Assert.Throws<NotImplementedException>(() => diskBackedBundleCache.GetBundle(fileHelper.Object, uncachedToCachedFiles.Object, concatenatedBundle.Path, concatenatedBundle));
-        }
-        
         #endregion
 
         #region ContainsKey
@@ -205,30 +176,9 @@ namespace Cassette.Configuration
                 .Throws(new Exception("Did not find bundle that should have been in memory."));
             fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
                 .Throws(new Exception("Did not find bundle that should have been in memory."));
-            /*fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
-                .Throws(new Exception("Did not find bundle that should have been in memory."));*/
-
             diskBackedBundleCache.ContainsKey(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle.Path, fileBundle);
         }
 
-        
-        public void ContainsKey_FailWithConcatenatedBundle()
-        {
-            /*fileHelper.Setup(fh => fh.GetAssetReferencesFromDisk(It.IsAny<FileAsset>(), It.IsAny<string>()))
-                                                                .Verifiable();*/
-            fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
-                .Returns(true);
-            fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
-                .Returns(DateTime.Today);
-            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
-                .Returns("[]");
-            /*fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
-                .Returns("test string");*/
-            uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
-                .Returns(false);
-            uncachedToCachedFiles.Setup(d => d.Add(It.IsAny<string>(), It.IsAny<string>()));
-            Assert.Throws<NotImplementedException>(() => diskBackedBundleCache.ContainsKey(fileHelper.Object, uncachedToCachedFiles.Object, concatenatedBundle.Path, concatenatedBundle));
-        }
         #endregion
 
         #region FixReferences
