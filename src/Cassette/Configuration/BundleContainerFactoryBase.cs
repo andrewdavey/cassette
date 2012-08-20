@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
 using Cassette.Scripts;
@@ -24,7 +25,7 @@ namespace Cassette.Configuration
         {
             Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
             hasher.Process(bundle, settings);
-            var bundleKey = CassetteSettings.bundles.GetCachebleHash(bundle.Url);
+            var bundleKey = CassetteSettings.bundles.GetSafeString(Encoding.Default.GetString(bundle.Hash));
             if (CassetteSettings.bundles.ContainsKey(fileHelper, uncachedToCachedFiles, bundleKey, bundle))
             {
                 bundle = CassetteSettings.bundles.GetBundle(fileHelper, uncachedToCachedFiles, bundleKey, bundle);

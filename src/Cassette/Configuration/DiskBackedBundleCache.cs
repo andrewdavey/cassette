@@ -18,7 +18,7 @@ namespace Cassette.Configuration
         /// </summary>
         public DiskBackedBundleCache(IFileHelper fileHelper)
         {
-            fileHelper.PrepareCachingDirectory(CacheDirectory, GetCachebleHash(GetAssemblyLastModifiedTime()));
+            fileHelper.PrepareCachingDirectory(CacheDirectory, GetSafeString(GetAssemblyLastModifiedTime()));
             _bundles = new Dictionary<string, Bundle>();
         }
 
@@ -100,7 +100,7 @@ namespace Cassette.Configuration
                         if (reference.Type == AssetReferenceType.SameBundle ||
                             reference.Type == AssetReferenceType.DifferentBundle)
                         {
-                            if (!uncachedToCachedFiles.ContainsValue(reference.Path))
+                            if (uncachedToCachedFiles.ContainsKey(reference.Path))
                             {
                                 reference.Path = uncachedToCachedFiles[reference.Path];
                             }
@@ -125,7 +125,7 @@ namespace Cassette.Configuration
                     uncachedToCachedFiles.Add(asset.SourceFile.FullPath, asset.SourceFile.FullPath);
                 }
             }
-            foreach (string assetPath in unprocessedAssetPaths)
+            foreach (string assetPath in unprocessedAssetPaths) 
             {
                 if (!uncachedToCachedFiles.ContainsKey(assetPath))
                 {
@@ -142,6 +142,7 @@ namespace Cassette.Configuration
         {
             bool retValue = false;
             var assetList = new List<IAsset>();
+            var assetSpecificLookup = new List<KeyValuePair<string, string>>();
             foreach (IAsset asset in bundle.Assets)
             {
                 string systemAbsoluteFilename = GetFileName(asset, bundle, CacheDirectory);
@@ -162,7 +163,7 @@ namespace Cassette.Configuration
                 assetList.Add(fileAsset);
                 if (!uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
                 {
-                    uncachedToCachedFiles.Add(asset.SourceFile.FullPath, fileAsset.SourceFile.FullPath);
+                    assetSpecificLookup.Add(new KeyValuePair<string, string>(asset.SourceFile.FullPath, fileAsset.SourceFile.FullPath));
                 }
             }
             if (bundle.Assets.Count == assetList.Count)
@@ -171,6 +172,10 @@ namespace Cassette.Configuration
                 foreach (IAsset asset in assetList)
                 {
                     bundle.Assets.Add(asset);
+                }
+                foreach (var uncachedToCachedPair in assetSpecificLookup)
+                {
+                    uncachedToCachedFiles.Add(uncachedToCachedPair.Key, uncachedToCachedPair.Value);
                 }
                 retValue = true;
             }
@@ -215,7 +220,7 @@ namespace Cassette.Configuration
         }
 
         /// <summary>
-        /// Turns the bundleUrl into a string that is still a unique hash but 
+        /// Turns the bundleUrl into a string that is still a unique str but 
         /// is also able to be used a file name.
         /// </summary>
         /// <param name="bundleUrl">the original bundleUrl</param>
@@ -229,10 +234,11 @@ namespace Cassette.Configuration
         {
             string assetExtension = Path.GetExtension(asset.SourceFile.FullPath);
             return cacheDirectory
+                   + Path.GetFileNameWithoutExtension(asset.SourceFile.FullPath)
                    + (assetExtension.Length > 0
-                          ? GetCachebleString(asset.SourceFile.FullPath.Replace(assetExtension, ""))
+                          ? GetSafeString(asset.SourceFile.FullPath.Replace(assetExtension, ""))
                           : "")
-                   + GetCachebleHash(Convert.ToBase64String(asset.Hash) + GetAssemblyLastModifiedTime()) +
+                   + GetSafeString(Convert.ToBase64String(asset.Hash) + GetAssemblyLastModifiedTime()) +
                    assetExtension;
         }
 
@@ -248,9 +254,13 @@ namespace Cassette.Configuration
             return lastModified;
         }
 
-        public string GetCachebleHash(string hash)
+        public string GetSafeString(string str)
         {
-            return hash.Replace("/", "1").Replace("+", "1").Replace("?", "1");
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                str = str.Replace(c, '1');
+            }
+            return str.Replace('_', '1').Replace('+', '1');
         }
 
         #region Nested type: ReferenceHolder

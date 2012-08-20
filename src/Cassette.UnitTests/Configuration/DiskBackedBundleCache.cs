@@ -240,6 +240,35 @@ namespace Cassette.Configuration
         
         #endregion
 
+        #region GetFromDisk
+
+        [Fact]
+        public void GetFromDisk_AllButOneAssetsFoundOnDisk()
+        {
+            var stubFileCreation = typeof(Asset_Tests).GetMethod("StubFile", BindingFlags.NonPublic | BindingFlags.Instance);
+            var fileAsset2 = new FileAsset((IFile)stubFileCreation.Invoke(new Asset_Tests(), 
+                new object[] { "asset content", "~/dont" }), fileBundle);
+            fileBundle.Assets.Add(fileAsset2);
+
+            fileHelper.Setup(fh => fh.Exists(It.Is<string>(s => s.Contains("\\pK35VRqYM2h2uRH9XIbkKnzqc8U"))))
+                .Returns(false);
+            fileHelper.Setup(fh => fh.Exists(It.Is<string>(s => !s.Contains("\\pK35VRqYM2h2uRH9XIbkKnzqc8U"))))
+                .Returns(true);
+            fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
+                .Returns(DateTime.Today);
+            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
+                .Returns("[]");
+
+            uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
+                .Returns(false);
+            uncachedToCachedFiles.Setup(d => d.Add(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(new Exception(
+                        "Tried add a cached asset to the lookup dictionary when the bundle was not fully cached"));
+            GetFromDisk(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle);
+        }
+
+        #endregion
+
         #region CreateFileOnDiskFromAsset
         ///Many code paths are checked by other tests
 
