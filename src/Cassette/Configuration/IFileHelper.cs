@@ -6,7 +6,7 @@ namespace Cassette.Configuration
     {
         void Write(string filename, string writeText);
         string ReadAllText(string filename);
-        bool Exists(string fileName);
+        bool Exists(string fileName); 
         DateTime GetLastAccessTime(string filename);
         void Delete(string fileName);
         void PrepareCachingDirectory(string cacheDirectory, string cacheVersion);
