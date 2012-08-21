@@ -742,16 +742,10 @@ namespace Cassette
                 throw new InvalidOperationException("BuildReferences must be called once before IncludeReferencesAndSortBundles can be called.");
             }
 
-            var partitioned = PartitionByBaseType(bundlesToSort);
-            var sortedPartitions = partitioned.Select(bundlesOfSameType =>
-            {
-                var bundlesArray = bundlesOfSameType.ToArray();
-                var all = GetAllRequiredBundles(bundlesArray);
-                var graph = BuildBundleGraph(bundleImmediateReferences, all);
-                return graph.TopologicalSort();
-            });
-
-            return sortedPartitions.Aggregate(Enumerable.Empty<Bundle>(), (a, b) => a.Concat(b));
+            var all = GetAllRequiredBundles(bundlesToSort);
+            var partitioned = PartitionByBaseType(all).SelectMany(b => b).ToArray();
+            var graph = BuildBundleGraph(bundleImmediateReferences, partitioned);
+            return graph.TopologicalSort();
         }
 
         IEnumerable<IEnumerable<Bundle>> PartitionByBaseType(IEnumerable<Bundle> bundlesToSort)

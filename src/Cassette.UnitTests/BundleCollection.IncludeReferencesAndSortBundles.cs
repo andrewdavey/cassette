@@ -159,6 +159,27 @@ namespace Cassette
             });
         }
 
+        [Fact]
+        public void WhenInterdependenciesBetweenBundlesOfDifferentType_DoesNotDuplicateBundles()
+        {
+            var bundleA = new ScriptBundle("~/a");
+            var bundleB = new StylesheetBundle("~/b");
+            var bundleC = new TestableBundle("~/c");
+            bundleC.AddReference("~/a");
+
+            var bundles = new Bundle[] { bundleA, bundleB, bundleC };
+            var collection = CreateBundleCollection(bundles);
+            collection.BuildReferences();
+            var sorted = collection.IncludeReferencesAndSortBundles(bundles).ToArray();
+
+            sorted.ShouldEqual(new Bundle[]
+            {
+                bundleB,
+                bundleA,
+                bundleC 
+            });
+        }
+
         BundleCollection CreateBundleCollection(IEnumerable<Bundle> bundles)
         {
             var collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
