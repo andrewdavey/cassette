@@ -11,6 +11,8 @@ namespace Cassette.Configuration
 {
     class FileHelper : IFileHelper
     {
+        static readonly object locker = new object();
+
         public void Write(string filename, string writeText)
         {
             File.WriteAllText(filename, writeText);
@@ -58,9 +60,12 @@ namespace Cassette.Configuration
             else if (Directory.GetLastWriteTime(cacheDirectory).Date < DateTime.Today.Date ||
                 !File.Exists(cacheDirectory + cacheVersion))
             {
-                new DirectoryInfo(cacheDirectory).GetFiles("*", SearchOption.AllDirectories)
-                    .ToList().ForEach(f => f.Delete());
-                File.Create(cacheDirectory + cacheVersion);
+                lock (locker)
+                {
+                    new DirectoryInfo(cacheDirectory).GetFiles("*", SearchOption.AllDirectories)
+                        .ToList().ForEach(f => f.Delete());
+                    File.Create(cacheDirectory + cacheVersion);
+                }
             }
         }
     }
