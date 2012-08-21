@@ -1,4 +1,5 @@
 using System;
+using Cassette.IO;
 
 namespace Cassette.Configuration
 {
@@ -10,5 +11,7 @@ namespace Cassette.Configuration
         DateTime GetLastAccessTime(string filename);
         void Delete(string fileName);
         void PrepareCachingDirectory(string cacheDirectory, string cacheVersion);
+        void CreateDirectory(string directory);
+        IFile GetFileSystemFile(IDirectory directory, string systemAbsoluteFilename, string cacheDirectory);
     }
 }

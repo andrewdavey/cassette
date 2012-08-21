@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Cassette.BundleProcessing;
+using Cassette.IO;
 using Newtonsoft.Json;
 
 namespace Cassette.Configuration
@@ -20,9 +21,22 @@ namespace Cassette.Configuration
             return File.ReadAllText(filename);
         }
 
+        public void CreateDirectory(string directory)
+        {
+            Directory.CreateDirectory(directory);
+        }
+
         public bool Exists(string fileName)
         {
             return File.Exists(fileName);
+        }
+
+        public IFile GetFileSystemFile(IDirectory directory, string systemAbsoluteFilename, 
+            string cacheDirectory)
+        {
+            return new FileSystemFile(Path.GetFileName(systemAbsoluteFilename),
+                    directory.GetDirectory(Path.GetDirectoryName(systemAbsoluteFilename)),
+                    systemAbsoluteFilename);
         }
 
         public DateTime GetLastAccessTime(string filename)
@@ -44,7 +58,8 @@ namespace Cassette.Configuration
             else if (Directory.GetLastWriteTime(cacheDirectory).Date < DateTime.Today.Date ||
                 !File.Exists(cacheDirectory + cacheVersion))
             {
-                new DirectoryInfo(cacheDirectory).GetFiles().ToList().ForEach(f => f.Delete());
+                new DirectoryInfo(cacheDirectory).GetFiles("*", SearchOption.AllDirectories)
+                    .ToList().ForEach(f => f.Delete());
                 File.Create(cacheDirectory + cacheVersion);
             }
         }

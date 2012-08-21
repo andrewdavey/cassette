@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
+using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
@@ -20,15 +21,15 @@ namespace Cassette.Configuration
         public abstract IBundleContainer CreateBundleContainer();
 
 
-        protected Bundle ProcessSingleBundle(IFileHelper fileHelper, Dictionary<string, string> uncachedToCachedFiles, 
-            Bundle bundle, AssignHash hasher) 
+        protected Bundle ProcessSingleBundle(IFileHelper fileHelper, IDirectory directory,
+            Dictionary<string, string> uncachedToCachedFiles, Bundle bundle, AssignHash hasher) 
         {
             Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
             hasher.Process(bundle, settings);
             var bundleKey = CassetteSettings.bundles.GetSafeString(Encoding.Default.GetString(bundle.Hash));
-            if (CassetteSettings.bundles.ContainsKey(fileHelper, uncachedToCachedFiles, bundleKey, bundle))
+            if (CassetteSettings.bundles.ContainsKey(fileHelper, directory, uncachedToCachedFiles, bundleKey, bundle))
             {
-                bundle = CassetteSettings.bundles.GetBundle(fileHelper, uncachedToCachedFiles, bundleKey, bundle);
+                bundle = CassetteSettings.bundles.GetBundle(fileHelper, directory, uncachedToCachedFiles, bundleKey, bundle);
             }
             else
             {
@@ -53,9 +54,10 @@ namespace Cassette.Configuration
             {
                 var hasher = new AssignHash();
                 var diskBacker = new FileHelper();
+                var directory = new FileSystemDirectory(DiskBackedBundleCache.CacheDirectory);
                 for (var i = 0; i < bundles.Count; i++)
                 {
-                    bundles[i] = ProcessSingleBundle(diskBacker, CassetteSettings.uncachedToCachedFiles, bundles[i], hasher);
+                    bundles[i] = ProcessSingleBundle(diskBacker, directory, CassetteSettings.uncachedToCachedFiles, bundles[i], hasher);
                     if (typeof(StylesheetBundle).IsAssignableFrom(bundles[i].GetType()))
                     {
                         ((StylesheetBundle)bundles[i]).Renderer = new DebugStylesheetHtmlRenderer(settings.UrlGenerator);

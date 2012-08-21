@@ -9,7 +9,7 @@ namespace Cassette.Configuration
 {
     public class DiskBackedBundleCache
     {
-        const string CacheDirectory = @"C:\DiskCachedBundles\";
+        public const string CacheDirectory = @"C:\DiskCachedBundles\";
         readonly IDictionary<string, Bundle> _bundles;
         string lastModified;
 
@@ -49,10 +49,10 @@ namespace Cassette.Configuration
         /// Assumes runs before processing, so no concatenated bundles. May throw if it receives
         /// a concatenated bundle.
         /// </summary>
-        public Bundle GetBundle(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key,
-                                Bundle bundle)
+        public Bundle GetBundle(IFileHelper fileHelper, IDirectory directory, IDictionary<string, string> uncachedToCachedFiles, 
+            string key, Bundle bundle)
         {
-            if (!ContainsKey(fileHelper, uncachedToCachedFiles, key, bundle))
+            if (!ContainsKey(fileHelper, directory, uncachedToCachedFiles, key, bundle))
             {
                 return null;
             }
@@ -63,14 +63,14 @@ namespace Cassette.Configuration
         /// Assumes runs before processing, so no concatenated bundles. May throw if it receives
         /// a concatenated bundle.
         /// </summary>
-        public bool ContainsKey(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key,
-                                Bundle bundle)
+        public bool ContainsKey(IFileHelper fileHelper, IDirectory directory, IDictionary<string, string> uncachedToCachedFiles, 
+            string key, Bundle bundle)
         {
             if (_bundles.ContainsKey(key))
             {
                 return true;
             }
-            bool returnValue = GetFromDisk(fileHelper, uncachedToCachedFiles, bundle);
+            bool returnValue = GetFromDisk(fileHelper, directory, uncachedToCachedFiles, bundle);
             if (returnValue)
             {
                 _bundles.Add(key, bundle);
@@ -84,22 +84,22 @@ namespace Cassette.Configuration
         /// </summary>
         public void FixReferences(Dictionary<string, string> uncachedToCachedFiles, IList<Bundle> bundles)
         {
-            foreach (Bundle bundle in bundles)
+            foreach (var bundle in bundles)
             {
                 if (!uncachedToCachedFiles.ContainsKey(bundle.Path))
                 {
                     uncachedToCachedFiles.Add(bundle.Path, bundle.Path);
                 }
             }
-            foreach (Bundle bundle in bundles)
+            foreach (var bundle in bundles)
             {
-                foreach (IAsset asset in bundle.Assets)
+                foreach (var asset in bundle.Assets)
                 {
-                    foreach (AssetReference reference in asset.References)
+                    foreach (var reference in asset.References)
                     {
                         if (reference.Type == AssetReferenceType.SameBundle ||
                             reference.Type == AssetReferenceType.DifferentBundle)
-                        {
+                        { 
                             if (uncachedToCachedFiles.ContainsKey(reference.Path))
                             {
                                 reference.Path = uncachedToCachedFiles[reference.Path];
@@ -138,9 +138,9 @@ namespace Cassette.Configuration
         /// Gets the given bundle from the disk. Should not take any concatenated assets as should run
         /// before the processing the generates those assets.
         /// </summary>
-        bool GetFromDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle)
+        bool GetFromDisk(IFileHelper fileHelper, IDirectory directory, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle)
         {
-            bool retValue = false;
+            bool isOnDisk = false;
             var assetList = new List<IAsset>();
             var assetSpecificLookup = new List<KeyValuePair<string, string>>();
             foreach (IAsset asset in bundle.Assets)
@@ -155,9 +155,7 @@ namespace Cassette.Configuration
                     fileHelper.Delete(systemAbsoluteFilename);
                     continue;
                 }
-                var file = new FileSystemFile(Path.GetFileName(systemAbsoluteFilename),
-                                              new FileSystemDirectory(Path.GetDirectoryName(systemAbsoluteFilename)),
-                                              systemAbsoluteFilename);
+                var file = fileHelper.GetFileSystemFile(directory, systemAbsoluteFilename, CacheDirectory);
                 var fileAsset = new FileAsset(file, bundle);
                 GetAssetReferencesFromDisk(fileHelper, fileAsset, systemAbsoluteFilename);
                 assetList.Add(fileAsset);
@@ -177,16 +175,16 @@ namespace Cassette.Configuration
                 {
                     uncachedToCachedFiles.Add(uncachedToCachedPair.Key, uncachedToCachedPair.Value);
                 }
-                retValue = true;
+                isOnDisk = true;
             }
-            return retValue;
+            return isOnDisk;
         }
 
         public void CreateFileOnDiskFromAsset(IFileHelper fileHelper, Bundle bundle, IAsset asset,
                                               string systemAbsoluteFilename)
         {
             ((AssetBase)asset).PreparePostProcessingStream();
-            //Handle possibility of concatenated assets
+            fileHelper.CreateDirectory(Path.GetDirectoryName(systemAbsoluteFilename));
             fileHelper.Write(systemAbsoluteFilename, ((AssetBase)asset).postProcessingString);
             var refHolderList = new List<ReferenceHolder>();
             foreach (AssetReference assetReference in asset.References)
@@ -219,27 +217,13 @@ namespace Cassette.Configuration
             }
         }
 
-        /// <summary>
-        /// Turns the bundleUrl into a string that is still a unique str but 
-        /// is also able to be used a file name.
-        /// </summary>
-        /// <param name="bundleUrl">the original bundleUrl</param>
-        /// <returns>the new, cachebale string</returns>
-        public string GetCachebleString(string bundleUrl)
-        {
-            return bundleUrl.Remove(0, bundleUrl.LastIndexOf('/') + 1);
-        }
-
         public string GetFileName(IAsset asset, Bundle bundle, string cacheDirectory)
         {
-            string assetExtension = Path.GetExtension(asset.SourceFile.FullPath);
+            string sourcePath = asset.SourceFile.FullPath;
             return cacheDirectory
-                   + Path.GetFileNameWithoutExtension(asset.SourceFile.FullPath)
-                   + (assetExtension.Length > 0
-                          ? GetSafeString(asset.SourceFile.FullPath.Replace(assetExtension, ""))
-                          : "")
-                   + GetSafeString(Convert.ToBase64String(asset.Hash) + GetAssemblyLastModifiedTime()) +
-                   assetExtension;
+                   + sourcePath.Insert(
+                       sourcePath.IndexOf(Path.GetExtension(asset.SourceFile.FullPath)),
+                       GetSafeString(Convert.ToBase64String(asset.Hash) + GetAssemblyLastModifiedTime()));
         }
 
         string GetAssemblyLastModifiedTime()
@@ -257,10 +241,14 @@ namespace Cassette.Configuration
         public string GetSafeString(string str)
         {
             foreach (var c in Path.GetInvalidFileNameChars())
-            {
+            { 
                 str = str.Replace(c, '1');
             }
-            return str.Replace('_', '1').Replace('+', '1');
+            //Removing _ as __ causes rest of url to be truncated by IIS
+            //removing + as that is considered a injection attack by IIS and ends
+            //any request
+            //~ don't add any information, so removing them too
+            return str.Replace('_', '1').Replace('+', '1').Replace('~', '1');
         }
 
         #region Nested type: ReferenceHolder
