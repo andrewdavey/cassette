@@ -157,7 +157,10 @@ namespace Cassette.Configuration
                 }
                 var file = fileHelper.GetFileSystemFile(directory, systemAbsoluteFilename, CacheDirectory);
                 var fileAsset = new FileAsset(file, bundle);
-                GetAssetReferencesFromDisk(fileHelper, fileAsset, systemAbsoluteFilename);
+                if (!GetAssetReferencesFromDisk(fileHelper, fileAsset, systemAbsoluteFilename))
+                {
+                    continue;
+                }
                 assetList.Add(fileAsset);
                 if (!uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
                 {
@@ -199,9 +202,13 @@ namespace Cassette.Configuration
             fileHelper.Write(systemAbsoluteFilename + "references", JsonConvert.SerializeObject(refHolderList));
         }
 
-        public void GetAssetReferencesFromDisk(IFileHelper fileHelper, FileAsset fileAsset,
+        public bool GetAssetReferencesFromDisk(IFileHelper fileHelper, FileAsset fileAsset,
                                                string systemAbsoluteFilename)
         {
+            if (!fileHelper.Exists(systemAbsoluteFilename + "references"))
+            {
+                return false;
+            }
             var refHolderList = JsonConvert.DeserializeObject<List<ReferenceHolder>>
                 (fileHelper.ReadAllText(systemAbsoluteFilename + "references"));
             foreach (ReferenceHolder refHolder in refHolderList)
@@ -215,6 +222,7 @@ namespace Cassette.Configuration
                     fileAsset.AddReference(refHolder.Path, refHolder.LineNumber);
                 }
             }
+            return true;
         }
 
         public string GetFileName(IAsset asset, Bundle bundle, string cacheDirectory)
