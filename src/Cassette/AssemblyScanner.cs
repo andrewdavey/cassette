@@ -27,10 +27,24 @@ namespace Cassette
             return (
                 from assembly in assemblies
                 where AssemblyIsNotIgnored(assembly) && IsNotDynamic(assembly)
-                from type in assembly.GetExportedTypes()
+                from type in GetPublicTypesAndIgnoreLoaderExceptions(assembly)
                 where !type.IsAbstract
                 select type
             ).ToArray();
+        }
+
+        IEnumerable<Type> GetPublicTypesAndIgnoreLoaderExceptions(Assembly assembly)
+        {
+            IEnumerable<Type> types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types.Where(type => type != null);
+            }
+            return types.Where(t => t.IsPublic || t.IsNestedPublic);
         }
 
         public string HashAssemblies()
