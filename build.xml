@@ -70,7 +70,13 @@
             <ExistingPackageFiles Include="build\nuget\*"/>
             <Transforms Include="src\**\*.nutrans" />
         </ItemGroup>
-
+        <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\')">
+            <WebTaskDirectory>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\</WebTaskDirectory>
+        </PropertyGroup>
+        <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\')">
+            <WebTaskDirectory>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\</WebTaskDirectory>
+        </PropertyGroup>
+      
         <!-- Get the package version from Cassette.dll's AssemblyInformationalVersion attribute. -->
         <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\$(Configuration)\Cassette.dll">
             <Output PropertyName="Version" TaskParameter="Version" />
@@ -84,11 +90,11 @@
         <TransformXmlHierarchy
             Source="%(Transforms.Identity)"
             Destination="src\%(Transforms.RecursiveDir)%(Transforms.Filename).nuspec"
-            TaskDirectory="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\" />
+            TaskDirectory="$(WebTaskDirectory)" />
 
-        <MakeDir Directories="$(OutputDir)"/>
+      <MakeDir Directories="$(OutputDir)"/>
         <MakeDir Directories="$(PackageOutputDir)"/>
-        <Exec Command="nuget pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -symbols -Version $(Version) -OutputDirectory $(PackageOutputDir)"/>
+        <Exec Command="src\.nuget\nuget.exe pack src\%(NugetProject.Identity)\%(NugetProject.Identity).nuspec -symbols -Version $(Version) -OutputDirectory $(PackageOutputDir)"/>
     </Target>
 
     <Target Name="NugetPush" DependsOnTargets="NugetPack">
