@@ -4,8 +4,8 @@ namespace Cassette.Stylesheets
 {
     class StylesheetBundleDeserializer : StylesheetBundleDeserializerBase<StylesheetBundle>
     {
-        public StylesheetBundleDeserializer(IUrlModifier urlModifier) 
-            : base(urlModifier)
+        public StylesheetBundleDeserializer(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
+            : base(urlModifier, applicationRootPrepender)
         {
         }
 

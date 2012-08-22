@@ -22,6 +22,7 @@ namespace Cassette.Scripts
             container.Register<IJavaScriptMinifier, MicrosoftJavaScriptMinifier>();
             container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
+            container.Register(typeof(IApplicationRootPrepender), Mock.Of<IApplicationRootPrepender>());
 
             configuration = new ScriptContainerConfiguration(type => new Type[0]);
             configuration.Configure(container);
@@ -81,6 +82,7 @@ namespace Cassette.Scripts
             container.Register<IJavaScriptMinifier, MicrosoftJavaScriptMinifier>();
             container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
+            container.Register(typeof(IApplicationRootPrepender), Mock.Of<IApplicationRootPrepender>());
 
             var modifier = new Mock<IFileSearchModifier<ScriptBundle>>();
             modifier

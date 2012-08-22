@@ -27,10 +27,13 @@ namespace Cassette.Aspnet
 
         protected override void ConfigureContainer()
         {
+            var applicationRootPrepender = new VirtualDirectoryPrepender(AppDomainAppVirtualPath);
+
             // These are before base.ConfigureContainer() so the application is able to override them - for example providing a different IUrlModifier.
             Container.Register((c, p) => HttpContext());
             Container.Register((c, p) => c.Resolve<HttpContextBase>().Request);
-            Container.Register(typeof(IUrlModifier), CreateUrlModifier());
+            Container.Register(typeof(IUrlModifier), CreateUrlModifier(applicationRootPrepender));
+            Container.Register(typeof(IApplicationRootPrepender), applicationRootPrepender);
 
             Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
             Container.Register<ICassetteRequestHandler, BundleRequestHandler<Scripts.ScriptBundle>>("ScriptBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
@@ -42,11 +45,11 @@ namespace Cassette.Aspnet
             base.ConfigureContainer();
         }
 
-        IUrlModifier CreateUrlModifier()
+        IUrlModifier CreateUrlModifier(IApplicationRootPrepender applicationRootPrepender)
         {
             return new AggregateUrlModifier(
                 new HandlerPathPrepender(),
-                new VirtualDirectoryPrepender(AppDomainAppVirtualPath)
+                applicationRootPrepender
             );
         }
 

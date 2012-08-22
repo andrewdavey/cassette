@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Cassette.MSBuild
 {
-    class CombinePathWithUrl : IUrlModifier
+    class CombinePathWithUrl : IApplicationRootPrepender
     {
         readonly string path;
 

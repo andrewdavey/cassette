@@ -65,6 +65,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ApplicationRootPlaceholderWrapper.cs" />
     <Compile Include="CreateBundles.cs" />
     <Compile Include="CreateBundlesCommand.cs" />
     <Compile Include="MSBuildHost.cs" />

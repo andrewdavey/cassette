@@ -94,6 +94,7 @@ namespace Cassette.MSBuild
             // So this is *after* the base.RegisterContainerItems() call.
             // We must output specially wrapped URLs at compile-time. These are then modified by the application at run-time.
             Container.Register<IUrlModifier>(new UrlPlaceholderWrapper());
+            Container.Register<IApplicationRootPrepender>(new ApplicationRootPlaceholderWrapper());
         }
 
         protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()

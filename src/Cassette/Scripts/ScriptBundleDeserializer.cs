@@ -4,8 +4,8 @@ namespace Cassette.Scripts
 {
     class ScriptBundleDeserializer : ScriptBundleDeserializerBase<ScriptBundle>
     {
-        public ScriptBundleDeserializer(IUrlModifier urlModifier)
-            : base(urlModifier)
+        public ScriptBundleDeserializer(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
+            : base(urlModifier, applicationRootPrepender)
         {
         }
 

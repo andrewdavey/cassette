@@ -6,8 +6,8 @@ namespace Cassette.Scripts
     abstract class ScriptBundleDeserializerBase<T> : BundleDeserializer<T>
         where T : ScriptBundle
     {
-        protected ScriptBundleDeserializerBase(IUrlModifier urlModifier)
-            : base(urlModifier)
+        protected ScriptBundleDeserializerBase(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
+            : base(urlModifier, applicationRootPrepender)
         {
         }
 

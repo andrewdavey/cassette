@@ -95,7 +95,10 @@ namespace Cassette
         protected override void ConfigureContainer()
         {
             base.ConfigureContainer();
-            Container.Register<IUrlModifier>(new VirtualDirectoryPrepender("/"));
+
+            var virtualDirectoryPrepender = new VirtualDirectoryPrepender("/");
+            Container.Register<IUrlModifier>(virtualDirectoryPrepender);
+            Container.Register<IApplicationRootPrepender>(virtualDirectoryPrepender);
             Container.Register<IBundleCollectionInitializer, BundleCollectionInitializer>();
         }
 

@@ -11,11 +11,12 @@ namespace Cassette.Scripts
 
         public ScriptBundleSerializer_Tests()
         {
+            var prepender = new VirtualDirectoryPrepender("/");
             bundle = new ScriptBundle("~")
             {
                 Hash = new byte[0],
                 Condition = "CONDITION",
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", new VirtualDirectoryPrepender("/"))
+                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", prepender, prepender)
             };
 
             SerializeToElement();

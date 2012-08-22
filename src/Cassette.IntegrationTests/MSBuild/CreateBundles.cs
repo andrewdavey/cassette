@@ -63,22 +63,25 @@ namespace Cassette.MSBuild
         [Fact]
         public void CssUrlIsRewrittenToBeApplicationRooted()
         {
-            var passThroughModifier = new Mock<IUrlModifier>();
+            var passThroughModifier = new Mock<IApplicationRootPrepender>();
             passThroughModifier
                 .Setup(m => m.Modify(It.IsAny<string>()))
                 .Returns<string>(url => url)
                 .Verifiable();
 
-            var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
+            var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object, passThroughModifier.Object);
             var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
 
             Regex.IsMatch(content, @"url\(file/test-.*?\.png\)").ShouldBeTrue();
             passThroughModifier.Verify();
         }
 
-        IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
+        IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier, IApplicationRootPrepender applicationRootPrepender)
         {
-            var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath), b => b == "StylesheetBundle" ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier) : new ScriptBundleDeserializer(urlModifier));
+            var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath), b => b == "StylesheetBundle" ? 
+                (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier, applicationRootPrepender) :
+                new ScriptBundleDeserializer(urlModifier, applicationRootPrepender));
+
             var result = cache.Read();
             result.IsSuccess.ShouldBeTrue();
             return result.Manifest.Bundles;

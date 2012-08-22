@@ -26,8 +26,8 @@ namespace Cassette.Stylesheets
                 { "~/stylesheet/010203.css", "content"}
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
-            
-            reader = new ExternalStylesheetBundleDeserializer(urlModifier);
+
+            reader = new ExternalStylesheetBundleDeserializer(urlModifier, urlModifier);
 
             DeserializeElement();
         }

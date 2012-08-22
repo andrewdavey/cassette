@@ -15,7 +15,9 @@ namespace Cassette.MSBuild
         public RawFileCopier(string absoluteSourceDirectory, string outputDirectory)
         {
             this.absoluteSourceDirectory = absoluteSourceDirectory;
-            urlGenerator = new UrlGenerator(new CombinePathWithUrl(outputDirectory));
+
+            var applicationRootPrepender = new CombinePathWithUrl(outputDirectory);
+            urlGenerator = new UrlGenerator(applicationRootPrepender, applicationRootPrepender);
         }
 
         public void Visit(Bundle bundle)
