@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets or sets if the local assets should be used when application is in debug mode. Default is true.
         /// </summary>
-        public bool UseWhenDebugging { get; set; }
+        public bool UseWhenDebugging { get; set; } // TODO: This property is never actually read! Use it or lose it.
         /// <summary>
         /// Gets or sets the <see cref="IFileSearch"/> used to find asset files. If null the bundle type's application default <see cref="IFileSearch"/> will be used.
         /// </summary>
