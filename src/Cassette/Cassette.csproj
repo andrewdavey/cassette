@@ -72,7 +72,6 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AggregateUrlModifier.cs" />
     <Compile Include="AssemblyScanner.cs" />
     <Compile Include="AssetPathComparer.cs" />
     <Compile Include="BundleCacheRebuilder.cs" />

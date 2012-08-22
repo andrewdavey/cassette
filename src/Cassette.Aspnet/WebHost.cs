@@ -44,10 +44,7 @@ namespace Cassette.Aspnet
 
         IUrlModifier CreateUrlModifier()
         {
-            return new AggregateUrlModifier(
-                new HandlerPathPrepender(),
-                new VirtualDirectoryPrepender(AppDomainAppVirtualPath)
-            );
+            return new VirtualDirectoryPrepender(AppDomainAppVirtualPath);
         }
 
         protected virtual string AppDomainAppVirtualPath

@@ -1,12 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.IO;
 using Cassette.TinyIoC;
 using Moq;
 using Should;
 using Xunit;
-using System.Linq;
 
 namespace Cassette.Scripts
 {
@@ -20,8 +20,8 @@ namespace Cassette.Scripts
         {
             container = new TinyIoCContainer();
             container.Register<IJavaScriptMinifier, MicrosoftJavaScriptMinifier>();
-            container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
+            container.Register<IUrlGenerator>((c, x) => new UrlGenerator(c.Resolve<IUrlModifier>(), "cassette.axd/"));
 
             configuration = new ScriptContainerConfiguration(type => new Type[0]);
             configuration.Configure(container);

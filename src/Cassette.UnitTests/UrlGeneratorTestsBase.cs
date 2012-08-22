@@ -12,7 +12,7 @@ namespace Cassette
             UrlModifier.Setup(m => m.Modify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
-            UrlGenerator = new UrlGenerator(UrlModifier.Object);
+            UrlGenerator = new UrlGenerator(UrlModifier.Object, "cassette.axd/");
         }
     }
 }

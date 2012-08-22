@@ -72,13 +72,20 @@ namespace Cassette.MSBuild
             var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
             var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
 
-            Regex.IsMatch(content, @"url\(file/test-.*?\.png\)").ShouldBeTrue();
+            Regex.IsMatch(content, @"url\(cassette.axd/file/test-.*?\.png\)")
+                 .ShouldBeTrue("Incorrect content: " + content);
+
             passThroughModifier.Verify();
         }
 
         IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
         {
-            var cache = new BundleCollectionCache(new FileSystemDirectory(cachePath), b => b == "StylesheetBundle" ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier) : new ScriptBundleDeserializer(urlModifier));
+            var cache = new BundleCollectionCache(
+                new FileSystemDirectory(cachePath), 
+                b => b == "StylesheetBundle" 
+                    ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier) 
+                    : new ScriptBundleDeserializer(urlModifier)
+            );
             var result = cache.Read();
             result.IsSuccess.ShouldBeTrue();
             return result.Manifest.Bundles;

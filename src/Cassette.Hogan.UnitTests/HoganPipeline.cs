@@ -13,8 +13,8 @@ namespace Cassette.HtmlTemplates
         public HoganPipeline_Tests()
         {
             var container = new TinyIoCContainer();
-            container.Register<IUrlGenerator, UrlGenerator>();
             container.Register<IUrlModifier>(new VirtualDirectoryPrepender("/"));
+            container.Register<IUrlGenerator>((c, n) => new UrlGenerator(c.Resolve<IUrlModifier>(), ""));
             pipeline = container.Resolve<HoganPipeline>();
         }
 

@@ -20,8 +20,8 @@ namespace Cassette.Stylesheets
         {
             container = new TinyIoCContainer();
             container.Register<IStylesheetMinifier, MicrosoftStylesheetMinifier>();
-            container.Register<IUrlGenerator, UrlGenerator>();
             container.Register(typeof(IUrlModifier), Mock.Of<IUrlModifier>());
+            container.Register<IUrlGenerator>((c, x) => new UrlGenerator(c.Resolve<IUrlModifier>(), "cassette.axd/"));
 
             configuration = new StylesheetsContainerConfiguration(type => new Type[0]);
             configuration.Configure(container);

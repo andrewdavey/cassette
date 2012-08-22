@@ -6,15 +6,18 @@ namespace Cassette
     class UrlGenerator : IUrlGenerator
     {
         readonly IUrlModifier urlModifier;
+        readonly string cassetteHandlerPrefix;
 
-        public UrlGenerator(IUrlModifier urlModifier)
+        public UrlGenerator(IUrlModifier urlModifier, string cassetteHandlerPrefix)
         {
             this.urlModifier = urlModifier;
+            this.cassetteHandlerPrefix = cassetteHandlerPrefix;
         }
 
         public string CreateBundleUrl(Bundle bundle)
         {
-            return urlModifier.Modify(bundle.Url);
+            var url = cassetteHandlerPrefix + bundle.Url;
+            return urlModifier.Modify(url);
         }
 
         public string CreateAssetUrl(IAsset asset)
@@ -25,7 +28,7 @@ namespace Cassette
             
             var assetPath = asset.Path.Substring(1);
             var hash = asset.Hash.ToUrlSafeBase64String();
-            var url = "asset" + assetPath + "?" + hash;
+            var url = cassetteHandlerPrefix + "asset" + assetPath + "?" + hash;
 
             return urlModifier.Modify(url);
         }
@@ -49,7 +52,7 @@ namespace Cassette
                 path = path + "-" + hash;
             }
 
-            var url = "file" + path;
+            var url = cassetteHandlerPrefix + "file" + path;
             return urlModifier.Modify(url);
         }
 

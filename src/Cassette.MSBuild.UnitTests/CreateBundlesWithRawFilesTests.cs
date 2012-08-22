@@ -29,6 +29,7 @@ namespace Cassette.MSBuild
 
             File.Move(configurationDll, Path.Combine(root, "source", "bin", "test.dll"));
             File.Copy("Cassette.dll", Path.Combine(root, "source", "bin", "Cassette.dll"));
+            File.Copy("Cassette.pdb", Path.Combine(root, "source", "bin", "Cassette.pdb"));
             File.Copy("AjaxMin.dll", Path.Combine(root, "source", "bin", "AjaxMin.dll"));
 
             var command = new CreateBundlesCommand(
@@ -64,8 +65,8 @@ public class Configuration : IConfiguration<BundleCollection>
         [Fact]
         public void ImageFileIsCopiedToOutput()
         {
-            var imageOutputilename = Path.Combine(root, "output", "file", "test-" + HashFileContent("test.png") + ".png");
-            File.Exists(imageOutputilename).ShouldBeTrue();
+            var imageOutputFilename = Path.Combine(root, "output", "file", "test-" + HashFileContent("test.png") + ".png");
+            File.Exists(imageOutputFilename).ShouldBeTrue();
         }
 
         string HashFileContent(string filename)
