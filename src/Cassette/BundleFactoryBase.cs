@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Cassette.IO;
 using Cassette.Utilities;
 
@@ -64,6 +65,9 @@ namespace Cassette
                 return file;
             }
 
+            ThrowIfShouldReferenceNonMinFile(bundle, filename, filesByPath);
+            ThrowIfShouldReferenceDebugFile(bundle, filename, filesByPath);
+
             throw new FileNotFoundException(
                 string.Format(
                     "The asset file \"{0}\" was not found for bundle \"{1}\".",
@@ -71,6 +75,47 @@ namespace Cassette
                     bundle.Path
                 )
             );
+        }
+
+        static void ThrowIfShouldReferenceNonMinFile(Bundle bundle, string filename, Dictionary<string, IFile> filesByPath)
+        {
+            var minMatch = Regex.Match(filename, @"^(.*)[.-]min(\.js|\.css)$");
+            if (minMatch.Success)
+            {
+                var nonMinFilename = minMatch.Groups[1].Value + minMatch.Groups[2].Value;
+                if (filesByPath.ContainsKey(nonMinFilename))
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            "Bundle \"{0}\" references \"{1}\" when it should reference \"{2}\".",
+                            bundle.Path,
+                            filename,
+                            nonMinFilename
+                            )
+                        );
+                }
+            }
+        }
+
+        static void ThrowIfShouldReferenceDebugFile(Bundle bundle, string filename, Dictionary<string, IFile> filesByPath)
+        {
+            var insertionIndex = filename.LastIndexOf('.');
+            var debugOptions = new[] { "-debug", ".debug" };
+            foreach (var debugOption in debugOptions)
+            {
+                var debugFilename = filename.Insert(insertionIndex, debugOption);
+                if (filesByPath.ContainsKey(debugFilename))
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            "Bundle \"{0}\" references \"{1}\" when it should reference \"{2}\".",
+                            bundle.Path,
+                            filename,
+                            debugFilename
+                            )
+                        );
+                }
+            }
         }
 
         void AddAllAssetsToBundle(Bundle bundle, IEnumerable<IFile> remainingFiles)
