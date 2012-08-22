@@ -93,7 +93,7 @@ namespace Cassette.Scripts
                 "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
                 "<script type=\"text/javascript\">" + Environment.NewLine +
                 "if(CONDITION){" + Environment.NewLine +
-                "document.write(unescape('FALLBACK'));" + Environment.NewLine +
+                "document.write('FALLBACK');" + Environment.NewLine +
                 "}" + Environment.NewLine +
                 "</script>"
             );
@@ -110,7 +110,7 @@ namespace Cassette.Scripts
 
             var html = Render(bundle);
 
-            html.ShouldContain("%3Cscript%3E%3C/script%3E");
+            html.ShouldContain(@"<script><\/script>");
         }
 
         [Fact]

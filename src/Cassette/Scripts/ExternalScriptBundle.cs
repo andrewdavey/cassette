@@ -113,13 +113,13 @@ namespace Cassette.Scripts
             return string.Join(
                 Environment.NewLine,
                 (from script in scripts
-                select "document.write(unescape('" + Escape(script) + "'));").ToArray()
+                select "document.write('" + Escape(script) + "');").ToArray()
             );
         }
 
         static string Escape(string script)
         {
-            return script.Replace("<", "%3C").Replace(">", "%3E");
+            return script.Replace("</script>", "<\\/script>").Replace("'", @"\'");
         }
 
         internal override void SerializeInto(XContainer container)

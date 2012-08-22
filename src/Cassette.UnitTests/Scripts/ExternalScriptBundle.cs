@@ -122,7 +122,7 @@ namespace Cassette.Scripts
             html.ShouldEqual(@"<script src=""http://test.com/asset.js"" type=""text/javascript""></script>
 <script type=""text/javascript"">
 if(condition){
-document.write(unescape('%3Cscript src=""/"" type=""text/javascript""%3E%3C/script%3E'));
+document.write('<script src=""/"" type=""text/javascript""><\/script>');
 }
 </script>");
         }
