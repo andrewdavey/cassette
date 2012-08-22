@@ -41,6 +41,14 @@ namespace Cassette.HtmlTemplates
         }
 
         [Fact]
+        public void GetTemplateIdReturnsAssetFilenameWithoutExtension_WhenTemplateBundlePerFile()
+        {
+            var bundle = new HtmlTemplateBundle("~/test.htm");
+            var id = bundle.GetTemplateId(new StubAsset("~/test.htm"));
+            id.ShouldEqual("test");
+        }
+
+        [Fact]
         public void GetTemplateIdIncludesDirectoryAndFilenameSeparatedWithHyphen()
         {
             var bundle = new HtmlTemplateBundle("~");

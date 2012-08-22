@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.Linq;
 using Cassette.Aspnet;
+using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.Views;
@@ -34,6 +35,23 @@ namespace Cassette
 
                 scriptUrls[1].ShouldMatch(new Regex(@"^/cassette\.axd/script/[^/]+/scripts/bundle-a"));
                 Download(host, scriptUrls[1]).ShouldEqual(@"function asset2(){}function asset1(){}");
+            }
+        }
+
+        [Fact] 
+        public void PageThatReferencesStylesAndTemplatesDoNotGetDuplicateResources()
+        {
+            using (var host = new TestableWebHost("assets", () => httpContext))
+            {
+                host.AddBundleConfiguration(new BundleConfiguration(bundles =>
+                {
+                    bundles.AddPerSubDirectory<ScriptBundle>("scripts");
+                    bundles.AddPerIndividualFile<HtmlTemplateBundle>("templates");
+                }));
+                host.Initialize();
+
+                var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-a", "templates/asset-1.htm");
+                Assert.Equal(scriptUrls.Distinct(), scriptUrls);
             }
         }
 
@@ -110,11 +128,12 @@ namespace Cassette
                 var htmlString = 
                     "<html>" +
                     Bundles.RenderScripts().ToHtmlString() +
-                    Bundles.RenderStylesheets().ToHtmlString() + 
+                    Bundles.RenderStylesheets().ToHtmlString() +
+                    Bundles.RenderHtmlTemplates().ToHtmlString() +
                     "</html>";
 
                 var html = XElement.Parse(htmlString);
-                var scripts = html.Elements("script").Select(s => s.Attribute("src").Value);
+                var scripts = html.Elements("script").Where((s => s.Attribute("src") != null)).Select(s => s.Attribute("src").Value);
                 var links = html.Elements("link").Select(s => s.Attribute("href").Value);
                 return links.Concat(scripts).ToArray();
             }

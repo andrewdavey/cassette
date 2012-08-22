@@ -35,7 +35,7 @@ namespace Cassette.HtmlTemplates
         internal string GetTemplateId(IAsset asset)
         {
             string id;
-            if (asset.Path.StartsWith(Path, StringComparison.OrdinalIgnoreCase))
+            if (asset.Path.StartsWith(Path, StringComparison.OrdinalIgnoreCase) && !asset.Path.Equals(Path, StringComparison.OrdinalIgnoreCase))
             {
                 id = asset.Path
                     .Substring(Path.Length + 1)

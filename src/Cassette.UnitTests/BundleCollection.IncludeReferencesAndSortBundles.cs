@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.Scripts;
+using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;
@@ -136,6 +137,47 @@ namespace Cassette
             );
             exception.Message.ShouldContain("~/a");
             exception.Message.ShouldContain("~/b");
+        }
+
+        [Fact]
+        public void WhenSortDifferentTypesOfBundle_ThenSortsArePartitioned()
+        {
+            var bundleA = new ScriptBundle("~/a");
+            var bundleB = new StylesheetBundle("~/b");
+            var bundleC = new ScriptBundle("~/c");
+
+            var bundles = new Bundle[] { bundleA, bundleB, bundleC };
+            var collection = CreateBundleCollection(bundles);
+            collection.BuildReferences();
+            var sorted = collection.IncludeReferencesAndSortBundles(bundles);
+
+            sorted.ShouldEqual(new Bundle[]
+            {
+                bundleA,
+                bundleC,
+                bundleB
+            });
+        }
+
+        [Fact]
+        public void WhenInterdependenciesBetweenBundlesOfDifferentType_DoesNotDuplicateBundles()
+        {
+            var bundleA = new ScriptBundle("~/a");
+            var bundleB = new StylesheetBundle("~/b");
+            var bundleC = new TestableBundle("~/c");
+            bundleC.AddReference("~/a");
+
+            var bundles = new Bundle[] { bundleA, bundleB, bundleC };
+            var collection = CreateBundleCollection(bundles);
+            collection.BuildReferences();
+            var sorted = collection.IncludeReferencesAndSortBundles(bundles).ToArray();
+
+            sorted.ShouldEqual(new Bundle[]
+            {
+                bundleB,
+                bundleA,
+                bundleC 
+            });
         }
 
         BundleCollection CreateBundleCollection(IEnumerable<Bundle> bundles)
