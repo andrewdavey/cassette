@@ -89,6 +89,7 @@ namespace Cassette
             RegisterFileAccessAuthorization();
             RegisterPerRequestServices();
             RegisterConfigurationTypes();
+            RegisterJsonSerializer();
 
             // Classes that implement IConfiguration<TinyIoCContainer> can register services in the container.
             // This means plugins and the application can add to and override Cassette's default services.
@@ -279,6 +280,11 @@ namespace Cassette
                 var implementationTypes = configs;
                 container.RegisterMultiple(registrationType, implementationTypes);
             }
+        }
+
+        void RegisterJsonSerializer()
+        {
+            container.Register<IJsonSerializer, SimpleJsonSerializer>();
         }
 
         IEnumerable<Type> GetImplementationTypes(Type baseType)

@@ -25,5 +25,7 @@ namespace Cassette.Views
         string FileUrl(string applicationRelativeFilePath);
 
         void RebuildBundleCache();
+
+        IJsonSerializer JsonSerializer { get; }
     }
 }

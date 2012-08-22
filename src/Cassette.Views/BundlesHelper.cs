@@ -19,8 +19,9 @@ namespace Cassette.Views
         readonly Func<IReferenceBuilder> getReferenceBuilder;
         readonly IFileAccessAuthorization fileAccessAuthorization;
         readonly IBundleCacheRebuilder bundleCacheRebuilder;
+        readonly IJsonSerializer jsonSerializer;
 
-        public BundlesHelper(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, Func<IReferenceBuilder> getReferenceBuilder, IFileAccessAuthorization fileAccessAuthorization, IBundleCacheRebuilder bundleCacheRebuilder)
+        public BundlesHelper(BundleCollection bundles, CassetteSettings settings, IUrlGenerator urlGenerator, Func<IReferenceBuilder> getReferenceBuilder, IFileAccessAuthorization fileAccessAuthorization, IBundleCacheRebuilder bundleCacheRebuilder, IJsonSerializer jsonSerializer)
         {
             this.bundles = bundles;
             this.settings = settings;
@@ -28,6 +29,12 @@ namespace Cassette.Views
             this.getReferenceBuilder = getReferenceBuilder;
             this.fileAccessAuthorization = fileAccessAuthorization;
             this.bundleCacheRebuilder = bundleCacheRebuilder;
+            this.jsonSerializer = jsonSerializer;
+        }
+
+        public IJsonSerializer JsonSerializer
+        {
+            get { return jsonSerializer; }
         }
 
         void IStartUpTask.Start()

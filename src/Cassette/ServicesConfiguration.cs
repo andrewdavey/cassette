@@ -14,6 +14,7 @@ namespace Cassette
         Type urlModifierType;
         Type javaScriptMinifierType;
         Type stylesheetMinifierType;
+        Type jsonSerializerType;
         readonly Dictionary<Type, IFileSearch> fileSearches = new Dictionary<Type, IFileSearch>();
 
         public virtual void Configure(TinyIoCContainer container)
@@ -29,6 +30,10 @@ namespace Cassette
             if (StylesheetMinifierType != null)
             {
                 container.Register(typeof(IStylesheetMinifier), StylesheetMinifierType);
+            }
+            if (JsonSerializerType != null)
+            {
+                container.Register(typeof(IJsonSerializer), JsonSerializerType);
             }
             RegisterFileSearches(container);
         }
@@ -74,7 +79,6 @@ namespace Cassette
             }
         }
 
-
         /// <summary>
         /// The type that implements <see cref="IStylesheetMinifier"/>.
         /// </summary>
@@ -89,6 +93,17 @@ namespace Cassette
                 if (value != null && !typeof(IStylesheetMinifier).IsAssignableFrom(value))
                     throw new ArgumentException(string.Format("StylesheetMinifierType {0} must implement {1}", value.FullName, typeof(IStylesheetMinifier).FullName));
                 stylesheetMinifierType = value;
+            }
+        }
+
+        public Type JsonSerializerType
+        {
+            get { return jsonSerializerType; }
+            set
+            {
+                if (value != null && !typeof(IJsonSerializer).IsAssignableFrom(value))
+                    throw new ArgumentException(string.Format("JsonSerializerType {0} must implement {1}", value.FullName, typeof(IJsonSerializer).FullName));
+                jsonSerializerType = value;
             }
         }
 

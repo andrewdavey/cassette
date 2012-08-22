@@ -104,6 +104,7 @@
     <Compile Include="IFileAccessAuthorization.cs" />
     <Compile Include="DeserializedAsset.cs" />
     <Compile Include="IBundleDeserializer.cs" />
+    <Compile Include="IJsonSerializer.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="ResourceAsset.cs" />
     <Compile Include="RuntimeBundleCollectionInitializer.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="ServicesConfiguration.cs" />
     <Compile Include="SettingsVersionAssigner.cs" />
     <Compile Include="SimpleJson\SimpleJson.cs" />
+    <Compile Include="SimpleJson\SimpleJsonSerializer.cs" />
     <Compile Include="Stylesheets\AssignStylesheetRenderer.cs" />
     <Compile Include="Stylesheets\ConvertImageUrlsToDataUris.cs" />
     <Compile Include="Stylesheets\ConvertFontUrlsToDataUris.cs" />

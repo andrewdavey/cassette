@@ -33,6 +33,7 @@ namespace Cassette.Aspnet
             rebuilder = new Mock<IBundleCacheRebuilder>();
             helper = new Mock<IBundlesHelper>();
             helper.Setup(h => h.Render<ScriptBundle>(null)).Returns(new HtmlString(""));
+            helper.SetupGet(h => h.JsonSerializer).Returns(new SimpleJsonSerializer());
             Bundles.Helper = helper.Object;
             httpContext.SetupGet(c => c.Request.HttpMethod).Returns("GET");
             handler = new DiagnosticRequestHandler(requestContext, bundles, settings, urlGenerator, rebuilder.Object);
