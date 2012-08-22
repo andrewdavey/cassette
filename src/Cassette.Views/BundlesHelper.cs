@@ -67,40 +67,11 @@ namespace Cassette.Views
         public IEnumerable<string> GetReferencedBundleUrls<T>(string pageLocation)
             where T : Bundle
         {
-            var referencedBundles = GetReferencedBundles(pageLocation).OfType<T>();
-
-            if (settings.IsDebuggingEnabled)
-            {
-                return referencedBundles
-                    .SelectMany(AssetCollector.GetAllAssets)
-                    .Select(urlGenerator.CreateAssetUrl);
-            }
-            else
-            {
-                return referencedBundles
-                    .Select(urlGenerator.CreateBundleUrl);
-            }
-        }
-
-        class AssetCollector : IBundleVisitor
-        {
-            public static IEnumerable<IAsset> GetAllAssets(Bundle bundle)
-            {
-                var collector = new AssetCollector();
-                bundle.Accept(collector);
-                return collector.assets;
-            }
-
-            readonly List<IAsset> assets = new List<IAsset>();
-
-            public void Visit(Bundle bundle)
-            {
-            }
-
-            public void Visit(IAsset asset)
-            {
-                assets.Add(asset);
-            }
+            return GetReferencedBundles(pageLocation)
+                .OfType<T>()
+                .SelectMany(
+                    bundle => bundle.GetUrls(settings.IsDebuggingEnabled, urlGenerator)
+                );
         }
 
         public string Url<T>(string bundlePath)

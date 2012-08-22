@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -35,6 +36,18 @@ namespace Cassette.Stylesheets
         internal override bool ContainsPath(string pathToFind)
         {
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
+        }
+
+        internal override IEnumerable<string> GetUrls(bool isDebuggingEnabled, IUrlGenerator urlGenerator)
+        {
+            if (isDebuggingEnabled && Assets.Any())
+            {
+                return base.GetUrls(true, urlGenerator);
+            }
+            else
+            {
+                return new[] { ExternalUrl };
+            }
         }
 
         public string ExternalUrl

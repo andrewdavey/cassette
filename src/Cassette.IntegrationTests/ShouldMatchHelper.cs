@@ -7,7 +7,7 @@ namespace Cassette
     {
         public static void ShouldMatch(this string s, Regex regex)
         {
-            regex.IsMatch(s).ShouldBeTrue();
+            regex.IsMatch(s).ShouldBeTrue(s + " did not match " + regex);
         }
     }
 }

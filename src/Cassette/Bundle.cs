@@ -81,6 +81,20 @@ namespace Cassette
             }
         }
 
+        internal virtual IEnumerable<string> GetUrls(bool isDebuggingEnabled, IUrlGenerator urlGenerator)
+        {
+            if (isDebuggingEnabled)
+            {
+                var collector = new CollectLeafAssets();
+                Accept(collector);
+                return collector.Assets.Select(urlGenerator.CreateAssetUrl);
+            }
+            else
+            {
+                return new[] { urlGenerator.CreateBundleUrl(this) };
+            }
+        }
+
         protected abstract string UrlBundleTypeArgument { get; }
 
         internal string CacheFilename
