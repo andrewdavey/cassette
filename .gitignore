@@ -10,3 +10,4 @@ App_Bundles/
 *.ncrunch*
 src/**/*.nuspec
 *.dotCover
+*.orig
