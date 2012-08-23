@@ -6,5 +6,10 @@ namespace Cassette.MSBuild
         {
             return "<CASSETTE_URL_ROOT>" + url + "</CASSETTE_URL_ROOT>";
         }
+
+        public string PostCacheModify(string url)
+        {
+            return Modify(url);
+        }
     }
 }

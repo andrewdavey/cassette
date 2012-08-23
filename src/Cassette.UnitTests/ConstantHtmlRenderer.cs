@@ -22,7 +22,7 @@ namespace Cassette
         {
             var urlModifier = new Mock<IUrlModifier>();
             urlModifier
-                .Setup(m => m.Modify(It.IsAny<string>()))
+                .Setup(m => m.PreCacheModify(It.IsAny<string>()))
                 .Returns<string>(s => "/root/" + s);
             return urlModifier.Object;
         }

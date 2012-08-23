@@ -9,7 +9,7 @@ namespace Cassette.MSBuild
         public void ModifyWrapsUrlWithPlaceholder()
         {
             var modifier = new UrlPlaceholderWrapper();
-            modifier.Modify("example/url").ShouldEqual("<CASSETTE_URL_ROOT>example/url</CASSETTE_URL_ROOT>");
+            modifier.PreCacheModify("example/url").ShouldEqual("<CASSETTE_URL_ROOT>example/url</CASSETTE_URL_ROOT>");
         }
     }
 }

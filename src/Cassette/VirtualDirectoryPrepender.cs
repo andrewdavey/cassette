@@ -30,9 +30,17 @@ namespace Cassette
         /// <summary>
         /// Prepends the virtual directory to the beginning of the application relative URL path.
         /// </summary>
-        public string Modify(string url)
+        public string PreCacheModify(string url)
         {
             return virtualDirectory + url.TrimStart('/');
+        }
+
+        /// <summary>
+        /// Exists just to satisfy interface requirements. Just calls modify.
+        /// </summary>
+        public string PostCacheModify(string url)
+        {
+            return PreCacheModify(url);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Cassette
 
         protected UrlGenerator_Tests()
         {
-            UrlModifier.Setup(m => m.Modify(It.IsAny<string>()))
+            UrlModifier.Setup(m => m.PreCacheModify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
             var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();
@@ -40,7 +40,7 @@ namespace Cassette
         public void UrlModifierModifyIsCalled()
         {
             UrlGenerator.CreateBundleUrl(StubScriptBundle("~/test"));
-            UrlModifier.Verify(m => m.Modify("_cassette/scriptbundle/test_010203"));
+            UrlModifier.Verify(m => m.PreCacheModify("_cassette/scriptbundle/test_010203"));
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace Cassette
 
             UrlGenerator.CreateAssetUrl(asset.Object);
 
-            UrlModifier.Verify(m => m.Modify(It.IsAny<string>()));
+            UrlModifier.Verify(m => m.PreCacheModify(It.IsAny<string>()));
         }
 
         [Fact]

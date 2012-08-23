@@ -17,9 +17,9 @@ namespace Cassette
         public string Render(T bundle)
         {
             return Regex.Replace(
-                html,
-                "<CASSETTE_URL_ROOT>(.*?)</CASSETTE_URL_ROOT>",
-                match => urlModifier.Modify(match.Groups[1].Value)
+                html, 
+                "([^\"]+_cassette[^\"]+)",
+                match => urlModifier.PostCacheModify(match.Captures[0].Value)
             );
         }
     }
