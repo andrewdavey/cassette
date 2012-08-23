@@ -47,6 +47,11 @@ namespace Cassette
             }
         }
 
+        public HtmlAttributeDictionary Add(KeyValuePair<string, string> value)
+        {
+            return Add(value.Key, value.Value);
+        }
+
         /// <summary>
         /// Add an attribute to the <see cref="HtmlAttributeDictionary"/> that has a blank value.
         /// </summary>

@@ -39,7 +39,7 @@ namespace Cassette
         /// <summary>
         /// Path to an asset or bundle.
         /// </summary>
-        public string Path { get; private set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// The type of reference.

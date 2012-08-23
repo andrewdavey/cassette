@@ -7,7 +7,7 @@
 }
 
 .banner h1 {
-    padding: 0.6em 0 0 0;
+    padding: 0.6em 0 0 0; 
 }
 
 .banner p {
@@ -18,13 +18,13 @@
 }
 
 .intro {
-    margin-right: 280px;
+    margin-right: 280px; 
 }
 
 .banner .share-links  {
     top: 24px;
 }
-
+  
 .banner .share-links p {
     font-size: 1.1em;
 }

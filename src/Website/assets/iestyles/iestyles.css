@@ -8,4 +8,4 @@ a {
 
 span.gitforked-bubble a {
     display: inline; /* Fixes issue with alignment of gitforked button caused by the style above*/
-}
+} 

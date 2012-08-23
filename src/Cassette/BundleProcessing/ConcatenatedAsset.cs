@@ -19,6 +19,7 @@ namespace Cassette.BundleProcessing
             hash = stream.ComputeSHA1Hash();
         }
 
+
         public override void Accept(IBundleVisitor visitor)
         {
             foreach (var child in children)
@@ -56,7 +57,7 @@ namespace Cassette.BundleProcessing
         {
             var newStream = new MemoryStream();
             stream.Position = 0;
-            stream.CopyTo(newStream);
+            stream.CopyTo(newStream); 
             newStream.Position = 0;
             return newStream;
         }

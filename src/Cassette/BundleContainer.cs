@@ -132,7 +132,7 @@ namespace Cassette
         {
             var collector = new BundleReferenceCollector(AssetReferenceType.DifferentBundle);
             foreach (var bundle in Bundles)
-            {
+            { 
                 bundle.Accept(collector);
             }
             var notFound = from reference in collector.CollectedReferences

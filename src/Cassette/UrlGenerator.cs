@@ -17,12 +17,12 @@ namespace Cassette
         public string CreateBundleUrl(Bundle bundle)
         {
             var url = routePrefix + "/" + bundle.Url;
-            return urlModifier.Modify(url);
+            return urlModifier.PreCacheModify(url);
         }
 
         public string CreateAssetUrl(IAsset asset)
         {
-            return urlModifier.Modify(
+            return urlModifier.PreCacheModify(
                 String.Format(
                     "{0}/asset/{1}?{2}",
                     routePrefix,
@@ -44,7 +44,7 @@ namespace Cassette
             var name = filename.Substring(0, dotIndex);
             var extension = filename.Substring(dotIndex + 1);
 
-            return urlModifier.Modify(
+            return urlModifier.PreCacheModify(
                 String.Format(
                     "{0}/file/{1}_{2}.{3}",
                     routePrefix,

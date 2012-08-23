@@ -17,7 +17,7 @@ namespace Cassette.Web
 
         public RouteInstaller_Tests()
         {
-            urlModifier.Setup(m => m.Modify(It.IsAny<string>()))
+            urlModifier.Setup(m => m.PreCacheModify(It.IsAny<string>()))
                        .Returns<string>(url => url);
 
             var container = new Mock<ICassetteApplicationContainer<ICassetteApplication>>();

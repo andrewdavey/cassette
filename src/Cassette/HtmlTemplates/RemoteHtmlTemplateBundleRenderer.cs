@@ -10,9 +10,9 @@
         }
 
         public string Render(HtmlTemplateBundle bundle)
-        {
+        { 
             return string.Format(
-                "<script src=\"{0}\" type=\"text/javascript\"{1}></script>",
+                HtmlConstants.RemoteHtml,
                 urlGenerator.CreateBundleUrl(bundle),
                 bundle.HtmlAttributes.CombinedAttributes
             );

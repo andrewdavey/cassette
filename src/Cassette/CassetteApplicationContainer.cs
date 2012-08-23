@@ -140,7 +140,7 @@ namespace Cassette
             catch
             {
                 creationFailed = true;
-                throw;
+                throw; 
             }
         }
 

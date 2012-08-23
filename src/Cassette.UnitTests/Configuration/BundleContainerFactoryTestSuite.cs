@@ -179,5 +179,7 @@ namespace Cassette.Configuration
 
             externalBundle.WasProcessed.ShouldBeTrue();
         }
+
+        
     }
 }

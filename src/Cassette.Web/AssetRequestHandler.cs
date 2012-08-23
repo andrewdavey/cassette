@@ -57,7 +57,7 @@ namespace Cassette.Web
             {
                 using (var stream = asset.OpenStream())
                 {
-                    stream.CopyTo(response.OutputStream);
+                    stream.CopyTo(response.OutputStream); 
                 }
             }
         }

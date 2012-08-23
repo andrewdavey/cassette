@@ -29,7 +29,7 @@ namespace Cassette.Manifests
                 var output = Regex.Replace(
                     input,
                     "<CASSETTE_URL_ROOT>(.*?)</CASSETTE_URL_ROOT>",
-                    match => urlModifier.Modify(match.Groups[1].Value)
+                    match => urlModifier.PreCacheModify(match.Groups[1].Value)
                 );
                 return Encoding.UTF8.GetBytes(output);
             }

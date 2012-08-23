@@ -10,6 +10,13 @@
         /// </summary>
         /// <param name="url">The URL to modify.</param>
         /// <returns>The modified URL.</returns>
-        string Modify(string url);
+        string PreCacheModify(string url);
+
+        /// <summary>
+        /// Modifies a URL only during rendering for a page to ensure that specific url is not cached
+        /// </summary>
+        /// <param name="url">The URL to modify.</param>
+        /// <returns>The modified URL.</returns>
+        string PostCacheModify(string url);
     }
 }
