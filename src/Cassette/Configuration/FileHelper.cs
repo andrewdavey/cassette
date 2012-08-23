@@ -56,6 +56,7 @@ namespace Cassette.Configuration
             if (!Directory.Exists(cacheDirectory))
             {
                 Directory.CreateDirectory(cacheDirectory);
+                File.Create(Path.Combine(cacheDirectory, cacheVersion));
             }
             else if (Directory.GetLastWriteTime(cacheDirectory).Date < DateTime.Today.Date ||
                 !File.Exists(cacheDirectory + cacheVersion))

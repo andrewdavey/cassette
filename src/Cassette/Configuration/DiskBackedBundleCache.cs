@@ -229,10 +229,12 @@ namespace Cassette.Configuration
         public string GetFileName(IAsset asset, Bundle bundle, string cacheDirectory)
         {
             string sourcePath = asset.SourceFile.FullPath;
+            string fileName = Path.GetFileNameWithoutExtension(sourcePath);
             return cacheDirectory
                    + sourcePath.Insert(
                        sourcePath.IndexOf(Path.GetExtension(asset.SourceFile.FullPath)),
-                       GetSafeString(Convert.ToBase64String(asset.Hash) + GetAssemblyLastModifiedTime()));
+                       GetSafeString(Convert.ToBase64String(asset.Hash) + GetAssemblyLastModifiedTime())
+                       + fileName);
         }
 
         string GetAssemblyLastModifiedTime()
