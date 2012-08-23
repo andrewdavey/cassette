@@ -48,7 +48,7 @@ namespace Website
         /// </summary>
         public string PostCacheModify(string url)
         {
-            return "//" + "www.google.com/" + baseModifier.PreCacheModify(url);
+            return "//" + "www.google.com" + url;
         }
     }
 }

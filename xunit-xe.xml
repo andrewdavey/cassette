@@ -1,0 +1,144 @@
+<TemplatesExport>
+  <Template uid="91d09222-88d8-4712-9a3b-8991bf9b66ea" shortcut="fact" description="Create a fact test method" text="[Xunit.Fact]&#xD;&#xA;public void $FactMethodName$()&#xD;&#xA;{&#xD;&#xA;$END$&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="FactMethodName" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="58defe14-2132-4e4e-8126-5fa7e9a8f472" shortcut="theory" description="Create theory method" text="[Xunit.Extensions.Theory]&#xD;&#xA;[$DataAttribute$]&#xD;&#xA;public void $TheoryMethodName$()&#xD;&#xA;{&#xD;&#xA;$END$&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TheoryMethodName" expression="" initialRange="0" />
+      <Variable name="DataAttribute" expression="completeSmart()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="b1a7ea77-7a24-4cea-af40-4104d3b32073" shortcut="xc" description="xUnit.net Assert.Contains" text="Xunit.Assert.Contains($expected$, $actual$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="expected" expression="completeSmart()" initialRange="0" />
+      <Variable name="actual" expression="completeSmart()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="7efea864-4ec6-4c20-ac13-6c38cff777a4" shortcut="xt" description="xUnit.net Assert.True" text="Xunit.Assert.True($condition$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="condition" expression="completeSmart()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="250b821b-58f2-4aee-a00c-bdc41147020a" shortcut="xf" description="xUnit.net Assert.False" text="Xunit.Assert.False($condition$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="condition" expression="completeSmart()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="fa9e4737-0e4b-4f93-8dea-8c0f0a59e92d" shortcut="xiaf" description="xUnit.net Assert.IsAssignableFrom" text="Xunit.Assert.IsAssignableFrom&lt;$T$&gt;($OBJECT$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="OBJECT" expression="completeSmart()" initialRange="0" />
+      <Variable name="T" expression="guessExpectedType()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="aef59266-05cf-4dba-ba8b-42bdb326a043" shortcut="xit" description="xUnit.net Assert.IsType" text="Xunit.Assert.IsType&lt;$T$&gt;($OBJECT$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="OBJECT" expression="completeSmart()" initialRange="0" />
+      <Variable name="T" expression="guessExpectedType()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="139c10fc-dfcf-4e33-9544-f78fc7874784" shortcut="xnn" description="xUnit.net Assert.NotNull" text="Assert.NotNull($Object$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="Object" expression="completeSmart()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="834b641a-60f6-49b7-8ebf-db143fbc2fd5" shortcut="xthr" description="xUnit.net Assert.Throws" text="Xunit.Assert.Throws&lt;$TException$&gt;($func$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TException" expression="completeSmart()" initialRange="0" />
+      <Variable name="func" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="d3267f83-df1b-4d32-9c3d-68d8561a94b3" shortcut="xn" description="xUnit.net Assert.Null" text="Xunit.Assert.Null($Object$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="Object" expression="completeSmart()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="5ec342ee-0b76-4d52-9484-93fc6146d8ca" shortcut="fa" description="xUnit.net FactAttribute" text="[Xunit.Fact]" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="3908dcc6-0737-47b5-a2a6-0f26f43c8ce3" shortcut="ida" description="xUnit.net InlineDataAttribute" text="[Xunit.Extensions.InlineData($data$)]$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="data" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="b63adf33-d8ff-4a44-bcfb-df89725eb0be" shortcut="ta" description="xUnit.net TheoryAttribute" text="[Xunit.Extensions.Theory]$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Everywhere" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="38072922-793e-4b0c-8d2d-95e3a34dffe2" shortcut="xe" description="xUnit.net Assert.Equal" text="Xunit.Assert.Equal($expected$,$actual$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="expected" expression="completeSmart()" initialRange="0" />
+      <Variable name="actual" expression="completeSmart()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+</TemplatesExport>

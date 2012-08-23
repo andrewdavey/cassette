@@ -18,7 +18,7 @@ namespace Cassette
         {
             return Regex.Replace(
                 html, 
-                "([^\"]+_cassette[^\"]+)",
+                "([^\"]*_cassette[^\"]*)",
                 match => urlModifier.PostCacheModify(match.Captures[0].Value)
             );
         }
