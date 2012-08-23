@@ -21,7 +21,7 @@ namespace Cassette.Configuration
         public abstract IBundleContainer CreateBundleContainer();
 
 
-        protected Bundle ProcessSingleBundle(IFileHelper fileHelper, IDirectory directory,
+        protected Bundle ProcessSingleBundle(IFileHelper fileHelper, IDirectory directory, List<Bundle> bundlesToSort,
             Dictionary<string, string> uncachedToCachedFiles, Bundle bundle, AssignHash hasher) 
         {
             Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
@@ -30,6 +30,7 @@ namespace Cassette.Configuration
             if (CassetteSettings.bundles.ContainsKey(fileHelper, directory, uncachedToCachedFiles, bundleKey, bundle))
             {
                 bundle = CassetteSettings.bundles.GetBundle(fileHelper, directory, uncachedToCachedFiles, bundleKey, bundle);
+                bundlesToSort.Add(bundle);
             }
             else
             {
@@ -54,10 +55,12 @@ namespace Cassette.Configuration
             {
                 var hasher = new AssignHash();
                 var diskBacker = new FileHelper();
+                var bundlesToSort = new List<Bundle>();
                 var directory = new FileSystemDirectory(DiskBackedBundleCache.CacheDirectory);
                 for (var i = 0; i < bundles.Count; i++)
                 {
-                    bundles[i] = ProcessSingleBundle(diskBacker, directory, CassetteSettings.uncachedToCachedFiles, bundles[i], hasher);
+                    bundles[i] = ProcessSingleBundle(diskBacker, directory, bundlesToSort,
+                        CassetteSettings.uncachedToCachedFiles, bundles[i], hasher);
                     if (typeof(StylesheetBundle).IsAssignableFrom(bundles[i].GetType()))
                     {
                         ((StylesheetBundle)bundles[i]).Renderer = new DebugStylesheetHtmlRenderer(settings.UrlGenerator);
@@ -73,6 +76,7 @@ namespace Cassette.Configuration
                     }
                 }
                 CassetteSettings.bundles.FixReferences(CassetteSettings.uncachedToCachedFiles, bundles);
+                bundlesToSort.ForEach(b => b.SortAssetsByDependency());
             }
             Trace.Source.TraceInformation("Bundle processing completed.");
         }

@@ -179,6 +179,7 @@ namespace Cassette.Configuration
                     uncachedToCachedFiles.Add(uncachedToCachedPair.Key, uncachedToCachedPair.Value);
                 }
                 isOnDisk = true;
+                bundle.IsSorted = false;
             }
             return isOnDisk;
         }
