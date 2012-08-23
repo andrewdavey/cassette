@@ -4,13 +4,11 @@ namespace Cassette.Configuration
 {
     public interface IFileHelper
     {
-        void CreateFileOnDiskFromAsset(Bundle bundle, IAsset asset, string systemAbsoluteFilename);
-        void GetAssetReferencesFromDisk(FileAsset fileAsset, string systemAbsoluteFilename);
+        void Write(string filename, string writeText);
+        string ReadAllText(string filename);
         bool Exists(string fileName);
         DateTime GetLastAccessTime(string filename);
         void Delete(string fileName);
-        string GetFileName(IAsset asset, Bundle bundle, string cacheDirectory);
-        string GetCachebleString(string bundleUrl);
-        string GetCachebleHash(string hash);
+        void PrepareCachingDirectory(string cacheDirectory, string cacheVersion);
     }
 }

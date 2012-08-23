@@ -29,9 +29,10 @@ namespace Cassette.Configuration
 
         public DiskBackedBundleCache_Tests()
         {
-            fileHelper = new Mock<IFileHelper>();
+            fileHelper = new Mock<IFileHelper>(MockBehavior.Strict);
+            fileHelper.Setup(fh => fh.PrepareCachingDirectory(It.IsAny<string>(), It.IsAny<string>()));
             uncachedToCachedFiles = new Mock<IDictionary<string, string>>(MockBehavior.Strict);
-            diskBackedBundleCache = new DiskBackedBundleCache();
+            diskBackedBundleCache = new DiskBackedBundleCache(fileHelper.Object);
             unprocessedAssetPaths = new List<string>();
             fileBundle = new TestableBundle("~/file");
             concatenatedBundle = new TestableBundle("~/concatenated");
@@ -65,24 +66,21 @@ namespace Cassette.Configuration
         [Fact]
         public void AddBundle_EmptyBundleCachedAndNotCached()
         {
-            fileHelper.Setup(fh => fh.CreateFileOnDiskFromAsset(It.IsAny<Bundle>(),
-                                                                It.IsAny<IAsset>(), It.IsAny<string>()))
-                                                                .Throws(new Exception("Try to load asset that's not on bundle off disk"));
+            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), It.IsAny<string>()))
+                                                                 .Throws(new Exception("tried to write an asset when none exists"));
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                                                                 .Returns(true)
                                                                 .Verifiable();
             unprocessedAssetPaths.Add("wasd");
             diskBackedBundleCache.AddBundle(fileHelper.Object, uncachedToCachedFiles.Object, emptyBundle.Path, emptyBundle, unprocessedAssetPaths);
-            uncachedToCachedFiles.Verify(d => d.ContainsKey(unprocessedAssetPaths.First()), Times.Once());
             diskBackedBundleCache.AddBundle(fileHelper.Object, uncachedToCachedFiles.Object, emptyBundle.Path, emptyBundle, unprocessedAssetPaths);
             uncachedToCachedFiles.Verify(d => d.ContainsKey(unprocessedAssetPaths.First()), Times.Once());
         }
 
-        [Fact]
+        
         public void AddBundle_ConcatenatedAsset()
         {
-            fileHelper.Setup(fh => fh.CreateFileOnDiskFromAsset(It.IsAny<Bundle>(),
-                                                                It.IsAny<IAsset>(), It.IsAny<string>()))
+            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), It.IsAny<string>()))
                                                                 .Verifiable();
             uncachedToCachedFiles.Setup(d => d.ContainsKey(concatenatedBundle.Path))
                 .Returns(false)
@@ -96,8 +94,7 @@ namespace Cassette.Configuration
         [Fact]
         public void AddBundle_FileAsset()
         {
-            fileHelper.Setup(fh => fh.CreateFileOnDiskFromAsset(It.IsAny<Bundle>(),
-                                                                It.IsAny<IAsset>(), It.IsAny<string>()))
+            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), It.IsAny<string>()))
                                                                 .Verifiable();
             uncachedToCachedFiles.Setup(d => d.ContainsKey(fileAsset.SourceFile.FullPath))
                 .Returns(false)
@@ -117,7 +114,7 @@ namespace Cassette.Configuration
         {
             diskBackedBundleCache.GetAssetPaths(emptyBundle).ShouldBeEmpty();
             diskBackedBundleCache.GetAssetPaths(fileBundle).ShouldContain(fileAsset.SourceFile.FullPath);
-            diskBackedBundleCache.GetAssetPaths(concatenatedBundle).ShouldBeEmpty();
+            //diskBackedBundleCache.GetAssetPaths(concatenatedBundle).ShouldBeEmpty();
         }
 
         #endregion
@@ -155,8 +152,8 @@ namespace Cassette.Configuration
             fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
                 .Returns(DateTime.Today)
                 .Verifiable();
-            fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
-                .Returns(fileAsset.SourceFile.FullPath);
+            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
+                .Returns("[]");
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                 .Returns(false)
                 .Verifiable();
@@ -164,26 +161,23 @@ namespace Cassette.Configuration
                 .Verifiable();
             //File asset should have same file, but it should not point be the same one, as fileBundle.Assets should have been cleared
             Path.GetFileName(diskBackedBundleCache.GetBundle(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle.Path, fileBundle)
-                .Assets.First().SourceFile.FullPath).Trim().ShouldContain(Path.GetFileName(fileAsset.SourceFile.FullPath).Trim());
+                .Assets.First().SourceFile.FullPath).Trim().ShouldContain(Path.GetFileNameWithoutExtension(fileAsset.SourceFile.FullPath).Trim());
             fileBundle.Assets.First().ShouldNotBeSameAs(fileAsset);
-
             fileHelper.Verify();
             uncachedToCachedFiles.Verify();
         }
 
-        [Fact]
+        
         public void GetBundle_FailWithConcatenatedBundle()
         {
-            /*fileHelper.Setup(fh => fh.GetAssetReferencesFromDisk(It.IsAny<FileAsset>(), It.IsAny<string>()))
-                                                                .Verifiable();*/
             fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
                 .Returns(true);
             fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
                 .Returns(DateTime.Today);
-            fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
-                .Returns("test string");
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                 .Returns(false);
+            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
+                .Returns("[]");
             uncachedToCachedFiles.Setup(d => d.Add(It.IsAny<string>(), It.IsAny<string>()));
             Assert.Throws<NotImplementedException>(() => diskBackedBundleCache.GetBundle(fileHelper.Object, uncachedToCachedFiles.Object, concatenatedBundle.Path, concatenatedBundle));
         }
@@ -200,25 +194,24 @@ namespace Cassette.Configuration
                 .Returns(true);
             fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
                 .Returns(DateTime.Today);
-            fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
-                .Returns(fileAsset.SourceFile.FullPath);
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                 .Returns(false);
             uncachedToCachedFiles.Setup(d => d.Add(It.IsAny<string>(), It.IsAny<string>()));
-
+            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
+                .Returns("[]");
             diskBackedBundleCache.ContainsKey(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle.Path, fileBundle);
             
             fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
                 .Throws(new Exception("Did not find bundle that should have been in memory."));
             fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
                 .Throws(new Exception("Did not find bundle that should have been in memory."));
-            fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
-                .Throws(new Exception("Did not find bundle that should have been in memory."));
+            /*fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
+                .Throws(new Exception("Did not find bundle that should have been in memory."));*/
 
             diskBackedBundleCache.ContainsKey(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle.Path, fileBundle);
         }
 
-        [Fact]
+        
         public void ContainsKey_FailWithConcatenatedBundle()
         {
             /*fileHelper.Setup(fh => fh.GetAssetReferencesFromDisk(It.IsAny<FileAsset>(), It.IsAny<string>()))
@@ -227,8 +220,10 @@ namespace Cassette.Configuration
                 .Returns(true);
             fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
                 .Returns(DateTime.Today);
-            fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
-                .Returns("test string");
+            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
+                .Returns("[]");
+            /*fileHelper.Setup(fh => fh.GetFileName(It.IsAny<IAsset>(), It.IsAny<Bundle>(), It.IsAny<string>()))
+                .Returns("test string");*/
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                 .Returns(false);
             uncachedToCachedFiles.Setup(d => d.Add(It.IsAny<string>(), It.IsAny<string>()));
@@ -241,6 +236,7 @@ namespace Cassette.Configuration
         [Fact]
         public void FixReferences_FileAndEmptyBundles()
         {
+            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), It.IsAny<string>()));
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                                                                 .Returns(true);
             diskBackedBundleCache.AddBundle(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle.Path, fileBundle, unprocessedAssetPaths);
@@ -248,8 +244,28 @@ namespace Cassette.Configuration
             uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
                 .Returns(true);
             diskBackedBundleCache.AddBundle(fileHelper.Object, uncachedToCachedFiles.Object, emptyBundle.Path, emptyBundle, unprocessedAssetPaths);
-            diskBackedBundleCache.FixReferences(new List<Bundle> { fileBundle });
-            diskBackedBundleCache.FixReferences(new List<Bundle> { emptyBundle });
+            var stubFileCreation = typeof(Asset_Tests).GetMethod("StubFile", BindingFlags.NonPublic | BindingFlags.Instance);
+            var fileAssetChild = new FileAsset((IFile)stubFileCreation.Invoke(new Asset_Tests(), new object[] { "asset content", "~/file2" }), fileBundle);
+            fileAsset.AddReference(fileAssetChild.SourceFile.FullPath, 1);
+            fileBundle.Assets.Add(fileAssetChild);
+            var containsDict = new Dictionary<string, string>();
+            var originalPath = fileAsset.References.First().Path;
+
+            containsDict.Add(fileAsset.References.First().Path, "good test result");
+            diskBackedBundleCache.FixReferences(containsDict, new List<Bundle> { fileBundle });
+            fileAsset.References.First().Path.ShouldEqual("good test result");
+
+            containsDict.Add("good test result", "bad test result");
+            diskBackedBundleCache.FixReferences(containsDict, new List<Bundle> { fileBundle });
+            fileAsset.References.First().Path.ShouldEqual("good test result");
+
+            fileAssetChild.AddReference("http://www.google.com", -1);
+            containsDict.Add("http://www.google.com", "bad test result");
+            diskBackedBundleCache.FixReferences(containsDict, new List<Bundle> { fileBundle });
+            fileAssetChild.References.First().Path.ShouldEqual("http://www.google.com");
+
+            //Just making sure it doesn't do anything with an empty bundle.
+            diskBackedBundleCache.FixReferences(containsDict, new List<Bundle> { emptyBundle });
         }
 
         #endregion
@@ -274,13 +290,62 @@ namespace Cassette.Configuration
         
         #endregion
 
-        #region GetFromDisk
-        ///Many code paths are checked by the GetBundle and ContainsKey test
+        #region CreateFileOnDiskFromAsset
+        ///Many code paths are checked by other tests
+
+        [Fact]
+        public void CreateFileOnDiskFromAsset_CheckProperDehydration()
+        {
+            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), "asset content"))
+                .Verifiable();
+            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), "[{\"AssetReferenceType\":1,\"LineNumber\":1,\"Path\":\"~/file2\"}]"))
+                .Verifiable();
+            fileHelper.Setup(fh => fh.Write(It.IsAny<string>(), "[]"))
+                .Verifiable();
+            fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
+                .Returns(true);
+            fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
+                .Returns(DateTime.Today);
+            uncachedToCachedFiles.Setup(d => d.ContainsKey(It.IsAny<string>()))
+                .Returns(false);
+            uncachedToCachedFiles.Setup(d => d.Add(It.IsAny<string>(), It.IsAny<string>()));
+            unprocessedAssetPaths.Add("~/a");
+            var stubFileCreation = typeof(Asset_Tests).GetMethod("StubFile", BindingFlags.NonPublic | BindingFlags.Instance);
+            var fileAssetChild = new FileAsset((IFile)stubFileCreation.Invoke(new Asset_Tests(), new object[] { "asset content", "~/file2" }), fileBundle);
+            fileAsset.AddReference(fileAssetChild.SourceFile.FullPath, 1);
+            fileBundle.Assets.Add(fileAssetChild);
+            AddToDisk(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle, unprocessedAssetPaths);
+            fileBundle.Assets.First().References.First().Path.Equals(fileAssetChild.SourceFile.FullPath);
+            fileHelper.Verify();
+            fileHelper.Verify(fh => fh.Write(It.IsAny<string>(), "[{\"AssetReferenceType\":1,\"LineNumber\":1,\"Path\":\"~/file2\"}]"), Times.Once());
+            fileHelper.Verify(fh => fh.Write(It.IsAny<string>(), "[]"), Times.Once());
+            fileHelper.Verify(fh => fh.Write(It.IsAny<string>(), "asset content"), Times.Exactly(2));
+        }
+
+        #endregion
+
+        #region GetAssetReferencesFromDisk
+        ///Many code paths are checked by the GetBundle and ContainsKey tests
          
         [Fact]
-        public void GetFromDisk_CheckProperRehydration()
+        public void GetAssetReferencesFromDisk_CheckProperRehydration()
         {
-            
+            fileHelper.Setup(fh => fh.ReadAllText(It.IsAny<string>()))
+                .Returns("[{\"AssetReferenceType\":1,\"LineNumber\":1,\"Path\":\"~/file2\"}]")
+                .Verifiable();
+            fileHelper.Setup(fh => fh.Exists(It.IsAny<string>()))
+                .Returns(true);
+            fileHelper.Setup(fh => fh.GetLastAccessTime(It.IsAny<string>()))
+                .Returns(DateTime.Today);
+            uncachedToCachedFiles.Setup(fh => fh.ContainsKey(It.IsAny<string>()))
+                .Returns(true);
+            var stubFileCreation = typeof(Asset_Tests).GetMethod("StubFile", BindingFlags.NonPublic | BindingFlags.Instance);
+            var fileAssetChild = new FileAsset((IFile)stubFileCreation.Invoke(new Asset_Tests(), new object[] { "asset content", "~/file2" }), fileBundle);
+            fileAsset.AddReference(fileAssetChild.SourceFile.FullPath, 1);
+            fileBundle.Assets.Add(fileAssetChild);
+            GetFromDisk(fileHelper.Object, uncachedToCachedFiles.Object, fileBundle);
+            fileBundle.Assets.First().References.First().Path.Equals(fileAssetChild.SourceFile.FullPath);
+            fileHelper.Verify();
         }
 
         #endregion

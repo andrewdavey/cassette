@@ -12,7 +12,10 @@ namespace Cassette.HtmlTemplates
             yield return new ParseHtmlTemplateReferences();
             yield return new WrapHtmlTemplatesInScriptElements();
             yield return new AssignHash();
-            yield return new ConcatenateAssets();
+            if (!settings.IsDebuggingEnabled)
+            {
+                yield return new ConcatenateAssets();
+            }
         }
     }
 }

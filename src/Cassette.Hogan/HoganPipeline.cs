@@ -22,7 +22,10 @@ namespace Cassette.HtmlTemplates
             yield return new CompileHogan();
             yield return new RegisterTemplatesWithHogan(bundle, JavaScriptVariableName);
             yield return new AssignHash();
-            yield return new ConcatenateAssets();
+            if (!settings.IsDebuggingEnabled)
+            {
+                yield return new ConcatenateAssets();
+            }
         }
     }
 }

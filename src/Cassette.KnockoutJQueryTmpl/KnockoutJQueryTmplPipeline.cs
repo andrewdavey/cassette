@@ -16,7 +16,10 @@ namespace Cassette.HtmlTemplates
             yield return new CompileKnockoutJQueryTmpl();
             yield return new RegisterTemplatesWithJQueryTmpl(bundle);
             yield return new AssignHash();
-            yield return new ConcatenateAssets();
+            if (!settings.IsDebuggingEnabled)
+            {
+                yield return new ConcatenateAssets();
+            }
         }
     }
 }

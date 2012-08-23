@@ -23,8 +23,8 @@ namespace Cassette.Configuration
             Bundle bundle, AssignHash hasher) 
         {
             Trace.Source.TraceInformation("Processing {0} {1}", bundle.GetType().Name, bundle.Path);
-            hasher.Process(bundle, settings); 
-            var bundleKey = fileHelper.GetCachebleHash(bundle.Url);
+            hasher.Process(bundle, settings);
+            var bundleKey = CassetteSettings.bundles.GetCachebleHash(bundle.Url);
             if (CassetteSettings.bundles.ContainsKey(fileHelper, uncachedToCachedFiles, bundleKey, bundle))
             {
                 bundle = CassetteSettings.bundles.GetBundle(fileHelper, uncachedToCachedFiles, bundleKey, bundle);
@@ -63,12 +63,13 @@ namespace Cassette.Configuration
                     {
                         ((ScriptBundle)bundles[i]).Renderer = new DebugScriptBundleHtmlRenderer(settings.UrlGenerator);
                     }
-                    else if (typeof(HtmlTemplateBundle).IsAssignableFrom(bundles[i].GetType()) && ((HtmlTemplateBundle)bundles[i]).Renderer == null)
-                    {
-                        ((HtmlTemplateBundle)bundles[i]).Renderer = new RemoteHtmlTemplateBundleRenderer(settings.UrlGenerator);
+                    else if (typeof(HtmlTemplateBundle).IsAssignableFrom(bundles[i].GetType()))
+                    {  
+                        ((HtmlTemplateBundle)bundles[i]).Renderer = new DebugHtmlTemplateBundleRenderer(settings.UrlGenerator);
+                        bundles[i].ContentType = "text/javascript";
                     }
                 }
-                CassetteSettings.bundles.FixReferences(bundles);
+                CassetteSettings.bundles.FixReferences(CassetteSettings.uncachedToCachedFiles, bundles);
             }
             Trace.Source.TraceInformation("Bundle processing completed.");
         }

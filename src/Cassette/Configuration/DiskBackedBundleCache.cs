@@ -1,43 +1,32 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using Cassette.BundleProcessing;
+using System.Reflection;
 using Cassette.IO;
-using Cassette.Manifests;
-using Cassette.Scripts;
-using Cassette.Stylesheets;
-using Cassette.Utilities;
+using Newtonsoft.Json;
 
 namespace Cassette.Configuration
 {
     public class DiskBackedBundleCache
     {
-        const string CACHE_DIRECTORY = @"C:\DiskCachedBundles\";
-        IDictionary<string, Bundle> _bundles;
+        const string CacheDirectory = @"C:\DiskCachedBundles\";
+        readonly IDictionary<string, Bundle> _bundles;
+        string lastModified;
 
         /// <summary>
-        /// Creates the directory if needed.
+        /// Creates the directory if needed and clears it every day.
         /// </summary>
-        public DiskBackedBundleCache()
+        public DiskBackedBundleCache(IFileHelper fileHelper)
         {
-            if (!Directory.Exists(CACHE_DIRECTORY))
-            {
-                Directory.CreateDirectory(CACHE_DIRECTORY);
-            }
+            fileHelper.PrepareCachingDirectory(CacheDirectory, GetCachebleHash(GetAssemblyLastModifiedTime()));
             _bundles = new Dictionary<string, Bundle>();
         }
 
         /// <summary>
         /// Adds it to the cache if not in there, will not overwrite already existing
         /// </summary>
-        /// <typeparam name="T">A descendent of Bundle</typeparam>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void AddBundle(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key, 
-            Bundle value, IEnumerable<string> unprocessedAssetPaths)
+        public void AddBundle(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key,
+                              Bundle value, IEnumerable<string> unprocessedAssetPaths)
         {
             if (!_bundles.ContainsKey(key))
             {
@@ -49,12 +38,8 @@ namespace Cassette.Configuration
         public IEnumerable<string> GetAssetPaths(Bundle bundle)
         {
             var assetPaths = new List<string>();
-            foreach (var asset in bundle.Assets)
+            foreach (IAsset asset in bundle.Assets)
             {
-                if (asset is ConcatenatedAsset)
-                {
-                    continue;
-                }
                 assetPaths.Add(asset.SourceFile.FullPath);
             }
             return assetPaths;
@@ -64,8 +49,8 @@ namespace Cassette.Configuration
         /// Assumes runs before processing, so no concatenated bundles. May throw if it receives
         /// a concatenated bundle.
         /// </summary>
-        public Bundle GetBundle(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key, 
-            Bundle bundle)
+        public Bundle GetBundle(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key,
+                                Bundle bundle)
         {
             if (!ContainsKey(fileHelper, uncachedToCachedFiles, key, bundle))
             {
@@ -78,14 +63,14 @@ namespace Cassette.Configuration
         /// Assumes runs before processing, so no concatenated bundles. May throw if it receives
         /// a concatenated bundle.
         /// </summary>
-        public bool ContainsKey(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key, 
-            Bundle bundle)
+        public bool ContainsKey(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, string key,
+                                Bundle bundle)
         {
             if (_bundles.ContainsKey(key))
             {
                 return true;
             }
-            var returnValue = GetFromDisk(fileHelper, uncachedToCachedFiles, bundle);
+            bool returnValue = GetFromDisk(fileHelper, uncachedToCachedFiles, bundle);
             if (returnValue)
             {
                 _bundles.Add(key, bundle);
@@ -97,36 +82,27 @@ namespace Cassette.Configuration
         /// Scan all references in bundles and make sure that they match the assets
         /// that are actually loaded.
         /// </summary>
-        /// <param name="bundles">The bundles to scan.</param>
-        public void FixReferences(IList<Bundle> bundles)
+        public void FixReferences(Dictionary<string, string> uncachedToCachedFiles, IList<Bundle> bundles)
         {
-            foreach (var bundle in bundles)
+            foreach (Bundle bundle in bundles)
             {
-                if (!CassetteSettings.uncachedToCachedFiles.ContainsKey(bundle.Path))
+                if (!uncachedToCachedFiles.ContainsKey(bundle.Path))
                 {
-                    CassetteSettings.uncachedToCachedFiles.Add(bundle.Path, bundle.Path);
+                    uncachedToCachedFiles.Add(bundle.Path, bundle.Path);
                 }
             }
-            foreach (var bundle in bundles)
+            foreach (Bundle bundle in bundles)
             {
-                foreach (var asset in bundle.Assets)
+                foreach (IAsset asset in bundle.Assets)
                 {
-                    foreach (var reference in asset.References)
+                    foreach (AssetReference reference in asset.References)
                     {
                         if (reference.Type == AssetReferenceType.SameBundle ||
                             reference.Type == AssetReferenceType.DifferentBundle)
                         {
-                            try
+                            if (!uncachedToCachedFiles.ContainsValue(reference.Path))
                             {
-                                if (!CassetteSettings.uncachedToCachedFiles.ContainsValue(reference.Path))
-                                {
-                                    reference.Path = CassetteSettings.uncachedToCachedFiles[reference.Path];
-                                }
-                            }
-                            catch (KeyNotFoundException)
-                            {
-                                throw new Exception(reference.Path + " " + reference.Type + " " +
-                                                    reference.SourceAsset.SourceFile.FullPath);
+                                reference.Path = uncachedToCachedFiles[reference.Path];
                             }
                         }
                     }
@@ -134,30 +110,22 @@ namespace Cassette.Configuration
             }
         }
 
-        
-
         /// <summary>
         /// Caches the given bundle on disk. Note: assumes this is done after processing
         /// </summary>
-        /// <param name="key">The key of the file</param>
-        /// <param name="value">The cached bundle.</param>
-        void AddToDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle, 
-            IEnumerable<string> unprocessedAssetPaths)
+        void AddToDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle,
+                       IEnumerable<string> unprocessedAssetPaths)
         {
-            foreach (var asset in bundle.Assets)
+            foreach (IAsset asset in bundle.Assets)
             {
-                var systemAbsoluteFilename = fileHelper.GetFileName(asset, bundle, CACHE_DIRECTORY);
-                fileHelper.CreateFileOnDiskFromAsset(bundle, asset, systemAbsoluteFilename);
-                if (asset.GetType() == typeof(ConcatenatedAsset) && !uncachedToCachedFiles.ContainsKey(bundle.Path))
-                {
-                    uncachedToCachedFiles.Add(bundle.Path, bundle.Path);
-                }
-                else if (asset.GetType() != typeof(ConcatenatedAsset) && !uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
+                string systemAbsoluteFilename = GetFileName(asset, bundle, CacheDirectory);
+                CreateFileOnDiskFromAsset(fileHelper, bundle, asset, systemAbsoluteFilename);
+                if (!uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
                 {
                     uncachedToCachedFiles.Add(asset.SourceFile.FullPath, asset.SourceFile.FullPath);
                 }
             }
-            foreach (var assetPath in unprocessedAssetPaths)
+            foreach (string assetPath in unprocessedAssetPaths)
             {
                 if (!uncachedToCachedFiles.ContainsKey(assetPath))
                 {
@@ -166,21 +134,17 @@ namespace Cassette.Configuration
             }
         }
 
-
-
         /// <summary>
         /// Gets the given bundle from the disk. Should not take any concatenated assets as should run
         /// before the processing the generates those assets.
         /// </summary>
-        /// <param name="key">The bundles key, which is also the file name</param>
-        /// <returns>The bundle that has been has been cached in a file.</returns>
         bool GetFromDisk(IFileHelper fileHelper, IDictionary<string, string> uncachedToCachedFiles, Bundle bundle)
         {
-            var retValue = false;
+            bool retValue = false;
             var assetList = new List<IAsset>();
-            foreach (var asset in bundle.Assets)
+            foreach (IAsset asset in bundle.Assets)
             {
-                var systemAbsoluteFilename = fileHelper.GetFileName(asset, bundle, CACHE_DIRECTORY);
+                string systemAbsoluteFilename = GetFileName(asset, bundle, CacheDirectory);
                 if (!fileHelper.Exists(systemAbsoluteFilename))
                 {
                     continue;
@@ -194,17 +158,17 @@ namespace Cassette.Configuration
                                               new FileSystemDirectory(Path.GetDirectoryName(systemAbsoluteFilename)),
                                               systemAbsoluteFilename);
                 var fileAsset = new FileAsset(file, bundle);
-                fileHelper.GetAssetReferencesFromDisk(fileAsset, systemAbsoluteFilename);
+                GetAssetReferencesFromDisk(fileHelper, fileAsset, systemAbsoluteFilename);
                 assetList.Add(fileAsset);
                 if (!uncachedToCachedFiles.ContainsKey(asset.SourceFile.FullPath))
                 {
                     uncachedToCachedFiles.Add(asset.SourceFile.FullPath, fileAsset.SourceFile.FullPath);
                 }
             }
-            if (assetList.Count == bundle.Assets.Count)
+            if (bundle.Assets.Count == assetList.Count)
             {
                 bundle.Assets.Clear();
-                foreach (var asset in assetList)
+                foreach (IAsset asset in assetList)
                 {
                     bundle.Assets.Add(asset);
                 }
@@ -212,5 +176,92 @@ namespace Cassette.Configuration
             }
             return retValue;
         }
+
+        public void CreateFileOnDiskFromAsset(IFileHelper fileHelper, Bundle bundle, IAsset asset,
+                                              string systemAbsoluteFilename)
+        {
+            ((AssetBase)asset).PreparePostProcessingStream();
+            //Handle possibility of concatenated assets
+            fileHelper.Write(systemAbsoluteFilename, ((AssetBase)asset).postProcessingString);
+            var refHolderList = new List<ReferenceHolder>();
+            foreach (AssetReference assetReference in asset.References)
+            {
+                refHolderList.Add(new ReferenceHolder
+                {
+                    Path = assetReference.Path,
+                    LineNumber = assetReference.SourceLineNumber,
+                    AssetReferenceType = assetReference.Type
+                });
+            }
+            fileHelper.Write(systemAbsoluteFilename + "references", JsonConvert.SerializeObject(refHolderList));
+        }
+
+        public void GetAssetReferencesFromDisk(IFileHelper fileHelper, FileAsset fileAsset,
+                                               string systemAbsoluteFilename)
+        {
+            var refHolderList = JsonConvert.DeserializeObject<List<ReferenceHolder>>
+                (fileHelper.ReadAllText(systemAbsoluteFilename + "references"));
+            foreach (ReferenceHolder refHolder in refHolderList)
+            {
+                if (refHolder.AssetReferenceType == AssetReferenceType.RawFilename)
+                {
+                    fileAsset.AddRawFileReference(refHolder.Path);
+                }
+                else
+                {
+                    fileAsset.AddReference(refHolder.Path, refHolder.LineNumber);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Turns the bundleUrl into a string that is still a unique hash but 
+        /// is also able to be used a file name.
+        /// </summary>
+        /// <param name="bundleUrl">the original bundleUrl</param>
+        /// <returns>the new, cachebale string</returns>
+        public string GetCachebleString(string bundleUrl)
+        {
+            return bundleUrl.Remove(0, bundleUrl.LastIndexOf('/') + 1);
+        }
+
+        public string GetFileName(IAsset asset, Bundle bundle, string cacheDirectory)
+        {
+            string assetExtension = Path.GetExtension(asset.SourceFile.FullPath);
+            return cacheDirectory
+                   + (assetExtension.Length > 0
+                          ? GetCachebleString(asset.SourceFile.FullPath.Replace(assetExtension, ""))
+                          : "")
+                   + GetCachebleHash(Convert.ToBase64String(asset.Hash) + GetAssemblyLastModifiedTime()) +
+                   assetExtension;
+        }
+
+        string GetAssemblyLastModifiedTime()
+        {
+            if (lastModified != null)
+            {
+                return lastModified;
+            }
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            var fileInfo = new FileInfo(assembly.Location);
+            lastModified = fileInfo.LastWriteTime.ToString("ddMMMHHmmss");
+            return lastModified;
+        }
+
+        public string GetCachebleHash(string hash)
+        {
+            return hash.Replace("/", "1").Replace("+", "1").Replace("?", "1");
+        }
+
+        #region Nested type: ReferenceHolder
+
+        class ReferenceHolder
+        {
+            public AssetReferenceType AssetReferenceType;
+            public int LineNumber;
+            public string Path;
+        }
+
+        #endregion
     }
 }

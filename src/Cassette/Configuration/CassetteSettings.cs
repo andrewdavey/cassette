@@ -27,7 +27,7 @@ namespace Cassette.Configuration
             { typeof(HtmlTemplateBundle), new HtmlTemplatePipeline() },
         };
 
-        public static DiskBackedBundleCache bundles = new DiskBackedBundleCache();
+        public static DiskBackedBundleCache bundles = new DiskBackedBundleCache(new FileHelper());
 
         public static Dictionary<string, string> uncachedToCachedFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         

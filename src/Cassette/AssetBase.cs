@@ -9,7 +9,12 @@ namespace Cassette
 {
     public abstract class AssetBase : IAsset
     {
-        public byte[] postProcessingByteArray = null;
+        private byte[] postProcessingByteArray = null;
+
+        public string postProcessingString
+        {
+            get { return Encoding.UTF8.GetString(postProcessingByteArray); }
+        }
 
         readonly List<IAssetTransformer> transformers = new List<IAssetTransformer>();
 
