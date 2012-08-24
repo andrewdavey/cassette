@@ -317,6 +317,7 @@ namespace Cassette.TinyIoC
     #endregion
 
     #region TinyIoC Exception Types
+    [Serializable]
     public class TinyIoCResolutionException : Exception
     {
         private const string ERROR_TEXT = "Unable to resolve type: {0}";
@@ -332,6 +333,7 @@ namespace Cassette.TinyIoC
         }
     }
 
+    [Serializable]
     public class TinyIoCRegistrationTypeException : Exception
     {
         private const string REGISTER_ERROR_TEXT = "Cannot register type {0} - abstract classes or interfaces are not valid implementation types for {1}.";
@@ -347,6 +349,7 @@ namespace Cassette.TinyIoC
         }
     }
 
+    [Serializable]
     public class TinyIoCRegistrationException : Exception
     {
         private const string CONVERT_ERROR_TEXT = "Cannot convert current registration of {0} to {1}";
@@ -373,6 +376,7 @@ namespace Cassette.TinyIoC
         }
     }
 
+    [Serializable]
     public class TinyIoCWeakReferenceException : Exception
     {
         private const string ERROR_TEXT = "Unable to instantiate {0} - referenced object has been reclaimed";
@@ -388,6 +392,7 @@ namespace Cassette.TinyIoC
         }
     }
 
+    [Serializable]
     public class TinyIoCConstructorResolutionException : Exception
     {
         private const string ERROR_TEXT = "Unable to resolve constructor for {0} using provided Expression.";
@@ -413,6 +418,7 @@ namespace Cassette.TinyIoC
         }
     }
 
+    [Serializable]
     public class TinyIoCAutoRegistrationException : Exception
     {
         private const string ERROR_TEXT = "Duplicate implementation of type {0} found ({1}).";
