@@ -25,6 +25,9 @@ namespace Perf
                     }
                 }
 
+                Console.WriteLine("Assets written to disk. Start profiler, then press Enter.");
+                Console.ReadLine();
+
                 using (var host = new TestableWebHost(temp, () => null, true))
                 {
                     host.AddBundleConfiguration(new BundleConfiguration(bundles =>
