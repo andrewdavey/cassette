@@ -25,12 +25,6 @@ namespace Cassette
         }
 
         [Fact]
-        public void UseWhenDebuggingIsTrue()
-        {
-            settings.UseWhenDebugging.ShouldBeTrue();
-        }
-
-        [Fact]
         public void FileSearchIsNull()
         {
             settings.FileSearch.ShouldBeNull();
