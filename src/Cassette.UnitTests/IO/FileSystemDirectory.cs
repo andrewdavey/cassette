@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Linq;
+using Cassette.Utilities;
 using Should;
 using Xunit;
-using Cassette.Utilities;
 
 namespace Cassette.IO
 {
@@ -41,7 +41,7 @@ namespace Cassette.IO
             {
                 var dir = new FileSystemDirectory(path);
                 var file = dir.GetFile("sub\\test.txt");
-                file.ShouldBeType<NonExistentFile>();
+                file.Exists.ShouldBeFalse();
             }
         }
     }
@@ -58,26 +58,6 @@ namespace Cassette.IO
 
                 var files = dir.GetFiles("*", SearchOption.AllDirectories).ToArray();
                 files[0].FullPath.ShouldEqual("~/file.js");
-            }
-        }
-    }
-
-    public class FileSystemDirectory_DeleteAll_Tests
-    {
-        [Fact]
-        public void GivenFilesAndSubDirectories_WhenDeleteAll_ThenEverythingIsDeleted()
-        {
-            using (var path = new TempDirectory())
-            {
-                Directory.CreateDirectory(Path.Combine(path, "sub"));
-                File.WriteAllText(Path.Combine(path, "file1.txt"), "1");
-                File.WriteAllText(Path.Combine(path, "sub\\file2.txt"), "2");
-
-                var dir = new FileSystemDirectory(path);
-                dir.DeleteContents();
-
-                Directory.GetFiles(path).Length.ShouldEqual(0);
-                Directory.GetDirectories(path).Length.ShouldEqual(0);
             }
         }
     }

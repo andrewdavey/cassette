@@ -1,0 +1,71 @@
+﻿<div class="tree">
+    <p>Documentation version: <strong>v1</strong> &bull; <a href="@Url.RouteUrl("Documentation", new{version="v2",path=""})">v2</a></p>
+    <ul>
+        <li>
+            @DocLink("", "Index")
+        </li>
+        <li>
+            @DocLink("getting-started", "Getting Started")
+            <ul>
+                <li>@DocLink("getting-started/assets-and-bundles", "Assets and Bundles")</li>
+                <li>@DocLink("getting-started/mvc", "Using Cassette in MVC")</li>
+                <li>@DocLink("getting-started/webforms", "Using Cassette in Web Forms")</li>
+                <li class="last-child">@DocLink("getting-started/fx35", "Using Cassette in .NET 3.5")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("Tutorials", "Tutorials")
+            <ul>
+                <li class="last-child">@DocLink("tutorials/twitter-bootstrap", "Twitter Bootstrap")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("configuration", "Configuration")
+            <ul>
+                <li>@DocLink("configuration/add-directory", "Add Directory")</li>
+                <li>@DocLink("configuration/add-file", "Add File(s)")</li>
+                <li>@DocLink("configuration/add-per-sub-directory", "Add Per Sub-Directory")</li>
+                <li class="last-child">@DocLink("configuration/bundle-descriptor-file", "Bundle Descriptor File")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("AssetReferences", "Asset References")
+        </li>
+        <li>
+            @DocLink("BundlesHelper", "Bundles Helper")
+        </li>
+        <li>
+            @DocLink("scripts", "Scripts")
+            <ul>
+                <li>@DocLink("scripts/external", "External Scripts")</li>
+                <li class="last-child">@DocLink("scripts/coffeescript", "CoffeeScript")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("stylesheets", "Stylesheets")
+            <ul>
+                <li>@DocLink("stylesheets/less", "LESS")</li>
+                <li class="last-child">@DocLink("stylesheets/data-uris", "Data URIs")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("html-templates", "HTML Templates")
+            <ul>
+                <li>@DocLink("html-templates/jquery-tmpl", "jQuery-tmpl Compilation")</li>
+                <li>@DocLink("html-templates/knockoutjs-jquery-tmpl", "KnockoutJS")</li>
+                <li class="last-child">@DocLink("html-templates/mustache-hoganjs", "Mustache/Hogan.js")</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+@helper DocLink(string path, string text)
+{
+    if (Request.Url.AbsolutePath.EndsWith("documentation/v1/" + path))
+    {
+    <a class="activedoc" href="@Url.DocumentationUrl(path)">@text</a>
+    }
+    else
+    {
+    <a href="@Url.DocumentationUrl(path)">@text</a>
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Cassette.IO;
 using Cassette.Utilities;
 using dotless.Core;
@@ -8,28 +9,53 @@ using dotless.Core.Input;
 using dotless.Core.Loggers;
 using dotless.Core.Parser;
 
+#if NET35
+using Iesi.Collections.Generic;
+#endif
+
 namespace Cassette.Stylesheets
 {
-    public class LessCompiler : ICompiler
+    public class LessCompiler : ILessCompiler
     {
-        public string Compile(string source, IFile sourceFile)
+        HashedSet<string> importedFilePaths;
+
+        public CompileResult Compile(string source, CompileContext context)
         {
+            var sourceFile = context.RootDirectory.GetFile(context.SourceFilePath);
+            importedFilePaths = new HashedSet<string>();
             var parser = new Parser
             {
-                Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory))
+                Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory, importedFilePaths))
             };
             var errorLogger = new ErrorLogger();
-            var engine = new LessEngine(parser, errorLogger, false);
-            
-            var css = engine.TransformToCss(source, sourceFile.FullPath);
+            var engine = new LessEngine(parser, errorLogger, false, false);
+
+            string css;
+            try
+            {
+                css = engine.TransformToCss(source, sourceFile.FullPath);
+            }
+            catch (Exception ex)
+            {
+                throw new LessCompileException(
+                    string.Format("Error compiling {0}{1}{2}", context.SourceFilePath, Environment.NewLine, ex.Message),
+                    ex
+                );
+            }
 
             if (errorLogger.HasErrors)
             {
-                throw new LessCompileException(errorLogger.ErrorMessage);
+                var exceptionMessage = string.Format(
+                    "Error compiling {0}{1}{2}",
+                    context.SourceFilePath,
+                    Environment.NewLine,
+                    errorLogger.ErrorMessage
+                );
+                throw new LessCompileException(exceptionMessage);
             }
             else
             {
-                return css;
+                return new CompileResult(css, importedFilePaths);
             }
         }
 
@@ -69,9 +95,20 @@ namespace Cassette.Stylesheets
                 Trace.Source.TraceInformation(message);
             }
 
+            public void Error(string message, params object[] args)
+            {
+                errors.Add(string.Format(message, args));
+                Trace.Source.TraceInformation(message, args);
+            }
+
             public void Info(string message)
             {
                 Trace.Source.TraceInformation(message);
+            }
+
+            public void Info(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
             }
 
             public void Debug(string message)
@@ -79,24 +116,52 @@ namespace Cassette.Stylesheets
                 Trace.Source.TraceInformation(message);
             }
 
+            public void Debug(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
+            }
+
             public void Warn(string message)
             {
                 Trace.Source.TraceInformation(message);
+            }
+
+            public void Warn(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
             }
         }
 
         class CassetteLessFileReader : IFileReader
         {
             readonly IDirectory directory;
+            readonly HashedSet<string> importFilePaths;
 
-            public CassetteLessFileReader(IDirectory directory)
+            public CassetteLessFileReader(IDirectory directory, HashedSet<string> importFilePaths)
             {
                 this.directory = directory;
+                this.importFilePaths = importFilePaths;
+            }
+
+            public byte[] GetBinaryFileContents(string fileName)
+            {
+                var file = directory.GetFile(fileName);
+                importFilePaths.Add(file.FullPath);
+                using (var buffer = new MemoryStream())
+                {
+                    using (var fileStream = file.OpenRead())
+                    {
+                        fileStream.CopyTo(buffer);
+                    }
+                    return buffer.ToArray();
+                }
             }
 
             public string GetFileContents(string fileName)
             {
-                return directory.GetFile(fileName).OpenRead().ReadToEnd();
+                var file = directory.GetFile(fileName);
+                importFilePaths.Add(file.FullPath);
+                return file.OpenRead().ReadToEnd();
             }
 
             public bool DoesFileExist(string fileName)

@@ -15,14 +15,10 @@ namespace Cassette.IO
         readonly Func<Storage> getStorage;
         readonly string basePath;
 
-        public IsolatedStorageDirectory(Storage storage)
-            : this(() => storage, "~/")
-        {
-        }
-
         public IsolatedStorageDirectory(Func<Storage> getStorage)
-            : this(getStorage, "~/")
         {
+            this.getStorage = getStorage;
+            basePath = "~/";
         }
 
         IsolatedStorageDirectory(Func<Storage> getStorage, string basePath)
@@ -36,9 +32,51 @@ namespace Cassette.IO
             get { return basePath; }
         }
 
+        public bool Exists
+        {
+            get
+            {
+#if NET35
+                var all = RecursiveGetAllDirectories("");
+                return all.Any(path => path.Equals(basePath, StringComparison.OrdinalIgnoreCase));
+#else
+                return getStorage().DirectoryExists(basePath);
+#endif
+            }
+        }
+
+#if NET35
+        IEnumerable<string> RecursiveGetAllDirectories(string path)
+        {
+            var storage = getStorage();
+            var directoryNames = storage.GetDirectoryNames(path.Length == 0 ? "*" : (path + "/*"));
+            foreach (var directoryName in directoryNames)
+            {
+                var subPath = path + "/" + directoryName;
+                yield return subPath;
+                foreach (var subSubPath in RecursiveGetAllDirectories(subPath))
+                {
+                    yield return subSubPath;
+                }
+            }
+        } 
+#endif
+
         public IFile GetFile(string filename)
         {
-            return new IsolatedStorageFile(GetAbsolutePath(filename), getStorage, this);
+            filename = GetAbsolutePath(filename);
+            var parts = filename.Split('/', '\\');
+            IsolatedStorageDirectory directory;
+            if (parts.Length > 2)
+            {
+                var subDirectory = string.Join("/", parts.Reverse().Skip(1).Reverse().ToArray());
+                directory = new IsolatedStorageDirectory(getStorage, subDirectory);
+            }
+            else
+            {
+                directory = this;
+            }
+            return new IsolatedStorageFile(filename, getStorage, directory);
         }
 
         string GetAbsolutePath(string path)
@@ -58,7 +96,7 @@ namespace Cassette.IO
 
         public IDirectory GetDirectory(string path)
         {
-            throw new NotSupportedException();
+            return new IsolatedStorageDirectory(getStorage, Path.Combine(basePath, path));
         }
 
         public IEnumerable<IFile> GetFiles(string searchPattern, SearchOption searchOption)
@@ -76,6 +114,42 @@ namespace Cassette.IO
         }
 
         public IEnumerable<IDirectory> GetDirectories()
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Create()
+        {
+            getStorage().CreateDirectory(basePath.TrimStart('~', '/'));
+        }
+
+        public void Delete()
+        {
+            var storage = getStorage();
+            var path = basePath.TrimStart('~', '/');
+            RecursiveDirectoryDelete(storage, path);
+        }
+
+        void RecursiveDirectoryDelete(Storage storage, string path)
+        {
+            if (path.Length > 0) path += "/";
+            foreach (var subDirectory in storage.GetDirectoryNames(path + "*"))
+            {
+                RecursiveDirectoryDelete(storage, path + subDirectory);
+            }
+            DeleteFiles(storage, path);
+            storage.DeleteDirectory(path);
+        }
+
+        void DeleteFiles(Storage storage, string directoryPath)
+        {
+            foreach (var filename in storage.GetFileNames(directoryPath + "*"))
+            {
+                storage.DeleteFile(directoryPath + filename);
+            }
+        }
+
+        public IDisposable WatchForChanges(Action<string> pathCreated, Action<string> pathChanged, Action<string> pathDeleted, Action<string, string> pathRenamed)
         {
             throw new NotSupportedException();
         }

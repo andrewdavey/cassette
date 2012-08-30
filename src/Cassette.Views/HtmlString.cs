@@ -1,6 +1,6 @@
-﻿namespace Cassette.Views
+﻿#if NET35
+namespace Cassette.Views
 {
-#if NET35
     public interface IHtmlString
     {
         string ToHtmlString();
@@ -25,5 +25,5 @@
             return this._htmlString;
         }
     }
-#endif
 }
+#endif

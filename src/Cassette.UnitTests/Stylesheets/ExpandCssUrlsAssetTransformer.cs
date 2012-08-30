@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.IO;
-using Cassette.IO;
-using Cassette.Utilities;
-using Cassette.Web;
+﻿using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -13,40 +9,30 @@ namespace Cassette.Stylesheets
     {
         public ExpandCssUrlsAssetTransformer_Tests()
         {
-            directory = new Mock<IDirectory>();
-            file = new Mock<IFile>();
+            fileSystem = new FakeFileSystem
+            {
+                "~/styles/asset.css"
+            };
+
             urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(u => u.CreateRawFileUrl(It.IsAny<string>(), It.IsAny<string>()))
                         .Returns<string, string>((f, h) => "EXPANDED");
-            directory.SetupGet(d => d.FullPath).Returns("~/styles");
             
-            file.SetupGet(f => f.Exists).Returns(true);
-            file.SetupGet(f => f.Directory).Returns(directory.Object);
-            file.SetupGet(f => f.FullPath).Returns("~/styles/asset.css");
-            file.Setup(f => f.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                .Returns(Stream.Null);
-
-            transformer = new ExpandCssUrlsAssetTransformer(directory.Object, urlGenerator.Object);
+            transformer = new ExpandCssUrlsAssetTransformer(fileSystem, urlGenerator.Object);
             asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile).Returns(file.Object);
+            asset.SetupGet(a => a.Path).Returns("~/styles/asset.css");
         }
 
         readonly ExpandCssUrlsAssetTransformer transformer;
         readonly Mock<IAsset> asset;
         readonly Mock<IUrlGenerator> urlGenerator;
-        readonly Mock<IFile> file;
-        readonly Mock<IDirectory> directory;
-
-        void SetupDirectoryGetFile(IFile file)
-        {
-            directory.Setup(d => d.GetFile(It.IsAny<string>()))
-                     .Returns(file);
-        }
+        readonly FakeFileSystem fileSystem;
 
         [Fact]
         public void GivenCssWithRelativeUrl_WhenTransformed_ThenUrlIsExpanded()
         {
-            SetupDirectoryGetFile(StubImageFile().Object);
+            fileSystem.Add("~/styles/test.png");
+
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
@@ -57,11 +43,55 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
-        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenUrlIsNotExpanded()
+        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenUrlIsExpandedToAbsolutePath()
         {
+            urlGenerator
+                .Setup(g => g.CreateAbsolutePathUrl(It.IsAny<string>()))
+                .Returns("ABSOLUTE-URL");
+
             var output = TransformCssWhereUrlDoesNotExist();
 
-            output.ShouldEqual("p { background-image: url(test.png); }");
+            output.ShouldEqual("p { background-image: url(ABSOLUTE-URL); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsPathStartingWithSlash_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(/test.png); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsFullUrl_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(http://example.com/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(http://example.com/test.png); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsFullHttpsUrl_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(https://example.com/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(https://example.com/test.png); }");
+        }
+
+        [Fact]
+        public void GivenCssUrlIsFullProtocolRelativeUrl_WhenTransform_ThenUrlIsUnchanged()
+        {
+            var css = "p { background-image: url(//example.com/test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(//example.com/test.png); }");
         }
 
         [Fact]
@@ -72,28 +102,8 @@ namespace Cassette.Stylesheets
             asset.Verify(a => a.AddRawFileReference(It.IsAny<string>()), Times.Never());
         }
 
-        [Fact]
-        public void GivenCssUrlFileIsNotFound_WhenTransform_ThenWarningWrittenToTrace()
-        {
-            var listener = new StringBuilderTraceListener
-            {
-                Filter = new EventTypeFilter(SourceLevels.All)
-            };
-            Trace.Source.Switch.Level = SourceLevels.All;
-            Trace.Source.Listeners.Add(listener);
-
-            TransformCssWhereUrlDoesNotExist();
-
-            Trace.Source.Flush();
-            listener.ToString().ShouldContain("The file ~/styles/test.png, referenced by ~/styles/asset.css, does not exist.");
-        }
-
         string TransformCssWhereUrlDoesNotExist()
         {
-            var imageFile = StubImageFile();
-            imageFile.SetupGet(f => f.Exists).Returns(false);
-            SetupDirectoryGetFile(imageFile.Object);
-
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             return getResult().ReadToEnd();
@@ -102,8 +112,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssWithUrlWithFragment_WhenTransformed_ThenUrlIsExpanded()
         {
-            var imageFile = StubImageFile();
-            SetupDirectoryGetFile(imageFile.Object);
+            fileSystem.Add("~/styles/test.png");
             var css = "p { background-image: url(test.png#fragment); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
@@ -116,8 +125,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssWithWhitespaceAroundRelativeUrl_WhenTransformed_ThenUrlIsExpanded()
         {
-            var imageFile = StubImageFile();
-            SetupDirectoryGetFile(imageFile.Object);
+            fileSystem.Add("~/styles/test.png");
             var css = "p { background-image: url(\n test.png \n); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
@@ -128,9 +136,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssWithDoubleQuotedRelativeUrl_WhenTransformed_ThenUrlIsExpandedWithoutQuotes()
         {
-            var imageFile = StubImageFile();
-            SetupDirectoryGetFile(imageFile.Object);
-
+            fileSystem.Add("~/styles/test.png");
             var css = "p { background-image: url(\"test.png\"); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
@@ -141,8 +147,7 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssWithSingleQuotedRelativeUrl_WhenTransformed_ThenUrlIsExpandedWithoutQuotes()
         {
-            var imageFile = StubImageFile();
-            SetupDirectoryGetFile(imageFile.Object);
+            fileSystem.Add("~/styles/test.png");
 
             var css = "p { background-image: url('test.png'); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -164,14 +169,15 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssWithRelativeTopMostUrl_WhenTransformed_ThenUrlIsExpanded()
         {
-            SetupDirectoryGetFile(StubImageFile().Object);
-            var css = "p { background-image: url(/Content/test.png); }";
+            fileSystem.Add("~/styles/test.png");
+
+            var css = "p { background-image: url(/styles/test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/Content/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png", It.IsAny<string>()));
         }
 
         [Fact]
@@ -217,7 +223,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssWithUrlToDifferentDirectory_WhenTransformed_ThenUrlIsExpanded()
         {
-            SetupDirectoryGetFile(StubImageFile().Object);
+            fileSystem.Add("~/styles/images/test.png");
+
             var css = "p { background-image: url(images/test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
@@ -230,8 +237,8 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenCssWithUrlToParentDirectory_WhenTransformed_ThenUrlIsExpanded()
         {
-            var imageFile = StubImageFile();
-            SetupDirectoryGetFile(imageFile.Object);
+            fileSystem.Add("~/images/test.png");
+
             var css = "p { background-image: url(../images/test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             var output = getResult().ReadToEnd();
@@ -244,10 +251,9 @@ namespace Cassette.Stylesheets
         [Fact]
         public void GivenAssetInSubDirectoryAndCssWithUrlToParentDirectory_WhenTransformed_ThenUrlIsExpanded()
         {
-            directory.SetupGet(f => f.FullPath).Returns("~/styles/sub");
-
-            var imageFile = StubImageFile();
-            SetupDirectoryGetFile(imageFile.Object);
+            asset.SetupGet(a => a.Path).Returns("~/styles/sub/asset.css");
+            fileSystem.Add("~/styles/sub/asset.css");
+            fileSystem.Add("~/styles/images/test.png");
 
             var css = "p { background-image: url(../images/test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
@@ -256,15 +262,6 @@ namespace Cassette.Stylesheets
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png", It.IsAny<string>()));
-        }
-
-        static Mock<IFile> StubImageFile()
-        {
-            var imageFile = new Mock<IFile>();
-            imageFile.SetupGet(f => f.Exists).Returns(true);
-            imageFile.Setup(f => f.Open(It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-                .Returns(Stream.Null);
-            return imageFile;
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿using Cassette.Configuration;
-
-namespace Cassette.BundleProcessing
+﻿namespace Cassette.BundleProcessing
 {
     public class ConcatenateAssets : IBundleProcessor<Bundle>
     {
-        public void Process(Bundle bundle, CassetteSettings settings)
+        public void Process(Bundle bundle)
         {
-            bundle.ConcatenateAssets();
+            bundle.ConcatenateAssets(Separator);
         }
+
+        public string Separator { get; set; }
     }
 }

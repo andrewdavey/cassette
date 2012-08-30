@@ -1,4 +1,4 @@
-﻿using Cassette.Configuration;
+﻿using Moq;
 using Should;
 using Xunit;
 
@@ -6,13 +6,22 @@ namespace Cassette.HtmlTemplates
 {
     public class KnockoutJQueryTmplPipeline_Tests
     {
+        readonly KnockoutJQueryTmplPipeline pipeline;
+
+        public KnockoutJQueryTmplPipeline_Tests()
+        {
+            var container = new TinyIoC.TinyIoCContainer();
+            container.Register(Mock.Of<IUrlGenerator>());
+            container.Register(new CassetteSettings());
+            pipeline = new KnockoutJQueryTmplPipeline(container);
+        }
+
         [Fact]
         public void WhenProcessBundle_ThenBundleContentTypeIsTextJavascript()
         {
-            var pipeline = new KnockoutJQueryTmplPipeline();
             var bundle = new HtmlTemplateBundle("~/");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle);
 
             bundle.ContentType.ShouldEqual("text/javascript");
         }
@@ -20,10 +29,9 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void WhenProcessBundle_ThenHashIsAssigned()
         {
-            var pipeline = new KnockoutJQueryTmplPipeline();
             var bundle = new HtmlTemplateBundle("~");
 
-            pipeline.Process(bundle, new CassetteSettings(""));
+            pipeline.Process(bundle);
 
             bundle.Hash.ShouldNotBeNull();
         }

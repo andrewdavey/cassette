@@ -27,7 +27,8 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
-                return getDirectory().GetFile(path.Substring(2)).Exists;
+                path = RemoveDotSlash(path);
+                return getDirectory().GetFile(path).Exists;
             }
             else
             {
@@ -39,8 +40,10 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
-                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
-                return getDirectory().GetFile(path.Substring(2)).OpenRead();
+                path = RemoveDotSlash(path);
+                var file = getDirectory().GetFile(path);
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(file.FullPath);
+                return file.OpenRead();
             }
             else
             {
@@ -52,8 +55,10 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
-                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
-                return getDirectory().GetFile(path.Substring(2)).Open(mode, access, share);
+                path = RemoveDotSlash(path);
+                var file = getDirectory().GetFile(path);
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(file.FullPath);
+                return file.Open(mode, access, share);
             }
             else
             {
@@ -65,8 +70,10 @@ namespace Cassette.Stylesheets
         {
             if (IsRelativePath(path))
             {
-                if (OnOpenInputFileStream != null) OnOpenInputFileStream(path);
-                return getDirectory().GetFile(path.Substring(2)).Open(mode, access, share);
+                path = RemoveDotSlash(path);
+                var file = getDirectory().GetFile(path);
+                if (OnOpenInputFileStream != null) OnOpenInputFileStream(file.FullPath);
+                return file.Open(mode, access, share);
             }
             else
             {
@@ -74,9 +81,16 @@ namespace Cassette.Stylesheets
             }
         }
 
+        static string RemoveDotSlash(string path)
+        {
+            if (path.StartsWith("./")) path = path.Substring(2);
+            return path;
+        }
+
         static bool IsRelativePath(string path)
         {
-            return path.StartsWith("./");
+            var isRooted = path.Length > 2 && char.IsLetter(path[0]) && path[1] == ':';
+            return !isRooted;
         }
     }
 }

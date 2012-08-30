@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Cassette.Configuration;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -52,7 +52,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.Setup(a => a.Path).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~\\test\\asset.js").ShouldBeTrue();
@@ -65,7 +65,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.Setup(a => a.Path).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~/test/asset.js").ShouldBeTrue();
@@ -78,7 +78,7 @@ namespace Cassette
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
-            asset.Setup(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.Setup(a => a.Path).Returns("~/test/asset.js");
             bundle.Assets.Add(asset.Object);
 
             bundle.ContainsPath("~\\TEST\\ASSET.js").ShouldBeTrue();
@@ -228,7 +228,7 @@ namespace Cassette
             {
                 asset.Setup(a => a.OpenStream()).Returns(stream);
                 bundle.Assets.Add(asset.Object);
-                bundle.Process(new CassetteSettings(""));
+                bundle.Process(new CassetteSettings());
 
                 var actualStream = bundle.OpenStream();
 
@@ -257,7 +257,7 @@ namespace Cassette
         public void WhenProcess_ThenIsProcessedIsTrue()
         {
             var bundle = new TestableBundle("~");
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
             bundle.IsProcessed.ShouldBeTrue();
         }
 
@@ -265,10 +265,10 @@ namespace Cassette
         public void GivenBundleIsProcessed_WhenProcess_ThenThrowInvalidOperationException()
         {
             var bundle = new TestableBundle("~");
-            bundle.Process(new CassetteSettings(""));
+            bundle.Process(new CassetteSettings());
            
             Assert.Throws<InvalidOperationException>(
-                () => bundle.Process(new CassetteSettings(""))
+                () => bundle.Process(new CassetteSettings())
             );
         }
 
@@ -281,13 +281,14 @@ namespace Cassette
         }
 
         [Fact]
-        public void UrlIsBundleTypePathAndHash()
+        public void UrlIsBundleTypeAndBase64HashAndPath()
         {
             var bundle = new TestableBundle("~/path")
             {
                 Hash = new byte[] { 1, 2, 3 }
             };
-            bundle.Url.ShouldEqual("testablebundle/path_010203");
+            var hash = bundle.Hash.ToUrlSafeBase64String();
+            bundle.Url.ShouldEqual("testable/" + hash + "/path");
         }
     }
 

@@ -5,10 +5,11 @@
     <description xdt:Transform="Insert">KnockoutJS jQuery-tmpl HTML template compilation support for Cassette.</description>
     <dependencies xdt:Transform="Insert">
       <dependency id="Cassette" version="$version$" />
+      <dependency id="Cassette.JQueryTmpl" version="$version$" />
       <dependency id="Jurassic" version="2.1" />
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="..\..\build\bin\lib40\Cassette.KnockoutJQueryTmpl.dll" target="lib\net40-client" />
+    <file src="bin\Release\Cassette.KnockoutJQueryTmpl.dll" target="lib\net40-client" />
   </files>
 </package>

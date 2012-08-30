@@ -1,0 +1,15 @@
+﻿<h1>Add method</h1>
+
+<p>
+    The <code>BundleCollection.Add</code> method adds a bundle to the collection. 
+    You must provide a type of bundle and file system path.
+</p>
+<pre><code>bundles.Add&lt;ScriptBundle&gt;("path/to/scripts");</code></pre>
+<p>The allowed bundle types are:</p>
+<ul>
+    <li><code>Cassette.Scripts.ScriptBundle</code></li>
+    <li><code>Cassette.Stylesheets.StylesheetBundle</code></li>
+    <li><code>Cassette.HtmlTemplates.HtmlTemplateBundle</code></li>
+</ul>
+<p>The bundle path is relative to the web application's root directory.</p>
+<p>When the path is a directory, Cassette uses a <a href="@Url.DocumentationUrl("bundle-configuration/file-search")"><code>FileSearch</code></a> to find the files to include in the bundle.</p>

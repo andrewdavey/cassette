@@ -8,7 +8,7 @@ namespace Cassette.Stylesheets
     {
         protected override bool ShouldParseAsset(IAsset asset)
         {
-            return asset.SourceFile.FullPath.EndsWith(".less", StringComparison.OrdinalIgnoreCase);
+            return asset.Path.EndsWith(".less", StringComparison.OrdinalIgnoreCase);
         }
 
         internal override ICommentParser CreateCommentParser()

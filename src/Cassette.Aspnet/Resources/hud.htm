@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cassette</title>
+    <style type="text/css">
+        html {
+            background: #efefef;
+        }
+        body {
+            font-size: 62.5%;
+            font-family: Calibri, Arial, sans-serif;
+        }
+        .bundle {
+            margin-bottom: 1.5em;
+        }
+        .bundle > a {
+            font-weight: bold;
+        }
+        .bundle ul {
+            margin-top: .5em;
+        }
+        .bundle ul, .bundle p {
+            margin-left: 2em;
+        }
+        .size {
+            color: #666;
+        }
+        pre {
+            font-family: Consolas, "Courier New", Monospace;
+        }
+        ul {
+            padding: 0;
+        }
+        li {
+            list-style-type: none;
+        }
+        
+        #tabs .nav {
+            height: 3.5em;
+            border-bottom: 1px solid #A7A7A7;
+            margin: 0;
+        }
+        
+        #tabs .nav li {
+            display: block;
+            float: left;
+            height: 2.5em;
+            font-size: 1.4em;
+            margin-right: .5em;
+            border-left: 1px solid #A7A7A7;
+            border-right: 1px solid #A7A7A7;
+            border-top: 1px solid #A7A7A7;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+        
+        #tabs .nav a {
+            display: block;
+            height: 1.5em;
+            padding: .5em 1em;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            text-decoration: none;
+            color: #444;
+        }
+        
+        #tabs .nav a.active {
+            font-weight: bold;
+            background-color: #fff;
+        }
+        
+        #tabs .content {
+            border-left: 1px solid #A7A7A7;
+            border-right: 1px solid #A7A7A7;
+            border-bottom: 1px solid #A7A7A7;
+            font-size: 1.6em;            
+            padding: 1em;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="tabs">
+        <ul class="nav">
+            <li><a href="#about">Cassette</a></li>
+            <li><a href="#scripts">Scripts</a></li>
+            <li><a href="#stylesheets">Stylesheets</a></li>
+            <li><a href="#htmltemplates">HTML Templates</a></li>
+            <li><a href="#trace">Start-up Trace</a></li>
+        </ul>
+        <div class="content">
+            <div id="about">
+                <p>Version: <span data-bind="text: Cassette.Version"></span></p>
+                <p>Source Directory: <span data-bind="text: Cassette.SourceDirectory"></span></p>
+                <p>Cache Directory: <span data-bind="text: Cassette.CacheDirectory"></span></p>
+                <p>IsDebuggingEnabled: <span data-bind="text: Cassette.IsDebuggingEnabled"></span></p>
+                <p>IsHtmlRewritingEnabled: <span data-bind="text: Cassette.IsHtmlRewritingEnabled"></span></p>
+            
+                <p data-bind="visible: !Cassette.IsDebuggingEnabled">
+                    <button id="rebuild-cache">Rebuild Bundle Cache</button>
+                </p>
+
+                <p>Copyright &copy; 2011 Andrew Davey <a href="http://getcassette.net/">getcassette.net</a></p>
+            </div>
+            <div id="scripts">
+                <ul data-bind="foreach: Scripts">
+                    <li class="bundle">
+                        <a data-bind="text: Path, attr: { href: Url }"></a> <span class="size" data-bind="visible: Size !== -1"><span data-bind="text: Size"></span> bytes</span>
+                        <ul data-bind="foreach: Assets">
+                            <li>
+                                <a data-bind="text: Path, attr: { href: Url }"></a>
+                            </li>
+                        </ul>
+                        <p data-bind="visible: References.length">References: <span data-bind="text: References.join(', ')"></span></p>
+                    </li>
+                </ul>
+                <p data-bind="if: Scripts.length === 0">(None)</p>
+            </div>
+            <div id="stylesheets">
+                <ul data-bind="foreach: Stylesheets">
+                    <li class="bundle">
+                        <a data-bind="text: Path, attr: { href: Url }"></a> <span class="size" data-bind="visible: Size !== -1"><span data-bind="text: Size"></span> bytes</span>
+                        <span data-bind="visible: Media, text: 'Media=' + Media"></span>
+                        <span data-bind="visible: Condition, text: 'Condition=' + Condition"></span>
+                        <ul data-bind="foreach: Assets">
+                            <li>
+                                <a data-bind="text: Path, attr: { href: Url }"></a>
+                            </li>
+                        </ul>
+                        <p data-bind="visible: References.length">References: <span data-bind="text: References.join(', ')"></span></p>
+                    </li>
+                </ul>
+                <p data-bind="if: Stylesheets.length === 0">(None)</p>
+            </div>
+            <div id="htmltemplates">
+                <ul data-bind="foreach: HtmlTemplates">
+                    <li class="bundle">
+                        <a data-bind="text: Path, attr: { href: Url }"></a> <span class="size" data-bind="visible: Size !== -1"><span data-bind="text: Size"></span> bytes</span>
+                        <ul data-bind="foreach: Assets">
+                            <li>
+                                <a data-bind="text: Path, attr: { href: Url }"></a>
+                            </li>
+                        </ul>
+                        <p data-bind="visible: References.length">References: <span data-bind="text: References.join(', ')"></span></p>
+                    </li>
+                </ul>
+                <p data-bind="if: HtmlTemplates.length === 0">(None)</p>
+            </div>
+            <div id="trace">
+                <pre data-bind="text: StartupTrace, visible: StartupTrace"></pre>
+                <div data-bind="visible: !StartupTrace">
+                    <p>
+                        To enable Cassette tracing please add this to <code>web.config</code>:
+                    </p>
+                    <pre>&lt;system.diagnostics&gt;
+    &lt;sources&gt;
+        &lt;source name="Cassette" switchName="CassetteSwitch" switchType="System.Diagnostics.SourceSwitch" /&gt;
+    &lt;/sources&gt;
+    &lt;switches&gt;
+        &lt;add name="CassetteSwitch" value="All" /&gt;
+    &lt;/switches&gt;
+&lt;/system.diagnostics&gt;</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    $scripts$
+</body>
+</html>

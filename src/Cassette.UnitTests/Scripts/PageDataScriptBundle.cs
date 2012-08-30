@@ -7,10 +7,12 @@ namespace Cassette.Scripts
 {
     public class PageDataScriptBundle_Tests
     {
+        IJsonSerializer jsonSerializer = new SimpleJsonSerializer();
+
         [Fact]
         public void GivenPageDataScriptBundleWithGlobalVariableAndDictionary_WhenRender_ThenJavaScriptGenerated()
         {
-            var bundle = new PageDataScriptBundle("app", new Dictionary<string, object> { { "data", "test" } });
+            var bundle = new PageDataScriptBundle("app", new Dictionary<string, object> { { "data", "test" } }, jsonSerializer);
             var html = bundle.Render();
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
@@ -26,7 +28,7 @@ namespace Cassette.Scripts
         [Fact]
         public void GivenPageDataScriptBundleWithGlobalVariableAndData_WhenRender_ThenJavaScriptGenerated()
         {
-            var bundle = new PageDataScriptBundle("app", new { data = "test" });
+            var bundle = new PageDataScriptBundle("app", new { data = "test" }, jsonSerializer);
             var html = bundle.Render();
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {
@@ -46,7 +48,7 @@ namespace Cassette.Scripts
             {
                 data1 = new { sub = "\"quoted\"", list = new[] { 1,2,3 } },
                 data2 = true
-            });
+            }, jsonSerializer);
             var html = bundle.Render();
             html.ShouldEqual(string.Join(Environment.NewLine, new[]
             {

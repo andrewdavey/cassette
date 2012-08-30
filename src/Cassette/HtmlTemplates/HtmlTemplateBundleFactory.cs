@@ -1,22 +1,22 @@
-﻿
-using Cassette.Configuration;
+﻿using System;
+using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
     class HtmlTemplateBundleFactory : BundleFactoryBase<HtmlTemplateBundle>
     {
-        readonly CassetteSettings settings;
+        readonly Func<IBundlePipeline<HtmlTemplateBundle>> bundlePipeline;
 
-        public HtmlTemplateBundleFactory(CassetteSettings settings)
+        public HtmlTemplateBundleFactory(Func<IBundlePipeline<HtmlTemplateBundle>> bundlePipeline)
         {
-            this.settings = settings;
+            this.bundlePipeline = bundlePipeline;
         }
 
         protected override HtmlTemplateBundle CreateBundleCore(string path, BundleDescriptor bundleDescriptor)
         {
             return new HtmlTemplateBundle(path)
             {
-                Processor = settings.GetDefaultBundleProcessor<HtmlTemplateBundle>()
+                Pipeline = bundlePipeline()
             };
         }
     }

@@ -1,19 +1,27 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Configuration;
 
 namespace Cassette.Stylesheets
 {
     public class AssignStylesheetRenderer : IBundleProcessor<StylesheetBundle>
     {
-        public void Process(StylesheetBundle bundle, CassetteSettings settings)
+        readonly IUrlGenerator urlGenerator;
+        readonly CassetteSettings settings;
+
+        public AssignStylesheetRenderer(IUrlGenerator urlGenerator, CassetteSettings settings)
+        {
+            this.urlGenerator = urlGenerator;
+            this.settings = settings;
+        }
+
+        public void Process(StylesheetBundle bundle)
         {
             if (settings.IsDebuggingEnabled)
             {
-                bundle.Renderer = new DebugStylesheetHtmlRenderer(settings.UrlGenerator);
+                bundle.Renderer = new DebugStylesheetHtmlRenderer(urlGenerator);
             }
             else
             {
-                bundle.Renderer = new StylesheetHtmlRenderer(settings.UrlGenerator);
+                bundle.Renderer = new StylesheetHtmlRenderer(urlGenerator);
             }
         }
     }

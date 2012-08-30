@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Cassette
 {
-    class TempDirectory : IDisposable
+    public class TempDirectory : IDisposable
     {
         public TempDirectory()
         {
@@ -20,7 +20,10 @@ namespace Cassette
 
         public void Dispose()
         {
-            Directory.Delete(path, true);
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
         }
     }
 }

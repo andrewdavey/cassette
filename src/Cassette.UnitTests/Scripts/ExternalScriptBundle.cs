@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Cassette.BundleProcessing;
-using Cassette.Configuration;
 using Moq;
 using Should;
 using Xunit;
@@ -58,13 +57,13 @@ namespace Cassette.Scripts
         public void ProcessCallsProcessor()
         {
             var bundle = new ExternalScriptBundle(Url);
-            var processor = new Mock<IBundleProcessor<ScriptBundle>>();
-            var settings = new CassetteSettings("");
+            var pipeline = new Mock<IBundlePipeline<ScriptBundle>>();
+            var settings = new CassetteSettings();
 
-            bundle.Processor = processor.Object;
+            bundle.Pipeline = pipeline.Object;
             bundle.Process(settings);
 
-            processor.Verify(p => p.Process(bundle, settings));
+            pipeline.Verify(p => p.Process(bundle));
         }
 
         [Fact]
@@ -99,21 +98,41 @@ namespace Cassette.Scripts
         }
 
         [Fact]
-        public void GivenBundleIsProcessed_WhenRender_ThenExternalRendererUsed()
+        public void GivenProcessedExternalScriptBundleWithFallbackCondition_WhenRender_ThenExternalRendererUsed()
         {
-            var bundle = new ExternalScriptBundle(Url, "~/test", "condition") { Processor = new ScriptPipeline() };
+            var urlGenerator = new Mock<IUrlGenerator>();
+            urlGenerator
+                .Setup(g => g.CreateBundleUrl(It.IsAny<Bundle>()))
+                .Returns("/");
+
+            var bundle = new ExternalScriptBundle(Url, "~/test", "condition")
+            {
+                Renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object),
+                Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>()
+            };
             var asset = new Mock<IAsset>();
-            asset.SetupGet(a => a.SourceFile.FullPath).Returns("~/test/asset.js");
+            asset.SetupGet(a => a.Path).Returns("~/test/asset.js");
             asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
             bundle.Assets.Add(asset.Object);
-            var urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(g => g.CreateBundleUrl(bundle)).Returns("/");
-            var settings = new CassetteSettings("") { UrlGenerator = urlGenerator.Object };
+            var settings = new CassetteSettings();
             bundle.Process(settings);
             
             var html = bundle.Render();
 
-            html.ShouldContain("condition");
+            html.ShouldEqual(@"<script src=""http://test.com/asset.js"" type=""text/javascript""></script>
+<script type=""text/javascript"">
+if(condition){
+document.write('<script src=""/"" type=""text/javascript""><\/script>');
+}
+</script>");
+        }
+
+        [Fact]
+        public void GivenDifferentUrls_ThenExternalScriptBundlesNotEqual()
+        {
+            var b1 = new ExternalScriptBundle("http://test1.com/a", "a");
+            var b2 = new ExternalScriptBundle("http://test2.com/a", "a");
+            b1.Equals(b2).ShouldBeFalse();
         }
     }
 }

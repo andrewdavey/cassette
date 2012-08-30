@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Cassette.IO;
+
 #if NET35
 using Cassette.Utilities;
 #endif
@@ -11,14 +12,15 @@ namespace Cassette.Stylesheets
 {
     abstract class CssUrlMatchTransformer
     {
-        protected CssUrlMatchTransformer(Match match, IAsset asset)
+        protected CssUrlMatchTransformer(Match match, IAsset asset, IDirectory rootDirectory)
         {
             matchIndex = match.Index;
             matchLength = match.Length;
             path = match.Groups["path"].Value;
             url = (path.StartsWith("/") ? "~" : "") + path + "." + match.Groups["extension"].Value;
             extension = match.Groups["extension"].Value;
-            file = asset.SourceFile.Directory.GetFile(url);
+            var currentDirectory = rootDirectory.GetFile(asset.Path).Directory;
+            file = currentDirectory.GetFile(url);
         }
 
         readonly int matchIndex;
@@ -43,7 +45,7 @@ namespace Cassette.Stylesheets
             get { return matchLength;  }
         }
 
-        protected IFile File
+        public IFile File
         {
             get { return file; }
         }

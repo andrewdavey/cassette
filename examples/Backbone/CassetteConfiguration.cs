@@ -1,19 +1,17 @@
-﻿﻿using Cassette.Configuration;
-using Cassette.HtmlTemplates;
+﻿﻿using Cassette;
+﻿using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 
 namespace Backbone
 {
-    public class CassetteConfiguration : ICassetteConfiguration
+    public class CassetteConfiguration : IConfiguration<BundleCollection>
     {
-        public void Configure(BundleCollection bundles, CassetteSettings settings)
+        public void Configure(BundleCollection bundles)
         {
             bundles.Add<StylesheetBundle>(
                 "styles/todos",
-                bundle => bundle.Processor = new StylesheetPipeline()
-                    .EmbedImages()
-                    .EmbedFonts()
+                bundle => bundle.EmbedImages().EmbedFonts()
             );
             bundles.Add<ScriptBundle>(
                 "scripts/lib"
@@ -22,10 +20,7 @@ namespace Backbone
                 "scripts/todos"
             );
             bundles.Add<HtmlTemplateBundle>(
-                "scripts/todos/templates",
-                bundle => bundle.Processor = new HoganPipeline {
-                    JavaScriptVariableName = "JST"
-                }
+                "scripts/todos/templates"
             );
         }
     }

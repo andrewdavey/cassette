@@ -6,30 +6,31 @@ namespace Cassette
     class UrlGenerator : IUrlGenerator
     {
         readonly IUrlModifier urlModifier;
-        readonly string routePrefix;
+        readonly string cassetteHandlerPrefix;
 
-        public UrlGenerator(IUrlModifier urlModifier, string routePrefix)
+        public UrlGenerator(IUrlModifier urlModifier, string cassetteHandlerPrefix)
         {
             this.urlModifier = urlModifier;
-            this.routePrefix = routePrefix;
+            this.cassetteHandlerPrefix = cassetteHandlerPrefix;
         }
 
         public string CreateBundleUrl(Bundle bundle)
         {
-            var url = routePrefix + "/" + bundle.Url;
+            var url = cassetteHandlerPrefix + bundle.Url;
             return urlModifier.Modify(url);
         }
 
         public string CreateAssetUrl(IAsset asset)
         {
-            return urlModifier.Modify(
-                String.Format(
-                    "{0}/asset/{1}?{2}",
-                    routePrefix,
-                    asset.SourceFile.FullPath.Substring(2),
-                    asset.Hash.ToHexString()
-                )
-            );
+            // "~/directory/file.js" --> "cassette.axd/asset/directory/file.js?hash"
+            // Asset URLs are only used in debug mode. The hash is placed in the querystring, not the path.
+            // This maintains the asset directory structure i.e. two assets in the same directory appear together in web browser JavaScript development tooling.
+            
+            var assetPath = asset.Path.Substring(1);
+            var hash = asset.Hash.ToUrlSafeBase64String();
+            var url = cassetteHandlerPrefix + "asset" + assetPath + "?" + hash;
+
+            return urlModifier.Modify(url);
         }
 
         public string CreateRawFileUrl(string filename, string hash)
@@ -39,25 +40,28 @@ namespace Cassette
                 throw new ArgumentException("Image filename must be application relative (starting with '~').");
             }
 
-            filename = filename.Substring(2); // Remove the "~/"
-            var dotIndex = filename.LastIndexOf('.');
-            var name = filename.Substring(0, dotIndex);
-            var extension = filename.Substring(dotIndex + 1);
+            // "~\example\image.png" --> "/example/image-hash.png"
+            var path = ConvertToForwardSlashes(filename).Substring(1);
+            var index = path.LastIndexOf('.');
+            if (index >= 0)
+            {
+                path = path.Insert(index, "-" + hash);
+            }
+            else
+            {
+                path = path + "-" + hash;
+            }
 
-            return urlModifier.Modify(
-                String.Format(
-                    "{0}/file/{1}_{2}.{3}",
-                    routePrefix,
-                    ConvertToForwardSlashes(name),
-                    hash,
-                    extension
-                )
-            );
+            var url = cassetteHandlerPrefix + "file" + path;
+            return urlModifier.Modify(url);
         }
 
-        // TODO: move RoutePrefix to settings?
-        public const string RoutePrefix = "_cassette";
-        
+        public string CreateAbsolutePathUrl(string applicationRelativePath)
+        {
+            var url = applicationRelativePath.TrimStart('~', '/');
+            return urlModifier.Modify(url);
+        }
+
         string ConvertToForwardSlashes(string path)
         {
             return path.Replace('\\', '/');

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
-using Cassette.Configuration;
+using Cassette.BundleProcessing;
 using Cassette.IO;
+using Moq;
 using Should;
 using Xunit;
 
@@ -9,12 +10,12 @@ namespace Cassette.Stylesheets
     public class StylesheetBundleFactory_Tests
     {
         readonly StylesheetBundleFactory factory;
-        readonly CassetteSettings settings;
+        readonly IBundlePipeline<StylesheetBundle> pipeline;
 
         public StylesheetBundleFactory_Tests()
         {
-            settings = new CassetteSettings("");
-            factory = new StylesheetBundleFactory(settings);
+            pipeline = Mock.Of<IBundlePipeline<StylesheetBundle>>();
+            factory = new StylesheetBundleFactory(() => pipeline);
         }
 
         [Fact]
@@ -38,10 +39,44 @@ namespace Cassette.Stylesheets
         [Fact]
         public void CreateBundleAssignsSettingsDefaultProcessor()
         {
-            var processor = new StylesheetPipeline();
-            settings.SetDefaultBundleProcessor(processor);
             var bundle = factory.CreateBundle("~", Enumerable.Empty<IFile>(), new BundleDescriptor { AssetFilenames = { "*" } });
-            bundle.Processor.ShouldBeSameAs(processor);
+            bundle.Pipeline.ShouldBeSameAs(pipeline);
+        }
+
+        [Fact]
+        public void ShowFriendlyExceptionWhenTryingToCreateMinCssFileWhereNonMinCssExists()
+        {
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath).Returns("~/test.css");
+            var files = new[] { file.Object };
+            var exception = Record.Exception(
+                () => factory.CreateBundle("~", files, new BundleDescriptor { AssetFilenames = { "~/test.min.css" } })
+            );
+            exception.Message.ShouldEqual("Bundle \"~\" references \"~/test.min.css\" when it should reference \"~/test.css\".");
+        }
+
+        [Fact]
+        public void ShowFriendlyExceptionWhenTryingToCreateCssFileWhereDashDebugCssExists()
+        {
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath).Returns("~/test-debug.css");
+            var files = new[] { file.Object };
+            var exception = Record.Exception(
+                () => factory.CreateBundle("~", files, new BundleDescriptor { AssetFilenames = { "~/test.css" } })
+            );
+            exception.Message.ShouldEqual("Bundle \"~\" references \"~/test.css\" when it should reference \"~/test-debug.css\".");
+        }
+
+        [Fact]
+        public void ShowFriendlyExceptionWhenTryingToCreateCssFileWhereDotDebugCssExists()
+        {
+            var file = new Mock<IFile>();
+            file.SetupGet(f => f.FullPath).Returns("~/test.debug.css");
+            var files = new[] { file.Object };
+            var exception = Record.Exception(
+                () => factory.CreateBundle("~", files, new BundleDescriptor { AssetFilenames = { "~/test.css" } })
+            );
+            exception.Message.ShouldEqual("Bundle \"~\" references \"~/test.css\" when it should reference \"~/test.debug.css\".");
         }
     }
 }

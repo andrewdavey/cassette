@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Cassette.Configuration;
-using Cassette.Manifests;
-using Cassette.Scripts.Manifests;
+using System.Xml.Linq;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
+#pragma warning disable 659
     class ExternalScriptBundle : ScriptBundle, IExternalBundle, IBundleHtmlRenderer<ScriptBundle>
     {
         readonly string url;
         readonly string fallbackCondition;
         bool isDebuggingEnabled;
+        IBundleHtmlRenderer<ScriptBundle> fallbackRenderer;
 
         public ExternalScriptBundle(string url)
             : base(url)
@@ -40,12 +41,10 @@ namespace Cassette.Scripts
             get { return fallbackCondition; }
         }
 
-        internal IBundleHtmlRenderer<ScriptBundle> FallbackRenderer { get; set; } 
-
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            FallbackRenderer = Renderer;
+            fallbackRenderer = Renderer;
             isDebuggingEnabled = settings.IsDebuggingEnabled;
             Renderer = this;
         }
@@ -55,10 +54,16 @@ namespace Cassette.Scripts
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override BundleManifest CreateBundleManifest(bool includeProcessedBundleContent)
+        internal override IEnumerable<string> GetUrls(bool isDebuggingEnabled, IUrlGenerator urlGenerator)
         {
-            var builder = new ExternalScriptBundleManifestBuilder { IncludeContent = includeProcessedBundleContent };
-            return builder.BuildManifest(this);
+            if (isDebuggingEnabled && Assets.Any())
+            {
+                return base.GetUrls(true, urlGenerator);
+            }
+            else
+            {
+                return new[] { ExternalUrl };
+            }
         }
 
         public string ExternalUrl
@@ -70,7 +75,7 @@ namespace Cassette.Scripts
         {
             if (isDebuggingEnabled && Assets.Any())
             {
-                return FallbackRenderer.Render(this);
+                return fallbackRenderer.Render(this);
             }
 
             var conditionalRenderer = new ConditionalRenderer();
@@ -110,7 +115,7 @@ namespace Cassette.Scripts
 
         string CreateFallbackScripts()
         {
-            var scripts = FallbackRenderer.Render(this);
+            var scripts = fallbackRenderer.Render(this);
             return ConvertToDocumentWriteCalls(scripts);
         }
 
@@ -121,13 +126,28 @@ namespace Cassette.Scripts
             return string.Join(
                 Environment.NewLine,
                 (from script in scripts
-                select "document.write(unescape('" + Escape(script) + "'));").ToArray()
+                select "document.write('" + Escape(script) + "');").ToArray()
             );
         }
 
         static string Escape(string script)
         {
-            return script.Replace("<", "%3C").Replace(">", "%3E");
+            return script.Replace("</script>", "<\\/script>").Replace("'", @"\'");
+        }
+
+        internal override void SerializeInto(XContainer container)
+        {
+            var serializer = new ExternalScriptBundleSerializer(container);
+            serializer.Serialize(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ExternalScriptBundle;
+            return base.Equals(obj)
+                   && other != null
+                   && other.url == url;
         }
     }
+#pragma warning restore 659
 }

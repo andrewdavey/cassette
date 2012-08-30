@@ -11,10 +11,12 @@ namespace Cassette.BundleProcessing
         readonly byte[] hash;
         readonly IEnumerable<IAsset> children;
         readonly MemoryStream stream;
+        readonly string separator;
 
-        public ConcatenatedAsset(IEnumerable<IAsset> children)
+        public ConcatenatedAsset(IEnumerable<IAsset> children, string separator)
         {
             this.children = children.ToArray();
+            this.separator = separator ?? Environment.NewLine;
             stream = CopyAssetsIntoSingleStream(this.children);
             hash = stream.ComputeSHA1Hash();
         }
@@ -27,7 +29,7 @@ namespace Cassette.BundleProcessing
             }
         }
 
-        public override IO.IFile SourceFile
+        public override string Path
         {
             get { throw new NotImplementedException(); }
         }
@@ -35,6 +37,11 @@ namespace Cassette.BundleProcessing
         public override byte[] Hash
         {
             get { return hash; }
+        }
+
+        public override Type AssetCacheValidatorType
+        {
+            get { throw new NotImplementedException(); }
         }
 
         public override IEnumerable<AssetReference> References
@@ -54,11 +61,7 @@ namespace Cassette.BundleProcessing
 
         protected override Stream OpenStreamCore()
         {
-            var newStream = new MemoryStream();
-            stream.Position = 0;
-            stream.CopyTo(newStream);
-            newStream.Position = 0;
-            return newStream;
+            return new MemoryStream(stream.ToArray());
         }
 
         public void Dispose()
@@ -79,7 +82,7 @@ namespace Cassette.BundleProcessing
                 }
                 else
                 {
-                    writer.WriteLine();
+                    writer.Write(separator);
                 }
                 WriteAsset(asset, writer);
             }
@@ -111,4 +114,3 @@ namespace Cassette.BundleProcessing
         }
     }
 }
-

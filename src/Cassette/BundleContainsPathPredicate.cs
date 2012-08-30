@@ -1,22 +1,31 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Cassette.Utilities;
 
 namespace Cassette
 {
     class BundleContainsPathPredicate : IBundleVisitor
     {
-        public bool BundleContainsPath(string path, Bundle bundle)
+        public BundleContainsPathPredicate(string path)
         {
-            pathToFind = path.IsUrl() ? path : NormalizePath(path, bundle);
-            bundle.Accept(this);
-            return isFound;
+            originalPath = path;
         }
 
-        string pathToFind;
+        readonly string originalPath;
+        string normalizedPath;
         bool isFound;
+
+        public bool AllowPartialAssetPaths { get; set; }
+
+        public bool Result
+        {
+            get { return isFound; }
+        }
 
         void IBundleVisitor.Visit(Bundle bundle)
         {
+            normalizedPath = originalPath.IsUrl() ? originalPath : NormalizePath(originalPath, bundle);
+
             if (IsMatch(bundle.Path))
             {
                 isFound = true;
@@ -25,10 +34,21 @@ namespace Cassette
 
         void IBundleVisitor.Visit(IAsset asset)
         {
-            if (IsMatch(asset.SourceFile.FullPath))
+            if (IsMatch(asset.Path) || (AllowPartialAssetPaths && IsPartialAssetPathMatch(asset.Path)))
             {
                 isFound = true;
             }
+        }
+
+        /// <summary>
+        /// Looking for "~/bundle/sub" can match "~/bundle/sub/asset.js"
+        /// </summary>
+        bool IsPartialAssetPathMatch(string assetPath)
+        {
+            if (assetPath.Length < originalPath.Length) return false;
+
+            var partialPath = assetPath.Substring(0, originalPath.Length);
+            return partialPath.Equals(originalPath, StringComparison.OrdinalIgnoreCase);
         }
 
         string NormalizePath(string path, Bundle bundle)
@@ -46,8 +66,7 @@ namespace Cassette
 
         bool IsMatch(string path)
         {
-            return PathUtilities.PathsEqual(path, pathToFind);
+            return PathUtilities.PathsEqual(path, normalizedPath);
         }
     }
 }
-

@@ -1,4 +1,4 @@
-﻿/// <reference path="~/assets/scripts/jquery/jquery.js"/>
+﻿/// <reference path="../jquery/jquery.js"/>
 $(function () {
     var tweets = $(".tweets");
     var tweetIndex = 0;
@@ -10,5 +10,4 @@ $(function () {
         }
         $(tweets[tweetIndex]).fadeIn(2000);
     }, 8000);
-
 });
