@@ -58,6 +58,8 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Condition="'$(TargetFrameworkVersion)' == 'v4.0'" Include="Microsoft.CSharp" />
     <Reference Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Include="System.Web.Routing" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
