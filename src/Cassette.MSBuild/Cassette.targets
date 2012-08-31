@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--
-    The web application csproj file has been modified to import this file.
+    The web application csproj file has been modified to execute the Bundle target.
     So after a build, the Cassette bundles will be saved into a cache directory.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">    
     <UsingTask AssemblyFile="$(OutputPath)\Cassette.MSBuild.dll" TaskName="CreateBundles"/>
-    <Target Name="Bundle" AfterTargets="Build">
+    <Target Name="Bundle">
         <CreateBundles />
         <!--
         CreateBundles has the following optional properties:

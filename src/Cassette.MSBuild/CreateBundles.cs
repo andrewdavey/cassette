@@ -4,7 +4,7 @@ using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
-    public class CreateBundles : AppDomainIsolatedTask
+    public class CreateBundles : Task
     {
         /// <summary>
         /// The root directory of the web application.

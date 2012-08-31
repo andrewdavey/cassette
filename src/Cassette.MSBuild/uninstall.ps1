@@ -31,7 +31,7 @@ function Get-MSBuildProject {
 $project = Get-Project
 $buildProject = Get-MSBuildProject
 
-$existingImports = $buildProject.Xml.Imports | where {$_.Project -eq "Cassette.targets"}
+$existingImports = $buildProject.Xml.Targets | where {$_.Name -eq "Bundle"}
 foreach ($import in $existingImports) {
 	$buildProject.Xml.RemoveChild($import)
 }
