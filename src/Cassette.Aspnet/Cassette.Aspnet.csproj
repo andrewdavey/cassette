@@ -65,6 +65,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CachedFileRequestHandler.cs" />
     <Compile Include="DiagnosticBundleConfiguration.cs" />
     <Compile Include="CassetteHttpHandler.cs" />
     <Compile Include="HttpContextLifetimeProvider.cs" />

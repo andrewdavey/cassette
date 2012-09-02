@@ -50,6 +50,12 @@ namespace Cassette.Aspnet
         }
 
         [Fact]
+        public void CachedFileRequestIsHandledByCachedFileHandler()
+        {
+            AssertMapping("/cached/test", "CachedFileRequestHandler", "~/test");
+        }
+
+        [Fact]
         public void UnexpectedPathInfoCauses404()
         {
             GivenRequestPathInfo("/unexpected");

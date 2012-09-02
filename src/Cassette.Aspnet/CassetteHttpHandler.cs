@@ -55,6 +55,10 @@ namespace Cassette.Aspnet
             {
                 CallAssetHandler(pathInfo);
             }
+            else if (pathInfo.StartsWith("/cache", StringComparison.OrdinalIgnoreCase))
+            {
+                CallCachedFileHandler(pathInfo);
+            }
             else
             {
                 CallBundleHandler(pathInfo);
@@ -66,6 +70,13 @@ namespace Cassette.Aspnet
             var path = "~" + pathInfo.Substring("/asset".Length);
             var assetHandler = requestContainer.Resolve<ICassetteRequestHandler>("AssetRequestHandler");
             assetHandler.ProcessRequest(path);
+        }
+
+        void CallCachedFileHandler(string pathInfo)
+        {
+            var path = "~" + pathInfo.Substring("/cached".Length);
+            var handler = requestContainer.Resolve<ICassetteRequestHandler>("CachedFileRequestHandler");
+            handler.ProcessRequest(path);
         }
 
         void CallBundleHandler(string pathInfo)
