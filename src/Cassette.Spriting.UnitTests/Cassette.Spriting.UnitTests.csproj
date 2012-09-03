@@ -7,7 +7,7 @@
     <ProjectGuid>{4AD6C38D-F3FA-4AE5-8485-B397A9224955}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cassette.Spriting.UnitTests</RootNamespace>
+    <RootNamespace>Cassette.Spriting</RootNamespace>
     <AssemblyName>Cassette.Spriting.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpriteImages.cs" />
     <Compile Include="StylesheetBundleExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,6 +61,10 @@
     <ProjectReference Include="..\Cassette.Spriting\Cassette.Spriting.csproj">
       <Project>{B775612C-BAF8-4947-B83B-DD43F802E999}</Project>
       <Name>Cassette.Spriting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette.UnitTests\Cassette.UnitTests.csproj">
+      <Project>{F200A67A-D7B5-441B-AB36-69AA5C87577E}</Project>
+      <Name>Cassette.UnitTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>

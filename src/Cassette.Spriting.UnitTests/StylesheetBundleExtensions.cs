@@ -3,7 +3,7 @@ using Cassette.Stylesheets;
 using Moq;
 using Xunit;
 
-namespace Cassette.Spriting.UnitTests
+namespace Cassette.Spriting
 {
     public class StylesheetBundleExtensions
     {
