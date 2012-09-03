@@ -2,6 +2,7 @@
 using Cassette;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.Spriting;
 
 namespace Website
 {
@@ -9,7 +10,7 @@ namespace Website
     {
         public void Configure(BundleCollection bundles)
         {
-            bundles.Add<StylesheetBundle>("assets/styles");
+            bundles.Add<StylesheetBundle>("assets/styles", b => b.SpriteImages());
             bundles.Add<StylesheetBundle>("assets/iestyles", b => b.Condition = "IE");
             
             bundles.AddPerSubDirectory<ScriptBundle>("assets/scripts");

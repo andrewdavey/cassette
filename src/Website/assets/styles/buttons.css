@@ -54,6 +54,7 @@ a.action:hover {
     background-image: url(images/download-button-icon.png);
     background-repeat: no-repeat;
     background-position: 0px 0px;
+    width: 139px;
 }
 
 .donate-button {

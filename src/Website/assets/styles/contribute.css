@@ -84,9 +84,6 @@
 
 .contribute-page form {
     position: relative;
-    background-image: url(images\donate-count.png);
-    background-repeat: no-repeat;
-    background-position: right 12px;    
     float: left;
     padding-right: 78px;
     padding-bottom: 25px;
@@ -94,10 +91,16 @@
 
 .donations-number {
     position: absolute;
-    top: 24px;
-    right: 29px;
+    line-height: 47px;
+    right: 0;
+    top: 12px;
     font-size: 1.2em;
     color: #696969;
+    background-image: url(images\donate-count.png);
+    background-repeat: no-repeat;
+    width: 74px;
+    height: 47px;
+    text-align: center;
 }
 
 .clear-left {

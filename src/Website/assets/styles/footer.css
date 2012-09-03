@@ -83,8 +83,7 @@ p.footer-navigation a {
     padding: 0;
     margin: 0;
 }
-
-.connect a {
+.connectlink {
     display: block;
     height: 32px;
     width: 32px;
@@ -94,18 +93,23 @@ p.footer-navigation a {
     filter: alpha(opacity=80); /* IE 7, IE8 */
     -moz-transition: opacity .5s;
     -webkit-transition: opacity .5s;
+    background-repeat: no-repeat;
 }
 
-.connect a:hover {
+.connect-link:hover {
     opacity: 1;
     -moz-transition: opacity .5s;
     -webkit-transition: opacity .5s;
 }
 
-.googlegroups {
+.connectlink.googlegroups {
     background-image: url(images/googlegroups.png);
+    width: 32px;
+    background-repeat: no-repeat;
 }
 
-.twitter {
+.connectlink.twitter {
     background-image: url(images/twitter.png);
+    width: 32px;
+    background-repeat: no-repeat;
 }
