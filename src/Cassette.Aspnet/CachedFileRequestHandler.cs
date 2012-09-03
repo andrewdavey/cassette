@@ -25,6 +25,7 @@ namespace Cassette.Aspnet
 
             using(var stream = file.OpenRead())
             {
+                response.ContentType = "image/png";
                 stream.CopyTo(response.OutputStream);
             }
         }
