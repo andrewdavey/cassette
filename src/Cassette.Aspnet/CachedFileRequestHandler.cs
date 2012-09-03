@@ -23,9 +23,23 @@ namespace Cassette.Aspnet
                 return;
             }
 
-            using(var stream = file.OpenRead())
+            SetContentType(path);
+            SendFile(file);
+        }
+
+        void SetContentType(string path)
+        {
+            string contentType;
+            if (ContentTypes.TryGetContentTypeForFilename(path, out contentType))
             {
-                response.ContentType = "image/png";
+                response.ContentType = contentType;
+            }
+        }
+
+        void SendFile(IFile file)
+        {
+            using (var stream = file.OpenRead())
+            {
                 stream.CopyTo(response.OutputStream);
             }
         }
