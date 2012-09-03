@@ -5,7 +5,7 @@ using Cassette.Spriting.Spritastic.Utilities;
 
 namespace Cassette.Spriting.Spritastic
 {
-    class SpriteGenerator
+    class SpriteGenerator : ISpriteGenerator
     {
         private readonly ICssImageExtractor cssImageExtractor;
         private readonly Func<string, ISpriteManager> createSpriteManager;

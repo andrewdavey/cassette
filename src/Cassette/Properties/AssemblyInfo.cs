@@ -31,6 +31,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.Views")]
 [assembly: InternalsVisibleTo("Cassette.MSBuild")]
 [assembly: InternalsVisibleTo("Cassette.Nancy")]
+[assembly: InternalsVisibleTo("Cassette.Spriting")]
 
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.MSBuild.UnitTests")]
@@ -41,6 +42,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.Less.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Sass.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Hogan.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Spriting.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
 
 // To allow mocking of internal types, using Moq, the following is required.

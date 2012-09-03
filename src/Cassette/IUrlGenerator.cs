@@ -9,5 +9,7 @@
         /// Converts an application relative path into an absolute URL path. For example "~/images/test.png" becomes "/virtual-directory/images/test.png".
         /// </summary>
         string CreateAbsolutePathUrl(string applicationRelativePath);
+
+        string CreateCachedFileUrl(string filename);
     }
 }

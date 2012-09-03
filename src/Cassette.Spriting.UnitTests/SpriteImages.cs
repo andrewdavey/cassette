@@ -16,8 +16,8 @@ namespace Cassette.Spriting
 
             var cacheDirectory = new FakeFileSystem();
 
-            var processor = new SpriteImages(cacheDirectory);
-            processor.Process(bundle);
+            //var processor = new SpriteImages(cacheDirectory);
+            //processor.Process(bundle);
 
             //CacheDirectoryContains "~/sprites/hash.png"
         }

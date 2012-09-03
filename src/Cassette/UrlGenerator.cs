@@ -56,6 +56,18 @@ namespace Cassette
             return urlModifier.Modify(url);
         }
 
+        public string CreateCachedFileUrl(string filename)
+        {
+            if (filename.StartsWith("~") == false)
+            {
+                throw new ArgumentException("Filename must be application relative (starting with '~').", "filename");
+            }
+
+            var path = ConvertToForwardSlashes(filename).Substring(1);
+            var url = cassetteHandlerPrefix + "cached" + path;
+            return urlModifier.Modify(url);
+        }
+
         public string CreateAbsolutePathUrl(string applicationRelativePath)
         {
             var url = applicationRelativePath.TrimStart('~', '/');
