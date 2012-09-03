@@ -47,6 +47,7 @@
 }
 
 .links a {
+    text-indent: -9999px;
     display: block;
     height: 76px;
     padding-top: 36px;
@@ -62,4 +63,39 @@
 a.active, li.active a {
     opacity: 1;
     filter: alpha(opacity=100); /* IE 7, IE8 */
+}
+
+#benefits-link {
+    background-image: url(images/benefits-icon.png);
+    background-repeat: no-repeat;
+    width: 61px;
+    height: 112px;
+}
+
+#download-link {
+    background-image: url(images/download-icon.png);
+    background-repeat: no-repeat;
+    width: 80px;
+    height: 112px;
+}
+
+#docs-link {
+    background-image: url(images/docs-icon.png);
+    background-repeat: no-repeat;
+    width: 37px;
+    height: 112px;
+}
+
+#support-link {
+    background-image: url(images/support-icon.png);
+    background-repeat: no-repeat;
+    width: 62px;
+    height: 112px;
+}
+
+#donate-link {
+    background-image: url(images/donate-icon.png);
+    background-repeat: no-repeat;
+    width: 55px;
+    height: 112px;
 }
