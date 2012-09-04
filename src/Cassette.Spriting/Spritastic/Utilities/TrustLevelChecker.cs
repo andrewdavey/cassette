@@ -3,7 +3,7 @@ using System.Web;
 
 namespace Cassette.Spriting.Spritastic.Utilities
 {
-    public static class TrustLevelChecker
+    static class TrustLevelChecker
     {
         // Based on 
         // http://blogs.msdn.com/b/dmitryr/archive/2007/01/23/finding-out-the-current-trust-level-in-asp-net.aspx

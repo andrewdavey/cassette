@@ -48,6 +48,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DefaultSpritingSettingsConfiguration.cs" />
     <Compile Include="ImageFileLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spritastic\Generator\CssImageExtractor.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Spritastic\ImageLoad\HttpImageLoader.cs" />
     <Compile Include="Spritastic\ImageLoad\IImageLoader.cs" />
     <Compile Include="Spritastic\ISpriteGenerator.cs" />
+    <Compile Include="Spritastic\ISpritingSettings.cs" />
     <Compile Include="Spritastic\Parser\BackgroundImageClass.cs" />
     <Compile Include="Spritastic\Parser\Direction.cs" />
     <Compile Include="Spritastic\Parser\Position.cs" />
@@ -75,7 +77,6 @@
     <Compile Include="Spritastic\SpriteGenerator.cs" />
     <Compile Include="Spritastic\SpritePackage.cs" />
     <Compile Include="Spritastic\SpriteStore\ISpriteStore.cs" />
-    <Compile Include="Spritastic\SpritingSettings.cs" />
     <Compile Include="Spritastic\Utilities\FileWrapper.cs" />
     <Compile Include="Spritastic\Utilities\IFileWrapper.cs" />
     <Compile Include="Spritastic\Utilities\IPngOptimizer.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="SpriteImages.cs" />
     <Compile Include="SpriteUrlGenerator.cs" />
     <Compile Include="SpritingContainerConfiguration.cs" />
+    <Compile Include="SpritingSettings.cs" />
     <Compile Include="StylesheetBundleExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

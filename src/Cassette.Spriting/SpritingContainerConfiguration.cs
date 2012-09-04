@@ -12,8 +12,8 @@ namespace Cassette.Spriting
     {
         public void Configure(TinyIoCContainer container)
         {
-            // TODO: Apply IConfiguration<SpritingSettings>
-            container.Register(new SpritingSettings { SpriteSizeLimit = 1000 * 1000, SpriteColorLimit = (int)Math.Pow(2,16) });
+            var lazySettings = new Lazy<SpritingSettings>(() => CreateSpritingSettings(container));
+            container.Register((c, n) => lazySettings.Value);
 
             container.Register<ICssImageExtractor, CssImageExtractor>();
             container.Register<ICssSelectorAnalyzer, CssSelectorAnalyzer>();
@@ -23,12 +23,30 @@ namespace Cassette.Spriting
 
             container.Register((c, n) => CreateSpriteGenerator(c));
 
-            container.Register((c,n)=>
+            RegisterSpriteImagesBundleProcessor(container);
+        }
+
+        static void RegisterSpriteImagesBundleProcessor(TinyIoCContainer container)
+        {
+            // The SpriteImages constructor is internal (to avoid having to expose all of Spritastic).
+            // TinyIoC won't have access to the internal constructor.
+            // Therefore we have to a delegate to express SpriteImages creation.
+            container.Register((c, n) =>
                 new SpriteImages(
                     c.Resolve<CassetteSettings>(),
-                    () => c.Resolve<ISpriteGenerator>()
+                    c.Resolve<ISpriteGenerator>
                 )
             );
+        }
+
+        static SpritingSettings CreateSpritingSettings(TinyIoCContainer container)
+        {
+            var settings = new SpritingSettings();
+            container
+                .ResolveAll<IConfiguration<SpritingSettings>>()
+                .OrderByConfigurationOrderAttribute()
+                .Configure(settings);
+            return settings;
         }
 
         static ISpriteGenerator CreateSpriteGenerator(TinyIoCContainer c)
