@@ -104,6 +104,10 @@
     <Content Include="Spritastic\License.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cassette.Spriting.nutrans">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Cassette.Spriting.symbols.nutrans" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
