@@ -12,3 +12,4 @@ src/**/*.nuspec
 *.dotCover
 *.orig
 src/packages
+cassette-cache
