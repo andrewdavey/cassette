@@ -22,6 +22,7 @@ namespace Cassette.Spriting
 
         public void Process(StylesheetBundle bundle)
         {
+            if (settings.IsDebuggingEnabled) return;
             if (bundle.Assets.Count == 0) return;
 
             var css = ReadCssFromBundle(bundle);

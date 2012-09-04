@@ -54,6 +54,7 @@
     <Compile Include="ImageFileLoader.cs" />
     <Compile Include="SpriteImages.cs" />
     <Compile Include="SpriteUrlGenerator.cs" />
+    <Compile Include="SpritingIntegrationTest.cs" />
     <Compile Include="StylesheetBundleExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Test.cs" />
