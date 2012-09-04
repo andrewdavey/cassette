@@ -1,6 +1,7 @@
 using System;
 using Cassette.Spriting.Spritastic;
 using Cassette.Spriting.Spritastic.Generator;
+using Cassette.Spriting.Spritastic.ImageLoad;
 using Cassette.Spriting.Spritastic.Selector;
 using Cassette.Spriting.Spritastic.Utilities;
 using Cassette.TinyIoC;
@@ -12,18 +13,42 @@ namespace Cassette.Spriting
     {
         public void Configure(TinyIoCContainer container)
         {
-            var lazySettings = new Lazy<SpritingSettings>(() => CreateSpritingSettings(container));
-            container.Register((c, n) => lazySettings.Value);
+            RegisterSpritingSettings(container);
+            RegisterSpritasticServices(container);
+            RegisterSpriteGenerator(container);
+            RegisterSpriteImagesBundleProcessor(container);
+        }
 
+        static void RegisterSpritingSettings(TinyIoCContainer container)
+        {
+            // SpritingSettings needs to be a singleton,
+            // but the created instance needs to be configured with 
+            // any implementations of IConfiguration<SpritingSettings>.
+            // So use a Lazy object to ensure one instance is created and configured.
+            var lazySettings = new Lazy<SpritingSettings>(
+                () => CreateAndConfigureSpritingSettings(container)
+            );
+            container.Register((c, n) => lazySettings.Value);
+        }
+
+        static void RegisterSpritasticServices(TinyIoCContainer container)
+        {
             container.Register<ICssImageExtractor, CssImageExtractor>();
             container.Register<ICssSelectorAnalyzer, CssSelectorAnalyzer>();
             container.Register<IPngOptimizer, PngOptimizer>();
             container.Register<IFileWrapper, FileWrapper>();
             container.Register<IWuQuantizer, WuQuantizer>();
+            container.Register<IImageLoader>(
+                (c, n) => new ImageFileLoader(
+                    c.Resolve<CassetteSettings>().SourceDirectory,
+                    c.Resolve<IUrlGenerator>()
+                )
+            );
+        }
 
+        static void RegisterSpriteGenerator(TinyIoCContainer container)
+        {
             container.Register((c, n) => CreateSpriteGenerator(c));
-
-            RegisterSpriteImagesBundleProcessor(container);
         }
 
         static void RegisterSpriteImagesBundleProcessor(TinyIoCContainer container)
@@ -39,7 +64,7 @@ namespace Cassette.Spriting
             );
         }
 
-        static SpritingSettings CreateSpritingSettings(TinyIoCContainer container)
+        static SpritingSettings CreateAndConfigureSpritingSettings(TinyIoCContainer container)
         {
             var settings = new SpritingSettings();
             container
@@ -58,20 +83,14 @@ namespace Cassette.Spriting
 
         static Func<string, ISpriteManager> CreateSpriteManagerFactory(TinyIoCContainer container)
         {
-            var cassetteSettings = container.Resolve<CassetteSettings>();
-            var settings = container.Resolve<SpritingSettings>();
-            Func<byte[], string> generateSpriteUrl = container.Resolve<SpriteUrlGenerator>().CreateSpriteUrl;
-            var pngOptimizer = container.Resolve<IPngOptimizer>();
             return path =>
             {
-                var imageLoader = CreateImageLoader(cassetteSettings, container.Resolve<IUrlGenerator>());
+                var settings = container.Resolve<SpritingSettings>();
+                var imageLoader = container.Resolve<IImageLoader>();
+                Func<byte[], string> generateSpriteUrl = container.Resolve<SpriteUrlGenerator>().CreateSpriteUrl;
+                var pngOptimizer = container.Resolve<IPngOptimizer>();
                 return new SpriteManager(settings, imageLoader, generateSpriteUrl, pngOptimizer);
             };
-        }
-
-        static ImageFileLoader CreateImageLoader(CassetteSettings cassetteSettings, IUrlGenerator urlGenerator)
-        {
-            return new ImageFileLoader(cassetteSettings.SourceDirectory, urlGenerator);
         }
     }
 }
