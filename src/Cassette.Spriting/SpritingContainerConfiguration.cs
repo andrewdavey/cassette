@@ -46,14 +46,14 @@ namespace Cassette.Spriting
             var pngOptimizer = container.Resolve<IPngOptimizer>();
             return path =>
             {
-                var imageLoader = CreateImageLoader(cassetteSettings);
+                var imageLoader = CreateImageLoader(cassetteSettings, container.Resolve<IUrlGenerator>());
                 return new SpriteManager(settings, imageLoader, generateSpriteUrl, pngOptimizer);
             };
         }
 
-        static ImageFileLoader CreateImageLoader(CassetteSettings cassetteSettings)
+        static ImageFileLoader CreateImageLoader(CassetteSettings cassetteSettings, IUrlGenerator urlGenerator)
         {
-            return new ImageFileLoader(cassetteSettings.SourceDirectory);
+            return new ImageFileLoader(cassetteSettings.SourceDirectory, urlGenerator);
         }
     }
 }
