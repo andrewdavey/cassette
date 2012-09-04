@@ -1,3 +1,4 @@
+using System;
 using Cassette.Spriting.Spritastic;
 using Cassette.Spriting.Spritastic.Utilities;
 
@@ -15,5 +16,7 @@ namespace Cassette.Spriting
         {
             get { return TrustLevelChecker.IsFullTrust(); }
         }
+
+        public Func<string, bool> ShouldSpriteImage { get; set; }
     }
 }

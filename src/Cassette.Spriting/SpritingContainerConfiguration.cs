@@ -89,7 +89,10 @@ namespace Cassette.Spriting
                 var imageLoader = container.Resolve<IImageLoader>();
                 Func<byte[], string> generateSpriteUrl = container.Resolve<SpriteUrlGenerator>().CreateSpriteUrl;
                 var pngOptimizer = container.Resolve<IPngOptimizer>();
-                return new SpriteManager(settings, imageLoader, generateSpriteUrl, pngOptimizer);
+                return new SpriteManager(settings, imageLoader, generateSpriteUrl, pngOptimizer)
+                {
+                    ImageExclusionFilter = image => !settings.ShouldSpriteImage(image.ImageUrl)
+                };
             };
         }
     }
