@@ -50,7 +50,6 @@
     text-indent: -9999px;
     display: block;
     height: 76px;
-    padding-top: 36px;
     -moz-transition: opacity 0.5s; /* Firefox */
     -webkit-transition: opacity 0.5s; /* Chrome, Safari */
 }
