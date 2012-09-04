@@ -1,3 +1,4 @@
+using System;
 using System.Web;
 using Cassette.IO;
 
@@ -40,6 +41,7 @@ namespace Cassette.Aspnet
         {
             using (var stream = file.OpenRead())
             {
+                response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
                 stream.CopyTo(response.OutputStream);
             }
         }
