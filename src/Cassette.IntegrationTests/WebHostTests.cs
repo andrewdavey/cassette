@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -147,21 +146,6 @@ namespace Cassette
 
                 http.Get(url);
                 return http.ResponseOutputStream.ReadToEnd();
-            }
-        }
-
-        class BundleConfiguration : IConfiguration<BundleCollection>
-        {
-            readonly Action<BundleCollection> addBundles;
-
-            public BundleConfiguration(Action<BundleCollection> addBundles)
-            {
-                this.addBundles = addBundles;
-            }
-
-            public void Configure(BundleCollection bundles)
-            {
-                addBundles(bundles);
             }
         }
     }

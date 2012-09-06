@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using Cassette.Aspnet;
+using Cassette.TinyIoC;
 
 namespace Cassette
 {
@@ -14,6 +15,7 @@ namespace Cassette
         readonly Func<HttpContextBase> getHttpContext;
         readonly bool isAspNetDebuggingEnabled;
         readonly List<IConfiguration<BundleCollection>> bundleConfigurations = new List<IConfiguration<BundleCollection>>();
+        readonly List<Action<TinyIoCContainer>> configs = new List<Action<TinyIoCContainer>>();
 
         public TestableWebHost(string sourceDirectory, Func<HttpContextBase> getHttpContext, bool isAspNetDebuggingEnabled = false)
         {
@@ -32,6 +34,12 @@ namespace Cassette
         {
             base.ConfigureContainer();
             Container.Register(typeof(IEnumerable<IConfiguration<BundleCollection>>), bundleConfigurations);
+            configs.ForEach(c => c(Container));
+        }
+
+        public void ConfigureContainer(Action<TinyIoCContainer> config)
+        {
+            configs.Add(config);
         }
 
         public void AddBundleConfiguration(IConfiguration<BundleCollection> bundleConfiguration)

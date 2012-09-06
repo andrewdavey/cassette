@@ -10,6 +10,12 @@ namespace Cassette.HtmlTemplates
         {
         }
 
+        public override void Configure(TinyIoC.TinyIoCContainer container)
+        {
+            base.Configure(container);
+            container.Register<IHtmlTemplateIdStrategy>((c, n) => new HtmlTemplateIdBuilder());
+        }
+
         protected override string FilePattern
         {
             get { return "*.htm;*.html"; }

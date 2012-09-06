@@ -96,9 +96,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BundleConfiguration.cs" />
     <Compile Include="Compilation\CoffeeScriptCompiler.cs" />
     <Compile Include="HttpTestHarness.cs" />
     <Compile Include="IsolatedStorageFileSystem.cs" />
+    <Compile Include="JavaScriptHtmlTemplatePipelineTests.cs" />
     <Compile Include="MSBuild\CreateBundles.cs" />
     <Compile Include="ShouldMatchHelper.cs" />
     <Compile Include="StreamExtensions.cs" />
@@ -125,6 +127,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="assets\scripts\bundle-d\bundle.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="templates\asset-1.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="templates\asset-2.htm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="assets\styles\bundle-a\asset-3.scss">

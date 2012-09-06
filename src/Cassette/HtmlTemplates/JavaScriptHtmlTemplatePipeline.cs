@@ -1,5 +1,6 @@
 using System;
 using Cassette.BundleProcessing;
+using Cassette.Scripts;
 using Cassette.TinyIoC;
 
 namespace Cassette.HtmlTemplates
@@ -14,8 +15,10 @@ namespace Cassette.HtmlTemplates
                 container.Resolve<AddJavaScriptHtmlTemplateBuilders>(),
                 new ConcatenateAssets { Separator = Environment.NewLine },
                 new AddWrapJavaScriptHtmlTemplates(),
-                container.Resolve<MinifyAssets>(),
-                new AssignHash()
+                new MinifyAssets(container.Resolve<IJavaScriptMinifier>()),
+                new AssignHash(),
+                new AssignContentType("text/javascript"),
+                new AssignHtmlTemplateRenderer(container.Resolve<RemoteHtmlTemplateBundleRenderer>()), 
             });
         }
     }
