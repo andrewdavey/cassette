@@ -98,9 +98,13 @@
     <Compile Include="FileSearchProvider.cs" />
     <Compile Include="HostBase.cs" />
     <Compile Include="BundleCollection.cs" />
+    <Compile Include="HtmlTemplates\AddJavaScriptHtmlTemplateBuilders.cs" />
+    <Compile Include="HtmlTemplates\AddWrapJavaScriptHtmlTemplates.cs" />
     <Compile Include="HtmlTemplates\IHtmlTemplateIdStrategy.cs" />
     <Compile Include="HtmlTemplates\JavaScriptHtmlTemplateBuilder.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateIdBuilder.cs" />
+    <Compile Include="HtmlTemplates\JavaScriptHtmlTemplatePipeline.cs" />
+    <Compile Include="HtmlTemplates\WrapJavaScriptHtmlTemplates.cs" />
     <Compile Include="IBundleCacheRebuilder.cs" />
     <Compile Include="IBundleCollectionInitializer.cs" />
     <Compile Include="IConfiguration.cs" />

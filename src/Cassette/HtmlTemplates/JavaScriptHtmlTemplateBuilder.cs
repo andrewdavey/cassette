@@ -6,6 +6,8 @@ namespace Cassette.HtmlTemplates
 {
     public class JavaScriptHtmlTemplateBuilder : IAssetTransformer
     {
+        public delegate JavaScriptHtmlTemplateBuilder Factory(HtmlTemplateBundle bundle);
+
         readonly HtmlTemplateBundle bundle;
         readonly IJsonSerializer serializer;
         readonly IHtmlTemplateIdStrategy idStrategy;
