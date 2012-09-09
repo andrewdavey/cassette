@@ -42,6 +42,13 @@ namespace Cassette.BundleProcessing
             Insert(index, step);
         }
 
+        public void ReplaceWith<TReplacementProcessors>() where TReplacementProcessors : class, IEnumerable<IBundleProcessor<T>>
+        {
+            Clear();
+            var replacementProcessors = container.Resolve<TReplacementProcessors>();
+            AddRange(replacementProcessors);
+        }
+
         public virtual void Process(T bundle)
         {
             foreach (var processor in this)

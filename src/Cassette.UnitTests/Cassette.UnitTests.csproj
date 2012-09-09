@@ -140,6 +140,7 @@
     <Compile Include="FileAccessAuthorization.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />
     <Compile Include="HostBase.cs" />
+    <Compile Include="HtmlTemplates\HtmlTemplateBundleExtensions.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateIdBuilder.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateToJavaScriptTransformer.cs" />
     <Compile Include="HtmlTemplates\AssignHtmlTemplateRenderer.cs" />
