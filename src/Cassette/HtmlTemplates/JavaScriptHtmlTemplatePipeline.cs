@@ -12,7 +12,7 @@ namespace Cassette.HtmlTemplates
         {
             AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
             {
-                container.Resolve<AddJavaScriptHtmlTemplateBuilders>(),
+                container.Resolve<AddHtmlTemplateToJavaScriptTransformers>(),
                 new ConcatenateAssets { Separator = Environment.NewLine },
                 new AddWrapJavaScriptHtmlTemplates(),
                 new MinifyAssets(container.Resolve<IJavaScriptMinifier>()),

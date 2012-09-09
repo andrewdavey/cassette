@@ -4,15 +4,15 @@ using System.Text;
 
 namespace Cassette.HtmlTemplates
 {
-    public class JavaScriptHtmlTemplateBuilder : IAssetTransformer
+    public class HtmlTemplateToJavaScriptTransformer : IAssetTransformer
     {
-        public delegate JavaScriptHtmlTemplateBuilder Factory(HtmlTemplateBundle bundle);
+        public delegate HtmlTemplateToJavaScriptTransformer Factory(HtmlTemplateBundle bundle);
 
         readonly HtmlTemplateBundle bundle;
         readonly IJsonSerializer serializer;
         readonly IHtmlTemplateIdStrategy idStrategy;
 
-        public JavaScriptHtmlTemplateBuilder(HtmlTemplateBundle bundle, IJsonSerializer serializer, IHtmlTemplateIdStrategy idStrategy)
+        public HtmlTemplateToJavaScriptTransformer(HtmlTemplateBundle bundle, IJsonSerializer serializer, IHtmlTemplateIdStrategy idStrategy)
         {
             this.bundle = bundle;
             this.serializer = serializer;

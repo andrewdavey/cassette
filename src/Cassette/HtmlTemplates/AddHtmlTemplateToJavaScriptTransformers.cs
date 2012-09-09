@@ -2,11 +2,11 @@ using Cassette.BundleProcessing;
 
 namespace Cassette.HtmlTemplates
 {
-    public class AddJavaScriptHtmlTemplateBuilders : IBundleProcessor<HtmlTemplateBundle>
+    public class AddHtmlTemplateToJavaScriptTransformers : IBundleProcessor<HtmlTemplateBundle>
     {
-        readonly JavaScriptHtmlTemplateBuilder.Factory createTransformer;
+        readonly HtmlTemplateToJavaScriptTransformer.Factory createTransformer;
 
-        public AddJavaScriptHtmlTemplateBuilders(JavaScriptHtmlTemplateBuilder.Factory createTransformer)
+        public AddHtmlTemplateToJavaScriptTransformers(HtmlTemplateToJavaScriptTransformer.Factory createTransformer)
         {
             this.createTransformer = createTransformer;
         }

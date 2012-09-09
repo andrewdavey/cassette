@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Cassette.HtmlTemplates
 {
-    public class JavaScriptHtmlTemplateBuilderTests
+    public class HtmlTemplateToJavaScriptTransformerTests
     {
         [Fact]
         public void TemplateTransformedIntoAddTemplateJavaScriptCall()
@@ -49,7 +49,7 @@ namespace Cassette.HtmlTemplates
         string transformOutput;
         IHtmlTemplateIdStrategy htmlTemplateIdStrategy;
 
-        public JavaScriptHtmlTemplateBuilderTests()
+        public HtmlTemplateToJavaScriptTransformerTests()
         {
             asset = new Mock<IAsset>();
             htmlTemplateIdStrategy = new HtmlTemplateIdBuilder();
@@ -68,7 +68,7 @@ namespace Cassette.HtmlTemplates
 
         void WhenTransform(string htmlTemplate)
         {
-            var transformer = new JavaScriptHtmlTemplateBuilder(
+            var transformer = new HtmlTemplateToJavaScriptTransformer(
                 bundle,
                 new SimpleJsonSerializer(),
                 htmlTemplateIdStrategy
