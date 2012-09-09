@@ -31,7 +31,8 @@ var addTemplate = function(id, content) {{
     }} else {{
         script.innerText = content;
     }}
-    d.body.appendChild(script);
+    var x = d.getElementsByTagName('script')[0];
+    x.parentNode.insertBefore(script, x);
 }};
 {1}
 }}(document));",
