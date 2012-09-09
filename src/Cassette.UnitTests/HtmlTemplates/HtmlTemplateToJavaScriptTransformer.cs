@@ -69,6 +69,7 @@ namespace Cassette.HtmlTemplates
         void WhenTransform(string htmlTemplate)
         {
             var transformer = new HtmlTemplateToJavaScriptTransformer(
+                "addTemplate({0},{1});",
                 bundle,
                 new SimpleJsonSerializer(),
                 htmlTemplateIdStrategy

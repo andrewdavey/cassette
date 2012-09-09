@@ -14,6 +14,20 @@ namespace Cassette.BundleProcessing
             this.container = container;
         }
 
+        public void Add<TBundleProcessor>()
+            where TBundleProcessor : class, IBundleProcessor<T>
+        {
+            var step = (IBundleProcessor<T>)container.Resolve<TBundleProcessor>();
+            Add(step);
+        }
+
+        public void Add<TBundleProcessorFactory>(Func<TBundleProcessorFactory, IBundleProcessor<T>> create)
+            where TBundleProcessorFactory : class
+        {
+            var step = create(container.Resolve<TBundleProcessorFactory>());
+            Add(step);
+        }
+
         public void Insert<TBundleProcessor>(int index)
             where TBundleProcessor : class, IBundleProcessor<T>
         {

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using Cassette.Aspnet;
+using Cassette.Caching;
 using Cassette.TinyIoC;
+using Moq;
 
 namespace Cassette
 {
@@ -33,8 +35,16 @@ namespace Cassette
         protected override void ConfigureContainer()
         {
             base.ConfigureContainer();
+            Container.Register(CreateEmptyCache());
             Container.Register(typeof(IEnumerable<IConfiguration<BundleCollection>>), bundleConfigurations);
             configs.ForEach(c => c(Container));
+        }
+
+        IBundleCollectionCache CreateEmptyCache()
+        {
+            var cache = new Mock<IBundleCollectionCache>();
+            cache.Setup(c => c.Read()).Returns(CacheReadResult.Failed());
+            return cache.Object;
         }
 
         public void ConfigureContainer(Action<TinyIoCContainer> config)

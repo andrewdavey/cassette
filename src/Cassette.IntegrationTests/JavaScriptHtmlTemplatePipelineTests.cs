@@ -14,7 +14,7 @@ namespace Cassette
         [Fact]
         public void HtmlTemplatesServedAsJavaScript()
         {
-            using (var host = new TestableWebHost(".", () => httpContext, true))
+            using (var host = new TestableWebHost(".", () => httpContext))
             {
                 host.ConfigureContainer(c =>
                 {
@@ -26,9 +26,9 @@ namespace Cassette
                 ));
 
                 host.Initialize();
-                
+
                 var javaScript = DownloadJavaScript(host, "/cassette.axd/htmltemplate/hash/templates");
-                javaScript.ShouldEqual(@"(function(n){var t=function(t){var r=n.createElement(""script"");r.setAttribute(""type"",""text/html""),r.setAttribute(""id"",t),n.body.appendChild(r)};t(""asset-1"",""<p>asset 1<\/p>""),t(""asset-2"",""<p>asset 2<\/p>"")})(document)");
+                javaScript.ShouldEqual(@"(function(n){var t=function(t){var r=n.createElement(""script"");r.type=""text/html"",r.id=t,n.body.appendChild(r)};t(""asset-1"",""<p>asset 1<\/p>""),t(""asset-2"",""<p>asset 2<\/p>"")})(document)");
             }
         }
 

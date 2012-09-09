@@ -6,14 +6,16 @@ namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateToJavaScriptTransformer : IAssetTransformer
     {
-        public delegate HtmlTemplateToJavaScriptTransformer Factory(HtmlTemplateBundle bundle);
+        public delegate HtmlTemplateToJavaScriptTransformer Factory(string javaScriptTemplate, HtmlTemplateBundle bundle);
 
+        readonly string javaScriptTemplate;
         readonly HtmlTemplateBundle bundle;
         readonly IJsonSerializer serializer;
         readonly IHtmlTemplateIdStrategy idStrategy;
 
-        public HtmlTemplateToJavaScriptTransformer(HtmlTemplateBundle bundle, IJsonSerializer serializer, IHtmlTemplateIdStrategy idStrategy)
+        public HtmlTemplateToJavaScriptTransformer(string javaScriptTemplate, HtmlTemplateBundle bundle, IJsonSerializer serializer, IHtmlTemplateIdStrategy idStrategy)
         {
+            this.javaScriptTemplate = javaScriptTemplate;
             this.bundle = bundle;
             this.serializer = serializer;
             this.idStrategy = idStrategy;
@@ -28,7 +30,7 @@ namespace Cassette.HtmlTemplates
                     var template = reader.ReadToEnd();
                     var idString = CreateJavaScriptString(TemplateId(asset));
                     var templateString = CreateJavaScriptString(template);
-                    var output = string.Format("addTemplate({0},{1});", idString, templateString);
+                    var output = string.Format(javaScriptTemplate, idString, templateString);
                     return new MemoryStream(Encoding.UTF8.GetBytes(output));
                 }
             };
