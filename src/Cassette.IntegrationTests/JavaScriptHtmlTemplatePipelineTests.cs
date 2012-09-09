@@ -1,6 +1,5 @@
 ﻿using System.Web;
 using Cassette.Aspnet;
-using Cassette.BundleProcessing;
 using Cassette.HtmlTemplates;
 using Should;
 using Xunit;
@@ -23,7 +22,7 @@ namespace Cassette
                 host.Initialize();
 
                 var javaScript = DownloadJavaScript(host, "/cassette.axd/htmltemplate/hash/templates");
-                javaScript.ShouldEqual(@"(function(n){var t=function(t){var r=n.createElement(""script"");r.type=""text/html"",r.id=t,n.body.appendChild(r)};t(""asset-1"",""<p>asset 1<\/p>""),t(""asset-2"",""<p>asset 2<\/p>"")})(document)");
+                javaScript.ShouldEqual(@"(function(n){var t=function(t,i){var r=n.createElement(""script"");r.type=""text/html"",r.id=t,typeof r.textContent!=""undefined""?r.textContent=i:r.innerText=i,n.body.appendChild(r)};t(""asset-1"",""<p>asset 1<\/p>""),t(""asset-2"",""<p>asset 2<\/p>"")})(document)");
             }
         }
 

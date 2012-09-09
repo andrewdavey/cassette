@@ -26,6 +26,11 @@ var addTemplate = function(id, content) {{
     var script = d.createElement('script');
     script.type = '{0}';
     script.id = id;
+    if (typeof script.textContent !== 'undefined') {{
+        script.textContent = content;
+    }} else {{
+        script.innerText = content;
+    }}
     d.body.appendChild(script);
 }};
 {1}
