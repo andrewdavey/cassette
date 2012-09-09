@@ -16,13 +16,8 @@ namespace Cassette
         {
             using (var host = new TestableWebHost(".", () => httpContext))
             {
-                host.ConfigureContainer(c =>
-                {
-                    c.Register<IBundlePipeline<HtmlTemplateBundle>, JavaScriptHtmlTemplatePipeline>();
-                });
-
                 host.AddBundleConfiguration(new BundleConfiguration(
-                    bundles => bundles.Add<HtmlTemplateBundle>("~/templates")
+                    bundles => bundles.Add<HtmlTemplateBundle>("~/templates", b => b.AsJavaScript())
                 ));
 
                 host.Initialize();
