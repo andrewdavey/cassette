@@ -85,7 +85,7 @@ namespace Cassette
         public void Add(Bundle bundle)
         {
             var bundleTypeAlreadyAdded = bundles.Any(
-                b => b.ContainsPath(bundle.Path)
+                b => b.Path.Equals(bundle.Path, StringComparison.OrdinalIgnoreCase)
                   && b.GetType() == bundle.GetType()
             );
             if (bundleTypeAlreadyAdded)

@@ -67,6 +67,8 @@ namespace Cassette.Utilities
             {
                 return false;
             }
+            if (path1 == path2) return true;
+
             var slashes = new[] {Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar};
             return path1.Split(slashes).SequenceEqual(path2.Split(slashes), StringComparer.OrdinalIgnoreCase);
         }

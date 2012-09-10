@@ -6,15 +6,15 @@ namespace Cassette.IO
 {
     public class FileSystemFile : IFile
     {
-        readonly string name;
         readonly string systemAbsoluteFilename;
         readonly IDirectory directory;
+        readonly string fullPath;
 
         public FileSystemFile(string name, IDirectory directory, string systemAbsoluteFilename)
         {
-            this.name = name;
             this.directory = directory;
             this.systemAbsoluteFilename = systemAbsoluteFilename;
+            fullPath = PathUtilities.CombineWithForwardSlashes(directory.FullPath, name);
         }
 
         public IDirectory Directory
@@ -24,7 +24,7 @@ namespace Cassette.IO
 
         public string FullPath
         {
-            get { return PathUtilities.CombineWithForwardSlashes(directory.FullPath, name); }
+            get { return fullPath; }
         }
 
         public Stream Open(FileMode mode, FileAccess access, FileShare fileShare)

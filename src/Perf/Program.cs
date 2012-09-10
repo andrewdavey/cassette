@@ -12,11 +12,13 @@ namespace Perf
         {
             var assetContent = string.Join("\r\n", Enumerable.Range(0, 1000).Select(i => "var x" + i + "={};"));
 
-            using (var temp = new TempDirectory())
+            //using (var temp = new TempDirectory())
             {
+                var temp = Path.GetFullPath(".");
                 for (int i = 0; i < 200; i++)
                 {
                     var bundlePath = Path.Combine(temp, "bundle" + i);
+                    if (Directory.Exists(bundlePath)) continue;
                     Directory.CreateDirectory(bundlePath);
                     for (int j = 0; j < 30; j++)
                     {
@@ -25,8 +27,8 @@ namespace Perf
                     }
                 }
 
-                Console.WriteLine("Assets written to disk. Start profiler, then press Enter.");
-                Console.ReadLine();
+                //Console.WriteLine("Assets written to disk. Start profiler, then press Enter.");
+                //Console.ReadLine();
 
                 using (var host = new TestableWebHost(temp, () => null, true))
                 {
