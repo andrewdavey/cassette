@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Cassette.IO;
 using Cassette.Utilities;
 
@@ -107,10 +108,14 @@ namespace Cassette
 
         internal void Process()
         {
+#if NET35
             foreach (var bundle in bundles)
             {
                 bundle.Process(settings);
             }
+#else
+            Parallel.ForEach(bundles, b => b.Process(settings));
+#endif
         }
 
         void Remove(Bundle bundle)
