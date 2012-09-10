@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Cassette.Caching;
 using Cassette.IO;
 using Moq;
 using Xunit;
@@ -42,7 +43,7 @@ namespace Cassette
                 .Setup(s => s.IsMatch(It.IsAny<string>()))
                 .Returns<string>(path => path.EndsWith(".js"));
             
-            var initializer = new BundleCollectionInitializer(new[] { bundleConfiguration.Object }, new ExternalBundleGenerator(Mock.Of<IBundleFactoryProvider>(), settings));
+            var initializer = new BundleCollectionInitializer(new[] { bundleConfiguration.Object }, new ExternalBundleGenerator(Mock.Of<IBundleFactoryProvider>(), settings), type => new FileAssetCacheValidator(settings.SourceDirectory), settings);
             rebuilder = new FileSystemWatchingBundleRebuilder(settings, bundles, initializer, new[] { fileSearch.Object });
         }
 

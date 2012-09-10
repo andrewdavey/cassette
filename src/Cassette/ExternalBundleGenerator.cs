@@ -23,14 +23,14 @@ namespace Cassette
             this.settings = settings;
         }
 
-        public void AddBundlesForUrlReferences(BundleCollection bundleCollection)
+        public IEnumerable<Bundle> AddBundlesForUrlReferences(IEnumerable<Bundle> bundles)
         {
             createdExternalBundles = new List<Bundle>();
-            existingUrls = GetExistingUrls(bundleCollection);
+            existingUrls = GetExistingUrls(bundles);
 
-            bundleCollection.Accept(this);
+            bundles.Accept(this);
 
-            bundleCollection.AddRange(createdExternalBundles);
+            return createdExternalBundles;
         }
 
         HashSet<string> GetExistingUrls(IEnumerable<Bundle> bundleCollection)

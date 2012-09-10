@@ -31,20 +31,23 @@ namespace Perf
                 host.AddBundleConfiguration(new BundleConfiguration(
                     bundles => bundles.AddPerSubDirectory<ScriptBundle>("")
                 ));
-                host.Initialize();
 
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
+
+                host.Initialize();
+                Console.WriteLine(stopWatch.ElapsedMilliseconds);
+                stopWatch.Restart();
 
                 var wait = new ManualResetEvent(false);
 
                 host.Bundles.Changed += (sender, eventArgs) =>
                 {
-                    Console.WriteLine(stopWatch.ElapsedMilliseconds + "ms Changed");
+                    Console.WriteLine("Changed after " + stopWatch.ElapsedMilliseconds + "ms");
                     wait.Set();
                 };
                 Console.WriteLine("Changing");
-                File.WriteAllText(Path.Combine(temp, "bundle100", "asset15.js"), "var x = 1;");
+                File.WriteAllText(Path.Combine(temp, "bundle1", "asset1.js"), "var x = 1;");
 
                 wait.WaitOne();
             }

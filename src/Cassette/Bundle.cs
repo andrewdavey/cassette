@@ -147,6 +147,7 @@ namespace Cassette
             {
                 throw new InvalidOperationException("Bundle has already been processed.");
             }
+            Trace.Source.TraceInformation(string.Format("Processing {0} {1}", GetType().Name, Path));
             ProcessCore(settings);
             IsProcessed = true;
         }

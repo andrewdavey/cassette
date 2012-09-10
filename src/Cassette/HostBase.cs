@@ -116,9 +116,10 @@ namespace Cassette
                     bundleTypeName => ResolveBundleDeserializer(bundleTypeName, c)
                 );
             });
+            container.Register((c, p) => new Func<Type, IAssetCacheValidator>(type => (IAssetCacheValidator)c.Resolve(type)));
             container.Register((c, p) =>
             {
-                Func<Type, IAssetCacheValidator> assetCacheValidatorFactory = type => (IAssetCacheValidator)c.Resolve(type);
+                var assetCacheValidatorFactory = c.Resolve<Func<Type, IAssetCacheValidator>>();
                 var sourceDirectory = c.Resolve<CassetteSettings>().SourceDirectory;
                 return new ManifestValidator(assetCacheValidatorFactory, sourceDirectory);
             });
@@ -148,6 +149,7 @@ namespace Cassette
 
         protected virtual void RegisterBundleCollectionInitializer()
         {
+            container.Register<BundleCollectionInitializer>().AsSingleton();
             container.Register<IBundleCollectionInitializer>(
                 (c, p) => new ExceptionCatchingBundleCollectionInitializer(
                     c.Resolve<RuntimeBundleCollectionInitializer>()
