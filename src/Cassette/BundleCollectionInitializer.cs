@@ -62,7 +62,9 @@ namespace Cassette
                 newBundle.Process(settings);
             }
 
-            var externalBundles = externalBundleGenerator.AddBundlesForUrlReferences(newBundles);
+            var externalBundles = externalBundleGenerator
+                .AddBundlesForUrlReferences(newBundles)
+                .Except(upToDateBundles, new BundleComparer());
 
             var all = newBundles.Concat(upToDateBundles).Concat(externalBundles);
             bundles.Clear();
