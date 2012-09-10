@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Cassette.Scripts;
 
 namespace Perf
@@ -12,40 +13,40 @@ namespace Perf
         {
             var assetContent = string.Join("\r\n", Enumerable.Range(0, 1000).Select(i => "var x" + i + "={};"));
 
-            //using (var temp = new TempDirectory())
+            var temp = Path.GetFullPath(".");
+            for (int i = 0; i < 200; i++)
             {
-                var temp = Path.GetFullPath(".");
-                for (int i = 0; i < 200; i++)
+                var bundlePath = Path.Combine(temp, "bundle" + i);
+                if (Directory.Exists(bundlePath)) continue;
+                Directory.CreateDirectory(bundlePath);
+                for (int j = 0; j < 30; j++)
                 {
-                    var bundlePath = Path.Combine(temp, "bundle" + i);
-                    if (Directory.Exists(bundlePath)) continue;
-                    Directory.CreateDirectory(bundlePath);
-                    for (int j = 0; j < 30; j++)
-                    {
-                        var assetFilename = Path.Combine(bundlePath, "asset" + j + ".js");
-                        File.WriteAllText(assetFilename, assetContent);
-                    }
+                    var assetFilename = Path.Combine(bundlePath, "asset" + j + ".js");
+                    File.WriteAllText(assetFilename, assetContent);
                 }
+            }
 
-                //Console.WriteLine("Assets written to disk. Start profiler, then press Enter.");
-                //Console.ReadLine();
+            using (var host = new TestableWebHost(temp, () => null, true))
+            {
+                host.AddBundleConfiguration(new BundleConfiguration(
+                    bundles => bundles.AddPerSubDirectory<ScriptBundle>("")
+                ));
+                host.Initialize();
 
-                using (var host = new TestableWebHost(temp, () => null, true))
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var wait = new ManualResetEvent(false);
+
+                host.Bundles.Changed += (sender, eventArgs) =>
                 {
-                    host.AddBundleConfiguration(new BundleConfiguration(bundles =>
-                        bundles.AddPerSubDirectory<ScriptBundle>("")
-                    ));
+                    Console.WriteLine(stopWatch.ElapsedMilliseconds + "ms Changed");
+                    wait.Set();
+                };
+                Console.WriteLine("Changing");
+                File.WriteAllText(Path.Combine(temp, "bundle100", "asset15.js"), "var x = 1;");
 
-                    var stopWatch = new Stopwatch();
-                    stopWatch.Start();
-
-                    host.Initialize();
-
-                    File.WriteAllText(Path.Combine(temp, "bundle100", "asset15.js"), "var x = 1;");
-
-                    Console.WriteLine(stopWatch.ElapsedMilliseconds);
-                    stopWatch.Stop();
-                }
+                wait.WaitOne();
             }
         }
     }

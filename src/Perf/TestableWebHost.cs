@@ -55,6 +55,11 @@ namespace Perf
             get { return "/"; }
         }
 
+        public BundleCollection Bundles
+        {
+            get { return Container.Resolve<BundleCollection>(); }
+        }
+
         class TestableWebHostSettingsConfiguration : WebHostSettingsConfiguration
         {
             readonly TestableWebHost host;
