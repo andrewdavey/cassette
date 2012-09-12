@@ -231,5 +231,20 @@ namespace Cassette.HtmlAppCache
             merged.Fallback[0].UrlNamespace.ShouldEqual("/a");
             merged.Fallback[0].FallbackUrl.ShouldEqual("/b");
         }
+
+        [Fact]
+        public void LastModifiedIsMaxOfMerged()
+        {
+            var manifest1 = new CacheManifest
+            {
+                LastModified = new DateTime(2000, 1, 1)
+            };
+            var manifest2 = new CacheManifest
+            {
+                LastModified = new DateTime(2000, 1, 2)
+            };
+            var merged = CacheManifest.Merge(manifest1, manifest2);
+            merged.LastModified.ShouldEqual(new DateTime(2000, 1, 2));
+        }
     }
 }

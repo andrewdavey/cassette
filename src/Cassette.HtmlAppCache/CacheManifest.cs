@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,7 @@ namespace Cassette.HtmlAppCache
             Fallback = new FallbackSection();
         }
 
+        public DateTime LastModified { get; set; }
         public CacheSection Cache { get; private set; }
         public NetworkSection Network { get; private set; }
         public FallbackSection Fallback { get; private set; }
@@ -30,14 +32,20 @@ namespace Cassette.HtmlAppCache
                    select sectionString;
         }
 
-        public static CacheManifest Merge(CacheManifest m1, CacheManifest m2)
+        public static CacheManifest Merge(CacheManifest manifest1, CacheManifest manifest2)
         {
             return new CacheManifest
             {
-                Cache = CacheSection.Merge(m1.Cache, m2.Cache),
-                Fallback = FallbackSection.Merge(m1.Fallback, m2.Fallback),
-                Network = NetworkSection.Merge(m1.Network, m2.Network)
+                Cache = CacheSection.Merge(manifest1.Cache, manifest2.Cache),
+                Fallback = FallbackSection.Merge(manifest1.Fallback, manifest2.Fallback),
+                Network = NetworkSection.Merge(manifest1.Network, manifest2.Network),
+                LastModified = MaxLastModified(manifest1, manifest2)
             };
+        }
+
+        static DateTime MaxLastModified(CacheManifest manifest1, CacheManifest manifest2)
+        {
+            return manifest1.LastModified > manifest2.LastModified ? manifest1.LastModified : manifest2.LastModified;
         }
     }
 }

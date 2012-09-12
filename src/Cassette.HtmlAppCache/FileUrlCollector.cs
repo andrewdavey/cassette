@@ -31,7 +31,7 @@ namespace Cassette.HtmlAppCache
 
             foreach (var filename in filenames)
             {
-                var url = urlGenerator.CreateRawFileUrl(filename, "TODOGETHASH"); // TODO: Get Hash
+                var url = urlGenerator.CreateRawFileUrl(filename);
                 Urls.Add(url);
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cassette.IO;
@@ -18,7 +19,10 @@ namespace Cassette.HtmlAppCache
         public CacheManifest BuildCacheManifest(IEnumerable<Bundle> bundles)
         {
             var cacheUrls = bundles.SelectMany(GetUrls);
-            var cacheManifest = new CacheManifest();
+            var cacheManifest = new CacheManifest
+            {
+                LastModified = DateTime.UtcNow
+            };
             foreach (var url in cacheUrls)
             {
                 cacheManifest.Cache.Add(url);
