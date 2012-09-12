@@ -28,7 +28,7 @@ namespace Cassette
                 from assembly in assemblies
                 where AssemblyIsNotIgnored(assembly) && IsNotDynamic(assembly)
                 from type in GetPublicTypesAndIgnoreLoaderExceptions(assembly)
-                where !type.IsAbstract
+                where !type.IsAbstract || type.IsInterface
                 select type
             ).ToArray();
         }

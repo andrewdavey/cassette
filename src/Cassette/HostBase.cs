@@ -91,10 +91,26 @@ namespace Cassette
             RegisterPerRequestServices();
             RegisterConfigurationTypes();
             RegisterJsonSerializer();
+            RegisterAutos();
 
             // Classes that implement IConfiguration<TinyIoCContainer> can register services in the container.
             // This means plugins and the application can add to and override Cassette's default services.
             ExecuteContainerConfigurations();
+        }
+
+        /// <summary>
+        /// Allows an interface to specify [AutoRegisterImplementations]
+        /// and then have all implementations of it registered in the container.
+        /// </summary>
+        void RegisterAutos()
+        {
+            var autoInterfaces = allTypes.Where(t => t.IsDefined(typeof(AutoRegisterImplementationsAttribute), false));
+            foreach (var autoInterface in autoInterfaces)
+            {
+                var @interface = autoInterface;
+                var implementations = allTypes.Where(t => t.IsClass).Where(@interface.IsAssignableFrom);
+                container.RegisterMultiple(@interface, implementations);
+            }
         }
 
         void RegisterBundleCollection()
@@ -290,7 +306,7 @@ namespace Cassette
 
         IEnumerable<Type> GetImplementationTypes(Type baseType)
         {
-            return allTypes.Where(baseType.IsAssignableFrom); 
+            return allTypes.Where(t => t.IsClass).Where(baseType.IsAssignableFrom);
         }
 
         IPlaceholderTracker CreatePlaceholderTracker(TinyIoCContainer currentContainer)

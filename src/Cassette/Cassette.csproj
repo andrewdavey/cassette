@@ -262,6 +262,7 @@
     <Compile Include="BundleProcessing\CompileAsset.cs" />
     <Compile Include="Stylesheets\ExpandCssUrlsAssetTransformer.cs" />
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
+    <Compile Include="TinyIoC\AutoRegisterImplementationsAttribute.cs" />
     <Compile Include="TinyIoC\TinyIoC.cs" />
     <Compile Include="TinyIoC\TinyIoCExtensions.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
