@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,11 +41,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheManifest.cs" />
+    <Compile Include="CacheManifestBuilder.cs" />
+    <Compile Include="CacheManifestHandler.cs" />
+    <Compile Include="CacheManifestHandlerFactory.cs" />
+    <Compile Include="CacheManifestProvider.cs" />
     <Compile Include="CacheSection.cs" />
     <Compile Include="FallbackMapping.cs" />
     <Compile Include="FallbackSection.cs" />
+    <Compile Include="ICacheManifestProvider.cs" />
     <Compile Include="NetworkSection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StartUp.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cassette\Cassette.csproj">
+      <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
+      <Name>Cassette</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
