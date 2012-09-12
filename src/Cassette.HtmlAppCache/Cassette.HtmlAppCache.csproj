@@ -48,6 +48,7 @@
     <Compile Include="CacheSection.cs" />
     <Compile Include="FallbackMapping.cs" />
     <Compile Include="FallbackSection.cs" />
+    <Compile Include="FileUrlCollector.cs" />
     <Compile Include="ICacheManifestProvider.cs" />
     <Compile Include="NetworkSection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
