@@ -1,5 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <configSections>
+      <section name="cassette" type="Cassette.CassetteConfigurationSection, Cassette" requirePermission="false" />
+    </configSections>
+    
+    <!-- For configuration options: http://getcassette.net/documentation/v2/web-config -->
+    <cassette />
+  
     <system.web>
         <httpModules>
             <add name="CassetteHttpModule" type="Cassette.Aspnet.CassetteHttpModule, Cassette.Aspnet" />
