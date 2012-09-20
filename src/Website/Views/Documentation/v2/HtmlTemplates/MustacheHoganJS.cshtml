@@ -10,22 +10,27 @@
 
 <p>The compiled template functions are loaded into a configurable global variable.</p>
 
-<h2>Bundle configuration</h2>
+<h2>Install Cassette.Hogan</h2>
+<p>Install the Cassette.Hogan package from nuget</p>
+<pre><code>Install-Package Cassette.Hogan</code></pre>
 
-<p>To enable this feature, use the following bundle configuration:</p>
-
-<pre><code>bundles.Add&lt;<span class="code-type">HtmlTemplate</span>&gt;(
-    <span class="string">"HtmlTemplates"</span>
-    <span class="comment">// Assign the Hogan processor to the HTML template bundles</span>
-    bundle => bundle.Pipeline = <span class="keyword">new</span> <span class="code-type">HoganPipeline</span>() {
-        JavaScriptVariableName = <span class="string">"templates"</span>
-    }
-);</code></pre>
-
+<h2>Configuration</h2>
 <p>
-    <code>JavaScriptVariableName</code> is an optional parameter that specifies the name of the global object your templates will be added to. 
-    The default value of <code>JavaScriptVariableName</code> is <code>"JST"</code>.
+    The plug-in will automatically configure the default HTML template pipeline
+    to be the <code>HoganPipeline</code>.
+    So any <code>HtmlTemplateBundle</code>s that you add will use the <code>HoganPipeline</code>.
 </p>
+<p>To configure the global JavaScript variable that will store the templates, add the following:</p>
+<pre><code><span class="keyword">using</span> Cassette;
+<span class="keyword">using</span> Cassette.Hogan;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">HoganConfig</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">HoganSettings</span>&gt;
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">HoganSettings</span> settings)
+    {
+        settings.JavaScriptVariableName = <span class="string">"myvar"</span>; <span class="comment">// The default is "JST"</span>
+    }
+}</code></pre>
 
 <h2>Using in pages</h2>
 <p>In a view page, reference your templates just like any other bundle:</p>
