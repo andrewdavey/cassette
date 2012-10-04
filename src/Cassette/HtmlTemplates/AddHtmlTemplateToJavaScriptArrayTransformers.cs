@@ -5,20 +5,27 @@ namespace Cassette.HtmlTemplates
     public class AddHtmlTemplateToJavaScriptArrayTransformers : IBundleProcessor<HtmlTemplateBundle>
     {
         readonly HtmlTemplateToJavaScriptTransformer.Factory createTransformer;
-        readonly string variableName;
 
-        public AddHtmlTemplateToJavaScriptArrayTransformers(HtmlTemplateToJavaScriptTransformer.Factory createTransformer, string variableName)
+        /// <summary>
+        /// The name of the JavaScript variable to store compiled templates in.
+        /// For example, the default is "JST", so a template will be registered as <code>JST['my-template'] = ...;</code>.
+        /// </summary>
+        public string JavaScriptVariableName { get; set; }
+
+        public AddHtmlTemplateToJavaScriptArrayTransformers(HtmlTemplateToJavaScriptTransformer.Factory createTransformer)
         {
-            if (string.IsNullOrEmpty(variableName))
-                variableName = "JST";
-
             this.createTransformer = createTransformer;
-            this.variableName = variableName;
         }
 
         public void Process(HtmlTemplateBundle bundle)
         {
-            var transformer = createTransformer(this.variableName + "[{0}]={1};", bundle);
+            var javaScriptVariableName = JavaScriptVariableName;
+            if(string.IsNullOrEmpty(javaScriptVariableName))
+            {
+                javaScriptVariableName = "JST";
+            }
+
+            var transformer = createTransformer(javaScriptVariableName + "[{0}]={1};", bundle);
             foreach (var asset in bundle.Assets)
             {
                 asset.AddAssetTransformer(transformer);

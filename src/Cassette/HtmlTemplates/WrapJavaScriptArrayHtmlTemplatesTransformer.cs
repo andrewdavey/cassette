@@ -7,37 +7,26 @@ namespace Cassette.HtmlTemplates
 {
     public class WrapJavaScriptArrayHtmlTemplatesTransformer : IAssetTransformer
     {
-        readonly string contentType;
+        readonly string javascriptVariableName;
 
-        public WrapJavaScriptArrayHtmlTemplatesTransformer(string contentType)
+        public WrapJavaScriptArrayHtmlTemplatesTransformer(string javascriptVariableName)
         {
-            this.contentType = contentType;
+            if (string.IsNullOrEmpty(javascriptVariableName))
+            {
+                javascriptVariableName = "JST";
+            }
+
+            this.javascriptVariableName = javascriptVariableName;
         }
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
             return () =>
             {
+                
                 var addTemplateCalls = openSourceStream().ReadToEnd();
 
-                var output = string.Format(
-                    @"(function(d) {{
-var addTemplate = function(id, content) {{
-    var script = d.createElement('script');
-    script.type = '{0}';
-    script.id = id;
-    if (typeof script.textContent !== 'undefined') {{
-        script.textContent = content;
-    }} else {{
-        script.innerText = content;
-    }}
-    var x = d.getElementsByTagName('script')[0];
-    x.parentNode.insertBefore(script, x);
-}};
-{1}
-}}(document));",
-                    contentType,
-                    addTemplateCalls);
+                var output = string.Format(@"window.{0}=window.{0} || {{}};{1}", javascriptVariableName, addTemplateCalls);
 
                 return new MemoryStream(Encoding.UTF8.GetBytes(output));
             };

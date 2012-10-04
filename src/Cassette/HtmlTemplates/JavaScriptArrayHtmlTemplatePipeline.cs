@@ -9,12 +9,27 @@ namespace Cassette.HtmlTemplates
     {
         readonly TinyIoCContainer container;
         readonly CassetteSettings settings;
+        readonly string javaScriptVariableName;
+        readonly AddHtmlTemplateToJavaScriptArrayTransformers transformer;
 
         public JavaScriptArrayHtmlTemplatePipeline(TinyIoCContainer container, CassetteSettings settings)
+            : this(container, settings, "JST")
+        {
+        }
+
+        public JavaScriptArrayHtmlTemplatePipeline(TinyIoCContainer container, CassetteSettings settings, string javascriptVariableName)
             : base(container)
         {
+            if (string.IsNullOrEmpty(javascriptVariableName))
+            {
+                throw new ArgumentNullException("javascriptVariableName");
+            }
+
             this.container = container;
             this.settings = settings;
+            this.javaScriptVariableName = javascriptVariableName;
+            this.transformer = container.Resolve<AddHtmlTemplateToJavaScriptArrayTransformers>();
+
             BuildPipeline();
         }
 
@@ -31,7 +46,8 @@ namespace Cassette.HtmlTemplates
 
         void TransformHtmlTemplatesIntoJavaScript()
         {
-            Add<AddHtmlTemplateToJavaScriptArrayTransformers>();
+            transformer.JavaScriptVariableName = javaScriptVariableName;
+            Add(transformer);
         }
 
         void Concatenate()
@@ -41,7 +57,7 @@ namespace Cassette.HtmlTemplates
 
         void WrapJavaScriptHtmlTemplates()
         {
-            Add(new WrapJavaScriptArrayHtmlTemplates());
+            Add(new WrapJavaScriptArrayHtmlTemplates(javaScriptVariableName));
         }
 
         void MinifyIfNotDebugging()
