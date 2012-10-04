@@ -109,6 +109,7 @@
     <Compile Include="HostBase.cs" />
     <Compile Include="BundleCollection.cs" />
     <Compile Include="HtmlTemplates\AddHtmlTemplateToJavaScriptTransformers.cs" />
+    <Compile Include="HtmlTemplates\AddHtmlTemplateToJavaScriptArrayTransformers.cs" />
     <Compile Include="HtmlTemplates\JavaScriptArrayHtmlTemplatePipeline.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleExtensions.cs" />
     <Compile Include="HtmlTemplates\WrapJavaScriptHtmlTemplates.cs" />
