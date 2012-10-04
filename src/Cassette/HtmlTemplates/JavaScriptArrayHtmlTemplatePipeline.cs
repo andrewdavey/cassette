@@ -31,7 +31,7 @@ namespace Cassette.HtmlTemplates
 
         void TransformHtmlTemplatesIntoJavaScript()
         {
-            Add<AddHtmlTemplateToJavaScriptTransformers>();
+            Add<AddHtmlTemplateToJavaScriptArrayTransformers>();
         }
 
         void Concatenate()
