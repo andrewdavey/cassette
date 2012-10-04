@@ -26,7 +26,8 @@ namespace Cassette.HtmlTemplates
                 
                 var addTemplateCalls = openSourceStream().ReadToEnd();
 
-                var output = string.Format(@"window.{0}=window.{0} || {{}};{1}", javascriptVariableName, addTemplateCalls);
+                var output = string.Format(@"window.{0}=window.{0} || {{}};
+{1}", javascriptVariableName, addTemplateCalls);
 
                 return new MemoryStream(Encoding.UTF8.GetBytes(output));
             };
