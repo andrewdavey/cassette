@@ -41,7 +41,7 @@ namespace Cassette.HtmlTemplates
 
         void WrapJavaScriptHtmlTemplates()
         {
-            Add(new WrapJavaScriptHtmlTemplates());
+            Add(new WrapJavaScriptArrayHtmlTemplates());
         }
 
         void MinifyIfNotDebugging()
