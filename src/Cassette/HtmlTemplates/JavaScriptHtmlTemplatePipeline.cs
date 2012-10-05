@@ -7,14 +7,18 @@ namespace Cassette.HtmlTemplates
 {
     public class JavaScriptHtmlTemplatePipeline : BundlePipeline<HtmlTemplateBundle>
     {
-        readonly TinyIoCContainer container;
-        readonly CassetteSettings settings;
+        public delegate JavaScriptHtmlTemplatePipeline Factory(IHtmlTemplateScriptStrategy scriptStrategy);
 
-        public JavaScriptHtmlTemplatePipeline(TinyIoCContainer container, CassetteSettings settings)
+        readonly CassetteSettings settings;
+        readonly IJavaScriptMinifier minifier;
+        readonly IBundleHtmlRenderer<HtmlTemplateBundle> renderer;
+
+        public JavaScriptHtmlTemplatePipeline(TinyIoCContainer container, CassetteSettings settings, IJavaScriptMinifier minifier, IBundleHtmlRenderer<HtmlTemplateBundle> renderer)
             : base(container)
         {
-            this.container = container;
             this.settings = settings;
+            this.minifier = minifier;
+            this.renderer = renderer;
             BuildPipeline();
         }
 
@@ -41,14 +45,14 @@ namespace Cassette.HtmlTemplates
 
         void WrapJavaScriptHtmlTemplates()
         {
-            Add(new WrapJavaScriptHtmlTemplates());
+            Add<WrapJavaScriptHtmlTemplates>();
         }
 
         void MinifyIfNotDebugging()
         {
             if (!settings.IsDebuggingEnabled)
             {
-                Add(new MinifyAssets(container.Resolve<IJavaScriptMinifier>()));
+                Add(new MinifyAssets(minifier));
             }
         }
 
@@ -64,7 +68,7 @@ namespace Cassette.HtmlTemplates
 
         void AssignRenderer()
         {
-            Add(new AssignHtmlTemplateRenderer(container.Resolve<RemoteHtmlTemplateBundleRenderer>()));
+            Add(new AssignHtmlTemplateRenderer(renderer));
         }
     }
 }

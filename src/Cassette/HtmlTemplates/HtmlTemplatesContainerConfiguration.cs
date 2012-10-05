@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cassette.Scripts;
+using Cassette.TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {
@@ -10,14 +12,21 @@ namespace Cassette.HtmlTemplates
         {
         }
 
-        public override void Configure(TinyIoC.TinyIoCContainer container)
+        public override void Configure(TinyIoCContainer container)
         {
             base.Configure(container);
-            container.Register<IHtmlTemplateIdStrategy>(
-                // For compatibility with previous version of Cassette,
-                // pathSeparatorReplacement is "-" by default
-                (c, n) => new HtmlTemplateIdBuilder(pathSeparatorReplacement: "-")
+            container.Register(
+                (c, n) => new JavaScriptHtmlTemplatePipeline(
+                    c,
+                    c.Resolve<CassetteSettings>(),
+                    c.Resolve<IJavaScriptMinifier>(),
+                    c.Resolve<RemoteHtmlTemplateBundleRenderer>()
+                )
             );
+            container.Register<IHtmlTemplateScriptStrategy, DomHtmlTemplateScriptStrategy>();
+            // For compatibility with previous version of Cassette,
+            // pathSeparatorReplacement is "-" by default
+            container.Register<IHtmlTemplateIdStrategy>((c, n) => new HtmlTemplateIdBuilder(pathSeparatorReplacement: "-"));
         }
 
         protected override string FilePattern

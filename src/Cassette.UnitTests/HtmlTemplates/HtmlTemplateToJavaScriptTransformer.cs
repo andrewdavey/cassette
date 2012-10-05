@@ -48,11 +48,13 @@ namespace Cassette.HtmlTemplates
         readonly HtmlTemplateBundle bundle;
         string transformOutput;
         IHtmlTemplateIdStrategy htmlTemplateIdStrategy;
+        readonly IHtmlTemplateScriptStrategy scriptStrategy;
 
         public HtmlTemplateToJavaScriptTransformerTests()
         {
             asset = new Mock<IAsset>();
             htmlTemplateIdStrategy = new HtmlTemplateIdBuilder();
+            scriptStrategy = new DomHtmlTemplateScriptStrategy(new SimpleJsonSerializer());
             bundle = new HtmlTemplateBundle("~");
         }
 
@@ -69,9 +71,8 @@ namespace Cassette.HtmlTemplates
         void WhenTransform(string htmlTemplate)
         {
             var transformer = new HtmlTemplateToJavaScriptTransformer(
-                "addTemplate({0},{1});",
                 bundle,
-                new SimpleJsonSerializer(),
+                scriptStrategy,
                 htmlTemplateIdStrategy
             );
 

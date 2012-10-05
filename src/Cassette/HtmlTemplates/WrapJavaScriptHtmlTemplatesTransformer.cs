@@ -7,38 +7,19 @@ namespace Cassette.HtmlTemplates
 {
     public class WrapJavaScriptHtmlTemplatesTransformer : IAssetTransformer
     {
-        readonly string contentType;
+        readonly IHtmlTemplateScriptStrategy scriptStrategy;
 
-        public WrapJavaScriptHtmlTemplatesTransformer(string contentType)
+        public WrapJavaScriptHtmlTemplatesTransformer(IHtmlTemplateScriptStrategy scriptStrategy)
         {
-            this.contentType = contentType;
+            this.scriptStrategy = scriptStrategy;
         }
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
             return () =>
             {
-                var addTemplateCalls = openSourceStream().ReadToEnd();
-
-                var output = string.Format(
-                    @"(function(d) {{
-var addTemplate = function(id, content) {{
-    var script = d.createElement('script');
-    script.type = '{0}';
-    script.id = id;
-    if (typeof script.textContent !== 'undefined') {{
-        script.textContent = content;
-    }} else {{
-        script.innerText = content;
-    }}
-    var x = d.getElementsByTagName('script')[0];
-    x.parentNode.insertBefore(script, x);
-}};
-{1}
-}}(document));",
-                    contentType,
-                    addTemplateCalls);
-
+                var templateDefinitions = openSourceStream().ReadToEnd();
+                var output = scriptStrategy.WrapTemplates(templateDefinitions);
                 return new MemoryStream(Encoding.UTF8.GetBytes(output));
             };
         }

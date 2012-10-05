@@ -6,18 +6,16 @@ namespace Cassette.HtmlTemplates
 {
     public class HtmlTemplateToJavaScriptTransformer : IAssetTransformer
     {
-        public delegate HtmlTemplateToJavaScriptTransformer Factory(string javaScriptTemplate, HtmlTemplateBundle bundle);
+        public delegate HtmlTemplateToJavaScriptTransformer Factory(HtmlTemplateBundle bundle);
 
-        readonly string javaScriptTemplate;
         readonly HtmlTemplateBundle bundle;
-        readonly IJsonSerializer serializer;
+        readonly IHtmlTemplateScriptStrategy scriptStrategy;
         readonly IHtmlTemplateIdStrategy idStrategy;
 
-        public HtmlTemplateToJavaScriptTransformer(string javaScriptTemplate, HtmlTemplateBundle bundle, IJsonSerializer serializer, IHtmlTemplateIdStrategy idStrategy)
+        public HtmlTemplateToJavaScriptTransformer(HtmlTemplateBundle bundle, IHtmlTemplateScriptStrategy scriptStrategy, IHtmlTemplateIdStrategy idStrategy)
         {
-            this.javaScriptTemplate = javaScriptTemplate;
             this.bundle = bundle;
-            this.serializer = serializer;
+            this.scriptStrategy = scriptStrategy;
             this.idStrategy = idStrategy;
         }
 
@@ -28,9 +26,8 @@ namespace Cassette.HtmlTemplates
                 using (var reader = new StreamReader(openSourceStream()))
                 {
                     var template = reader.ReadToEnd();
-                    var idString = CreateJavaScriptString(TemplateId(asset));
-                    var templateString = CreateJavaScriptString(template);
-                    var output = string.Format(javaScriptTemplate, idString, templateString);
+                    var idString = TemplateId(asset);
+                    var output = scriptStrategy.DefineTemplate(idString, template);
                     return new MemoryStream(Encoding.UTF8.GetBytes(output));
                 }
             };
@@ -39,11 +36,6 @@ namespace Cassette.HtmlTemplates
         string TemplateId(IAsset asset)
         {
             return idStrategy.HtmlTemplateId(bundle, asset);
-        }
-
-        string CreateJavaScriptString(string template)
-        {
-            return serializer.Serialize(template);
         }
     }
 }

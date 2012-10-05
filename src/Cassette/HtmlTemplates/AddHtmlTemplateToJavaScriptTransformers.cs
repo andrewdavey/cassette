@@ -13,7 +13,7 @@ namespace Cassette.HtmlTemplates
 
         public void Process(HtmlTemplateBundle bundle)
         {
-            var transformer = createTransformer("addTemplate({0},{1});", bundle);
+            var transformer = createTransformer(bundle);
             foreach (var asset in bundle.Assets)
             {
                 asset.AddAssetTransformer(transformer);

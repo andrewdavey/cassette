@@ -1,4 +1,6 @@
-﻿namespace Cassette.BundleProcessing
+﻿using System;
+
+namespace Cassette.BundleProcessing
 {
     public abstract class AddTransformerToAssets<T> : IBundleProcessor<T>
         where T : Bundle
