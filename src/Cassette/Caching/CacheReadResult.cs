@@ -1,6 +1,6 @@
 ﻿namespace Cassette.Caching
 {
-    class CacheReadResult
+    public class CacheReadResult
     {
         public static CacheReadResult Success(Manifest manifest)
         {

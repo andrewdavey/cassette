@@ -14,7 +14,7 @@ namespace Cassette.HtmlTemplates
             var bundle = new HtmlTemplateBundle("~");
             var asset = new Mock<IAsset>();
             asset.Setup(a => a.Path).Returns("~/asset.htm");
-            var transformer = new RegisterTemplateWithJQueryTmpl(bundle);
+            var transformer = new RegisterTemplateWithJQueryTmpl(bundle, new HtmlTemplateIdBuilder());
 
             var getResult = transformer.Transform(() => "TEMPLATE".AsStream(), asset.Object);
 

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Cassette.BundleProcessing;
 using Cassette.IO;
 using Moq;
 using Xunit;

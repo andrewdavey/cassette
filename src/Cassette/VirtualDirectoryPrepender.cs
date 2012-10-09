@@ -5,7 +5,7 @@ namespace Cassette
     /// <summary>
     /// Prepends the virtual directory to the beginning of application relative URL paths.
     /// </summary>
-    class VirtualDirectoryPrepender : IUrlModifier
+    public class VirtualDirectoryPrepender : IUrlModifier
     {
         readonly string virtualDirectory;
 

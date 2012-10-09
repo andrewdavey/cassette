@@ -1,6 +1,6 @@
 ﻿namespace Cassette.BundleProcessing
 {
-    class Comment
+    public class Comment
     {
         public int LineNumber;
         public string Value;

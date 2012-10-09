@@ -52,7 +52,7 @@ namespace Cassette.HtmlTemplates
         string RemoveBundlePath(string assetPath)
         {
             var bundlePath = currentBundle.Path;
-            if (assetPath.StartsWith(bundlePath, StringComparison.OrdinalIgnoreCase))
+            if (assetPath.StartsWith(bundlePath, StringComparison.OrdinalIgnoreCase) && assetPath.Length > bundlePath.Length)
             {
                 return assetPath.Substring(bundlePath.Length + 1);
             }

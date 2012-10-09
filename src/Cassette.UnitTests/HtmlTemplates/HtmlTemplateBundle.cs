@@ -31,37 +31,5 @@ namespace Cassette.HtmlTemplates
 
             renderer.Verify(p => p.Render(bundle));
         }
-
-        [Fact]
-        public void GetTemplateIdReturnsAssetFilenameWithoutExtension()
-        {
-            var bundle = new HtmlTemplateBundle("~");
-            var id = bundle.GetTemplateId(new StubAsset("~/test.htm"));
-            id.ShouldEqual("test");
-        }
-
-        [Fact]
-        public void GetTemplateIdReturnsAssetFilenameWithoutExtension_WhenTemplateBundlePerFile()
-        {
-            var bundle = new HtmlTemplateBundle("~/test.htm");
-            var id = bundle.GetTemplateId(new StubAsset("~/test.htm"));
-            id.ShouldEqual("test");
-        }
-
-        [Fact]
-        public void GetTemplateIdIncludesDirectoryAndFilenameSeparatedWithHyphen()
-        {
-            var bundle = new HtmlTemplateBundle("~");
-            var id = bundle.GetTemplateId(new StubAsset("~/dir/test.htm"));
-            id.ShouldEqual("dir-test");
-        }
-
-        [Fact]
-        public void GivenAssetNotSubPathOfBundlePath_ThenGetTemplateIdReturnsJustFilename()
-        {
-            var bundle = new HtmlTemplateBundle("~/bundle");
-            var id = bundle.GetTemplateId(new StubAsset("~/test.htm"));
-            id.ShouldEqual("test");
-        }
     }
 }

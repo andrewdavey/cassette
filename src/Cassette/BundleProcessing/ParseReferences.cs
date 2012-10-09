@@ -43,6 +43,6 @@ namespace Cassette.BundleProcessing
             return new ReferenceParser(commentParser);
         }
 
-        internal abstract ICommentParser CreateCommentParser();
+        protected abstract ICommentParser CreateCommentParser();
     }
 }

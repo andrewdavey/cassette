@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Cassette.BundleProcessing;
 using Cassette.Caching;
+using Trace = Cassette.Diagnostics.Trace;
 
 namespace Cassette
 {

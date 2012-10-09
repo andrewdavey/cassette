@@ -1,4 +1,5 @@
 ﻿using System.IO.IsolatedStorage;
+using Cassette.Utilities;
 
 namespace Cassette.Aspnet
 {

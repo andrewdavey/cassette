@@ -13,6 +13,7 @@ namespace Cassette.HtmlTemplates
             var container = new TinyIoC.TinyIoCContainer();
             container.Register(Mock.Of<IUrlGenerator>());
             container.Register(new CassetteSettings());
+            container.Register<IHtmlTemplateIdStrategy>(new HtmlTemplateIdBuilder());
             pipeline = new JQueryTmplPipeline(container);
         }
 

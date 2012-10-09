@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Cassette.BundleProcessing;
 using Cassette.Utilities;
+using Trace = Cassette.Diagnostics.Trace;
 
 #if NET35
 using Iesi.Collections.Generic;
@@ -69,7 +70,7 @@ namespace Cassette
         /// <summary>
         /// Gets the hash of the combined assets.
         /// </summary>
-        public byte[] Hash { get; internal set; }
+        public byte[] Hash { get; set; }
 
         internal string Url
         {
@@ -81,7 +82,7 @@ namespace Cassette
             }
         }
 
-        internal virtual IEnumerable<string> GetUrls(bool isDebuggingEnabled, IUrlGenerator urlGenerator)
+        public virtual IEnumerable<string> GetUrls(bool isDebuggingEnabled, IUrlGenerator urlGenerator)
         {
             if (isDebuggingEnabled)
             {
@@ -115,7 +116,7 @@ namespace Cassette
             { "text/html", "htm" }
         };
 
-        internal IEnumerable<string> References
+        public IEnumerable<string> References
         {
             get { return references; }
         }

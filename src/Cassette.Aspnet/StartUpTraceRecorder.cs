@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Trace = Cassette.Diagnostics.Trace;
 
 namespace Cassette.Aspnet
 {

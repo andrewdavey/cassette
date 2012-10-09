@@ -21,17 +21,8 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("da355e7d-f445-4c8d-856c-c7b6ae19bb7d")]
 
-[assembly: InternalsVisibleTo("Cassette.CoffeeScript")]
-[assembly: InternalsVisibleTo("Cassette.Hogan")]
-[assembly: InternalsVisibleTo("Cassette.JQueryTmpl")]
-[assembly: InternalsVisibleTo("Cassette.KnockoutJQueryTmpl")]
-[assembly: InternalsVisibleTo("Cassette.Less")]
-[assembly: InternalsVisibleTo("Cassette.Sass")]
-[assembly: InternalsVisibleTo("Cassette.Aspnet")]
-[assembly: InternalsVisibleTo("Cassette.Views")]
-[assembly: InternalsVisibleTo("Cassette.MSBuild")]
+// TODO: Check if we can remove this, now that most Cassette types are public.
 [assembly: InternalsVisibleTo("Cassette.Nancy")]
-[assembly: InternalsVisibleTo("Cassette.Spriting")]
 
 [assembly: InternalsVisibleTo("Cassette.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.MSBuild.UnitTests")]

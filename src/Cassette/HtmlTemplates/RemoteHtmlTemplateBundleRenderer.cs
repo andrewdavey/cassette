@@ -1,6 +1,6 @@
 ﻿namespace Cassette.HtmlTemplates
 {
-    class RemoteHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
+    public class RemoteHtmlTemplateBundleRenderer : IBundleHtmlRenderer<HtmlTemplateBundle>
     {
         readonly IUrlGenerator urlGenerator;
 

@@ -12,7 +12,9 @@ namespace Cassette.HtmlTemplates
         public HtmlTemplatePipeline_Tests()
         {
             bundle = new HtmlTemplateBundle("~");
-            pipeline = new HtmlTemplatePipeline(new TinyIoCContainer());   
+            var container = new TinyIoCContainer();
+            container.Register<IHtmlTemplateIdStrategy>(new HtmlTemplateIdBuilder());
+            pipeline = new HtmlTemplatePipeline(container);   
         }
 
         [Fact]

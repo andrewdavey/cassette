@@ -5,7 +5,7 @@ using Cassette.Utilities;
 
 namespace Cassette.BundleProcessing
 {
-    class CompileAsset : IAssetTransformer
+    public class CompileAsset : IAssetTransformer
     {
         public CompileAsset(ICompiler compiler, IDirectory rootDirectory)
         {

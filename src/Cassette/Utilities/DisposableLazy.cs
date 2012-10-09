@@ -4,9 +4,9 @@
 using Cassette.Utilities;
 #endif
 
-namespace Cassette
+namespace Cassette.Utilities
 {
-    class DisposableLazy<T> : Lazy<T>, IDisposable
+    public class DisposableLazy<T> : Lazy<T>, IDisposable
         where T : IDisposable
     {
         public DisposableLazy(Func<T> valueFactory)

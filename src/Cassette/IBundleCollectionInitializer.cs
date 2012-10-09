@@ -1,6 +1,6 @@
 namespace Cassette
 {
-    interface IBundleCollectionInitializer
+    public interface IBundleCollectionInitializer
     {
         void Initialize(BundleCollection bundles);
     }

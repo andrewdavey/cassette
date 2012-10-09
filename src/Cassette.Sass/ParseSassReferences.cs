@@ -13,7 +13,7 @@ namespace Cassette.Stylesheets
                    path.EndsWith(".sass", StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override ICommentParser CreateCommentParser()
+        protected override ICommentParser CreateCommentParser()
         {
             // Sass supports the same comment syntax as JavaScript.
             // So we'll just reuse the JavaScript comment parser!

@@ -4,16 +4,16 @@ namespace Cassette.HtmlTemplates
 {
     public class RegisterTemplatesWithJQueryTmpl : AddTransformerToAssets<HtmlTemplateBundle>
     {
-        readonly CassetteSettings settings;
+        readonly RegisterTemplateWithJQueryTmpl.Factory createAssetTransformer;
 
-        public RegisterTemplatesWithJQueryTmpl(CassetteSettings settings)
+        public RegisterTemplatesWithJQueryTmpl(RegisterTemplateWithJQueryTmpl.Factory createAssetTransformer)
         {
-            this.settings = settings;
+            this.createAssetTransformer = createAssetTransformer;
         }
 
         protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle)
         {
-            return new RegisterTemplateWithJQueryTmpl(bundle);
+            return createAssetTransformer(bundle);
         }
     }
 }

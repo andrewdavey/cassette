@@ -3,7 +3,7 @@ using Cassette.Utilities;
 
 namespace Cassette
 {
-    class UrlGenerator : IUrlGenerator
+    public class UrlGenerator : IUrlGenerator
     {
         readonly IUrlModifier urlModifier;
         readonly string cassetteHandlerPrefix;

@@ -4,12 +4,15 @@ namespace Cassette.HtmlTemplates
 {
     public class RegisterTemplatesWithHogan : AddTransformerToAssets<HtmlTemplateBundle>
     {
+        readonly IHtmlTemplateIdStrategy idStrategy;
+
         public delegate RegisterTemplatesWithHogan Factory(string javaScriptVariableName);
 
         readonly string javaScriptVariableName;
 
-        public RegisterTemplatesWithHogan(string javaScriptVariableName)
+        public RegisterTemplatesWithHogan(string javaScriptVariableName, IHtmlTemplateIdStrategy idStrategy)
         {
+            this.idStrategy = idStrategy;
             this.javaScriptVariableName = javaScriptVariableName ?? "JST";
         }
 
@@ -29,7 +32,7 @@ namespace Cassette.HtmlTemplates
 
         protected override IAssetTransformer CreateAssetTransformer(HtmlTemplateBundle bundle)
         {
-            return new RegisterTemplateWithHogan(bundle, javaScriptVariableName);
+            return new RegisterTemplateWithHogan(bundle, javaScriptVariableName, idStrategy);
         }
     }
 }

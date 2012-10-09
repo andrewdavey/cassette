@@ -2,7 +2,7 @@
 
 namespace Cassette.BundleProcessing
 {
-    interface ICommentParser
+    public interface ICommentParser
     {
         IEnumerable<Comment> Parse(string code);
     }

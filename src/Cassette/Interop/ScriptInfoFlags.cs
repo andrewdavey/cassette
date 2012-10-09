@@ -5,7 +5,7 @@ using System;
 namespace Cassette.Interop
 {
     [Flags]
-    enum ScriptInfoFlags : uint
+    public enum ScriptInfoFlags : uint
     {
         /// <summary>
         /// Not a valid option.

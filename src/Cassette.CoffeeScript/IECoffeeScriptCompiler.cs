@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using Trace = Cassette.Diagnostics.Trace;
 
 namespace Cassette.Scripts
 {

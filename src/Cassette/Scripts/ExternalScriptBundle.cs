@@ -54,7 +54,7 @@ namespace Cassette.Scripts
             return base.ContainsPath(pathToFind) || url.Equals(pathToFind, StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override IEnumerable<string> GetUrls(bool isDebuggingEnabled, IUrlGenerator urlGenerator)
+        public override IEnumerable<string> GetUrls(bool isDebuggingEnabled, IUrlGenerator urlGenerator)
         {
             if (isDebuggingEnabled && Assets.Any())
             {

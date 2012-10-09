@@ -13,7 +13,11 @@ namespace Cassette.HtmlTemplates
         public override void Configure(TinyIoC.TinyIoCContainer container)
         {
             base.Configure(container);
-            container.Register<IHtmlTemplateIdStrategy>((c, n) => new HtmlTemplateIdBuilder());
+            container.Register<IHtmlTemplateIdStrategy>(
+                // For compatibility with previous version of Cassette,
+                // pathSeparatorReplacement is "-" by default
+                (c, n) => new HtmlTemplateIdBuilder(pathSeparatorReplacement: "-")
+            );
         }
 
         protected override string FilePattern

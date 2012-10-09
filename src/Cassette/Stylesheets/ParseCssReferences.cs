@@ -10,7 +10,7 @@ namespace Cassette.Stylesheets
             return asset.Path.EndsWith(".css", StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override ICommentParser CreateCommentParser()
+        protected override ICommentParser CreateCommentParser()
         {
             return new CssCommentParser();
         }

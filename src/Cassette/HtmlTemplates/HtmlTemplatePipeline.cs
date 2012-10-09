@@ -12,7 +12,7 @@ namespace Cassette.HtmlTemplates
             {
                 new AssignHtmlTemplateRenderer(new InlineHtmlTemplateBundleRenderer()),
                 new ParseHtmlTemplateReferences(),
-                new WrapHtmlTemplatesInScriptElements(),
+                container.Resolve<WrapHtmlTemplatesInScriptElements>(),
                 new AssignHash(),
                 new ConcatenateAssets()
             });

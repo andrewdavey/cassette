@@ -3,7 +3,7 @@ using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
 {
-    class JavaScriptCommentParser : ICommentParser
+    public class JavaScriptCommentParser : ICommentParser
     {
         enum State
         {

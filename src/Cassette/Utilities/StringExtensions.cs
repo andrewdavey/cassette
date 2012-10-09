@@ -6,7 +6,7 @@ namespace Cassette.Utilities
     /// <summary>
     /// Utility methods for strings.
     /// </summary>
-    static class StringExtensions
+    public static class StringExtensions
     {
         /// <summary>
         /// Returns a new stream containing the contents of the string, using UTF-8 encoding.

@@ -7,7 +7,7 @@ using System.IO.IsolatedStorage;
 
 namespace Cassette.Utilities
 {
-    static class StreamExtensions
+    public static class StreamExtensions
     {
 // ReSharper disable InconsistentNaming
         public static byte[] ComputeSHA1Hash(this Stream stream)

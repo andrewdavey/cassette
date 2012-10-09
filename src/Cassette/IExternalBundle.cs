@@ -1,6 +1,6 @@
 ﻿namespace Cassette
 {
-    interface IExternalBundle
+    public interface IExternalBundle
     {
         string ExternalUrl { get; }
     }

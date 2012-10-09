@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using Cassette.IO;
 using Cassette.Utilities;
+using Trace = Cassette.Diagnostics.Trace;
 
 namespace Cassette.Views
 {

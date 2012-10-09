@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Cassette.Utilities
 {
-    static class ByteArrayExtensions
+    public static class ByteArrayExtensions
     {
         public static string ToHexString(this IEnumerable<byte> bytes)
         {

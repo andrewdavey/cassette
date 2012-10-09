@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Cassette.Utilities
 {
-    static class PathUtilities
+    public static class PathUtilities
     {
         public static string Combine(params string[] paths)
         {

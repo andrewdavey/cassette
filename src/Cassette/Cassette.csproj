@@ -80,6 +80,7 @@
     <Compile Include="BundleCacheRebuilder.cs" />
     <Compile Include="BundleCollectionChangedEventArgs.cs" />
     <Compile Include="BundleEnumerableExtensions.cs" />
+    <Compile Include="BundleProcessing\ExternalBundleGenerator.cs" />
     <Compile Include="Caching\BundleCollectionCache.cs" />
     <Compile Include="Caching\BundleCollectionCacheReader.cs" />
     <Compile Include="Caching\ManifestValidator.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />
+    <Compile Include="Diagnostics\Trace.cs" />
     <Compile Include="ExceptionCatchingBundleCollectionInitializer.cs" />
     <Compile Include="FileAccessAuthorization.cs" />
     <Compile Include="FileSearchProvider.cs" />
@@ -125,7 +127,6 @@
     <Compile Include="CompileContext.cs" />
     <Compile Include="CompileResult.cs" />
     <Compile Include="ConditionalRenderer.cs" />
-    <Compile Include="ExternalBundleGenerator.cs" />
     <Compile Include="FilePathComparer.cs" />
     <Compile Include="IFileSearchModifier.cs" />
     <Compile Include="ConstantHtmlRenderer.cs" />
@@ -196,7 +197,6 @@
     <Compile Include="IO\NonExistentFile.cs" />
     <Compile Include="IPlaceholderTracker.cs" />
     <Compile Include="IReferenceBuilder.cs" />
-    <Compile Include="DisposableLazy.cs" />
     <Compile Include="IUrlGenerator.cs" />
     <Compile Include="BundleDescriptor.cs" />
     <Compile Include="BundleProcessing\AddTransformerToAssets.cs" />
@@ -256,7 +256,6 @@
     <Compile Include="Stylesheets\ExpandCssUrls.cs" />
     <Compile Include="TinyIoC\TinyIoC.cs" />
     <Compile Include="TinyIoC\TinyIoCExtensions.cs" />
-    <Compile Include="Trace.cs" />
     <Compile Include="Scripts\InlineScriptBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundle.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateBundleFactory.cs" />
@@ -287,6 +286,7 @@
     <Compile Include="Stylesheets\StylesheetBundleFactory.cs" />
     <Compile Include="UrlGenerator.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
+    <Compile Include="Utilities\DisposableLazy.cs" />
     <Compile Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Include="Utilities\EnumT.cs" />
     <Compile Include="Utilities\HashedSets.cs" />
     <Compile Include="Utilities\JavaScriptUtilities.cs" />

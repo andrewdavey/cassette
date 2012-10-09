@@ -7,6 +7,7 @@ using Cassette.HtmlTemplates;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.TinyIoC;
+using Trace = Cassette.Diagnostics.Trace;
 
 #if NET35
 using System.Reflection.Emit;
@@ -140,7 +141,7 @@ namespace Cassette
             { typeof(ExternalStylesheetBundle).Name, typeof(ExternalStylesheetBundleDeserializer) }
         };
 
-        internal static IBundleDeserializer<Bundle> ResolveBundleDeserializer(string bundleTypeName, TinyIoCContainer container)
+        protected static IBundleDeserializer<Bundle> ResolveBundleDeserializer(string bundleTypeName, TinyIoCContainer container)
         {
             var deserializerType = BundleDeserializers[bundleTypeName];
             return (IBundleDeserializer<Bundle>)container.Resolve(deserializerType);

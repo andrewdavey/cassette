@@ -50,10 +50,10 @@ namespace Cassette
         /// </summary>
         public IDirectory CacheDirectory { get; set; }
 
-        internal bool AllowRemoteDiagnostics { get; set; }
+        public bool AllowRemoteDiagnostics { get; set; }
 
-        internal string Version { get; set; }
+        public string Version { get; set; }
 
-        internal bool IsFileSystemWatchingEnabled { get; set; }
+        public bool IsFileSystemWatchingEnabled { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace Cassette.Scripts
             return asset.Path.EndsWith(".coffee", StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override ICommentParser CreateCommentParser()
+        protected override ICommentParser CreateCommentParser()
         {
             return new CoffeeScriptCommentParser();
         }

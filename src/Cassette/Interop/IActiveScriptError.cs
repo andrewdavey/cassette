@@ -11,7 +11,7 @@ namespace Cassette.Interop
     /// </summary>
     [Guid("EAE1BA61-A4ED-11cf-8F20-00805F2CD064")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IActiveScriptError
+    public interface IActiveScriptError
     {
         /// <summary>
         /// Retrieves information about an error that occurred while the scripting engine was running

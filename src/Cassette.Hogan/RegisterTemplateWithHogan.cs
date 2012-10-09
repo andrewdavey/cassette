@@ -8,11 +8,13 @@ namespace Cassette.HtmlTemplates
     {
         readonly HtmlTemplateBundle bundle;
         readonly string javaScriptVariableName;
+        readonly IHtmlTemplateIdStrategy idStrategy;
 
-        public RegisterTemplateWithHogan(HtmlTemplateBundle bundle, string javaScriptVariableName)
+        public RegisterTemplateWithHogan(HtmlTemplateBundle bundle, string javaScriptVariableName, IHtmlTemplateIdStrategy idStrategy)
         {
             this.bundle = bundle;
             this.javaScriptVariableName = javaScriptVariableName;
+            this.idStrategy = idStrategy;
         }
 
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
@@ -21,7 +23,7 @@ namespace Cassette.HtmlTemplates
             {
                 var compiledTemplate = openSourceStream().ReadToEnd();
 
-                var id = bundle.GetTemplateId(asset);
+                var id = idStrategy.HtmlTemplateId(bundle, asset);
                 var template = javaScriptVariableName + "['" + id + "']";
 
                 var output = template + "=new Hogan.Template();" + 

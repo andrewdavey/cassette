@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Jurassic;
+using Trace = Cassette.Diagnostics.Trace;
 
 #if NET35
 using Cassette.Utilities;

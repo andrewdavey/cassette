@@ -6,7 +6,7 @@ using JavaScriptObject = System.Collections.Generic.IEnumerable<System.Collectio
 
 namespace Cassette.Scripts
 {
-    class PageDataScriptBundle : InlineScriptBundle
+    public class PageDataScriptBundle : InlineScriptBundle
     {
         public PageDataScriptBundle(string globalVariable, object data, IJsonSerializer jsonSerializer)
             : this(globalVariable, CreateDictionaryOfProperties(data), jsonSerializer)

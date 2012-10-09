@@ -13,8 +13,8 @@ namespace Cassette.HtmlTemplates
                 || asset.Path.EndsWith(".tmpl", StringComparison.OrdinalIgnoreCase)
                 || asset.Path.EndsWith(".mustache", StringComparison.OrdinalIgnoreCase);
         }
-        
-        internal override ICommentParser CreateCommentParser()
+
+        protected override ICommentParser CreateCommentParser()
         {
             return new HtmlTemplateCommentParser();
         }

@@ -3,7 +3,7 @@ using Cassette.IO;
 
 namespace Cassette.Caching
 {
-    class BundleCollectionCache : IBundleCollectionCache
+    public class BundleCollectionCache : IBundleCollectionCache
     {
         const string ManifestFilename = "manifest.xml";
 

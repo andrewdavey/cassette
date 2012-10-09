@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Web;
+using Trace = Cassette.Diagnostics.Trace;
 
 namespace Cassette.Aspnet
 {

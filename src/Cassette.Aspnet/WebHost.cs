@@ -63,15 +63,6 @@ namespace Cassette.Aspnet
             return new HttpContextWrapper(System.Web.HttpContext.Current);
         }
 
-        protected override IEnumerable<Type> GetStartUpTaskTypes()
-        {
-            var startUpTaskTypes = base.GetStartUpTaskTypes();
-            return startUpTaskTypes.Concat(new[]
-            {
-                typeof(FileSystemWatchingBundleRebuilder)
-            });
-        }
-
         public PlaceholderRewriter CreatePlaceholderRewriter()
         {
             return Container.Resolve<PlaceholderRewriter>();

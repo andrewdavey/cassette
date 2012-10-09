@@ -32,26 +32,6 @@ namespace Cassette.HtmlTemplates
             serializer.Serialize(this);
         }
 
-        internal string GetTemplateId(IAsset asset)
-        {
-            string id;
-            if (asset.Path.StartsWith(Path, StringComparison.OrdinalIgnoreCase) && !asset.Path.Equals(Path, StringComparison.OrdinalIgnoreCase))
-            {
-                id = asset.Path
-                    .Substring(Path.Length + 1)
-                    .Replace(System.IO.Path.DirectorySeparatorChar, '-')
-                    .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
-            }
-            else
-            {
-                id = asset.Path
-                    .Substring(2) // Skips the "~/" prefix
-                    .Replace(System.IO.Path.DirectorySeparatorChar, '-')
-                    .Replace(System.IO.Path.AltDirectorySeparatorChar, '-');
-            }
-            return System.IO.Path.GetFileNameWithoutExtension(id);
-        }
-
         protected override string UrlBundleTypeArgument
         {
             get { return "htmltemplate"; }

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Cassette.BundleProcessing;
 
 namespace Cassette
 {
-    class BundleCollectionInitializer : IBundleCollectionInitializer
+    public class BundleCollectionInitializer : IBundleCollectionInitializer
     {
         readonly IEnumerable<IConfiguration<BundleCollection>> bundleConfigurations;
         readonly ExternalBundleGenerator externalBundleGenerator;

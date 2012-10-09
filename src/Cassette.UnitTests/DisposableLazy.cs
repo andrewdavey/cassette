@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassette.Utilities;
 using Moq;
 using Xunit;
 

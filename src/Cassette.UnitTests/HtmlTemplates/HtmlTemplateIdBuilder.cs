@@ -56,6 +56,14 @@ namespace Cassette.HtmlTemplates
             ThenIdIs("bundle-asset");
         }
 
+        [Fact]
+        public void GivenAssetPathIsBundlePath()
+        {
+            GivenAssetPath("~/bundle");
+            GivenIdStrategy(new HtmlTemplateIdBuilder());
+            ThenIdIs("bundle");
+        }
+
         void GivenAssetPath(string path)
         {
             asset.SetupGet(a => a.Path).Returns(path);

@@ -1,6 +1,6 @@
 namespace Cassette.Caching
 {
-    interface IBundleCollectionCache
+    public interface IBundleCollectionCache
     {
         CacheReadResult Read();
         void Write(Manifest manifest);

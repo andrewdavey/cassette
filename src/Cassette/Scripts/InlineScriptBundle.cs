@@ -5,7 +5,7 @@ using Cassette.Utilities;
 namespace Cassette.Scripts
 {
 #pragma warning disable 659
-    class InlineScriptBundle : ScriptBundle
+    public class InlineScriptBundle : ScriptBundle
     {
         readonly string scriptContent;
         readonly bool isContentScriptTag;

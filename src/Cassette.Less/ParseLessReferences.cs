@@ -11,7 +11,7 @@ namespace Cassette.Stylesheets
             return asset.Path.EndsWith(".less", StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override ICommentParser CreateCommentParser()
+        protected override ICommentParser CreateCommentParser()
         {
             // LESS supports the same comment syntax as JavaScript.
             // So we'll just reuse the JavaScript comment parser!

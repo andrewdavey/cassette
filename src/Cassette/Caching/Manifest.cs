@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cassette.Caching
 {
-    class Manifest
+    public class Manifest
     {
         public static Manifest Static(IEnumerable<Bundle> bundles)
         {

@@ -1,4 +1,5 @@
-﻿using Cassette.BundleProcessing;
+﻿using System.Collections.Generic;
+using Cassette.BundleProcessing;
 using Cassette.TinyIoC;
 
 namespace Cassette.HtmlTemplates
@@ -9,16 +10,14 @@ namespace Cassette.HtmlTemplates
             : base(container)
         {
             var renderer = container.Resolve<RemoteHtmlTemplateBundleRenderer>();
-            AddRange(new IBundleProcessor<HtmlTemplateBundle>[]
-            {
-                new AssignHtmlTemplateRenderer(renderer),
-                new AssignContentType("text/javascript"),
-                new ParseHtmlTemplateReferences(),
-                container.Resolve<CompileHogan>(),
-                new RegisterTemplatesWithHogan(hoganSettings.JavaScriptVariableName),
-                new AssignHash(),
-                new ConcatenateAssets()
-            });
+            
+            Add(new AssignHtmlTemplateRenderer(renderer));
+            Add(new AssignContentType("text/javascript"));
+            Add<ParseHtmlTemplateReferences>();
+            Add<CompileHogan>();
+            Add<RegisterTemplatesWithHogan.Factory>(create => create(hoganSettings.JavaScriptVariableName));
+            Add<AssignHash>();
+            Add<ConcatenateAssets>();
         }
     }
 }

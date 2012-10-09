@@ -10,7 +10,7 @@ namespace Cassette.Interop
     // Huge thanks to kogir's work in https://github.com/xpaulbettsx/SassAndCoffee.
     // This class is based on that project's Internet Explorer JScript interop work.
 
-    class IEJavaScriptEngine : IActiveScriptSite, IDisposable
+    public class IEJavaScriptEngine : IActiveScriptSite, IDisposable
     {
         IActiveScript engine;
         ActiveScriptParseWrapper parser;

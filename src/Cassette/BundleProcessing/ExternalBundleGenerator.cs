@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Cassette.Utilities;
 
-namespace Cassette
+namespace Cassette.BundleProcessing
 {
     /// <summary>
     /// Modifies a <see cref="BundleCollection"/> by adding external bundles for any URL references made by existing bundles,
     /// which are not already represented by external bundles.
     /// </summary>
-    class ExternalBundleGenerator : IBundleVisitor
+    public class ExternalBundleGenerator : IBundleVisitor
     {
         readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly CassetteSettings settings;

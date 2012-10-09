@@ -10,7 +10,7 @@ namespace Cassette.Scripts
             return asset.Path.EndsWith(".js", StringComparison.OrdinalIgnoreCase);
         }
 
-        internal override ICommentParser CreateCommentParser()
+        protected override ICommentParser CreateCommentParser()
         {
             return new JavaScriptCommentParser();
         }

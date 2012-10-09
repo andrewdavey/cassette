@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
-namespace Cassette
+namespace Cassette.Diagnostics
 {
-    static class Trace
+    public static class Trace
     {
         public static readonly TraceSource Source = new TraceSource("Cassette");
     }

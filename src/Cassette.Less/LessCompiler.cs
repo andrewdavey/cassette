@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Cassette.IO;
 using Cassette.Utilities;
+using Trace = Cassette.Diagnostics.Trace;
 using dotless.Core;
 using dotless.Core.Importers;
 using dotless.Core.Input;

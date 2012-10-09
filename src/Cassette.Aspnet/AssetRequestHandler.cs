@@ -1,6 +1,7 @@
 ﻿using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
+using Trace = Cassette.Diagnostics.Trace;
 
 namespace Cassette.Aspnet
 {
