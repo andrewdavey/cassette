@@ -103,8 +103,8 @@ namespace Cassette
             get
             {
                 return UrlBundleTypeArgument + 
-                       Path.Substring(1) + 
-                       "/" + Hash.ToHexString() + 
+                       Path.Substring(1) +
+                       "/" + Hash.ToUrlSafeBase64String() + 
                        "." + FileExtensionsByContentType[ContentType];
             }
         }
