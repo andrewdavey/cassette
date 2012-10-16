@@ -1,6 +1,6 @@
 ﻿namespace Cassette
 {
-    class SimpleJsonSerializer : IJsonSerializer
+    public class SimpleJsonSerializer : IJsonSerializer
     {
         public string Serialize(object objectToSerialize)
         {
