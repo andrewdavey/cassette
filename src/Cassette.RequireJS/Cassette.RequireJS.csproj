@@ -43,7 +43,10 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AddDefineCallTransformerToAssets.cs" />
+    <Compile Include="AmdConfiguration.cs" />
     <Compile Include="DefineCallTransformer.cs" />
+    <Compile Include="RequireJsScriptPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
