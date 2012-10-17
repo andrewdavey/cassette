@@ -2,7 +2,7 @@
 
 namespace Cassette.RequireJS
 {
-    public class ConfigurationScriptBuilder
+    public class ConfigurationScriptBuilder : IConfigurationScriptBuilder
     {
         readonly IUrlGenerator urlGenerator;
         readonly IJsonSerializer jsonSerializer;
@@ -15,7 +15,7 @@ namespace Cassette.RequireJS
             this.isDebuggingEnabled = isDebuggingEnabled;
         }
 
-        public string BuildScript(IEnumerable<Bundle> bundles)
+        public string BuildConfigurationScript(IEnumerable<Bundle> bundles)
         {
             var config = ConfigurationObject(bundles);
             var json = jsonSerializer.Serialize(config);

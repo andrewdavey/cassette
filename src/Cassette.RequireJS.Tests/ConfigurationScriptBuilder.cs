@@ -111,7 +111,7 @@ namespace Cassette.RequireJS.Tests
                 new SimpleJsonSerializer(),
                 debug
             );
-            script = builder.BuildScript(bundles);
+            script = builder.BuildConfigurationScript(bundles);
         }
 
         IDictionary<string, string> Paths
