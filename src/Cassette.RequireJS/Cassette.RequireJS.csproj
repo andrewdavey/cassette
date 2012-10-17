@@ -45,7 +45,10 @@
     </Compile>
     <Compile Include="AddDefineCallTransformerToAssets.cs" />
     <Compile Include="AmdConfiguration.cs" />
+    <Compile Include="ConfigurationScriptBuilder.cs" />
     <Compile Include="DefineCallTransformer.cs" />
+    <Compile Include="PathHelpers.cs" />
+    <Compile Include="PathsDictionaryBuilder.cs" />
     <Compile Include="RequireJsScriptPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
