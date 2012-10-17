@@ -4,7 +4,7 @@ using Cassette.Scripts;
 
 namespace Cassette.RequireJS
 {
-    public class AddDefineCallTransformerToAssets : AddTransformerToAssets<ScriptBundle>
+    public class AddDefineCallTransformerToAssets : IBundleProcessor<ScriptBundle>
     {
         readonly Func<DefineCallTransformer> create;
 
@@ -13,9 +13,16 @@ namespace Cassette.RequireJS
             this.create = create;
         }
 
-        protected override IAssetTransformer CreateAssetTransformer(ScriptBundle bundle)
+        public void Process(ScriptBundle bundle)
         {
-            return create();
+            if (bundle.Path != "~/Cassette.RequireJS")
+            {
+                var assetTransformer = create();
+                foreach (var asset in bundle.Assets)
+                {
+                    asset.AddAssetTransformer(assetTransformer);
+                }   
+            }
         }
     }
 }

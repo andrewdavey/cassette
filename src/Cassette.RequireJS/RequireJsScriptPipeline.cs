@@ -1,14 +1,15 @@
-﻿using Cassette.Scripts;
+﻿using Cassette.BundleProcessing;
+using Cassette.Scripts;
 using Cassette.TinyIoC;
 
 namespace Cassette.RequireJS
 {
-    public class RequireJsScriptPipeline : ScriptPipeline
+    public class X : IBundlePipelineModifier<ScriptBundle>
     {
-        public RequireJsScriptPipeline(TinyIoCContainer container, CassetteSettings settings)
-            : base(container, settings)
+        public IBundlePipeline<ScriptBundle> Modify(IBundlePipeline<ScriptBundle> pipeline)
         {
-            Insert<AddDefineCallTransformerToAssets>(0);
+            pipeline.Insert<AddDefineCallTransformerToAssets>(0);
+            return pipeline;
         }
     }
 }

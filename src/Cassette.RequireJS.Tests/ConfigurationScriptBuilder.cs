@@ -11,7 +11,7 @@ namespace Cassette.RequireJS.Tests
     public class ConfigurationScriptBuilderTests
     {
         readonly Mock<IUrlGenerator> urlGenerator;
-        readonly List<Bundle> bundles = new List<Bundle>();
+        readonly List<ScriptBundle> bundles = new List<ScriptBundle>();
         string script;
 
         public ConfigurationScriptBuilderTests()

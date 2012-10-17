@@ -24,6 +24,7 @@ namespace Cassette.RequireJS
         void AddRequireJsBundle(BundleCollection bundles)
         {
             bundles.Add<ScriptBundle>(RequireJsBundlePath, settings.RequireJsPath);
+
             var bundle = bundles[RequireJsBundlePath];
             bundle.Assets.Insert(0, ConfigScriptAsset(bundles));
         }
@@ -40,7 +41,10 @@ namespace Cassette.RequireJS
             Lazy<string> lazyContent = null;
             Action reset = () => lazyContent = new Lazy<string>(
                 () => configurationScriptBuilder.BuildConfigurationScript(
-                    bundles.Where(b => b.Path != RequireJsBundlePath).ToArray()
+                    bundles
+                        .OfType<ScriptBundle>()
+                        .Where(b => b.Path != RequireJsBundlePath)
+                        .ToArray()
                 )
             );
             reset();
