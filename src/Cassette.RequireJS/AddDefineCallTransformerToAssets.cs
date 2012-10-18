@@ -15,13 +15,11 @@ namespace Cassette.RequireJS
 
         public void Process(ScriptBundle bundle)
         {
-            if (bundle.Path != "~/Cassette.RequireJS")
+            var assetTransformer = create();
+            foreach (var asset in bundle.Assets)
             {
-                var assetTransformer = create();
-                foreach (var asset in bundle.Assets)
-                {
-                    asset.AddAssetTransformer(assetTransformer);
-                }   
+                if (asset.Path.EndsWith("require.js")) continue;
+                asset.AddAssetTransformer(assetTransformer);
             }
         }
     }

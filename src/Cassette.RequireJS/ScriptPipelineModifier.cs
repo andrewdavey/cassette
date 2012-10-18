@@ -1,10 +1,9 @@
 ﻿using Cassette.BundleProcessing;
 using Cassette.Scripts;
-using Cassette.TinyIoC;
 
 namespace Cassette.RequireJS
 {
-    public class X : IBundlePipelineModifier<ScriptBundle>
+    public class ScriptPipelineModifier : IBundlePipelineModifier<ScriptBundle>
     {
         public IBundlePipeline<ScriptBundle> Modify(IBundlePipeline<ScriptBundle> pipeline)
         {

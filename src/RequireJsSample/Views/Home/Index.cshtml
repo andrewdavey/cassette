@@ -2,10 +2,7 @@
 <html>
     <head>
         <title>Test</title>
-        @Cassette.RequireJS.ViewHelper.RequireJsScript()
-        <script>
-            require(["Scripts/page1/init"]);
-        </script>
+        @Cassette.RequireJS.ViewHelper.RequireJsScript("Scripts/page1/init")
     </head>
     <body>
     </body>

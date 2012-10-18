@@ -12,12 +12,12 @@ namespace Cassette.RequireJS
                 configuration.Configure(this);
             }
 
-            if (string.IsNullOrEmpty(RequireJsPath))
+            if (string.IsNullOrEmpty(MainBundlePath))
             {
-                throw new InvalidOperationException("RequireJsPath has not been assigned by any configuration class. Ensure there is a public class that implements IConfiguration<RequireJsSettings>.");
+                throw new InvalidOperationException("MainBundlePath has not been assigned by any configuration class. Ensure there is a public class that implements IConfiguration<RequireJsSettings>.");
             }
         }
 
-        public string RequireJsPath { get; set; }
+        public string MainBundlePath { get; set; }
     }
 }

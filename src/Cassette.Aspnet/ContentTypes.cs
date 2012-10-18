@@ -6,7 +6,8 @@ namespace Cassette.Aspnet
     {
         static readonly Dictionary<string, string> TypesByExtension = new Dictionary<string, string>
         {
-            { "png", "image/png" }
+            { "png", "image/png" },
+            { "js", "text/javascript" }
         };
 
         public static bool TryGetContentTypeForFilename(string filename, out string mimeType)

@@ -49,7 +49,13 @@ namespace Cassette.RequireJS
         void AddReleasePathMapping(IAsset asset)
         {
             var path = PathHelpers.ConvertCassettePathToModulePath(asset.Path);
-            var url = urlGenerator.CreateBundleUrl(currentBundle);
+            
+            // require.js always adds ".js" to the end of URLs.
+            // To prevent this generating an incorrect Cassette URL
+            // an empty querystring (?) is appended to prevent 
+            // the ".js" from breaking things!
+            var url = urlGenerator.CreateBundleUrl(currentBundle) + "?";
+
             paths.Add(path, url);
         }
     }

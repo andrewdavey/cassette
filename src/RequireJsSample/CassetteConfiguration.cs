@@ -16,7 +16,7 @@ namespace RequireJsSample
     {
         public void Configure(RequireJsSettings settings)
         {
-            settings.RequireJsPath = "~/require.js";
+            settings.MainBundlePath = "~/Scripts/app";
         }
     }
 }

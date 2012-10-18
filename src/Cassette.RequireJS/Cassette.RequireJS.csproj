@@ -54,22 +54,26 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AddDefineCallTransformerToAssets.cs" />
-    <Compile Include="AlwaysValid.cs" />
     <Compile Include="AmdConfiguration.cs" />
-    <Compile Include="BundlesConfiguration.cs" />
     <Compile Include="ConfigurationScriptBuilder.cs" />
+    <Compile Include="RequireJsConfigUrlProvider.cs" />
     <Compile Include="ContainerConfiguration.cs" />
     <Compile Include="DefineCallTransformer.cs" />
     <Compile Include="IConfigurationScriptBuilder.cs" />
     <Compile Include="PathHelpers.cs" />
     <Compile Include="PathsDictionaryBuilder.cs" />
-    <Compile Include="RequireJsScriptPipeline.cs" />
+    <Compile Include="ScriptPipelineModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequireJsSettings.cs" />
-    <Compile Include="StringAsset.cs" />
+    <Compile Include="StartUpTask.cs" />
     <Compile Include="ViewHelper.cs" />
+    <Compile Include="ViewHelperImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
+      <Project>{3a021487-a395-4fe6-9b41-336d0f1e6ad0}</Project>
+      <Name>Cassette.Views</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{a5ccf9d3-5d49-4bfc-b9a6-9ec9e0e29c50}</Project>
       <Name>Cassette</Name>

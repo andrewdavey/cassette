@@ -103,7 +103,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="require.js" />
+    <Content Include="Scripts\app\require.js" />
+    <Content Include="Scripts\app\ScriptBundle.txt" />
     <Content Include="Scripts\app\util.js" />
     <Content Include="Scripts\page1\init.js" />
     <Content Include="Scripts\page1\page.js" />
