@@ -66,7 +66,6 @@ namespace Cassette.RequireJS
 
         static string GetCacheFilename(IEnumerable<ScriptBundle> scriptBundles)
         {
-            string filename;
             var allHashes = scriptBundles
                 .Select(b => b.Hash)
                 .Aggregate<IEnumerable<byte>>((a, b) => a.Concat(b))

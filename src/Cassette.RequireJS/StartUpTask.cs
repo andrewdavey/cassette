@@ -1,4 +1,6 @@
-﻿namespace Cassette.RequireJS
+﻿using System.Collections.Generic;
+
+namespace Cassette.RequireJS
 {
     /// <summary>
     /// Run by Cassette at application start-up.
@@ -7,16 +9,19 @@
     public class StartUpTask : IStartUpTask
     {
         readonly ViewHelperImplementation viewHelper;
-        readonly RequireJsConfigUrlProvider requireJsConfigUrlProvider;
+        readonly IEnumerable<IConfiguration<RequireJsSettings>> settingsConfigurations;
+        readonly RequireJsSettings settings;
 
-        public StartUpTask(ViewHelperImplementation viewHelper, RequireJsConfigUrlProvider requireJsConfigUrlProvider)
+        public StartUpTask(ViewHelperImplementation viewHelper, IEnumerable<IConfiguration<RequireJsSettings>> settingsConfigurations, RequireJsSettings settings)
         {
             this.viewHelper = viewHelper;
-            this.requireJsConfigUrlProvider = requireJsConfigUrlProvider;
+            this.settingsConfigurations = settingsConfigurations;
+            this.settings = settings;
         }
 
         public void Start()
         {
+            settingsConfigurations.Configure(settings);
             ViewHelper.Instance = viewHelper;
         }
     }

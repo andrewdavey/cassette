@@ -7,7 +7,13 @@ namespace Cassette.RequireJS
     {
         public void Configure(TinyIoCContainer container)
         {
+            RegisterRequireJsSettings(container);
             RegisterConfigurationScriptBuilder(container);
+        }
+
+        void RegisterRequireJsSettings(TinyIoCContainer container)
+        {
+            container.Register<RequireJsSettings>().AsSingleton();
         }
 
         static void RegisterConfigurationScriptBuilder(TinyIoCContainer container)
