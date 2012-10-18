@@ -36,11 +36,12 @@ namespace Cassette.IO
         {
             get
             {
+                var systemPath = basePath.TrimStart('~', '/');
 #if NET35
                 var all = RecursiveGetAllDirectories("");
-                return all.Any(path => path.Equals(basePath, StringComparison.OrdinalIgnoreCase));
+                return all.Any(path => path.Equals(systemPath, StringComparison.OrdinalIgnoreCase));
 #else
-                return getStorage().DirectoryExists(basePath);
+                return getStorage().DirectoryExists(systemPath);
 #endif
             }
         }
@@ -81,6 +82,7 @@ namespace Cassette.IO
 
         string GetAbsolutePath(string path)
         {
+            if (path.StartsWith("~")) return path;
             return Path.Combine(basePath, path);
         }
 
