@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cassette.Utilities;
+using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
 {
@@ -30,17 +31,37 @@ namespace Cassette.RequireJS
                     var dependencyAliases = string.Join(",", DependencyAliases(asset));
                     var export = ExportedVariableName(asset.Path);
 
-                    var output = string.Format(
-                        "define({0},{1},function({2}){{{3}\r\nreturn {4};}});",
-                        path,
-                        dependencyPaths,
-                        dependencyAliases,
-                        source,
-                        export
-                    );
+                    var output = JavaScriptContainsTopLevelVar(source, export)
+                        ? ModuleWithReturn(path, dependencyPaths, dependencyAliases, source, export)
+                        : ModuleWithoutReturn(path, dependencyPaths, dependencyAliases, source);
+
                     return output.AsStream();
                 }
             };
+        }
+
+        static string ModuleWithoutReturn(string path, string dependencyPaths, string dependencyAliases, string source)
+        {
+            return string.Format(
+                "define({0},{1},function({2}){{{3}\r\n}});",
+                path,
+                dependencyPaths,
+                dependencyAliases,
+                source
+            );
+        }
+
+        static string ModuleWithReturn(string path, string dependencyPaths, string dependencyAliases, string source, string export)
+        {
+            Diagnostics.Trace.Source.TraceInformation("AMD module {0} does not return a value.", path);
+            return string.Format(
+                "define({0},{1},function({2}){{{3}\r\nreturn {4};}});",
+                path,
+                dependencyPaths,
+                dependencyAliases,
+                source,
+                export
+            );
         }
 
         IEnumerable<string> DependencyPaths(IAsset asset)
@@ -78,6 +99,37 @@ namespace Cassette.RequireJS
                 path = path.Substring(0, index);
             }
             return path;
+        }
+
+        bool JavaScriptContainsTopLevelVar(string source, string var)
+        {
+            var parser = new JSParser(source);
+            var tree = parser.Parse(new CodeSettings());
+            var finder = new TopLevelVarFinder(var);
+            tree.Accept(finder);
+            return finder.Found;
+        }
+
+        class TopLevelVarFinder : TreeVisitor
+        {
+            readonly string varName;
+
+            public TopLevelVarFinder(string varName)
+            {
+                this.varName = varName;
+            }
+
+            public override void Visit(VariableDeclaration node)
+            {
+                if (node.EnclosingScope is GlobalScope && node.Identifier == varName)
+                {
+                    Found = true;
+                }
+
+                base.Visit(node);
+            }
+
+            public bool Found { get; private set; }
         }
     }
 }

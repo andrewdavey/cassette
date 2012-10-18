@@ -105,9 +105,13 @@
     <Content Include="Global.asax" />
     <Content Include="require.js" />
     <Content Include="Scripts\app\util.js" />
+    <Content Include="Scripts\page1\init.js" />
     <Content Include="Scripts\page1\page.js" />
+    <Content Include="Scripts\page2\init.js" />
     <Content Include="Scripts\page2\page.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

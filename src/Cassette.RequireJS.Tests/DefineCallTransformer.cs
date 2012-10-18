@@ -89,6 +89,12 @@ namespace Cassette.RequireJS.Tests
                 "return foo;});");
         }
 
+        [Fact]
+        public void GivenNoModuleVarThenDefineDoesNotReturnModuleVar()
+        {
+            AssertTransform("~/test.js", "", "define(\"test\",[],function(){\r\n});");
+        }
+
         readonly List<AssetReference> references = new List<AssetReference>();
         AmdConfiguration amdConfiguration = new AmdConfiguration();
 

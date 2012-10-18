@@ -69,9 +69,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin, Version=4.67.4639.17277, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
+    <Reference Include="AjaxMin, Version=4.70.4668.12887, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AjaxMin.4.67.4639.17289\lib\net40\AjaxMin.dll</HintPath>
+      <HintPath>..\packages\AjaxMin.4.70.4668.12892\lib\net40\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -324,7 +324,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Cassette.symbols.nutrans" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
