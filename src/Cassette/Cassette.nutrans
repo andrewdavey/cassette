@@ -9,5 +9,6 @@
   </metadata>
   <files xdt:Transform="Insert">
     <file src="bin\Release\Cassette.dll" target="lib\net40-client" />
+    <file src="bin\Release\Cassette.xml" target="lib\net40-client" />
   </files>
 </package>
