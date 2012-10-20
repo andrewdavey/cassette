@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmdModuleRewriter.cs" />
     <Compile Include="DefineCallTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationScriptBuilder.cs" />
