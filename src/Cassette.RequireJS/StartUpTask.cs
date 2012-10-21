@@ -9,19 +9,14 @@ namespace Cassette.RequireJS
     public class StartUpTask : IStartUpTask
     {
         readonly ViewHelperImplementation viewHelper;
-        readonly IEnumerable<IConfiguration<RequireJsSettings>> settingsConfigurations;
-        readonly RequireJsSettings settings;
-
-        public StartUpTask(ViewHelperImplementation viewHelper, IEnumerable<IConfiguration<RequireJsSettings>> settingsConfigurations, RequireJsSettings settings)
+        
+        public StartUpTask(ViewHelperImplementation viewHelper)
         {
             this.viewHelper = viewHelper;
-            this.settingsConfigurations = settingsConfigurations;
-            this.settings = settings;
         }
 
         public void Start()
         {
-            settingsConfigurations.Configure(settings);
             ViewHelper.Instance = viewHelper;
         }
     }

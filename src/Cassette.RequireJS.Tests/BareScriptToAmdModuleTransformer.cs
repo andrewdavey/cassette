@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using Cassette.Utilities;
+using System.Linq;
+using Moq;
 using Should;
 using Xunit;
 
-namespace Cassette.RequireJS.Tests
+namespace Cassette.RequireJS
 {
-    public class DefineCallTransformerTests
+    public class BareScriptToAmdModuleTransformerTests
     {
         [Fact]
         public void WrapWithModuleDefine()
@@ -65,7 +66,7 @@ namespace Cassette.RequireJS.Tests
         [Fact]
         public void GivenAssetReferenceThenModuleHasDependencyOnTheReferencedAsset()
         {
-            GivenReference(new AssetReference("~/foo.js", "~/bar.js", 1, AssetReferenceType.SameBundle));
+            GivenReference("~/bar.js");
             AssertTransform(
                 "~/foo.js",
                 "var foo = {};",
@@ -77,11 +78,9 @@ namespace Cassette.RequireJS.Tests
         [Fact]
         public void GivenReferenceToVendorModuleThenDependencyUsesConfiguredModuleInfo()
         {
-            GivenReference(new AssetReference("~/app/foo.js", "~/vendor/jquery.js", 1, AssetReferenceType.DifferentBundle));
-            GivenConfiguration(new AmdConfiguration
-            {
-                {"~/vendor/jquery.js", "jquery", "$"}
-            });
+            GivenReference("~/vendor/jquery.js");
+            modules.SetupGet(m => m["~/vendor/jquery.js"])
+                   .Returns(new AmdModule("jquery", "$"));
             AssertTransform(
                 "~/app/foo.js",
                 "var foo = {};",
@@ -95,26 +94,24 @@ namespace Cassette.RequireJS.Tests
             AssertTransform("~/test.js", "", "define(\"test\",[],function(){\r\n});");
         }
 
-        readonly List<AssetReference> references = new List<AssetReference>();
-        AmdConfiguration amdConfiguration = new AmdConfiguration();
+        readonly List<string> references = new List<string>();
+        readonly Mock<IAmdModuleCollection> modules = new Mock<IAmdModuleCollection>();
 
-        void GivenReference(AssetReference assetReference)
+        void GivenReference(string reference)
         {
-            references.Add(assetReference);
-        }
-
-        void GivenConfiguration(AmdConfiguration newAmdConfiguration)
-        {
-            amdConfiguration = newAmdConfiguration;
+            references.Add(reference);
+            modules
+                .SetupGet(m => m[reference])
+                .Returns(new AmdModule(
+                   PathHelpers.ConvertCassettePathToModulePath(reference),
+                   PathHelpers.ConvertCassettePathToModulePath(reference).Split('/').Last()
+                ));
         }
 
         void AssertTransform(string path, string input, string expectedOutput)
         {
-            var asset = new StubAsset(path, input);
-            asset.ReferenceList.AddRange(references);
-            var transformer = new DefineCallTransformer(amdConfiguration, new SimpleJsonSerializer());
-            asset.AddAssetTransformer(transformer);
-            var output = asset.OpenStream().ReadToEnd();
+            var transformer = new BareScriptToAmdModuleTransformer(modules.Object, new SimpleJsonSerializer());
+            var output = transformer.Transform(input, path, references);
             output.ShouldEqual(expectedOutput);
         }
     }

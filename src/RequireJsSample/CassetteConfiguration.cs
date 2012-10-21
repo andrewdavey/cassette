@@ -6,17 +6,21 @@ namespace RequireJsSample
 {
     public class CassetteConfiguration : IConfiguration<BundleCollection>
     {
+        readonly AmdConfiguration amd;
+
+        public CassetteConfiguration(AmdConfiguration amd)
+        {
+            this.amd = amd;
+        }
+
         public void Configure(BundleCollection bundles)
         {
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
-        }
-    }
 
-    public class RequireJsConfig : IConfiguration<RequireJsSettings>
-    {
-        public void Configure(RequireJsSettings settings)
-        {
-            settings.MainBundlePath = "~/Scripts/app";
+            amd.ModulePerAsset("~/Scripts/page1");
+            amd.ModulePerAsset("~/Scripts/page2");
+            amd.AddModule("~/Scripts/app/jquery.js", "$");
+            amd.MainBundlePath = "Scripts/app";
         }
     }
 }

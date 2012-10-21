@@ -13,7 +13,7 @@ namespace Cassette.RequireJS
 
         void RegisterRequireJsSettings(TinyIoCContainer container)
         {
-            container.Register<RequireJsSettings>().AsSingleton();
+            container.Register<AmdConfiguration>().AsSingleton();
         }
 
         static void RegisterConfigurationScriptBuilder(TinyIoCContainer container)

@@ -1,65 +1,77 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using Cassette.Scripts;
 
 namespace Cassette.RequireJS
 {
-    public class AmdConfiguration : List<AmdModule>
+    /// <summary>
+    /// Configures script bundles to work as AMD modules.
+    /// </summary>
+    public class AmdConfiguration : IAmdModuleCollection
     {
-        public void Add(string assetPath, string amdModulePath, string alias)
+        readonly BundleCollection bundles;
+        readonly Func<IAssetTransformer> createDefineCallTransformer;
+        readonly Func<IAssetTransformer> createModulePathInserter;
+        readonly Func<Shim, IAssetTransformer> createModuleShimmer;
+        readonly Dictionary<string, AmdModule> modules = new Dictionary<string, AmdModule>();
+
+        public AmdConfiguration(BundleCollection bundles, Func<IAssetTransformer> createDefineCallTransformer, Func<IAssetTransformer> createModulePathInserter, Func<Shim, IAssetTransformer> createModuleShimmer)
         {
-            Add(new AmdModule
+            this.bundles = bundles;
+            this.createDefineCallTransformer = createDefineCallTransformer;
+            this.createModulePathInserter = createModulePathInserter;
+            this.createModuleShimmer = createModuleShimmer;
+        }
+
+        public string MainBundlePath { get; set; }
+
+        public void ModulePerAsset(string bundlePath)
+        {
+            var bundle = bundles.Get<ScriptBundle>(bundlePath);
+            foreach (var asset in bundle.Assets)
             {
-                AssetPath = assetPath,
-                ModulePath = amdModulePath,
-                Alias = alias
-            });
-        }
-
-        public string GetModulePathForAsset(string toPath)
-        {
-            var module = this.FirstOrDefault(m => m.AssetPath == toPath);
-            if (module == null) return RequireJsPath(toPath);
-            return module.ModulePath;
-        }
-
-        string RequireJsPath(string assetPath)
-        {
-            var path = assetPath.Substring(2);
-            return RemoveFileExtension(path);
-        }
-
-        string RemoveFileExtension(string path)
-        {
-            var index = path.LastIndexOf('.');
-            if (index >= 0)
-            {
-                path = path.Substring(0, index);
+                asset.AddAssetTransformer(createDefineCallTransformer());
+                modules[asset.Path] = new AmdModule(asset, bundle);
             }
-            return path;
         }
 
-        public string GetModuleVariableName(string assetPath)
+        public void AddModule(string scriptPath, string alias = null)
         {
-            var module = this.FirstOrDefault(m => m.AssetPath == assetPath);
-            if (module == null) return ExportedVariableName(assetPath);
-            return module.Alias;
+            IAsset asset;
+            Bundle bundle;
+            if (!bundles.TryGetAssetByPath(scriptPath, out asset, out bundle))
+            {
+                throw new ArgumentException("Script not found: " + scriptPath);
+            }
+
+            asset.AddAssetTransformer(createModulePathInserter());
+
+            modules[scriptPath] = new AmdModule(asset, bundle)
+            {
+                Alias = alias
+            };
         }
 
-        string ExportedVariableName(string assetPath)
+        public void AddModuleUsingShim(string scriptPath, Shim shim)
         {
-            var name = Path.GetFileNameWithoutExtension(assetPath);
-            if (!char.IsLetter(name[0]) && name[0] != '_') name = "_" + name;
-            var safeName = Regex.Replace(name, "[^a-zA-Z0-9_]", match => "_");
-            return safeName;
-        }
-    }
+            IAsset asset;
+            Bundle bundle;
+            if (!bundles.TryGetAssetByPath(scriptPath, out asset, out bundle))
+            {
+                throw new ArgumentException("Script not found: " + scriptPath);
+            }
 
-    public class AmdModule
-    {
-        public string AssetPath { get; set; }
-        public string ModulePath { get; set; }
-        public string Alias { get; set; }
+            asset.AddAssetTransformer(createModuleShimmer(shim));
+
+            modules[scriptPath] = new AmdModule(asset, bundle)
+            {
+                Alias = shim.Alias
+            };
+        }
+
+        public AmdModule this[string path]
+        {
+            get { return modules[path]; }
+        }
     }
 }

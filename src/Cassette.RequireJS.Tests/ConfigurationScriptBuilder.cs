@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Should;
 using Xunit;
 
-namespace Cassette.RequireJS.Tests
+namespace Cassette.RequireJS
 {
     public class ConfigurationScriptBuilderTests
     {
@@ -35,7 +35,7 @@ namespace Cassette.RequireJS.Tests
         {
             GivenBundle("~/app", new StubAsset("~/app/test.js"));
             WhenBuildScriptForRelease();
-            Paths["app/test"].ShouldEqual("BUNDLE-URL");
+            Paths["app/test"].ShouldEqual("BUNDLE-URL?");
         }
 
         [Fact]
@@ -47,8 +47,8 @@ namespace Cassette.RequireJS.Tests
                 new StubAsset("~/app/test2.js")
                 );
             WhenBuildScriptForRelease();
-            Paths["app/test1"].ShouldEqual("BUNDLE-URL");
-            Paths["app/test2"].ShouldEqual("BUNDLE-URL");
+            Paths["app/test1"].ShouldEqual("BUNDLE-URL?");
+            Paths["app/test2"].ShouldEqual("BUNDLE-URL?");
         }
 
         [Fact]
@@ -70,10 +70,10 @@ namespace Cassette.RequireJS.Tests
 
             WhenBuildScriptForRelease();
 
-            Paths["app1/test1"].ShouldEqual("/app1");
-            Paths["app1/test2"].ShouldEqual("/app1");
-            Paths["app2/test1"].ShouldEqual("/app2");
-            Paths["app2/test2"].ShouldEqual("/app2");
+            Paths["app1/test1"].ShouldEqual("/app1?");
+            Paths["app1/test2"].ShouldEqual("/app1?");
+            Paths["app2/test1"].ShouldEqual("/app2?");
+            Paths["app2/test2"].ShouldEqual("/app2?");
         }
 
         [Fact]

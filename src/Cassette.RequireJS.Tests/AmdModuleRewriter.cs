@@ -1,7 +1,7 @@
 ﻿using Should;
 using Xunit;
 
-namespace Cassette.RequireJS.Tests
+namespace Cassette.RequireJS
 {
     public class AmdModuleRewriterTests
     {

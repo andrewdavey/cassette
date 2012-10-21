@@ -7,7 +7,7 @@
     <ProjectGuid>{E45DA7CE-3A8F-4414-AA60-BDF636D15D1B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cassette.RequireJS.Tests</RootNamespace>
+    <RootNamespace>Cassette.RequireJS</RootNamespace>
     <AssemblyName>Cassette.RequireJS.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -54,8 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmdConfiguration.cs" />
     <Compile Include="AmdModuleRewriter.cs" />
-    <Compile Include="DefineCallTransformer.cs" />
+    <Compile Include="BareScriptToAmdModuleTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationScriptBuilder.cs" />
   </ItemGroup>

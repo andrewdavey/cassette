@@ -7,14 +7,14 @@ namespace Cassette.RequireJS
     public class ViewHelperImplementation
     {
         readonly BundleCollection bundles;
-        readonly RequireJsSettings settings;
+        readonly AmdConfiguration configuration;
         readonly IJsonSerializer jsonSerializer;
         readonly RequireJsConfigUrlProvider requireJsConfigUrlProvider;
 
-        public ViewHelperImplementation(BundleCollection bundles, RequireJsSettings settings, IJsonSerializer jsonSerializer, RequireJsConfigUrlProvider requireJsConfigUrlProvider)
+        public ViewHelperImplementation(BundleCollection bundles, AmdConfiguration configuration, IJsonSerializer jsonSerializer, RequireJsConfigUrlProvider requireJsConfigUrlProvider)
         {
             this.bundles = bundles;
-            this.settings = settings;
+            this.configuration = configuration;
             this.jsonSerializer = jsonSerializer;
             this.requireJsConfigUrlProvider = requireJsConfigUrlProvider;
         }
@@ -38,7 +38,7 @@ namespace Cassette.RequireJS
 
         string MainScriptElements()
         {
-            var bundle = bundles.Get<ScriptBundle>(settings.MainBundlePath);
+            var bundle = bundles.Get<ScriptBundle>(configuration.MainBundlePath);
             return bundle.Renderer.Render(bundle);
         }
 

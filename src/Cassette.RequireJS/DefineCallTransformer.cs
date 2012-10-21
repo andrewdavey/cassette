@@ -10,12 +10,12 @@ namespace Cassette.RequireJS
 {
     public class DefineCallTransformer : IAssetTransformer
     {
-        readonly AmdConfiguration amdConfiguration;
+        readonly AmdConfiguration configuration;
         readonly IJsonSerializer jsonSerializer;
 
-        public DefineCallTransformer(AmdConfiguration amdConfiguration, IJsonSerializer jsonSerializer)
+        public DefineCallTransformer(AmdConfiguration configuration, IJsonSerializer jsonSerializer)
         {
-            this.amdConfiguration = amdConfiguration;
+            this.configuration = configuration;
             this.jsonSerializer = jsonSerializer;
         }
 
@@ -68,12 +68,12 @@ namespace Cassette.RequireJS
         {
             return asset
                 .References
-                .Select(reference => amdConfiguration.GetModulePathForAsset(reference.ToPath));
+                .Select(reference => configuration[reference.ToPath].ModulePath);
         }
 
         IEnumerable<string> DependencyAliases(IAsset asset)
         {
-            return asset.References.Select(reference => amdConfiguration.GetModuleVariableName(reference.ToPath));
+            return asset.References.Select(reference => configuration[reference.ToPath].Alias);
         }
 
         string ExportedVariableName(string assetPath)
