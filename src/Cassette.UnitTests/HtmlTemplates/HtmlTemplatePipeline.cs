@@ -13,7 +13,7 @@ namespace Cassette.HtmlTemplates
         {
             bundle = new HtmlTemplateBundle("~");
             var container = new TinyIoCContainer();
-            container.Register<IHtmlTemplateIdStrategy>(new HtmlTemplateIdBuilder());
+            container.Register<IHtmlTemplateIdStrategy>(new DefaultHtmlTemplateIdStrategy());
             pipeline = new HtmlTemplatePipeline(container);   
         }
 

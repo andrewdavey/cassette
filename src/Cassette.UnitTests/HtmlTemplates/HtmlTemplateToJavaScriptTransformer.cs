@@ -41,7 +41,7 @@ namespace Cassette.HtmlTemplates
             GivenIdStrategy(strategy.Object);
             WhenTransform("");
 
-            strategy.Verify(s => s.HtmlTemplateId(bundle, asset.Object));
+            strategy.Verify(s => s.GetHtmlTemplateId(asset.Object, bundle));
         }
 
         readonly Mock<IAsset> asset;
@@ -53,7 +53,7 @@ namespace Cassette.HtmlTemplates
         public HtmlTemplateToJavaScriptTransformerTests()
         {
             asset = new Mock<IAsset>();
-            htmlTemplateIdStrategy = new HtmlTemplateIdBuilder();
+            htmlTemplateIdStrategy = new DefaultHtmlTemplateIdStrategy();
             scriptStrategy = new DomHtmlTemplateScriptStrategy(new SimpleJsonSerializer());
             bundle = new HtmlTemplateBundle("~");
         }

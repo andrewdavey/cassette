@@ -4,13 +4,13 @@ using Xunit;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateIdBuilderTests
+    public class DefaultHtmlTemplateIdStrategyTests
     {
         readonly HtmlTemplateBundle bundle;
         readonly Mock<IAsset> asset;
-        HtmlTemplateIdBuilder builder;
+        DefaultHtmlTemplateIdStrategy strategy;
 
-        public HtmlTemplateIdBuilderTests()
+        public DefaultHtmlTemplateIdStrategyTests()
         {
             bundle = new HtmlTemplateBundle("~/bundle");
             asset = new Mock<IAsset>();
@@ -20,7 +20,7 @@ namespace Cassette.HtmlTemplates
         public void DefaultRemovesBundlePathAndFileExtension()
         {
             GivenAssetPath("~/bundle/template.html");
-            GivenIdStrategy(new HtmlTemplateIdBuilder());
+            GivenIdStrategy(new DefaultHtmlTemplateIdStrategy());
             ThenIdIs("template");
         }
 
@@ -28,7 +28,7 @@ namespace Cassette.HtmlTemplates
         public void GivenIncludeBundlePathThenIdStartsWithBundlePath()
         {
             GivenAssetPath("~/bundle/template.html");
-            GivenIdStrategy(new HtmlTemplateIdBuilder(includeBundlePath: true));
+            GivenIdStrategy(new DefaultHtmlTemplateIdStrategy(includeBundlePath: true));
             ThenIdIs("bundle/template");
         }
 
@@ -36,7 +36,7 @@ namespace Cassette.HtmlTemplates
         public void GivenNotIncludeBundlePathButBundlePathDoesntMatchAssetPathThenIdIsFullAssetPath()
         {
             GivenAssetPath("~/other/template.html");
-            GivenIdStrategy(new HtmlTemplateIdBuilder());
+            GivenIdStrategy(new DefaultHtmlTemplateIdStrategy());
             ThenIdIs("other/template");
         }
 
@@ -44,7 +44,7 @@ namespace Cassette.HtmlTemplates
         public void GivenIncludeFileExtensionThenIdIncludesFileExtension()
         {
             GivenAssetPath("~/asset.html");
-            GivenIdStrategy(new HtmlTemplateIdBuilder(includeFileExtension: true));
+            GivenIdStrategy(new DefaultHtmlTemplateIdStrategy(includeFileExtension: true));
             ThenIdIs("asset.html");
         }
 
@@ -52,7 +52,7 @@ namespace Cassette.HtmlTemplates
         public void GivenPathSeparatorReplacementIsDash()
         {
             GivenAssetPath("~/bundle/asset.html");
-            GivenIdStrategy(new HtmlTemplateIdBuilder(pathSeparatorReplacement: "-", includeBundlePath: true));
+            GivenIdStrategy(new DefaultHtmlTemplateIdStrategy(pathSeparatorReplacement: "-", includeBundlePath: true));
             ThenIdIs("bundle-asset");
         }
 
@@ -60,7 +60,7 @@ namespace Cassette.HtmlTemplates
         public void GivenAssetPathIsBundlePath()
         {
             GivenAssetPath("~/bundle");
-            GivenIdStrategy(new HtmlTemplateIdBuilder());
+            GivenIdStrategy(new DefaultHtmlTemplateIdStrategy());
             ThenIdIs("bundle");
         }
 
@@ -69,14 +69,14 @@ namespace Cassette.HtmlTemplates
             asset.SetupGet(a => a.Path).Returns(path);
         }
 
-        void GivenIdStrategy(HtmlTemplateIdBuilder strategy)
+        void GivenIdStrategy(DefaultHtmlTemplateIdStrategy strategy)
         {
-            this.builder = strategy;
+            this.strategy = strategy;
         }
 
         void ThenIdIs(string expectedId)
         {
-            var id = builder.HtmlTemplateId(bundle, asset.Object);
+            var id = strategy.GetHtmlTemplateId(asset.Object, bundle);
             id.ShouldEqual(expectedId);
         }
     }

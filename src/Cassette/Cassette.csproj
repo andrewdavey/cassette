@@ -116,7 +116,7 @@
     <Compile Include="HtmlTemplates\WrapJavaScriptHtmlTemplates.cs" />
     <Compile Include="HtmlTemplates\IHtmlTemplateIdStrategy.cs" />
     <Compile Include="HtmlTemplates\HtmlTemplateToJavaScriptTransformer.cs" />
-    <Compile Include="HtmlTemplates\HtmlTemplateIdBuilder.cs" />
+    <Compile Include="HtmlTemplates\DefaultHtmlTemplateIdStrategy.cs" />
     <Compile Include="HtmlTemplates\JavaScriptHtmlTemplatePipeline.cs" />
     <Compile Include="HtmlTemplates\WrapJavaScriptHtmlTemplatesTransformer.cs" />
     <Compile Include="IBundleCacheRebuilder.cs" />

@@ -26,7 +26,7 @@ namespace Cassette.HtmlTemplates
             container.Register<IHtmlTemplateScriptStrategy, DomHtmlTemplateScriptStrategy>();
             // For compatibility with previous version of Cassette,
             // pathSeparatorReplacement is "-" by default
-            container.Register<IHtmlTemplateIdStrategy>((c, n) => new HtmlTemplateIdBuilder(pathSeparatorReplacement: "-"));
+            container.Register<IHtmlTemplateIdStrategy>((c, n) => new DefaultHtmlTemplateIdStrategy(pathSeparatorReplacement: "-"));
         }
 
         protected override string FilePattern

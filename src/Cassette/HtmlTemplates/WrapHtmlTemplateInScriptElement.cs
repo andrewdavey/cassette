@@ -22,7 +22,7 @@ namespace Cassette.HtmlTemplates
                 var template = openSourceStream().ReadToEnd();
                 var scriptElement = String.Format(
                     "<script id=\"{0}\" type=\"{1}\"{2}>{3}</script>",
-                    idStrategy.HtmlTemplateId(bundle, asset),
+                    idStrategy.GetHtmlTemplateId(asset, bundle),
                     bundle.ContentType,
                     bundle.HtmlAttributes.CombinedAttributes,
                     template

@@ -21,7 +21,7 @@ namespace Cassette.HtmlTemplates
         {
             return delegate
             {
-                var id = idStrategy.HtmlTemplateId(bundle, asset);
+                var id = idStrategy.GetHtmlTemplateId(asset, bundle);
                 var template = openSourceStream().ReadToEnd();
                 return string.Format("jQuery.template('{0}', {1});{2}", id, template, Environment.NewLine).AsStream();
             };

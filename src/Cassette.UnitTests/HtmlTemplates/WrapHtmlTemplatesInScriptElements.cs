@@ -70,7 +70,7 @@ namespace Cassette.HtmlTemplates
 
         string TransformToHtml()
         {
-            var transformer = new WrapHtmlTemplateInScriptElement(bundle, new HtmlTemplateIdBuilder(pathSeparatorReplacement: "-"));
+            var transformer = new WrapHtmlTemplateInScriptElement(bundle, new DefaultHtmlTemplateIdStrategy(pathSeparatorReplacement: "-"));
             var getResult = transformer.Transform(() => templateContent.AsStream(), asset.Object);
             var html = getResult().ReadToEnd();
             return html;

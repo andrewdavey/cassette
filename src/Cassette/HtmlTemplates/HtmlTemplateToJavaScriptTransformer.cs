@@ -35,7 +35,7 @@ namespace Cassette.HtmlTemplates
 
         string TemplateId(IAsset asset)
         {
-            return idStrategy.HtmlTemplateId(bundle, asset);
+            return idStrategy.GetHtmlTemplateId(asset, bundle);
         }
     }
 }

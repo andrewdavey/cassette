@@ -23,7 +23,7 @@ namespace Cassette.HtmlTemplates
             {
                 var compiledTemplate = openSourceStream().ReadToEnd();
 
-                var id = idStrategy.HtmlTemplateId(bundle, asset);
+                var id = idStrategy.GetHtmlTemplateId(asset, bundle);
                 var template = javaScriptVariableName + "['" + id + "']";
 
                 var output = template + "=new Hogan.Template();" + 

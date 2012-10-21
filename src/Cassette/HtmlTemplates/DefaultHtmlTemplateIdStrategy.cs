@@ -4,21 +4,21 @@ using System.Linq;
 
 namespace Cassette.HtmlTemplates
 {
-    public class HtmlTemplateIdBuilder : IHtmlTemplateIdStrategy
+    public class DefaultHtmlTemplateIdStrategy : IHtmlTemplateIdStrategy
     {
         readonly bool includeBundlePath;
         readonly bool includeFileExtension;
         readonly string pathSeparatorReplacement;
         HtmlTemplateBundle currentBundle;
 
-        public HtmlTemplateIdBuilder(bool includeBundlePath = false, bool includeFileExtension = false, string pathSeparatorReplacement = null)
+        public DefaultHtmlTemplateIdStrategy(bool includeBundlePath = false, bool includeFileExtension = false, string pathSeparatorReplacement = null)
         {
             this.includeBundlePath = includeBundlePath;
             this.includeFileExtension = includeFileExtension;
             this.pathSeparatorReplacement = pathSeparatorReplacement;
         }
 
-        public string HtmlTemplateId(HtmlTemplateBundle bundle, IAsset htmlTemplateAsset)
+        public string GetHtmlTemplateId(IAsset htmlTemplateAsset, HtmlTemplateBundle bundle)
         {
             currentBundle = bundle;
             var operations = BuildOperations();

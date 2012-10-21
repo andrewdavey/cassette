@@ -15,7 +15,7 @@ namespace Cassette.HtmlTemplates
         {
             container = new TinyIoCContainer();
             container.Register(Mock.Of<IUrlGenerator>());
-            container.Register<IHtmlTemplateIdStrategy>(new HtmlTemplateIdBuilder());
+            container.Register<IHtmlTemplateIdStrategy>(new DefaultHtmlTemplateIdStrategy());
 
             services = new HoganServices();
         }
