@@ -12,7 +12,7 @@ namespace Cassette
 
         public UrlGenerator_CreateAssetUrl_Tests()
         {
-            expectedHash = new byte[] { 1, 2, 15, 16 }.ToUrlSafeBase64String();
+            expectedHash = new byte[] { 1, 2, 15, 16 }.ToHexString();
             asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Hash).Returns(new byte[] { 1, 2, 15, 16 });
         }

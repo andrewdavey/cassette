@@ -287,7 +287,7 @@ namespace Cassette
             {
                 Hash = new byte[] { 1, 2, 3 }
             };
-            var hash = bundle.Hash.ToUrlSafeBase64String();
+            var hash = bundle.Hash.ToHexString();
             bundle.Url.ShouldEqual("testable/" + hash + "/path");
         }
     }

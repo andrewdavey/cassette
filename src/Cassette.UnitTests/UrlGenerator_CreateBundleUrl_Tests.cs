@@ -12,7 +12,7 @@ namespace Cassette
 
         public UrlGenerator_CreateBundleUrl_Tests()
         {
-            expectedHash = new byte[] { 1, 2, 3 }.ToUrlSafeBase64String();
+            expectedHash = new byte[] { 1, 2, 3 }.ToHexString();
         }
 
         [Fact]

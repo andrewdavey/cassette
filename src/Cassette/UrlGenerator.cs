@@ -31,7 +31,7 @@ namespace Cassette
             // This maintains the asset directory structure i.e. two assets in the same directory appear together in web browser JavaScript development tooling.
             
             var assetPath = asset.Path.Substring(1);
-            var hash = asset.Hash.ToUrlSafeBase64String();
+            var hash = asset.Hash.ToHexString();
             var url = cassetteHandlerPrefix + "asset" + assetPath + "?" + hash;
 
             return urlModifier.Modify(url);
@@ -51,7 +51,7 @@ namespace Cassette
             }
             using (var stream = file.OpenRead())
             {
-                var hash = stream.ComputeSHA1Hash().ToUrlSafeBase64String();
+                var hash = stream.ComputeSHA1Hash().ToHexString();
                 return ((IUrlGenerator)this).CreateRawFileUrl(filename, hash);
             }
         }

@@ -64,7 +64,7 @@ namespace Cassette.Caching
         [Fact]
         public void ItCreatesScriptBundleContentFile()
         {
-            var hash = new byte[] { 1, 2, 3 }.ToUrlSafeBase64String();
+            var hash = new byte[] { 1, 2, 3 }.ToHexString();
             var file = directory.GetFile("~/script/test1/" + hash + ".js");
             var content = file.OpenRead().ReadToEnd();
             content.ShouldEqual("script-bundle-content");
@@ -73,7 +73,7 @@ namespace Cassette.Caching
         [Fact]
         public void ItCreatesStylesheetBundleContentFile()
         {
-            var hash = new byte[] { 4, 5, 6 }.ToUrlSafeBase64String();
+            var hash = new byte[] { 4, 5, 6 }.ToHexString();
             var file = directory.GetFile("~/stylesheet/test2/" + hash + ".css");
             var content = file.OpenRead().ReadToEnd();
             content.ShouldEqual("stylesheet-bundle-content");

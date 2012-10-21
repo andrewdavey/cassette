@@ -20,13 +20,5 @@ namespace Cassette.Utilities
             }
             return bytes;
         }
-
-        public static string ToUrlSafeBase64String(this byte[] bytes)
-        {
-            return Convert
-                .ToBase64String(bytes)
-                .Replace('+', '-')
-                .Replace('/', '_');
-        }
     }
 }

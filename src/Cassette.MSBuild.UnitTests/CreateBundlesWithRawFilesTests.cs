@@ -74,7 +74,7 @@ public class Configuration : IConfiguration<BundleCollection>
             using (var file = File.OpenRead(Path.Combine(root, "source", filename)))
             using (var sha1 = SHA1.Create())
             {
-                return sha1.ComputeHash(file).ToUrlSafeBase64String();
+                return sha1.ComputeHash(file).ToHexString();
             }
         }
 

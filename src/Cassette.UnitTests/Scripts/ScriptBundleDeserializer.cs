@@ -45,7 +45,7 @@ namespace Cassette.Scripts
 
             directory = new FakeFileSystem
             {
-                { "~/script/AQID.js", "CONTENT" } // "AQID" is base64 of {1,2,3}
+                { "~/script/010203.js", "CONTENT" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
             deserializer = new ScriptBundleDeserializer(urlModifier);

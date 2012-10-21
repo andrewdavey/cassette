@@ -11,7 +11,7 @@ namespace Cassette
         {
             SourceDirectory.Add("~\\test.png", "content");
             var url = UrlGenerator.CreateRawFileUrl("~/test.png");
-            url.ShouldEqual("cassette.axd/file/test-BA8G_XdAkkeNRQd09bowxdp4rMg=.png");
+            url.ShouldEqual("cassette.axd/file/test-040f06fd774092478d450774f5ba30c5da78acc8.png");
         }
 
         [Fact]
@@ -19,7 +19,7 @@ namespace Cassette
         {
             SourceDirectory.Add("~\\test\\foo.png", "content");
             var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.png");
-            url.ShouldEqual("cassette.axd/file/test/foo-BA8G_XdAkkeNRQd09bowxdp4rMg=.png");
+            url.ShouldEqual("cassette.axd/file/test/foo-040f06fd774092478d450774f5ba30c5da78acc8.png");
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace Cassette
         {
             SourceDirectory.Add("~\\test\\foo", "content");
             var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo");
-            url.ShouldEqual("cassette.axd/file/test/foo-BA8G_XdAkkeNRQd09bowxdp4rMg=");
+            url.ShouldEqual("cassette.axd/file/test/foo-040f06fd774092478d450774f5ba30c5da78acc8");
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Cassette
         {
             SourceDirectory.Add("~\\test\\foo.bar.png", "content");
             var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.bar.png");
-            url.ShouldEqual("cassette.axd/file/test/foo.bar-BA8G_XdAkkeNRQd09bowxdp4rMg=.png");
+            url.ShouldEqual("cassette.axd/file/test/foo.bar-040f06fd774092478d450774f5ba30c5da78acc8.png");
         }
 
         [Fact]
