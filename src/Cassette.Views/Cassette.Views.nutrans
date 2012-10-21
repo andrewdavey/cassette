@@ -10,6 +10,7 @@
 
   <files xdt:Transform="Insert">
     <file src="bin\Release\Cassette.Views.dll" target="lib\net40" />
+    <file src="bin\Release\Cassette.Views.xml" target="lib\net40" />
     
     <!-- For aspx views -->
     <file src="Web.config.transform" target="content"/>
