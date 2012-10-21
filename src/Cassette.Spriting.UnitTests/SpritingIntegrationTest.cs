@@ -16,6 +16,7 @@ namespace Cassette.Spriting
         readonly TinyIoCContainer container;
         readonly TempDirectory cache;
         readonly StylesheetBundle bundle;
+        static FakeFileSystem sourceDirectory;
 
         public SpritingIntegrationTest()
         {
@@ -64,12 +65,9 @@ namespace Cassette.Spriting
         void InitDirectories()
         {
             var cassetteSettings = container.Resolve<CassetteSettings>();
-            cassetteSettings.SourceDirectory = new FakeFileSystem
-            {
-                { "~/asset.css", "" },
-                { "~/image-a.png", RedPng() },
-                { "~/image-b.png", BluePng() }
-            };
+            sourceDirectory.Add("~/image-b.png", BluePng());
+            sourceDirectory.Add("~/image-a.png", RedPng());
+            sourceDirectory.Add("~/asset.css", "");
             cassetteSettings.CacheDirectory = new FileSystemDirectory(cache);
         }
 
@@ -89,8 +87,13 @@ namespace Cassette.Spriting
         {
             var container = new TinyIoCContainer();
             new SpritingContainerConfiguration().Configure(container);
-            container.Register(new CassetteSettings());
-            container.Register<IUrlGenerator>(new UrlGenerator(new VirtualDirectoryPrepender("/"), "cassette.axd/"));
+            sourceDirectory = new FakeFileSystem();
+            var settings = new CassetteSettings
+            {
+                SourceDirectory = sourceDirectory
+            };
+            container.Register(settings);
+            container.Register<IUrlGenerator>(new UrlGenerator(new VirtualDirectoryPrepender("/"), sourceDirectory, "cassette.axd/"));
             container.Register<IConfiguration<SpritingSettings>, DefaultSpritingSettingsConfiguration>();
             return container;
         }

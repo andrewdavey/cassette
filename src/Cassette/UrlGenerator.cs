@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette
@@ -7,11 +9,13 @@ namespace Cassette
     {
         readonly IUrlModifier urlModifier;
         readonly string cassetteHandlerPrefix;
+        readonly IDirectory sourceDirectory;
 
-        public UrlGenerator(IUrlModifier urlModifier, string cassetteHandlerPrefix)
+        public UrlGenerator(IUrlModifier urlModifier, IDirectory sourceDirectory, string cassetteHandlerPrefix)
         {
             this.urlModifier = urlModifier;
             this.cassetteHandlerPrefix = cassetteHandlerPrefix;
+            this.sourceDirectory = sourceDirectory;
         }
 
         public string CreateBundleUrl(Bundle bundle)
@@ -33,7 +37,26 @@ namespace Cassette
             return urlModifier.Modify(url);
         }
 
-        public string CreateRawFileUrl(string filename, string hash)
+        public string CreateRawFileUrl(string filename)
+        {
+            if (filename.StartsWith("~") == false)
+            {
+                throw new ArgumentException("Image filename must be application relative (starting with '~').");
+            }
+
+            var file = sourceDirectory.GetFile(filename);
+            if (!file.Exists)
+            {
+                throw new FileNotFoundException("File not found: " + filename, filename);
+            }
+            using (var stream = file.OpenRead())
+            {
+                var hash = stream.ComputeSHA1Hash().ToUrlSafeBase64String();
+                return ((IUrlGenerator)this).CreateRawFileUrl(filename, hash);
+            }
+        }
+
+        string IUrlGenerator.CreateRawFileUrl(string filename, string hash)
         {
             if (filename.StartsWith("~") == false)
             {

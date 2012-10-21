@@ -9,29 +9,33 @@ namespace Cassette
         [Fact]
         public void CreateRawFileUrlReturnsUrlWithRoutePrefixAndHashAndPathWithoutTilde()
         {
-            var url = UrlGenerator.CreateRawFileUrl("~/test.png", "hash");
-            url.ShouldEqual("cassette.axd/file/test-hash.png");
+            SourceDirectory.Add("~\\test.png", "content");
+            var url = UrlGenerator.CreateRawFileUrl("~/test.png");
+            url.ShouldEqual("cassette.axd/file/test-BA8G_XdAkkeNRQd09bowxdp4rMg=.png");
         }
 
         [Fact]
         public void ConvertsToForwardSlashes()
         {
-            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.png", "hash");
-            url.ShouldEqual("cassette.axd/file/test/foo-hash.png");
+            SourceDirectory.Add("~\\test\\foo.png", "content");
+            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.png");
+            url.ShouldEqual("cassette.axd/file/test/foo-BA8G_XdAkkeNRQd09bowxdp4rMg=.png");
         }
 
         [Fact]
         public void ToleratesFilenameWithoutExtension()
         {
-            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo", "hash");
-            url.ShouldEqual("cassette.axd/file/test/foo-hash");
+            SourceDirectory.Add("~\\test\\foo", "content");
+            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo");
+            url.ShouldEqual("cassette.axd/file/test/foo-BA8G_XdAkkeNRQd09bowxdp4rMg=");
         }
 
         [Fact]
         public void InsertsHashBeforeLastPeriod()
         {
-            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.bar.png", "hash");
-            url.ShouldEqual("cassette.axd/file/test/foo.bar-hash.png");
+            SourceDirectory.Add("~\\test\\foo.bar.png", "content");
+            var url = UrlGenerator.CreateRawFileUrl("~\\test\\foo.bar.png");
+            url.ShouldEqual("cassette.axd/file/test/foo.bar-BA8G_XdAkkeNRQd09bowxdp4rMg=.png");
         }
 
         [Fact]
@@ -39,7 +43,7 @@ namespace Cassette
         {
             Assert.Throws<ArgumentException>(delegate
             {
-                UrlGenerator.CreateRawFileUrl("fail.png", "hash");
+                UrlGenerator.CreateRawFileUrl("fail.png");
             });
         }
     }

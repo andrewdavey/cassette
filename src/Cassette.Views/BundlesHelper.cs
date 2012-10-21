@@ -105,11 +105,7 @@ namespace Cassette.Views
             ThrowIfFileNotFound(applicationRelativeFilePath, file);
             ThrowIfCannotRequestRawFile(applicationRelativeFilePath, file);
 
-            using (var stream = file.OpenRead())
-            {
-                var hash = stream.ComputeSHA1Hash().ToHexString();
-                return urlGenerator.CreateRawFileUrl(applicationRelativeFilePath, hash);
-            }
+            return urlGenerator.CreateRawFileUrl(applicationRelativeFilePath);
         }
 
         public void RebuildBundleCache()

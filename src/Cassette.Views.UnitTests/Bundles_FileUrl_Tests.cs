@@ -12,7 +12,6 @@ namespace Cassette.Views
     {
         readonly Mock<IUrlGenerator> urlGenerator;
         readonly FakeFileSystem fileSystem;
-        readonly string hashOfFileContent;
         readonly Mock<IFileAccessAuthorization> fileAccessAuthorization;
 
         public Bundles_FileUrl_Tests()
@@ -25,7 +24,7 @@ namespace Cassette.Views
 
             using (var sha1 = SHA1.Create())
             {
-                hashOfFileContent = sha1.ComputeHash(new byte[] { 1, 2, 3 }).ToHexString();
+                sha1.ComputeHash(new byte[] { 1, 2, 3 }).ToHexString();
             }
 
             var settings = new CassetteSettings
@@ -45,7 +44,7 @@ namespace Cassette.Views
         [Fact]
         public void WhenPathIsPrefixedWithTilde_ThenCallsUrlGeneratorCreateRawFileUrlWithPath()
         {
-            urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png", hashOfFileContent)).Returns("URL");
+            urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png")).Returns("URL");
 
             var url = Bundles.FileUrl("~/test.png");
 
@@ -55,7 +54,7 @@ namespace Cassette.Views
         [Fact]
         public void WhenPathIsRelative_ThenCallsUrlGeneratorCreateRawFileUrlWithPrefixedPath()
         {
-            urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png", hashOfFileContent)).Returns("URL");
+            urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png")).Returns("URL");
 
             var url = Bundles.FileUrl("test.png");
 
@@ -65,7 +64,7 @@ namespace Cassette.Views
         [Fact]
         public void WhenFilePathStartsWithSlash_ThenPrefixPathWithTilde()
         {
-            urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png", hashOfFileContent)).Returns("URL");
+            urlGenerator.Setup(g => g.CreateRawFileUrl("~/test.png")).Returns("URL");
 
             var url = Bundles.FileUrl("/test.png");
 

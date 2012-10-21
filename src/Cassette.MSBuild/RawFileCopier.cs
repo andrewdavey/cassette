@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
+using Cassette.IO;
 using Cassette.Utilities;
 
 namespace Cassette.MSBuild
@@ -15,7 +15,7 @@ namespace Cassette.MSBuild
         public RawFileCopier(string absoluteSourceDirectory, string outputDirectory)
         {
             this.absoluteSourceDirectory = absoluteSourceDirectory;
-            urlGenerator = new UrlGenerator(new CombinePathWithUrl(outputDirectory), "");
+            urlGenerator = new UrlGenerator(new CombinePathWithUrl(outputDirectory), new FileSystemDirectory(absoluteSourceDirectory), "");
         }
 
         public void Visit(Bundle bundle)
@@ -38,7 +38,7 @@ namespace Cassette.MSBuild
             if (!File.Exists(absoluteSourceFilename)) return; // TODO: Log this as a warning?
             if (copiedFilenames.Contains(absoluteSourceFilename)) return;
 
-            var outputPath = CreateOutputFilename(sourceFilename, absoluteSourceFilename);
+            var outputPath = CreateOutputFilename(sourceFilename);
             CopyFile(absoluteSourceFilename, outputPath);
             copiedFilenames.Add(absoluteSourceFilename);
         }
@@ -49,24 +49,15 @@ namespace Cassette.MSBuild
             File.Copy(absoluteSourceFilename, outputPath);
         }
 
-        string CreateOutputFilename(string sourceFilename, string absoluteSourceFilename)
+        string CreateOutputFilename(string sourceFilename)
         {
-            return urlGenerator.CreateRawFileUrl(sourceFilename, HashFileContents(absoluteSourceFilename));
+            return urlGenerator.CreateRawFileUrl(sourceFilename);
         }
 
         string AbsoluteSourcePath(string path)
         {
             path = path.TrimStart('~', '/');
             return Path.Combine(absoluteSourceDirectory, path);
-        }
-
-        string HashFileContents(string filename)
-        {
-            using (var file = File.OpenRead(filename))
-            using (var sha1 = SHA1.Create())
-            {
-                return sha1.ComputeHash(file).ToHexString();
-            }
         }
 
         void EnsureFilenameDirectoryExists(string outputFilename)

@@ -9,12 +9,10 @@ namespace Cassette.Spriting
     class ImageFileLoader : IImageLoader
     {
         readonly IDirectory directory;
-        readonly IUrlGenerator urlGenerator;
 
-        public ImageFileLoader(IDirectory directory, IUrlGenerator urlGenerator)
+        public ImageFileLoader(IDirectory directory)
         {
             this.directory = directory;
-            this.urlGenerator = urlGenerator;
         }
 
         public string BasePath { get; set; }
@@ -52,18 +50,11 @@ namespace Cassette.Spriting
 
         Regex UrlRegex()
         {
-            var prefix = Regex.Escape(RawFileUrlPrefix());
+            var prefix = Regex.Escape("cassette.axd/file/");
             return new Regex(
-                prefix + @"(?<filename>.*)-[a-z0-9]+\.png",
+                prefix + @"(?<filename>.*)-[A-Za-z0-9\-_=]+\.png",
                 RegexOptions.IgnoreCase
-            );
-        }
-
-        string RawFileUrlPrefix()
-        {
-            var dummyUrl = urlGenerator.CreateRawFileUrl("~/dummy", "hash");
-            var prefixLength = dummyUrl.IndexOf("dummy", StringComparison.Ordinal);
-            return dummyUrl.Substring(0, prefixLength);
+                );
         }
     }
 }

@@ -28,11 +28,13 @@ namespace Cassette
 
         public void Add(string filename)
         {
+            filename = NormalizeSlashes(filename);
             Add(filename, "");
         }
 
         public void Add(string filename, byte[] bytes)
         {
+            filename = NormalizeSlashes(filename);
             Func<IDirectory> directory = () => GetDirectory(filename.Substring(0, filename.LastIndexOf('/')));
             var file = new FakeFile(filename, directory)
             {
@@ -43,6 +45,7 @@ namespace Cassette
 
         public void Add(string filename, string content)
         {
+            filename = NormalizeSlashes(filename);
             Add(filename, Encoding.UTF8.GetBytes(content));
         }
 
@@ -65,6 +68,7 @@ namespace Cassette
 
         public IFile GetFile(string filename)
         {
+            filename = NormalizeSlashes(filename);
             if (filename.StartsWith("~"))
             {
                 if (root != null)
@@ -88,6 +92,11 @@ namespace Cassette
                 filename = PathUtilities.NormalizePath(FullPath + "/" + filename);
                 return GetFile(filename);
             }
+        }
+
+        static string NormalizeSlashes(string filename)
+        {
+            return string.Join("/", filename.Split(new[] { '/', '\\' }));
         }
 
         public IDirectory GetDirectory(string path)

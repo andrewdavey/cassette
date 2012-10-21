@@ -40,8 +40,7 @@ namespace Cassette.Spriting
             container.Register<IWuQuantizer, WuQuantizer>();
             container.Register<IImageLoader>(
                 (c, n) => new ImageFileLoader(
-                    c.Resolve<CassetteSettings>().SourceDirectory,
-                    c.Resolve<IUrlGenerator>()
+                    c.Resolve<CassetteSettings>().SourceDirectory
                 )
             );
         }

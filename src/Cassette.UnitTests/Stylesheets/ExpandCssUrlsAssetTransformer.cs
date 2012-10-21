@@ -15,8 +15,8 @@ namespace Cassette.Stylesheets
             };
 
             urlGenerator = new Mock<IUrlGenerator>();
-            urlGenerator.Setup(u => u.CreateRawFileUrl(It.IsAny<string>(), It.IsAny<string>()))
-                        .Returns<string, string>((f, h) => "EXPANDED");
+            urlGenerator.Setup(u => u.CreateRawFileUrl(It.IsAny<string>()))
+                        .Returns<string>(f => "EXPANDED");
             
             transformer = new ExpandCssUrlsAssetTransformer(fileSystem, urlGenerator.Object);
             asset = new Mock<IAsset>();
@@ -39,7 +39,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
 
         [Fact]
@@ -177,7 +177,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
 
         [Fact]
@@ -231,7 +231,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png"));
         }
 
         [Fact]
@@ -245,7 +245,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/images/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/images/test.png"));
         }
 
         [Fact]
@@ -261,7 +261,7 @@ namespace Cassette.Stylesheets
 
             output.ShouldEqual("p { background-image: url(EXPANDED); }");
 
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png", It.IsAny<string>()));
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png"));
         }
     }
 }

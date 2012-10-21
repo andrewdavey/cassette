@@ -95,8 +95,7 @@ namespace Cassette.Stylesheets
                 return false;
             }
 
-            var hash = HashFileContents(file);
-            var absoluteUrl = urlGenerator.CreateRawFileUrl(filename, hash);
+            var absoluteUrl = urlGenerator.CreateRawFileUrl(filename);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
             return true;
@@ -107,14 +106,6 @@ namespace Cassette.Stylesheets
             var index = relativeFilename.IndexOf('#');
             if (index < 0) return relativeFilename;
             return relativeFilename.Substring(0, index);
-        }
-
-        string HashFileContents(IFile file)
-        {
-            using (var fileStream = file.OpenRead())
-            {
-                return fileStream.ComputeSHA1Hash().ToHexString();
-            }
         }
 
         string GetImageFilename(Group matchedUrlGroup, string currentDirectory)

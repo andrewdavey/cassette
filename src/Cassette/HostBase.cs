@@ -104,7 +104,7 @@ namespace Cassette
 
         void RegisterUrlGenerator()
         {
-            container.Register<IUrlGenerator>((c, n) => new UrlGenerator(c.Resolve<IUrlModifier>(), "cassette.axd/"));
+            container.Register<IUrlGenerator>((c, n) => new UrlGenerator(c.Resolve<IUrlModifier>(), c.Resolve<CassetteSettings>().SourceDirectory, "cassette.axd/"));
         }
 
         void RegisterCache()
