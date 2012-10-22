@@ -20,6 +20,7 @@ namespace RequireJsSample
             amd.ModulePerAsset("~/Scripts/page1");
             amd.ModulePerAsset("~/Scripts/page2");
             amd.AddModule("~/Scripts/app/jquery.js", "$");
+            amd.AddAutoModule("~/Scripts/app/util.js");
             amd.MainBundlePath = "Scripts/app";
         }
     }

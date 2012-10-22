@@ -11,7 +11,7 @@ namespace Cassette.RequireJS
     public class ConfigurationScriptBuilderTests
     {
         readonly Mock<IUrlGenerator> urlGenerator;
-        readonly List<ScriptBundle> bundles = new List<ScriptBundle>();
+        readonly List<IAmdModule> modules = new List<IAmdModule>();
         string script;
 
         public ConfigurationScriptBuilderTests()
@@ -90,8 +90,8 @@ namespace Cassette.RequireJS
             foreach (var asset in assets)
             {
                 bundle.Assets.Add(asset);
+                modules.Add(new AutoAmdModule(asset, bundle, new SimpleJsonSerializer(), Mock.Of<IAmdModuleCollection>()));
             }
-            bundles.Add(bundle);
         }
 
         void WhenBuildScriptForRelease()
@@ -111,7 +111,7 @@ namespace Cassette.RequireJS
                 new SimpleJsonSerializer(),
                 debug
             );
-            script = builder.BuildConfigurationScript(bundles);
+            script = builder.BuildConfigurationScript(modules);
         }
 
         IDictionary<string, string> Paths

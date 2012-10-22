@@ -53,22 +53,19 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AddDefineCallTransformerToAssets.cs" />
     <Compile Include="AmdConfiguration.cs" />
     <Compile Include="AmdModule.cs" />
-    <Compile Include="BareScriptToAmdModuleTransformer.cs" />
+    <Compile Include="AutoAmdModule.cs" />
     <Compile Include="ConfigurationScriptBuilder.cs" />
-    <Compile Include="AmdModuleRewriter.cs" />
+    <Compile Include="IAmdModule.cs" />
     <Compile Include="IAmdModuleCollection.cs" />
     <Compile Include="RequireJsConfigUrlProvider.cs" />
     <Compile Include="ContainerConfiguration.cs" />
-    <Compile Include="DefineCallTransformer.cs" />
     <Compile Include="IConfigurationScriptBuilder.cs" />
     <Compile Include="PathHelpers.cs" />
     <Compile Include="PathsDictionaryBuilder.cs" />
-    <Compile Include="ScriptPipelineModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shim.cs" />
+    <Compile Include="ShimAmdModule.cs" />
     <Compile Include="StartUpTask.cs" />
     <Compile Include="ViewHelper.cs" />
     <Compile Include="ViewHelperImplementation.cs" />

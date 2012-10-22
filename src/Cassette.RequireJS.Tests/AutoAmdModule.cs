@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Cassette.Scripts;
+using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
 
 namespace Cassette.RequireJS
 {
-    public class BareScriptToAmdModuleTransformerTests
+    public class AutoAmdModuleTransformTests
     {
         [Fact]
         public void WrapWithModuleDefine()
@@ -79,8 +82,11 @@ namespace Cassette.RequireJS
         public void GivenReferenceToVendorModuleThenDependencyUsesConfiguredModuleInfo()
         {
             GivenReference("~/vendor/jquery.js");
+            var jquery = new Mock<IAmdModule>();
+            jquery.SetupGet(m => m.Alias).Returns("$");
+            jquery.SetupGet(m => m.ModulePath).Returns("jquery");
             modules.SetupGet(m => m["~/vendor/jquery.js"])
-                   .Returns(new AmdModule("jquery", "$"));
+                   .Returns(jquery.Object);
             AssertTransform(
                 "~/app/foo.js",
                 "var foo = {};",
@@ -96,22 +102,29 @@ namespace Cassette.RequireJS
 
         readonly List<string> references = new List<string>();
         readonly Mock<IAmdModuleCollection> modules = new Mock<IAmdModuleCollection>();
-
+        
         void GivenReference(string reference)
         {
             references.Add(reference);
             modules
                 .SetupGet(m => m[reference])
-                .Returns(new AmdModule(
-                   PathHelpers.ConvertCassettePathToModulePath(reference),
-                   PathHelpers.ConvertCassettePathToModulePath(reference).Split('/').Last()
-                ));
+                .Returns(() =>
+                {
+                    var module = new Mock<IAmdModule>();
+                    module.SetupGet(m => m.Alias).Returns(Path.GetFileNameWithoutExtension(reference));
+                    module.SetupGet(m => m.ModulePath).Returns(PathHelpers.ConvertCassettePathToModulePath(reference));
+                    return module.Object;
+                });
         }
 
         void AssertTransform(string path, string input, string expectedOutput)
         {
-            var transformer = new BareScriptToAmdModuleTransformer(modules.Object, new SimpleJsonSerializer());
-            var output = transformer.Transform(input, path, references);
+            var asset = new StubAsset(path);
+            asset.ReferenceList.AddRange(references.Select(r => new AssetReference("~/", r, 1, AssetReferenceType.SameBundle)));
+
+            var module = new AutoAmdModule(asset, new ScriptBundle("~"), new SimpleJsonSerializer(), modules.Object);
+            var outputStreamFactory = module.Transform(() => input.AsStream(), null);
+            var output = outputStreamFactory().ReadToEnd();
             output.ShouldEqual(expectedOutput);
         }
     }

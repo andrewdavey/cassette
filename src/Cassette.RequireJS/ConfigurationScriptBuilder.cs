@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Cassette.Scripts;
+using System.Linq;
 
 namespace Cassette.RequireJS
 {
@@ -16,17 +16,24 @@ namespace Cassette.RequireJS
             this.isDebuggingEnabled = isDebuggingEnabled;
         }
 
-        public string BuildConfigurationScript(IEnumerable<ScriptBundle> bundles)
+        public string BuildConfigurationScript(IEnumerable<IAmdModule> modules)
         {
-            var config = ConfigurationObject(bundles);
+            var config = ConfigurationObject(modules);
             var json = jsonSerializer.Serialize(config);
             return "var requirejs = " + json + ";";
         }
 
-        object ConfigurationObject(IEnumerable<ScriptBundle> bundles)
+        object ConfigurationObject(IEnumerable<IAmdModule> modules)
         {
-            var paths = PathsDictionaryBuilder.Build(bundles, urlGenerator, isDebuggingEnabled);
+            var paths = modules.ToDictionary(m => m.ModulePath, CreateUrl);
             return new { paths };
+        }
+
+        string CreateUrl(IAmdModule amdModule)
+        {
+            return isDebuggingEnabled 
+                ? urlGenerator.CreateAssetUrl(amdModule.Asset) 
+                : urlGenerator.CreateBundleUrl(amdModule.Bundle) + "?";
         }
     }
 }

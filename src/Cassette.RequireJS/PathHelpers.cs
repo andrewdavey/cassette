@@ -11,7 +11,8 @@
         static string RemoveFileExtension(string path)
         {
             var index = path.LastIndexOf('.');
-            if (index >= 0)
+            var slash = path.LastIndexOf('/');
+            if (index >= 0 && index > slash)
             {
                 path = path.Substring(0, index);
             }

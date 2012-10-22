@@ -1,7 +1,9 @@
-﻿namespace Cassette.RequireJS
+﻿using System.Collections.Generic;
+
+namespace Cassette.RequireJS
 {
-    public interface IAmdModuleCollection
+    public interface IAmdModuleCollection : IEnumerable<IAmdModule>
     {
-        AmdModule this[string path] { get; }
+        IAmdModule this[string path] { get; }
     }
 }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Cassette.Scripts;
-using Moq;
+using Cassette.Utilities;
 using Should;
 using Xunit;
 
@@ -12,43 +10,43 @@ namespace Cassette.RequireJS
     {
         readonly AmdConfiguration configuration;
         readonly BundleCollection bundles;
-        readonly Mock<IAssetTransformer> moduleWrapper;
-        readonly Mock<IAssetTransformer> modulePathInserter;
-        readonly Mock<IAssetTransformer> moduleShimmer;
-
+        
         public AmdConfigurationTests()
         {
-            moduleWrapper = FakeAssetTransformer();
-            modulePathInserter = FakeAssetTransformer();
-            moduleShimmer = FakeAssetTransformer();
             bundles = new BundleCollection(new CassetteSettings(Enumerable.Empty<IConfiguration<CassetteSettings>>()), null, null);
-            configuration = new AmdConfiguration(bundles, () => moduleWrapper.Object, () => modulePathInserter.Object, _ => moduleShimmer.Object);
+            configuration = new AmdConfiguration(bundles, new SimpleJsonSerializer());
         }
 
         [Fact]
         public void ModulePerAssetAddsDefineWrapperTransformerToAssetInBundle()
         {
             var bundle = new ScriptBundle("~/bundle");
-            var asset = new StubAsset("~/bundle/test.js");
+            var asset = new StubAsset("~/bundle/test.js", "var test = {};");
             bundle.Assets.Add(asset);
             bundles.Add(bundle);
 
             configuration.ModulePerAsset("~/bundle");
 
-            AssetIsTransformed(asset, moduleWrapper);
+            AssetIsTransformed(
+                asset,
+                "define(\"bundle/test\",[],function(){var test = {};\r\nreturn test;});"
+            );
         }
 
         [Fact]
         public void WhenAddModuleThenModulePathInserterWillTransformTheScript()
         {
             var bundle = new ScriptBundle("~/bundle");
-            var asset = new StubAsset("~/bundle/jquery.js");
+            var asset = new StubAsset("~/bundle/knockout.js", "define([],function(){})");
             bundle.Assets.Add(asset);
             bundles.Add(bundle);
 
-            configuration.AddModule("~/bundle/jquery.js");
+            configuration.AddModule("~/bundle/knockout.js", "ko");
 
-            AssetIsTransformed(asset, modulePathInserter);
+            AssetIsTransformed(
+                asset,
+                "define(\"bundle/knockout\",[],function(){})"
+            );
         }
 
         [Fact]
@@ -62,8 +60,6 @@ namespace Cassette.RequireJS
             configuration.ModulePerAsset("~/bundle");
 
             var module = configuration["~/bundle/test.js"];
-            module.Bundle.ShouldBeSameAs(bundle);
-            module.Asset.ShouldBeSameAs(asset);
             module.ModulePath.ShouldEqual("bundle/test");
             module.Alias.ShouldEqual("test");
         }
@@ -72,29 +68,21 @@ namespace Cassette.RequireJS
         public void WhenAddModuleUsingShimThenScriptIsTransformedUsingModuleShimmer()
         {
             var bundle = new ScriptBundle("~/bundle");
-            var asset = new StubAsset("~/bundle/test.js");
+            var asset = new StubAsset("~/bundle/test.js", "var test = {};");
             bundle.Assets.Add(asset);
             bundles.Add(bundle);
 
-            configuration.AddModuleUsingShim("~/bundle/test.js", new Shim { ModuleReturnExpression = "test" });
+            configuration.AddModuleUsingShim("~/bundle/test.js", "test");
 
-            AssetIsTransformed(asset, moduleShimmer);
+            AssetIsTransformed(
+                asset,
+                "var test = {};\r\ndefine(\"bundle/test\",[],function(){return test;});"
+            );
         }
 
-        Mock<IAssetTransformer> FakeAssetTransformer()
+        void AssetIsTransformed(IAsset asset, string expectedOutput)
         {
-            var fake = new Mock<IAssetTransformer>();
-            fake.Setup(w => w.Transform(It.IsAny<Func<Stream>>(), It.IsAny<IAsset>()))
-                .Returns(() => Stream.Null);
-            return fake;
-        }
-
-        void AssetIsTransformed(IAsset asset, Mock<IAssetTransformer> mock)
-        {
-            using (asset.OpenStream())
-            {
-                mock.Verify(w => w.Transform(It.IsAny<Func<Stream>>(), asset));
-            }
+            asset.OpenStream().ReadToEnd().ShouldEqual(expectedOutput);
         }
     }
 }

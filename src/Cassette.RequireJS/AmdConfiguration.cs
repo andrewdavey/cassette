@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Cassette.Scripts;
 
@@ -10,17 +11,13 @@ namespace Cassette.RequireJS
     public class AmdConfiguration : IAmdModuleCollection
     {
         readonly BundleCollection bundles;
-        readonly Func<IAssetTransformer> createDefineCallTransformer;
-        readonly Func<IAssetTransformer> createModulePathInserter;
-        readonly Func<Shim, IAssetTransformer> createModuleShimmer;
-        readonly Dictionary<string, AmdModule> modules = new Dictionary<string, AmdModule>();
+        readonly IJsonSerializer jsonSerializer;
+        readonly Dictionary<string, IAmdModule> modules = new Dictionary<string, IAmdModule>();
 
-        public AmdConfiguration(BundleCollection bundles, Func<IAssetTransformer> createDefineCallTransformer, Func<IAssetTransformer> createModulePathInserter, Func<Shim, IAssetTransformer> createModuleShimmer)
+        public AmdConfiguration(BundleCollection bundles, IJsonSerializer jsonSerializer)
         {
             this.bundles = bundles;
-            this.createDefineCallTransformer = createDefineCallTransformer;
-            this.createModulePathInserter = createModulePathInserter;
-            this.createModuleShimmer = createModuleShimmer;
+            this.jsonSerializer = jsonSerializer;
         }
 
         public string MainBundlePath { get; set; }
@@ -30,12 +27,13 @@ namespace Cassette.RequireJS
             var bundle = bundles.Get<ScriptBundle>(bundlePath);
             foreach (var asset in bundle.Assets)
             {
-                asset.AddAssetTransformer(createDefineCallTransformer());
-                modules[asset.Path] = new AmdModule(asset, bundle);
+                var module = new AutoAmdModule(asset, bundle, jsonSerializer, this);
+                modules[asset.Path] = module;
+                asset.AddAssetTransformer(module);
             }
         }
 
-        public void AddModule(string scriptPath, string alias = null)
+        public void AddModule(string scriptPath, string alias)
         {
             IAsset asset;
             Bundle bundle;
@@ -44,15 +42,12 @@ namespace Cassette.RequireJS
                 throw new ArgumentException("Script not found: " + scriptPath);
             }
 
-            asset.AddAssetTransformer(createModulePathInserter());
-
-            modules[scriptPath] = new AmdModule(asset, bundle)
-            {
-                Alias = alias
-            };
+            var module = new AmdModule(asset, bundle, alias);
+            modules[asset.Path] = module;
+            asset.AddAssetTransformer(module);
         }
 
-        public void AddModuleUsingShim(string scriptPath, Shim shim)
+        public void AddModuleUsingShim(string scriptPath, string moduleReturnExpression, params string[] dependencies)
         {
             IAsset asset;
             Bundle bundle;
@@ -61,17 +56,43 @@ namespace Cassette.RequireJS
                 throw new ArgumentException("Script not found: " + scriptPath);
             }
 
-            asset.AddAssetTransformer(createModuleShimmer(shim));
-
-            modules[scriptPath] = new AmdModule(asset, bundle)
-            {
-                Alias = shim.Alias
-            };
+            var module = new ShimAmdModule(asset, bundle, moduleReturnExpression, dependencies, jsonSerializer);
+            modules[asset.Path] = module;
+            asset.AddAssetTransformer(module);
         }
 
-        public AmdModule this[string path]
+        public IAmdModule this[string path]
         {
-            get { return modules[path]; }
+            get
+            {
+                IAmdModule module;
+                if (modules.TryGetValue(path, out module)) return module;
+                throw new ArgumentException("Module not found: " + path);
+            }
+        }
+
+        public IEnumerator<IAmdModule> GetEnumerator()
+        {
+            return modules.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void AddAutoModule(string scriptPath)
+        {
+            IAsset asset;
+            Bundle bundle;
+            if (!bundles.TryGetAssetByPath(scriptPath, out asset, out bundle))
+            {
+                throw new ArgumentException("Script not found: " + scriptPath);
+            }
+
+            var module = new AutoAmdModule(asset, bundle, jsonSerializer, this);
+            asset.AddAssetTransformer(module);
+            modules[asset.Path] = module;
         }
     }
 }

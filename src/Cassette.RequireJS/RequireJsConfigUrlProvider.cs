@@ -3,22 +3,28 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using Cassette.IO;
-using Cassette.Scripts;
 using Cassette.Utilities;
 
 namespace Cassette.RequireJS
 {
     public class RequireJsConfigUrlProvider
     {
+        readonly IAmdModuleCollection modules;
         readonly IConfigurationScriptBuilder configurationScriptBuilder;
-        readonly CassetteSettings cassetteSettings;
+        readonly IDirectory cacheDirectory;
         readonly IUrlGenerator urlGenerator;
         readonly object urlLock = new object();
 
-        public RequireJsConfigUrlProvider(BundleCollection bundles, IConfigurationScriptBuilder configurationScriptBuilder, CassetteSettings cassetteSettings, IUrlGenerator urlGenerator)
+        public RequireJsConfigUrlProvider(
+            BundleCollection bundles,
+            IAmdModuleCollection modules,
+            IConfigurationScriptBuilder configurationScriptBuilder,
+            IDirectory cacheDirectory,
+            IUrlGenerator urlGenerator)
         {
+            this.modules = modules;
             this.configurationScriptBuilder = configurationScriptBuilder;
-            this.cassetteSettings = cassetteSettings;
+            this.cacheDirectory = cacheDirectory;
             this.urlGenerator = urlGenerator;
             bundles.Changed += BundlesChanged;
         }
@@ -31,15 +37,14 @@ namespace Cassette.RequireJS
             // So lock to avoid race conditions
             lock (urlLock)
             {
-                Url = BuildUrl(e.Bundles);
+                Url = BuildUrl();
             }
         }
 
-        string BuildUrl(IEnumerable<Bundle> bundles)
+        string BuildUrl()
         {
-            var scriptBundles = bundles.OfType<ScriptBundle>().ToArray();
-            var config = configurationScriptBuilder.BuildConfigurationScript(scriptBundles);
-            var filename = GetCacheFilename(scriptBundles);
+            var config = configurationScriptBuilder.BuildConfigurationScript(modules);
+            var filename = GetCacheFilename();
             WriteConfigCacheFile(filename, config);
             return urlGenerator.CreateCachedFileUrl("~/Cassette.RequireJS/" + filename);
         }
@@ -58,23 +63,27 @@ namespace Cassette.RequireJS
 
         IDirectory GetEmptyConfigCacheDirectory()
         {
-            var directory = cassetteSettings.CacheDirectory.GetDirectory("Cassette.RequireJS");
+            var directory = cacheDirectory.GetDirectory("Cassette.RequireJS");
             if (directory.Exists) directory.Delete();
             directory.Create();
             return directory;
         }
 
-        static string GetCacheFilename(IEnumerable<ScriptBundle> scriptBundles)
+        string GetCacheFilename()
         {
-            var allHashes = scriptBundles
-                .Select(b => b.Hash)
-                .Aggregate<IEnumerable<byte>>((a, b) => a.Concat(b))
-                .ToArray();
             using (var sha1 = SHA1.Create())
             {
-                var hash = sha1.ComputeHash(allHashes);
-                return hash.ToUrlSafeBase64String() + ".js";
+                var hash = sha1.ComputeHash(ConcatAllBundleHashes());
+                return hash.ToHexString() + ".js";
             }
+        }
+
+        byte[] ConcatAllBundleHashes()
+        {
+            return modules
+                .Select(m => m.Bundle.Hash)
+                .Aggregate<IEnumerable<byte>>(Enumerable.Concat)
+                .ToArray();
         }
     }
 }

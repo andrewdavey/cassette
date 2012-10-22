@@ -1,3 +1,6 @@
 ﻿/// <reference path="page.js"/>
+/// <reference path="../app/jquery.js"/>
 
-page.go();
+$(function() {
+    page.go();
+});

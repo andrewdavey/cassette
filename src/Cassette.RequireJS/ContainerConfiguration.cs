@@ -7,16 +7,22 @@ namespace Cassette.RequireJS
     {
         public void Configure(TinyIoCContainer container)
         {
-            RegisterRequireJsSettings(container);
+            RegisterAmdConfiguration(container);
             RegisterConfigurationScriptBuilder(container);
+            RegisterRequireJsConfigUrlProvider(container);
         }
 
-        void RegisterRequireJsSettings(TinyIoCContainer container)
+        void RegisterAmdConfiguration(TinyIoCContainer container)
         {
-            container.Register<AmdConfiguration>().AsSingleton();
+            container
+                .Register<AmdConfiguration>()
+                .AsSingleton();
+
+            container
+                .Register<IAmdModuleCollection>((c, n) => c.Resolve<AmdConfiguration>());
         }
 
-        static void RegisterConfigurationScriptBuilder(TinyIoCContainer container)
+        void RegisterConfigurationScriptBuilder(TinyIoCContainer container)
         {
             container.Register<IConfigurationScriptBuilder>((c, n) =>
             {
@@ -27,6 +33,17 @@ namespace Cassette.RequireJS
                     settings.IsDebuggingEnabled
                 );
             });
+        }
+
+        void RegisterRequireJsConfigUrlProvider(TinyIoCContainer container)
+        {
+            container.Register((c, n) => new RequireJsConfigUrlProvider(
+                c.Resolve<BundleCollection>(),
+                c.Resolve<IAmdModuleCollection>(),
+                c.Resolve<IConfigurationScriptBuilder>(),
+                c.Resolve<CassetteSettings>().CacheDirectory,
+                c.Resolve<IUrlGenerator>()
+            ));
         }
     }
 }

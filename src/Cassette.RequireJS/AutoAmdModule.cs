@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cassette.Utilities;
 using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
@@ -11,29 +13,58 @@ namespace Cassette.RequireJS
     /// variable that matches the file name of the script. This variable will be returned as the
     /// module's value from the generated <code>define</code> call.
     /// </summary>
-    public class BareScriptToAmdModuleTransformer
+    public class AutoAmdModule : IAmdModule, IAssetTransformer
     {
-        readonly IAmdModuleCollection modules;
         readonly IJsonSerializer jsonSerializer;
+        readonly IAmdModuleCollection modules;
 
-        public BareScriptToAmdModuleTransformer(IAmdModuleCollection modules, IJsonSerializer jsonSerializer)
+        public AutoAmdModule(IAsset asset, Bundle bundle, IJsonSerializer jsonSerializer, IAmdModuleCollection modules)
         {
-            this.modules = modules;
             this.jsonSerializer = jsonSerializer;
+            this.modules = modules;
+            Asset = asset;
+            Bundle = bundle;
+            ModulePath = PathHelpers.ConvertCassettePathToModulePath(asset.Path);
+            Alias = ConvertFilenameToAlias(asset.Path);
         }
 
-        public string Transform(string source, string scriptPath, IEnumerable<string> referencePaths)
+        public IAsset Asset { get; private set; }
+        
+        public Bundle Bundle { get; private set; }
+
+        public string Alias { get; set; }
+
+        public string ModulePath { get; set; }
+        
+        public string ScriptPath
         {
-            var path = PathHelpers.ConvertCassettePathToModulePath(scriptPath);
-            var dependencyPaths = DependencyPaths(referencePaths);
-            var dependencyAliases = DependencyAliases(referencePaths);
-            var export = ExportedVariableName(scriptPath);
+            get { return Asset.Path; }
+        }
 
-            var output = JavaScriptContainsTopLevelVar(source, export)
-                ? ModuleWithReturn(path, dependencyPaths, dependencyAliases, source, export)
-                : ModuleWithoutReturn(path, dependencyPaths, dependencyAliases, source);
+        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset _)
+        {
+            return () =>
+            {
+                var source = openSourceStream().ReadToEnd();
+                var referencePaths = Asset.References.Select(r => r.ToPath).ToArray();
 
-            return output;
+                var dependencyPaths = DependencyPaths(referencePaths);
+                var dependencyAliases = DependencyAliases(referencePaths);
+
+                var output = JavaScriptContainsTopLevelVar(source, Alias)
+                    ? ModuleWithReturn(ModulePath, dependencyPaths, dependencyAliases, source, Alias)
+                    : ModuleWithoutReturn(ModulePath, dependencyPaths, dependencyAliases, source);
+
+                return output.AsStream();
+            };
+        }
+
+        string ConvertFilenameToAlias(string assetPath)
+        {
+            var name = Path.GetFileNameWithoutExtension(assetPath);
+            if (!char.IsLetter(name[0]) && name[0] != '_') name = "_" + name;
+            var safeName = Regex.Replace(name, "[^a-zA-Z0-9_]", match => "_");
+            return safeName;
         }
 
         string ModuleWithoutReturn(string path, IEnumerable<string> dependencyPaths, IEnumerable<string> dependencyAliases, string source)
@@ -68,14 +99,6 @@ namespace Cassette.RequireJS
         IEnumerable<string> DependencyAliases(IEnumerable<string> referencePaths)
         {
             return referencePaths.Select(p => modules[p].Alias);
-        }
-
-        string ExportedVariableName(string assetPath)
-        {
-            var name = Path.GetFileNameWithoutExtension(assetPath);
-            if (!char.IsLetter(name[0]) && name[0] != '_') name = "_" + name;
-            var safeName = Regex.Replace(name, "[^a-zA-Z0-9_]", match => "_");
-            return safeName;
         }
 
         bool JavaScriptContainsTopLevelVar(string source, string var)
