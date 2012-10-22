@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets a JavaScript identifier used as a function parameter by modules that import this module.
         /// </summary>
-        string Alias { get; }
+        string Alias { get; set; }
         
         /// <summary>
         /// Gets the asset that defines this module.

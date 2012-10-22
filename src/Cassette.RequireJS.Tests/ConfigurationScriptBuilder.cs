@@ -11,7 +11,8 @@ namespace Cassette.RequireJS
     public class ConfigurationScriptBuilderTests
     {
         readonly Mock<IUrlGenerator> urlGenerator;
-        readonly List<IAmdModule> modules = new List<IAmdModule>();
+        readonly List<Bundle> bundles = new List<Bundle>();
+        readonly AmdConfiguration modules = new AmdConfiguration();
         string script;
 
         public ConfigurationScriptBuilderTests()
@@ -19,6 +20,8 @@ namespace Cassette.RequireJS
             urlGenerator = new Mock<IUrlGenerator>();
             urlGenerator.Setup(g => g.CreateBundleUrl(It.IsAny<Bundle>())).Returns("BUNDLE-URL");
             urlGenerator.Setup(g => g.CreateAssetUrl(It.IsAny<IAsset>())).Returns("ASSET-URL");
+
+            GivenBundle("~/shared", new StubAsset("~/shared/required.js"));
         }
 
         [Fact]    
@@ -90,8 +93,8 @@ namespace Cassette.RequireJS
             foreach (var asset in assets)
             {
                 bundle.Assets.Add(asset);
-                modules.Add(new AutoAmdModule(asset, bundle, new SimpleJsonSerializer(), Mock.Of<IAmdModuleCollection>()));
             }
+            bundles.Add(bundle);
         }
 
         void WhenBuildScriptForRelease()
@@ -106,6 +109,7 @@ namespace Cassette.RequireJS
 
         void BuildScript(bool debug)
         {
+            modules.InitializeModulesFromBundles(bundles, "~/shared/required.js");
             var builder = new ConfigurationScriptBuilder(
                 urlGenerator.Object,
                 new SimpleJsonSerializer(),

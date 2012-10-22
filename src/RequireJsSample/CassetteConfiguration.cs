@@ -17,11 +17,8 @@ namespace RequireJsSample
         {
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
 
-            amd.ModulePerAsset("~/Scripts/page1");
-            amd.ModulePerAsset("~/Scripts/page2");
-            amd.AddModule("~/Scripts/app/jquery.js", "$");
-            amd.AddAutoModule("~/Scripts/app/util.js");
-            amd.MainBundlePath = "Scripts/app";
+            amd.InitializeModulesFromBundles(bundles, "Scripts/app/require.js");
+            amd.SetImportAlias("Scripts/app/jquery.js", "$");
         }
     }
 }

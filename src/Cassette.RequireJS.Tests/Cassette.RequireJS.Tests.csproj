@@ -55,11 +55,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmdConfiguration.cs" />
-    <Compile Include="AmdModule.cs" />
-    <Compile Include="AutoAmdModule.cs" />
+    <Compile Include="AnonymousModule.cs" />
+    <Compile Include="NamedModule.cs" />
+    <Compile Include="PlainScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationScriptBuilder.cs" />
-    <Compile Include="ShimAmdModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
