@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package inherits="../Cassette.Shared.nuspec" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <metadata>
+    <id xdt:Transform="Insert">Cassette.RequireJS</id>
+    <description xdt:Transform="Insert">RequireJS support for Cassette.</description>
+    <dependencies xdt:Transform="Insert">
+      <dependency id="Cassette" version="$version$" />
+    </dependencies>
+  </metadata>
+  <files xdt:Transform="Insert">
+    <file src="bin\Release\Cassette.RequireJS.dll" target="lib\net40" />
+  </files>
+</package>

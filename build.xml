@@ -20,6 +20,7 @@
         <TestProject Include="Hogan.UnitTests"/>
         <TestProject Include="Aspnet.Jasmine.UnitTests"/>
         <TestProject Include="Spriting.UnitTests"/>
+        <TestProject Include="RequireJS.UnitTests"/>
         <TestProject Include="IntegrationTests"/>
         <!-- Sass is only support in .NET 4.0 and above -->
         <TestProject Include="Sass.UnitTests" Condition="'$(Configuration)' != 'ReleaseNET35'"/>
@@ -37,6 +38,7 @@
         <NugetProject Include="Cassette.KnockoutJQueryTmpl"/>
         <NugetProject Include="Cassette.Aspnet.Jasmine"/>
         <NugetProject Include="Cassette.Spriting"/>
+        <NugetProject Include="Cassette.RequireJS"/>
     </ItemGroup>
 
     <Target Name="Default" DependsOnTargets="Build;Test;NugetPack">

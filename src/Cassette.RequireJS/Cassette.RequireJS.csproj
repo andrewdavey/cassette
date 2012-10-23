@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,14 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web">
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
@@ -72,16 +66,16 @@
     <Compile Include="ViewHelperImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
-      <Project>{3a021487-a395-4fe6-9b41-336d0f1e6ad0}</Project>
-      <Name>Cassette.Views</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{a5ccf9d3-5d49-4bfc-b9a6-9ec9e0e29c50}</Project>
       <Name>Cassette</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cassette.RequireJS.nutrans">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Cassette.RequireJS.symbols.nutrans" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
