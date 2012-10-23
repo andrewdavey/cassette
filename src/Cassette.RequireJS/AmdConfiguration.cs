@@ -8,14 +8,11 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
 {
-    /// <summary>
-    /// Configures script bundles to work as AMD modules.
-    /// </summary>
-    public class AmdConfiguration : IAmdModuleCollection
+    class AmdConfiguration : IAmdConfiguration
     {
         readonly Dictionary<string, IAmdModule> modules = new Dictionary<string, IAmdModule>();
 
-        public string MainBundlePath { get; set; }
+        public string MainBundlePath { get; private set; }
 
         public void InitializeModulesFromBundles(IEnumerable<Bundle> bundles, string requireJsScriptPath)
         {
@@ -88,41 +85,15 @@ namespace Cassette.RequireJS
             return parser.Parse(new CodeSettings());
         }
 
-        public void SetImportAlias(string scriptPath, string importAlias)
-        {
-            scriptPath = PathUtilities.AppRelative(scriptPath);
-
-            IAmdModule module;
-            if (modules.TryGetValue(scriptPath, out module))
-            {
-                module.Alias = importAlias;
-            }
-            else
-            {
-                throw new ArgumentException("Script not found: " + scriptPath);
-            }
-        }
-
-        public void SetModuleReturnExpression(string path, string moduleReturnExpression)
-        {
-            var module = this[path] as PlainScript;
-            if (module != null)
-            {
-                module.ModuleReturnExpression = moduleReturnExpression;
-            }
-            else
-            {
-                throw new ArgumentException("Cannot change the return expression of a predefined AMD module: " + path);
-            }
-        }
-
-        public IAmdModule this[string path]
+        public IAmdModule this[string scriptPath]
         {
             get
             {
+                scriptPath = PathUtilities.AppRelative(scriptPath);
+
                 IAmdModule module;
-                if (modules.TryGetValue(path, out module)) return module;
-                throw new ArgumentException("Module not found: " + path);
+                if (modules.TryGetValue(scriptPath, out module)) return module;
+                throw new ArgumentException("Module not found: " + scriptPath);
             }
         }
 

@@ -6,9 +6,9 @@ namespace RequireJsSample
 {
     public class CassetteConfiguration : IConfiguration<BundleCollection>
     {
-        readonly AmdConfiguration amd;
+        readonly IAmdConfiguration amd;
 
-        public CassetteConfiguration(AmdConfiguration amd)
+        public CassetteConfiguration(IAmdConfiguration amd)
         {
             this.amd = amd;
         }

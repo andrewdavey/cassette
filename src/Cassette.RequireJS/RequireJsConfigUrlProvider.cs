@@ -9,7 +9,7 @@ namespace Cassette.RequireJS
 {
     class RequireJsConfigUrlProvider : IRequireJsConfigUrlProvider
     {
-        readonly IAmdModuleCollection modules;
+        readonly IAmdConfiguration modules;
         readonly IConfigurationScriptBuilder configurationScriptBuilder;
         readonly IDirectory cacheDirectory;
         readonly IUrlGenerator urlGenerator;
@@ -17,7 +17,7 @@ namespace Cassette.RequireJS
 
         public RequireJsConfigUrlProvider(
             BundleCollection bundles,
-            IAmdModuleCollection modules,
+            IAmdConfiguration modules,
             IConfigurationScriptBuilder configurationScriptBuilder,
             IDirectory cacheDirectory,
             IUrlGenerator urlGenerator)

@@ -19,7 +19,7 @@ namespace Cassette.RequireJS
                 .AsSingleton();
 
             container
-                .Register<IAmdModuleCollection>((c, n) => c.Resolve<AmdConfiguration>());
+                .Register<IAmdConfiguration>((c, n) => c.Resolve<AmdConfiguration>());
         }
 
         void RegisterConfigurationScriptBuilder(TinyIoCContainer container)
@@ -39,7 +39,7 @@ namespace Cassette.RequireJS
         {
             container.Register<IRequireJsConfigUrlProvider>((c, n) => new RequireJsConfigUrlProvider(
                 c.Resolve<BundleCollection>(),
-                c.Resolve<IAmdModuleCollection>(),
+                c.Resolve<IAmdConfiguration>(),
                 c.Resolve<IConfigurationScriptBuilder>(),
                 c.Resolve<CassetteSettings>().CacheDirectory,
                 c.Resolve<IUrlGenerator>()

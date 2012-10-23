@@ -7,11 +7,11 @@ namespace Cassette.RequireJS
     public class ViewHelperImplementation
     {
         readonly BundleCollection bundles;
-        readonly AmdConfiguration configuration;
+        readonly IAmdConfiguration configuration;
         readonly IJsonSerializer jsonSerializer;
         readonly IRequireJsConfigUrlProvider requireJsConfigUrlProvider;
 
-        public ViewHelperImplementation(BundleCollection bundles, AmdConfiguration configuration, IJsonSerializer jsonSerializer, IRequireJsConfigUrlProvider requireJsConfigUrlProvider)
+        public ViewHelperImplementation(BundleCollection bundles, IAmdConfiguration configuration, IJsonSerializer jsonSerializer, IRequireJsConfigUrlProvider requireJsConfigUrlProvider)
         {
             this.bundles = bundles;
             this.configuration = configuration;

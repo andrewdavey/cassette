@@ -9,10 +9,10 @@ namespace Cassette.RequireJS
 {
     class PlainScript : Module, IAssetTransformer
     {
-        readonly IAmdModuleCollection modules;
+        readonly IAmdConfiguration modules;
         readonly SimpleJsonSerializer jsonSerializer;
 
-        public PlainScript(IAsset asset, Bundle bundle, IAmdModuleCollection modules) 
+        public PlainScript(IAsset asset, Bundle bundle, IAmdConfiguration modules) 
             : base(asset, bundle)
         {
             this.modules = modules;

@@ -48,10 +48,11 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AmdConfiguration.cs" />
+    <Compile Include="AmdConfigurationExtensions.cs" />
     <Compile Include="AnonymousModule.cs" />
     <Compile Include="ConfigurationScriptBuilder.cs" />
     <Compile Include="IAmdModule.cs" />
-    <Compile Include="IAmdModuleCollection.cs" />
+    <Compile Include="IAmdConfiguration.cs" />
     <Compile Include="IRequireJsConfigUrlProvider.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleDefinitionParser.cs" />
