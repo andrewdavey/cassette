@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Cassette.RequireJS
 {
-    public class ConfigurationScriptBuilder : IConfigurationScriptBuilder
+    class ConfigurationScriptBuilder : IConfigurationScriptBuilder
     {
         readonly IUrlGenerator urlGenerator;
         readonly IJsonSerializer jsonSerializer;

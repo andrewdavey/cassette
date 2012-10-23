@@ -37,7 +37,7 @@ namespace Cassette.RequireJS
 
         void RegisterRequireJsConfigUrlProvider(TinyIoCContainer container)
         {
-            container.Register((c, n) => new RequireJsConfigUrlProvider(
+            container.Register<IRequireJsConfigUrlProvider>((c, n) => new RequireJsConfigUrlProvider(
                 c.Resolve<BundleCollection>(),
                 c.Resolve<IAmdModuleCollection>(),
                 c.Resolve<IConfigurationScriptBuilder>(),

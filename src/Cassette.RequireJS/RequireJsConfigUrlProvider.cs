@@ -7,7 +7,7 @@ using Cassette.Utilities;
 
 namespace Cassette.RequireJS
 {
-    public class RequireJsConfigUrlProvider
+    class RequireJsConfigUrlProvider : IRequireJsConfigUrlProvider
     {
         readonly IAmdModuleCollection modules;
         readonly IConfigurationScriptBuilder configurationScriptBuilder;

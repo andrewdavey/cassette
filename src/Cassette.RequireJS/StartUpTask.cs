@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Cassette.RequireJS
+﻿namespace Cassette.RequireJS
 {
     /// <summary>
     /// Run by Cassette at application start-up.
