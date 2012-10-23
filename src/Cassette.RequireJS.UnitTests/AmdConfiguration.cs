@@ -57,6 +57,25 @@ namespace Cassette.RequireJS
             );
         }
 
+        [Fact]
+        public void SetModuleReturnExpressionChangesPlainScriptModuleReturnExpression()
+        {
+            GivenBundle("~", new StubAsset("~/test.js"));
+            configuration.InitializeModulesFromBundles(bundles, "~/shared/require.js");
+            configuration.SetModuleReturnExpression("~/test.js", "{ test: 1 }");
+            ((PlainScript)configuration["~/test.js"]).ModuleReturnExpression.ShouldEqual("{ test: 1 }");
+        }
+
+        [Fact]
+        public void GivenNamedBundleThenSetModuleReturnExpressionThrowsException()
+        {
+            GivenBundle("~", new StubAsset("~/test.js", "define(\"test\",[],function(){})"));
+            configuration.InitializeModulesFromBundles(bundles, "~/shared/require.js");
+            Assert.Throws<ArgumentException>(
+                () => configuration.SetModuleReturnExpression("~/test.js", "{ test: 1 }")
+            );
+        }
+
         void GivenBundle(string path, params IAsset[] assets)
         {
             var bundle = new ScriptBundle(path);

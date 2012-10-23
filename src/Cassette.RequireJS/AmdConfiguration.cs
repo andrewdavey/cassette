@@ -103,6 +103,19 @@ namespace Cassette.RequireJS
             }
         }
 
+        public void SetModuleReturnExpression(string path, string moduleReturnExpression)
+        {
+            var module = this[path] as PlainScript;
+            if (module != null)
+            {
+                module.ModuleReturnExpression = moduleReturnExpression;
+            }
+            else
+            {
+                throw new ArgumentException("Cannot change the return expression of a predefined AMD module: " + path);
+            }
+        }
+
         public IAmdModule this[string path]
         {
             get
