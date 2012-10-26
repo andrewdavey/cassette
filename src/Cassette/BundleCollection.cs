@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -71,12 +72,21 @@ namespace Cassette
             readerWriterLock.EnterWriteLock();
             return new DelegatingDisposable(() =>
             {
+                // get the snapshot from inside the lock.
+                var updatedCollection = GetReadOnlySnapshot();
                 readerWriterLock.ExitWriteLock();
                 // Make the sweeping assumption that if someone asked for a write lock
                 // then they changed the collection in some way.
                 // In future we can look at actually checking for changes.
-                Changed(this, new BundleCollectionChangedEventArgs(new ReadOnlyCollection<Bundle>(bundles)));
+                Changed(this, new BundleCollectionChangedEventArgs(updatedCollection));
             });
+        }
+
+        private ReadOnlyCollection<Bundle> GetReadOnlySnapshot()
+        {
+            Debug.Assert(readerWriterLock.IsReadLockHeld || readerWriterLock.IsWriteLockHeld);
+            // taking a snapshot is not necessarily safe if we don't hold a lock.
+            return new ReadOnlyCollection<Bundle>(bundles.ToList());
         }
 
         /// <summary>

@@ -42,5 +42,28 @@ namespace Cassette
 
             readOnlyBundleCollection.First().ShouldBeSameAs(bundle);
         }
+
+        [Fact]
+        public void ChangeEventArgsIsSnapshotOfBundlesCollection()
+        {
+            List<IEnumerable<Bundle>> readOnlyBundleCollections = new List<IEnumerable<Bundle>>();
+            bundles.Changed += (sender, args) =>
+            {
+                readOnlyBundleCollections.Add(args.Bundles);
+            };
+
+            var bundle1 = new TestableBundle("~/1");
+            var bundle2 = new TestableBundle("~/2");
+            using (bundles.GetWriteLock())
+            {
+                bundles.Add(bundle1);
+            }
+            using (bundles.GetWriteLock())
+            {
+                bundles.Add(bundle2);
+            }
+
+            readOnlyBundleCollections.First().ShouldNotContain(bundle2);
+        }
     }
 }
