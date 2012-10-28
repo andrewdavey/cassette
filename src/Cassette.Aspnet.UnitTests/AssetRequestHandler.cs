@@ -108,10 +108,7 @@ namespace Cassette.Aspnet
                  .Returns("");
             bundles.First().Assets.Add(asset.Object);
 
-            using (outputStream = new MemoryStream())
-            {
-                handler.ProcessRequest("~/test/asset.js");
-            }
+            handler.ProcessRequest("~/test/asset.js");
 
             response.VerifySet(r => r.ContentType = "CONTENT/TYPE");
         }
@@ -135,8 +132,7 @@ namespace Cassette.Aspnet
             using (outputStream = new MemoryStream())
             {
                 handler.ProcessRequest("~/test/asset.js");
-
-                Encoding.UTF8.GetString(outputStream.ToArray()).ShouldEqual("output");
+                response.Verify(r => r.Write("output"));
             }
         }
 

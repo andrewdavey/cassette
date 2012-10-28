@@ -145,7 +145,7 @@ namespace Cassette
                 httpContext = http.Context.Object;
 
                 http.Get(url);
-                return http.ResponseOutputStream.ReadToEnd();
+                return http.WrittenBody;
             }
         }
     }

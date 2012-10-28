@@ -1,23 +1,19 @@
-﻿using System;
-using System.Security.Cryptography;
-using Cassette.Utilities;
+﻿using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
 
 namespace Cassette.BundleProcessing
 {
-    public class AssignHash_Tests : IDisposable
+    public class AssignHash_Tests
     {
         readonly AssignHash assignHash;
         readonly TestableBundle bundle;
-        readonly SHA1 sha1;
 
         public AssignHash_Tests()
         {
             assignHash = new AssignHash();
             bundle = new TestableBundle("~");
-            sha1 = SHA1.Create();
         }
 
         [Fact]
@@ -70,17 +66,7 @@ namespace Cassette.BundleProcessing
 
         void AssertHashIsSha1Of(string expected)
         {
-            using (var stream = expected.AsStream())
-            {
-                bundle.Hash.ShouldEqual(sha1.ComputeHash(stream));
-            }
-        }
-
-        void IDisposable.Dispose()
-        {
-#if !NET35
-           sha1.Dispose();
-#endif
+            bundle.Hash.ShouldEqual(expected.ComputeSHA1Hash());
         }
     }
 }

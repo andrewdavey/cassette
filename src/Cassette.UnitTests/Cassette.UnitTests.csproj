@@ -234,6 +234,7 @@
     <Compile Include="UrlGenerator_CreateBundleUrl_Tests.cs" />
     <Compile Include="UrlGenerator_CreateRawFileUrl_Tests.cs" />
     <Compile Include="Utilities\Graph.cs" />
+    <Compile Include="Utilities\Utils.cs" />
     <Compile Include="VirtualDirectoryPrepender.cs" />
     <Compile Include="UrlGeneratorTestsBase.cs" />
     <Compile Include="PlaceholderTracker.cs" />

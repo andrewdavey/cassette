@@ -1,3 +1,4 @@
+using System.Text;
 using Cassette.Utilities;
 
 namespace Cassette.BundleProcessing
@@ -13,11 +14,11 @@ namespace Cassette.BundleProcessing
 
         class HashBuilder : IBundleVisitor
         {
-            string allContent;
+            readonly StringBuilder allContent = new StringBuilder("");
 
             public byte[] Hash
             {
-                get { return allContent.ComputeSHA1Hash(); }
+                get { return allContent.ToString().ComputeSHA1Hash(); }
             }
 
             public void Visit(Bundle bundle)
@@ -26,7 +27,7 @@ namespace Cassette.BundleProcessing
 
             public void Visit(IAsset asset)
             {
-                allContent += asset.GetTransformedContent();
+                allContent.Append(asset.GetTransformedContent());
             }
         }
     }

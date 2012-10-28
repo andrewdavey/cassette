@@ -94,8 +94,7 @@ namespace Cassette.Aspnet
         [Fact]
         public void BundleAssetContentReturned()
         {
-            outputStream.Position = 0;
-            outputStream.ReadToEnd().ShouldEqual("asset-content");
+            response.Verify(r => r.Write("asset-content"));
         }
 
         [Fact]
@@ -177,8 +176,7 @@ namespace Cassette.Aspnet
         [Fact]
         public void BundleAssetContentReturned()
         {
-            outputStream.Position = 0;
-            (outputStream.Length > 0).ShouldBeTrue();
+            response.Verify(r => r.Write(It.IsAny<string>()));
         }
     }
 

@@ -34,7 +34,7 @@ namespace Cassette
 
                 http.Get(url);
                 http.Response.VerifySet(r => r.ContentType = "text/javascript");
-                return http.ResponseOutputStream.ReadToEnd();
+                return http.WrittenBody;
             }
         }
     }

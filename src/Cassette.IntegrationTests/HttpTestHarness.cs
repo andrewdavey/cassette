@@ -33,6 +33,8 @@ namespace Cassette
             Response.SetupGet(r => r.OutputStream).Returns(ResponseOutputStream);
             Response.SetupGet(r => r.Cache).Returns(ResponseCache.Object);
             Response.SetupProperty(r => r.ContentType);
+            Response.Setup(r => r.Write(It.IsAny<string>()))
+                    .Callback<string>(content => WrittenBody += content);
         }
 
         public Mock<HttpContextBase> Context;
@@ -41,6 +43,7 @@ namespace Cassette
         public NameValueCollection RequestHeaders;
         public Mock<HttpCachePolicyBase> ResponseCache;
         public Stream ResponseOutputStream;
+        public string WrittenBody = "";
 
         public void Get(string url)
         {
