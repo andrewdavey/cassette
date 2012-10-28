@@ -32,10 +32,10 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/test.png", new byte[] { 1, 2, 3 });
             
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
             var expectedBase64 = Base64Encode(new byte[] { 1, 2, 3 });
-            getResult().ReadToEnd().ShouldEqual(
+            result.ShouldEqual(
                 "p { background-image: url(test.png);background-image: url(data:image/png;base64," + expectedBase64 + "); }"
             );
         }
@@ -48,10 +48,10 @@ namespace Cassette.Stylesheets
 
             var css = "p { background-image: url(test1.png); } " +
                       "a { background-image: url(test2.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
             var expectedBase64 = Base64Encode(new byte[] { 1, 2, 3 });
-            getResult().ReadToEnd().ShouldEqual(
+            result.ShouldEqual(
                 "p { background-image: url(test1.png);background-image: url(data:image/png;base64," + expectedBase64 + "); } " +
                 "a { background-image: url(test2.png);background-image: url(data:image/png;base64," + expectedBase64 + "); }"
             );
@@ -65,10 +65,10 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/jquery-ui/images/test.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(images/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
             var expectedBase64 = Base64Encode(new byte[] { 1, 2, 3 });
-            getResult().ReadToEnd().ShouldEqual(
+            result.ShouldEqual(
                 "p { background-image: url(images/test.png);background-image: url(data:image/png;base64," + expectedBase64 + "); }"
             );
         }
@@ -79,9 +79,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/test.jpg", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(test.jpg); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
-            getResult().ReadToEnd().ShouldContain("url(data:image/jpeg;");
+            result.ShouldContain("url(data:image/jpeg;");
         }
 
         [Fact]
@@ -90,8 +90,7 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/test.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            getResult();
+            transformer.Transform(css, asset.Object);
 
             asset.Verify(a => a.AddRawFileReference("~/test.png"));
         }
@@ -100,9 +99,9 @@ namespace Cassette.Stylesheets
         public void GivenFileDoesNotExists_WhenTransform_ThenUrlIsNotChanged()
         {
             var css = "p { background-image: url(FILE_NOT_FOUND.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
-            getResult().ReadToEnd().ShouldEqual(
+            result.ShouldEqual(
                 "p { background-image: url(FILE_NOT_FOUND.png); }"
             );
         }
@@ -115,9 +114,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/test.png", new byte[] { 1, 2, 3 });
 
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
-            getResult().ReadToEnd().ShouldEqual(
+            result.ShouldEqual(
                 "p { background-image: url(test.png); }"
             );
         }
@@ -129,9 +128,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/test.png", new byte[32768 + 1]);
 
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
-            getResult().ReadToEnd().ShouldEqual(
+            result.ShouldEqual(
                 "p { background-image: url(test.png); }"
             );
         }
@@ -143,10 +142,10 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/test.png", new byte[32768]);
 
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var result = transformer.Transform(css, asset.Object);
 
             var expectedBase64 = Base64Encode(new byte[32768]);
-            getResult().ReadToEnd().ShouldEqual(
+            result.ShouldEqual(
                 "p { background-image: url(test.png);background-image: url(data:image/png;base64," + expectedBase64 + "); }"
             );
         }

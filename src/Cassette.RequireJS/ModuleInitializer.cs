@@ -87,7 +87,7 @@ namespace Cassette.RequireJS
 
         static Block ParseJavaScript(IAsset asset)
         {
-            var source = asset.OpenStream().ReadToEnd();
+            var source = asset.GetTransformedContent();
             var parser = new JSParser(source);
             return parser.Parse(new CodeSettings());
         }

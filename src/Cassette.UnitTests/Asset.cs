@@ -50,15 +50,9 @@ namespace Cassette
         }
 
         [Fact]
-        public void OpenStream_OpensTheFile()
+        public void GetTransformedContent_OpensTheFile()
         {
-            using (var stream = asset.OpenStream())
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    reader.ReadToEnd().ShouldEqual("asset content");
-                }
-            }
+            asset.GetTransformedContent().ShouldEqual("asset content");
         }
 
         [Fact]
@@ -66,31 +60,23 @@ namespace Cassette
         {
             var transformer = new Mock<IAssetTransformer>();
             transformer
-                .Setup(t => t.Transform(It.IsAny<Func<Stream>>(), asset))
-                .Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
+                .Setup(t => t.Transform(It.IsAny<string>(), asset))
+                .Returns("test");
             asset.AddAssetTransformer(transformer.Object);
 
-            using (var sha1 = SHA1.Create())
-            {
-                var expected = sha1.ComputeHash(new byte[] { 1, 2, 3 });
-                asset.Hash.ShouldEqual(expected);
-            }
+            asset.Hash.ShouldEqual("test".ComputeSHA1Hash());
         }
 
         [Fact]
-        public void WhenAddAssetTransformer_ThenOpenStreamReturnsTransformedStream()
+        public void WhenAddAssetTransformer_ThenGetTransformedContentReturnsTransformedContent()
         {
-            Stream transformedStream = null;
             var transformer = new Mock<IAssetTransformer>();
-            transformer.Setup(t => t.Transform(It.IsAny<Func<Stream>>(), asset))
-                        .Returns(() => () => transformedStream = new MemoryStream());
+            transformer.Setup(t => t.Transform(It.IsAny<string>(), asset))
+                       .Returns(() => "test");
             
             asset.AddAssetTransformer(transformer.Object);
-
-            using (var stream = asset.OpenStream())
-            {
-                stream.ShouldBeSameAs(transformedStream);
-            }
+            var output = asset.GetTransformedContent();
+            output.ShouldEqual("test");
         }
 
         [Fact]
@@ -98,21 +84,17 @@ namespace Cassette
         {
             var transformer1 = new Mock<IAssetTransformer>();
             var transformer2 = new Mock<IAssetTransformer>();
-            Func<Stream> openStream1 = () => Stream.Null;
-            var stream2 = Mock.Of<Stream>();
-            Func<Stream> openStream2 = () => stream2;
-            transformer1.Setup(t => t.Transform(It.IsAny<Func<Stream>>(), asset))
-                        .Returns(() => openStream1).Verifiable();
-            transformer2.Setup(t => t.Transform(openStream1, asset))
-                        .Returns(() => openStream2).Verifiable();
+            transformer1.Setup(t => t.Transform(It.IsAny<string>(), asset))
+                        .Returns("1").Verifiable();
+            transformer2.Setup(t => t.Transform("1", asset))
+                        .Returns("2").Verifiable();
 
             asset.AddAssetTransformer(transformer1.Object);
             asset.AddAssetTransformer(transformer2.Object);
             
-            using (var result = asset.OpenStream())
-            {
-                result.ShouldBeSameAs(stream2);
-            }
+            asset.GetTransformedContent().ShouldEqual("2");
+            transformer1.Verify();
+            transformer2.Verify();
         }
 
         [Fact]

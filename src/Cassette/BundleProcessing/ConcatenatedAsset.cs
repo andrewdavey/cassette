@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
 using Cassette.Utilities;
 
 namespace Cassette.BundleProcessing
 {
-    class ConcatenatedAsset : AssetBase, IDisposable
+    class ConcatenatedAsset : AssetBase
     {
+        readonly string content;
         readonly byte[] hash;
         readonly IEnumerable<IAsset> children;
-        readonly MemoryStream stream;
         readonly string separator;
 
         public ConcatenatedAsset(IEnumerable<IAsset> children, string separator)
         {
             this.children = children.ToArray();
             this.separator = separator ?? Environment.NewLine;
-            stream = CopyAssetsIntoSingleStream(this.children);
-            hash = stream.ComputeSHA1Hash();
+            content = ConcatenateAssetContent(this.children);
+            hash = content.ComputeSHA1Hash();
         }
 
         public override void Accept(IBundleVisitor visitor)
@@ -59,20 +59,15 @@ namespace Cassette.BundleProcessing
             throw new NotSupportedException();
         }
 
-        protected override Stream OpenStreamCore()
+        protected override string GetContentCore()
         {
-            return new MemoryStream(stream.ToArray());
+            return content;
         }
 
-        public void Dispose()
+        string ConcatenateAssetContent(IEnumerable<IAsset> assets)
         {
-            stream.Dispose();
-        }
+            var builder = new StringBuilder();
 
-        MemoryStream CopyAssetsIntoSingleStream(IEnumerable<IAsset> assets)
-        {
-            var outputStream = new MemoryStream();
-            var writer = new StreamWriter(outputStream);
             var isFirstAsset = true;
             foreach (var asset in assets)
             {
@@ -82,35 +77,12 @@ namespace Cassette.BundleProcessing
                 }
                 else
                 {
-                    writer.Write(separator);
+                    builder.Append(separator);
                 }
-                WriteAsset(asset, writer);
+                builder.Append(asset.GetTransformedContent());
             }
 
-            writer.Flush();
-            outputStream.Position = 0;
-            return outputStream;
-        }
-
-        void WriteAsset(IAsset asset, StreamWriter writer)
-        {
-            using (var reader = new StreamReader(asset.OpenStream()))
-            {
-                var isFirstLine = true;
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (isFirstLine)
-                    {
-                        isFirstLine = false;
-                    }
-                    else
-                    {
-                        writer.WriteLine();
-                    }
-                    writer.Write(line);
-                }
-            }
+            return builder.ToString();
         }
     }
 }

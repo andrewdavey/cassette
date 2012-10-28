@@ -60,10 +60,7 @@ namespace Cassette.Spriting
 
         string ReadCssFromBundle(StylesheetBundle bundle)
         {
-            using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
-            {
-                return reader.ReadToEnd();
-            }
+            return bundle.Assets[0].GetTransformedContent();
         }
 
         SpritePackage GenerateSprites(StylesheetBundle bundle, string css)

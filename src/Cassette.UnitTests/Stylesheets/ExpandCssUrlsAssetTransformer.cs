@@ -34,10 +34,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/test.png");
 
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
@@ -90,49 +89,45 @@ namespace Cassette.Stylesheets
                 .Setup(g => g.CreateAbsolutePathUrl(It.IsAny<string>()))
                 .Returns("ABSOLUTE-URL");
 
-            var output = TransformCssWhereUrlDoesNotExist();
+            var result = TransformCssWhereUrlDoesNotExist();
 
-            output.ShouldEqual("p { background-image: url(ABSOLUTE-URL); }");
+            result.ShouldEqual("p { background-image: url(ABSOLUTE-URL); }");
         }
 
         [Fact]
         public void GivenCssUrlIsPathStartingWithSlash_WhenTransform_ThenUrlIsUnchanged()
         {
             var css = "p { background-image: url(/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(/test.png); }");
+            result.ShouldEqual("p { background-image: url(/test.png); }");
         }
 
         [Fact]
         public void GivenCssUrlIsFullUrl_WhenTransform_ThenUrlIsUnchanged()
         {
             var css = "p { background-image: url(http://example.com/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(http://example.com/test.png); }");
+            result.ShouldEqual("p { background-image: url(http://example.com/test.png); }");
         }
 
         [Fact]
         public void GivenCssUrlIsFullHttpsUrl_WhenTransform_ThenUrlIsUnchanged()
         {
             var css = "p { background-image: url(https://example.com/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(https://example.com/test.png); }");
+            result.ShouldEqual("p { background-image: url(https://example.com/test.png); }");
         }
 
         [Fact]
         public void GivenCssUrlIsFullProtocolRelativeUrl_WhenTransform_ThenUrlIsUnchanged()
         {
             var css = "p { background-image: url(//example.com/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(//example.com/test.png); }");
+            result.ShouldEqual("p { background-image: url(//example.com/test.png); }");
         }
 
         [Fact]
@@ -146,8 +141,19 @@ namespace Cassette.Stylesheets
         string TransformCssWhereUrlDoesNotExist()
         {
             var css = "p { background-image: url(test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            return getResult().ReadToEnd();
+            return transformer.Transform(css, asset.Object);
+        }
+
+        [Fact]
+        public void GivenCssWithUrlWithFragment_WhenTransformed_ThenUrlIsExpanded()
+        {
+            fileSystem.Add("~/styles/test.png");
+            var css = "p { background-image: url(test.png#fragment); }";
+            var result = transformer.Transform(css, asset.Object);
+
+            result.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
 
         [Fact]
@@ -155,10 +161,9 @@ namespace Cassette.Stylesheets
         {
             fileSystem.Add("~/styles/test.png");
             var css = "p { background-image: url(\n test.png \n); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(\n EXPANDED \n); }");
+            result.ShouldEqual("p { background-image: url(\n EXPANDED \n); }");
         }
 
         [Fact]
@@ -166,10 +171,9 @@ namespace Cassette.Stylesheets
         {
             fileSystem.Add("~/styles/test.png");
             var css = "p { background-image: url(\"test.png\"); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(\"EXPANDED\"); }");
+            result.ShouldEqual("p { background-image: url(\"EXPANDED\"); }");
         }
 
         [Fact]
@@ -178,20 +182,18 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/test.png");
 
             var css = "p { background-image: url('test.png'); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url('EXPANDED'); }");
+            result.ShouldEqual("p { background-image: url('EXPANDED'); }");
         }
 
         [Fact]
         public void GivenCssWithHttpUrl_WhenTransformed_ThenUrlNotChanged()
         {
             var css = "p { background-image: url(http://test.com/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(http://test.com/test.png); }");
+            result.ShouldEqual("p { background-image: url(http://test.com/test.png); }");
         }
 
         [Fact]
@@ -200,10 +202,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/test.png");
 
             var css = "p { background-image: url(/styles/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
@@ -212,40 +213,36 @@ namespace Cassette.Stylesheets
         public void GivenCssWithProtocolRelativeUrl_WhenTransformed_ThenUrlNotChanged()
         {
             var css = "p { background-image: url(//test.com/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(//test.com/test.png); }");
+            result.ShouldEqual("p { background-image: url(//test.com/test.png); }");
         }
 
         [Fact]
         public void GivenCssWithDataUri_WhenTransformed_ThenUrlNotChanged()
         {
             var css = "p { background-image: url(data:image/png;base64,abc); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(data:image/png;base64,abc); }");
+            result.ShouldEqual("p { background-image: url(data:image/png;base64,abc); }");
         }
 
         [Fact]
         public void GivenCssWithDataUriInDoubleQuotes_WhenTransformed_ThenUrlNotChanged()
         {
             var css = "p { background-image: url(\"data:image/png;base64,abc\"); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(\"data:image/png;base64,abc\"); }");
+            result.ShouldEqual("p { background-image: url(\"data:image/png;base64,abc\"); }");
         }
 
         [Fact]
         public void GivenCssWithDataUriInSingleQuotes_WhenTransformed_ThenUrlNotChanged()
         {
             var css = "p { background-image: url('data:image/png;base64,abc'); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url('data:image/png;base64,abc'); }");
+            result.ShouldEqual("p { background-image: url('data:image/png;base64,abc'); }");
         }
 
         [Fact]
@@ -254,10 +251,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/images/test.png");
 
             var css = "p { background-image: url(images/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png"));
         }
@@ -268,10 +264,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/images/test.png");
 
             var css = "p { background-image: url(../images/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/images/test.png"));
         }
@@ -284,10 +279,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/images/test.png");
 
             var css = "p { background-image: url(../images/test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png"));
         }

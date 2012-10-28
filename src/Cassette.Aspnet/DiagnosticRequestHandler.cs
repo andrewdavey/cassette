@@ -167,10 +167,7 @@ namespace Cassette.Aspnet
 
             if (bundle.Assets.Any())
             {
-                using (var s = bundle.OpenStream())
-                {
-                    return s.Length;
-                }
+                return bundle.GetContent().Length;
             }
 
             return -1;

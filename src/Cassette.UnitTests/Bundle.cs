@@ -224,16 +224,13 @@ namespace Cassette
         {
             var bundle = new TestableBundle("~");
             var asset = new Mock<IAsset>();
-            using (var stream = new MemoryStream())
-            {
-                asset.Setup(a => a.OpenStream()).Returns(stream);
-                bundle.Assets.Add(asset.Object);
-                bundle.Process(new CassetteSettings());
+            asset.Setup(a => a.GetTransformedContent()).Returns("test");
+            bundle.Assets.Add(asset.Object);
+            bundle.Process(new CassetteSettings());
 
-                var actualStream = bundle.OpenStream();
+            var actualStream = bundle.GetContent();
 
-                actualStream.ShouldBeSameAs(stream);
-            }
+            actualStream.ShouldBeSameAs("test");
         }
 
         [Fact]

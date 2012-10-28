@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 #if NET35
 using System.IO.IsolatedStorage;
@@ -16,6 +17,16 @@ namespace Cassette.Utilities
             using (var sha1 = SHA1.Create())
             {
                 return sha1.ComputeHash(stream);
+            }
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static byte[] ComputeSHA1Hash(this string input)
+        // ReSharper restore InconsistentNaming
+        {
+            using (var sha1 = SHA1.Create())
+            {
+                return sha1.ComputeHash(Encoding.Unicode.GetBytes(input));
             }
         }
 

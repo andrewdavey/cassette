@@ -17,8 +17,8 @@ namespace Cassette.HtmlTemplates
      @reference 'another2.js'
      @reference another3.js another4.js
 -->";
-            asset.Setup(a => a.OpenStream())
-                 .Returns(javaScriptSource.AsStream());
+            asset.Setup(a => a.GetTransformedContent())
+                 .Returns(javaScriptSource);
             var bundle = new HtmlTemplateBundle("~");
             bundle.Assets.Add(asset.Object);
 
@@ -42,8 +42,8 @@ namespace Cassette.HtmlTemplates
      @reference 'another2.js'
      @reference another3.js another4.js
 -->";
-            asset.Setup(a => a.OpenStream())
-                 .Returns(javaScriptSource.AsStream());
+            asset.Setup(a => a.GetTransformedContent())
+                 .Returns(javaScriptSource);
             var bundle = new HtmlTemplateBundle("~");
             bundle.Assets.Add(asset.Object);
 

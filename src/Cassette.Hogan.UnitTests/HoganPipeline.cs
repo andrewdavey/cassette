@@ -39,10 +39,9 @@ namespace Cassette.HtmlTemplates
 
         static ScriptEngine LoadHtmlTemplateScriptsIntoEngine(HtmlTemplateBundle bundle)
         {
-            var output = bundle.OpenStream().ReadToEnd();
             var scriptEngine = new ScriptEngine();
             scriptEngine.ExecuteFile("hogan.js");
-            scriptEngine.Execute(output);
+            scriptEngine.Execute(bundle.GetContent());
             return scriptEngine;
         }
     }

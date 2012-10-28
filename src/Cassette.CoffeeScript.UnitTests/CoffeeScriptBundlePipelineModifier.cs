@@ -19,7 +19,7 @@ namespace Cassette.Scripts
             bundle = new ScriptBundle("~/");
             asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/test.coffee");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            asset.Setup(a => a.GetTransformedContent()).Returns("");
             bundle.Assets.Add(asset.Object);
 
             compiler = new Mock<ICoffeeScriptCompiler>();
@@ -68,7 +68,7 @@ namespace Cassette.Scripts
 
         void ApplyTransform(CompileAsset transformer)
         {
-            transformer.Transform(() => Stream.Null, asset.Object)().Dispose();
+            transformer.Transform("", asset.Object);
         }
     }
 }

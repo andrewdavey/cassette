@@ -19,8 +19,8 @@ namespace Cassette.Scripts
 
 class Foo
 ";
-            asset.Setup(a => a.OpenStream())
-                 .Returns(coffeeScriptSource.AsStream());
+            asset.Setup(a => a.GetTransformedContent())
+                 .Returns(coffeeScriptSource);
             var bundle = new ScriptBundle("~");
             bundle.Assets.Add(asset.Object);
 

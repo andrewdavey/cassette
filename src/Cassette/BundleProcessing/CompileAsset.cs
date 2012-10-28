@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using Cassette.IO;
-using Cassette.Utilities;
+﻿using Cassette.IO;
 
 namespace Cassette.BundleProcessing
 {
@@ -16,23 +13,17 @@ namespace Cassette.BundleProcessing
         readonly ICompiler compiler;
         readonly IDirectory rootDirectory;
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string assetContent, IAsset asset)
         {
-            return delegate
-            {
-                using (var input = new StreamReader(openSourceStream()))
-                {
-                    var compileResult = Compile(asset, input);
-                    AddRawFileReferenceForEachImportedFile(asset, compileResult);
-                    return compileResult.Output.AsStream();
-                }
-            };
+            var compileResult = Compile(assetContent, asset);
+            AddRawFileReferenceForEachImportedFile(asset, compileResult);
+            return compileResult.Output;
         }
 
-        CompileResult Compile(IAsset asset, StreamReader input)
+        CompileResult Compile(string assetContent, IAsset asset)
         {
             var context = CreateCompileContext(asset);
-            return compiler.Compile(input.ReadToEnd(), context);
+            return compiler.Compile(assetContent, context);
         }
 
         CompileContext CreateCompileContext(IAsset asset)

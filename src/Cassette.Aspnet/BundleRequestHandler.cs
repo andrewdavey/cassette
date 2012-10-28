@@ -73,11 +73,16 @@ namespace Cassette.Aspnet
 
             var encoding = request.Headers["Accept-Encoding"];
             response.Filter = EncodeStreamAndAppendResponseHeaders(response.Filter, encoding);
+<<<<<<< HEAD
 
             using (var assetStream = bundle.OpenStream())
             {
                 assetStream.CopyTo(response.OutputStream);
             }
+=======
+            
+            response.Write(bundle.GetContent());
+>>>>>>> Change IAsset to be string based
         }
 
         void CacheLongTime(string actualETag)

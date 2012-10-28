@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
@@ -10,7 +9,7 @@ namespace Cassette.HtmlTemplates
         {
             return string.Join(
                 Environment.NewLine,
-                bundle.Assets.Select(asset => asset.OpenStream().ReadToEnd()).ToArray()
+                bundle.Assets.Select(asset => asset.GetTransformedContent()).ToArray()
             );
         }
     }

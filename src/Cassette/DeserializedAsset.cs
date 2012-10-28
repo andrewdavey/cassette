@@ -61,7 +61,7 @@ namespace Cassette
             throw new NotSupportedException();
         }
 
-        public Stream OpenStream()
+        public string GetTransformedContent()
         {
             throw new NotSupportedException();
         }

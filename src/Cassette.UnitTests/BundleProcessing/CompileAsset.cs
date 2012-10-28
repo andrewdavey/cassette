@@ -22,15 +22,8 @@ namespace Cassette.BundleProcessing
 
             var transformer = new CompileAsset(compiler, Mock.Of<IDirectory>());
 
-            var getResultStream = transformer.Transform(
-                () => sourceInput.AsStream(),
-                asset.Object
-            );
-
-            using (var reader = new StreamReader(getResultStream()))
-            {
-                reader.ReadToEnd().ShouldEqual(compilerOutput);
-            }
+            var result = transformer.Transform(sourceInput, asset.Object);
+            result.ShouldEqual(compilerOutput);
         }
 
         [Fact]
@@ -44,8 +37,7 @@ namespace Cassette.BundleProcessing
                 .Returns(new CompileResult("", new[] { "~/imported.less" }));
 
             var transformer = new CompileAsset(compiler.Object, Mock.Of<IDirectory>());
-            var getResultStream = transformer.Transform(() => Stream.Null, asset.Object);
-            getResultStream();
+            transformer.Transform("", asset.Object);
 
             asset.Verify(a => a.AddRawFileReference("~/imported.less"));
         }

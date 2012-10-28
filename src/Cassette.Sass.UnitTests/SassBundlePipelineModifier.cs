@@ -85,9 +85,7 @@ namespace Cassette.Stylesheets
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns(filename);
-// ReSharper disable ConvertClosureToMethodGroup
-            asset.Setup(a => a.OpenStream()).Returns(() => content.AsStream());
-// ReSharper restore ConvertClosureToMethodGroup
+            asset.Setup(a => a.GetTransformedContent()).Returns(content);
             return asset;
         }
 

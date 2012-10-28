@@ -21,19 +21,11 @@ namespace Cassette.HtmlTemplates
             this.idStrategy = idStrategy;
         }
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string assetContent, IAsset asset)
         {
-            return () =>
-            {
-                using (var reader = new StreamReader(openSourceStream()))
-                {
-                    var template = reader.ReadToEnd();
-                    var idString = CreateJavaScriptString(TemplateId(asset));
-                    var templateString = CreateJavaScriptString(template);
-                    var output = string.Format(javaScriptTemplate, idString, templateString);
-                    return new MemoryStream(Encoding.UTF8.GetBytes(output));
-                }
-            };
+            var idString = CreateJavaScriptString(TemplateId(asset));
+            var templateString = CreateJavaScriptString(assetContent);
+            return string.Format(javaScriptTemplate, idString, templateString);
         }
 
         string TemplateId(IAsset asset)

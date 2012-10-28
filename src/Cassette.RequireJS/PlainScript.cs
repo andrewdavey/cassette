@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Cassette.Utilities;
 using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
@@ -22,17 +19,7 @@ namespace Cassette.RequireJS
 
         public string ModuleReturnExpression { get; set; }
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
-        {
-            return () =>
-            {
-                var source = openSourceStream().ReadToEnd();
-                var output = Transform(source);
-                return output.AsStream();
-            };
-        }
-
-        string Transform(string source)
+        public string Transform(string source, IAsset asset)
         {
             if (ModuleReturnExpression != null)
             {

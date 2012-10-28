@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using Cassette.Utilities;
-using Microsoft.Ajax.Utilities;
+﻿using Microsoft.Ajax.Utilities;
 
 namespace Cassette.Stylesheets
 {
@@ -19,16 +16,9 @@ namespace Cassette.Stylesheets
 
         readonly CssSettings cssSettings;
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string assetContent, IAsset asset)
         {
-            return delegate
-            {
-                using (var reader = new StreamReader(openSourceStream()))
-                {
-                    var output = new Minifier().MinifyStyleSheet(reader.ReadToEnd(), cssSettings);
-                    return output.AsStream();
-                }
-            };
+            return new Minifier().MinifyStyleSheet(assetContent, cssSettings);
         }
     }
 }

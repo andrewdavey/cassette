@@ -69,9 +69,9 @@ namespace Cassette.Caching
             var file = cacheDirectory.GetFile(bundle.CacheFilename);
             file.Directory.Create();
             using (var contentFileStream = file.Open(FileMode.Create, FileAccess.Write, FileShare.None))
-            using (var bundleContent = bundle.OpenStream())
+            using (var writer = new StreamWriter(contentFileStream))
             {
-                bundleContent.CopyTo(contentFileStream);
+                writer.Write(bundle.GetContent());
                 contentFileStream.Flush();
             }
         }

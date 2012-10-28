@@ -75,15 +75,7 @@ namespace Cassette.HtmlTemplates
                 htmlTemplateIdStrategy
             );
 
-            var getOutput = transformer.Transform(
-                () => new MemoryStream(Encoding.UTF8.GetBytes(htmlTemplate)),
-                asset.Object
-            );
-
-            using (var reader = new StreamReader(getOutput()))
-            {
-                transformOutput = reader.ReadToEnd();
-            }
+            transformOutput = transformer.Transform(htmlTemplate, asset.Object);
         }
 
         void ThenOutputIs(string expected)

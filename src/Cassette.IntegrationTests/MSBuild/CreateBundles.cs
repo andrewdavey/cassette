@@ -70,7 +70,7 @@ namespace Cassette.MSBuild
                 .Verifiable();
 
             var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
-            var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
+            var content = bundles.OfType<StylesheetBundle>().First().GetContent();
 
             Regex.IsMatch(content, @"url\(cassette.axd/file/test-.*?\.png\)")
                  .ShouldBeTrue("Incorrect content: " + content);

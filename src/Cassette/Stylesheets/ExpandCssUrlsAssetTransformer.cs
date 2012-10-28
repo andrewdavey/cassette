@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -28,39 +26,25 @@ namespace Cassette.Stylesheets
             @"^(https?:|data:|//)"
         );
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string css, IAsset asset)
         {
-            return delegate
+            var currentDirectory = GetCurrentDirectory(asset);
+            var urlMatches = UrlMatchesInReverse(css);
+            var builder = new StringBuilder(css);
+            foreach (var match in urlMatches)
             {
-                var css = ReadCss(openSourceStream);
-                var currentDirectory = GetCurrentDirectory(asset);
-                var urlMatches = UrlMatchesInReverse(css);
-                var builder = new StringBuilder(css);
-                foreach (var match in urlMatches)
+                var matchedUrlGroup = match.Groups["url"];
+                var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory);
+                if (ReplaceUrlWithCassetteRawFileUrl(builder, matchedUrlGroup, relativeFilename))
                 {
-                    var matchedUrlGroup = match.Groups["url"];
-                    string queryString;
-                    string fragment;
-                    var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory, out queryString, out fragment);
-                    if (ReplaceUrlWithCassetteRawFileUrl(builder, matchedUrlGroup, relativeFilename, queryString, fragment))
-                    {
-                        asset.AddRawFileReference(relativeFilename);
-                    }
-                    else
-                    {
-                        ReplaceUrlWithAbsoluteUrl(builder, matchedUrlGroup, currentDirectory);
-                    }
+                    asset.AddRawFileReference(relativeFilename);
                 }
-                return builder.ToString().AsStream();
-            };
-        }
-
-        string ReadCss(Func<Stream> openSourceStream)
-        {
-            using (var reader = new StreamReader(openSourceStream()))
-            {
-                return reader.ReadToEnd();
+                else
+                {
+                    ReplaceUrlWithAbsoluteUrl(builder, matchedUrlGroup, currentDirectory);
+                }
             }
+            return builder.ToString();
         }
 
         string GetCurrentDirectory(IAsset asset)

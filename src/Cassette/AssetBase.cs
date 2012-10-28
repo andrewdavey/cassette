@@ -16,19 +16,15 @@ namespace Cassette
             transformers.Add(transformer);
         }
 
-        public Stream OpenStream()
+        public string GetTransformedContent()
         {
-            // Passing an already created stream to the transformers would make deciding who has to 
-            // close the stream confusing. Using a Func<Stream> instead allows a transformer to 
-            // choose when to create the stream and also then close it.
-            var createStream = transformers.Aggregate<IAssetTransformer, Func<Stream>>(
-                OpenStreamCore,
+            return transformers.Aggregate(
+                GetContentCore(),
                 (current, transformer) => transformer.Transform(current, this)
             );
-            return createStream();
         }
 
-        protected abstract Stream OpenStreamCore();
+        protected abstract string GetContentCore();
 
         public abstract string Path { get; }
 

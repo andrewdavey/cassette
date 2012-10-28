@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using Cassette.Utilities;
-using Microsoft.Ajax.Utilities;
+﻿using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
 {
@@ -12,15 +9,10 @@ namespace Cassette.RequireJS
         {
             asset.AddAssetTransformer(this);
         }
-    
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+
+        public string Transform(string source, IAsset asset)
         {
-            return () =>
-            {
-                var source = openSourceStream().ReadToEnd();
-                var output = ModulePathInserter.InsertModulePathIntoDefineCall(source, ModulePath);
-                return output.AsStream();
-            };
+            return InsertModulePathIntoDefineCall(source, ModulePath);
         }
 
         /// <summary>

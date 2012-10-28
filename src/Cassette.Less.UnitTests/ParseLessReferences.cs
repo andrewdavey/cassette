@@ -1,5 +1,4 @@
-﻿using Cassette.Utilities;
-using Moq;
+﻿using Moq;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -17,8 +16,8 @@ namespace Cassette.Stylesheets
 // @reference '/another2.less';
 // @reference '../test/another3.less';
 ";
-            asset.Setup(a => a.OpenStream())
-                 .Returns(lessSource.AsStream());
+            asset.Setup(a => a.GetTransformedContent())
+                 .Returns(lessSource);
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
@@ -31,4 +30,3 @@ namespace Cassette.Stylesheets
         }
     }
 }
-

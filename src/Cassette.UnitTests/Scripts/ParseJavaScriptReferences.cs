@@ -17,8 +17,8 @@ namespace Cassette.Scripts
 ///   <reference path=""/another2.js"">
 /// <reference path='../test/another3.js'/>
 ";
-            asset.Setup(a => a.OpenStream())
-                 .Returns(javaScriptSource.AsStream());
+            asset.Setup(a => a.GetTransformedContent())
+                 .Returns(javaScriptSource);
             var bundle = new ScriptBundle("~");
             bundle.Assets.Add(asset.Object);
 

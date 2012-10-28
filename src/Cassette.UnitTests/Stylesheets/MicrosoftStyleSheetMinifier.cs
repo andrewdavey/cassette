@@ -1,5 +1,4 @@
-﻿using Cassette.Utilities;
-using Should;
+﻿using Should;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -10,11 +9,8 @@ namespace Cassette.Stylesheets
         public void TransformMinifiesCss()
         {
             var minifier = new MicrosoftStylesheetMinifier();
-            var getResult = minifier.Transform(() => "p { color: White; }".AsStream(), new StubAsset());
-            using (var result = getResult())
-            {
-                result.ReadToEnd().ShouldEqual("p{color:#fff}");
-            }
+            var result = minifier.Transform("p { color: White; }", new StubAsset());
+            result.ShouldEqual("p{color:#fff}");
         }
     }
 }

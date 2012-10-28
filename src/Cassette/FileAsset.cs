@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using Cassette.Caching;
 using Cassette.IO;
 using Cassette.Utilities;
@@ -16,7 +16,7 @@ namespace Cassette
             this.parentBundle = parentBundle;
             this.sourceFile = sourceFile;
 
-            hash = new Lazy<byte[]>(ComputeHash); // Avoid file IO until the hash is actually needed.
+            hash = new Lazy<byte[]>(ComputeHashOfTransformedContent); // Avoid file IO until the hash is actually needed.
         }
 
         readonly Bundle parentBundle;
@@ -107,18 +107,18 @@ namespace Cassette
             references.Add(new AssetReference(Path, relativeFilename, -1, AssetReferenceType.RawFilename));
         }
 
-        byte[] ComputeHash()
+        byte[] ComputeHashOfTransformedContent()
         {
             using (var sha1 = SHA1.Create())
-            using (var stream = OpenStream())
             {
-                return sha1.ComputeHash(stream);
+                var bytes = Encoding.Unicode.GetBytes(GetTransformedContent());
+                return sha1.ComputeHash(bytes);
             }
         }
 
-        protected override Stream OpenStreamCore()
+        protected override string GetContentCore()
         {
-            return sourceFile.OpenRead();
+            return sourceFile.OpenRead().ReadToEnd();
         }
 
         public override void Accept(IBundleVisitor visitor)

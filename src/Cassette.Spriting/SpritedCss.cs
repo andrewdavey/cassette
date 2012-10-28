@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -58,9 +57,9 @@ namespace Cassette.Spriting
             throw new NotImplementedException();
         }
 
-        public Stream OpenStream()
+        public string GetTransformedContent()
         {
-            return new MemoryStream(Encoding.UTF8.GetBytes(css));
+            return css;
         }
     }
 }

@@ -140,7 +140,7 @@ namespace Cassette
 
         class CustomJavaScriptMinfier : IJavaScriptMinifier
         {
-            public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+            public string Transform(string assetContent, IAsset asset)
             {
                 throw new NotImplementedException();
             }
@@ -148,7 +148,7 @@ namespace Cassette
 
         class CustomStylesheetMinfier : IStylesheetMinifier
         {
-            public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+            public string Transform(string assetContent, IAsset asset)
             {
                 throw new NotImplementedException();
             }

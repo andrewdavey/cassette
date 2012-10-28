@@ -42,7 +42,7 @@ namespace Cassette.Stylesheets
 	    {
 	        var asset = new Mock<IAsset>();
 	        asset.SetupGet(a => a.Path).Returns("~/file.less");
-            asset.Setup(a => a.OpenStream()).Returns(() => "// @reference 'other.less';".AsStream());
+            asset.Setup(a => a.GetTransformedContent()).Returns("// @reference 'other.less';");
             var bundle = new StylesheetBundle("~");
 	        bundle.Assets.Add(asset.Object);
 
@@ -56,7 +56,7 @@ namespace Cassette.Stylesheets
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/file.less");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            asset.Setup(a => a.GetTransformedContent()).Returns("");
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 

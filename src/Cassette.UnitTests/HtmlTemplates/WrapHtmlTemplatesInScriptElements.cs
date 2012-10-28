@@ -71,9 +71,7 @@ namespace Cassette.HtmlTemplates
         string TransformToHtml()
         {
             var transformer = new WrapHtmlTemplateInScriptElement(bundle, new HtmlTemplateIdBuilder(pathSeparatorReplacement: "-"));
-            var getResult = transformer.Transform(() => templateContent.AsStream(), asset.Object);
-            var html = getResult().ReadToEnd();
-            return html;
+            return transformer.Transform(templateContent, asset.Object);
         }
     }
 }

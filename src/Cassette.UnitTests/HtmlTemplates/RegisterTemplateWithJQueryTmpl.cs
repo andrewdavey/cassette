@@ -1,5 +1,4 @@
 ﻿using System;
-using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -16,9 +15,9 @@ namespace Cassette.HtmlTemplates
             asset.Setup(a => a.Path).Returns("~/asset.htm");
             var transformer = new RegisterTemplateWithJQueryTmpl(bundle, new HtmlTemplateIdBuilder());
 
-            var getResult = transformer.Transform(() => "TEMPLATE".AsStream(), asset.Object);
+            var result = transformer.Transform("TEMPLATE", asset.Object);
 
-            getResult().ReadToEnd().ShouldEqual("jQuery.template('asset', TEMPLATE);" + Environment.NewLine);
+            result.ShouldEqual("jQuery.template('asset', TEMPLATE);" + Environment.NewLine);
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using Cassette.Utilities;
 
 namespace Cassette.HtmlTemplates
 {
@@ -17,14 +15,15 @@ namespace Cassette.HtmlTemplates
             this.idStrategy = idStrategy;
         }
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string template, IAsset asset)
         {
-            return delegate
-            {
-                var id = idStrategy.HtmlTemplateId(bundle, asset);
-                var template = openSourceStream().ReadToEnd();
-                return string.Format("jQuery.template('{0}', {1});{2}", id, template, Environment.NewLine).AsStream();
-            };
+            var id = idStrategy.HtmlTemplateId(bundle, asset);
+            return string.Format(
+                "jQuery.template('{0}', {1});{2}",
+                id,
+                template,
+                Environment.NewLine
+            );
         }
     }
 }

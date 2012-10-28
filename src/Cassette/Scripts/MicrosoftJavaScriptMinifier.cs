@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using Cassette.Utilities;
-using Microsoft.Ajax.Utilities;
+﻿using Microsoft.Ajax.Utilities;
 
 namespace Cassette.Scripts
 {
@@ -19,17 +16,9 @@ namespace Cassette.Scripts
 
         readonly CodeSettings codeSettings;
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string assetContent, IAsset asset)
         {
-            return delegate
-            {
-                using (var reader = new StreamReader(openSourceStream()))
-                {
-                    var output = new Minifier().MinifyJavaScript(reader.ReadToEnd(), codeSettings);
-                    return output.AsStream();
-                }
-            };
+            return new Minifier().MinifyJavaScript(assetContent, codeSettings);
         }
     }
 }
-

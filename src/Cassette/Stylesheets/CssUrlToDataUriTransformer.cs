@@ -34,27 +34,23 @@ namespace Cassette.Stylesheets
             this.rootDirectory = rootDirectory;
         }
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string css, IAsset asset)
         {
-            return delegate
+            var matches = urlRegex
+                .Matches(css)
+                .Cast<Match>()
+                .Select(match => CreateCssUrlMatchTransformer(match, asset, rootDirectory))
+                .Where(match => match.CanTransform && shouldEmbedUrl(match.Url))
+                .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
+
+            var output = new StringBuilder(css);
+            foreach (var match in matches)
             {
-                var css = openSourceStream().ReadToEnd();
-                var matches = urlRegex
-                    .Matches(css)
-                    .Cast<Match>()
-                    .Select(match => CreateCssUrlMatchTransformer(match, asset, rootDirectory))
-                    .Where(match => match.CanTransform && shouldEmbedUrl(match.Url))
-                    .Reverse(); // Must work backwards to prevent match indicies getting out of sync after insertions.
+                match.Transform(output);
 
-                var output = new StringBuilder(css);
-                foreach (var match in matches)
-                {
-                    match.Transform(output);
-
-                    asset.AddRawFileReference(match.File.FullPath);
-                }
-                return output.ToString().AsStream();
-            };
+                asset.AddRawFileReference(match.File.FullPath);
+            }
+            return output.ToString();
         }
 
         protected abstract CssUrlMatchTransformer CreateCssUrlMatchTransformer(Match match, IAsset asset, IDirectory rootDirectory);

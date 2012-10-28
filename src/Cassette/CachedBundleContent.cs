@@ -10,7 +10,7 @@ namespace Cassette
 {
     class CachedBundleContent : IAsset
     {
-        readonly byte[] content;
+        readonly string content;
         readonly IEnumerable<IAsset> originalAssets;
 
         public CachedBundleContent(IFile file, IEnumerable<IAsset> originalAssets, IUrlModifier urlModifier)
@@ -24,7 +24,7 @@ namespace Cassette
             get { return originalAssets; }
         }
 
-        byte[] TransformUrls(IFile file, IUrlModifier urlModifier)
+        string TransformUrls(IFile file, IUrlModifier urlModifier)
         {
             using (var stream = file.OpenRead())
             using (var reader = new StreamReader(stream))
@@ -35,7 +35,7 @@ namespace Cassette
                     "<CASSETTE_URL_ROOT>(.*?)</CASSETTE_URL_ROOT>",
                     match => urlModifier.Modify(match.Groups[1].Value)
                 );
-                return Encoding.UTF8.GetBytes(output);
+                return output;
             }
         }
 
@@ -47,13 +47,13 @@ namespace Cassette
             }
         }
 
-        public Stream OpenStream()
+        public string GetTransformedContent()
         {
             if (content == null)
             {
-                throw new InvalidOperationException("Cannot open stream. Bundle was created from a manifest without any content.");
+                throw new InvalidOperationException("Bundle was created from a manifest without any content.");
             }
-            return new MemoryStream(content);
+            return content;
         }
 
         public Type AssetCacheValidatorType

@@ -45,7 +45,7 @@ namespace Cassette.RequireJS
 
             var module = new PlainScript(asset, bundle, modules.Object);
 
-            var output = asset.OpenStream().ReadToEnd();
+            var output = asset.GetTransformedContent();
             output.ShouldEqual("define(\"test\",[],function(){var test = {};\r\nreturn test;});");
         }
 
@@ -60,7 +60,7 @@ namespace Cassette.RequireJS
                 ModuleReturnExpression = "{}"
             };
 
-            var output = asset.OpenStream().ReadToEnd();
+            var output = asset.GetTransformedContent();
             output.ShouldEqual("define(\"test\",[],function(){var test = {};\r\nreturn {};});");
         }
 
@@ -72,7 +72,7 @@ namespace Cassette.RequireJS
 
             var module = new PlainScript(asset, bundle, modules.Object);
 
-            var output = asset.OpenStream().ReadToEnd();
+            var output = asset.GetTransformedContent();
             output.ShouldEqual("define(\"test\",[],function(){\r\n});");
         }
 
@@ -89,7 +89,7 @@ namespace Cassette.RequireJS
 
             var module = new PlainScript(asset, bundle, modules.Object);
 
-            var output = asset.OpenStream().ReadToEnd();
+            var output = asset.GetTransformedContent();
             output.ShouldEqual("define(\"test\",[\"foo\",\"bar\"],function(foo,bar){\r\n});");
         }
 

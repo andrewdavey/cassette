@@ -35,7 +35,7 @@ namespace Cassette.Stylesheets
             var bundle = new StylesheetBundle("~");
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/asset.css");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            asset.Setup(a => a.GetTransformedContent()).Returns("");
             bundle.Assets.Add(asset.Object);
 
             // Remove the ConcatenateAssets step, so the transformer is added to our mock asset instead of the concatenated asset object.
@@ -52,7 +52,7 @@ namespace Cassette.Stylesheets
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/file.less");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            asset.Setup(a => a.GetTransformedContent()).Returns("");
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
@@ -69,7 +69,7 @@ namespace Cassette.Stylesheets
         {
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/file.less");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            asset.Setup(a => a.GetTransformedContent()).Returns("");
             var bundle = new StylesheetBundle("~");
             bundle.Assets.Add(asset.Object);
 
@@ -104,12 +104,12 @@ namespace Cassette.Stylesheets
 
             asset1.SetupGet(a => a.Path)
                   .Returns("~/asset1.css");
-            asset1.Setup(a => a.OpenStream())
-                  .Returns(() => "/* @reference \"asset2.css\"; */".AsStream());
+            asset1.Setup(a => a.GetTransformedContent())
+                  .Returns("/* @reference \"asset2.css\"; */");
             asset2.SetupGet(a => a.Path)
                   .Returns("~/asset2.css");
-            asset2.Setup(a => a.OpenStream())
-                  .Returns(() => "p { color: White; }".AsStream());
+            asset2.Setup(a => a.GetTransformedContent())
+                  .Returns("p { color: White; }");
             asset1.SetupGet(a => a.References)
                   .Returns(new[] { new AssetReference(asset1.Object.Path, "~/asset2.css", -1, AssetReferenceType.SameBundle) });
 
@@ -183,7 +183,7 @@ namespace Cassette.Stylesheets
             var pipeline = new StylesheetPipeline(container, settings);
             pipeline.Process(bundle);
 
-            using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
+            using (var reader = new StreamReader(bundle.Assets[0].GetTransformedContent()))
             {
                 reader.ReadToEnd().ShouldEqual("p{color:#fff}");
             }

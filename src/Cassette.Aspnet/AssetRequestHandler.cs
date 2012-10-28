@@ -52,10 +52,7 @@ namespace Cassette.Aspnet
             }
             else
             {
-                using (var stream = asset.OpenStream())
-                {
-                    stream.CopyTo(response.OutputStream);
-                }
+                response.Write(asset.GetTransformedContent());
             }
         }
 

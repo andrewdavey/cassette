@@ -44,11 +44,8 @@ namespace Cassette.Spriting
         [Fact]
         public void CssImageUrlsRewrittenToReferenceCachedSpriteImages()
         {
-            using (var reader = new StreamReader(bundle.OpenStream()))
-            {
-                var css = reader.ReadToEnd();
-                css.ShouldContain("url(/cassette.axd/cached/sprites/");
-            }
+            var css = bundle.GetContent();
+            css.ShouldContain("url(/cassette.axd/cached/sprites/");
         }
 
         void ExpandUrls(StylesheetBundle bundle)

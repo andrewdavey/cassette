@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using Cassette.Caching;
+using Cassette.Utilities;
 
 namespace Cassette
 {
@@ -25,13 +26,7 @@ namespace Cassette
         {
             get
             {
-                using (var stream = OpenStream())
-                {
-                    using (var sha1 = SHA1.Create())
-                    {
-                        return sha1.ComputeHash(stream);
-                    }
-                }
+                return GetTransformedContent().ComputeSHA1Hash();
             }
         }
 
@@ -63,22 +58,24 @@ namespace Cassette
         {
         }
 
-        public Stream OpenStream()
+        public string GetTransformedContent()
         {
-            var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream != null)
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
-                return stream;
-            }
-            else
-            {
-                throw new InvalidOperationException(
-                    string.Format(
-                        "Resource {0} not found in assembly {1}.",
-                        resourceName, 
-                        assembly.FullName
-                    )
-                );
+                if (stream != null)
+                {
+                    return stream.ReadToEnd();
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            "Resource {0} not found in assembly {1}.",
+                            resourceName,
+                            assembly.FullName
+                            )
+                        );
+                }
             }
         }
 

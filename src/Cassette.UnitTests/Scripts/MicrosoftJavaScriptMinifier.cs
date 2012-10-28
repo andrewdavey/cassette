@@ -1,5 +1,4 @@
-﻿using Cassette.Utilities;
-using Should;
+﻿using Should;
 using Xunit;
 
 namespace Cassette.Scripts
@@ -10,9 +9,8 @@ namespace Cassette.Scripts
         public void TransformMinifiesJavaScript()
         {
             var minifier = new MicrosoftJavaScriptMinifier();
-            var getResult = minifier.Transform(() => "function () { }".AsStream(), new StubAsset());
-            getResult().ReadToEnd().ShouldEqual("function(){}");
+            var result = minifier.Transform("function () { }", new StubAsset());
+            result.ShouldEqual("function(){}");
         }
     }
 }
-

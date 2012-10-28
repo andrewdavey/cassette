@@ -23,12 +23,7 @@ namespace Cassette.BundleProcessing
 
         void ParseAssetReferences(IAsset asset)
         {
-            string code;
-            using (var reader = new StreamReader(asset.OpenStream()))
-            {
-                code = reader.ReadToEnd();
-            }
-
+            var code = asset.GetTransformedContent();
             var commentParser = CreateCommentParser();
             var referenceParser = CreateReferenceParser(commentParser);
             var references = referenceParser.Parse(code, asset);

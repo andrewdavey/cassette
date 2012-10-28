@@ -35,10 +35,6 @@ namespace Cassette
 
         void AddRawFileReference(string relativeFilename);
 
-        /// <summary>
-        /// Opens a new stream to read the transformed contents of the asset.
-        /// </summary>
-        /// <returns>A readable <see cref="Stream"/>.</returns>
-        Stream OpenStream();
+        string GetTransformedContent();
     }
 }

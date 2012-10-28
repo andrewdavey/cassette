@@ -123,14 +123,10 @@ namespace Cassette
 
         internal bool IsSorted { get; set; }
 
-        /// <summary>
-        /// Opens a readable stream of the contained assets content.
-        /// </summary>
-        /// <returns>A readable stream.</returns>
-        public Stream OpenStream()
+        public string GetContent()
         {
-            if (assets.Count == 0) return Stream.Null;
-            return assets[0].OpenStream();
+            if (assets.Count == 0) return "";
+            return assets[0].GetTransformedContent();
         }
 
         /// <summary>

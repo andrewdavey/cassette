@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using Cassette.Utilities;
-
 namespace Cassette.HtmlTemplates
 {
     class DefineJavaScriptVariable : IAssetTransformer
@@ -13,18 +9,13 @@ namespace Cassette.HtmlTemplates
             this.javaScriptVariableName = javaScriptVariableName;
         }
 
-        public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
+        public string Transform(string source, IAsset asset)
         {
-            return delegate
-            {
-                var source = openSourceStream().ReadToEnd();
-                var define = string.Format(
-                    "if (typeof {0}==='undefined'){{var {0}={{}};}}{1}",
-                    javaScriptVariableName,
-                    source
+            return string.Format(
+                "if (typeof {0}==='undefined'){{var {0}={{}};}}{1}",
+                javaScriptVariableName,
+                source
                 );
-                return define.AsStream();
-            };
         }
     }
 }

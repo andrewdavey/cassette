@@ -13,12 +13,12 @@ namespace Cassette
         public StubAsset(string fullPath = "~/asset.js", string content = "", byte[] hash = null)
         {
             this.hash = hash ?? new byte[] {1};
-            CreateStream = () => content.AsStream();
+            OriginalContent = content;
             path = fullPath;
             ReferenceList = new List<AssetReference>();
         }
 
-        public Func<Stream> CreateStream { get; set; }
+        public string OriginalContent { get; set; }
  
         public override byte[] Hash
         {
@@ -56,9 +56,9 @@ namespace Cassette
             get { return typeof(Caching.FileAssetCacheValidator); }
         }
 
-        protected override Stream OpenStreamCore()
+        protected override string GetContentCore()
         {
-            return CreateStream();
+            return OriginalContent;
         }
     }
 }

@@ -164,7 +164,7 @@ namespace Cassette.Scripts
         [Fact]
         public void ReadBundleContentEqualsBase64DecodedContentElement()
         {
-            bundle.OpenStream().ReadToEnd().ShouldEqual("CONTENT");
+            bundle.GetContent().ShouldEqual("CONTENT");
         }
 
         void DeserializeBundle()

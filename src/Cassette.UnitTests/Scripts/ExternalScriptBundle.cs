@@ -112,7 +112,7 @@ namespace Cassette.Scripts
             };
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/test/asset.js");
-            asset.Setup(a => a.OpenStream()).Returns(Stream.Null);
+            asset.Setup(a => a.GetTransformedContent()).Returns("");
             bundle.Assets.Add(asset.Object);
             var settings = new CassetteSettings();
             bundle.Process(settings);

@@ -1,5 +1,4 @@
-﻿using Cassette.Utilities;
-using Moq;
+﻿using Moq;
 using Xunit;
 
 namespace Cassette.Stylesheets
@@ -79,9 +78,8 @@ namespace Cassette.Stylesheets
             bundle.Assets.Add(asset.Object);
 
             asset.SetupGet(a => a.Path).Returns("asset.css");
-            asset.Setup(a => a.OpenStream()).Returns(() => css.AsStream());
+            asset.Setup(a => a.GetTransformedContent()).Returns(css);
             return asset;
         }
     }
 }
-

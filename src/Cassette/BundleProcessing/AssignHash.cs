@@ -1,9 +1,4 @@
-using System.IO;
-using System.Security.Cryptography;
-
-#if NET35
 using Cassette.Utilities;
-#endif
 
 namespace Cassette.BundleProcessing
 {
@@ -11,30 +6,18 @@ namespace Cassette.BundleProcessing
     {
         public void Process(Bundle bundle)
         {
-            using (var concatenatedStream = new MemoryStream())
-            {
-                bundle.Accept(new ConcatenatedStreamBuilder(concatenatedStream));
-
-                concatenatedStream.Position = 0;
-                bundle.Hash = ComputeSha1Hash(concatenatedStream);
-            }
+            var builder = new HashBuilder();
+            bundle.Accept(builder);
+            bundle.Hash = builder.Hash;
         }
 
-        byte[] ComputeSha1Hash(Stream concatenatedStream)
+        class HashBuilder : IBundleVisitor
         {
-            using (var sha1 = SHA1.Create())
-            {
-                return sha1.ComputeHash(concatenatedStream);
-            }
-        }
+            string allContent;
 
-        class ConcatenatedStreamBuilder : IBundleVisitor
-        {
-            readonly Stream concatenatedStream;
-
-            public ConcatenatedStreamBuilder(Stream concatenatedStream)
+            public byte[] Hash
             {
-                this.concatenatedStream = concatenatedStream;
+                get { return allContent.ComputeSHA1Hash(); }
             }
 
             public void Visit(Bundle bundle)
@@ -43,10 +26,7 @@ namespace Cassette.BundleProcessing
 
             public void Visit(IAsset asset)
             {
-                using (var stream = asset.OpenStream())
-                {
-                    stream.CopyTo(concatenatedStream);
-                }
+                allContent += asset.GetTransformedContent();
             }
         }
     }

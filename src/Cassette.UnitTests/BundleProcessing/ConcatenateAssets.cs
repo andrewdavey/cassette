@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
@@ -24,8 +22,8 @@ namespace Cassette.BundleProcessing
             var bundle = new TestableBundle("~");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
-            asset1.Setup(a => a.OpenStream()).Returns(() => ("asset1" + Environment.NewLine + "content").AsStream());
-            asset2.Setup(a => a.OpenStream()).Returns(() => ("asset2" + Environment.NewLine + "content").AsStream());
+            asset1.Setup(a => a.GetTransformedContent()).Returns("asset1" + Environment.NewLine + "content");
+            asset2.Setup(a => a.GetTransformedContent()).Returns("asset2" + Environment.NewLine + "content");
             bundle.Assets.Add(asset1.Object);
             bundle.Assets.Add(asset2.Object);
 
@@ -33,11 +31,11 @@ namespace Cassette.BundleProcessing
             processor.Process(bundle);
 
             bundle.Assets.Count.ShouldEqual(1);
-            using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
-            {
-                reader.ReadToEnd().ShouldEqual("asset1" + Environment.NewLine + "content" + Environment.NewLine + "asset2" + Environment.NewLine + "content");
-            }
-            (bundle.Assets[0] as IDisposable).Dispose();
+            bundle.Assets[0].GetTransformedContent()
+                            .ShouldEqual(
+                            "asset1" + Environment.NewLine + "content" + 
+                            Environment.NewLine + 
+                            "asset2" + Environment.NewLine + "content");
         }
 
         [Fact]
@@ -46,12 +44,12 @@ namespace Cassette.BundleProcessing
             var bundle = new TestableBundle("~");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
-            asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
+            asset1.Setup(a => a.GetTransformedContent()).Returns("asset1");
             asset1.SetupGet(a => a.References).Returns(new[] 
             {
                 new AssetReference(asset1.Object.Path, "~\\other1.js", 0, AssetReferenceType.DifferentBundle)
             });
-            asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
+            asset2.Setup(a => a.GetTransformedContent()).Returns("asset2");
             asset2.SetupGet(a => a.References).Returns(new[]
             { 
                 new AssetReference(asset2.Object.Path, "~\\other1.js", 0, AssetReferenceType.DifferentBundle),
@@ -76,19 +74,15 @@ namespace Cassette.BundleProcessing
             var bundle = new TestableBundle("~");
             var asset1 = new Mock<IAsset>();
             var asset2 = new Mock<IAsset>();
-            asset1.Setup(a => a.OpenStream()).Returns(() => "asset1".AsStream());
-            asset2.Setup(a => a.OpenStream()).Returns(() => "asset2".AsStream());
+            asset1.Setup(a => a.GetTransformedContent()).Returns("asset1");
+            asset2.Setup(a => a.GetTransformedContent()).Returns("asset2");
             bundle.Assets.Add(asset1.Object);
             bundle.Assets.Add(asset2.Object);
 
             var processor = new ConcatenateAssets { Separator = ";" };
             processor.Process(bundle);
 
-            using (var reader = new StreamReader(bundle.Assets[0].OpenStream()))
-            {
-                reader.ReadToEnd().ShouldEqual("asset1;asset2");
-            }
-            (bundle.Assets[0] as IDisposable).Dispose();
+            bundle.Assets[0].GetTransformedContent().ShouldEqual("asset1;asset2");
         }
     }
 }
