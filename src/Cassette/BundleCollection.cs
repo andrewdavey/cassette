@@ -82,7 +82,7 @@ namespace Cassette
             });
         }
 
-        private ReadOnlyCollection<Bundle> GetReadOnlySnapshot()
+        ReadOnlyCollection<Bundle> GetReadOnlySnapshot()
         {
             Debug.Assert(readerWriterLock.IsReadLockHeld || readerWriterLock.IsWriteLockHeld);
             // taking a snapshot is not necessarily safe if we don't hold a lock.
