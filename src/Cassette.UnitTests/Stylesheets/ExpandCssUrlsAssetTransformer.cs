@@ -43,6 +43,47 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void GivenCssWithRelativeUrlWithQueryString_WhenTransformed_ThenUrlIsExpanded()
+        {
+            fileSystem.Add("~/styles/test.png");
+
+            var css = "p { background-image: url(test.png?param=value); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(EXPANDED?param=value); }");
+
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
+        }
+
+        [Fact]
+        public void GivenCssWithRelativeUrlWithFragment_WhenTransformed_ThenUrlIsExpanded()
+        {
+            fileSystem.Add("~/styles/test.png");
+
+            var css = "p { background-image: url(test.png#fragment); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(EXPANDED#fragment); }");
+
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
+        }
+
+        [Fact]
+        public void GivenCssWithRelativeUrlWithQueryStringAndFragment_WhenTransformed_ThenUrlIsExpanded()
+        {
+            fileSystem.Add("~/styles/test.png");
+
+            var css = "p { background-image: url(test.png?param#fragment); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(EXPANDED?param#fragment); }");
+
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
+        }
+        [Fact]
         public void GivenCssUrlFileIsNotFound_WhenTransform_ThenUrlIsExpandedToAbsolutePath()
         {
             urlGenerator
@@ -107,19 +148,6 @@ namespace Cassette.Stylesheets
             var css = "p { background-image: url(test.png); }";
             var getResult = transformer.Transform(css.AsStream, asset.Object);
             return getResult().ReadToEnd();
-        }
-
-        [Fact]
-        public void GivenCssWithUrlWithFragment_WhenTransformed_ThenUrlIsExpanded()
-        {
-            fileSystem.Add("~/styles/test.png");
-            var css = "p { background-image: url(test.png#fragment); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
-
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
-
-            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
 
         [Fact]
