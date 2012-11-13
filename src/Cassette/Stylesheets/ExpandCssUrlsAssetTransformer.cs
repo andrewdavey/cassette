@@ -39,8 +39,10 @@ namespace Cassette.Stylesheets
                 foreach (var match in urlMatches)
                 {
                     var matchedUrlGroup = match.Groups["url"];
-                    var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory);
-                    if (ReplaceUrlWithCassetteRawFileUrl(builder, matchedUrlGroup, relativeFilename))
+                    string queryString;
+                    string fragment;
+                    var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory, out queryString, out fragment);
+                    if (ReplaceUrlWithCassetteRawFileUrl(builder, matchedUrlGroup, relativeFilename, queryString, fragment))
                     {
                         asset.AddRawFileReference(relativeFilename);
                     }
@@ -86,9 +88,8 @@ namespace Cassette.Stylesheets
             return !AbsoluteUrlRegex.IsMatch(match.Groups["url"].Value);
         }
 
-        bool ReplaceUrlWithCassetteRawFileUrl(StringBuilder builder, Group matchedUrlGroup, string filename)
+        bool ReplaceUrlWithCassetteRawFileUrl(StringBuilder builder, Group matchedUrlGroup, string filename, string queryString, string fragment)
         {
-            filename = RemoveFragment(filename);
             var file = sourceDirectory.GetFile(filename);
             if (!file.Exists)
             {
@@ -97,7 +98,7 @@ namespace Cassette.Stylesheets
 
             var absoluteUrl = urlGenerator.CreateRawFileUrl(filename);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
-            builder.Insert(matchedUrlGroup.Index, absoluteUrl);
+            builder.Insert(matchedUrlGroup.Index, absoluteUrl + queryString + fragment);
             return true;
         }
 
@@ -108,9 +109,13 @@ namespace Cassette.Stylesheets
             return relativeFilename.Substring(0, index);
         }
 
-        string GetImageFilename(Group matchedUrlGroup, string currentDirectory)
+        string GetImageFilename(Group matchedUrlGroup, string currentDirectory, 
+            out string queryString, out string fragment)
         {
             var originalUrl = matchedUrlGroup.Value.Trim('"', '\'');
+            originalUrl = SplitOnLastOccurence(originalUrl, '#', out fragment);
+            originalUrl = SplitOnLastOccurence(originalUrl, '?', out queryString);
+
             if (originalUrl.StartsWith("/"))
             {
                 return PathUtilities.NormalizePath("~" + originalUrl);
@@ -129,6 +134,21 @@ namespace Cassette.Stylesheets
             var absoluteUrl = urlGenerator.CreateAbsolutePathUrl(currentDirectory + "/" + url);
             builder.Remove(matchedUrlGroup.Index, matchedUrlGroup.Length);
             builder.Insert(matchedUrlGroup.Index, absoluteUrl);
+        }
+
+        string SplitOnLastOccurence(string input, char separator, out string after)
+        {
+            var sepIndex = input.LastIndexOf(separator);
+            if (sepIndex < 0)
+            {
+                after = string.Empty;
+                return input;
+            }
+            else
+            {
+                after = input.Substring(sepIndex);
+                return input.Substring(0, sepIndex);
+            }
         }
     }
 }
