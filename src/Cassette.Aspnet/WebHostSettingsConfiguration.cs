@@ -4,6 +4,10 @@ using System.Web.Configuration;
 using System.Xml.Linq;
 using Cassette.IO;
 using System.IO;
+using System.Xml;
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette.Aspnet
 {
@@ -57,7 +61,8 @@ namespace Cassette.Aspnet
             if (!manifestFile.Exists) return false;
             using (var stream = manifestFile.OpenRead())
             {
-                var doc = XDocument.Load(stream);
+                var reader = XmlReader.Create(stream);
+                var doc = XDocument.Load(reader);
                 var attribute = doc.Root.Attribute("IsStatic");
                 return attribute != null
                     && attribute.Value.Equals("true", StringComparison.OrdinalIgnoreCase);

@@ -1,6 +1,9 @@
 using System;
 using System.Web;
 using Cassette.IO;
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette.Aspnet
 {

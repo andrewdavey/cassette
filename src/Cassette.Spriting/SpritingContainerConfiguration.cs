@@ -6,6 +6,9 @@ using Cassette.Spriting.Spritastic.Selector;
 using Cassette.Spriting.Spritastic.Utilities;
 using Cassette.TinyIoC;
 using nQuant;
+#if NET35
+using Cassette.Utilities;
+#endif
 
 namespace Cassette.Spriting
 {
