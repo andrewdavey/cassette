@@ -70,6 +70,7 @@ namespace Cassette.MSBuild
             // but the object lives in the other AppDomain.
 
             var constructorArguments = new object[] { command.source, command.bin, command.output, command.includeRawFiles };
+            
             var objectHandle = Activator.CreateInstanceFrom(
                 appDomain,
                 typeof(CreateBundlesCommand).Assembly.Location,
@@ -78,6 +79,7 @@ namespace Cassette.MSBuild
                 0,
                 null,
                 constructorArguments,
+                null,
                 null,
                 null
             );

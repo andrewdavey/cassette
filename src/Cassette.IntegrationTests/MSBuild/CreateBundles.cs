@@ -115,6 +115,11 @@ namespace Cassette.MSBuild
                 File.Copy(parentAssembly, Path.Combine(directory, Path.GetFileName(parentAssembly)));
                 File.Copy("Cassette.dll", Path.Combine(directory, "Cassette.dll"));
                 File.Copy("AjaxMin.dll", Path.Combine(directory, "AjaxMin.dll"));
+#if NET35
+                File.Copy("Iesi.Collections.dll", Path.Combine(directory, "Iesi.Collections.dll"));
+                File.Copy("Jurassic.dll", Path.Combine(directory, "Jurassic.dll"));
+
+#endif
                 File.Copy("Cassette.CoffeeScript.dll", Path.Combine(directory, "Cassette.CoffeeScript.dll"));
                 File.Copy("Cassette.Less.dll", Path.Combine(directory, "Cassette.Less.dll"));
 #if !NET35

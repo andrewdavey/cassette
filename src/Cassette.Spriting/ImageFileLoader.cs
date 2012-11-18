@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Cassette.IO;
+#if NET35
+using Cassette.Utilities;
+#endif
 using Cassette.Spriting.Spritastic.ImageLoad;
 
 namespace Cassette.Spriting
