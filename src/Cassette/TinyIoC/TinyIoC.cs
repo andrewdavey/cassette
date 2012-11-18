@@ -56,6 +56,7 @@ namespace Cassette.TinyIoC
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
+    using System.Runtime.Serialization;
 
     #region SafeDictionary
     public class SafeDictionary<TKey, TValue> : IDisposable
@@ -331,6 +332,16 @@ namespace Cassette.TinyIoC
             : base(String.Format(ERROR_TEXT, type.FullName), innerException)
         {
         }
+
+        public TinyIoCResolutionException() {
+
+        }
+
+        public TinyIoCResolutionException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
+}
     }
 
     [Serializable]

@@ -24,7 +24,7 @@ namespace Cassette.Utilities
             : base(initialValues, comparer) {}
     }
 #else
-    sealed class HashedCompareSet<T> : DictionarySet<T>
+    public class HashedCompareSet<T> : DictionarySet<T>
     {
         public HashedCompareSet(ICollection<T> initialValues, IEqualityComparer<T> comparer)
         {

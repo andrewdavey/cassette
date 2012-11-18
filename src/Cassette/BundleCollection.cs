@@ -761,7 +761,11 @@ namespace Cassette
 
         IEnumerable<IEnumerable<Bundle>> PartitionByBaseType(IEnumerable<Bundle> bundlesToSort)
         {
+#if NET35
+            return bundlesToSort.GroupBy(GetBundleBaseType).Select(x=>x.AsEnumerable());
+#else
             return bundlesToSort.GroupBy(GetBundleBaseType);
+#endif
         }
 
         Type GetBundleBaseType(Bundle bundle)

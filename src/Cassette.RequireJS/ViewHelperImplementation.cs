@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Web;
 using Cassette.Scripts;
+#if NET35
+using Cassette.Views;
+#endif
 
 namespace Cassette.RequireJS
 {
