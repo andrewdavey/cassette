@@ -15,7 +15,7 @@
   <Import Project="Cassette.targets" />
   
   
-  <Target Name="Default" DependsOnTargets="Test" />
+  <Target Name="Default" DependsOnTargets="NugetPack" />
   
   
   <Target Name="Build">
@@ -59,13 +59,12 @@
   <Target Name="NugetPack" DependsOnTargets="Build">
     <ItemGroup>
       <Nutrans Include="**\*.nutrans" />
-      <Nuspec Include="**\*.nuspec" Exclude="src\Cassette.Shared.nuspec" />
+      <Nuspec Include="**\*.nuspec" Exclude="src\Cassette.Shared.nuspec;src\packages\**\*.nuspec" />
     </ItemGroup>
     <!-- Get the package version from Cassette.dll's AssemblyInformationalVersion attribute. -->
     <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\Release\Cassette.dll">
       <Output PropertyName="Version" TaskParameter="Version" />
     </GetAssemblyInformationalVersion>
-
 
     <MakeDir Directories="$(NugetOutputDir)" />
     
@@ -85,7 +84,7 @@
     <ItemGroup>
       <Packages Include="$(NugetOutputDir)\*.nupkg" Exclude="$(NugetOutputDir)\*.symbols.nupkg"/>
     </ItemGroup>
-    <Exec Command="nuget push %(Packages.Identity)" />
+    <Exec Command="src\.nuget\nuget push %(Packages.Identity)" />
   </Target>
   
 </Project>
