@@ -4,11 +4,17 @@
     <id xdt:Transform="Insert">Cassette.Less</id>
     <description xdt:Transform="Insert">Less CSS compiler support for Cassette.</description>
     <dependencies xdt:Transform="Insert">
-      <dependency id="Cassette" version="$version$" />
-      <dependency id="DotlessClientOnly" version="1.3"/>
+      <group>
+        <dependency id="Cassette" version="$version$" />
+        <dependency id="DotlessClientOnly" version="1.3"/>
+      </group>
+      <group targetFramework="net35">
+        <dependency id="Iesi.Collections" version="(,4.0)"/>
+      </group>
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
     <file src="bin\Release\Cassette.Less.dll" target="lib\net40-client" />
+    <file src="bin\ReleaseNET35\Cassette.Less.dll" target="lib\net35" />
   </files>
 </package>

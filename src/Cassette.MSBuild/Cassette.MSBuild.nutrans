@@ -1,17 +1,23 @@
 <?xml version="1.0"?>
 <package inherits="../Cassette.Shared.nuspec"  xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
-    <metadata>
-        <id xdt:Transform="Insert">Cassette.MSBuild</id>        
-        <description xdt:Transform="Insert">Contains an MSBuild task that will generate Cassette bundles for a web application at compile time.</description>
-        <dependencies xdt:Transform="Insert">
-            <dependency id="Cassette" version="$version$"/>
-        </dependencies>
-    </metadata>
-    <files xdt:Transform="Insert">
-        <file src="bin\Release\Cassette.MSBuild.dll" target="lib\net40" />
-        <file src="install.ps1" target="Tools"/>
-        <file src="uninstall.ps1" target="Tools"/>
-        <file src="Cassette.targets" target="Content"/>
-        <file src="Web.config.transform" target="Content"/>
-    </files>
+  <metadata>
+    <id xdt:Transform="Insert">Cassette.MSBuild</id>
+    <description xdt:Transform="Insert">Contains an MSBuild task that will generate Cassette bundles for a web application at compile time.</description>
+    <dependencies xdt:Transform="Insert">
+      <group>
+        <dependency id="Cassette" version="$version$"/>
+      </group>
+      <group targetFramework="net35">
+        <dependency id="Iesi.Collections" version="(,4.0)"/>
+      </group>
+    </dependencies>
+  </metadata>
+  <files xdt:Transform="Insert">
+    <file src="bin\Release\Cassette.MSBuild.dll" target="lib\net40" />
+    <file src="bin\ReleaseNET35\Cassette.MSBuild.dll" target="lib\net35" />
+    <file src="install.ps1" target="Tools"/>
+    <file src="uninstall.ps1" target="Tools"/>
+    <file src="Cassette.targets" target="Content"/>
+    <file src="Web.config.transform" target="Content"/>
+  </files>
 </package>

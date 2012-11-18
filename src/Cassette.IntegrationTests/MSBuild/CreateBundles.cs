@@ -31,7 +31,7 @@ namespace Cassette.MSBuild
             BundleConfiguration.GenerateAssembly(assemblyPath);
 
             File.WriteAllText(Path.Combine(path, "test.css"), "p { background-image: url(test.png); }");
-            File.WriteAllText(Path.Combine(path, "test.coffee"), "x = 1");
+            File.WriteAllText(Path.Combine(path, "test.coffee"), "x = 1\nlog(x)");
             File.WriteAllText(Path.Combine(path, "test.png"), "");
 
             Environment.CurrentDirectory = path;
@@ -57,7 +57,7 @@ namespace Cassette.MSBuild
         public void CoffeeScriptIsCompiled()
         {
             var filename = Directory.GetFiles(Path.Combine(cachePath, "script"))[0];
-            File.ReadAllText(filename).ShouldEqual("(function(){var n;n=1}).call(this)");
+            File.ReadAllText(filename).ShouldEqual("(function(){var n;n=1,log(n)}).call(this)");
         }
    
         [Fact]

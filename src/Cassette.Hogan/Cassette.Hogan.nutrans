@@ -10,5 +10,6 @@
   </metadata>
   <files xdt:Transform="Insert">
     <file src="bin\Release\Cassette.Hogan.dll" target="lib\net40-client" />
+    <file src="bin\ReleaseNET35\Cassette.Hogan.dll" target="lib\net35" />
   </files>
 </package>

@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0"?>
-<package inherits="Cassette.Spriting.nutrans" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">    
-    <files>      
-      <file xdt:Transform="Insert" src="bin\Release\Cassette.Spriting.pdb" target="lib\net40-client" />          
-      <file xdt:Transform="Insert" src="**\*.cs" target="src" />
-    </files>
+<package inherits="Cassette.Spriting.nutrans" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <files>
+    <file xdt:Transform="Insert" src="bin\Release\Cassette.Spriting.pdb" target="lib\net40-client" />
+    <file xdt:Transform="Insert" src="bin\ReleaseNET35\Cassette.Spriting.pdb" target="lib\net35" />
+    <file xdt:Transform="Insert" src="**\*.cs" target="src" />
+  </files>
 </package>

@@ -53,10 +53,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin, Version=4.70.4668.12887, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">..\packages\AjaxMin.4.70.4668.12892\lib\net35\AjaxMin.dll</HintPath>
-      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">..\packages\AjaxMin.4.70.4668.12892\lib\net40\AjaxMin.dll</HintPath>
+    <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net40\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net35\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

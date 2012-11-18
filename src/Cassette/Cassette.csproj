@@ -59,24 +59,20 @@
     <DocumentationFile>bin\ReleaseNET35\Cassette.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-    <Reference Include="Iesi.Collections">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Iesi.Collections.3.3.1.4000\lib\Net35\Iesi.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="AjaxMin, Version=4.70.4668.12887, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AjaxMin.4.70.4668.12892\lib\net35\AjaxMin.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="AjaxMin, Version=4.70.4668.12887, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AjaxMin.4.70.4668.12892\lib\net40\AjaxMin.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net35\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net40\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\packages\Iesi.Collections.3.3.2.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />

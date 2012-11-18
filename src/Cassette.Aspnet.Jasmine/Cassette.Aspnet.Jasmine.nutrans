@@ -12,6 +12,7 @@
   </metadata>
   <files xdt:Transform="Insert">
     <file src="bin\Release\Cassette.Aspnet.Jasmine.dll" target="lib\net40" />
+    <file src="bin\ReleaseNET35\Cassette.Aspnet.Jasmine.dll" target="lib\net35" />
     <file src="Web.config.transform" target="content"/>
   </files>
 </package>

@@ -90,7 +90,7 @@ namespace Cassette
                 var scriptUrls = GetPageHtmlResourceUrls(host, "scripts/bundle-c");
 
                 scriptUrls[0].ShouldMatch(new Regex(@"^/cassette\.axd/script/[^/]+/scripts/bundle-c"));
-                Download(host, scriptUrls[0]).ShouldEqual(@"(function(){var n;n=1}).call(this)");
+                Download(host, scriptUrls[0]).ShouldEqual(@"(function(){var n;n=1,log(n)}).call(this)");
             }
         }
 

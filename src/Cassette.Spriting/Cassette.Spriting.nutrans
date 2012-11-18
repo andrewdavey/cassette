@@ -10,5 +10,6 @@
   </metadata>
   <files xdt:Transform="Insert">
     <file src="bin\Release\Cassette.Spriting.dll" target="lib\net40-client" />
+    <file src="bin\ReleaseNET35\Cassette.Spriting.dll" target="lib\net35" />
   </files>
 </package>
