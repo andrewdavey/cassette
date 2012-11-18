@@ -71,6 +71,7 @@ namespace Cassette.MSBuild
 
             var constructorArguments = new object[] { command.source, command.bin, command.output, command.includeRawFiles };
             
+#if NET35
             var objectHandle = Activator.CreateInstanceFrom(
                 appDomain,
                 typeof(CreateBundlesCommand).Assembly.Location,
@@ -83,6 +84,19 @@ namespace Cassette.MSBuild
                 null,
                 null
             );
+#else
+            var objectHandle = Activator.CreateInstanceFrom(
+                appDomain,
+                typeof(CreateBundlesCommand).Assembly.Location,
+                typeof(CreateBundlesCommand).FullName,
+                false,
+                0,
+                null,
+                constructorArguments,
+                null,
+                null
+            );
+#endif
             return (CreateBundlesCommand)objectHandle.Unwrap();
         }
     }
