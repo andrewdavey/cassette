@@ -4,10 +4,11 @@
     <id xdt:Transform="Insert">Cassette</id>
     <description xdt:Transform="Insert">Important: This is just the core library for Cassette. You probably want to install the Cassette.Aspnet package for ASP.NET support.</description>
     <dependencies xdt:Transform="Insert">
-      <group>
+      <group targetFramework="net40">
         <dependency id="AjaxMin" version="4.67" />
       </group>
       <group targetFramework="net35">
+        <dependency id="AjaxMin" version="4.67" />
         <dependency id="Iesi.Collections" version="(,4.0)"/>
       </group>
     </dependencies>
