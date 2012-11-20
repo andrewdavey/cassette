@@ -27,19 +27,19 @@ namespace Cassette.MSBuild
             WriteFile("source\\test.png", "image");
 
             var configurationDll = CompileConfigurationDll();
-            
-            File.Move(configurationDll, PathHelper.Combine(root, "source", "bin", "test.dll"));
-            File.Copy("Cassette.dll", PathHelper.Combine(root, "source", "bin", "Cassette.dll"));
-            File.Copy("Cassette.pdb", PathHelper.Combine(root, "source", "bin", "Cassette.pdb"));
-            File.Copy("AjaxMin.dll", PathHelper.Combine(root, "source", "bin", "AjaxMin.dll"));
+
+            File.Move(configurationDll, PathUtilities.Combine(root, "source", "bin", "test.dll"));
+            File.Copy("Cassette.dll", PathUtilities.Combine(root, "source", "bin", "Cassette.dll"));
+            File.Copy("Cassette.pdb", PathUtilities.Combine(root, "source", "bin", "Cassette.pdb"));
+            File.Copy("AjaxMin.dll", PathUtilities.Combine(root, "source", "bin", "AjaxMin.dll"));
 #if NET35
-            File.Copy("Iesi.Collections.dll", PathHelper.Combine(root, "source", "bin", "Iesi.Collections.dll"));
+            File.Copy("Iesi.Collections.dll", PathUtilities.Combine(root, "source", "bin", "Iesi.Collections.dll"));
 #endif
 
             var command = new CreateBundlesCommand(
-                PathHelper.Combine(root, "source"),
-                PathHelper.Combine(root, "source", "bin"),
-                PathHelper.Combine(root, "output"),
+                PathUtilities.Combine(root, "source"),
+                PathUtilities.Combine(root, "source", "bin"),
+                PathUtilities.Combine(root, "output"),
                 true
             );
 
@@ -70,13 +70,13 @@ public class Configuration : IConfiguration<BundleCollection>
         [Fact]
         public void ImageFileIsCopiedToOutput()
         {
-            var imageOutputFilename = PathHelper.Combine(root, "output", "file", "test-" + HashFileContent("test.png") + ".png");
+            var imageOutputFilename = PathUtilities.Combine(root, "output", "file", "test-" + HashFileContent("test.png") + ".png");
             File.Exists(imageOutputFilename).ShouldBeTrue();
         }
 
         string HashFileContent(string filename)
         {
-            using (var file = File.OpenRead(PathHelper.Combine(root, "source", filename)))
+            using (var file = File.OpenRead(PathUtilities.Combine(root, "source", filename)))
             using (var sha1 = SHA1.Create())
             {
                 return sha1.ComputeHash(file).ToHexString();
