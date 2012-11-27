@@ -41,7 +41,7 @@ namespace Cassette
         {
             if (filename.StartsWith("~") == false)
             {
-                throw new ArgumentException("Image filename must be application relative (starting with '~').");
+                throw new ArgumentException("Image filename must be application relative (starting with '~'). Filename: "+filename);
             }
 
             var file = sourceDirectory.GetFile(filename);
@@ -60,7 +60,7 @@ namespace Cassette
         {
             if (filename.StartsWith("~") == false)
             {
-                throw new ArgumentException("Image filename must be application relative (starting with '~').");
+                throw new ArgumentException("Image filename must be application relative (starting with '~'). Filename: "+filename);
             }
 
             // "~\example\image.png" --> "/example/image-hash.png"
@@ -83,7 +83,7 @@ namespace Cassette
         {
             if (filename.StartsWith("~") == false)
             {
-                throw new ArgumentException("Filename must be application relative (starting with '~').", "filename");
+                throw new ArgumentException("Filename must be application relative (starting with '~'). Filename: "+filename, "filename");
             }
 
             var path = ConvertToForwardSlashes(filename).Substring(1);
