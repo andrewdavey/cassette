@@ -44,7 +44,9 @@ namespace Cassette.Aspnet
         {
             using (var stream = file.OpenRead())
             {
+                response.Cache.SetCacheability(HttpCacheability.Public);
                 response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
+                response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
                 stream.CopyTo(response.OutputStream);
             }
         }

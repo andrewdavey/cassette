@@ -9,6 +9,7 @@ using Cassette.Utilities;
 using Moq;
 using Should;
 using Xunit;
+using System;
 
 namespace Cassette.Aspnet
 {
@@ -64,6 +65,31 @@ namespace Cassette.Aspnet
             bundles.Add(new TestableBundle("~/test"));
             handler.ProcessRequest("~/test/asset.js");
             response.VerifySet(r => r.StatusCode = 404);
+        }
+
+        [Fact]
+        public void GivenAssetExists_WhenProcessRequest_ThenMaxAgeIsSetToAYear()
+        {
+            bundles.Add(new TestableBundle("~/test")
+            {
+                ContentType = "CONTENT/TYPE"
+            });
+            var asset = new Mock<IAsset>();
+            asset.Setup(a => a.Accept(It.IsAny<IBundleVisitor>()))
+                 .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
+            asset.SetupGet(a => a.Path)
+                 .Returns("~/test/asset.js");
+            asset.Setup(a => a.OpenStream())
+                 .Returns(Stream.Null);
+            bundles.First().Assets.Add(asset.Object);
+
+            using (outputStream = new MemoryStream())
+            {
+                handler.ProcessRequest("~/test/asset.js");
+            }
+
+            cache.Verify(c => c.SetCacheability(HttpCacheability.Public));
+            cache.Verify(c => c.SetMaxAge(It.Is<TimeSpan>(t => t.Days == 365)));
         }
 
         [Fact]
