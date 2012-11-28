@@ -2,6 +2,7 @@
 using System.Web.Routing;
 using Cassette.Utilities;
 using Trace = Cassette.Diagnostics.Trace;
+using System;
 
 namespace Cassette.Aspnet
 {
@@ -42,8 +43,7 @@ namespace Cassette.Aspnet
             response.ContentType = bundle.ContentType;
 
             var actualETag = "\"" + asset.Hash.ToHexString() + "\"";
-            response.Cache.SetCacheability(HttpCacheability.Public);
-            response.Cache.SetETag(actualETag);
+            CacheLongTime(response, actualETag);
 
             var givenETag = request.Headers["If-None-Match"];
             if (givenETag == actualETag)
@@ -57,6 +57,14 @@ namespace Cassette.Aspnet
                     stream.CopyTo(response.OutputStream);
                 }
             }
+        }
+
+        void CacheLongTime(HttpResponseBase response, string actualETag)
+        {
+            response.Cache.SetCacheability(HttpCacheability.Public);
+            response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
+            response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
+            response.Cache.SetETag(actualETag);
         }
 
         void SendNotModified(HttpResponseBase response)

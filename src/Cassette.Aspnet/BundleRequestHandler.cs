@@ -84,6 +84,7 @@ namespace Cassette.Aspnet
         {
             response.Cache.SetCacheability(HttpCacheability.Public);
             response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
+            response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
             response.Cache.SetETag(actualETag);
         }
 

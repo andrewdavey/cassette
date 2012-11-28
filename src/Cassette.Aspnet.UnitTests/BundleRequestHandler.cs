@@ -111,6 +111,14 @@ namespace Cassette.Aspnet
         }
 
         [Fact]
+        public void MaxAgeIsSetToOneYear()
+        {
+            // Setting the cache to Public, then the MaxAge will be set on the asset.
+            responseCache.Verify(c => c.SetCacheability(HttpCacheability.Public));
+            responseCache.Verify(c => c.SetMaxAge(It.Is<TimeSpan>(t => t.TotalDays >= 365)));
+        }
+
+        [Fact]
         public void ResponseIsPubliclyCacheable()
         {
             responseCache.Verify(c => c.SetCacheability(HttpCacheability.Public));
