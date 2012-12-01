@@ -20,7 +20,7 @@ namespace Cassette.RequireJS
         {
             var config = ConfigurationObject(modules);
             var json = jsonSerializer.Serialize(config);
-            return "var requirejs = " + json + ";";
+            return "requirejs.config(" + json + ");";
         }
 
         object ConfigurationObject(IEnumerable<IAmdModule> modules)

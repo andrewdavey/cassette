@@ -9,10 +9,10 @@ namespace Cassette.RequireJS
 {
     class PlainScript : Module, IAssetTransformer
     {
-        readonly IAmdConfiguration modules;
+        readonly IModuleInitializer modules;
         readonly SimpleJsonSerializer jsonSerializer;
 
-        public PlainScript(IAsset asset, Bundle bundle, IAmdConfiguration modules) 
+        public PlainScript(IAsset asset, Bundle bundle, IModuleInitializer modules) 
             : base(asset, bundle)
         {
             this.modules = modules;
@@ -49,12 +49,24 @@ namespace Cassette.RequireJS
 
         IEnumerable<string> DependencyPaths
         {
-            get { return Asset.References.Select(r => r.ToPath).Select(p => modules[p].ModulePath); }
+            get
+            {
+                return Asset.References
+                    .Select(r => r.ToPath)
+                    .Where(p => modules.RequireJsScriptPath != p)
+                    .Select(p => modules[p].ModulePath);
+            }
         }
 
         IEnumerable<string> DependencyAliases
         {
-            get { return Asset.References.Select(r => r.ToPath).Select(p => modules[p].Alias); }
+            get 
+            {
+                return Asset.References
+                    .Select(r => r.ToPath)
+                    .Where(p => modules.RequireJsScriptPath != p)
+                    .Select(p => modules[p].Alias);
+            }
         }
 
         class TopLevelVariableFinder : TreeVisitor

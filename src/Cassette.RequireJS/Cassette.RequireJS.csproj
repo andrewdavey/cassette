@@ -67,26 +67,30 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AmdConfiguration.cs" />
-    <Compile Include="AmdConfigurationExtensions.cs" />
+    <Compile Include="RequireJsConfigAsset.cs" />
+    <Compile Include="AlwaysValidAssetCacheValidator.cs" />
+    <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="ModuleInitializerExtensions.cs" />
     <Compile Include="AnonymousModule.cs" />
+    <Compile Include="BundleCollectionExtensions.cs" />
     <Compile Include="ConfigurationScriptBuilder.cs" />
     <Compile Include="IAmdModule.cs" />
-    <Compile Include="IAmdConfiguration.cs" />
-    <Compile Include="IRequireJsConfigUrlProvider.cs" />
+    <Compile Include="IModuleInitializer.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleDefinitionParser.cs" />
     <Compile Include="NamedModule.cs" />
     <Compile Include="PlainScript.cs" />
-    <Compile Include="RequireJsConfigUrlProvider.cs" />
     <Compile Include="ContainerConfiguration.cs" />
     <Compile Include="IConfigurationScriptBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StartUpTask.cs" />
+    <Compile Include="BundleCollectionExtensionsUtilities.cs" />
     <Compile Include="ViewHelper.cs" />
-    <Compile Include="ViewHelperImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
+      <Project>{3a021487-a395-4fe6-9b41-336d0f1e6ad0}</Project>
+      <Name>Cassette.Views</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{a5ccf9d3-5d49-4bfc-b9a6-9ec9e0e29c50}</Project>
       <Name>Cassette</Name>

@@ -124,7 +124,7 @@ namespace Cassette
             }
         }
 
-        void Remove(Bundle bundle)
+        public void Remove(Bundle bundle)
         {
             bundles.Remove(bundle);
         }

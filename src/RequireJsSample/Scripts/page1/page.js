@@ -1,4 +1,5 @@
 ﻿/// <reference path="../app/util.js"/>
+/// <reference path="../app/require.js"/>
 
 var page = {
     go: function () {

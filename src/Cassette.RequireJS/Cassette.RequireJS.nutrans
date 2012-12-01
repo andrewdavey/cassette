@@ -5,6 +5,7 @@
     <description xdt:Transform="Insert">RequireJS support for Cassette.</description>
     <dependencies xdt:Transform="Insert">
       <dependency id="Cassette" version="$version$" />
+      <dependency id="Cassette.Views" version="$version$" />
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">

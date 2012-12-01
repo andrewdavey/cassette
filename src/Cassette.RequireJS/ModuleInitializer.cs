@@ -8,15 +8,22 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
 {
-    class AmdConfiguration : IAmdConfiguration
+    public class ModuleInitializer : IModuleInitializer
     {
+        readonly IConfigurationScriptBuilder configurationScriptBuilder;
         readonly Dictionary<string, IAmdModule> modules = new Dictionary<string, IAmdModule>();
 
-        public string MainBundlePath { get; private set; }
-
-        public void InitializeModulesFromBundles(IEnumerable<Bundle> bundles, string requireJsScriptPath)
+        public ModuleInitializer(IConfigurationScriptBuilder configurationScriptBuilder)
         {
-            requireJsScriptPath = PathUtilities.AppRelative(requireJsScriptPath);
+            this.configurationScriptBuilder = configurationScriptBuilder;
+        }
+
+        public string MainBundlePath { get; private set; }
+        public string RequireJsScriptPath { get; private set; }
+
+        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath)
+        {
+            RequireJsScriptPath = PathUtilities.AppRelative(requireJsScriptPath);
             modules.Clear();
 
             var scriptBundles = GetScriptBundles(bundles);
@@ -24,7 +31,7 @@ namespace Cassette.RequireJS
             {
                 foreach (var asset in bundle.Assets)
                 {
-                    if (asset.Path.Equals(requireJsScriptPath))
+                    if (asset.Path.Equals(RequireJsScriptPath))
                     {
                         MainBundlePath = bundle.Path;
                     }
@@ -38,7 +45,7 @@ namespace Cassette.RequireJS
             if (MainBundlePath == null)
             {
                 modules.Clear();
-                throw new ArgumentException("Cannot find a bundle that contains " + requireJsScriptPath);
+                throw new ArgumentException("Cannot find a bundle that contains " + RequireJsScriptPath);
             }
         }
 
@@ -95,6 +102,11 @@ namespace Cassette.RequireJS
                 if (modules.TryGetValue(scriptPath, out module)) return module;
                 throw new ArgumentException("Module not found: " + scriptPath);
             }
+        }
+
+        public void AddRequireJsConfigAssetToMainBundle(ScriptBundle bundle)
+        {
+            bundle.Assets.Add(new RequireJsConfigAsset(modules.Values, configurationScriptBuilder));
         }
 
         public IEnumerator<IAmdModule> GetEnumerator()

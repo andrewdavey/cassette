@@ -2,15 +2,15 @@
 
 namespace Cassette.RequireJS
 {
-    public static class AmdConfigurationExtensions
+    public static class ModuleInitializerExtensions
     {
-        public static void SetImportAlias(this IAmdConfiguration configuration, string scriptPath, string importAlias)
+        public static void SetImportAlias(this IModuleInitializer configuration, string scriptPath, string importAlias)
         {
             var module = configuration[scriptPath];
             module.Alias = importAlias;
         }
 
-        public static void SetModuleReturnExpression(this IAmdConfiguration configuration, string scriptPath, string moduleReturnExpression)
+        public static void SetModuleReturnExpression(this IModuleInitializer configuration, string scriptPath, string moduleReturnExpression)
         {
             var module = configuration[scriptPath] as PlainScript;
             if (module != null)

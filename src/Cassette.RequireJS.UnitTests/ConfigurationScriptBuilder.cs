@@ -12,7 +12,7 @@ namespace Cassette.RequireJS
     {
         readonly Mock<IUrlGenerator> urlGenerator;
         readonly List<Bundle> bundles = new List<Bundle>();
-        readonly AmdConfiguration modules = new AmdConfiguration();
+        readonly ModuleInitializer modules = new ModuleInitializer(Mock.Of<IConfigurationScriptBuilder>());
         string script;
 
         public ConfigurationScriptBuilderTests()
@@ -25,11 +25,11 @@ namespace Cassette.RequireJS
         }
 
         [Fact]    
-        public void ConfigScriptDefinesRequireJsVariable()
+        public void ConfigScriptCallsConfigFunction()
         {
             GivenBundle("~/app", new StubAsset("~/app/test.js"));
             WhenBuildScriptForRelease();
-            script.ShouldStartWith("var requirejs = ");
+            script.ShouldStartWith("requirejs.config(");
             script.Last().ShouldEqual(';');
         }
 
@@ -109,7 +109,7 @@ namespace Cassette.RequireJS
 
         void BuildScript(bool debug)
         {
-            modules.InitializeModulesFromBundles(bundles, "~/shared/required.js");
+            modules.InitializeModules(bundles, "~/shared/required.js");
             var builder = new ConfigurationScriptBuilder(
                 urlGenerator.Object,
                 new SimpleJsonSerializer(),
@@ -122,7 +122,8 @@ namespace Cassette.RequireJS
         {
             get
             {
-                var configObjectScript = script.Substring(16, script.Length - 17);
+                var offset = "requirejs.config(".Length;
+                var configObjectScript = script.Substring(offset, script.Length - offset - 2);
                 var config = JsonConvert.DeserializeObject<RequireJsConfig>(configObjectScript);
                 return config.paths;
             }

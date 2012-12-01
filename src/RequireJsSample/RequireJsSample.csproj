@@ -135,6 +135,10 @@
       <Project>{5672a520-0a60-424f-b9db-29a80a96f24f}</Project>
       <Name>Cassette.RequireJS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
+      <Project>{3a021487-a395-4fe6-9b41-336d0f1e6ad0}</Project>
+      <Name>Cassette.Views</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
       <Project>{a5ccf9d3-5d49-4bfc-b9a6-9ec9e0e29c50}</Project>
       <Name>Cassette</Name>

@@ -8,11 +8,11 @@ namespace Cassette.RequireJS
 {
     public class PlainScriptTests
     {
-        readonly Mock<IAmdConfiguration> modules;
+        readonly Mock<IModuleInitializer> modules;
 
         public PlainScriptTests()
         {
-            modules = new Mock<IAmdConfiguration>();
+            modules = new Mock<IModuleInitializer>();
         }
 
         [Fact]
