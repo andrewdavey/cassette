@@ -220,13 +220,77 @@ namespace Cassette.Aspnet
         }
 
         [Fact]
-        public void ResponseFilterIsDeflateStream()
+        public void ResponseFilterIsGZipStream()
         {
             response.VerifySet(r => r.Filter = It.IsAny<GZipStream>());
         }
 
         [Fact]
-        public void ContentEncodingHeaderIsDeflate()
+        public void ContentEncodingHeaderIsGzip()
+        {
+            response.Verify(r => r.AppendHeader("Content-Encoding", "gzip"));
+        }
+
+        [Fact]
+        public void VeryHeaderIsAcceptEncoding()
+        {
+            response.Verify(r => r.AppendHeader("Vary", "Accept-Encoding"));
+        }
+    }
+
+    public class GivenRequestMultipleEncodingsNoQValue_WhenProcessRequest : BundleRequestHandler_Tests
+    {
+        public GivenRequestMultipleEncodingsNoQValue_WhenProcessRequest()
+        {
+            requestHeaders.Add("Accept-Encoding", "gzip,deflate");
+            response.SetupGet(r => r.Filter).Returns(Stream.Null);
+
+            SetupTestBundle();
+
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
+        }
+
+        [Fact]
+        public void ResponseFilterIsGZipStream()
+        {
+            response.VerifySet(r => r.Filter = It.IsAny<GZipStream>());
+        }
+
+        [Fact]
+        public void ContentEncodingHeaderIsGzip()
+        {
+            response.Verify(r => r.AppendHeader("Content-Encoding", "gzip"));
+        }
+
+        [Fact]
+        public void VeryHeaderIsAcceptEncoding()
+        {
+            response.Verify(r => r.AppendHeader("Vary", "Accept-Encoding"));
+        }
+    }
+
+    public class GivenRequestMultipleEncodingsEquivalentQValues_WhenProcessRequest : BundleRequestHandler_Tests
+    {
+        public GivenRequestMultipleEncodingsEquivalentQValues_WhenProcessRequest()
+        {
+            requestHeaders.Add("Accept-Encoding", "gzip;q=1.0, deflate;q=1.0");
+            response.SetupGet(r => r.Filter).Returns(Stream.Null);
+
+            SetupTestBundle();
+
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
+        }
+
+        [Fact]
+        public void ResponseFilterIsGZipStream()
+        {
+            response.VerifySet(r => r.Filter = It.IsAny<GZipStream>());
+        }
+
+        [Fact]
+        public void ContentEncodingHeaderIsGzip()
         {
             response.Verify(r => r.AppendHeader("Content-Encoding", "gzip"));
         }
