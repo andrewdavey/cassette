@@ -220,13 +220,13 @@ namespace Cassette.Aspnet
         }
 
         [Fact]
-        public void ResponseFilterIsDeflateStream()
+        public void ResponseFilterIsGZipStream()
         {
             response.VerifySet(r => r.Filter = It.IsAny<GZipStream>());
         }
 
         [Fact]
-        public void ContentEncodingHeaderIsDeflate()
+        public void ContentEncodingHeaderIsGzip()
         {
             response.Verify(r => r.AppendHeader("Content-Encoding", "gzip"));
         }
