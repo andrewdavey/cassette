@@ -95,12 +95,18 @@ namespace Cassette.Aspnet
             }
 
             foreach (var type in encoding.Split(',')) {
-                if (type.Equals("deflate", StringComparison.OrdinalIgnoreCase)) {
+                var typeComponents = type.Split(';');
+                var typeEncoding = typeComponents[0].Trim();
+                float qvalue = 1.0f;
+                if (typeComponents.Length > 1  && !float.TryParse(typeComponents[1], out qvalue)) {
+                    qvalue = 1.0f;
+                }
+                if (typeEncoding.Equals("deflate", StringComparison.OrdinalIgnoreCase)) {
                     response.AppendHeader("Content-Encoding", "deflate");
                     response.AppendHeader("Vary", "Accept-Encoding");
                     return new DeflateStream(stream, CompressionMode.Compress, true);
                 }
-                else if (type.Equals("gzip", StringComparison.OrdinalIgnoreCase)) {
+                else if (typeEncoding.Equals("gzip", StringComparison.OrdinalIgnoreCase)) {
                     response.AppendHeader("Content-Encoding", "gzip");
                     response.AppendHeader("Vary", "Accept-Encoding");
                     return new GZipStream(stream, CompressionMode.Compress, true);
