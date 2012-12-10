@@ -97,7 +97,7 @@ namespace Cassette.Aspnet
             foreach (var type in encoding.Split(',')) {
                 var typeComponents = type.Split(';');
                 var typeEncoding = typeComponents[0].Trim();
-                float qvalue = 1.0f;
+                float qvalue = 1.0f;  // TODO: Prioritize qvalue and implement remaining RFC 2616, section 14.3
                 if (typeComponents.Length > 1  && !float.TryParse(typeComponents[1], out qvalue)) {
                     qvalue = 1.0f;
                 }
