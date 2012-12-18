@@ -18,18 +18,9 @@ namespace Cassette.RequireJS
             return () =>
             {
                 var source = openSourceStream().ReadToEnd();
-                var output = InsertModulePathIntoDefineCall(source, ModulePath);
+                var output = ModulePathInserter.InsertModulePathIntoDefineCall(source, ModulePath);
                 return output.AsStream();
             };
-        }
-
-        string InsertModulePathIntoDefineCall(string moduleScript, string modulePath)
-        {
-            var parser = new JSParser(moduleScript);
-            var sourceTree = parser.Parse(new CodeSettings());
-            sourceTree.Accept(new ModulePathInserter(modulePath));
-
-            return sourceTree.ToCode();
         }
 
         /// <summary>
@@ -38,12 +29,23 @@ namespace Cassette.RequireJS
         /// </summary>
         class ModulePathInserter : TreeVisitor
         {
-            readonly string modulePath;
-
-            public ModulePathInserter(string modulePath)
+            public static string InsertModulePathIntoDefineCall(string moduleScript, string modulePath)
             {
-                this.modulePath = modulePath;
+                var inserter = new ModulePathInserter();
+                var parser = new JSParser(moduleScript);
+                var sourceTree = parser.Parse(new CodeSettings { MinifyCode = false });
+                sourceTree.Accept(inserter);
+                if (inserter.insertionIndex > 0)
+                {
+                    return moduleScript.Insert(inserter.insertionIndex, "\"" + modulePath + "\",");
+                }
+                else
+                {
+                    return moduleScript;
+                }
             }
+
+            int insertionIndex;
 
             public override void Visit(CallNode node)
             {
@@ -51,8 +53,7 @@ namespace Cassette.RequireJS
 
                 if (ShouldInsertModulePathArgument(node))
                 {
-                    var modulePathNode = new ConstantWrapper(modulePath, PrimitiveType.String, node.Context, node.Parser);
-                    node.Arguments.Insert(0, modulePathNode);
+                    insertionIndex = node.Arguments[0].Context.StartPosition;
                 }
             }
 

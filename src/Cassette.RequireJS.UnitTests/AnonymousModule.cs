@@ -40,5 +40,17 @@ namespace Cassette.RequireJS
             var output = asset.OpenStream().ReadToEnd();
             output.ShouldEqual("define(\"test\",function(){})");
         }
+
+        [Fact]
+        public void AssetIsNotMinified()
+        {
+            var asset = new StubAsset("~/test.js", "define([],function(){var x = 1;})");
+            var bundle = new ScriptBundle("~");
+
+            var module = new AnonymousModule(asset, bundle);
+
+            var output = asset.OpenStream().ReadToEnd();
+            output.ShouldEqual("define(\"test\",[],function(){var x = 1;})");
+        }
     }
 }
