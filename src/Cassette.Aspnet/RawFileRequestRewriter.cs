@@ -96,6 +96,7 @@ namespace Cassette.Aspnet
         void SetFarFutureExpiresHeader()
         {
             context.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
+            context.Response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
         }
     }
 }
