@@ -1,7 +1,0 @@
-﻿<?xml version="1.0"?>
-<package inherits="Cassette.KnockoutJQueryTmpl.nutrans" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">    
-    <files>      
-      <file xdt:Transform="Insert" src="bin\Release\Cassette.KnockoutJQueryTmpl.pdb" target="lib\net40-client" />          
-      <file xdt:Transform="Insert" src="**\*.cs" target="src" />
-    </files>
-</package>
