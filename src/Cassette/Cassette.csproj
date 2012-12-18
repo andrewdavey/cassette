@@ -124,7 +124,6 @@
     <Compile Include="DeserializedAsset.cs" />
     <Compile Include="IBundleDeserializer.cs" />
     <Compile Include="IJsonSerializer.cs" />
-    <Compile Include="IO\PathHelper.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="ResourceAsset.cs" />
     <Compile Include="RuntimeBundleCollectionInitializer.cs" />
