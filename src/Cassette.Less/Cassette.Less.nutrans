@@ -4,6 +4,10 @@
     <id xdt:Transform="Insert">Cassette.Less</id>
     <description xdt:Transform="Insert">Less CSS compiler support for Cassette.</description>
     <dependencies xdt:Transform="Insert">
+      <group targetFramework="net45">
+        <dependency id="Cassette" version="$version$" />
+        <dependency id="DotlessClientOnly" version="1.3"/>
+      </group>
       <group targetFramework="net40">
         <dependency id="Cassette" version="$version$" />
         <dependency id="DotlessClientOnly" version="1.3"/>

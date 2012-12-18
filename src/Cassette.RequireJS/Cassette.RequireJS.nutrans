@@ -6,6 +6,7 @@
     <dependencies xdt:Transform="Insert">
       <dependency id="Cassette" version="$version$" />
       <dependency id="Cassette.Views" version="$version$" />
+      <dependency id="AjaxMin" version="4.78" />
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">

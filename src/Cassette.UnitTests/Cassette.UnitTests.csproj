@@ -52,11 +52,13 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
-      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net40\AjaxMin.dll</HintPath>
-    </Reference>
     <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net35\AjaxMin.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.78.4724.23869\lib\net35\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.78.4724.23869\lib\net40\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.3.2.4000\lib\Net35\Iesi.Collections.dll</HintPath>

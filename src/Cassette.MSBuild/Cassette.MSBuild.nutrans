@@ -4,6 +4,9 @@
     <id xdt:Transform="Insert">Cassette.MSBuild</id>
     <description xdt:Transform="Insert">Contains an MSBuild task that will generate Cassette bundles for a web application at compile time.</description>
     <dependencies xdt:Transform="Insert">
+      <group targetFramework="net45">
+        <dependency id="Cassette" version="$version$"/>
+      </group>
       <group targetFramework="net40">
         <dependency id="Cassette" version="$version$"/>
       </group>

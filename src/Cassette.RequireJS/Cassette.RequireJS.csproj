@@ -54,10 +54,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
-      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net40\AjaxMin.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.78.4724.23869\lib\net40\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="AjaxMin" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-      <HintPath>..\packages\AjaxMin.4.74.4698.25434\lib\net35\AjaxMin.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.78.4724.23869\lib\net35\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
