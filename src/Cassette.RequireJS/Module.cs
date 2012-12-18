@@ -19,7 +19,7 @@ namespace Cassette.RequireJS
 
         public IAsset Asset { get; private set; }
         public Bundle Bundle { get; private set; }
-        public string ModulePath { get; protected set; }
+        public string ModulePath { get; set; }
         public string Alias { get; set; }
 
         static string ConvertAssetPathToModulePath(string assetPath)

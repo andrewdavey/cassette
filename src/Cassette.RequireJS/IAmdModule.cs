@@ -6,9 +6,9 @@
     public interface IAmdModule
     {
         /// <summary>
-        /// Gets the AMD path for this module.
+        /// The AMD path for this module.
         /// </summary>
-        string ModulePath { get; }
+        string ModulePath { get; set; }
 
         /// <summary>
         /// Gets a JavaScript identifier used as a function parameter by modules that import this module.
