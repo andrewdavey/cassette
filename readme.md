@@ -25,7 +25,7 @@ Cassette does all this [and more](http://getcassette.net/benefits)!
 
 ## Install into your web application using Nuget ##
 
-    Install-Package Cassette.Web
+    Install-Package Cassette.Aspnet
 
 ## Documentation ##
 
