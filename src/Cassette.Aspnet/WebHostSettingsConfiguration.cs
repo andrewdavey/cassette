@@ -29,7 +29,7 @@ namespace Cassette.Aspnet
             settings.SourceDirectory = new FileSystemDirectory(AppDomainAppPath);
             settings.CacheDirectory = GetCacheDirectory(configurationSection);
             settings.IsFileSystemWatchingEnabled = TrustLevel.IsFullTrust() && !IsStaticCacheManifest(settings);
-
+            settings.IsCompressionEnabled = configurationSection.CompressionEnabled;
             IsStaticCacheManifest(settings);
 
             // Include the virtual directory so that if the application is moved to 

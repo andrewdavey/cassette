@@ -13,6 +13,7 @@ namespace Cassette.Aspnet
     {
         readonly MemoryStream outputStream;
         readonly Mock<HttpResponseBase> response;
+        readonly Mock<HttpRequestBase> request;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
         readonly PlaceholderReplacingResponseFilter filter;
 
@@ -20,6 +21,10 @@ namespace Cassette.Aspnet
         {
             outputStream = new MemoryStream();
             response = new Mock<HttpResponseBase>();
+            request = new Mock<HttpRequestBase>();
+            request.SetupGet(r => r.Headers).Returns(new NameValueCollection());
+            
+            
             placeholderTracker = new Mock<IPlaceholderTracker>();
 
             placeholderTracker.Setup(h => h.ReplacePlaceholders(It.IsAny<string>()))
@@ -28,7 +33,7 @@ namespace Cassette.Aspnet
             response.SetupGet(r => r.Output.Encoding).Returns(Encoding.ASCII);
             response.SetupGet(r => r.Filter).Returns(outputStream);
             response.SetupGet(r => r.Headers).Returns(new NameValueCollection());
-            filter = new PlaceholderReplacingResponseFilter(response.Object, placeholderTracker.Object);
+            filter = new PlaceholderReplacingResponseFilter(new CassetteSettings(),  response.Object, request.Object, placeholderTracker.Object);
         }
 
         [Fact]
