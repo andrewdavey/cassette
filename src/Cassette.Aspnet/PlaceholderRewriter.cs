@@ -39,8 +39,9 @@ namespace Cassette.Aspnet
         void InstallPlaceholderReplacingResponseFilter(HttpContextBase httpContext)
         {
             var response = httpContext.Response;
+            var request = httpContext.Request;
             var tracker = (IPlaceholderTracker)httpContext.Items[PlaceholderTrackerKey];
-            var filter = new PlaceholderReplacingResponseFilter(response, tracker);
+            var filter = new PlaceholderReplacingResponseFilter(settings, response, request, tracker);
             response.Filter = filter;
         }
 

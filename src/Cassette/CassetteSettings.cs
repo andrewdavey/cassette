@@ -55,5 +55,7 @@ namespace Cassette
         public string Version { get; set; }
 
         public bool IsFileSystemWatchingEnabled { get; set; }
+
+        public bool IsCompressionEnabled { get; set; }
     }
 }

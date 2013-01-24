@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Web;
 
@@ -7,19 +8,25 @@ namespace Cassette.Aspnet
 {
     class PlaceholderReplacingResponseFilter : MemoryStream
     {
-        public PlaceholderReplacingResponseFilter(HttpResponseBase response, IPlaceholderTracker placeholderTracker)
+        public PlaceholderReplacingResponseFilter(CassetteSettings settings, HttpResponseBase response, HttpRequestBase request, IPlaceholderTracker placeholderTracker)
         {
+            this.settings = settings;
             this.response = response;
+            this.request = request;
             this.placeholderTracker = placeholderTracker;
             outputStream = response.Filter;
             htmlBuffer = new StringBuilder();
         }
 
+        readonly CassetteSettings settings;
         readonly Stream outputStream;
         readonly HttpResponseBase response;
+        readonly HttpRequestBase request;
         readonly IPlaceholderTracker placeholderTracker;
         readonly StringBuilder htmlBuffer;
         bool hasWrittenToOutputStream;
+
+        
 
         public override void Write(byte[] buffer, int offset, int count)
         {
@@ -56,7 +63,19 @@ namespace Cassette.Aspnet
             var outputBytes = encoding.GetBytes(output);
             if (outputBytes.Length > 0)
             {
-                outputStream.Write(outputBytes, 0, outputBytes.Length);
+                var acceptEncodingRequest = request.Headers["Accept-Encoding"];
+                if (settings.IsCompressionEnabled && !String.IsNullOrEmpty(acceptEncodingRequest) && acceptEncodingRequest.Contains("gzip"))
+                {
+                    response.AppendHeader("Content-Encoding", "gzip");
+                    response.Cache.VaryByHeaders["Accept-Encoding"] = true;
+                    var compressedStream = new GZipStream(outputStream, CompressionMode.Compress);
+                    compressedStream.Write(outputBytes, 0, outputBytes.Length);
+                    compressedStream.Close();
+                }
+                else
+                {
+                    outputStream.Write(outputBytes, 0, outputBytes.Length);
+                }
             }
         }
     }
