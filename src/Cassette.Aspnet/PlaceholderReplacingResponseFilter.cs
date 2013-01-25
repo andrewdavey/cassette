@@ -4,6 +4,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
+#if NET35
+using Cassette.Utilities;
+#endif
+
 namespace Cassette.Aspnet
 {
     class PlaceholderReplacingResponseFilter : MemoryStream
