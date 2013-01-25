@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Web;
 using Moq;
 using Should;
@@ -25,6 +26,7 @@ namespace Cassette.Aspnet
             items = new Dictionary<string, object>();
             httpContext.SetupGet(c => c.Items).Returns(items);
             httpContext.SetupGet(c => c.Response).Returns(response.Object);
+            response.SetupGet(r => r.Output.Encoding).Returns(Encoding.UTF8);
             rewriter = new PlaceholderRewriter(settings, () => tracker.Object, () => httpContext.Object);
         }
 
