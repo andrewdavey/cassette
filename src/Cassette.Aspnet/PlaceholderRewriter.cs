@@ -40,7 +40,7 @@ namespace Cassette.Aspnet
         {
             var response = httpContext.Response;
             var tracker = (IPlaceholderTracker)httpContext.Items[PlaceholderTrackerKey];
-            var filter = new PlaceholderReplacingResponseFilter(response, tracker);
+            var filter = new PlaceholderReplacingResponseFilter(response.Filter, response.Output.Encoding, response.Headers, tracker);
             response.Filter = filter;
         }
 

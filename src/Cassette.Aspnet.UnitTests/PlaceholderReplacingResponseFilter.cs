@@ -2,7 +2,6 @@
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
-using System.Web;
 using Moq;
 using Should;
 using Xunit;
@@ -12,23 +11,18 @@ namespace Cassette.Aspnet
     public class PlaceholderReplacingResponseFilter_Tests : IDisposable
     {
         readonly MemoryStream outputStream;
-        readonly Mock<HttpResponseBase> response;
         readonly Mock<IPlaceholderTracker> placeholderTracker;
         readonly PlaceholderReplacingResponseFilter filter;
 
         public PlaceholderReplacingResponseFilter_Tests()
         {
             outputStream = new MemoryStream();
-            response = new Mock<HttpResponseBase>();
             placeholderTracker = new Mock<IPlaceholderTracker>();
 
             placeholderTracker.Setup(h => h.ReplacePlaceholders(It.IsAny<string>()))
                       .Returns<string>(s => s);
 
-            response.SetupGet(r => r.Output.Encoding).Returns(Encoding.ASCII);
-            response.SetupGet(r => r.Filter).Returns(outputStream);
-            response.SetupGet(r => r.Headers).Returns(new NameValueCollection());
-            filter = new PlaceholderReplacingResponseFilter(response.Object, placeholderTracker.Object);
+            filter = new PlaceholderReplacingResponseFilter(outputStream, Encoding.ASCII, new NameValueCollection(), placeholderTracker.Object);
         }
 
         [Fact]
