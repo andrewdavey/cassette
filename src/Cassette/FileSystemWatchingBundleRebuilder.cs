@@ -196,8 +196,11 @@ namespace Cassette
 
         void RebuildBundles()
         {
-            Trace.Source.TraceInformation("Rebuilding bundles due to file system changes.");
-            initializer.Initialize(bundles);
+            lock (initializer)
+            {
+                Trace.Source.TraceInformation("Rebuilding bundles due to file system changes.");
+                initializer.Initialize(bundles);
+            }
         }
 
         /// <summary>
