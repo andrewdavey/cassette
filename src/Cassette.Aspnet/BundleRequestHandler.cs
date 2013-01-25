@@ -9,7 +9,7 @@ using Trace = Cassette.Diagnostics.Trace;
 
 namespace Cassette.Aspnet
 {
-    class BundleRequestHandler<T> : ICassetteRequestHandler
+    internal class BundleRequestHandler<T> : ICassetteRequestHandler
         where T : Bundle
     {
         readonly BundleCollection bundles;
@@ -73,7 +73,7 @@ namespace Cassette.Aspnet
 
             var encoding = request.Headers["Accept-Encoding"];
             response.Filter = EncodeStreamAndAppendResponseHeaders(response.Filter, encoding);
-            
+
             using (var assetStream = bundle.OpenStream())
             {
                 assetStream.CopyTo(response.OutputStream);
@@ -88,33 +88,54 @@ namespace Cassette.Aspnet
             response.Cache.SetETag(actualETag);
         }
 
-        Stream EncodeStreamAndAppendResponseHeaders(Stream stream, string encoding)
+        Stream EncodeStreamAndAppendResponseHeaders(Stream stream, string acceptEncoding)
         {
-            if (encoding == null)
+            if (acceptEncoding == null) return stream;
+
+            var preferredEncoding = ParsePreferredEncoding(acceptEncoding);
+            if (preferredEncoding == null) return stream;
+
+            response.AppendHeader("Content-Encoding", preferredEncoding);
+            response.AppendHeader("Vary", "Accept-Encoding");
+            if (preferredEncoding == "deflate")
             {
-                return stream;
+                return new DeflateStream(stream, CompressionMode.Compress, true);
+            }
+            if (preferredEncoding == "gzip")
+            {
+                return new GZipStream(stream, CompressionMode.Compress, true);
             }
 
-            foreach (var type in encoding.Split(',')) {
-                var typeComponents = type.Split(';');
-                var typeEncoding = typeComponents[0].Trim();
-                float qvalue = 1.0f;  // TODO: Prioritize qvalue and implement remaining RFC 2616, section 14.3
-                if (typeComponents.Length > 1  && !float.TryParse(typeComponents[1], out qvalue)) {
-                    qvalue = 1.0f;
-                }
-                if (typeEncoding.Equals("deflate", StringComparison.OrdinalIgnoreCase)) {
-                    response.AppendHeader("Content-Encoding", "deflate");
-                    response.AppendHeader("Vary", "Accept-Encoding");
-                    return new DeflateStream(stream, CompressionMode.Compress, true);
-                }
-                else if (typeEncoding.Equals("gzip", StringComparison.OrdinalIgnoreCase)) {
-                    response.AppendHeader("Content-Encoding", "gzip");
-                    response.AppendHeader("Vary", "Accept-Encoding");
-                    return new GZipStream(stream, CompressionMode.Compress, true);
-                }
+            // This line should never be reached because we've filtered out unsupported encoding types.
+            // But the compiler doesn't know this. :)
+            throw new Exception("Unknown content encoding type \"" + preferredEncoding + "\".");
+        }
 
-            }
-            return stream;
+        static readonly string[] AllowedEncodings = new[] { "gzip", "deflate" };
+
+        static string ParsePreferredEncoding(string acceptEncoding)
+        {
+            return acceptEncoding
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(type => type.Split(';'))
+                .Select(parts => new
+                {
+                    encoding = parts[0].Trim(),
+                    qvalue = ParseQValueFromSecondArrayElement(parts)
+                })
+                .Where(x => AllowedEncodings.Contains(x.encoding))
+                .OrderByDescending(x => x.qvalue)
+                .Select(x => x.encoding)
+                .FirstOrDefault();
+        }
+
+        static float ParseQValueFromSecondArrayElement(string[] parts)
+        {
+            const float defaultQValue = 1f;
+            if (parts.Length < 2) return defaultQValue;
+
+            float qvalue;
+            return float.TryParse(parts[1].Trim(), out qvalue) ? qvalue : defaultQValue;
         }
     }
 }
