@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
-using System.Web;
 
 namespace Cassette.Aspnet
 {
@@ -26,11 +26,6 @@ namespace Cassette.Aspnet
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (HttpRuntime.UsingIntegratedPipeline && responseHeaders["Content-Encoding"] != null)
-            {
-                throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set <cassette rewriteHtml=\"false\" /> to disable rewriting or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
-            }
-
             bufferStream.Write(buffer, offset, count);
         }
 
@@ -47,11 +42,44 @@ namespace Cassette.Aspnet
 
         void WriteBufferedOutput()
         {
-            var output = GetOutputWithPlaceholdersReplaced();
-            var outputBytes = outputEncoding.GetBytes(output);
-            if (outputBytes.Length > 0)
+            var contentEncoding = responseHeaders["Content-Encoding"] ?? "";
+            if (contentEncoding.IndexOf("gzip", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                outputStream.Write(outputBytes, 0, outputBytes.Length);
+                WriteCompressedOutput((stream, mode) => new GZipStream(stream, mode));
+            }
+            else if (contentEncoding.IndexOf("deflate", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                WriteCompressedOutput((stream, mode) => new DeflateStream(stream, mode));
+            }
+            else if (contentEncoding != "")
+            {
+                throw new Exception("Cannot process output with content encoding \"" + contentEncoding + "\".");
+            }
+            else
+            {
+                var output = GetOutputWithPlaceholdersReplaced();
+                var outputBytes = outputEncoding.GetBytes(output);
+                if (outputBytes.Length > 0)
+                {
+                    outputStream.Write(outputBytes, 0, outputBytes.Length);
+                }
+            }
+        }
+
+        void WriteCompressedOutput(Func<Stream, CompressionMode, Stream> createCompressionStream)
+        {
+            bufferStream.Position = 0;
+            using (var decompressor = createCompressionStream(bufferStream, CompressionMode.Decompress))
+            using (var expanded = new MemoryStream())
+            {
+                decompressor.CopyTo(expanded);
+                var originalOutput = outputEncoding.GetString(expanded.ToArray());
+                var replacedOutput = placeholderTracker.ReplacePlaceholders(originalOutput);
+                using (var toCompress = new MemoryStream(outputEncoding.GetBytes(replacedOutput)))
+                using (var compressor = createCompressionStream(outputStream, CompressionMode.Compress))
+                {
+                    toCompress.CopyTo(compressor);
+                }
             }
         }
 
