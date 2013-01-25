@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Web;
 
 namespace Cassette.Aspnet
@@ -12,13 +11,13 @@ namespace Cassette.Aspnet
             this.response = response;
             this.placeholderTracker = placeholderTracker;
             outputStream = response.Filter;
-            htmlBuffer = new StringBuilder();
+            bufferStream = new MemoryStream();
         }
 
         readonly Stream outputStream;
         readonly HttpResponseBase response;
         readonly IPlaceholderTracker placeholderTracker;
-        readonly StringBuilder htmlBuffer;
+        readonly MemoryStream bufferStream;
         bool hasWrittenToOutputStream;
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -28,7 +27,7 @@ namespace Cassette.Aspnet
                 throw new InvalidOperationException("Cannot rewrite page output when it has been compressed. Either set <cassette rewriteHtml=\"false\" /> to disable rewriting or set <urlCompression dynamicCompressionBeforeCache=\"false\" /> in Web.config.");
             }
 
-            BufferOutput(buffer, offset, count);
+            bufferStream.Write(buffer, offset, count);
         }
 
         public override void Close()
@@ -42,22 +41,21 @@ namespace Cassette.Aspnet
             base.Close();
         }
 
-        void BufferOutput(byte[] buffer, int offset, int count)
-        {
-            var encoding = response.Output.Encoding;
-            var html = encoding.GetString(buffer, offset, count);
-            htmlBuffer.Append(html);
-        }
-
         void WriteBufferedOutput()
         {
-            var encoding = response.Output.Encoding;
-            var output = placeholderTracker.ReplacePlaceholders(htmlBuffer.ToString());
-            var outputBytes = encoding.GetBytes(output);
+            var output = GetOutputWithPlaceholdersReplaced();
+            var outputBytes = response.Output.Encoding.GetBytes(output);
             if (outputBytes.Length > 0)
             {
                 outputStream.Write(outputBytes, 0, outputBytes.Length);
             }
+        }
+
+        string GetOutputWithPlaceholdersReplaced()
+        {
+            var encoding = response.Output.Encoding;
+            var originalOutput = encoding.GetString(bufferStream.ToArray());
+            return placeholderTracker.ReplacePlaceholders(originalOutput);
         }
     }
 }
