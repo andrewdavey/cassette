@@ -39,6 +39,14 @@ namespace Cassette
         }
 
         [Fact]
+        public void EscapesSpaces()
+        {
+            SourceDirectory.Add("~\\space test.png", "content");
+            var url = UrlGenerator.CreateRawFileUrl("~/space test.png");
+            url.ShouldEqual("cassette.axd/file/space%20test-040f06fd774092478d450774f5ba30c5da78acc8.png");
+        }
+
+        [Fact]
         public void ArgumentExceptionThrownWhenFilenameDoesNotStartWithTilde()
         {
             Assert.Throws<ArgumentException>(delegate

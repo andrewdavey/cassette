@@ -115,6 +115,7 @@ namespace Cassette.Stylesheets
             var originalUrl = matchedUrlGroup.Value.Trim('"', '\'');
             originalUrl = SplitOnLastOccurence(originalUrl, '#', out fragment);
             originalUrl = SplitOnLastOccurence(originalUrl, '?', out queryString);
+            originalUrl = Uri.UnescapeDataString(originalUrl);
 
             if (originalUrl.StartsWith("/"))
             {

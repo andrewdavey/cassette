@@ -291,5 +291,21 @@ namespace Cassette.Stylesheets
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/images/test.png"));
         }
+
+        [Fact]
+        public void ItUnescapesUriToGetFilename()
+        {
+            // e.g. "%20" -> " "
+
+            fileSystem.Add("~/styles/space test.png");
+
+            var css = "p { background-image: url(space%20test.png); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+            var output = getResult().ReadToEnd();
+
+            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+
+            urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/space test.png"));
+        }
     }
 }

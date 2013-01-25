@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Cassette.IO;
 using Cassette.Utilities;
 
@@ -65,6 +66,8 @@ namespace Cassette
 
             // "~\example\image.png" --> "/example/image-hash.png"
             var path = ConvertToForwardSlashes(filename).Substring(1);
+            path = UriEscapePathSegments(path);
+            
             var index = path.LastIndexOf('.');
             if (index >= 0)
             {
@@ -100,6 +103,17 @@ namespace Cassette
         string ConvertToForwardSlashes(string path)
         {
             return path.Replace('\\', '/');
+        }
+
+        /// <summary>
+        /// Escape each part of the URL between the slashes.
+        /// </summary>
+        string UriEscapePathSegments(string path)
+        {
+            return string.Join(
+                "/", 
+                path.Split('/').Select(Uri.EscapeDataString).ToArray()
+            );
         }
     }
 }
