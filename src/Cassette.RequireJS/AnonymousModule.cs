@@ -12,7 +12,7 @@ namespace Cassette.RequireJS
 
         public string Transform(string source, IAsset asset)
         {
-            return InsertModulePathIntoDefineCall(source, ModulePath);
+            return ModulePathInserter.InsertModulePathIntoDefineCall(source, ModulePath);
         }
 
         /// <summary>

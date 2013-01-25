@@ -31,10 +31,7 @@ namespace Cassette.RequireJS
         {
             get
             {
-                using (var stream = OpenStream())
-                {
-                    return stream.ComputeSHA1Hash();
-                }
+                return Content.ComputeSHA1Hash();
             }
         }
 
@@ -68,9 +65,9 @@ namespace Cassette.RequireJS
             throw new NotImplementedException();
         }
 
-        public Stream OpenStream()
+        public string GetTransformedContent()
         {
-            return Content.AsStream();
+            return Content;
         }
     }
 }

@@ -79,8 +79,8 @@ namespace Cassette.Aspnet
                  .Callback<IBundleVisitor>(v => v.Visit(asset.Object));
             asset.SetupGet(a => a.Path)
                  .Returns("~/test/asset.js");
-            asset.Setup(a => a.OpenStream())
-                 .Returns(Stream.Null);
+            asset.Setup(a => a.GetTransformedContent())
+                 .Returns("");
             bundles.First().Assets.Add(asset.Object);
 
             using (outputStream = new MemoryStream())

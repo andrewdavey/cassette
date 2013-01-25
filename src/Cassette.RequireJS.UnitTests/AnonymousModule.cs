@@ -49,8 +49,7 @@ namespace Cassette.RequireJS
 
             var module = new AnonymousModule(asset, bundle);
 
-            var output = asset.OpenStream().ReadToEnd();
-            output.ShouldEqual("define(\"test\",[],function(){var x = 1;})");
+            asset.GetTransformedContent().ShouldEqual("define(\"test\",[],function(){var x = 1;})");
         }
     }
 }

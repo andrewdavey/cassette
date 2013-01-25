@@ -47,10 +47,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/test.png");
 
             var css = "p { background-image: url(test.png?param=value); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED?param=value); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED?param=value); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
@@ -61,10 +60,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/test.png");
 
             var css = "p { background-image: url(test.png#fragment); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED#fragment); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED#fragment); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
@@ -75,10 +73,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/test.png");
 
             var css = "p { background-image: url(test.png?param#fragment); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED?param#fragment); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED?param#fragment); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
@@ -151,7 +148,7 @@ namespace Cassette.Stylesheets
             var css = "p { background-image: url(test.png#fragment); }";
             var result = transformer.Transform(css, asset.Object);
 
-            result.ShouldEqual("p { background-image: url(EXPANDED); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED#fragment); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/test.png"));
         }
@@ -294,10 +291,9 @@ namespace Cassette.Stylesheets
             fileSystem.Add("~/styles/space test.png");
 
             var css = "p { background-image: url(space%20test.png); }";
-            var getResult = transformer.Transform(css.AsStream, asset.Object);
-            var output = getResult().ReadToEnd();
+            var result = transformer.Transform(css, asset.Object);
 
-            output.ShouldEqual("p { background-image: url(EXPANDED); }");
+            result.ShouldEqual("p { background-image: url(EXPANDED); }");
 
             urlGenerator.Verify(g => g.CreateRawFileUrl("~/styles/space test.png"));
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -34,8 +35,10 @@ namespace Cassette.Stylesheets
             foreach (var match in urlMatches)
             {
                 var matchedUrlGroup = match.Groups["url"];
-                var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory);
-                if (ReplaceUrlWithCassetteRawFileUrl(builder, matchedUrlGroup, relativeFilename))
+                string queryString;
+                string fragment;
+                var relativeFilename = GetImageFilename(matchedUrlGroup, currentDirectory, out queryString, out fragment);
+                if (ReplaceUrlWithCassetteRawFileUrl(builder, matchedUrlGroup, relativeFilename, queryString, fragment))
                 {
                     asset.AddRawFileReference(relativeFilename);
                 }
