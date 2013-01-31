@@ -1,17 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5D451928-B7C4-4BEA-848D-F23A8E3DFAA5}</ProjectGuid>
+    <ProjectGuid>{F93F6566-0EB8-4492-ADB9-2272ADC4A273}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Cassette.HtmlTemplates</RootNamespace>
-    <AssemblyName>Cassette.Hogan.UnitTests</AssemblyName>
+    <AssemblyName>Cassette.Handlebars.UnitTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -72,32 +73,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HoganCompiler.cs" />
-    <Compile Include="HoganFileSearchModifier.cs" />
-    <Compile Include="HoganServices.cs" />
+    <Compile Include="HandlebarsCompiler.cs" />
+    <Compile Include="HandlebarsFileSearchModifier.cs" />
+    <Compile Include="HandlebarsPipeline.cs" />
+    <Compile Include="HandlebarsServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="HoganPipeline.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cassette.Hogan\Cassette.Hogan.csproj">
-      <Project>{4D64EC45-C42A-4601-9E80-2D166AC849F3}</Project>
-      <Name>Cassette.Hogan</Name>
+    <ProjectReference Include="..\Cassette.Handlebars\Cassette.Handlebars.csproj">
+      <Project>{e3b1e8f5-686a-4bb8-ba01-4fc7ec38a354}</Project>
+      <Name>Cassette.Handlebars</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette.UnitTests\Cassette.UnitTests.csproj">
-      <Project>{F200A67A-D7B5-441B-AB36-69AA5C87577E}</Project>
+      <Project>{f200a67a-d7b5-441b-ab36-69aa5c87577e}</Project>
       <Name>Cassette.UnitTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
-      <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
+      <Project>{a5ccf9d3-5d49-4bfc-b9a6-9ec9e0e29c50}</Project>
       <Name>Cassette</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Cassette.Hogan\Resources\hogan.js">
-      <Link>hogan.js</Link>
+    <Content Include="..\Cassette.Handlebars\Resources\handlebars.js">
+      <Link>handlebars.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
