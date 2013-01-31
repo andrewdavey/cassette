@@ -9,8 +9,6 @@ namespace Cassette.HtmlTemplates
         {
             scriptEngine = new ScriptEngine();
             scriptEngine.Execute(Properties.Resources.handlebars);
-            
-            //scriptEngine.Execute("var precompile = Handlebars.precompile;");
 
             // Create a global compile function that returns the template compiled into javascript source.
             scriptEngine.Execute(@"
@@ -18,8 +16,7 @@ namespace Cassette.HtmlTemplates
                   return Handlebars.precompile(template, { knownHelpers : ['t', 'eachkeys'], knownHelpersOnly: false });
                 };");
         }
-
-
+        
         readonly ScriptEngine scriptEngine;
 
         public CompileResult Compile(string source, CompileContext context)

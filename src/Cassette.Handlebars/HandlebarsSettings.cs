@@ -10,9 +10,17 @@ namespace Cassette.HtmlTemplates
         /// </summary>
         public string JavaScriptVariableName { get; set; }
 
+        /// <summary>
+        /// A list of any custom Handlebars helpers that are needed during precompilation.
+        /// For example, if you have templates that make use of a "t" helper with <code>{{t "MyKey"}}</code>
+        /// then you would add "t" to the list.
+        /// </summary>
+        public List<string> KnownHelpers { get; set; }
+
         public HandlebarsSettings(IEnumerable<IConfiguration<HandlebarsSettings>> configurations)
         {
             JavaScriptVariableName = "JST";
+            KnownHelpers = new List<string>();
             ApplyConfigurations(configurations);
         }
 

@@ -5,7 +5,7 @@ namespace Cassette.HtmlTemplates
     {
         public void Modify(FileSearch fileSearch)
         {
-            fileSearch.Pattern += ";*.mustache;*.jst;*.tmpl";
+            fileSearch.Pattern += ";*.mustache;*.jst;*.tmpl,*.hbs";
         }
     }
 }
