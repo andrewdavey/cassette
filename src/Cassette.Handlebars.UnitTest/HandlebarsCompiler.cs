@@ -1,4 +1,5 @@
-﻿using Jurassic;
+﻿using System.Collections.Generic;
+using Jurassic;
 using Should;
 using Xunit;
 
@@ -9,16 +10,17 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void CanCompileHandlebarsTemplate()
         {
-            var compiler = new HandlebarsCompiler();
+            var settings = new HandlebarsSettings { KnownHelpersOnly = false, KnownHelpers = new List<string> { "t" } };
+
+            var compiler = new HandlebarsCompiler(settings);
             var result = compiler.Compile("Hello {{world}}", new CompileContext());
             
             var engine = new ScriptEngine();
             engine.ExecuteFile("handlebars.js");
             var source = @"
 (function(){
-var template = new Hogan.Template();
-template.r = " + result.Output + @";
-return template.render({world:'Andrew'});
+var template = new Hogan.template(" + result.Output + @");
+return template({world:'Andrew'});
 }());";
             var templateRender = engine.Evaluate<string>(source);
 

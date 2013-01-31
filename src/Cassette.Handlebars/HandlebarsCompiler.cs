@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Jurassic;
+using Newtonsoft.Json;
 
 namespace Cassette.HtmlTemplates
 {
@@ -10,14 +11,16 @@ namespace Cassette.HtmlTemplates
             scriptEngine = new ScriptEngine();
             scriptEngine.Execute(Properties.Resources.handlebars);
 
-            var knownHelpersFormattedList = settings.KnownHelpers.Aggregate("[", (current, helper) => current + ("'" + helper + "'"));
-            knownHelpersFormattedList += "]";
-
+            var knownHelpersJson = JsonConvert.SerializeObject(settings.KnownHelpers);
+            var knownHelpersOnly = JsonConvert.False;
+            if (settings.KnownHelpersOnly) {
+                knownHelpersOnly = JsonConvert.True;
+            }
 
             // Create a global compile function that returns the template compiled into javascript source.
             scriptEngine.Execute(@"
                 var precompile = function (template) {
-                    return Handlebars.precompile(template, { knownHelpers: ['t', 'eachkeys'], knownHelpersOnly: false });
+                    return Handlebars.precompile(template, { knownHelpers: " + knownHelpersJson + @", knownHelpersOnly: " + knownHelpersOnly + @" });
                 };"
             );
         }

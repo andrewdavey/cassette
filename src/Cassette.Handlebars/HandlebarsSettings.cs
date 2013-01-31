@@ -17,10 +17,24 @@ namespace Cassette.HtmlTemplates
         /// </summary>
         public List<string> KnownHelpers { get; set; }
 
+        /// <summary>
+        /// The flag which determines if you only wish to precompile your Handlebars 
+        /// templates with ONLY your Known Helpers.
+        /// </summary>
+        public bool KnownHelpersOnly { get; set; }
+
+        public HandlebarsSettings()
+        {
+            JavaScriptVariableName = "JST";
+            KnownHelpers = new List<string>();
+            KnownHelpersOnly = false;
+        }
+
         public HandlebarsSettings(IEnumerable<IConfiguration<HandlebarsSettings>> configurations)
         {
             JavaScriptVariableName = "JST";
             KnownHelpers = new List<string>();
+            KnownHelpersOnly = false;
             ApplyConfigurations(configurations);
         }
 

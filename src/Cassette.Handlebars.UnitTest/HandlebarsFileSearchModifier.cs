@@ -26,7 +26,7 @@ namespace Cassette.HtmlTemplates
         [Fact]
         public void ModifyAddsHbsToPattern()
         {
-            
+            AssertPatternContains("*.hbs");
         }
 
         void AssertPatternContains(string filePattern)
