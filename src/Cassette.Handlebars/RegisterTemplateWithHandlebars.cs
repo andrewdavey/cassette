@@ -26,8 +26,7 @@ namespace Cassette.HtmlTemplates
                 var id = idStrategy.HtmlTemplateId(bundle, asset);
                 var template = javaScriptVariableName + "['" + id + "']";
 
-                var output = template + "=new Handlebars.template();" + 
-                             template + ".r=" + compiledTemplate + ";";
+                var output = template + "= Handlebars.template(" + compiledTemplate + ");";
                 return output.AsStream();
             };
         }
