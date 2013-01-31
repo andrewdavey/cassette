@@ -17,7 +17,7 @@ namespace Cassette.HtmlTemplates
             // Create a global compile function that returns the template compiled into javascript source.
             scriptEngine.Execute(@"
                 var precompile = function (template) {
-                    return Handlebars.precompile(template, { knownHelpers: "+ knownHelpersFormattedList +@", knownHelpersOnly: false });
+                    return Handlebars.precompile(template, { knownHelpers: ['t', 'eachkeys'], knownHelpersOnly: false });
                 };"
             );
         }
