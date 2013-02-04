@@ -32,6 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Cassette.CoffeeScript.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Less.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Sass.UnitTests")]
+[assembly: InternalsVisibleTo("Cassette.Handlebars.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Hogan.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.Spriting.UnitTests")]
 [assembly: InternalsVisibleTo("Cassette.IntegrationTests")]
