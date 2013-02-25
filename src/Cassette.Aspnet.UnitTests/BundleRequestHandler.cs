@@ -138,9 +138,8 @@ namespace Cassette.Aspnet
         public void HandlerReturns404()
         {
             var handler = CreateRequestHandler();
-
-            handler.ProcessRequest("~/notfound");
-
+            var httpException = Assert.Throws<HttpException>(() => handler.ProcessRequest("~/notfound"));
+            httpException.GetHttpCode().ShouldEqual(404);
             response.VerifySet(r => r.StatusCode = 404);
         }
     }
