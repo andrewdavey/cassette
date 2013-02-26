@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Cassette.Caching;
 using Cassette.IO;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
@@ -14,10 +17,9 @@ namespace Cassette.MSBuild
         readonly string binDirectory;
         readonly string outputDirectory;
         readonly bool includeRawFiles;
-        readonly Action<string> logInformation;
-        readonly Action<string> logError;
+        readonly TaskLoggingHelper taskLoggingHelper;
 
-        public MSBuildHost(string sourceDirectory, string binDirectory, string outputDirectory, bool includeRawFiles, Action<string> logInformation, Action<string> logError)
+        public MSBuildHost(string sourceDirectory, string binDirectory, string outputDirectory, bool includeRawFiles, TaskLoggingHelper taskLoggingHelper)
         {
             if (!Path.IsPathRooted(sourceDirectory)) throw new ArgumentException("sourceDirectory must be an absolute path.", "sourceDirectory");
             if (!Path.IsPathRooted(binDirectory)) throw new ArgumentException("binDirectory must be an absolute path.", "binDirectory");
@@ -27,8 +29,7 @@ namespace Cassette.MSBuild
             this.binDirectory = binDirectory;
             this.outputDirectory = outputDirectory;
             this.includeRawFiles = includeRawFiles;
-            this.logInformation = logInformation;
-            this.logError = logError;
+            this.taskLoggingHelper = taskLoggingHelper;
         }
 
         protected override IEnumerable<Assembly> LoadAssemblies()
@@ -71,19 +72,29 @@ namespace Cassette.MSBuild
 
         public void Execute()
         {
+            taskLoggingHelper.LogMessage(MessageImportance.High, "Starting bundling");
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             try
             {
                 var bundles = Container.Resolve<BundleCollection>();
+
                 WriteCache(bundles);
                 if (includeRawFiles)
                 {
                     CopyRawFileToOutputDirectory(bundles);
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                logError(exception.ToString());
+                taskLoggingHelper.LogError(exception.ToString());
                 throw;
+            }
+            finally
+            {
+                stopwatch.Stop();
+                taskLoggingHelper.LogMessage(MessageImportance.High, "Finished bundling - (took {0}ms)", stopwatch.ElapsedMilliseconds);
             }
         }
 

@@ -1,31 +1,30 @@
 using System;
 using System.IO;
+using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
     [Serializable]
     public class CreateBundlesCommand : MarshalByRefObject
-    {        
-        public CreateBundlesCommand(string source, string bin, string output, bool includeRawFiles, Action<string> logInformation, Action<string> logError)
+    {
+        public CreateBundlesCommand(string source, string bin, string output, bool includeRawFiles, TaskLoggingHelper taskLoggingHelper)
         {
             this.source = source;
             this.bin = bin;
             this.output = output;
             this.includeRawFiles = includeRawFiles;
-            this.logInformation = logInformation;
-            this.logError = logError;
+            this.taskLoggingHelper = taskLoggingHelper;
         }
 
         readonly string source;
         readonly string bin;
         readonly string output;
         readonly bool includeRawFiles;
-        readonly Action<string> logInformation;
-        readonly Action<string> logError;
+        readonly TaskLoggingHelper taskLoggingHelper;
 
         public void Execute()
         {
-            using (var host = new MSBuildHost(source, bin, output, includeRawFiles, logInformation, logError))
+            using (var host = new MSBuildHost(source, bin, output, includeRawFiles, taskLoggingHelper))
             {
                 host.Initialize();
                 host.Execute();
@@ -70,10 +69,10 @@ namespace Cassette.MSBuild
         static CreateBundlesCommand CreateCommandInAppDomain(CreateBundlesCommand command, AppDomain appDomain)
         {
             // This is like calling
-            //   new CreateBundlesCommand(command.source, command.bin, command.output);
+            //   new CreateBundlesCommand(command.source, command.bin, command.output, command.logInformation, command.logError);
             // but the object lives in the other AppDomain.
 
-            var constructorArguments = new object[] { command.source, command.bin, command.output, command.includeRawFiles };
+            var constructorArguments = new object[] { command.source, command.bin, command.output, command.includeRawFiles, command.taskLoggingHelper };
             
 #if NET35
             var objectHandle = Activator.CreateInstanceFrom(
