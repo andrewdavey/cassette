@@ -6,6 +6,7 @@ namespace Cassette.Aspnet
 {
     public class RawFileRequestRewriter_Tests
     {
+    /*
         [Fact]
         public void RewriteCallsContextRewritePathMethodPassingTheOriginalFilePath()
         {
@@ -58,5 +59,6 @@ namespace Cassette.Aspnet
 
             context.Verify(c => c.RewritePath(to));
         }
+     */
     }
 }

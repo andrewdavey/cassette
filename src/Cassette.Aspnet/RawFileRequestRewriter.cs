@@ -1,6 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Web;
+using Cassette.Utilities;
 
 namespace Cassette.Aspnet
 {
@@ -26,8 +29,33 @@ namespace Cassette.Aspnet
 
             EnsureFileCanBeAccessed(path);
 
-            SetFarFutureExpiresHeader();
+            byte[] hash;
+            using(var sha1 = SHA1.Create())
+            using(var fileStream = File.OpenRead(context.Server.MapPath(path))) {
+                hash = sha1.ComputeHash(fileStream);
+            }
+
+            var actualETag = "\"" + hash.ToHexString() + "\"";
+            if(request.RawUrl.Contains(hash.ToHexString())) {
+                SetFarFutureExpiresHeader(context.Response, actualETag);
+            }
+            else {
+                NoCache(context.Response);
+            }
+
+            var givenETag = request.Headers["If-None-Match"];
+            if(givenETag == actualETag) {
+                SendNotModified(context.Response);
+            }
+
             context.RewritePath(path);
+        }
+
+        void NoCache(HttpResponseBase response)
+        {
+            response.AddHeader("Pragma", "no-cache");
+            response.CacheControl = "no-cache";
+            response.Expires = -1;
         }
 
         bool IsCassetteRequest()
@@ -66,10 +94,7 @@ namespace Cassette.Aspnet
                     name = name.Substring(0, hyphenIndex);
                     return name + extension;
                 }
-                else
-                {
-                    return path;
-                }
+                return path;
             }
             else
             {
@@ -78,10 +103,7 @@ namespace Cassette.Aspnet
                 {
                     return path.Substring(0, hyphenIndex);
                 }
-                else
-                {
-                    return path;
-                }
+                return path;
             }
         }
 
@@ -93,10 +115,17 @@ namespace Cassette.Aspnet
             }
         }
 
-        void SetFarFutureExpiresHeader()
+        void SetFarFutureExpiresHeader(HttpResponseBase response, string actualETag)
         {
-            context.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
-            context.Response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
+            response.Cache.SetCacheability(HttpCacheability.Public);
+            response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
+            response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
+            response.Cache.SetETag(actualETag);
+        }
+
+        void SendNotModified(HttpResponseBase response) {
+            response.StatusCode = 304; // Not Modified
+            response.SuppressContent = true;
         }
     }
 }

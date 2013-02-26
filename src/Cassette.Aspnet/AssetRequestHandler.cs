@@ -43,7 +43,12 @@ namespace Cassette.Aspnet
             response.ContentType = bundle.ContentType;
 
             var actualETag = "\"" + asset.Hash.ToHexString() + "\"";
-            CacheLongTime(response, actualETag);
+            if(request.RawUrl.Contains(asset.Hash.ToHexString())) {
+                CacheLongTime(response, actualETag);
+            }
+            else {
+                NoCache(response);
+            }
 
             var givenETag = request.Headers["If-None-Match"];
             if (givenETag == actualETag)
@@ -65,6 +70,12 @@ namespace Cassette.Aspnet
             response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
             response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
             response.Cache.SetETag(actualETag);
+        }
+
+        void NoCache(HttpResponseBase response) {
+            response.AddHeader("Pragma", "no-cache");
+            response.CacheControl = "no-cache";
+            response.Expires = -1;
         }
 
         void SendNotModified(HttpResponseBase response)
