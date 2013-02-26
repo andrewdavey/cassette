@@ -40,7 +40,9 @@ namespace Cassette.MSBuild
                 PathUtilities.Combine(root, "source"),
                 PathUtilities.Combine(root, "source", "bin"),
                 PathUtilities.Combine(root, "output"),
-                true
+                true,
+                (information)=>{},
+                (error) => {}
             );
 
             CreateBundlesCommand.ExecuteInSeparateAppDomain(command);

@@ -6,22 +6,26 @@ namespace Cassette.MSBuild
     [Serializable]
     public class CreateBundlesCommand : MarshalByRefObject
     {        
-        public CreateBundlesCommand(string source, string bin, string output, bool includeRawFiles)
+        public CreateBundlesCommand(string source, string bin, string output, bool includeRawFiles, Action<string> logInformation, Action<string> logError)
         {
             this.source = source;
             this.bin = bin;
             this.output = output;
             this.includeRawFiles = includeRawFiles;
+            this.logInformation = logInformation;
+            this.logError = logError;
         }
 
         readonly string source;
         readonly string bin;
         readonly string output;
         readonly bool includeRawFiles;
+        readonly Action<string> logInformation;
+        readonly Action<string> logError;
 
         public void Execute()
         {
-            using (var host = new MSBuildHost(source, bin, output, includeRawFiles))
+            using (var host = new MSBuildHost(source, bin, output, includeRawFiles, logInformation, logError))
             {
                 host.Initialize();
                 host.Execute();

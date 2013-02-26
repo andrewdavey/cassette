@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
     public class CreateBundles : Task
     {
+        const string SenderName = "CreateBundles";
+
         /// <summary>
         /// The root directory of the web application.
         /// </summary>
@@ -39,9 +42,19 @@ namespace Cassette.MSBuild
             // Execution will load assemblies. When running this task from a Visual Studio build, the DLLs would then be locked.
             // So we must run the command in a separate AppDomain.
             // This means the assemblies can be unlocked by unloading the new AppDomain when finished.
-            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output, IncludeOtherFiles));
+            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output, IncludeOtherFiles, LogInformation, LogError));
             
             return true;
+        }
+
+        void LogError(string message)
+        {
+            BuildEngine.LogMessageEvent(new BuildMessageEventArgs(string.Format("{0}: {1}", SenderName, message), string.Empty, SenderName, MessageImportance.Normal));
+        }
+
+        void LogInformation(string message)
+        {
+            BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, string.Empty, 0, 0, 0, 0, string.Format("{0}: {1}", SenderName, message), string.Empty, SenderName));
         }
 
         void AssignPropertyDefaultsIfMissing()
