@@ -10,6 +10,6 @@
     </dependencies>
   </metadata>
   <files xdt:Transform="Insert">
-    <file src="bin\Release\Cassette.RequireJS.dll" target="lib\net40" />
+    <file src="bin\Release\net40\Cassette.RequireJS.dll" target="lib\net40" />
   </files>
 </package>

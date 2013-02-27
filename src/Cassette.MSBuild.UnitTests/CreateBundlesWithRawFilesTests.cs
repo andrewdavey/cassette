@@ -88,7 +88,12 @@ namespace Cassette.MSBuild
             File.Copy("Iesi.Collections.dll", PathUtilities.Combine(root, "source", "bin", "Iesi.Collections.dll"));
 #endif
             buildEngine = new BuildEngineStub();
-            var taskLoggingHelper = new TaskLoggingHelper(buildEngine, "test");
+            var task = new CreateBundles
+            {
+                BuildEngine = buildEngine
+            };
+
+            var taskLoggingHelper = new TaskLoggingHelper(task);
 
             var command = new CreateBundlesCommand(
                 PathUtilities.Combine(root, "source"),

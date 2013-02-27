@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  <PropertyGroup>
+    <NugetOutputDir>build\nuget</NugetOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\')">
+    <WebTaskDirectory>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\</WebTaskDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\')">
+    <WebTaskDirectory>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\</WebTaskDirectory>
+  </PropertyGroup>
+
+  <!-- Cassette.targets contains some helper tasks we'll use -->
+  <Import Project="Cassette.targets" />
+  
+  <Target Name="Default" DependsOnTargets="NugetPack" />
+
+  <Target Name="NugetPack">
+    <ItemGroup>
+      <Nutrans Include="**\*.nutrans" />
+      <Nuspec Include="**\*.nuspec" Exclude="src\Cassette.Shared.nuspec;src\packages\**\*.nuspec" />
+    </ItemGroup>
+    
+    <!-- Get the package version from Cassette.dll's AssemblyInformationalVersion attribute. -->
+    <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\Release\net40\Cassette.dll">
+      <Output PropertyName="Version" TaskParameter="Version" />
+    </GetAssemblyInformationalVersion>
+
+    <MakeDir Directories="$(NugetOutputDir)" />
+    
+    <Delete Files="$(NugetOutputDir)\*.nupkg"/>
+    
+    <!-- Transform Nuspecs -->
+    <TransformXmlHierarchy
+        Source="%(Nutrans.Identity)"
+        Destination="%(Nutrans.RecursiveDir)%(Nutrans.Filename).nuspec"
+        TaskDirectory="$(WebTaskDirectory)" />
+
+    <Exec Command="src\.nuget\nuget.exe pack %(Nuspec.Identity) -Symbols -Version $(Version) -OutputDirectory $(NugetOutputDir)"/>
+  </Target>
+
+
+  <Target Name="NugetPush" DependsOnTargets="NugetPack">
+    <ItemGroup>
+      <Packages Include="$(NugetOutputDir)\*.nupkg" Exclude="$(NugetOutputDir)\*.symbols.nupkg"/>
+    </ItemGroup>
+    <Exec Command="src\.nuget\nuget push %(Packages.Identity)" />
+  </Target>
+
+</Project>
