@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
@@ -35,20 +36,19 @@ namespace Cassette.Aspnet
                 if (bundle == null)
                 {
                     Trace.Source.TraceInformation("Bundle not found \"{0}\".", path);
-                    response.StatusCode = 404;
+                    response.StatusCode = (int) HttpStatusCode.NotFound;
+                    throw new HttpException((int) HttpStatusCode.NotFound, "Bundle not found");
+                }
+
+                var actualETag = "\"" + bundle.Hash.ToHexString() + "\"";
+                var givenETag = request.Headers["If-None-Match"];
+                if (givenETag == actualETag)
+                {
+                    SendNotModified(actualETag);
                 }
                 else
                 {
-                    var actualETag = "\"" + bundle.Hash.ToHexString() + "\"";
-                    var givenETag = request.Headers["If-None-Match"];
-                    if (givenETag == actualETag)
-                    {
-                        SendNotModified(actualETag);
-                    }
-                    else
-                    {
-                        SendBundle(bundle, actualETag);
-                    }
+                    SendBundle(bundle, actualETag);
                 }
             }
         }

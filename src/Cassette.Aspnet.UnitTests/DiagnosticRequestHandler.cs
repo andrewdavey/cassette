@@ -45,8 +45,8 @@ namespace Cassette.Aspnet
             GivenRemoteRequest();
             settings.AllowRemoteDiagnostics = false;
 
-            handler.ProcessRequest();
-
+            var httpException = Assert.Throws<HttpException>(() => handler.ProcessRequest());
+            httpException.GetHttpCode().ShouldEqual(404);
             response.VerifySet(r => r.StatusCode = 404);
         }
 

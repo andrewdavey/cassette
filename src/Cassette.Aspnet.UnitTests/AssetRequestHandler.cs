@@ -55,7 +55,8 @@ namespace Cassette.Aspnet
         public void GivenBundleNotFound_WhenProcessRequest_ThenNotFoundResponse()
         {
             bundles.Clear();
-            handler.ProcessRequest(null);
+            var httpException = Assert.Throws<HttpException>(() => handler.ProcessRequest(null));
+            httpException.GetHttpCode().ShouldEqual(404);
             response.VerifySet(r => r.StatusCode = 404);
         }
 
@@ -63,7 +64,8 @@ namespace Cassette.Aspnet
         public void GivenBundleFoundButAssetIsNull_WhenProcessRequest_ThenNotFoundResponse()
         {
             bundles.Add(new TestableBundle("~/test"));
-            handler.ProcessRequest("~/test/asset.js");
+            var httpException = Assert.Throws<HttpException>(() => handler.ProcessRequest("~/test/asset.js"));
+            httpException.GetHttpCode().ShouldEqual(404);
             response.VerifySet(r => r.StatusCode = 404);
         }
 
