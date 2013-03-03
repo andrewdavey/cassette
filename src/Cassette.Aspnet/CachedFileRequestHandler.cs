@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Web;
 using Cassette.IO;
 #if NET35
@@ -23,8 +24,8 @@ namespace Cassette.Aspnet
             var file = cacheDirectory.GetFile(path);
             if (!file.Exists)
             {
-                response.StatusCode = 404;
-                return;
+                response.StatusCode = (int) HttpStatusCode.NotFound;
+                throw new HttpException((int) HttpStatusCode.NotFound, "File not found");
             }
 
             SetContentType(path);

@@ -39,7 +39,8 @@ namespace Cassette.Aspnet
         [Fact]
         public void StatusCode404WhenCacheFileDoesntExist()
         {
-            handler.ProcessRequest("~/notfound");
+            var httpException = Assert.Throws<HttpException>(() => handler.ProcessRequest("~/notfound"));
+            httpException.GetHttpCode().ShouldEqual(404);
             response.VerifySet(r => r.StatusCode = 404);
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Web;
 using System.Web.Routing;
@@ -35,8 +36,8 @@ namespace Cassette.Aspnet
 
             if (!CanAccessHud(request))
             {
-                response.StatusCode = 404;
-                return;
+                response.StatusCode = (int) HttpStatusCode.NotFound;
+                throw new HttpException((int) HttpStatusCode.NotFound, "Not found");
             }
 
             if (request.HttpMethod.Equals("post", StringComparison.OrdinalIgnoreCase))

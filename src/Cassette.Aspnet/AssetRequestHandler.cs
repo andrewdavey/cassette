@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Net;
+using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
 using Trace = Cassette.Diagnostics.Trace;
@@ -29,8 +30,8 @@ namespace Cassette.Aspnet
                 if (!bundles.TryGetAssetByPath(path, out asset, out bundle))
                 {
                     Trace.Source.TraceInformation("Bundle asset not found with path \"{0}\".", path);
-                    NotFound(response);
-                    return;
+                    response.StatusCode = (int) HttpStatusCode.NotFound;
+                    throw new HttpException((int) HttpStatusCode.NotFound, "Asset not found");
                 }
 
                 var request = requestContext.HttpContext.Request;
@@ -70,12 +71,6 @@ namespace Cassette.Aspnet
         void SendNotModified(HttpResponseBase response)
         {
             response.StatusCode = 304; // Not Modified
-            response.SuppressContent = true;
-        }
-
-        void NotFound(HttpResponseBase response)
-        {
-            response.StatusCode = 404;
             response.SuppressContent = true;
         }
     }
