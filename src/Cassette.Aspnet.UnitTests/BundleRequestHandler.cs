@@ -15,7 +15,7 @@ namespace Cassette.Aspnet
     public class BundleRequestHandler_Tests : IDisposable
     {
         readonly Mock<HttpContextBase> httpContext;
-        readonly Mock<HttpRequestBase> request;
+        protected readonly Mock<HttpRequestBase> request;
         protected readonly Mock<HttpResponseBase> response;
         protected readonly Mock<HttpCachePolicyBase> responseCache;
         protected readonly NameValueCollection requestHeaders;
@@ -43,6 +43,7 @@ namespace Cassette.Aspnet
             response.SetupGet(r => r.Cache).Returns(responseCache.Object);
 
             request.SetupGet(r => r.Headers).Returns(requestHeaders);
+            request.SetupGet(x => x.RawUrl).Returns("~/010203/test");
 
             var settings = new CassetteSettings();
             bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
@@ -131,6 +132,22 @@ namespace Cassette.Aspnet
             responseCache.Verify(c => c.SetETag(expectedETag));
         }
     }
+
+    public class GivenBundleExists_WhenProcessRequest_With_Hash_Mismatch : BundleRequestHandler_Tests {
+        public GivenBundleExists_WhenProcessRequest_With_Hash_Mismatch()
+        {
+            SetupTestBundle();
+            request.SetupGet(x => x.RawUrl).Returns("~/HASH-MISMATCH/test");
+            var handler = CreateRequestHandler();
+            handler.ProcessRequest("~/test");
+        }
+
+        [Fact]
+        public void ResponseSetToNoCache() {
+            response.VerifySet(r => r.CacheControl = "no-cache");
+        }
+    }
+
 
     public class GivenBundleDoesNotExist : BundleRequestHandler_Tests
     {
