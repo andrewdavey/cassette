@@ -103,6 +103,7 @@
     <Compile Include="Diagnostics\Trace.cs" />
     <Compile Include="ExceptionCatchingBundleCollectionInitializer.cs" />
     <Compile Include="FileAccessAuthorization.cs" />
+    <Compile Include="FileContentHasher.cs" />
     <Compile Include="FileSearchProvider.cs" />
     <Compile Include="HostBase.cs" />
     <Compile Include="BundleCollection.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="IFileAccessAuthorization.cs" />
     <Compile Include="DeserializedAsset.cs" />
     <Compile Include="IBundleDeserializer.cs" />
+    <Compile Include="IFileContentHasher.cs" />
     <Compile Include="IJsonSerializer.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="ResourceAsset.cs" />

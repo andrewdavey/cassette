@@ -37,8 +37,8 @@ namespace Cassette.Aspnet
             Container.Register<ICassetteRequestHandler>(
                 (c, n) =>
                 new CachedFileRequestHandler(c.Resolve<HttpResponseBase>(), c.Resolve<CassetteSettings>().CacheDirectory),
-                "CachedFileRequestHandler")
-                ;
+                "CachedFileRequestHandler"
+            );
             Container.Register<ICassetteRequestHandler, BundleRequestHandler<Scripts.ScriptBundle>>("ScriptBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
             Container.Register<ICassetteRequestHandler, BundleRequestHandler<Stylesheets.StylesheetBundle>>("StylesheetBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
             Container.Register<ICassetteRequestHandler, BundleRequestHandler<HtmlTemplates.HtmlTemplateBundle>>("HtmlTemplateBundleRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());

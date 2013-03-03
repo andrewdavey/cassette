@@ -4,9 +4,11 @@ using System.Linq;
 using System.Reflection;
 using Cassette.Caching;
 using Cassette.HtmlTemplates;
+using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.TinyIoC;
+using Cassette.Utilities;
 using Trace = Cassette.Diagnostics.Trace;
 
 #if NET35
@@ -88,6 +90,7 @@ namespace Cassette
             RegisterBundleFactoryProvider();
             RegisterFileSearchProvider();
             RegisterFileAccessAuthorization();
+            RegisterFileContentHasher();
             RegisterPerRequestServices();
             RegisterConfigurationTypes();
             RegisterJsonSerializer();
@@ -197,6 +200,11 @@ namespace Cassette
         void RegisterFileAccessAuthorization()
         {
             container.Register<IFileAccessAuthorization, FileAccessAuthorization>().AsSingleton();
+        }
+
+        void RegisterFileContentHasher()
+        {
+            container.Register<IFileContentHasher, FileContentHasher>();
         }
 
         void RegisterPerRequestServices()

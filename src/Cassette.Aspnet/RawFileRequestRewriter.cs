@@ -1,9 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
+﻿using Cassette.Utilities;
+using System;
 using System.Text.RegularExpressions;
 using System.Web;
-using Cassette.Utilities;
 
 namespace Cassette.Aspnet
 {
@@ -11,12 +9,14 @@ namespace Cassette.Aspnet
     {
         readonly HttpContextBase context;
         readonly IFileAccessAuthorization fileAccessAuthorization;
+        readonly IFileContentHasher fileContentHasher;
         readonly HttpRequestBase request;
 
-        public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization)
+        public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization, IFileContentHasher fileContentHasher)
         {
             this.context = context;
             this.fileAccessAuthorization = fileAccessAuthorization;
+            this.fileContentHasher = fileContentHasher;
             request = context.Request;
         }
 
@@ -29,22 +29,21 @@ namespace Cassette.Aspnet
 
             EnsureFileCanBeAccessed(path);
 
-            byte[] hash;
-            using(var sha1 = SHA1.Create())
-            using(var fileStream = File.OpenRead(context.Server.MapPath(path))) {
-                hash = sha1.ComputeHash(fileStream);
-            }
+            var hash = fileContentHasher.Hash(path).ToHexString();
+            var actualETag = "\"" + hash + "\"";
 
-            var actualETag = "\"" + hash.ToHexString() + "\"";
-            if(request.RawUrl.Contains(hash.ToHexString())) {
+            if (request.PathInfo.Contains(hash))
+            {
                 SetFarFutureExpiresHeader(context.Response, actualETag);
             }
-            else {
+            else
+            {
                 NoCache(context.Response);
             }
 
             var givenETag = request.Headers["If-None-Match"];
-            if(givenETag == actualETag) {
+            if (givenETag == actualETag)
+            {
                 SendNotModified(context.Response);
             }
 
@@ -53,9 +52,10 @@ namespace Cassette.Aspnet
 
         void NoCache(HttpResponseBase response)
         {
-            response.AddHeader("Pragma", "no-cache");
-            response.CacheControl = "no-cache";
-            response.Expires = -1;
+            response.Cache.SetAllowResponseInBrowserHistory(false);
+            response.Cache.SetCacheability(HttpCacheability.NoCache);
+            response.Cache.SetNoStore();
+            response.Cache.SetExpires(DateTime.UtcNow);
         }
 
         bool IsCassetteRequest()
