@@ -34,6 +34,7 @@ namespace Cassette.Aspnet
                           .Returns(new Dictionary<string, object>());
 
             var requestContext = new RequestContext(httpContext.Object, routeData);
+            request.SetupGet(x => x.RawUrl).Returns("~/test/010203/asset.js");
 
             response.SetupGet(r => r.OutputStream).Returns(() => outputStream);
             response.SetupGet(r => r.Cache).Returns(cache.Object);
@@ -156,6 +157,21 @@ namespace Cassette.Aspnet
             }
 
             response.VerifySet(r => r.StatusCode = 304);
+        }
+
+        [Fact]
+        public void GivenRequestWithDifferingHash_WhenProcessRequest_ThenReturn3NoCacheResponse() {
+            bundles.Add(new TestableBundle("~/test"));
+            var asset = new StubAsset("~/test/asset.js", hash: new byte[] { 1, 2, 3 });
+            bundles.First().Assets.Add(asset);
+
+            request.SetupGet(x => x.RawUrl).Returns("~/test/HASH-MISMATCH/asset.js");
+            using(outputStream = new MemoryStream()) {
+                requestHeaders.Add("If-None-Match", "\"010203\"");
+                handler.ProcessRequest("~/test/asset.js");
+            }
+
+            response.VerifySet(r => r.CacheControl = "no-cache");
         }
     }
 }

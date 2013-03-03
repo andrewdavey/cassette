@@ -54,6 +54,7 @@ namespace Cassette
             Request.SetupGet(r => r.HttpMethod).Returns("GET");
             Request.SetupGet(r => r.AppRelativeCurrentExecutionFilePath).Returns("~/cassette.axd");
             Request.SetupGet(r => r.PathInfo).Returns(pathInfo);
+            Request.SetupGet(r => r.RawUrl).Returns(url);
 
             host.StoreRequestContainerInHttpContextItems();
             var httpHandler = new CassetteHttpHandler(host.RequestContainer, Request.Object);

@@ -69,7 +69,14 @@ namespace Cassette.Aspnet
         void SendBundle(Bundle bundle, string actualETag)
         {
             response.ContentType = bundle.ContentType;
-            CacheLongTime(actualETag);
+            if(request.RawUrl.Contains(bundle.Hash.ToHexString()))
+            {
+                CacheLongTime(actualETag);
+            }
+            else
+            {
+                NoCache();
+            }
 
             var encoding = request.Headers["Accept-Encoding"];
             response.Filter = EncodeStreamAndAppendResponseHeaders(response.Filter, encoding);
@@ -86,6 +93,13 @@ namespace Cassette.Aspnet
             response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
             response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
             response.Cache.SetETag(actualETag);
+        }
+
+        void NoCache()
+        {
+            response.AddHeader("Pragma", "no-cache");
+            response.CacheControl = "no-cache";
+            response.Expires = -1;
         }
 
         Stream EncodeStreamAndAppendResponseHeaders(Stream stream, string acceptEncoding)
