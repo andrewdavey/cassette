@@ -761,16 +761,7 @@ namespace Cassette
         internal IEnumerable<Bundle> SortBundles(IEnumerable<Bundle> bundles)
         {
             var partitioned = PartitionByBaseType(bundles).SelectMany(b => b).ToArray();
-            var references = new Dictionary<Bundle, HashedSet<Bundle>>();
-            foreach (var bundle in partitioned)
-            {
-                HashedSet<Bundle> allReferences;
-                if (bundleImmediateReferences.TryGetValue(bundle, out allReferences))
-                {
-                    references[bundle] = new HashedSet<Bundle>(allReferences.Where(partitioned.Contains).ToArray());
-                }
-            }
-            var graph = BuildBundleGraph(references, partitioned);
+            var graph = BuildBundleGraph(partitioned);
             return graph.TopologicalSort();
         }
 
@@ -793,14 +784,18 @@ namespace Cassette
             return type;
         }
 
-        Graph<Bundle> BuildBundleGraph(IDictionary<Bundle, HashedSet<Bundle>> references, IEnumerable<Bundle> all)
+        Graph<Bundle> BuildBundleGraph(IEnumerable<Bundle> all)
         {
+            var bundles = new HashedSet<Bundle>(all.ToArray());
             return new Graph<Bundle>(
-                all,
+                bundles,
                 bundle =>
                 {
-                    HashedSet<Bundle> set;
-                    if (references.TryGetValue(bundle, out set)) return set;
+                    HashedSet<Bundle> references;
+                    if (bundleImmediateReferences.TryGetValue(bundle, out references))
+                    {
+                        return references.Intersect(bundles);
+                    }
                     return Enumerable.Empty<Bundle>();
                 }
             );
