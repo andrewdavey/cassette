@@ -4,12 +4,6 @@
   <PropertyGroup>
     <NugetOutputDir>build\nuget</NugetOutputDir>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\')">
-    <WebTaskDirectory>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\</WebTaskDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\')">
-    <WebTaskDirectory>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\</WebTaskDirectory>
-  </PropertyGroup>
   
   <!-- Cassette.targets contains some helper tasks we'll use -->
   <Import Project="Cassette.targets" />
@@ -74,7 +68,7 @@
     <TransformXmlHierarchy
         Source="%(Nutrans.Identity)"
         Destination="%(Nutrans.RecursiveDir)%(Nutrans.Filename).nuspec"
-        TaskDirectory="$(WebTaskDirectory)" />
+        TaskPath="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.XmlTransform.dll"/>
 
     <Exec Command="src\.nuget\nuget.exe pack %(Nuspec.Identity) -Symbols -Version $(Version) -OutputDirectory $(NugetOutputDir)"/>
   </Target>

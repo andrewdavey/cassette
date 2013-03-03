@@ -7,7 +7,8 @@
   <!-- EXAMPLE USAGE:
   <TransformXmlHierarchy 
     Source="some-source.xml" 
-    Destination="transformed.xml" />
+    Destination="transformed.xml"
+    TaskPath="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.XmlTransform.dll"/>
   -->
   <UsingTask
     TaskName="TransformXmlHierarchy"
@@ -16,7 +17,7 @@
     <ParameterGroup>
       <Source Required="true" />
       <Destination Required="true" />
-      <TaskDirectory Required="true" />
+      <TaskPath Required="true"/>
     </ParameterGroup>
     <Task>      
       <Reference Include="System.Xml" />
@@ -28,16 +29,15 @@
       <Using Namespace="System.Reflection" />
       <Code Type="Fragment" Language="cs">
 <![CDATA[
-var taskPath = Path.Combine(TaskDirectory, "Microsoft.Web.Publishing.Tasks.dll");
-if (!File.Exists(taskPath))
+if (!File.Exists(TaskPath))
     throw new Exception("Could not load publishing tasks assembly");
 
-Assembly taskAssembly = Assembly.UnsafeLoadFrom(taskPath);
+Assembly taskAssembly = Assembly.UnsafeLoadFrom(TaskPath);
 
 Func<XmlDocument, string, XmlDocument> transformer = (source, transform) => 
 {
   dynamic transformation = taskAssembly.CreateInstance(
-    "Microsoft.Web.Publishing.Tasks.XmlTransformation", true, BindingFlags.CreateInstance, 
+    "Microsoft.Web.XmlTransform.XmlTransformation", true, BindingFlags.CreateInstance, 
     null, new object[] { transform }, null, null);
   
   if (transformation == null)
