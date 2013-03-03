@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Cassette
 {
-    public class BundleCollection_IncludeReferencesAndSortBundles
+    public class BundleCollection_SortBundles
     {
         [Fact]
         public void GivenDiamondReferencing_ThenConcatDependenciesReturnsEachReferencedBundleOnlyOnceInDependencyOrder()
@@ -46,8 +46,10 @@ namespace Cassette
             var collection = CreateBundleCollection(new[] { bundle1, bundle2, bundle3, bundle4 });
 
             collection.BuildReferences();
-            collection.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2, bundle3, bundle4 })
-                .SequenceEqual(new[] { bundle4, bundle2, bundle3, bundle1 }).ShouldBeTrue();
+            collection
+                .SortBundles(new[] { bundle1, bundle2, bundle3, bundle4 })
+                .SequenceEqual(new[] { bundle4, bundle2, bundle3, bundle1 })
+                .ShouldBeTrue();
         }
 
         [Fact]
@@ -58,7 +60,7 @@ namespace Cassette
             var collection = CreateBundleCollection(Enumerable.Empty<Bundle>());
 
             collection.BuildReferences();
-            var results = collection.IncludeReferencesAndSortBundles(new[] { externalBundle1, externalBundle2 });
+            var results = collection.SortBundles(new[] { externalBundle1, externalBundle2 });
             results.SequenceEqual(new[] { externalBundle1, externalBundle2 }).ShouldBeTrue();
         }
 
@@ -71,25 +73,25 @@ namespace Cassette
 
             var collection = CreateBundleCollection(new[] { bundle1, bundle2 });
             collection.BuildReferences();
-            var sorted = collection.IncludeReferencesAndSortBundles(new[] { bundle1, bundle2 });
+            var sorted = collection.SortBundles(new[] { bundle1, bundle2 });
             sorted.SequenceEqual(new[] { bundle2, bundle1 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenBundlesWithNoDependenciesAreReferencedInNonAlphaOrder_WhenIncludeReferencesAndSortBundles_ThenReferenceOrderIsMaintained()
+        public void GivenBundlesWithNoDependenciesAreReferencedInNonAlphaOrder_WhenSortBundles_ThenReferenceOrderIsMaintained()
         {
             var bundle1 = new TestableBundle("~/bundle1");
             var bundle2 = new TestableBundle("~/bundle2");
             var collection = CreateBundleCollection(new[] { bundle1, bundle2 });
 
             collection.BuildReferences();
-            var sorted = collection.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
+            var sorted = collection.SortBundles(new[] { bundle2, bundle1 });
 
             sorted.SequenceEqual(new[] { bundle2, bundle1 }).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenBundlesWithCyclicReferences_WhenIncludeReferencesAndSortBundles_ThenExceptionThrown()
+        public void GivenBundlesWithCyclicReferences_WhenBuildReferences_ThenExceptionThrown()
         {
             var bundle1 = new TestableBundle("~/bundle1");
             var bundle2 = new TestableBundle("~/bundle2");
@@ -97,11 +99,9 @@ namespace Cassette
             bundle2.AddReference("~/bundle1");
             var collection = CreateBundleCollection(new[] { bundle1, bundle2 });
 
-            Assert.Throws<InvalidOperationException>(delegate
-            {
-                collection.BuildReferences();
-                collection.IncludeReferencesAndSortBundles(new[] { bundle2, bundle1 });
-            });
+            Assert.Throws<InvalidOperationException>(
+                () => collection.BuildReferences()
+            );
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Cassette
 
             var collection = CreateBundleCollection(ms);
             collection.BuildReferences();
-            var sorted = collection.IncludeReferencesAndSortBundles(ms).ToArray();
+            var sorted = collection.SortBundles(ms).ToArray();
 
             sorted[0].ShouldBeSameAs(ms[0]);
             sorted[1].ShouldBeSameAs(ms[3]);
@@ -149,7 +149,7 @@ namespace Cassette
             var bundles = new Bundle[] { bundleA, bundleB, bundleC };
             var collection = CreateBundleCollection(bundles);
             collection.BuildReferences();
-            var sorted = collection.IncludeReferencesAndSortBundles(bundles);
+            var sorted = collection.SortBundles(bundles);
 
             sorted.ShouldEqual(new Bundle[]
             {
@@ -170,7 +170,7 @@ namespace Cassette
             var bundles = new Bundle[] { bundleA, bundleB, bundleC };
             var collection = CreateBundleCollection(bundles);
             collection.BuildReferences();
-            var sorted = collection.IncludeReferencesAndSortBundles(bundles).ToArray();
+            var sorted = collection.SortBundles(bundles).ToArray();
 
             sorted.ShouldEqual(new Bundle[]
             {

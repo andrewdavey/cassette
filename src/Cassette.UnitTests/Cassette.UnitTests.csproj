@@ -116,7 +116,7 @@
     <Compile Include="AssetPathComparer.cs" />
     <Compile Include="BundleCollection.FindBundlesContainingPath.cs" />
     <Compile Include="BundleCollection.BuildReferences.cs" />
-    <Compile Include="BundleCollection.IncludeReferencesAndSortBundles.cs" />
+    <Compile Include="BundleCollection.SortBundles.cs" />
     <Compile Include="BundleCollection.Equals.cs" />
     <Compile Include="BundleCollectionTestsBase.cs" />
     <Compile Include="Bundle.Equals.cs" />

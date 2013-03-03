@@ -25,9 +25,8 @@ namespace Cassette
         readonly IPlaceholderTracker placeholderTracker;
         readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly CassetteSettings settings;
-        readonly Dictionary<string, List<Bundle>> bundlesByLocation = new Dictionary<string, List<Bundle>>();
+        readonly HashedSet<ReferencedBundle> referencedBundles = new HashedSet<ReferencedBundle>(); 
         readonly HashedSet<string> renderedLocations = new HashedSet<string>();
-        readonly Dictionary<Bundle, string> bundlePageLocations = new Dictionary<Bundle, string>();
  
         public void Reference<T>(string path, string location = null)
             where T : Bundle
@@ -131,18 +130,16 @@ namespace Cassette
 
             foreach (var bundle in bundles)
             {
-                // Bundle can define it's own prefered location. Use this when we aren't given
-                // an explicit location argument i.e. null.
-                if (location == null)
+                referencedBundles.Add(new ReferencedBundle(bundle, location));
+            }
+
+            foreach (var bundle in bundles)
+            {
+                var references = allBundles.FindAllReferences(bundle);
+                foreach (var reference in references)
                 {
-                    location = bundle.PageLocation;
+                    referencedBundles.Add(new ReferencedBundle(reference));
                 }
-
-                bundlePageLocations[bundle] = location;
-
-                var bundlesForLocation = GetOrCreateBundleSet(location);
-                if (bundlesForLocation.Contains(bundle)) return;
-                bundlesForLocation.Add(bundle);
             }
         }
 
@@ -172,21 +169,8 @@ namespace Cassette
 
         public IEnumerable<Bundle> GetBundles(string location)
         {
-            var bundles = GetOrCreateBundleSet(location);
-            var bundlesForLocation = GetOrCreateBundleSet(location);
-            return allBundles
-                .IncludeReferencesAndSortBundles(bundles)
-                .Where(b => bundlesForLocation.Contains(b) || BundlePageLocationIs(b, location));
-        }
-
-        bool BundlePageLocationIs(Bundle bundle, string location)
-        {
-            string assignedLocation;
-            if (bundlePageLocations.TryGetValue(bundle, out assignedLocation))
-            {
-                return assignedLocation == location;
-            }
-            return bundle.PageLocation == location;
+            var bundles = referencedBundles.Where(r => r.PageLocation == location).Select(r => r.Bundle).ToArray();
+            return allBundles.SortBundles(bundles);
         }
 
         public string Render<T>(string location = null)
@@ -208,19 +192,43 @@ namespace Cassette
             );
         }
 
-        List<Bundle> GetOrCreateBundleSet(string location)
+        class ReferencedBundle
         {
-            location = location ?? ""; // Dictionary doesn't accept null keys.
-            List<Bundle> bundles;
-            if (bundlesByLocation.TryGetValue(location, out bundles))
+            readonly Bundle bundle;
+            readonly string pageLocation;
+
+            public ReferencedBundle(Bundle bundle, string pageLocation)
             {
-                return bundles;
+                this.bundle = bundle;
+                this.pageLocation = pageLocation;
             }
-            else
+
+            public ReferencedBundle(Bundle bundle)
             {
-                bundles = new List<Bundle>();
-                bundlesByLocation.Add(location, bundles);
-                return bundles;
+                this.bundle = bundle;
+            }
+
+            public Bundle Bundle
+            {
+                get { return bundle; }
+            }
+
+            public string PageLocation
+            {
+                get { return pageLocation ?? bundle.PageLocation; }
+            }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as ReferencedBundle;
+                return other != null 
+                    && bundle.GetType() == other.bundle.GetType() 
+                    && bundle.Path.Equals(other.bundle.Path);
+            }
+
+            public override int GetHashCode()
+            {
+                return bundle.Path.GetHashCode() ^ bundle.GetType().GetHashCode();
             }
         }
     }

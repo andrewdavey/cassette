@@ -114,7 +114,7 @@ namespace Cassette
 
             builder.Reference("a");
 
-            builder.GetBundles(null).SequenceEqual(new[] { bundleB, bundleA }).ShouldBeTrue();
+            builder.GetBundles(null).ShouldEqual(new[] { bundleB, bundleA });
         }
 
         [Fact]
@@ -346,6 +346,24 @@ namespace Cassette
 
             builder.GetBundles("head").Single().ShouldBeSameAs(jquery);
             builder.GetBundles(null).Single().ShouldBeSameAs(app);
+        }
+
+        [Fact]
+        public void ThreeBundlesWithDifferentPageLocationsInDependencyChainGetReferencedByOneReferenceCall()
+        {
+            var a = new TestableBundle("~/a") { PageLocation = "a" };
+            var b = new TestableBundle("~/b") { PageLocation = "b" };
+            var c = new TestableBundle("~/c");
+            c.AddReference("~/b");
+            b.AddReference("~/a");
+
+            AddBundles(a, b, c);
+
+            builder.Reference("~/c");
+
+            builder.GetBundles(null).Single().ShouldBeSameAs(c);
+            builder.GetBundles("a").Single().ShouldBeSameAs(a);
+            builder.GetBundles("b").Single().ShouldBeSameAs(b);
         }
 
         IBundlePipeline<T> StubPipeline<T>() where T : Bundle

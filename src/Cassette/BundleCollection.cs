@@ -746,16 +746,31 @@ namespace Cassette
             }
         }
 
-        internal IEnumerable<Bundle> IncludeReferencesAndSortBundles(IEnumerable<Bundle> bundlesToSort)
+        internal IEnumerable<Bundle> FindAllReferences(Bundle bundle)
         {
             if (bundleImmediateReferences == null)
             {
-                throw new InvalidOperationException("BuildReferences must be called once before IncludeReferencesAndSortBundles can be called.");
+                throw new InvalidOperationException("BuildReferences must be called once before FindAllReferences can be called.");
             }
 
-            var all = GetAllRequiredBundles(bundlesToSort);
-            var partitioned = PartitionByBaseType(all).SelectMany(b => b).ToArray();
-            var graph = BuildBundleGraph(bundleImmediateReferences, partitioned);
+            var set = new HashedSet<Bundle>();
+            AddReferencedBundlesToSet(bundle, set);
+            return set;
+        }
+
+        internal IEnumerable<Bundle> SortBundles(IEnumerable<Bundle> bundles)
+        {
+            var partitioned = PartitionByBaseType(bundles).SelectMany(b => b).ToArray();
+            var references = new Dictionary<Bundle, HashedSet<Bundle>>();
+            foreach (var bundle in partitioned)
+            {
+                HashedSet<Bundle> allReferences;
+                if (bundleImmediateReferences.TryGetValue(bundle, out allReferences))
+                {
+                    references[bundle] = new HashedSet<Bundle>(allReferences.Where(partitioned.Contains).ToArray());
+                }
+            }
+            var graph = BuildBundleGraph(references, partitioned);
             return graph.TopologicalSort();
         }
 
@@ -778,16 +793,6 @@ namespace Cassette
             return type;
         }
 
-        IEnumerable<Bundle> GetAllRequiredBundles(IEnumerable<Bundle> bundlesArray)
-        {
-            var all = new HashedSet<Bundle>();
-            foreach (var bundle in bundlesArray)
-            {
-                AddReferencedBundlesToSet(bundle, all);
-            }
-            return all;
-        }
-
         Graph<Bundle> BuildBundleGraph(IDictionary<Bundle, HashedSet<Bundle>> references, IEnumerable<Bundle> all)
         {
             return new Graph<Bundle>(
@@ -801,15 +806,13 @@ namespace Cassette
             );
         }
 
-        void AddReferencedBundlesToSet(Bundle referencer, ISet<Bundle> all)
+        void AddReferencedBundlesToSet(Bundle referencer, HashedSet<Bundle> all)
         {
-            if (all.Contains(referencer)) return;
-            all.Add(referencer);
-
             HashedSet<Bundle> referencedBundles;
             if (!bundleImmediateReferences.TryGetValue(referencer, out referencedBundles)) return;
             foreach (var referencedBundle in referencedBundles)
             {
+                all.Add(referencedBundle);
                 AddReferencedBundlesToSet(referencedBundle, all);
             }
         }
