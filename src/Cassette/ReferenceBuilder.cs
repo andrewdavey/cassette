@@ -221,14 +221,13 @@ namespace Cassette
             public override bool Equals(object obj)
             {
                 var other = obj as ReferencedBundle;
-                return other != null 
-                    && bundle.GetType() == other.bundle.GetType() 
-                    && bundle.Path.Equals(other.bundle.Path);
+                return other != null
+                    && bundle.Equals(other.bundle);
             }
 
             public override int GetHashCode()
             {
-                return bundle.Path.GetHashCode() ^ bundle.GetType().GetHashCode();
+                return bundle.GetHashCode();
             }
         }
     }

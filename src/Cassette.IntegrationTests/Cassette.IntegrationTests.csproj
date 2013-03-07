@@ -102,6 +102,7 @@
     <Compile Include="IsolatedStorageFileSystem.cs" />
     <Compile Include="JavaScriptHtmlTemplatePipelineTests.cs" />
     <Compile Include="MSBuild\CreateBundles.cs" />
+    <Compile Include="NonPathBundleTests.cs" />
     <Compile Include="ShouldMatchHelper.cs" />
     <Compile Include="StreamExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
