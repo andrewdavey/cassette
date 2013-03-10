@@ -80,5 +80,5 @@
     </ItemGroup>
     <Exec Command="src\.nuget\nuget push %(Packages.Identity)" />
   </Target>
-  
+
 </Project>

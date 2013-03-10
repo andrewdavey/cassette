@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0"?>
 <package inherits="Cassette.Hogan.nutrans" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <files>
-    <file xdt:Transform="Insert" src="bin\Release\Cassette.Hogan.pdb" target="lib\net40-client" />
-    <file xdt:Transform="Insert" src="bin\ReleaseNET35\Cassette.Hogan.pdb" target="lib\net35" />
+    <file xdt:Transform="Insert" src="bin\Release\net40\Cassette.Hogan.pdb" target="lib\net40-client" />
+    <file xdt:Transform="Insert" src="bin\ReleaseNET35\net35\Cassette.Hogan.pdb" target="lib\net35" />
     <file xdt:Transform="Insert" src="**\*.cs" target="src" />
   </files>
 </package>

@@ -1,18 +1,70 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using Cassette.Utilities;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using Microsoft.CSharp;
 using Should;
 using Xunit;
-using Cassette.IO;
 
 namespace Cassette.MSBuild
 {
+    [Serializable]
+    public class BuildEngineStub : IBuildEngine
+    {
+        public BuildEngineStub()
+        {
+            BuildErrorEventArgs = new List<BuildErrorEventArgs>();
+            BuildWarningEventArgs = new List<BuildWarningEventArgs>();
+            BuildMessageEventArgs = new List<BuildMessageEventArgs>();
+            CustomBuildEventArgs = new List<CustomBuildEventArgs>();
+        }
+
+        public List<BuildErrorEventArgs> BuildErrorEventArgs { get; set; }
+        public List<BuildWarningEventArgs> BuildWarningEventArgs { get; set; }
+        public List<BuildMessageEventArgs> BuildMessageEventArgs { get; set; }
+        public List<CustomBuildEventArgs> CustomBuildEventArgs { get; set; }
+
+        public void LogErrorEvent(BuildErrorEventArgs e)
+        {
+            BuildErrorEventArgs.Add(e);
+        }
+
+        public void LogWarningEvent(BuildWarningEventArgs e)
+        {
+            BuildWarningEventArgs.Add(e);
+        }
+
+        public void LogMessageEvent(BuildMessageEventArgs e)
+        {
+            BuildMessageEventArgs.Add(e);
+        }
+
+        public void LogCustomEvent(CustomBuildEventArgs e)
+        {
+            CustomBuildEventArgs.Add(e);
+        }
+
+        public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties,
+                                     IDictionary targetOutputs)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool ContinueOnError { get; private set; }
+        public int LineNumberOfTaskNode { get; private set; }
+        public int ColumnNumberOfTaskNode { get; private set; }
+        public string ProjectFileOfTaskNode { get; private set; }
+    }
+
     public class CreateBundlesWithRawFilesTests : IDisposable
     {
+        readonly BuildEngineStub buildEngine;
         readonly TempDirectory root;
 
         public CreateBundlesWithRawFilesTests()
@@ -35,12 +87,20 @@ namespace Cassette.MSBuild
 #if NET35
             File.Copy("Iesi.Collections.dll", PathUtilities.Combine(root, "source", "bin", "Iesi.Collections.dll"));
 #endif
+            buildEngine = new BuildEngineStub();
+            var task = new CreateBundles
+            {
+                BuildEngine = buildEngine
+            };
+
+            var taskLoggingHelper = new TaskLoggingHelper(task);
 
             var command = new CreateBundlesCommand(
                 PathUtilities.Combine(root, "source"),
                 PathUtilities.Combine(root, "source", "bin"),
                 PathUtilities.Combine(root, "output"),
-                true
+                true,
+                taskLoggingHelper
             );
 
             CreateBundlesCommand.ExecuteInSeparateAppDomain(command);
@@ -72,6 +132,12 @@ public class Configuration : IConfiguration<BundleCollection>
         {
             var imageOutputFilename = PathUtilities.Combine(root, "output", "file", "test-" + HashFileContent("test.png") + ".png");
             File.Exists(imageOutputFilename).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void MessagesAreLogged()
+        {
+            buildEngine.BuildMessageEventArgs.Any().ShouldBeTrue();
         }
 
         string HashFileContent(string filename)

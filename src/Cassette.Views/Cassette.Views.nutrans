@@ -9,10 +9,10 @@
   </metadata>
 
   <files xdt:Transform="Insert">
-    <file src="bin\Release\Cassette.Views.dll" target="lib\net40" />
-    <file src="bin\Release\Cassette.Views.xml" target="lib\net40" />
-    <file src="bin\ReleaseNET35\Cassette.Views.dll" target="lib\net35" />
-    <file src="bin\ReleaseNET35\Cassette.Views.xml" target="lib\net35" />
+    <file src="bin\Release\net40\Cassette.Views.dll" target="lib\net40" />
+    <file src="bin\Release\net40\Cassette.Views.xml" target="lib\net40" />
+    <file src="bin\ReleaseNET35\net35\Cassette.Views.dll" target="lib\net35" />
+    <file src="bin\ReleaseNET35\net35\Cassette.Views.xml" target="lib\net35" />
     
     <!-- For aspx views -->
     <file src="Web.config.transform" target="content"/>

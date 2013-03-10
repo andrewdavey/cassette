@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
 {
+    [LoadInSeparateAppDomain]
+    [Serializable]
     public class CreateBundles : Task
     {
         /// <summary>
@@ -26,6 +29,7 @@ namespace Cassette.MSBuild
         /// </summary>
         public bool IncludeOtherFiles { get; set; }
 
+     
         public override bool Execute()
         {
             AssignPropertyDefaultsIfMissing();
@@ -39,12 +43,13 @@ namespace Cassette.MSBuild
             // Execution will load assemblies. When running this task from a Visual Studio build, the DLLs would then be locked.
             // So we must run the command in a separate AppDomain.
             // This means the assemblies can be unlocked by unloading the new AppDomain when finished.
-            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output, IncludeOtherFiles));
+            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output, IncludeOtherFiles, Log));
             
             return true;
         }
 
-        void AssignPropertyDefaultsIfMissing()
+
+        private void AssignPropertyDefaultsIfMissing()
         {
             if (string.IsNullOrEmpty(Source))
             {
@@ -62,7 +67,7 @@ namespace Cassette.MSBuild
             }
         }
 
-        void MakePathsAbsolute()
+        private void MakePathsAbsolute()
         {
             Source = Path.Combine(Environment.CurrentDirectory, Source);
             Bin = Path.Combine(Source, Bin);
