@@ -28,10 +28,9 @@ namespace Cassette.Scripts
             {
                 { "~/script/010203.js", "content" }
             };
-            var urlModifier = new VirtualDirectoryPrepender("/");
             var container = new TinyIoCContainer();
             container.Register(Mock.Of<IUrlGenerator>());
-            reader = new ExternalScriptBundleDeserializer(urlModifier, container);
+            reader = new ExternalScriptBundleDeserializer(container);
             DeserializeToBundle();
         }
 

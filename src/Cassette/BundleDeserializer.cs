@@ -11,14 +11,12 @@ namespace Cassette
     abstract class BundleDeserializer<T> : IBundleDeserializer<T>
         where T : Bundle
     {
-        readonly IUrlModifier urlModifier;
         readonly TinyIoCContainer container;
         IDirectory directory;
         XElement element;
 
-        protected BundleDeserializer(IUrlModifier urlModifier, TinyIoCContainer container)
+        protected BundleDeserializer(TinyIoCContainer container)
         {
-            this.urlModifier = urlModifier;
             this.container = container;
         }
 
@@ -81,7 +79,7 @@ namespace Cassette
             var assets = assetElements.Select(e => new AssetDeserializer().Deserialize(e)).ToArray();
             if (assets.Length == 0) return;
             var contentFile = directory.GetFile(bundle.CacheFilename);
-            bundle.Assets.Add(new CachedBundleContent(contentFile, assets, urlModifier));
+            bundle.Assets.Add(new CachedBundleContent(contentFile, assets));
         }
 
         void AddReferences(Bundle bundle)

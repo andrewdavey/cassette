@@ -7,8 +7,8 @@ namespace Cassette.Scripts
     abstract class ScriptBundleDeserializerBase<T> : BundleDeserializer<T>
         where T : ScriptBundle
     {
-        protected ScriptBundleDeserializerBase(IUrlModifier urlModifier, TinyIoCContainer container)
-            : base(urlModifier, container)
+        protected ScriptBundleDeserializerBase(TinyIoCContainer container)
+            : base(container)
         {
         }
 

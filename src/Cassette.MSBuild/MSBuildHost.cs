@@ -32,6 +32,12 @@ namespace Cassette.MSBuild
             this.taskLoggingHelper = taskLoggingHelper;
         }
 
+        protected override void ConfigureContainer()
+        {
+            Container.Register<IUrlModifier>(new PathPrepender("/"));
+            base.ConfigureContainer();
+        }
+
         protected override IEnumerable<Assembly> LoadAssemblies()
         {
             return Directory
@@ -107,16 +113,6 @@ namespace Cassette.MSBuild
         void CopyRawFileToOutputDirectory(BundleCollection bundles)
         {
             bundles.Accept(new RawFileCopier(sourceDirectory, outputDirectory));
-        }
-
-        protected override void ConfigureContainer()
-        {
-            base.ConfigureContainer();
-
-            // Override any URL modifier, even if set by the application.
-            // So this is *after* the base.RegisterContainerItems() call.
-            // We must output specially wrapped URLs at compile-time. These are then modified by the application at run-time.
-            Container.Register<IUrlModifier>(new UrlPlaceholderWrapper());
         }
 
         protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()
