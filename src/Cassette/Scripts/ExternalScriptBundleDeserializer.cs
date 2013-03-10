@@ -1,12 +1,13 @@
 using System.Xml.Linq;
+using Cassette.TinyIoC;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
 {
     class ExternalScriptBundleDeserializer : ScriptBundleDeserializerBase<ExternalScriptBundle>
     {
-        public ExternalScriptBundleDeserializer(IUrlModifier urlModifier)
-            : base(urlModifier)
+        public ExternalScriptBundleDeserializer(IUrlModifier urlModifier, TinyIoCContainer container)
+            : base(urlModifier, container)
         {
         }
 
@@ -18,6 +19,7 @@ namespace Cassette.Scripts
 
             var externalScriptBundle = new ExternalScriptBundle(url, path, fallbackCondition);
             AssignScriptBundleProperties(externalScriptBundle, element);
+            externalScriptBundle.FallbackRenderer = CreateHtmlRenderer<ScriptBundle>("FallbackRenderer");
             return externalScriptBundle;
         }
 

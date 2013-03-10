@@ -1,4 +1,6 @@
 ﻿using System.Xml.Linq;
+using Cassette.TinyIoC;
+using Moq;
 using Should;
 using Xunit;
 
@@ -19,6 +21,8 @@ namespace Cassette.Stylesheets
                 new XAttribute("Hash", "010203"),
                 new XAttribute("Url", "http://example.com/"),
                 new XAttribute("Condition", "CONDITION"),
+                new XAttribute("FallbackRenderer", typeof(StylesheetHtmlRenderer).AssemblyQualifiedName),
+                new XAttribute("Renderer", typeof(ExternalStylesheetBundle.ExternalStylesheetBundleRenderer).AssemblyQualifiedName),
                 new XElement("HtmlAttribute", new XAttribute("Name", "media"), new XAttribute("Value", "MEDIA"))
             );
             directory = new FakeFileSystem
@@ -26,8 +30,10 @@ namespace Cassette.Stylesheets
                 { "~/stylesheet/010203.css", "content"}
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
-            
-            reader = new ExternalStylesheetBundleDeserializer(urlModifier);
+            var container = new TinyIoCContainer();
+            container.Register(Mock.Of<IUrlGenerator>());
+
+            reader = new ExternalStylesheetBundleDeserializer(urlModifier, container);
 
             DeserializeElement();
         }

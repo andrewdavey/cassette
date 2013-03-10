@@ -32,8 +32,8 @@ namespace Cassette.Scripts
         public void WhenRenderExternalScriptBundleWithCondition_ThenHtmlIsScriptElementWithConditional()
         {
             var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "CONDITION", Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
-            var html = Render(bundle);
 
+            var html = Render(bundle);
             html.ShouldEqual(
                 "<!--[if CONDITION]>" + Environment.NewLine +
                 "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
@@ -45,8 +45,7 @@ namespace Cassette.Scripts
         {
             var bundle = new ExternalScriptBundle("http://test.com/") { Condition = "(gt IE 9)|!(IE)", Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>() };
 
-            var html = bundle.Render(bundle);
-
+            var html = Render(bundle);
             html.ShouldEqual(
                 "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +
                 "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
@@ -60,7 +59,6 @@ namespace Cassette.Scripts
             bundle.HtmlAttributes["class"] = "foo";
 
             var html = Render(bundle);
-
             html.ShouldEqual("<script src=\"http://test.com/\" type=\"text/javascript\" class=\"foo\"></script>");
         }
 
@@ -74,7 +72,6 @@ namespace Cassette.Scripts
             settings.IsDebuggingEnabled = true;
 
             var html = Render(bundle);
-
             html.ShouldEqual("FALLBACK");
         }
 
@@ -86,9 +83,8 @@ namespace Cassette.Scripts
 
             fallbackRenderer.Setup(r => r.Render(bundle))
                             .Returns("FALLBACK");
-
+            
             var html = Render(bundle);
-
             html.ShouldEqual(
                 "<script src=\"http://test.com/\" type=\"text/javascript\"></script>" + Environment.NewLine +
                 "<script type=\"text/javascript\">" + Environment.NewLine +
@@ -144,7 +140,8 @@ namespace Cassette.Scripts
         {
             bundle.Renderer = fallbackRenderer.Object;
             bundle.Process(settings);
-            return bundle.Render();
+            var renderer = new ExternalScriptBundle.ExternalScriptBundleRenderer(settings);
+            return renderer.Render(bundle);
         }
     }
 }

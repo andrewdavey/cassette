@@ -1,11 +1,12 @@
 using System.Xml.Linq;
+using Cassette.TinyIoC;
 
 namespace Cassette.Scripts
 {
     class ScriptBundleDeserializer : ScriptBundleDeserializerBase<ScriptBundle>
     {
-        public ScriptBundleDeserializer(IUrlModifier urlModifier)
-            : base(urlModifier)
+        public ScriptBundleDeserializer(IUrlModifier urlModifier, TinyIoCContainer container)
+            : base(urlModifier, container)
         {
         }
 

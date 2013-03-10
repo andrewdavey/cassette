@@ -1,4 +1,6 @@
 ﻿using System.Xml.Linq;
+using Cassette.TinyIoC;
+using Moq;
 using Should;
 using Xunit;
 
@@ -18,14 +20,18 @@ namespace Cassette.Scripts
                 new XAttribute("Path", "~"),
                 new XAttribute("Hash", "010203"),
                 new XAttribute("Url", "http://example.com/"),
-                new XAttribute("FallbackCondition", "CONDITION")
+                new XAttribute("FallbackCondition", "CONDITION"),
+                new XAttribute("Renderer", typeof(ExternalScriptBundle.ExternalScriptBundleRenderer).AssemblyQualifiedName),
+                new XAttribute("FallbackRenderer", typeof(ScriptBundleHtmlRenderer).AssemblyQualifiedName)
             );
             directory = new FakeFileSystem
             {
                 { "~/script/010203.js", "content" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
-            reader = new ExternalScriptBundleDeserializer(urlModifier);
+            var container = new TinyIoCContainer();
+            container.Register(Mock.Of<IUrlGenerator>());
+            reader = new ExternalScriptBundleDeserializer(urlModifier, container);
             DeserializeToBundle();
         }
 
@@ -56,6 +62,12 @@ namespace Cassette.Scripts
             element.SetAttributeValue("FallbackCondition", null);
             DeserializeToBundle();
             bundle.FallbackCondition.ShouldBeNull();
+        }
+
+        [Fact]
+        public void BundleFallbackRendererIsAssigned()
+        {
+            bundle.FallbackRenderer.ShouldNotBeNull();
         }
 
         void DeserializeToBundle()

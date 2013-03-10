@@ -1,11 +1,12 @@
 using System.Xml.Linq;
+using Cassette.TinyIoC;
 
 namespace Cassette.HtmlTemplates
 {
     class HtmlTemplateBundleDeserializer : BundleDeserializer<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundleDeserializer(IUrlModifier urlModifier)
-            : base(urlModifier)
+        public HtmlTemplateBundleDeserializer(IUrlModifier urlModifier, TinyIoCContainer container)
+            : base(urlModifier, container)
         {
         }
 

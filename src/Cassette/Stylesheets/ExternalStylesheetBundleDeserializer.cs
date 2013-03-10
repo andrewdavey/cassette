@@ -1,12 +1,13 @@
 using System.Xml.Linq;
+using Cassette.TinyIoC;
 using Cassette.Utilities;
 
 namespace Cassette.Stylesheets
 {
     class ExternalStylesheetBundleDeserializer : StylesheetBundleDeserializerBase<ExternalStylesheetBundle>
     {
-        public ExternalStylesheetBundleDeserializer(IUrlModifier urlModifier) 
-            : base(urlModifier)
+        public ExternalStylesheetBundleDeserializer(IUrlModifier urlModifier, TinyIoCContainer container) 
+            : base(urlModifier, container)
         {
         }
 
@@ -14,6 +15,7 @@ namespace Cassette.Stylesheets
         {
             var bundle = new ExternalStylesheetBundle(GetUrlAttribute(element), GetPathAttribute());
             AssignStylesheetBundleProperties(bundle);
+            bundle.FallbackRenderer = CreateHtmlRenderer<StylesheetBundle>("FallbackRenderer");
             return bundle;
         }
 

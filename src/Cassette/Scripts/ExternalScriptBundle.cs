@@ -8,12 +8,10 @@ using Cassette.Utilities;
 namespace Cassette.Scripts
 {
 #pragma warning disable 659
-    class ExternalScriptBundle : ScriptBundle, IExternalBundle, IBundleHtmlRenderer<ScriptBundle>
+    public class ExternalScriptBundle : ScriptBundle, IExternalBundle
     {
         readonly string url;
         readonly string fallbackCondition;
-        bool isDebuggingEnabled;
-        IBundleHtmlRenderer<ScriptBundle> fallbackRenderer;
 
         public ExternalScriptBundle(string url)
             : base(url)
@@ -44,9 +42,8 @@ namespace Cassette.Scripts
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            fallbackRenderer = Renderer;
-            isDebuggingEnabled = settings.IsDebuggingEnabled;
-            Renderer = this;
+            FallbackRenderer = Renderer;
+            Renderer = new ExternalScriptBundleRenderer(settings);
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -71,69 +68,7 @@ namespace Cassette.Scripts
             get { return url; }
         }
 
-        public string Render(ScriptBundle unusedParameter)
-        {
-            if (isDebuggingEnabled && Assets.Any())
-            {
-                return fallbackRenderer.Render(this);
-            }
-
-            var conditionalRenderer = new ConditionalRenderer();
-            return conditionalRenderer.Render( Condition, html =>
-            {
-                if (Assets.Any())
-                {
-                    RenderScriptHtmlWithFallback(html);
-                }
-                else
-                {
-                    RenderScriptHtml(html);
-                }
-            });
-        }
-
-        void RenderScriptHtml(StringBuilder html)
-        {
-            html.AppendFormat(
-                HtmlConstants.ScriptHtml,
-                url,
-                HtmlAttributes.CombinedAttributes
-                );
-        }
-
-        void RenderScriptHtmlWithFallback(StringBuilder html)
-        {
-            html.AppendFormat(
-                HtmlConstants.ScriptHtmlWithFallback,
-                url,
-                HtmlAttributes.CombinedAttributes,
-                FallbackCondition,
-                CreateFallbackScripts(),
-                Environment.NewLine
-                );
-        }
-
-        string CreateFallbackScripts()
-        {
-            var scripts = fallbackRenderer.Render(this);
-            return ConvertToDocumentWriteCalls(scripts);
-        }
-
-        static string ConvertToDocumentWriteCalls(string scriptElements)
-        {
-            var scripts = scriptElements.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-            return string.Join(
-                Environment.NewLine,
-                (from script in scripts
-                select "document.write('" + Escape(script) + "');").ToArray()
-            );
-        }
-
-        static string Escape(string script)
-        {
-            return script.Replace("</script>", "<\\/script>").Replace("'", @"\'");
-        }
+        public IBundleHtmlRenderer<ScriptBundle> FallbackRenderer { get; set; }
 
         internal override void SerializeInto(XContainer container)
         {
@@ -148,6 +83,87 @@ namespace Cassette.Scripts
                    && other != null
                    && other.url == url;
         }
+
+        public class ExternalScriptBundleRenderer : IBundleHtmlRenderer<ScriptBundle>
+        {
+            readonly CassetteSettings settings;
+
+            public ExternalScriptBundleRenderer(CassetteSettings settings)
+            {
+                this.settings = settings;
+            }
+
+            public string Render(ScriptBundle bundle)
+            {
+                return Render((ExternalScriptBundle)bundle);
+            }
+
+            public string Render(ExternalScriptBundle bundle)
+            {
+                if (settings.IsDebuggingEnabled && bundle.Assets.Any())
+                {
+                    return bundle.FallbackRenderer.Render(bundle);
+                }
+
+                var conditionalRenderer = new ConditionalRenderer();
+                return conditionalRenderer.Render(bundle.Condition, html =>
+                {
+                    if (bundle.Assets.Any())
+                    {
+                        RenderScriptHtmlWithFallback(html, bundle);
+                    }
+                    else
+                    {
+                        RenderScriptHtml(html, bundle);
+                    }
+                });
+            }
+
+            void RenderScriptHtml(StringBuilder html, ExternalScriptBundle bundle)
+            {
+                html.AppendFormat(
+                    HtmlConstants.ScriptHtml,
+                    bundle.url,
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
+            }
+
+            void RenderScriptHtmlWithFallback(StringBuilder html, ExternalScriptBundle bundle)
+            {
+                html.AppendFormat(
+                    HtmlConstants.ScriptHtmlWithFallback,
+                    bundle.url,
+                    bundle.HtmlAttributes.CombinedAttributes,
+                    bundle.FallbackCondition,
+                    CreateFallbackScripts(bundle),
+                    Environment.NewLine
+                );
+            }
+
+            string CreateFallbackScripts(ExternalScriptBundle bundle)
+            {
+                var scripts = bundle.FallbackRenderer.Render(bundle);
+                return ConvertToDocumentWriteCalls(scripts);
+            }
+
+            static string ConvertToDocumentWriteCalls(string scriptElements)
+            {
+                var scripts = scriptElements.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+                return string.Join(
+                    Environment.NewLine,
+                    (from script in scripts
+                     select "document.write('" + Escape(script) + "');").ToArray()
+                );
+            }
+
+            static string Escape(string script)
+            {
+                return script.Replace("</script>", "<\\/script>").Replace("'", @"\'");
+            }
+        }
     }
 #pragma warning restore 659
+
+    
 }

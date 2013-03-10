@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using Cassette.Caching;
+using Cassette.TinyIoC;
 using Cassette.Utilities;
+using Moq;
 using Should;
 using Xunit;
 
@@ -22,6 +24,7 @@ namespace Cassette.Scripts
                 new XAttribute("Condition", "expected-condition"),
                 new XAttribute("ContentType", "text/javascript"),
                 new XAttribute("PageLocation", "PAGE-LOCATION"),
+                new XAttribute("Renderer", typeof(ScriptBundleHtmlRenderer).AssemblyQualifiedName),
                 new XElement("Asset", new XAttribute("Path", "~/asset-1"), new XAttribute("AssetCacheValidatorType", typeof(FileAssetCacheValidator).FullName)),
                 new XElement("Asset", new XAttribute("Path", "~/asset-2"), new XAttribute("AssetCacheValidatorType", typeof(FileAssetCacheValidator).FullName)),
                 new XElement("Reference", new XAttribute("Path", "~/reference-1")),
@@ -48,7 +51,10 @@ namespace Cassette.Scripts
                 { "~/script/010203.js", "CONTENT" }
             };
             var urlModifier = new VirtualDirectoryPrepender("/");
-            deserializer = new ScriptBundleDeserializer(urlModifier);
+            var container = new TinyIoCContainer();
+            container.Register(Mock.Of<IUrlGenerator>());
+
+            deserializer = new ScriptBundleDeserializer(urlModifier, container);
 
             DeserializeBundle();
         }

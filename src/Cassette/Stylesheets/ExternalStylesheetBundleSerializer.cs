@@ -13,7 +13,7 @@ namespace Cassette.Stylesheets
         {
             var element = base.CreateElement();
             element.Add(new XAttribute("Url", Bundle.ExternalUrl));
-
+            element.Add(new XAttribute("FallbackRenderer", Bundle.FallbackRenderer.GetType().AssemblyQualifiedName));
             return element;
         }
     }
