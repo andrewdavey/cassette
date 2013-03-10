@@ -16,6 +16,7 @@ namespace Cassette.Scripts
 
             AddUrlAttribute();
             AddFallbackConditionIfNotNull();
+            AddFallbackRenderer();
 
             return element;
         }
@@ -31,6 +32,11 @@ namespace Cassette.Scripts
             {
                 element.Add(new XAttribute("FallbackCondition", Bundle.FallbackCondition));
             }
+        }
+
+        void AddFallbackRenderer()
+        {
+            element.Add(new XAttribute("FallbackRenderer", Bundle.FallbackRenderer.GetType().AssemblyQualifiedName));
         }
     }
 }

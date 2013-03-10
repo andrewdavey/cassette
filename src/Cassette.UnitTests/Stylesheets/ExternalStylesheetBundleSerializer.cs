@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using Moq;
 using Should;
 using Xunit;
 
@@ -17,7 +18,8 @@ namespace Cassette.Stylesheets
                 Hash = new byte[0],
                 Media = "MEDIA",
                 Condition = "CONDITION",
-                Renderer = new ConstantHtmlRenderer<StylesheetBundle>("", new VirtualDirectoryPrepender("/"))
+                FallbackRenderer = new StylesheetHtmlRenderer(Mock.Of<IUrlGenerator>()),
+                Renderer = new ExternalStylesheetBundle.ExternalStylesheetBundleRenderer(new CassetteSettings())
             };
             
             SerializeToElement();

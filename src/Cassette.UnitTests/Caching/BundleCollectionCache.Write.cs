@@ -27,6 +27,7 @@ namespace Cassette.Caching
             scriptBundle.CallBase = true;
             scriptBundle.Object.Hash = new byte[] { 1, 2, 3 };
             scriptBundle.Object.Assets.Add(new StubAsset("~/test/asset.js", "script-bundle-content"));
+            scriptBundle.Object.Renderer = new ScriptBundleHtmlRenderer(Mock.Of<IUrlGenerator>());
             scriptBundle.Setup(b => b.Render()).Returns("");
             bundles.Add(scriptBundle.Object);
             
@@ -34,6 +35,7 @@ namespace Cassette.Caching
             stylesheetBundle.CallBase = true;
             stylesheetBundle.Object.Hash = new byte[] { 4, 5, 6 };
             stylesheetBundle.Object.Assets.Add(new StubAsset("~/test2/asset.css", "stylesheet-bundle-content"));
+            stylesheetBundle.Object.Renderer = new StylesheetHtmlRenderer(Mock.Of<IUrlGenerator>());
             stylesheetBundle.Setup(b => b.Render()).Returns("");
             bundles.Add(stylesheetBundle.Object);
 

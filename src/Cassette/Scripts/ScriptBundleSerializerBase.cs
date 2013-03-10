@@ -15,9 +15,15 @@ namespace Cassette.Scripts
         protected override XElement CreateElement()
         {
             element = base.CreateElement();
+            AddRenderer();
             AddConditionIfNotNull();
 
             return element;
+        }
+
+        void AddRenderer()
+        {
+            element.Add(new XAttribute("Renderer", Bundle.Renderer.GetType().AssemblyQualifiedName));
         }
 
         void AddConditionIfNotNull()

@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using Cassette.TinyIoC;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -6,8 +7,8 @@ namespace Cassette.Scripts
     abstract class ScriptBundleDeserializerBase<T> : BundleDeserializer<T>
         where T : ScriptBundle
     {
-        protected ScriptBundleDeserializerBase(IUrlModifier urlModifier)
-            : base(urlModifier)
+        protected ScriptBundleDeserializerBase(IUrlModifier urlModifier, TinyIoCContainer container)
+            : base(urlModifier, container)
         {
         }
 

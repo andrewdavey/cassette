@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using Moq;
 using Should;
 using Xunit;
 
@@ -17,10 +18,17 @@ namespace Cassette.Stylesheets
                 Hash = new byte[0],
                 Media = "MEDIA",
                 Condition = "CONDITION",
-                Renderer = new ConstantHtmlRenderer<StylesheetBundle>("", new VirtualDirectoryPrepender("/"))
+                Renderer = new StylesheetHtmlRenderer(Mock.Of<IUrlGenerator>())
             };
 
             WriteToElement();
+        }
+
+        [Fact]
+        public void ElementHasRendererAttributeWithRendererTypeAssemblyQualifiedName()
+        {
+            WriteToElement();
+            element.Attribute("Renderer").Value.ShouldEqual(typeof(StylesheetHtmlRenderer).AssemblyQualifiedName);
         }
 
         [Fact]

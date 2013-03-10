@@ -13,11 +13,22 @@ namespace Cassette.Stylesheets
         protected override XElement CreateElement()
         {
             var element = base.CreateElement();
+            AddRenderer(element);
+            AddConditionIfNotNull(element);
+            return element;
+        }
+
+        void AddRenderer(XElement element)
+        {
+            element.Add(new XAttribute("Renderer", Bundle.Renderer.GetType().AssemblyQualifiedName));
+        }
+
+        void AddConditionIfNotNull(XElement element)
+        {
             if (Bundle.Condition != null)
             {
                 element.Add(new XAttribute("Condition", Bundle.Condition));
             }
-            return element;
         }
     }
 }

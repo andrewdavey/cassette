@@ -32,8 +32,7 @@ namespace Cassette
                 ContentTypeAttribute(),
                 PageLocationAttribute(),
                 bundle.References.Select(SerializeReference),
-                HtmlAttributeElements(),
-                HtmlElement()
+                HtmlAttributeElements()
             );
 
             WriteAssetElements(element);
@@ -86,11 +85,6 @@ namespace Cassette
                        new XAttribute("Name", attribute.Key),
                        attribute.Value != null ? new XAttribute("Value", attribute.Value) : null
                    );
-        }
-
-        XElement HtmlElement()
-        {
-            return new XElement("Html", bundle.Render());
         }
 
         void WriteAssetElements(XElement bundleElement)

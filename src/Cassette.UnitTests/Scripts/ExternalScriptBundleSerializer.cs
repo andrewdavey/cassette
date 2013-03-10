@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using Moq;
 using Should;
 using Xunit;
 
@@ -14,7 +15,8 @@ namespace Cassette.Scripts
             bundle = new ExternalScriptBundle("http://example.com/", "~", "condition")
             {
                 Hash = new byte[0],
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", new VirtualDirectoryPrepender("/"))
+                FallbackRenderer = new ScriptBundleHtmlRenderer(Mock.Of<IUrlGenerator>()),
+                Renderer = new ExternalScriptBundle.ExternalScriptBundleRenderer(new CassetteSettings())
             };
 
             SerializeToElement();
@@ -38,7 +40,8 @@ namespace Cassette.Scripts
             bundle = new ExternalScriptBundle("http://example.com/")
             {
                 Hash = new byte[0],
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", new VirtualDirectoryPrepender("/"))
+                FallbackRenderer = new ScriptBundleHtmlRenderer(Mock.Of<IUrlGenerator>()),
+                Renderer = new ExternalScriptBundle.ExternalScriptBundleRenderer(new CassetteSettings())
             };
             SerializeToElement();
             element.Attribute("FallbackCondition").ShouldBeNull();

@@ -7,11 +7,9 @@ using System.Xml.Linq;
 namespace Cassette.Stylesheets
 {
 #pragma warning disable 659
-    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle, IBundleHtmlRenderer<StylesheetBundle>
+    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle
     {
         readonly string url;
-        bool isDebuggingEnabled;
-        IBundleHtmlRenderer<StylesheetBundle> fallbackRenderer;
 
         public ExternalStylesheetBundle(string url)
             : base(url)
@@ -28,9 +26,8 @@ namespace Cassette.Stylesheets
         protected override void ProcessCore(CassetteSettings settings)
         {
             base.ProcessCore(settings);
-            fallbackRenderer = Renderer;
-            isDebuggingEnabled = settings.IsDebuggingEnabled;
-            Renderer = this;
+            FallbackRenderer = Renderer;
+            Renderer = new ExternalStylesheetBundleRenderer(settings);
         }
 
         internal override bool ContainsPath(string pathToFind)
@@ -55,26 +52,7 @@ namespace Cassette.Stylesheets
             get { return url; }
         }
 
-        public string Render(StylesheetBundle unusedParameter)
-        {
-            if (isDebuggingEnabled && Assets.Any())
-            {
-                return fallbackRenderer.Render(this);
-            }
-
-            var conditionalRenderer = new ConditionalRenderer();
-
-            return conditionalRenderer.Render(Condition, RenderLink);
-        }
-
-        void RenderLink(StringBuilder html)
-        {
-            html.AppendFormat(
-                HtmlConstants.LinkHtml,
-                url,
-                HtmlAttributes.CombinedAttributes
-                );
-        }
+        public IBundleHtmlRenderer<StylesheetBundle> FallbackRenderer { get; set; }
 
         internal override void SerializeInto(XContainer container)
         {
@@ -89,6 +67,42 @@ namespace Cassette.Stylesheets
                    && other != null
                    && other.url == url;
         }
+
+        public class ExternalStylesheetBundleRenderer : IBundleHtmlRenderer<StylesheetBundle>
+        {
+            readonly CassetteSettings settings;
+
+            public ExternalStylesheetBundleRenderer(CassetteSettings settings)
+            {
+                this.settings = settings;
+            }
+
+            public string Render(StylesheetBundle bundle)
+            {
+                return Render((ExternalStylesheetBundle)bundle);
+            }
+
+            public string Render(ExternalStylesheetBundle bundle)
+            {
+                if (settings.IsDebuggingEnabled && bundle.Assets.Any())
+                {
+                    return bundle.FallbackRenderer.Render(bundle);
+                }
+
+                var conditionalRenderer = new ConditionalRenderer();
+                return conditionalRenderer.Render(bundle.Condition, html => RenderLink(html, bundle));
+            }
+
+            void RenderLink(StringBuilder html, ExternalStylesheetBundle bundle)
+            {
+                html.AppendFormat(
+                    HtmlConstants.LinkHtml,
+                    bundle.url,
+                    bundle.HtmlAttributes.CombinedAttributes
+                );
+            }
+        }
+
 #pragma warning restore 659
     }
 }

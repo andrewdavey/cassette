@@ -145,7 +145,6 @@
     <Compile Include="DisposableLazy.cs" />
     <Compile Include="ExceptionCatchingBundleCollectionInitializer.cs" />
     <Compile Include="FileSearch.IsMatch.cs" />
-    <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="DefaultCassetteBootstrapper.cs" />
     <Compile Include="FakeFileSystem.cs" />
     <Compile Include="FileAccessAuthorization.cs" />

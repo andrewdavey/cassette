@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 using Should;
 using Xunit;
+using Moq;
 
 namespace Cassette.Scripts
 {
@@ -15,10 +16,17 @@ namespace Cassette.Scripts
             {
                 Hash = new byte[0],
                 Condition = "CONDITION",
-                Renderer = new ConstantHtmlRenderer<ScriptBundle>("", new VirtualDirectoryPrepender("/"))
+                Renderer = new ScriptBundleHtmlRenderer(Mock.Of<IUrlGenerator>())
             };
 
             SerializeToElement();
+        }
+
+        [Fact]
+        public void ElementHasRendererAttributeWithRendererTypeAssemblyQualifiedName()
+        {
+            SerializeToElement();
+            element.Attribute("Renderer").Value.ShouldEqual(typeof(ScriptBundleHtmlRenderer).AssemblyQualifiedName);
         }
 
         [Fact]

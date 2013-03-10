@@ -123,13 +123,5 @@ namespace Cassette
             htmlAttributeElement.Attribute("Name").Value.ShouldEqual("attribute");
             htmlAttributeElement.Attribute("Value").ShouldBeNull();
         }
-
-        [Fact]
-        public void ElementHasHtmlElementWithBundleManifestHtml()
-        {
-            bundle.RenderResult = "EXPECTED-HTML";
-            SerializeToElement();
-            element.Element("Html").Value.ShouldEqual("EXPECTED-HTML");
-        }
     }
 }

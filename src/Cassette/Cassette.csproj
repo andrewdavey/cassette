@@ -147,7 +147,6 @@
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="FilePathComparer.cs" />
     <Compile Include="IFileSearchModifier.cs" />
-    <Compile Include="ConstantHtmlRenderer.cs" />
     <Compile Include="BundleCollectionInitializer.cs" />
     <Compile Include="DelegatingDisposable.cs" />
     <Compile Include="FileSystemWatchingBundleRebuilder.cs" />

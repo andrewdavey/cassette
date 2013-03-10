@@ -26,7 +26,8 @@ namespace Cassette.Stylesheets
         {
             bundle.Renderer = fallbackRenderer.Object;
             bundle.Process(settings);
-            return bundle.Render();
+            var renderer = new ExternalStylesheetBundle.ExternalStylesheetBundleRenderer(settings);
+            return renderer.Render(bundle);
         }
 
         [Fact]
@@ -57,7 +58,7 @@ namespace Cassette.Stylesheets
             settings.IsDebuggingEnabled = false;
             bundle.Condition = "(gt IE 9)|!(IE)";
 
-            var html = bundle.Render(bundle);
+            var html = Render();
 
             html.ShouldEqual(
                 "<!--[if " + bundle.Condition + "]><!-->" + Environment.NewLine +

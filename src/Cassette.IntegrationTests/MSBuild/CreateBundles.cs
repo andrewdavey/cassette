@@ -10,6 +10,7 @@ using Cassette.Caching;
 using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using Cassette.TinyIoC;
 using Microsoft.Build.Framework;
 using Moq;
 using Should;
@@ -138,11 +139,13 @@ namespace Cassette.MSBuild
 
         IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
         {
+            var container = new TinyIoCContainer();
+            container.Register(Mock.Of<IUrlGenerator>());
             var cache = new BundleCollectionCache(
                 new FileSystemDirectory(cachePath), 
                 b => b == "StylesheetBundle" 
-                    ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier) 
-                    : new ScriptBundleDeserializer(urlModifier)
+                    ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier, container)
+                    : new ScriptBundleDeserializer(urlModifier, container)
             );
             var result = cache.Read();
             result.IsSuccess.ShouldBeTrue();
