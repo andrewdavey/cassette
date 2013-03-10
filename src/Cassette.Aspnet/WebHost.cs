@@ -32,7 +32,7 @@ namespace Cassette.Aspnet
             Container.Register((c, p) => c.Resolve<HttpContextBase>().Request);
             Container.Register((c, p) => c.Resolve<HttpContextBase>().Response);
             Container.Register(typeof(IUrlModifier), CreateUrlModifier());
-
+            
             Container.Register<ICassetteRequestHandler, AssetRequestHandler>("AssetRequestHandler").AsPerRequestSingleton(CreateRequestLifetimeProvider());
             Container.Register<ICassetteRequestHandler>(
                 (c, n) =>
