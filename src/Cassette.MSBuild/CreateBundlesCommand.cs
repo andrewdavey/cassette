@@ -7,11 +7,12 @@ namespace Cassette.MSBuild
     [Serializable]
     public class CreateBundlesCommand : MarshalByRefObject
     {
-        public CreateBundlesCommand(string source, string bin, string output, bool includeRawFiles, TaskLoggingHelper taskLoggingHelper)
+        public CreateBundlesCommand(string source, string bin, string output, string appVirtualPath, bool includeRawFiles, TaskLoggingHelper taskLoggingHelper)
         {
             this.source = source;
             this.bin = bin;
             this.output = output;
+            this.appVirtualPath = appVirtualPath;
             this.includeRawFiles = includeRawFiles;
             this.taskLoggingHelper = taskLoggingHelper;
         }
@@ -19,12 +20,13 @@ namespace Cassette.MSBuild
         readonly string source;
         readonly string bin;
         readonly string output;
+        readonly string appVirtualPath;
         readonly bool includeRawFiles;
         readonly TaskLoggingHelper taskLoggingHelper;
 
         public void Execute()
         {
-            using (var host = new MSBuildHost(source, bin, output, includeRawFiles, taskLoggingHelper))
+            using (var host = new MSBuildHost(source, bin, output, appVirtualPath, includeRawFiles, taskLoggingHelper))
             {
                 host.Initialize();
                 host.Execute();
@@ -72,7 +74,7 @@ namespace Cassette.MSBuild
             //   new CreateBundlesCommand(command.source, command.bin, command.output, command.logInformation, command.logError);
             // but the object lives in the other AppDomain.
 
-            var constructorArguments = new object[] { command.source, command.bin, command.output, command.includeRawFiles, command.taskLoggingHelper };
+            var constructorArguments = new object[] { command.source, command.bin, command.output, command.appVirtualPath, command.includeRawFiles, command.taskLoggingHelper };
             
 #if NET35
             var objectHandle = Activator.CreateInstanceFrom(

@@ -25,6 +25,12 @@ namespace Cassette.MSBuild
         public string Output { get; set; }
 
         /// <summary>
+        /// The virtual path of the directory that contains the web application.
+        /// Defaults to "/".
+        /// </summary>
+        public string AppVirtualPath { get; set; }
+
+        /// <summary>
         /// When true, non-bundled files such as images referenced by stylesheets are also copied to the output directory. Default is false.
         /// </summary>
         public bool IncludeOtherFiles { get; set; }
@@ -38,12 +44,19 @@ namespace Cassette.MSBuild
             Log.LogMessage("Source directory = {0}", Source);
             Log.LogMessage("Bin directory = {0}", Bin);
             Log.LogMessage("Output directory = {0}", Output);
+            Log.LogMessage("App virtual path = {0}", AppVirtualPath);
             Log.LogMessage("Include other files = {0}", IncludeOtherFiles);
+
+            if (!AppVirtualPath.EndsWith("/"))
+            {
+                Log.LogError("AppVirtualPath must end with \"\".");
+                return false;
+            }
 
             // Execution will load assemblies. When running this task from a Visual Studio build, the DLLs would then be locked.
             // So we must run the command in a separate AppDomain.
             // This means the assemblies can be unlocked by unloading the new AppDomain when finished.
-            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output, IncludeOtherFiles, Log));
+            CreateBundlesCommand.ExecuteInSeparateAppDomain(new CreateBundlesCommand(Source, Bin, Output, AppVirtualPath, IncludeOtherFiles, Log));
             
             return true;
         }
@@ -64,6 +77,11 @@ namespace Cassette.MSBuild
             if (string.IsNullOrEmpty(Output))
             {
                 Output = "cassette-cache";
+            }
+
+            if (string.IsNullOrEmpty(AppVirtualPath))
+            {
+                AppVirtualPath = "/";
             }
         }
 

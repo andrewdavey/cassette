@@ -94,6 +94,7 @@ namespace Cassette.MSBuild
                 Source = path,
                 Bin = path,
                 Output = cachePath,
+                AppVirtualPath = "/app/",
                 BuildEngine = buildEngine
             };
             try
@@ -125,7 +126,7 @@ namespace Cassette.MSBuild
             var bundles = LoadBundlesFromManifestFile();
             var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
 
-            Regex.IsMatch(content, @"url\(/cassette.axd/file/test-.*?\.png\)")
+            Regex.IsMatch(content, @"url\(/app/cassette.axd/file/test-.*?\.png\)")
                  .ShouldBeTrue("Incorrect content: " + content);
         }
 

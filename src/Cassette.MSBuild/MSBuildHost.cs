@@ -16,10 +16,11 @@ namespace Cassette.MSBuild
         readonly string sourceDirectory;
         readonly string binDirectory;
         readonly string outputDirectory;
+        readonly string appVirtualPath;
         readonly bool includeRawFiles;
         readonly TaskLoggingHelper taskLoggingHelper;
 
-        public MSBuildHost(string sourceDirectory, string binDirectory, string outputDirectory, bool includeRawFiles, TaskLoggingHelper taskLoggingHelper)
+        public MSBuildHost(string sourceDirectory, string binDirectory, string outputDirectory, string appVirtualPath, bool includeRawFiles, TaskLoggingHelper taskLoggingHelper)
         {
             if (!Path.IsPathRooted(sourceDirectory)) throw new ArgumentException("sourceDirectory must be an absolute path.", "sourceDirectory");
             if (!Path.IsPathRooted(binDirectory)) throw new ArgumentException("binDirectory must be an absolute path.", "binDirectory");
@@ -28,13 +29,14 @@ namespace Cassette.MSBuild
             this.sourceDirectory = sourceDirectory;
             this.binDirectory = binDirectory;
             this.outputDirectory = outputDirectory;
+            this.appVirtualPath = appVirtualPath;
             this.includeRawFiles = includeRawFiles;
             this.taskLoggingHelper = taskLoggingHelper;
         }
 
         protected override void ConfigureContainer()
         {
-            Container.Register<IUrlModifier>(new PathPrepender("/"));
+            Container.Register<IUrlModifier>(new PathPrepender(appVirtualPath));
             base.ConfigureContainer();
         }
 
