@@ -5,8 +5,8 @@ namespace Cassette.HtmlTemplates
 {
     class HtmlTemplateBundleDeserializer : BundleDeserializer<HtmlTemplateBundle>
     {
-        public HtmlTemplateBundleDeserializer(IUrlModifier urlModifier, TinyIoCContainer container)
-            : base(urlModifier, container)
+        public HtmlTemplateBundleDeserializer(TinyIoCContainer container)
+            : base(container)
         {
         }
 

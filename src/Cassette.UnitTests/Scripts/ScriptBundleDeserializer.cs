@@ -50,11 +50,10 @@ namespace Cassette.Scripts
             {
                 { "~/script/010203.js", "CONTENT" }
             };
-            var urlModifier = new VirtualDirectoryPrepender("/");
             var container = new TinyIoCContainer();
             container.Register(Mock.Of<IUrlGenerator>());
 
-            deserializer = new ScriptBundleDeserializer(urlModifier, container);
+            deserializer = new ScriptBundleDeserializer(container);
 
             DeserializeBundle();
         }

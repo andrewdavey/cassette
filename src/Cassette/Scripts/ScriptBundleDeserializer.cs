@@ -5,8 +5,8 @@ namespace Cassette.Scripts
 {
     class ScriptBundleDeserializer : ScriptBundleDeserializerBase<ScriptBundle>
     {
-        public ScriptBundleDeserializer(IUrlModifier urlModifier, TinyIoCContainer container)
-            : base(urlModifier, container)
+        public ScriptBundleDeserializer(TinyIoCContainer container)
+            : base(container)
         {
         }
 

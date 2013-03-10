@@ -29,10 +29,9 @@ namespace Cassette.Stylesheets
             {
                 { "~/stylesheet/010203.css", "content" }
             };
-            var urlModifier = new VirtualDirectoryPrepender("/");
             var container = new TinyIoCContainer();
             container.Register(Mock.Of<IUrlGenerator>());
-            reader = new StylesheetBundleDeserializer(urlModifier, container);
+            reader = new StylesheetBundleDeserializer(container);
             DeserializeBundle();
         }
 

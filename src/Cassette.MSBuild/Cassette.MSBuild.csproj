@@ -85,9 +85,9 @@
     <Compile Include="MSBuildHost.cs" />
     <Compile Include="MsBuildHostSettingsConfiguration.cs" />
     <Compile Include="CombinePathWithUrl.cs" />
+    <Compile Include="PathPrepender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawFileCopier.cs" />
-    <Compile Include="UrlPlaceholderWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">

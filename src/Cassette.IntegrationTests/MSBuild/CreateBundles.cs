@@ -122,30 +122,22 @@ namespace Cassette.MSBuild
         [Fact]
         public void CssUrlIsRewrittenToBeApplicationRooted()
         {
-            var passThroughModifier = new Mock<IUrlModifier>();
-            passThroughModifier
-                .Setup(m => m.Modify(It.IsAny<string>()))
-                .Returns<string>(url => url)
-                .Verifiable();
-
-            var bundles = LoadBundlesFromManifestFile(passThroughModifier.Object);
+            var bundles = LoadBundlesFromManifestFile();
             var content = bundles.OfType<StylesheetBundle>().First().OpenStream().ReadToEnd();
 
-            Regex.IsMatch(content, @"url\(cassette.axd/file/test-.*?\.png\)")
+            Regex.IsMatch(content, @"url\(/cassette.axd/file/test-.*?\.png\)")
                  .ShouldBeTrue("Incorrect content: " + content);
-
-            passThroughModifier.Verify();
         }
 
-        IEnumerable<Bundle> LoadBundlesFromManifestFile(IUrlModifier urlModifier)
+        IEnumerable<Bundle> LoadBundlesFromManifestFile()
         {
             var container = new TinyIoCContainer();
             container.Register(Mock.Of<IUrlGenerator>());
             var cache = new BundleCollectionCache(
                 new FileSystemDirectory(cachePath), 
                 b => b == "StylesheetBundle" 
-                    ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(urlModifier, container)
-                    : new ScriptBundleDeserializer(urlModifier, container)
+                    ? (IBundleDeserializer<Bundle>)new StylesheetBundleDeserializer(container)
+                    : new ScriptBundleDeserializer(container)
             );
             var result = cache.Read();
             result.IsSuccess.ShouldBeTrue();

@@ -83,7 +83,6 @@
   <ItemGroup>
     <Compile Include="CreateBundlesWithRawFilesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UrlPlaceholderWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette.MSBuild\Cassette.MSBuild.csproj">
