@@ -63,7 +63,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">..\packages\Moq.4.0.10827\lib\NET35\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Should">
       <HintPath>..\packages\Should.1.1.12.0\lib\Should.dll</HintPath>
