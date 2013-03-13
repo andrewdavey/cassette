@@ -8,7 +8,7 @@ namespace Cassette.Stylesheets
     class CssImageToDataUriTransformer : CssUrlToDataUriTransformer
     {
         static readonly Regex BackgroundUrlRegex = new Regex(
-            @"\b(?<start>background .*? url \s* \() \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* (?<end>\) .*? ;)",
+            @"\b(?<start>background .*? url \s* \() \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif|svg) \<quote> \s* (?<end>\) .*? ;)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
