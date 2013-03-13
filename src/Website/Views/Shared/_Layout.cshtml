@@ -16,27 +16,28 @@
 </head>
 <body class="@ViewBag.Section">
     <div class="top">
+        <div class="lars">TEST</div>
         <div class="top-wrap">
-                <div class="logo">
-                    <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")"></a>
-                </div>
-                <ul class="links">
-                    <li @ActiveClassIf("benefits")>
-                        <a id="benefits-link" href="@Url.RouteUrl("Benefits")">Benefits</a>
-                    </li>
-                    <li @ActiveClassIf("download")>
-                        <a id="download-link" href="@Url.RouteUrl("Download")">Download</a>
-                    </li>
-                    <li @ActiveClassIf("documentation")>
-                        <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "", version = "v2" })">Docs</a>
-                    </li>
-                    <li @ActiveClassIf("support")>
-                        <a id="support-link" href="@Url.RouteUrl("Support")">Support</a>
-                    </li>
-                    <li @ActiveClassIf("donate")>
-                        <a id="donate-link" href="@Url.RouteUrl("Donate")">Donate</a>
-                    </li>
-                </ul>
+            <div class="logo">
+                <a @ActiveClassIf("home") href="@Url.RouteUrl("Home")"></a>
+            </div>
+            <ul class="links">
+                <li @ActiveClassIf("benefits")>
+                    <a id="benefits-link" href="@Url.RouteUrl("Benefits")">Benefits</a>
+                </li>
+                <li @ActiveClassIf("download")>
+                    <a id="download-link" href="@Url.RouteUrl("Download")">Download</a>
+                </li>
+                <li @ActiveClassIf("documentation")>
+                    <a id="docs-link" href="@Url.RouteUrl("Documentation", new { path = "", version = "v2" })">Docs</a>
+                </li>
+                <li @ActiveClassIf("support")>
+                    <a id="support-link" href="@Url.RouteUrl("Support")">Support</a>
+                </li>
+                <li @ActiveClassIf("donate")>
+                    <a id="donate-link" href="@Url.RouteUrl("Donate")">Donate</a>
+                </li>
+            </ul>
         </div>
     </div>
 

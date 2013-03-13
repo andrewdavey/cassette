@@ -42,6 +42,10 @@ namespace Cassette.Stylesheets
                 {
                     return "image/jpeg";
                 }
+                else if (extension.Equals("svg", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "image/svg+xml";
+                }
                 else
                 {
                     return "image/" + extension.ToLowerInvariant();

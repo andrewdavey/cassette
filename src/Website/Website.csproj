@@ -122,6 +122,7 @@
     <Content Include="assets\styles\images\osi-logo-small.png" />
     <Content Include="assets\styles\images\page.png" />
     <Content Include="assets\styles\images\support-icon.png" />
+    <Content Include="assets\styles\images\test.svg" />
     <Content Include="assets\styles\images\topnoise.png" />
     <Content Include="assets\styles\images\twitter.png" />
     <Content Include="assets\styles\images\whitetwittericon.png" />
