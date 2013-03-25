@@ -10,7 +10,7 @@ namespace Website
     {
         public void Configure(BundleCollection bundles)
         {
-            bundles.Add<StylesheetBundle>("assets/styles", b => b.SpriteImages());
+            bundles.Add<StylesheetBundle>("assets/styles", b => b.EmbedImages().SpriteImages());
             bundles.Add<StylesheetBundle>("assets/iestyles", b => b.Condition = "IE");
             
             bundles.AddPerSubDirectory<ScriptBundle>("assets/scripts");

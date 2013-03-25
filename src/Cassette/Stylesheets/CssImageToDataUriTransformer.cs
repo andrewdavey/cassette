@@ -8,7 +8,7 @@ namespace Cassette.Stylesheets
     class CssImageToDataUriTransformer : CssUrlToDataUriTransformer
     {
         static readonly Regex BackgroundUrlRegex = new Regex(
-            @"\b(?<start>background .*? url \s* \() \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* (?<end>\) .*? ;)",
+            @"\b(?<start>background .*? url \s* \() \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif|svg) \<quote> \s* (?<end>\) .*? ;)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
@@ -41,6 +41,10 @@ namespace Cassette.Stylesheets
                 if (extension.Equals("jpg", StringComparison.OrdinalIgnoreCase))
                 {
                     return "image/jpeg";
+                }
+                else if (extension.Equals("svg", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "image/svg+xml";
                 }
                 else
                 {
