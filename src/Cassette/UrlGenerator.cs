@@ -10,12 +10,14 @@ namespace Cassette
     {
         readonly IUrlModifier urlModifier;
         readonly string cassetteHandlerPrefix;
+        readonly bool isFileNameWithHashDisabled;
         readonly IDirectory sourceDirectory;
 
-        public UrlGenerator(IUrlModifier urlModifier, IDirectory sourceDirectory, string cassetteHandlerPrefix)
+        public UrlGenerator(IUrlModifier urlModifier, IDirectory sourceDirectory, string cassetteHandlerPrefix, bool isFileNameWithHashDisabled = false)
         {
             this.urlModifier = urlModifier;
             this.cassetteHandlerPrefix = cassetteHandlerPrefix;
+            this.isFileNameWithHashDisabled = isFileNameWithHashDisabled;
             this.sourceDirectory = sourceDirectory;
         }
 
@@ -32,8 +34,13 @@ namespace Cassette
             // This maintains the asset directory structure i.e. two assets in the same directory appear together in web browser JavaScript development tooling.
             
             var assetPath = asset.Path.Substring(1);
-            var hash = asset.Hash.ToHexString();
-            var url = cassetteHandlerPrefix + "asset" + assetPath + "?" + hash;
+            var url = cassetteHandlerPrefix + "asset" + assetPath;
+
+            if (!isFileNameWithHashDisabled)
+            {
+                var hash = asset.Hash.ToHexString();
+                url = url + "?" + hash;
+            }
 
             return urlModifier.Modify(url);
         }
@@ -64,6 +71,10 @@ namespace Cassette
                 throw new ArgumentException("Image filename must be application relative (starting with '~'). Filename: "+filename);
             }
 
+            var hashWithPrefix = string.Empty;
+            if (!isFileNameWithHashDisabled)
+                hashWithPrefix = "-" + hash;
+
             // "~\example\image.png" --> "/example/image-hash.png"
             var path = ConvertToForwardSlashes(filename).Substring(1);
             path = UriEscapePathSegments(path);
@@ -71,11 +82,11 @@ namespace Cassette
             var index = path.LastIndexOf('.');
             if (index >= 0)
             {
-                path = path.Insert(index, "-" + hash);
+                path = path.Insert(index, hashWithPrefix);
             }
             else
             {
-                path = path + "-" + hash;
+                path = path + hashWithPrefix;
             }
 
             var url = cassetteHandlerPrefix + "file" + path;

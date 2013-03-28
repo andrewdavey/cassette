@@ -142,6 +142,8 @@
     <Compile Include="BundleCollection.AddUrl.cs" />
     <Compile Include="BundleCollection.AddPerIndividualFile.cs" />
     <Compile Include="CassetteSettings.cs" />
+    <Compile Include="UrlGenerator_CreateAssetUrlWithoutHash_Tests.cs" />
+    <Compile Include="UrlGenerator_CreateRawFileUrlWithoutHash_Tests.cs" />
     <Compile Include="DisposableLazy.cs" />
     <Compile Include="ExceptionCatchingBundleCollectionInitializer.cs" />
     <Compile Include="FileSearch.IsMatch.cs" />

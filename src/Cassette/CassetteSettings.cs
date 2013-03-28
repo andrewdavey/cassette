@@ -33,6 +33,8 @@ namespace Cassette
         /// </summary>
         public bool IsDebuggingEnabled { get; set; }
 
+        public bool IsFileNameWithHashDisabled { get; set; }
+
         /// <summary>
         /// When true (the default), Cassette will buffer page output and rewrite to allow bundle references to be inserted into &lt;head&gt;
         /// after it has already been rendered. Disable this when &lt;system.webServer&gt;/&lt;urlCompression dynamicCompressionBeforeCache="true"&gt;

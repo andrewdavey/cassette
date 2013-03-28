@@ -91,6 +91,7 @@
     <Compile Include="BundleRequestHandler.cs" />
     <Compile Include="CachedFileRequestHandler.cs" />
     <Compile Include="CassetteHttpHandler.cs" />
+    <Compile Include="RawFileRequestRewriterWithoutHash.cs" />
     <Compile Include="DiagnosticRequestHandler.cs" />
     <Compile Include="HttpContextExtensions.cs" />
     <Compile Include="HttpTestHarness.cs" />

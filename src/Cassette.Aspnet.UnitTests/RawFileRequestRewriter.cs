@@ -43,6 +43,7 @@ namespace Cassette.Aspnet
             var context = new Mock<HttpContextBase>();
             var request = new Mock<HttpRequestBase>();
             var cache = new Mock<HttpCachePolicyBase>();
+            var cassetteSettings = new CassetteSettings();
             var requestHeaders = new NameValueCollection();
             context.SetupGet(c => c.Request).Returns(request.Object);
             context.Setup(c => c.Response.Cache).Returns(cache.Object);
@@ -60,7 +61,7 @@ namespace Cassette.Aspnet
                 .SetupGet(r => r.Headers)
                 .Returns(requestHeaders);
 
-            var rewriter = new RawFileRequestRewriter(context.Object, auth.Object, hasher.Object, usingIntegratedPipeline: true);
+            var rewriter = new RawFileRequestRewriter(context.Object, auth.Object, hasher.Object, cassetteSettings, usingIntegratedPipeline: true);
             rewriter.Rewrite();
 
             context.Verify(c => c.RewritePath(to));

@@ -11,6 +11,13 @@ namespace Cassette
             set { this["debug"] = value; }
         }
 
+        [ConfigurationProperty("disableHash", DefaultValue = false)]
+        public bool DisableHash
+        {
+            get { return (bool)this["disableHash"]; }
+            set { this["disableHash"] = value; }
+        }
+
         [ConfigurationProperty("rewriteHtml", DefaultValue = true)]
         public bool RewriteHtml
         {
