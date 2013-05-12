@@ -56,7 +56,7 @@
       <Nuspec Include="**\*.nuspec" Exclude="src\Cassette.Shared.nuspec;src\packages\**\*.nuspec" />
     </ItemGroup>
     <!-- Get the package version from Cassette.dll's AssemblyInformationalVersion attribute. -->
-    <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\Release\Cassette.dll">
+    <GetAssemblyInformationalVersion Assembly="src\Cassette\bin\Release\NET40\Cassette.dll">
       <Output PropertyName="Version" TaskParameter="Version" />
     </GetAssemblyInformationalVersion>
 
