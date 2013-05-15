@@ -81,7 +81,7 @@ namespace Cassette.Aspnet
             // Since we're not using the static file handler, we also need to set content type manually
             context.Response.ContentType = mimeMapping.GetMimeMapping(path);
             context.Response.TransmitFile(path);
-            context.Response.End();
+            context.ApplicationInstance.CompleteRequest();
         }
 
         void NoCache(HttpResponseBase response)
