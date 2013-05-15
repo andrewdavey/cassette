@@ -11,13 +11,33 @@ namespace Cassette.Aspnet
         readonly IFileAccessAuthorization fileAccessAuthorization;
         readonly IFileContentHasher fileContentHasher;
         readonly HttpRequestBase request;
+        readonly MimeMappingWrapper mimeMapping;
+        readonly Action<string> rewritePath;
 
         public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization, IFileContentHasher fileContentHasher)
+            : this(context, fileAccessAuthorization, fileContentHasher, HttpRuntime.UsingIntegratedPipeline)
+        {
+        }
+
+        public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization, IFileContentHasher fileContentHasher, bool usingIntegratedPipeline)
         {
             this.context = context;
             this.fileAccessAuthorization = fileAccessAuthorization;
             this.fileContentHasher = fileContentHasher;
             request = context.Request;
+
+            // RewritePath doesn't work as expected in IIS 6 or IIS 7 Classic pipeline
+            // Check if integrated pipeline is in use, and fall back to an alternate method if not.
+            if (usingIntegratedPipeline)
+            {
+                rewritePath = RewritePathIntegratedPipeline;
+            }
+            else
+            {
+                rewritePath = RewritePathClassicPipeline;
+                // Only required for classic pipeline
+                mimeMapping = new MimeMappingWrapper();
+            }
         }
 
         public void Rewrite()
@@ -47,7 +67,21 @@ namespace Cassette.Aspnet
                 SendNotModified(context.Response);
             }
 
+            rewritePath(path);
+        }
+
+        void RewritePathIntegratedPipeline(string path)
+        {
             context.RewritePath(path);
+        }
+
+        void RewritePathClassicPipeline(string path)
+        {
+            path = context.Server.MapPath(path);
+            // Since we're not using the static file handler, we also need to set content type manually
+            context.Response.ContentType = mimeMapping.GetMimeMapping(path);
+            context.Response.TransmitFile(path);
+            context.ApplicationInstance.CompleteRequest();
         }
 
         void NoCache(HttpResponseBase response)
