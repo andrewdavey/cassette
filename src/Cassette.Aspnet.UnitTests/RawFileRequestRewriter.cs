@@ -60,7 +60,7 @@ namespace Cassette.Aspnet
                 .SetupGet(r => r.Headers)
                 .Returns(requestHeaders);
 
-            var rewriter = new RawFileRequestRewriter(context.Object, auth.Object, hasher.Object);
+            var rewriter = new RawFileRequestRewriter(context.Object, auth.Object, hasher.Object, usingIntegratedPipeline: true);
             rewriter.Rewrite();
 
             context.Verify(c => c.RewritePath(to));
