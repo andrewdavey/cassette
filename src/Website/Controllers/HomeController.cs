@@ -4,6 +4,7 @@ using System.Net;
 using System.Web.Caching;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using System.Web.Configuration;
 
 namespace Website.Controllers
 {
@@ -70,7 +71,16 @@ namespace Website.Controllers
 
         static string DownoadContributorsJson()
         {
-            using (var client = new WebClient())
+            var username = WebConfigurationManager.AppSettings["GitHubUsername"];
+            var password = WebConfigurationManager.AppSettings["GitHubPassword"];
+            using (var client = new WebClient
+            {
+                Credentials = new NetworkCredential(username, password),
+                Headers =
+                {
+                    { HttpRequestHeader.UserAgent, "Cassette Website" }
+                }
+            })
             {
                 return client.DownloadString("https://api.github.com/repos/andrewdavey/cassette/contributors");
             }
