@@ -8,7 +8,7 @@ namespace Cassette.Stylesheets
     class CssImageToDataUriTransformer : CssUrlToDataUriTransformer
     {
         static readonly Regex BackgroundUrlRegex = new Regex(
-            @"\b(?<start>background .*? url \s* \() \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif) \<quote> \s* (?<end>\) .*? ;)",
+            @"\b(?<start>background .*? url \s* \() \s* (?<quote>[""']?) (?<path>.*?)\.(?<extension>png|jpg|jpeg|gif|svg) \<quote> \s* (?<end>\) .*? ;)",
             RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
         );
 
@@ -42,10 +42,13 @@ namespace Cassette.Stylesheets
                 {
                     return "image/jpeg";
                 }
-                else
+                
+                if (extension.Equals("svg", StringComparison.OrdinalIgnoreCase))
                 {
-                    return "image/" + extension.ToLowerInvariant();
+                    return "image/svg+xml";
                 }
+                
+                return "image/" + extension.ToLowerInvariant();
             }
 
             public override bool CanTransform

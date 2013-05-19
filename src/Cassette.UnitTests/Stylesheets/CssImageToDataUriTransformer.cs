@@ -85,6 +85,17 @@ namespace Cassette.Stylesheets
         }
 
         [Fact]
+        public void FileWithSvgExtensionCreatesImageSvgXmlDataUri()
+        {
+            fileSystem.Add("~/test.svg", new byte[] { 1, 2, 3 });
+
+            var css = "p { background-image: url(test.svg); }";
+            var getResult = transformer.Transform(css.AsStream, asset.Object);
+
+            getResult().ReadToEnd().ShouldContain("url(data:image/svg+xml;");
+        }
+
+        [Fact]
         public void AssetAddRawFileReferenceIsCalled()
         {
             fileSystem.Add("~/test.png", new byte[] { 1, 2, 3 });
