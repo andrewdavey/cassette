@@ -603,7 +603,7 @@ namespace Cassette
             foreach (var file in resourceFilenames)
             {
                 // File name can be supplied like a file name (eg. "js/global/test.js") and will be converted to
-                // a full resource name (eg. MySpace.Resources.js.global.test.js)
+                // a full resource name (eg. MyApp.Resources.js.global.test.js)
                 var cleanName = resourceNamespace + file.Replace('/', '.');
                 bundle.Assets.Add(new ResourceAsset(cleanName, assembly));
             }
