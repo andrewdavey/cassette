@@ -35,7 +35,7 @@ namespace Cassette
             }
         }
 
-	    public override string Path
+        public override string Path
         {
             get { return "~/" + resourceName; }
         }

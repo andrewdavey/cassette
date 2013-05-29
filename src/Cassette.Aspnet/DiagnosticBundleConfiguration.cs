@@ -7,15 +7,15 @@ namespace Cassette.Aspnet
     {
         public void Configure(BundleCollection bundles)
         {
-			bundles.AddEmbeddedResources<ScriptBundle>(
-				"~/Cassette.Aspnet.Resources",
-				Assembly.GetExecutingAssembly(),
-				"Cassette.Aspnet.Resources",
+            bundles.AddEmbeddedResources<ScriptBundle>(
+                "~/Cassette.Aspnet.Resources",
+                Assembly.GetExecutingAssembly(),
+                "Cassette.Aspnet.Resources",
 
-				"jquery.js",
-				"knockout.js",
-				"diagnostic-page.js"
-			);
+                "jquery.js",
+                "knockout.js",
+                "diagnostic-page.js"
+            );
         }
     }
 }

@@ -563,58 +563,58 @@ namespace Cassette
             }
         }
 
-	    /// <summary>
-	    /// Adds a new bundle with an explicit list of assets retrieved from embedded resources
-	    /// </summary>
-	    /// <typeparam name="T">The type of bundle to add.</typeparam>
-	    /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
-	    /// <param name="assembly">Assembly to retrieve assets from</param>
-		/// <param name="resourceNamespace">Base namespace to retrieve assets from</param>
-		/// <param name="resourceFilenames">The filenames of resources to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
-	    public void AddEmbeddedResources<T>(string applicationRelativePath, Assembly assembly, string resourceNamespace, params string[] resourceFilenames)
-			where T : Bundle
-		{
-			AddEmbeddedResources<T>(applicationRelativePath, assembly, resourceNamespace, resourceFilenames, null);
-		}
+        /// <summary>
+        /// Adds a new bundle with an explicit list of assets retrieved from embedded resources
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to add.</typeparam>
+        /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
+        /// <param name="assembly">Assembly to retrieve assets from</param>
+        /// <param name="resourceNamespace">Base namespace to retrieve assets from</param>
+        /// <param name="resourceFilenames">The filenames of resources to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
+        public void AddEmbeddedResources<T>(string applicationRelativePath, Assembly assembly, string resourceNamespace, params string[] resourceFilenames)
+            where T : Bundle
+        {
+            AddEmbeddedResources<T>(applicationRelativePath, assembly, resourceNamespace, resourceFilenames, null);
+        }
 
-		/// <summary>
-		/// Adds a new bundle with an explicit list of assets retrieved from embedded resources
-		/// </summary>
-		/// <typeparam name="T">The type of bundle to add.</typeparam>
-		/// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
-		/// <param name="assembly">Assembly to retrieve assets from</param>
-		/// <param name="resourceNamespace">Base namespace to retrieve assets from</param>
-		/// <param name="resourceFilenames">The filenames of resources to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
-		/// <param name="customizeBundle">An action delegate used to customize the created bundle.</param>
-		public void AddEmbeddedResources<T>(string applicationRelativePath, Assembly assembly, string resourceNamespace, IEnumerable<string> resourceFilenames, Action<T> customizeBundle = null)
-			where T : Bundle
-		{
-			var factory = bundleFactoryProvider.GetBundleFactory<T>();
+        /// <summary>
+        /// Adds a new bundle with an explicit list of assets retrieved from embedded resources
+        /// </summary>
+        /// <typeparam name="T">The type of bundle to add.</typeparam>
+        /// <param name="applicationRelativePath">The application relative path of the bundle. This does not have to be a real directory path.</param>
+        /// <param name="assembly">Assembly to retrieve assets from</param>
+        /// <param name="resourceNamespace">Base namespace to retrieve assets from</param>
+        /// <param name="resourceFilenames">The filenames of resources to add to the bundle. The order given here will be preserved. Filenames are bundle directory relative, if the bundle path exists, otherwise they are application relative.</param>
+        /// <param name="customizeBundle">An action delegate used to customize the created bundle.</param>
+        public void AddEmbeddedResources<T>(string applicationRelativePath, Assembly assembly, string resourceNamespace, IEnumerable<string> resourceFilenames, Action<T> customizeBundle = null)
+            where T : Bundle
+        {
+            var factory = bundleFactoryProvider.GetBundleFactory<T>();
 
-			var bundle = factory.CreateBundle(
-				applicationRelativePath,
-				Enumerable.Empty<IFile>(),
-				new BundleDescriptor { AssetFilenames = { "*" } }
-			);
+            var bundle = factory.CreateBundle(
+                applicationRelativePath,
+                Enumerable.Empty<IFile>(),
+                new BundleDescriptor { AssetFilenames = { "*" } }
+            );
 
-			if (!resourceNamespace.EndsWith("."))
-				resourceNamespace += ".";
+            if (!resourceNamespace.EndsWith("."))
+                resourceNamespace += ".";
 
-			foreach (var file in resourceFilenames)
-			{
-				// File name can be supplied like a file name (eg. "js/global/test.js") and will be converted to
-				// a full resource name (eg. MySpace.Resources.js.global.test.js)
-				var cleanName = resourceNamespace + file.Replace('/', '.');
-				bundle.Assets.Add(new ResourceAsset(cleanName, assembly));
-			}
+            foreach (var file in resourceFilenames)
+            {
+                // File name can be supplied like a file name (eg. "js/global/test.js") and will be converted to
+                // a full resource name (eg. MySpace.Resources.js.global.test.js)
+                var cleanName = resourceNamespace + file.Replace('/', '.');
+                bundle.Assets.Add(new ResourceAsset(cleanName, assembly));
+            }
 
-			if (customizeBundle != null)
-			{
-				customizeBundle(bundle);
-			}
+            if (customizeBundle != null)
+            {
+                customizeBundle(bundle);
+            }
 
-			Add(bundle);
-		}
+            Add(bundle);
+        }
 
         /// <summary>
         /// Gets a strongly-typed <see cref="Bundle"/> from the collection, by path.
