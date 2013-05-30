@@ -19,8 +19,8 @@ namespace Cassette.Caching
                 Bundle bundle;
                 IAsset asset;
 
-				if (!bundles.TryGetAssetByPath(assetPath, out asset, out bundle))
-					return false;
+                if (!bundles.TryGetAssetByPath(assetPath, out asset, out bundle))
+                    return false;
 
                 var resourceAsset = asset as ResourceAsset;
                 if (resourceAsset == null)
