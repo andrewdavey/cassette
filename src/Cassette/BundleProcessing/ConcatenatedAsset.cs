@@ -44,7 +44,12 @@ namespace Cassette.BundleProcessing
 
         public override Type AssetCacheValidatorType
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var first = children.FirstOrDefault();
+                if (first != null) return first.AssetCacheValidatorType;
+                throw new InvalidOperationException();
+            }
         }
 
         public override IEnumerable<AssetReference> References
