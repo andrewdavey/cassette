@@ -68,7 +68,8 @@
     <TransformXmlHierarchy
         Source="%(Nutrans.Identity)"
         Destination="%(Nutrans.RecursiveDir)%(Nutrans.Filename).nuspec"
-        TaskPath="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.XmlTransform.dll"/>
+        TaskPath="tools\Microsoft.Web.XmlTransform.dll"
+        />
 
     <Exec Command="src\.nuget\nuget.exe pack %(Nuspec.Identity) -Symbols -Version $(Version) -OutputDirectory $(NugetOutputDir)"/>
   </Target>
