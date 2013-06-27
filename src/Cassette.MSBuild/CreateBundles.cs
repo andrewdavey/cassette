@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -7,7 +8,7 @@ namespace Cassette.MSBuild
 {
     [LoadInSeparateAppDomain]
     [Serializable]
-    public class CreateBundles : Task
+    public class CreateBundles : AppDomainIsolatedTask
     {
         /// <summary>
         /// The root directory of the web application.

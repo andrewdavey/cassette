@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using Microsoft.Build.Utilities;
 
 namespace Cassette.MSBuild
@@ -37,6 +38,7 @@ namespace Cassette.MSBuild
         {
             var setup = CreateAppDomainSetup(command);
             var appDomain = AppDomain.CreateDomain("Cassette-MSBuild-AppDomain", null, setup);
+
             try
             {
                 var commandInAppDomain = CreateCommandInAppDomain(command, appDomain);
@@ -55,6 +57,7 @@ namespace Cassette.MSBuild
                 ApplicationBase = command.bin,
                 ShadowCopyFiles = "true"
             };
+
             AssignConfigurationFile(command, setup);
             return setup;
         }
@@ -68,8 +71,33 @@ namespace Cassette.MSBuild
             }
         }
 
+        static Assembly OnCurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            try
+            {
+                Assembly assembly = Assembly.Load(args.Name);
+                if (assembly != null)
+                    return assembly;
+            }
+            catch
+            {
+                // ignore load error 
+            }
+
+            // *** Try to load by filename - split out the filename of the full assembly name
+            // *** and append the base path of the original assembly (ie. look in the same dir)
+            // *** NOTE: this doesn't account for special search paths but then that never
+            //           worked before either.
+            string[] Parts = args.Name.Split(',');
+            string File = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + Parts[0].Trim() + ".dll";
+            return System.Reflection.Assembly.LoadFrom(File);
+        }
+
         static CreateBundlesCommand CreateCommandInAppDomain(CreateBundlesCommand command, AppDomain appDomain)
         {
+            var assemblyLocation = typeof(CreateBundlesCommand).Assembly.Location;
+            var typeString = typeof(CreateBundlesCommand).FullName;
+
             // This is like calling
             //   new CreateBundlesCommand(command.source, command.bin, command.output, command.logInformation, command.logError);
             // but the object lives in the other AppDomain.
@@ -79,8 +107,8 @@ namespace Cassette.MSBuild
 #if NET35
             var objectHandle = Activator.CreateInstanceFrom(
                 appDomain,
-                typeof(CreateBundlesCommand).Assembly.Location,
-                typeof(CreateBundlesCommand).FullName,
+                assemblyLocation,
+                typeString,
                 false,
                 0,
                 null,
@@ -92,8 +120,8 @@ namespace Cassette.MSBuild
 #else
             var objectHandle = Activator.CreateInstanceFrom(
                 appDomain,
-                typeof(CreateBundlesCommand).Assembly.Location,
-                typeof(CreateBundlesCommand).FullName,
+                assemblyLocation,
+                typeString,
                 false,
                 0,
                 null,
@@ -102,7 +130,16 @@ namespace Cassette.MSBuild
                 null
             );
 #endif
-            return (CreateBundlesCommand)objectHandle.Unwrap();
+            var unwrappedObject = objectHandle.Unwrap();
+
+            AppDomain.CurrentDomain.AssemblyResolve += OnCurrentDomainAssemblyResolve;
+            var typedObject = (CreateBundlesCommand)unwrappedObject;
+            AppDomain.CurrentDomain.AssemblyResolve -= OnCurrentDomainAssemblyResolve;
+
+            return typedObject;
         }
+
+
     }
+
 }
