@@ -55,6 +55,7 @@ namespace Cassette.Aspnet.Jasmine
             var html = Properties.Resources.runner;
             html = InsertStylesheetsIntoHtml(html);
             html = InsertScriptsIntoHtml(html);
+            html = InsertTemplatesIntoHtml(html);
             return html;
         }
 
@@ -68,6 +69,12 @@ namespace Cassette.Aspnet.Jasmine
         {
             var scripts = Bundles.RenderScripts().ToHtmlString();
             return html.Replace("$scripts$", scripts);
+        }
+
+        string InsertTemplatesIntoHtml(string html)
+        {
+            var templates = Bundles.RenderHtmlTemplates().ToHtmlString();
+            return html.Replace("$templates$", templates);
         }
 
         public bool IsReusable
