@@ -10,7 +10,7 @@ namespace Cassette
     /// <summary>
     /// Partial implementation of IAsset that reads from an assembly resource stream.
     /// </summary>
-    public class ResourceAsset : IAsset
+    public class ResourceAsset : AssetBase
     {
         readonly string resourceName;
         readonly Assembly assembly;
@@ -21,7 +21,7 @@ namespace Cassette
             this.assembly = assembly;
         }
 
-        public byte[] Hash
+        public override byte[] Hash
         {
             get
             {
@@ -35,35 +35,30 @@ namespace Cassette
             }
         }
 
-        public string Path
+        public override string Path
         {
             get { return "~/" + resourceName; }
         }
 
-        public IEnumerable<AssetReference> References
+        public override IEnumerable<AssetReference> References
         {
             get { yield break; }
         }
 
-        public void Accept(IBundleVisitor visitor)
+        public override void Accept(IBundleVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public void AddAssetTransformer(IAssetTransformer transformer)
-        {
-            // No transformations applied. Asset served as-is.
-        }
-
-        public void AddReference(string assetRelativePath, int lineNumber)
+        public override void AddReference(string assetRelativePath, int lineNumber)
         {
         }
 
-        public void AddRawFileReference(string relativeFilename)
+        public override void AddRawFileReference(string relativeFilename)
         {
         }
 
-        public Stream OpenStream()
+        protected override Stream OpenStreamCore()
         {
             var stream = assembly.GetManifestResourceStream(resourceName);
             if (stream != null)
@@ -82,7 +77,7 @@ namespace Cassette
             }
         }
 
-        public Type AssetCacheValidatorType
+        public override Type AssetCacheValidatorType
         {
             get { return typeof(ResourceAssetCacheValidator); }
         }
