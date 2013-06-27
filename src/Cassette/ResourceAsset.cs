@@ -86,5 +86,10 @@ namespace Cassette
         {
             get { return typeof(ResourceAssetCacheValidator); }
         }
+
+        public Assembly Assembly
+        {
+            get { return this.assembly; }
+        }
     }
 }
