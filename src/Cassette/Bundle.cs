@@ -174,6 +174,7 @@ namespace Cassette
 
         internal IAsset FindAssetByPath(string pathToFind)
         {
+            //return assets.FirstOrDefault(asset => PathUtilities.PathsEqual(asset.Path, pathToFind));
             var assetFinder = new AssetFinder(pathToFind);
             Accept(assetFinder);
             return assetFinder.FoundAsset;
@@ -223,7 +224,7 @@ namespace Cassette
             if (assets.Count == 0) return;
 
             Trace.Source.TraceInformation("Concatenating assets of {0}", path);
-            var concatenated = new ConcatenatedAsset(assets, separator);
+            var concatenated = new ConcatenatedAsset(path, assets, separator);
             assets.Clear();
             assets.Add(concatenated);
             Trace.Source.TraceInformation("Concatenated assets of {0}", path);
@@ -312,6 +313,8 @@ namespace Cassette
 
             public void Visit(IAsset asset)
             {
+                if (asset is ConcatenatedAsset) return;
+
                 Assets.Add(asset);
             }
         }

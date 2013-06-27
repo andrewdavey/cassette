@@ -64,6 +64,7 @@ namespace Cassette
             var bundle1 = new TestableBundle("~/bundle");
             bundle1.Assets.Add(
                 new ConcatenatedAsset(
+                    "~/bundle",
                     new[] { new StubAsset("~/bundle/asset1.js"), new StubAsset("~/bundle/asset2.js") },
                     ";"
                 )

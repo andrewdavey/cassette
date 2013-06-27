@@ -15,8 +15,8 @@ namespace Cassette
         public ConcatenatedAsset_Tests()
         {
             var child = new Mock<IAsset>();
-            child.Setup(c => c.OpenStream()).Returns(() => new MemoryStream(new byte[] {1, 2, 3}));
-            asset = new ConcatenatedAsset(new[] {child.Object}, "");
+            child.Setup(c => c.OpenStream()).Returns(() => new MemoryStream(new byte[] { 1, 2, 3 }));
+            asset = new ConcatenatedAsset("~/path", new[] { child.Object }, "");
         }
 
         readonly ConcatenatedAsset asset;
@@ -47,6 +47,7 @@ namespace Cassette
             child2 = new Mock<IAsset>();
             child2.Setup(c => c.OpenStream()).Returns(() => Stream.Null);
             asset = new ConcatenatedAsset(
+                "~/path",
                 new[] { child1.Object, child2.Object },
                 ""
             );
@@ -90,7 +91,7 @@ namespace Cassette
             var child2 = new Mock<IAsset>();
             child1.Setup(c => c.OpenStream()).Returns(() => new MemoryStream(Encoding.UTF8.GetBytes("first")));
             child2.Setup(c => c.OpenStream()).Returns(() => new MemoryStream(Encoding.UTF8.GetBytes("second")));
-            asset = new ConcatenatedAsset(new[] { child1.Object, child2.Object }, ";");
+            asset = new ConcatenatedAsset("~/path", new[] { child1.Object, child2.Object }, ";");
         }
 
         [Fact]

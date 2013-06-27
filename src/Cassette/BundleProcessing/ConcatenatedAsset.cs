@@ -8,13 +8,15 @@ namespace Cassette.BundleProcessing
 {
     class ConcatenatedAsset : AssetBase, IDisposable
     {
+        readonly string path;
         readonly byte[] hash;
         readonly IEnumerable<IAsset> children;
         readonly MemoryStream stream;
         readonly string separator;
 
-        public ConcatenatedAsset(IEnumerable<IAsset> children, string separator)
+        public ConcatenatedAsset(string path, IEnumerable<IAsset> children, string separator)
         {
+            this.path = path;
             this.children = children.ToArray();
             this.separator = separator ?? Environment.NewLine;
             stream = CopyAssetsIntoSingleStream(this.children);
@@ -23,6 +25,7 @@ namespace Cassette.BundleProcessing
 
         public override void Accept(IBundleVisitor visitor)
         {
+            visitor.Visit(this);
             foreach (var child in children)
             {
                 visitor.Visit(child);
@@ -31,7 +34,7 @@ namespace Cassette.BundleProcessing
 
         public override string Path
         {
-            get { throw new NotImplementedException(); }
+            get { return path; }
         }
 
         public override byte[] Hash

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
+using Cassette.BundleProcessing;
 
 namespace Cassette
 {
@@ -21,6 +22,8 @@ namespace Cassette
 
         void IBundleVisitor.Visit(IAsset asset)
         {
+            if (asset is ConcatenatedAsset) return;
+
             Serialize(asset);
         }
 
