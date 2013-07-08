@@ -7,23 +7,25 @@ namespace Cassette.Aspnet
     /// Provides the isolated storage used by Cassette.
     /// Storage is only created on demand.
     /// </summary>
-    static class IsolatedStorageContainer
+    class IsolatedStorageContainer
     {
-        // ReSharper disable ConvertClosureToMethodGroup because would cause this problem: http://stackoverflow.com/q/9113791/7011
-        static readonly DisposableLazy<IsolatedStorageFile> LazyStorage = new DisposableLazy<IsolatedStorageFile>(() => CreateIsolatedStorage());
-        // ReSharper restore ConvertClosureToMethodGroup
+        readonly DisposableLazy<IsolatedStorageFile> LazyStorage;
 
-        static IsolatedStorageFile CreateIsolatedStorage()
+        public IsolatedStorageContainer(bool perDomain)
         {
-            return IsolatedStorageFile.GetMachineStoreForAssembly();
+            // ReSharper disable ConvertClosureToMethodGroup because would cause this problem: http://stackoverflow.com/q/9113791/7011
+            LazyStorage = perDomain ?
+                new DisposableLazy<IsolatedStorageFile>(() => IsolatedStorageFile.GetMachineStoreForDomain()) : 
+                new DisposableLazy<IsolatedStorageFile>(() => IsolatedStorageFile.GetMachineStoreForAssembly());
+            // ReSharper restore ConvertClosureToMethodGroup
         }
 
-        public static IsolatedStorageFile IsolatedStorageFile
+        public IsolatedStorageFile IsolatedStorageFile
         {
             get { return LazyStorage.Value; }
         }
 
-        public static void Dispose()
+        public void Dispose()
         {
             LazyStorage.Dispose();
         }
