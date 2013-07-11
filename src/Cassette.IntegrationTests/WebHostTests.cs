@@ -113,6 +113,33 @@ namespace Cassette
         }
 #endif
 
+        [Fact]
+        public void GivenDebugMode_BundleAUrlShouldServeConcatenatedScripts()
+        {
+            using (var host = new TestableWebHost("assets", () => httpContext, isAspNetDebuggingEnabled: true))
+            {
+                host.AddBundleConfiguration(new BundleConfiguration(bundles =>
+                    bundles.AddPerSubDirectory<ScriptBundle>("scripts")
+                ));
+                host.Initialize();
+
+                string bundleUrl;
+                using (var http = new HttpTestHarness(host))
+                {
+                    httpContext = http.Context.Object;
+                    Bundles.Reference("scripts/bundle-a");
+                    bundleUrl = Bundles.Url("scripts/bundle-a");
+                }
+
+                var separator = System.Environment.NewLine + ";" + System.Environment.NewLine;
+
+                var expectedContent = File.ReadAllText("assets\\scripts\\bundle-a\\asset-2.js") + separator +
+                                      File.ReadAllText("assets\\scripts\\bundle-a\\asset-1.js");
+
+                Download(host, bundleUrl).ShouldEqual(expectedContent);
+            }
+        }
+
         string[] GetPageHtmlResourceUrls(WebHost host, params string[] references)
         {
             using (var http = new HttpTestHarness(host))
