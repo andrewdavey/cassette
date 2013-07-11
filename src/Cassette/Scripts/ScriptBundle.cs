@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using Cassette.BundleProcessing;
 
 namespace Cassette.Scripts
@@ -46,6 +47,14 @@ namespace Cassette.Scripts
         protected override string UrlBundleTypeArgument
         {
             get { return "script"; }
+        }
+
+        protected override string ConcatenateAssetsDefaultSeparator
+        {
+            get
+            {
+                return Environment.NewLine + ";" + Environment.NewLine;
+            }
         }
     }
 }
