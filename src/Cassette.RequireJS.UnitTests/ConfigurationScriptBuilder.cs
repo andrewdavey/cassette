@@ -105,7 +105,8 @@ namespace Cassette.RequireJS
             WhenBuildScriptForDebug(c => c.Shim("~/app/test2.js"));
             Paths["app/test1"].ShouldEqual("ASSET-URL");
             Paths["app/test2"].ShouldEqual("ASSET-URL");
-            Config.shims["app/test2"].ShouldEqual("['app/test1']");
+            string dependency = Config.shim["app/test2"][0].ToString();
+            dependency.ShouldEqual("app/test1");
         }
 
         [Fact]
@@ -125,7 +126,11 @@ namespace Cassette.RequireJS
             WhenBuildScriptForDebug(c => c.Shim("~/app/test2.js","t2"));
             Paths["app/test1"].ShouldEqual("ASSET-URL");
             Paths["app/test2"].ShouldEqual("ASSET-URL");
-            Config.shims["app/test2"].ShouldEqual("{\"exports\":\"t2\",\"deps\":\"['app/test1']\"}");
+            string dependency = Config.shim["app/test2"]["deps"][0].ToString();
+            dependency.ShouldEqual("app/test1");
+
+            string exports = Config.shim["app/test2"]["exports"].ToString();
+            exports.ShouldEqual("t2");
         }
 
         void GivenBundle(string path, params IAsset[] assets)
@@ -186,7 +191,7 @@ namespace Cassette.RequireJS
         {
             public Dictionary<string, string> paths { get; set; }
 
-            public Dictionary<string, string> shims { get; set; }
+            public Dictionary<string, dynamic> shim { get; set; }
         }
     }
 }
