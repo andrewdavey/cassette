@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cassette.Scripts;
 using Moq;
@@ -87,6 +88,46 @@ namespace Cassette.RequireJS
             Paths["app/test"].ShouldEqual("ASSET-URL");
         }
 
+        [Fact]
+        public void AssetIsShimmed()
+        {
+            var asset1 = new StubAsset("~/app/test1.js");
+            var asset2 = new StubAsset("~/app/test2.js");
+            asset2.AddRawFileReference(asset1.Path);
+            
+            GivenBundle(
+                "~/app",
+                asset1,
+                asset2
+                );
+
+
+            WhenBuildScriptForDebug(c => c.Shim("~/app/test2.js"));
+            Paths["app/test1"].ShouldEqual("ASSET-URL");
+            Paths["app/test2"].ShouldEqual("ASSET-URL");
+            Config.shims["app/test2"].ShouldEqual("['app/test1']");
+        }
+
+        [Fact]
+        public void AssetIsShimmedWithExport()
+        {
+            var asset1 = new StubAsset("~/app/test1.js");
+            var asset2 = new StubAsset("~/app/test2.js");
+            asset2.AddRawFileReference(asset1.Path);
+
+            GivenBundle(
+                "~/app",
+                asset1,
+                asset2
+                );
+
+
+            WhenBuildScriptForDebug(c => c.Shim("~/app/test2.js","t2"));
+            Paths["app/test1"].ShouldEqual("ASSET-URL");
+            Paths["app/test2"].ShouldEqual("ASSET-URL");
+            Config.shims["app/test2"].ShouldEqual("{\"exports\":\"t2\",\"deps\":\"['app/test1']\"}");
+        }
+
         void GivenBundle(string path, params IAsset[] assets)
         {
             var bundle = new ScriptBundle(path);
@@ -97,19 +138,23 @@ namespace Cassette.RequireJS
             bundles.Add(bundle);
         }
 
-        void WhenBuildScriptForRelease()
+        void WhenBuildScriptForRelease(Action<IModuleInitializer> configuration = null)
         {
-            BuildScript(false);
+            BuildScript(false, configuration);
         }
 
-        void WhenBuildScriptForDebug()
+        void WhenBuildScriptForDebug(Action<IModuleInitializer> configuration = null)
         {
-            BuildScript(true);
+            BuildScript(true, configuration);
         }
 
-        void BuildScript(bool debug)
+        void BuildScript(bool debug, Action<IModuleInitializer> configuration = null)
         {
             modules.InitializeModules(bundles, "~/shared/required.js");
+            if (configuration != null)
+            {
+                configuration(modules);
+            }
             var builder = new ConfigurationScriptBuilder(
                 urlGenerator.Object,
                 new SimpleJsonSerializer(),
@@ -122,16 +167,26 @@ namespace Cassette.RequireJS
         {
             get
             {
+                return Config.paths;
+            }
+        }
+
+        RequireJsConfig Config
+        {
+            get
+            {
                 var offset = "requirejs.config(".Length;
                 var configObjectScript = script.Substring(offset, script.Length - offset - 2);
                 var config = JsonConvert.DeserializeObject<RequireJsConfig>(configObjectScript);
-                return config.paths;
+                return config;
             }
         }
 
         public class RequireJsConfig
         {
             public Dictionary<string, string> paths { get; set; }
+
+            public Dictionary<string, string> shims { get; set; }
         }
     }
 }

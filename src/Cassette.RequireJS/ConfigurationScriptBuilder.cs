@@ -26,7 +26,8 @@ namespace Cassette.RequireJS
         object ConfigurationObject(IEnumerable<IAmdModule> modules)
         {
             var paths = modules.ToDictionary(m => m.ModulePath, CreateUrl);
-            return new { paths };
+            var shims = modules.OfType<PlainScript>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, CreateShimConfiguration);
+            return new { paths , shims };
         }
 
         string CreateUrl(IAmdModule amdModule)
@@ -34,6 +35,17 @@ namespace Cassette.RequireJS
             return isDebuggingEnabled 
                 ? urlGenerator.CreateAssetUrl(amdModule.Asset) 
                 : urlGenerator.CreateBundleUrl(amdModule.Bundle) + "?";
+        }
+
+        string CreateShimConfiguration(PlainScript amdModule)
+        {
+            string dependencies = "[" + string.Join(",", amdModule.DependencyPaths.Select(dependency => "'" + dependency + "'")) + "]";
+            if (!string.IsNullOrEmpty(amdModule.ShimExports))
+            {
+                var config = new { exports = amdModule.ShimExports, deps = dependencies };
+                return jsonSerializer.Serialize(config);
+            }
+            return dependencies;
         }
     }
 }
