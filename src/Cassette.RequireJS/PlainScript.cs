@@ -22,14 +22,22 @@ namespace Cassette.RequireJS
 
         public string ModuleReturnExpression { get; set; }
 
+        public bool Shim { get; set; }
+
+        public string ShimExports { get; set; }
+
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
-            return () =>
+            if (!this.Shim)
             {
-                var source = openSourceStream().ReadToEnd();
-                var output = Transform(source);
-                return output.AsStream();
-            };
+                return () =>
+                {
+                    var source = openSourceStream().ReadToEnd();
+                    var output = Transform(source);
+                    return output.AsStream();
+                };
+            }
+            return openSourceStream;
         }
 
         string Transform(string source)
@@ -47,7 +55,7 @@ namespace Cassette.RequireJS
             return ModuleWithoutReturn(source);
         }
 
-        IEnumerable<string> DependencyPaths
+        internal IEnumerable<string> DependencyPaths
         {
             get
             {
@@ -58,7 +66,7 @@ namespace Cassette.RequireJS
             }
         }
 
-        IEnumerable<string> DependencyAliases
+        internal IEnumerable<string> DependencyAliases
         {
             get 
             {

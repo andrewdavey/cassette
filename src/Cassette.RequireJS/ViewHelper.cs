@@ -26,5 +26,10 @@ namespace Cassette.Views
             var modulePathsArray = jsonSerializer.Serialize(initialModulePaths);
             return "<script>require(" + modulePathsArray + ")</script>";
         }
+
+        public static IHtmlString RenderCallScript(params string[] initialModulePaths)
+        {
+            return new HtmlString(CreateRequireCallJavaScript(initialModulePaths));
+        }
     }
 }
