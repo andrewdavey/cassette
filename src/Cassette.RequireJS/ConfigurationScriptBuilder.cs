@@ -26,8 +26,8 @@ namespace Cassette.RequireJS
         object ConfigurationObject(IEnumerable<IAmdModule> modules)
         {
             var paths = modules.ToDictionary(m => m.ModulePath, CreateUrl);
-            var shims = modules.OfType<PlainScript>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, CreateShimConfiguration);
-            return new { paths , shims };
+            var shim = modules.OfType<PlainScript>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, CreateShimConfiguration);
+            return new { paths , shim };
         }
 
         string CreateUrl(IAmdModule amdModule)
@@ -37,15 +37,14 @@ namespace Cassette.RequireJS
                 : urlGenerator.CreateBundleUrl(amdModule.Bundle) + "?";
         }
 
-        string CreateShimConfiguration(PlainScript amdModule)
+        object CreateShimConfiguration(PlainScript amdModule)
         {
-            string dependencies = "[" + string.Join(",", amdModule.DependencyPaths.Select(dependency => "'" + dependency + "'")) + "]";
             if (!string.IsNullOrEmpty(amdModule.ShimExports))
             {
-                var config = new { exports = amdModule.ShimExports, deps = dependencies };
-                return jsonSerializer.Serialize(config);
+                return new { deps = amdModule.DependencyPaths, exports = amdModule.ShimExports };
+
             }
-            return dependencies;
+            return amdModule.DependencyPaths;
         }
     }
 }
