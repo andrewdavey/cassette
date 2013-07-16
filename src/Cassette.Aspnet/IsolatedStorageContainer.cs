@@ -14,10 +14,15 @@ namespace Cassette.Aspnet
         public IsolatedStorageContainer(bool perDomain)
         {
             // ReSharper disable ConvertClosureToMethodGroup because would cause this problem: http://stackoverflow.com/q/9113791/7011
-            LazyStorage = perDomain ?
-                new DisposableLazy<IsolatedStorageFile>(() => IsolatedStorageFile.GetMachineStoreForDomain()) : 
-                new DisposableLazy<IsolatedStorageFile>(() => IsolatedStorageFile.GetMachineStoreForAssembly());
+            LazyStorage = new DisposableLazy<IsolatedStorageFile>(() => CreateIsolatedStorage(perDomain));
             // ReSharper restore ConvertClosureToMethodGroup
+        }
+
+        static IsolatedStorageFile CreateIsolatedStorage(bool perDomain)
+        {
+            return perDomain 
+                ? IsolatedStorageFile.GetMachineStoreForDomain() 
+                : IsolatedStorageFile.GetMachineStoreForAssembly();
         }
 
         public IsolatedStorageFile IsolatedStorageFile
