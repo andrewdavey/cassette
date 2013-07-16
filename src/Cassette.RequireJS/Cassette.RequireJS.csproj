@@ -68,6 +68,7 @@
       <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">$(SolutionDir)packages\AjaxMin.4.84.4790.14417\lib\net35\AjaxMin.dll</HintPath>
       <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">$(SolutionDir)packages\AjaxMin.4.84.4790.14417\lib\net40\AjaxMin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />

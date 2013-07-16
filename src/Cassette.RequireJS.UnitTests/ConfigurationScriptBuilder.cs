@@ -165,7 +165,7 @@ namespace Cassette.RequireJS
                 new SimpleJsonSerializer(),
                 debug
             );
-            script = builder.BuildConfigurationScript(modules);
+            script = builder.BuildConfigurationScript(modules,new RequireJSConfiguration());
         }
 
         IDictionary<string, string> Paths

@@ -9,17 +9,21 @@ namespace Cassette.RequireJS
     public class RequireJsConfigAsset : IAsset
     {
         readonly IEnumerable<IAmdModule> modules;
+
+        private readonly RequireJSConfiguration requireJsConfiguration;
+
         readonly IConfigurationScriptBuilder configurationScriptBuilder;
         
-        public RequireJsConfigAsset(IEnumerable<IAmdModule> modules, IConfigurationScriptBuilder configurationScriptBuilder)
+        public RequireJsConfigAsset(IEnumerable<IAmdModule> modules, RequireJSConfiguration requireJsConfiguration, IConfigurationScriptBuilder configurationScriptBuilder)
         {
             this.modules = modules;
+            this.requireJsConfiguration = requireJsConfiguration;
             this.configurationScriptBuilder = configurationScriptBuilder;
         }
 
         public string Content
         {
-            get { return configurationScriptBuilder.BuildConfigurationScript(modules); }
+            get { return configurationScriptBuilder.BuildConfigurationScript(modules, requireJsConfiguration); }
         }
 
         public Type AssetCacheValidatorType
