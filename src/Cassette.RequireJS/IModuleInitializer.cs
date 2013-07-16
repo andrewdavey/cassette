@@ -23,6 +23,8 @@ namespace Cassette.RequireJS
 
         string RequireJsScriptPath { get; }
 
+        RequireJSConfiguration RequireJsConfiguration { get; set; }
+
         /// <summary>
         /// Gets a module by it's path.
         /// </summary>

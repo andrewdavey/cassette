@@ -12,6 +12,7 @@ namespace Cassette.RequireJS
     {
         readonly IConfigurationScriptBuilder configurationScriptBuilder;
         readonly Dictionary<string, IAmdModule> modules = new Dictionary<string, IAmdModule>();
+        RequireJSConfiguration requireJsConfiguration = new RequireJSConfiguration();
 
         public ModuleInitializer(IConfigurationScriptBuilder configurationScriptBuilder)
         {
@@ -20,6 +21,18 @@ namespace Cassette.RequireJS
 
         public string MainBundlePath { get; private set; }
         public string RequireJsScriptPath { get; private set; }
+
+        public RequireJSConfiguration RequireJsConfiguration 
+        { 
+            get
+            {
+                return requireJsConfiguration;
+            }
+            set
+            {
+                requireJsConfiguration = value;
+            }
+        }
 
         public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath)
         {
@@ -106,7 +119,7 @@ namespace Cassette.RequireJS
 
         public void AddRequireJsConfigAssetToMainBundle(ScriptBundle bundle)
         {
-            bundle.Assets.Add(new RequireJsConfigAsset(modules.Values, configurationScriptBuilder));
+            bundle.Assets.Add(new RequireJsConfigAsset(modules.Values, requireJsConfiguration, configurationScriptBuilder));
         }
 
         public IEnumerator<IAmdModule> GetEnumerator()
@@ -118,5 +131,14 @@ namespace Cassette.RequireJS
         {
             return GetEnumerator();
         }
+    }
+
+    public class RequireJSConfiguration
+    {
+        public bool? CatchError { get; set; }
+        public string OnErrorModule { get; set; }
+        public bool? EnforceDefine { get; set; }
+        public object Config { get; set; }
+        public int? WaitSeconds { get; set; }
     }
 }

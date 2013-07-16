@@ -10,17 +10,8 @@ namespace Cassette.RequireJS
             var module = configuration[scriptPath];
             module.Alias = importAlias;
         }
-
-        public static void SetImportAlias(this IModuleInitializer configuration, string scriptPath, string importAlias, bool shim)
-        {
-            SetImportAlias(configuration, scriptPath, importAlias);
-            if (shim)
-            {
-                Shim(configuration, scriptPath);
-            }
-        }
-
-        public static void Shim(this IModuleInitializer configuration, string scriptPath, string exports = null)
+        
+        public static void Shim(this IModuleInitializer configuration, string scriptPath,string exports = null)
         {
             var plainScriptModule = configuration[scriptPath] as PlainScript;
             if (plainScriptModule != null)

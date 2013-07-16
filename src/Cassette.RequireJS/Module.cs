@@ -22,7 +22,7 @@ namespace Cassette.RequireJS
         public string ModulePath { get; set; }
         public string Alias { get; set; }
 
-        static string ConvertAssetPathToModulePath(string assetPath)
+        internal static string ConvertAssetPathToModulePath(string assetPath)
         {
             // "~/foo/bar.js" --> "foo/bar"
             var path = assetPath.TrimStart('~', '/');
