@@ -36,7 +36,7 @@ namespace Cassette.RequireJS
             var paths = modules.ToDictionary(m => m.ModulePath, CreateUrl);
             dynamic configurationObject = new ExpandoObject();
             configurationObject.paths = paths;
-            var shim = modules.OfType<PlainScript>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, CreateShimConfiguration);
+            var shim = modules.OfType<IAmdShimmableModule>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, CreateShimConfiguration);
             if (shim.Count > 0)
             {
                 configurationObject.shim = shim;
@@ -44,7 +44,7 @@ namespace Cassette.RequireJS
                 if (!this.isDebuggingEnabled)
                 {
                     //Needed to solve a load timeout issue "The paths config was used to set two module IDs to the same file, and that file only has one anonymous module in it"
-                    var globalMaps = modules.OfType<PlainScript>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, m => modules.FirstOrDefault(mod => mod.Bundle.Path == m.Bundle.Path).ModulePath);
+                    var globalMaps = modules.OfType<IAmdShimmableModule>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, m => modules.FirstOrDefault(mod => mod.Bundle.Path == m.Bundle.Path).ModulePath);
                     configurationObject.map = new Dictionary<string, dynamic> { { "*", globalMaps } };
                 }
             }
@@ -75,24 +75,13 @@ namespace Cassette.RequireJS
 
         object CreateUrl(IAmdModule amdModule)
         {
-            string path = this.isDebuggingEnabled
-                              ? this.urlGenerator.CreateAssetUrl(amdModule.Asset)
-                              : this.urlGenerator.CreateBundleUrl(amdModule.Bundle) + "?";
-
-            var externalBundle = amdModule.Bundle as IExternalBundle;
-            if (externalBundle != null)
-            {
-                var externalUrl = externalBundle.ExternalUrl;
-                if (externalUrl.EndsWith(".js"))
-                {
-                    externalUrl = externalUrl.Substring(0, externalUrl.Length - 3);
-                }
-                return new List<string> { externalUrl, path };
-            }
-            return path;
+            var urls = amdModule.GetUrls(urlGenerator, isDebuggingEnabled);
+            if (urls.Count == 1)
+                return urls[0];
+            return urls;
         }
 
-        object CreateShimConfiguration(PlainScript amdModule)
+        object CreateShimConfiguration(IAmdShimmableModule amdModule)
         {
             if (!string.IsNullOrEmpty(amdModule.ShimExports))
             {

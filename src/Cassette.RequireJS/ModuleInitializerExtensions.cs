@@ -13,7 +13,7 @@ namespace Cassette.RequireJS
         
         public static void Shim(this IModuleInitializer configuration, string scriptPath,string exports = null)
         {
-            var plainScriptModule = configuration[scriptPath] as PlainScript;
+            var plainScriptModule = configuration[scriptPath] as IAmdShimmableModule;
             if (plainScriptModule != null)
             {
                 plainScriptModule.Shim = true;
