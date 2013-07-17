@@ -34,9 +34,12 @@ namespace Cassette.RequireJS
             }
         }
 
-        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath)
+        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath, string baseUrl = null)
         {
+            RequireJsConfiguration.BaseUrl = baseUrl;
             RequireJsScriptPath = PathUtilities.AppRelative(requireJsScriptPath);
+
+
             modules.Clear();
 
             var scriptBundles = GetScriptBundles(bundles);
@@ -50,7 +53,7 @@ namespace Cassette.RequireJS
                     }
                     else
                     {
-                        modules[asset.Path] = GetModule(asset, bundle);
+                        modules[asset.Path] = GetModule(asset, bundle,baseUrl);
                     }
                 }
             }
@@ -70,14 +73,14 @@ namespace Cassette.RequireJS
                 .Where(b => !b.Path.StartsWith("~/Cassette."));
         }
 
-        Module GetModule(IAsset asset, Bundle bundle)
+        Module GetModule(IAsset asset, Bundle bundle, string baseUrl)
         {
             var moduleDefinitionParser = ParseJavaScriptForModuleDefinition(asset);
             if (moduleDefinitionParser.FoundModuleDefinition)
             {
                 if (moduleDefinitionParser.ModulePath == null)
                 {
-                    return new AnonymousModule(asset, bundle);
+                    return new AnonymousModule(asset, bundle,baseUrl);
                 }
                 else
                 {
@@ -86,7 +89,7 @@ namespace Cassette.RequireJS
             }
             else
             {
-                return new PlainScript(asset, bundle, this);
+                return new PlainScript(asset, bundle, this, baseUrl);
             }
         }
 
@@ -140,5 +143,7 @@ namespace Cassette.RequireJS
         public bool? EnforceDefine { get; set; }
         public object Config { get; set; }
         public int? WaitSeconds { get; set; }
+
+        internal string BaseUrl { get; set; }
     }
 }

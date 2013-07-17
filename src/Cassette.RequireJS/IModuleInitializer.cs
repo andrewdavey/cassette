@@ -13,7 +13,8 @@ namespace Cassette.RequireJS
         /// </summary>
         /// <param name="bundles">The bundles to create AMD modules from.</param>
         /// <param name="requireJsScriptPath">Application relative path to the require.js script.</param>
-        void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath);
+        /// <param name="baseUrl"></param>
+        void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath, string baseUrl);
 
         /// <summary>
         /// Gets the path of the bundle that contains require.js.

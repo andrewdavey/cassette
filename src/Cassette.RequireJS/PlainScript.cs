@@ -12,8 +12,8 @@ namespace Cassette.RequireJS
         readonly IModuleInitializer modules;
         readonly SimpleJsonSerializer jsonSerializer;
 
-        public PlainScript(IAsset asset, Bundle bundle, IModuleInitializer modules) 
-            : base(asset, bundle)
+        public PlainScript(IAsset asset, Bundle bundle, IModuleInitializer modules,string baseUrl = null)
+            : base(asset, bundle, baseUrl)
         {
             this.modules = modules;
             jsonSerializer = new SimpleJsonSerializer();

@@ -10,11 +10,12 @@ namespace Cassette.RequireJS
         public static void InitializeRequireJsModules(
             this BundleCollection bundles,
             string requireJsPath,
-            Action<IModuleInitializer> configuration = null
+            Action<IModuleInitializer> configuration = null,
+            string baseUrl = null
         )
         {
             var amd = CreateAmdConfiguration();
-            amd.InitializeModules(bundles, requireJsPath);
+            amd.InitializeModules(bundles, requireJsPath, baseUrl);
             if (configuration != null) configuration(amd);
 
             var mainBundle = bundles.Get<ScriptBundle>(amd.MainBundlePath);
