@@ -1,19 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using Cassette.Utilities;
 
 namespace Cassette.RequireJS
 {
     abstract class Module : IAmdModule
     {
-        protected Module(IAsset asset, Bundle bundle)
+        protected Module(IAsset asset, Bundle bundle, string baseUrl)
         {
             if (asset == null) throw new ArgumentNullException("asset");
             if (bundle == null) throw new ArgumentNullException("bundle");
 
             Asset = asset;
             Bundle = bundle;
-            ModulePath = ConvertAssetPathToModulePath(asset.Path);
+            ModulePath = ConvertAssetPathToModulePath(asset.Path, baseUrl);
             Alias = ConvertAssetPathToAlias(asset.Path);
         }
 
@@ -22,11 +23,17 @@ namespace Cassette.RequireJS
         public string ModulePath { get; set; }
         public string Alias { get; set; }
 
-        internal static string ConvertAssetPathToModulePath(string assetPath)
+        internal static string ConvertAssetPathToModulePath(string assetPath, string baseUrl)
         {
             // "~/foo/bar.js" --> "foo/bar"
             var path = assetPath.TrimStart('~', '/');
-            return RemoveFileExtension(path);
+            var modulePath  = RemoveFileExtension(path);
+
+            if (!String.IsNullOrEmpty(baseUrl) && modulePath.StartsWith(baseUrl))
+            {
+                return modulePath.Substring(baseUrl.Length + 1);
+            }
+            return modulePath;
         }
 
         static string RemoveFileExtension(string path)

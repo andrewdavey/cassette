@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 
@@ -25,7 +26,7 @@ namespace Cassette.RequireJS
 
             if (!string.IsNullOrEmpty(requireJsConfiguration.OnErrorModule))
             {
-                script += string.Format("require(['{0}'], function(handler) {{ console.log('error handler loaded'); require.onError = handler; }});", Module.ConvertAssetPathToModulePath(requireJsConfiguration.OnErrorModule));
+                script += string.Format("require(['{0}'], function(handler) {{ console.log('error handler loaded'); require.onError = handler; }});", requireJsConfiguration.OnErrorModule);
             }
             return script;
         }
@@ -46,6 +47,11 @@ namespace Cassette.RequireJS
                     var globalMaps = modules.OfType<PlainScript>().Where(m => m.Shim).ToDictionary(m => m.ModulePath, m => modules.FirstOrDefault(mod => mod.Bundle.Path == m.Bundle.Path).ModulePath);
                     configurationObject.map = new Dictionary<string, dynamic> { { "*", globalMaps } };
                 }
+            }
+
+            if (!String.IsNullOrEmpty(requireJsConfiguration.BaseUrl))
+            {
+                configurationObject.baseUrl = requireJsConfiguration.BaseUrl;
             }
 
             if (requireJsConfiguration.CatchError != null)
