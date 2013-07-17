@@ -1,4 +1,6 @@
-﻿namespace Cassette.RequireJS
+﻿using System.Collections.Generic;
+
+namespace Cassette.RequireJS
 {
     /// <summary>
     /// Provides information about an AMD module.
@@ -16,13 +18,17 @@
         string Alias { get; set; }
         
         /// <summary>
-        /// Gets the asset that defines this module.
+        /// Gets the asset path that defines this module.
         /// </summary>
-        IAsset Asset { get; }
+        string Path { get; }
 
+        IEnumerable<string> ReferencePaths { get;  }
+        
         /// <summary>
         /// Gets the bundle that contains this module's asset.
         /// </summary>
         Bundle Bundle { get; }
+
+        List<string> GetUrls(IUrlGenerator urlGenerator,bool isDebuggingEnabled);
     }
 }

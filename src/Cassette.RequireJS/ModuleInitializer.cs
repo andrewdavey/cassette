@@ -45,6 +45,15 @@ namespace Cassette.RequireJS
             var scriptBundles = GetScriptBundles(bundles);
             foreach (var bundle in scriptBundles)
             {
+                if (!bundle.Assets.Any())
+                {
+                    var externalScriptBundle = bundle as ExternalScriptBundle;
+                    if (externalScriptBundle != null)
+                    {
+                        modules[externalScriptBundle.Path] = new ExternalScriptModule(externalScriptBundle, this,baseUrl);
+                    }
+                }
+
                 foreach (var asset in bundle.Assets)
                 {
                     if (asset.Path.Equals(RequireJsScriptPath))
@@ -73,8 +82,9 @@ namespace Cassette.RequireJS
                 .Where(b => !b.Path.StartsWith("~/Cassette."));
         }
 
-        Module GetModule(IAsset asset, Bundle bundle, string baseUrl)
+        IAmdModule GetModule(IAsset asset, Bundle bundle, string baseUrl)
         {
+            
             var moduleDefinitionParser = ParseJavaScriptForModuleDefinition(asset);
             if (moduleDefinitionParser.FoundModuleDefinition)
             {

@@ -7,7 +7,7 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
 {
-    class PlainScript : Module, IAssetTransformer
+    class PlainScript : AssetModule, IAssetTransformer, IAmdShimmableModule
     {
         readonly IModuleInitializer modules;
         readonly SimpleJsonSerializer jsonSerializer;
@@ -55,12 +55,11 @@ namespace Cassette.RequireJS
             return ModuleWithoutReturn(source);
         }
 
-        internal IEnumerable<string> DependencyPaths
+        public IEnumerable<string> DependencyPaths
         {
             get
             {
-                return Asset.References
-                    .Select(r => r.ToPath)
+                return ReferencePaths
                     .Where(p => modules.RequireJsScriptPath != p)
                     .Select(p => modules[p].ModulePath);
             }
@@ -70,8 +69,7 @@ namespace Cassette.RequireJS
         {
             get 
             {
-                return Asset.References
-                    .Select(r => r.ToPath)
+                return ReferencePaths
                     .Where(p => modules.RequireJsScriptPath != p)
                     .Select(p => modules[p].Alias);
             }
