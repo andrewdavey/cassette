@@ -61,6 +61,7 @@ namespace Cassette.RequireJS
             {
                 return ReferencePaths
                     .Where(p => modules.RequireJsScriptPath != p)
+                    .Where(p => modules.Any(m=>m.Path == p))
                     .Select(p => modules[p].ModulePath);
             }
         }
@@ -71,6 +72,7 @@ namespace Cassette.RequireJS
             {
                 return ReferencePaths
                     .Where(p => modules.RequireJsScriptPath != p)
+                    .Where(p => modules.Any(m => m.Path == p))
                     .Select(p => modules[p].Alias);
             }
         }

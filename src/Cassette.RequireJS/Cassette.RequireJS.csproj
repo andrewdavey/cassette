@@ -77,6 +77,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="BundleScriptModule.cs" />
     <Compile Include="ExternalScriptModule.cs" />
     <Compile Include="IAmdShimmableModule.cs" />
     <Compile Include="RequireJsConfigAsset.cs" />

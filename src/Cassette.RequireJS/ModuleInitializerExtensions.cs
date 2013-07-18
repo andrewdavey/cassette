@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Cassette.Scripts;
 
 namespace Cassette.RequireJS
@@ -24,9 +25,16 @@ namespace Cassette.RequireJS
         public static void ShimBundle(this IModuleInitializer amd, BundleCollection bundles, string scriptPath)
         {
             var bundle = bundles.Get<ScriptBundle>(scriptPath);
-            foreach (var asset in bundle.Assets)
+            if (amd.Any(a => a.Path == scriptPath))
             {
-                amd.Shim(asset.Path);
+                amd.Shim(scriptPath);
+            }
+            else
+            {
+                foreach (var asset in bundle.Assets)
+                {
+                    amd.Shim(asset.Path);
+                }
             }
         }
 
