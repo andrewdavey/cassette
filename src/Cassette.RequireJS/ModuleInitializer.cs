@@ -34,7 +34,7 @@ namespace Cassette.RequireJS
             }
         }
 
-        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath, string baseUrl = null)
+        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath, string baseUrl = null, IEnumerable<string> bundleModulePaths = null)
         {
             RequireJsConfiguration.BaseUrl = baseUrl;
             RequireJsScriptPath = PathUtilities.AppRelative(requireJsScriptPath);
@@ -42,6 +42,7 @@ namespace Cassette.RequireJS
 
             modules.Clear();
 
+            var bundleModulePathsList = bundleModulePaths == null? new List<string>() : bundleModulePaths.ToList();
             var scriptBundles = GetScriptBundles(bundles);
             foreach (var bundle in scriptBundles)
             {
@@ -53,18 +54,26 @@ namespace Cassette.RequireJS
                         modules[externalScriptBundle.Path] = new ExternalScriptModule(externalScriptBundle, this,baseUrl);
                     }
                 }
-
-                foreach (var asset in bundle.Assets)
+                if (bundleModulePathsList.Contains(bundle.Path))
                 {
-                    if (asset.Path.Equals(RequireJsScriptPath))
+                    modules[bundle.Path] = new BundleScriptModule(bundle,this,baseUrl);
+                }
+                else
+                {
+                    foreach (var asset in bundle.Assets)
                     {
-                        MainBundlePath = bundle.Path;
-                    }
-                    else
-                    {
-                        modules[asset.Path] = GetModule(asset, bundle,baseUrl);
+                        if (asset.Path.Equals(RequireJsScriptPath))
+                        {
+                            MainBundlePath = bundle.Path;
+                        }
+                        else
+                        {
+                            modules[asset.Path] = GetModule(asset, bundle, baseUrl);
+                        }
                     }
                 }
+
+                
             }
 
             if (MainBundlePath == null)
