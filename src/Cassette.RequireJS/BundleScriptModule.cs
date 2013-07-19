@@ -30,7 +30,7 @@ namespace Cassette.RequireJS
 
         public List<string> GetUrls(IUrlGenerator urlGenerator, bool isDebuggingEnabled)
         {
-            return new List<string> { urlGenerator.CreateBundleUrl(this.Bundle) };
+            return new List<string> { urlGenerator.CreateBundleUrl(this.Bundle)  + "?"};
         }
 
         public bool Shim { get; set; }
