@@ -26,7 +26,7 @@ namespace Cassette.RequireJS
 
             if (!string.IsNullOrEmpty(requireJsConfiguration.OnErrorModule))
             {
-                script += string.Format("require(['{0}'], function(handler) {{ console.log('error handler loaded'); require.onError = handler; }});", requireJsConfiguration.OnErrorModule);
+                script += string.Format("require(['{0}'], function(handler) {{ require.onError = handler; }});", requireJsConfiguration.OnErrorModule);
             }
             return script;
         }
