@@ -2,10 +2,12 @@
 
 using System;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 
 namespace Cassette.Interop
 {
-    public sealed class ActiveScriptException : Exception
+    [Serializable]
+    public class ActiveScriptException : Exception
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActiveScriptException"/> class.
@@ -13,6 +15,11 @@ namespace Cassette.Interop
         /// <param name="message">The message.</param>
         ActiveScriptException(string message)
             : base(message)
+        {
+        }
+
+        protected ActiveScriptException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
 
