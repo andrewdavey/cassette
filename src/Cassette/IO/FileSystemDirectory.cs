@@ -70,7 +70,7 @@ namespace Cassette.IO
             Directory.Delete(fullSystemPath, true);
         }
 
-        string GetAbsolutePath(string filename)
+        public string GetAbsolutePath(string filename)
         {
             if (filename == "~")
             {

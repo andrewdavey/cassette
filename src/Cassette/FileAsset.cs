@@ -24,6 +24,8 @@ namespace Cassette
         readonly Lazy<byte[]> hash;
         readonly List<AssetReference> references = new List<AssetReference>();
 
+		public IFile File { get { return sourceFile; } }
+
         public override string Path
         {
             get { return sourceFile.FullPath; }

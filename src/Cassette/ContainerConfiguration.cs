@@ -8,7 +8,7 @@ using Cassette.TinyIoC;
 
 namespace Cassette
 {
-    abstract class ContainerConfiguration<T> : IConfiguration<TinyIoCContainer>
+	public abstract class ContainerConfiguration<T> : IConfiguration<TinyIoCContainer>
         where T : Bundle
     {
         readonly Func<Type, IEnumerable<Type>> getImplementationTypes;

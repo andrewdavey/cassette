@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,12 +47,15 @@
     <Compile Include="CompassBundle.cs" />
     <Compile Include="CompassBundleFactory.cs" />
     <Compile Include="CompassCompiler.cs" />
+    <Compile Include="CompassContainerConfiguration.cs" />
     <Compile Include="CompassException.cs" />
     <Compile Include="CompassProject.cs" />
     <Compile Include="CompassProjectParser.cs" />
     <Compile Include="CompassTimeoutException.cs" />
     <Compile Include="CompileCompass.cs" />
+    <Compile Include="ParseCompassReferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CompassPipeline.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassette\Cassette.csproj">
