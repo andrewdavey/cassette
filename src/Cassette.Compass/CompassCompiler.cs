@@ -44,11 +44,12 @@ namespace Cassette.Compass
 
 				if (process.ExitCode != 0)
 				{
-					var error = compassInfo.RedirectStandardError
-									? process.StandardError.ReadToEnd()
-									: string.Format("Process exited with code {0}.", process.ExitCode);
-					throw new CompassException(string.Format("Compass compilation of '{0}' failed. Output: \r\n{1}", projectDirectory,
-															error));
+					var stdOut = process.StandardOutput.ReadToEnd();
+					var stdErr = process.StandardError.ReadToEnd();
+
+					if(string.IsNullOrWhiteSpace(stdErr))
+					throw new CompassException(string.Format("Compass compilation of '{0}' failed. Output: \r\n {1}\r\n{2}", projectDirectory,
+															stdOut, stdErr));
 				}
 			}
 		}
