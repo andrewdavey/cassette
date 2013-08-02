@@ -63,7 +63,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Jurassic">
-      <HintPath>..\packages\Jurassic.2.1.1\lib\Jurassic.dll</HintPath>
+      <HintPath>$(SolutionDir)packages\Jurassic.2.1.1\lib\Jurassic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" Condition="'$(TargetFrameworkVersion)' == 'v4.0'" />
     <Reference Include="System" />

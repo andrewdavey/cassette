@@ -63,11 +63,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
-      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
-      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">..\packages\Moq.4.0.10827\lib\NET35\Moq.dll</HintPath>
+      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">$(SolutionDir)packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+      <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">$(SolutionDir)packages\Moq.4.0.10827\lib\NET35\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Should">
-      <HintPath>..\packages\Should.1.1.12.0\lib\Should.dll</HintPath>
+      <HintPath>$(SolutionDir)packages\Should.1.1.12.0\lib\Should.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -79,7 +79,7 @@
     <Reference Include="System.Web.Routing" />
     <Reference Include="xunit, Version=1.9.1.1600, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.dll</HintPath>
+      <HintPath>$(SolutionDir)packages\xunit.1.9.1\lib\net20\xunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

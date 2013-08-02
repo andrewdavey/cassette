@@ -47,7 +47,9 @@ namespace Cassette.Stylesheets
             {
                 compiler.Compile("#unclosed_rule {", compileContext);
             });
-            exception.Message.ShouldContain("Missing closing '}' on line 1 in file '~/test.less':");
+            exception.Message.ShouldContain("message: missing closing `}`");
+            exception.Message.ShouldContain("filename: ~/test.less");
+            exception.Message.ShouldContain("line: 1");
         }
 
         [Fact]
@@ -58,7 +60,9 @@ namespace Cassette.Stylesheets
             {
                 compiler.Compile(less, compileContext);
             });
-            exception.Message.ShouldContain("variable @baseline is undefined on line 2 in file '~/test.less':");
+            exception.Message.ShouldContain("message: variable @baseline is undefined");
+            exception.Message.ShouldContain("filename: ~/test.less");
+            exception.Message.ShouldContain("line: 2");
         }
 
         [Fact]
@@ -68,7 +72,9 @@ namespace Cassette.Stylesheets
             {
                 compiler.Compile("#fail { - }", compileContext);
             });
-            exception.Message.ShouldContain("Expected '}' but found ' ' on line 1 in file '~/test.less':");
+            exception.Message.ShouldContain("message: Unrecognised input");
+            exception.Message.ShouldContain("filename: ~/test.less");
+            exception.Message.ShouldContain("line: 1");
         }
 
         [Fact]
@@ -85,7 +91,7 @@ namespace Cassette.Stylesheets
                 "@import \"lib\";\nbody{ color: @color }",
                 compileContext
             );
-            css.Output.ShouldEqual("body {\n  color: white;\n}\n");
+            css.Output.ShouldEqual("body {\n  color: #ffffff;\n}\n");
         }
 
         [Fact]
@@ -103,7 +109,7 @@ namespace Cassette.Stylesheets
                 "@import \"../bundle-b/lib.less\";\nbody{ color: @color }",
                 compileContext
             );
-            css.Output.ShouldEqual("body {\n  color: red;\n}\n");
+            css.Output.ShouldEqual("body {\n  color: #ff0000;\n}\n");
         }
 
         [Fact]
@@ -124,7 +130,7 @@ namespace Cassette.Stylesheets
                 source,
                 compileContext
             );
-            css.Output.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: red;\n}\n");
+            css.Output.ShouldEqual("p {\n  height: 100px;\n}\nbody {\n  color: #ff0000;\n}\n");
         }
 
         [Fact]
@@ -203,7 +209,7 @@ namespace Cassette.Stylesheets
                 compileContext.SourceFilePath = "~/main.less";
                 var css = compiler.Compile(file.OpenRead().ReadToEnd(), compileContext);
 
-                css.Output.ShouldContain("color: red;");
+                css.Output.ShouldContain("color: #ff0000;");
             }
         }
 
