@@ -156,15 +156,32 @@ namespace Cassette.Stylesheets
             foreach (Match import in imports)
             {
                 var importFile = import.Groups["import"].Value;
+
+                var extension = Path.GetExtension(importFile);
+
+                if (string.IsNullOrEmpty(extension))
+                {
+                    importFile = importFile + ".less";
+                }
+                else
+                {
+                    continue;
+                }
+
                 var relImport = relPath + "/" + importFile;
                 
                 if (!importFilePaths.Contains(relImport))
                 {
                     importFilePaths.Add(relImport);
 
-                    var importSource = File.ReadAllText(relImport.Replace("~", tempPath).Replace('/', '\\'));
+                    var importFilePath = relImport.Replace("~", tempPath).Replace('/', '\\');
 
-                    ProcessImports(importFilePaths, importSource, tempPath, relImport);
+                    if (File.Exists(importFilePath))
+                    {
+                        var importSource = File.ReadAllText(importFilePath);
+
+                        ProcessImports(importFilePaths, importSource, tempPath, relImport);
+                    }
                 }
             }
         }
