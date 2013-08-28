@@ -17,7 +17,7 @@ namespace Cassette.Stylesheets
     {
         public CompileResult Compile(string source, CompileContext context)
         {
-            var tempPath = Path.Combine(Path.GetTempPath(), ".cassette.less");
+            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("D"));
 
             if (!Directory.Exists(tempPath))
             {
