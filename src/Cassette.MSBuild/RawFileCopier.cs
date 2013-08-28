@@ -46,7 +46,12 @@ namespace Cassette.MSBuild
         void CopyFile(string absoluteSourceFilename, string outputPath)
         {
             EnsureFilenameDirectoryExists(outputPath);
-            File.Copy(absoluteSourceFilename, outputPath);
+            // Ensure destination is not readonly
+            if (File.Exists(outputPath))
+            {
+                File.SetAttributes(outputPath, FileAttributes.Normal);
+            }
+            File.Copy(absoluteSourceFilename, outputPath, true);
         }
 
         string CreateOutputFilename(string sourceFilename)
