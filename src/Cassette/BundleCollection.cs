@@ -23,18 +23,18 @@ namespace Cassette
         readonly CassetteSettings settings;
         readonly IFileSearchProvider fileSearchProvider;
         readonly IBundleFactoryProvider bundleFactoryProvider; 
-		readonly IBundleCollectionInitializer bundleCollectionInitializer;
+        readonly IBundleCollectionInitializer bundleCollectionInitializer;
         readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
         Exception initializationException;
-	   
+       
 
-	    public BundleCollection(CassetteSettings settings, IFileSearchProvider fileSearchProvider, IBundleFactoryProvider bundleFactoryProvider, IBundleCollectionInitializer bundleCollectionInitializer)
+        public BundleCollection(CassetteSettings settings, IFileSearchProvider fileSearchProvider, IBundleFactoryProvider bundleFactoryProvider, IBundleCollectionInitializer bundleCollectionInitializer)
         {
-		    this.settings = settings;
+            this.settings = settings;
             this.fileSearchProvider = fileSearchProvider;
             this.bundleFactoryProvider = bundleFactoryProvider;
-			this.bundleCollectionInitializer = bundleCollectionInitializer;
+            this.bundleCollectionInitializer = bundleCollectionInitializer;
         }
 
         public event EventHandler<BundleCollectionChangedEventArgs> Changed = delegate { };
@@ -66,18 +66,18 @@ namespace Cassette
             {
                 readerWriterLock.ExitReadLock();
 
-				// we attempt to re-initialize the bundle collection if the original init failed
-				// this prevents unintentional "caching" of compiler errors for things like Less or Compass until the AppDomain recycles
-	            lock (bundleCollectionInitializer)
-	            {
-		            bundleCollectionInitializer.Initialize(this);
-	            }
+                // we attempt to re-initialize the bundle collection if the original init failed
+                // this prevents unintentional "caching" of compiler errors for things like Less or Compass until the AppDomain recycles
+                lock (bundleCollectionInitializer)
+                {
+                    bundleCollectionInitializer.Initialize(this);
+                }
 
-	            if(InitializationException != null)
-					throw new Exception("Bundle collection rebuild failed. See inner exception for details.", InitializationException);
+                if(InitializationException != null)
+                    throw new Exception("Bundle collection rebuild failed. See inner exception for details.", InitializationException);
 
-				// if we fixed the build error we need that lock back!
-				readerWriterLock.EnterReadLock();
+                // if we fixed the build error we need that lock back!
+                readerWriterLock.EnterReadLock();
             }
 
             return new DelegatingDisposable(() => readerWriterLock.ExitReadLock());
