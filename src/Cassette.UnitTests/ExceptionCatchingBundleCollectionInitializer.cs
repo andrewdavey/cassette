@@ -13,7 +13,7 @@ namespace Cassette
 
         public ExceptionCatchingBundleCollectionInitializer_WhereInitializerImplementationDoesNotThrowException()
         {
-            bundleCollection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            bundleCollection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
 
             initializerThatThrows = new Mock<IBundleCollectionInitializer>();
 
@@ -46,7 +46,7 @@ namespace Cassette
 
         public ExceptionCatchingBundleCollectionInitializer_WhereInitializerImplementationThrowsException()
         {
-            bundleCollection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            bundleCollection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
             bundleCollection.Add(new TestableBundle("~")); // Add a bundle so we can check the collection gets cleared.
 
             initializerThatThrows = new Mock<IBundleCollectionInitializer>();

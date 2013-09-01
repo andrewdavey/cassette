@@ -182,7 +182,7 @@ namespace Cassette
 
         BundleCollection CreateBundleCollection(IEnumerable<Bundle> bundles)
         {
-            var collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            var collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
             foreach (var bundle in bundles)
             {
                 collection.Add(bundle);

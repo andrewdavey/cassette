@@ -10,7 +10,7 @@ namespace Cassette
 
         public BundleCollection_BuildReferences()
         {
-            var bundleCollection = collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            var bundleCollection = collection = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
         }
 
         [Fact]

@@ -22,7 +22,7 @@ namespace Cassette.Caching
             path = new TempDirectory();
             directory = new FileSystemDirectory(path);
 
-            var bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            var bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
             scriptBundle = new Mock<ScriptBundle>("~/test1");
             scriptBundle.CallBase = true;
             scriptBundle.Object.Hash = new byte[] { 1, 2, 3 };

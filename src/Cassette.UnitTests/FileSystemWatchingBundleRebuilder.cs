@@ -27,7 +27,7 @@ namespace Cassette
                 CacheDirectory = new FileSystemDirectory(Path.Combine(tempDirectory, "cache")),
                 IsFileSystemWatchingEnabled = true
             };
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
             bundleConfiguration = new Mock<IConfiguration<BundleCollection>>();
 
             var bundle = new TestableBundle("~");

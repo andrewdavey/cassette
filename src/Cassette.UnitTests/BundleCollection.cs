@@ -10,7 +10,7 @@ namespace Cassette
 {
     public class BundleCollection_Tests
     {
-        readonly BundleCollection bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+        readonly BundleCollection bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
 
         [Fact]
         public void GivenBundleAdded_WhenGetByAppRelativePath_ThenBundleReturned()

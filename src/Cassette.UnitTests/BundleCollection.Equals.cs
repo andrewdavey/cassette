@@ -62,7 +62,7 @@ namespace Cassette
 
         BundleCollection EmptyBundleCollection()
         {
-            return new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            return new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
         }
     }
 }

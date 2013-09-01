@@ -48,7 +48,7 @@ namespace Cassette
                 .Setup(p => p.GetFileSearch(It.IsAny<Type>()))
                 .Returns(fileSearch.Object);
 
-            bundles = new BundleCollection(settings, fileSearchProvider.Object, bundleFactoryProvider.Object);
+            bundles = new BundleCollection(settings, fileSearchProvider.Object, bundleFactoryProvider.Object, Mock.Of<IBundleCollectionInitializer>());
         }
 
         public void Dispose()

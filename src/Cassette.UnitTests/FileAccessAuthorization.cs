@@ -15,7 +15,7 @@ namespace Cassette
         {
             configuration = new Mock<IConfiguration<IFileAccessAuthorization>>();
             var configurations = new[] { configuration.Object };
-            bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            bundles = new BundleCollection(new CassetteSettings(), Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
 
             authorization = new FileAccessAuthorization(configurations, bundles);
         }
