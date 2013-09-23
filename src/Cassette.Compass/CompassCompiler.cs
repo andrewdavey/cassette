@@ -57,7 +57,7 @@ namespace Cassette.Compass
 
                     if (!string.IsNullOrWhiteSpace(stdErr))
                     {
-                        error.AppendFormat("StdErr: {0}\r\n", stdOut);
+                        error.AppendFormat("StdErr: {0}\r\n", stdErr);
                     }
                         
                     error.AppendFormat("Process exited with code {0}.", process.ExitCode);
