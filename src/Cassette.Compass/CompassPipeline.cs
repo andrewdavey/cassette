@@ -11,12 +11,12 @@ namespace Cassette.Compass
     {
         public CompassPipeline(TinyIoCContainer container, CassetteSettings settings) : base(container)
         {
-			AddRange(new IBundleProcessor<CompassBundle>[]
+            AddRange(new IBundleProcessor<CompassBundle>[]
             {
                 container.Resolve<AssignStylesheetRenderer>(),
                 new ParseCssReferences(), 
-				new ParseCompassReferences(), 
-				new CompileCompass(new CompassCompiler(GetRubyPath(settings)), settings), 
+                new ParseCompassReferences(), 
+                new CompileCompass(new CompassCompiler(GetRubyPath(settings)), settings), 
                 container.Resolve<ExpandCssUrls>(),
                 new SortAssetsByDependency(),
                 new AssignHash()
@@ -30,25 +30,25 @@ namespace Cassette.Compass
             }
         }
 
-		string GetRubyPath(CassetteSettings settings)
-		{
-			var settingValue = ConfigurationManager.AppSettings["RubyBinPath"];
+        string GetRubyPath(CassetteSettings settings)
+        {
+            var settingValue = ConfigurationManager.AppSettings["RubyBinPath"];
 
-			if(string.IsNullOrWhiteSpace(settingValue)) throw new InvalidOperationException("The RubyBinPath appSetting was not defined. Point it to a path that contains ruby.exe and compass.");
+            if(string.IsNullOrWhiteSpace(settingValue)) throw new InvalidOperationException("The RubyBinPath appSetting was not defined. Point it to a path that contains ruby.exe and compass.");
 
-			// app-relative path to ruby
-			if (settingValue.StartsWith("/") || settingValue.StartsWith("~"))
-			{
-				var rootDirectory = settings.SourceDirectory as FileSystemDirectory;
+            // app-relative path to ruby
+            if (settingValue.StartsWith("/") || settingValue.StartsWith("~"))
+            {
+                var rootDirectory = settings.SourceDirectory as FileSystemDirectory;
 
-				if (rootDirectory == null)
-					throw new InvalidOperationException("Can't use Compass with a non-physical root directory");
+                if (rootDirectory == null)
+                    throw new InvalidOperationException("Can't use Compass with a non-physical root directory");
 
-				return rootDirectory.GetAbsolutePath(settingValue);
-			}
-			
-			// assuming absolute path to ruby
-			return settingValue;
-		}
+                return rootDirectory.GetAbsolutePath(settingValue);
+            }
+            
+            // assuming absolute path to ruby
+            return settingValue;
+        }
     }
 }
