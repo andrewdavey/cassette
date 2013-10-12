@@ -7,7 +7,11 @@ namespace Cassette.Stylesheets
     {
         public void Configure(TinyIoCContainer container)
         {
-            container.Register<ILessCompiler, LessCompiler>().AsMultiInstance();
+            // Explicitly call the default LessCompiler constructor.
+            // Otherwise TinyIoC will try to use the overload that requires a configuration object.
+            // That then causes a stackoverflow.
+            container
+                .Register<ILessCompiler>((c, n) => new LessCompiler());
         }
     }
 }
