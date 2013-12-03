@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Cassette.IO;
 using Cassette.Utilities;
+using dotless.Core.configuration;
 using Trace = Cassette.Diagnostics.Trace;
 using dotless.Core;
 using dotless.Core.Importers;
@@ -19,6 +20,17 @@ namespace Cassette.Stylesheets
     public class LessCompiler : ILessCompiler
     {
         HashedSet<string> importedFilePaths;
+        readonly DotlessConfiguration configuration;
+
+        public LessCompiler()
+            : this(new DotlessConfiguration())
+        {
+        }
+
+        public LessCompiler(DotlessConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
 
         public CompileResult Compile(string source, CompileContext context)
         {
@@ -29,7 +41,14 @@ namespace Cassette.Stylesheets
                 Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory, importedFilePaths))
             };
             var errorLogger = new ErrorLogger();
-            var engine = new LessEngine(parser, errorLogger, false, false);
+            var engine = new LessEngine(
+                                    parser,
+                                    errorLogger,
+                                    configuration.MinifyOutput,
+                                    configuration.Debug,
+                                    configuration.DisableVariableRedefines,
+                                    configuration.KeepFirstSpecialComment,
+                                    configuration.Plugins);
 
             string css;
             try

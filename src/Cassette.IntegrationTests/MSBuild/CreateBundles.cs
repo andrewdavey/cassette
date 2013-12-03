@@ -97,14 +97,7 @@ namespace Cassette.MSBuild
                 AppVirtualPath = "/app/",
                 BuildEngine = buildEngine
             };
-            try
-            {
-                task.Execute();
-            }
-            catch (Exception exception)
-            {
-                var t = exception.ToString();
-            }
+            task.Execute();
         }
 
         [Fact]
@@ -169,6 +162,7 @@ namespace Cassette.MSBuild
                 File.Copy(parentAssembly, Path.Combine(directory, Path.GetFileName(parentAssembly)));
                 File.Copy("Cassette.dll", Path.Combine(directory, "Cassette.dll"));
                 File.Copy("AjaxMin.dll", Path.Combine(directory, "AjaxMin.dll"));
+                File.Copy("dotLess.ClientOnly.dll", Path.Combine(directory, "dotLess.ClientOnly.dll"));
 #if NET35
                 File.Copy("Iesi.Collections.dll", Path.Combine(directory, "Iesi.Collections.dll"));
                 File.Copy("Jurassic.dll", Path.Combine(directory, "Jurassic.dll"));
