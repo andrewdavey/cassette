@@ -21,17 +21,14 @@ namespace Cassette
             {
                 if (!path.IsUrl())
                 {
-                    throw new ArgumentException("Referenced path must be a URL.", "path");
+                    throw new ArgumentException(string.Format("Referenced path must be a URL.Path: {0}", path), "path");
                 }
             }
             else
             {
                 if (!path.StartsWith("~"))
                 {
-                    throw new ArgumentException(
-                        "Referenced path must be application relative and start with a \"~\".",
-                        "path"
-                    );
+                    throw new ArgumentException(string.Format("Referenced path must be application relative and start with a \"~\". Path: {0}", path), "path");
                 }
             }
         }

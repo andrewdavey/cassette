@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text.RegularExpressions;
 using Cassette.IO;
 using Cassette.Utilities;
+using dotless.Core.configuration;
 using Trace = Cassette.Diagnostics.Trace;
+using dotless.Core;
+using dotless.Core.Importers;
+using dotless.Core.Input;
+using dotless.Core.Loggers;
+using dotless.Core.Parser;
 
 #if NET35
 using Iesi.Collections.Generic;
@@ -15,173 +19,182 @@ namespace Cassette.Stylesheets
 {
     public class LessCompiler : ILessCompiler
     {
+        HashedSet<string> importedFilePaths;
+        readonly DotlessConfiguration configuration;
+
+        public LessCompiler()
+            : this(new DotlessConfiguration())
+        {
+        }
+
+        public LessCompiler(DotlessConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         public CompileResult Compile(string source, CompileContext context)
         {
-            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("D"));
-
-            if (!Directory.Exists(tempPath))
+            var sourceFile = context.RootDirectory.GetFile(context.SourceFilePath);
+            importedFilePaths = new HashedSet<string>();
+            var parser = new Parser
             {
-                Directory.CreateDirectory(tempPath);
-            }
-
-            foreach (var file in context.RootDirectory.GetFiles("*.*", SearchOption.AllDirectories))
-            {
-                var fileName = Path.GetFileName(file.FullPath.Replace("/", "\\"));
-
-                if (!fileName.EndsWith(".less"))
-                {
-                    continue;
-                }
-
-                var fileDirectory = Path.GetDirectoryName(file.FullPath.Replace("/", "\\")).Replace("~", tempPath);
-
-                var tempFile = Path.Combine(fileDirectory, fileName);
-
-                if (!Directory.Exists(fileDirectory))
-                {
-                    Directory.CreateDirectory(fileDirectory);
-                }
-
-                using (var s = file.OpenRead())
-                {
-                    File.WriteAllText(tempFile, s.ReadToEnd());
-                }
-            }
-
-            var input = context.SourceFilePath.Replace("~", tempPath).Replace("/", "\\"); //  Path.Combine(tempPath, "input.less");
-            if (!input.StartsWith(tempPath))
-            {
-                input = Path.Combine(tempPath, input);
-            }
-
-            var output = Path.Combine(tempPath, "output.less");
-
-            var lessjs = Path.Combine(tempPath, "less-1.4.1.min.js");
-            var es5shim = Path.Combine(tempPath, "es5-shim.min.js");
-            var lessc = Path.Combine(tempPath, "lessc.wsf");
-
-            File.WriteAllText(input, source);
-
-            IList<string> importedFilePaths = new List<string>();
-
-            ProcessImports(importedFilePaths, source, tempPath, context.SourceFilePath);
-
-            File.WriteAllText(lessjs, Resource1.less_1_4_1_min);
-            File.WriteAllText(es5shim, Resource1.es5_shim_min);
-            File.WriteAllText(lessc, Resource1.lessc);
-
-            var start = new ProcessStartInfo(@"cscript")
-            {
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                Arguments = "//nologo //s \"" + lessc + "\" \"" + input + "\" \"" + output + "\"",
-                UseShellExecute = false,
-                RedirectStandardError = true,
-                WorkingDirectory = tempPath
+                Importer = new Importer(new CassetteLessFileReader(sourceFile.Directory, importedFilePaths))
             };
+            var errorLogger = new ErrorLogger();
+            var engine = new LessEngine(
+                                    parser,
+                                    errorLogger,
+                                    configuration.MinifyOutput,
+                                    configuration.Debug,
+                                    configuration.DisableVariableRedefines,
+                                    configuration.DisableColorCompression,
+                                    configuration.KeepFirstSpecialComment,
+                                    configuration.Plugins);
 
-            var p = new Process
-            {
-                StartInfo = start, 
-                EnableRaisingEvents = true
-            };
-
-            p.Start();
-            
-            p.WaitForExit(10000);
-            
-            var isSuccess = false;
-            var result = string.Empty;
-            var error = string.Empty;
-
+            string css;
             try
             {
-                if (File.Exists(output))
-                {
-                    if (p.ExitCode == 0)
-                    {
-                        isSuccess = true;
-                        result = File.ReadAllText(output);
-                    }
-                    else
-                    {
-                        error = p.StandardError.ReadToEnd();
-                    }
-
-                    File.Delete(output);
-                }
-                else
-                {
-                    error = p.StandardError.ReadToEnd();
-                }
+                css = engine.TransformToCss(source, sourceFile.FullPath);
             }
-            finally
+            catch (Exception ex)
             {
-                Directory.Delete(tempPath, true);
+                throw new LessCompileException(
+                    string.Format("Error compiling {0}{1}{2}", context.SourceFilePath, Environment.NewLine, ex.Message),
+                    ex
+                );
             }
 
-            if (!isSuccess)
+            if (errorLogger.HasErrors)
             {
-                tempPath = char.ToLowerInvariant(tempPath[0]) + tempPath.Substring(1);
-
                 var exceptionMessage = string.Format(
                     "Error compiling {0}{1}{2}",
                     context.SourceFilePath,
                     Environment.NewLine,
-                    error.Replace(tempPath.Replace('\\', '/'), "~")
+                    errorLogger.ErrorMessage
                 );
-
-                Trace.Source.TraceInformation(error);
-
                 throw new LessCompileException(exceptionMessage);
             }
             else
             {
-                return new CompileResult(result, importedFilePaths);
+                return new CompileResult(css, importedFilePaths);
             }
         }
 
-        private static readonly Regex ImportRegex = new Regex(@"@import\s+""(?<import>[\w\.\-_]+)""", RegexOptions.Multiline);
-
-        void ProcessImports(IList<string> importFilePaths, string source, string tempPath, string inputFile)
+        class ErrorLogger : ILogger
         {
-            if (!inputFile.StartsWith("~/"))
+            readonly List<string> errors;
+
+            public ErrorLogger()
             {
-                inputFile = "~/" + inputFile;
+                errors = new List<string>();
             }
 
-            var imports = ImportRegex.Matches(source);
-            var relPath = Path.GetDirectoryName(inputFile).Replace('\\', '/');
-
-            foreach (Match import in imports)
+            public bool HasErrors
             {
-                var importFile = import.Groups["import"].Value;
+                get { return errors.Count > 0; }
+            }
 
-                var extension = Path.GetExtension(importFile);
+            public string ErrorMessage
+            {
+                get { return string.Join(Environment.NewLine, errors.ToArray()).Trim(); }
+            }
 
-                if (string.IsNullOrEmpty(extension))
+            public void Log(LogLevel level, string message)
+            {
+                switch (level)
                 {
-                    importFile = importFile + ".less";
+                    case LogLevel.Info: Info(message); break;
+                    case LogLevel.Debug: Debug(message); break;
+                    case LogLevel.Warn: Warn(message); break;
+                    case LogLevel.Error: Error(message); break;
                 }
-                else
+            }
+
+            public void Error(string message)
+            {
+                errors.Add(message);
+                Trace.Source.TraceInformation(message);
+            }
+
+            public void Error(string message, params object[] args)
+            {
+                errors.Add(string.Format(message, args));
+                Trace.Source.TraceInformation(message, args);
+            }
+
+            public void Info(string message)
+            {
+                Trace.Source.TraceInformation(message);
+            }
+
+            public void Info(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
+            }
+
+            public void Debug(string message)
+            {
+                Trace.Source.TraceInformation(message);
+            }
+
+            public void Debug(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
+            }
+
+            public void Warn(string message)
+            {
+                Trace.Source.TraceInformation(message);
+            }
+
+            public void Warn(string message, params object[] args)
+            {
+                Trace.Source.TraceInformation(message, args);
+            }
+        }
+
+        class CassetteLessFileReader : IFileReader
+        {
+            readonly IDirectory directory;
+            readonly HashedSet<string> importFilePaths;
+
+            public CassetteLessFileReader(IDirectory directory, HashedSet<string> importFilePaths)
+            {
+                this.directory = directory;
+                this.importFilePaths = importFilePaths;
+            }
+
+            public byte[] GetBinaryFileContents(string fileName)
+            {
+                var file = directory.GetFile(fileName);
+                importFilePaths.Add(file.FullPath);
+                using (var buffer = new MemoryStream())
                 {
-                    continue;
-                }
-
-                var relImport = relPath + "/" + importFile;
-                
-                if (!importFilePaths.Contains(relImport))
-                {
-                    importFilePaths.Add(relImport);
-
-                    var importFilePath = relImport.Replace("~", tempPath).Replace('/', '\\');
-
-                    if (File.Exists(importFilePath))
+                    using (var fileStream = file.OpenRead())
                     {
-                        var importSource = File.ReadAllText(importFilePath);
-
-                        ProcessImports(importFilePaths, importSource, tempPath, relImport);
+                        fileStream.CopyTo(buffer);
                     }
+                    return buffer.ToArray();
+                }
+            }
+
+            public string GetFileContents(string fileName)
+            {
+                var file = directory.GetFile(fileName);
+                importFilePaths.Add(file.FullPath);
+                return file.OpenRead().ReadToEnd();
+            }
+
+            public bool DoesFileExist(string fileName)
+            {
+                return directory.GetFile(fileName).Exists;
+            }
+
+            public bool UseCacheDependencies
+            {
+                get
+                {
+                    return true;
                 }
             }
         }
