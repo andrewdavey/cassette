@@ -5,10 +5,10 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
 {
-    class AnonymousModule : Module, IAssetTransformer
+    class AnonymousModule : AssetModule, IAssetTransformer
     {
-        public AnonymousModule(IAsset asset, Bundle bundle) 
-            : base(asset, bundle)
+        public AnonymousModule(IAsset asset, Bundle bundle,string baseUrl = null)
+            : base(asset, bundle, baseUrl)
         {
             asset.AddAssetTransformer(this);
         }

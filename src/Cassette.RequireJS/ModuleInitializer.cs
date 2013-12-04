@@ -12,6 +12,7 @@ namespace Cassette.RequireJS
     {
         readonly IConfigurationScriptBuilder configurationScriptBuilder;
         readonly Dictionary<string, IAmdModule> modules = new Dictionary<string, IAmdModule>();
+        RequireJSConfiguration requireJsConfiguration = new RequireJSConfiguration();
 
         public ModuleInitializer(IConfigurationScriptBuilder configurationScriptBuilder)
         {
@@ -21,25 +22,58 @@ namespace Cassette.RequireJS
         public string MainBundlePath { get; private set; }
         public string RequireJsScriptPath { get; private set; }
 
-        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath)
+        public RequireJSConfiguration RequireJsConfiguration 
+        { 
+            get
+            {
+                return requireJsConfiguration;
+            }
+            set
+            {
+                requireJsConfiguration = value;
+            }
+        }
+
+        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath, string baseUrl = null, IEnumerable<string> bundleModulePaths = null)
         {
+            RequireJsConfiguration.BaseUrl = baseUrl;
             RequireJsScriptPath = PathUtilities.AppRelative(requireJsScriptPath);
+
+
             modules.Clear();
 
+            var bundleModulePathsList = bundleModulePaths == null? new List<string>() : bundleModulePaths.ToList();
             var scriptBundles = GetScriptBundles(bundles);
             foreach (var bundle in scriptBundles)
             {
-                foreach (var asset in bundle.Assets)
+                if (!bundle.Assets.Any())
                 {
-                    if (asset.Path.Equals(RequireJsScriptPath))
+                    var externalScriptBundle = bundle as ExternalScriptBundle;
+                    if (externalScriptBundle != null)
                     {
-                        MainBundlePath = bundle.Path;
-                    }
-                    else
-                    {
-                        modules[asset.Path] = GetModule(asset, bundle);
+                        modules[externalScriptBundle.Path] = new ExternalScriptModule(externalScriptBundle, this,baseUrl);
                     }
                 }
+                if (bundleModulePathsList.Contains(bundle.Path))
+                {
+                    modules[bundle.Path] = new BundleScriptModule(bundle,this,baseUrl);
+                }
+                else
+                {
+                    foreach (var asset in bundle.Assets)
+                    {
+                        if (asset.Path.Equals(RequireJsScriptPath))
+                        {
+                            MainBundlePath = bundle.Path;
+                        }
+                        else
+                        {
+                            modules[asset.Path] = GetModule(asset, bundle, baseUrl);
+                        }
+                    }
+                }
+
+                
             }
 
             if (MainBundlePath == null)
@@ -57,14 +91,15 @@ namespace Cassette.RequireJS
                 .Where(b => !b.Path.StartsWith("~/Cassette."));
         }
 
-        Module GetModule(IAsset asset, Bundle bundle)
+        IAmdModule GetModule(IAsset asset, Bundle bundle, string baseUrl)
         {
+            
             var moduleDefinitionParser = ParseJavaScriptForModuleDefinition(asset);
             if (moduleDefinitionParser.FoundModuleDefinition)
             {
                 if (moduleDefinitionParser.ModulePath == null)
                 {
-                    return new AnonymousModule(asset, bundle);
+                    return new AnonymousModule(asset, bundle,baseUrl);
                 }
                 else
                 {
@@ -73,7 +108,7 @@ namespace Cassette.RequireJS
             }
             else
             {
-                return new PlainScript(asset, bundle, this);
+                return new PlainScript(asset, bundle, this, baseUrl);
             }
         }
 
@@ -106,7 +141,7 @@ namespace Cassette.RequireJS
 
         public void AddRequireJsConfigAssetToMainBundle(ScriptBundle bundle)
         {
-            bundle.Assets.Add(new RequireJsConfigAsset(modules.Values, configurationScriptBuilder));
+            bundle.Assets.Add(new RequireJsConfigAsset(modules.Values, requireJsConfiguration, configurationScriptBuilder));
         }
 
         public IEnumerator<IAmdModule> GetEnumerator()
@@ -118,5 +153,16 @@ namespace Cassette.RequireJS
         {
             return GetEnumerator();
         }
+    }
+
+    public class RequireJSConfiguration
+    {
+        public bool? CatchError { get; set; }
+        public string OnErrorModule { get; set; }
+        public bool? EnforceDefine { get; set; }
+        public object Config { get; set; }
+        public int? WaitSeconds { get; set; }
+
+        internal string BaseUrl { get; set; }
     }
 }

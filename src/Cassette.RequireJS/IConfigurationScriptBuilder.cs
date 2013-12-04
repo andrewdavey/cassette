@@ -4,6 +4,6 @@ namespace Cassette.RequireJS
 {
     public interface IConfigurationScriptBuilder
     {
-        string BuildConfigurationScript(IEnumerable<IAmdModule> modules);
+        string BuildConfigurationScript(IEnumerable<IAmdModule> modules, RequireJSConfiguration requireJsConfiguration);
     }
 }

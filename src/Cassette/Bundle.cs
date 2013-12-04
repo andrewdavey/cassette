@@ -123,6 +123,11 @@ namespace Cassette
 
         internal bool IsSorted { get; set; }
 
+        protected virtual string ConcatenateAssetsDefaultSeparator
+        {
+            get { return Environment.NewLine; }
+        }
+
         /// <summary>
         /// Opens a readable stream of the contained assets content.
         /// </summary>
@@ -130,6 +135,10 @@ namespace Cassette
         public Stream OpenStream()
         {
             if (assets.Count == 0) return Stream.Null;
+            if (assets.Count > 1)
+            {
+                return new ConcatenatedAsset(path, assets, ConcatenateAssetsDefaultSeparator).OpenStream();
+            }
             return assets[0].OpenStream();
         }
 

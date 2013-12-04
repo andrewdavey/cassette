@@ -7,13 +7,13 @@ using Microsoft.Ajax.Utilities;
 
 namespace Cassette.RequireJS
 {
-    class PlainScript : Module, IAssetTransformer
+    class PlainScript : AssetModule, IAssetTransformer, IAmdShimmableModule
     {
         readonly IModuleInitializer modules;
         readonly SimpleJsonSerializer jsonSerializer;
 
-        public PlainScript(IAsset asset, Bundle bundle, IModuleInitializer modules) 
-            : base(asset, bundle)
+        public PlainScript(IAsset asset, Bundle bundle, IModuleInitializer modules,string baseUrl = null)
+            : base(asset, bundle, baseUrl)
         {
             this.modules = modules;
             jsonSerializer = new SimpleJsonSerializer();
@@ -22,14 +22,22 @@ namespace Cassette.RequireJS
 
         public string ModuleReturnExpression { get; set; }
 
+        public bool Shim { get; set; }
+
+        public string ShimExports { get; set; }
+
         public Func<Stream> Transform(Func<Stream> openSourceStream, IAsset asset)
         {
-            return () =>
+            if (!this.Shim)
             {
-                var source = openSourceStream().ReadToEnd();
-                var output = Transform(source);
-                return output.AsStream();
-            };
+                return () =>
+                {
+                    var source = openSourceStream().ReadToEnd();
+                    var output = Transform(source);
+                    return output.AsStream();
+                };
+            }
+            return openSourceStream;
         }
 
         string Transform(string source)
@@ -47,24 +55,24 @@ namespace Cassette.RequireJS
             return ModuleWithoutReturn(source);
         }
 
-        IEnumerable<string> DependencyPaths
+        public IEnumerable<string> DependencyPaths
         {
             get
             {
-                return Asset.References
-                    .Select(r => r.ToPath)
+                return ReferencePaths
                     .Where(p => modules.RequireJsScriptPath != p)
+                    .Where(p => modules.Any(m=>m.Path == p))
                     .Select(p => modules[p].ModulePath);
             }
         }
 
-        IEnumerable<string> DependencyAliases
+        internal IEnumerable<string> DependencyAliases
         {
             get 
             {
-                return Asset.References
-                    .Select(r => r.ToPath)
+                return ReferencePaths
                     .Where(p => modules.RequireJsScriptPath != p)
+                    .Where(p => modules.Any(m => m.Path == p))
                     .Select(p => modules[p].Alias);
             }
         }

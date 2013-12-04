@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cassette.Scripts;
 
 namespace Cassette.RequireJS
@@ -10,11 +11,13 @@ namespace Cassette.RequireJS
         public static void InitializeRequireJsModules(
             this BundleCollection bundles,
             string requireJsPath,
-            Action<IModuleInitializer> configuration = null
+            Action<IModuleInitializer> configuration = null,
+            string baseUrl = null,
+            IEnumerable<string> bundleModulePaths = null 
         )
         {
             var amd = CreateAmdConfiguration();
-            amd.InitializeModules(bundles, requireJsPath);
+            amd.InitializeModules(bundles, requireJsPath, baseUrl, bundleModulePaths);
             if (configuration != null) configuration(amd);
 
             var mainBundle = bundles.Get<ScriptBundle>(amd.MainBundlePath);

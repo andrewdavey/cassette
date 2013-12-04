@@ -68,6 +68,7 @@
       <HintPath Condition="'$(TargetFrameworkVersion)' == 'v3.5'">$(SolutionDir)packages\AjaxMin.4.84.4790.14417\lib\net35\AjaxMin.dll</HintPath>
       <HintPath Condition="'$(TargetFrameworkVersion)' == 'v4.0'">$(SolutionDir)packages\AjaxMin.4.84.4790.14417\lib\net40\AjaxMin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -76,6 +77,9 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="BundleScriptModule.cs" />
+    <Compile Include="ExternalScriptModule.cs" />
+    <Compile Include="IAmdShimmableModule.cs" />
     <Compile Include="RequireJsConfigAsset.cs" />
     <Compile Include="AlwaysValidAssetCacheValidator.cs" />
     <Compile Include="ModuleInitializer.cs" />
@@ -85,7 +89,7 @@
     <Compile Include="ConfigurationScriptBuilder.cs" />
     <Compile Include="IAmdModule.cs" />
     <Compile Include="IModuleInitializer.cs" />
-    <Compile Include="Module.cs" />
+    <Compile Include="AssetModule.cs" />
     <Compile Include="ModuleDefinitionParser.cs" />
     <Compile Include="NamedModule.cs" />
     <Compile Include="PlainScript.cs" />
