@@ -79,6 +79,7 @@
     <Compile Include="DiagnosticBundleConfiguration.cs" />
     <Compile Include="CassetteHttpHandler.cs" />
     <Compile Include="HttpContextLifetimeProvider.cs" />
+    <Compile Include="HttpResponseUtil.cs" />
     <Compile Include="ICassetteRequestHandler.cs" />
     <Compile Include="IDiagnosticRequestHandler.cs" />
     <Compile Include="ContentTypes.cs" />
