@@ -47,6 +47,7 @@ namespace Cassette.Stylesheets
                                     configuration.MinifyOutput,
                                     configuration.Debug,
                                     configuration.DisableVariableRedefines,
+                                    configuration.DisableColorCompression,
                                     configuration.KeepFirstSpecialComment,
                                     configuration.Plugins);
 
@@ -188,6 +189,8 @@ namespace Cassette.Stylesheets
             {
                 return directory.GetFile(fileName).Exists;
             }
+
+            public bool UseCacheDependencies { get { return true; } }
         }
     }
 }
