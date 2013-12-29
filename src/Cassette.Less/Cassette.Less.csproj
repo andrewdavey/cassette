@@ -62,8 +62,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotless.ClientOnly">
-      <HintPath>$(SolutionDir)packages\DotlessClientOnly.1.3.1.0\lib\dotless.ClientOnly.dll</HintPath>
+    <Reference Include="dotless.ClientOnly, Version=1.4.0.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotlessClientOnly.1.4.0.0\lib\dotless.ClientOnly.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>$(SolutionDir)packages\Iesi.Collections.3.3.2.4000\lib\Net35\Iesi.Collections.dll</HintPath>
