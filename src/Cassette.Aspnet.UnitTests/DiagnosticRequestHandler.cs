@@ -28,7 +28,7 @@ namespace Cassette.Aspnet
             httpContext.SetupGet(c => c.Response).Returns(response.Object);
             var requestContext = new RequestContext(httpContext.Object, new RouteData());
             settings = new CassetteSettings();
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
             var urlGenerator = Mock.Of<IUrlGenerator>();
             rebuilder = new Mock<IBundleCacheRebuilder>();
             helper = new Mock<IBundlesHelper>();
