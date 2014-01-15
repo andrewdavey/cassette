@@ -42,7 +42,8 @@ namespace Cassette.Aspnet
             var path = configurationSection.CacheDirectory;
             if (string.IsNullOrEmpty(path))
             {
-                return new IsolatedStorageDirectory(() => IsolatedStorageContainer.IsolatedStorageFile);
+                var container = new IsolatedStorageContainer(configurationSection.IsolatedStoragePerDomain);
+                return new IsolatedStorageDirectory(() => container.IsolatedStorageFile);
             }
             else if (Path.IsPathRooted(path))
             {

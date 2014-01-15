@@ -15,7 +15,8 @@
         debug="true|false"
         rewriteHtml="true|false"
         allowRemoteDiagnostics="true|false"
-        cacheDirectory="directory-path" /&gt;
+        cacheDirectory="directory-path" 
+        isolatedStoragePerDomain="true|false" /&gt;
         
     ...
 &lt;/configuration&gt;</code></pre>
@@ -36,4 +37,14 @@
 
 <h2>The <code>cacheDirectory</code> property</h2>
 <p>Configures where Cassette will cache optimized bundle content.</p>
-<p>When empty (the default) Isolated Storage is used. Otherwise, this should be a file system path. It can be relative to the web application's root directory.</p>
+<p>
+	When empty (the default) <a href="http://msdn.microsoft.com/en-us/library/3ak841sy.aspx">Isolated Storage</a> is used. Otherwise, this should be a file system 
+	path. It can be relative to the web application's root directory.
+</p>
+
+<h2>The <code>isolatedStoragePerDomain</code> property</h2>
+<p>
+	Configures whether Isolated Storage should be isolated to the AppDomain (<code>true</code>) or to the assembly (<code>false</code>). This should normally be 
+	<code>false</code> unless you are using the same assembly with the same path in multiple websites (for example, you have the one application running in several
+	different virtual directories). Defaults to <code>false</code>.
+</p>
