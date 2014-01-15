@@ -57,6 +57,23 @@ namespace Cassette.Aspnet
             );
         }
 
+		internal AssetRequestHandler CreateAssetRequestHandler()
+        {
+            return new AssetRequestHandler(
+                requestContext,
+                bundles
+            );
+        }
+
+		internal CachedFileRequestHandler CreateCachedFileRequestHandler()
+		{
+			return new CachedFileRequestHandler(
+				request.Object,
+				response.Object,
+				new FakeFileSystem()
+			);
+		}
+
         protected void SetupTestBundle()
         {
             var bundle = new TestableBundle("~/test");
@@ -337,12 +354,6 @@ namespace Cassette.Aspnet
 
             var handler = CreateRequestHandler();
             handler.ProcessRequest("~/test");
-        }
-
-        [Fact]
-        public void ResponseFilterIsNotSet()
-        {
-            response.VerifySet(r => r.Filter = It.IsAny<Stream>(), Times.Once()); // Only set once in the test constructor.
         }
     }
 }
