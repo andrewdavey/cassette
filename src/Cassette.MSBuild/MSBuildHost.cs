@@ -119,7 +119,7 @@ namespace Cassette.MSBuild
 
         protected override IConfiguration<CassetteSettings> CreateHostSpecificSettingsConfiguration()
         {
-            return new MsBuildHostSettingsConfiguration(sourceDirectory);
+            return new MsBuildHostSettingsConfiguration(sourceDirectory, outputDirectory);
         }
     }
 }

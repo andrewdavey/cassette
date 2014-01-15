@@ -127,6 +127,7 @@ namespace Cassette.Aspnet
             if (outputBytes.Length > 0)
             {
                 outputStream.Write(outputBytes, 0, outputBytes.Length);
+				outputStream.Flush();
             }
         }
 
