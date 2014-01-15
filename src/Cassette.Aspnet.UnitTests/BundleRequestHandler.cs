@@ -46,7 +46,7 @@ namespace Cassette.Aspnet
             request.SetupGet(x => x.RawUrl).Returns("~/010203/test");
 
             var settings = new CassetteSettings();
-            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
         }
 
         internal BundleRequestHandler<TestableBundle> CreateRequestHandler()

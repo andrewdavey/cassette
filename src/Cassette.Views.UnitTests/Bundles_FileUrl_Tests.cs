@@ -36,7 +36,7 @@ namespace Cassette.Views
             fileAccessAuthorization.Setup(a => a.CanAccess("~/test.png")).Returns(true);
 
             var referenceBuilder = new Mock<IReferenceBuilder>();
-            var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>());
+            var bundles = new BundleCollection(settings, Mock.Of<IFileSearchProvider>(), Mock.Of<IBundleFactoryProvider>(), Mock.Of<IBundleCollectionInitializer>());
             var bundleCacheRebuilder = new Mock<IBundleCacheRebuilder>();
             Bundles.Helper = new BundlesHelper(bundles, settings, urlGenerator.Object, () => referenceBuilder.Object, fileAccessAuthorization.Object, bundleCacheRebuilder.Object, new SimpleJsonSerializer());
         }
