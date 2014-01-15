@@ -3,7 +3,6 @@ using System.Web;
 using System.Web.Routing;
 using Cassette.Utilities;
 using Trace = Cassette.Diagnostics.Trace;
-using System;
 
 namespace Cassette.Aspnet
 {
@@ -12,17 +11,20 @@ namespace Cassette.Aspnet
         public AssetRequestHandler(RequestContext requestContext, BundleCollection bundles)
         {
             this.requestContext = requestContext;
-            this.bundles = bundles;
+			this.bundles = bundles;
+			this.response = requestContext.HttpContext.Response;
+			this.request = requestContext.HttpContext.Request;
         }
 
         readonly RequestContext requestContext;
-        readonly BundleCollection bundles;
+		readonly BundleCollection bundles;
+		readonly HttpResponseBase response;
+		readonly HttpRequestBase request;
 
         public void ProcessRequest(string path)
         {
             Trace.Source.TraceInformation("Handling asset request for path \"{0}\".", path);
             requestContext.HttpContext.DisableHtmlRewriting();
-            var response = requestContext.HttpContext.Response;
             using (bundles.GetReadLock())
             {
                 Bundle bundle;
@@ -34,55 +36,36 @@ namespace Cassette.Aspnet
                     throw new HttpException((int) HttpStatusCode.NotFound, "Asset not found");
                 }
 
-                var request = requestContext.HttpContext.Request;
-                SendAsset(request, response, bundle, asset);
+                SendAsset(bundle, asset);
             }
         }
 
-        void SendAsset(HttpRequestBase request, HttpResponseBase response, Bundle bundle, IAsset asset)
+        void SendAsset(Bundle bundle, IAsset asset)
         {
             response.ContentType = bundle.ContentType;
 
             var actualETag = "\"" + asset.Hash.ToHexString() + "\"";
             if(request.RawUrl.Contains(asset.Hash.ToHexString())) {
-                CacheLongTime(response, actualETag);
+				HttpResponseUtil.CacheLongTime(response, actualETag);
             }
             else {
-                NoCache(response);
+				HttpResponseUtil.NoCache(response);
             }
 
             var givenETag = request.Headers["If-None-Match"];
             if (givenETag == actualETag)
             {
-                SendNotModified(response);
+				HttpResponseUtil.SendNotModified(response);
             }
             else
-            {
+			{
+				HttpResponseUtil.EncodeStreamAndAppendResponseHeaders(request, response);
+
                 using (var stream = asset.OpenStream())
                 {
                     stream.CopyTo(response.OutputStream);
                 }
             }
-        }
-
-        void CacheLongTime(HttpResponseBase response, string actualETag)
-        {
-            response.Cache.SetCacheability(HttpCacheability.Public);
-            response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
-            response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
-            response.Cache.SetETag(actualETag);
-        }
-
-        void NoCache(HttpResponseBase response) {
-            response.AddHeader("Pragma", "no-cache");
-            response.CacheControl = "no-cache";
-            response.Expires = -1;
-        }
-
-        void SendNotModified(HttpResponseBase response)
-        {
-            response.StatusCode = 304; // Not Modified
-            response.SuppressContent = true;
         }
     }
 }
