@@ -11,15 +11,15 @@ namespace Cassette.Aspnet
         public AssetRequestHandler(RequestContext requestContext, BundleCollection bundles)
         {
             this.requestContext = requestContext;
-			this.bundles = bundles;
-			this.response = requestContext.HttpContext.Response;
-			this.request = requestContext.HttpContext.Request;
+            this.bundles = bundles;
+            this.response = requestContext.HttpContext.Response;
+            this.request = requestContext.HttpContext.Request;
         }
 
         readonly RequestContext requestContext;
-		readonly BundleCollection bundles;
-		readonly HttpResponseBase response;
-		readonly HttpRequestBase request;
+        readonly BundleCollection bundles;
+        readonly HttpResponseBase response;
+        readonly HttpRequestBase request;
 
         public void ProcessRequest(string path)
         {
@@ -46,20 +46,20 @@ namespace Cassette.Aspnet
 
             var actualETag = "\"" + asset.Hash.ToHexString() + "\"";
             if(request.RawUrl.Contains(asset.Hash.ToHexString())) {
-				HttpResponseUtil.CacheLongTime(response, actualETag);
+                HttpResponseUtil.CacheLongTime(response, actualETag);
             }
             else {
-				HttpResponseUtil.NoCache(response);
+                HttpResponseUtil.NoCache(response);
             }
 
             var givenETag = request.Headers["If-None-Match"];
             if (givenETag == actualETag)
             {
-				HttpResponseUtil.SendNotModified(response);
+                HttpResponseUtil.SendNotModified(response);
             }
             else
-			{
-				HttpResponseUtil.EncodeStreamAndAppendResponseHeaders(request, response);
+            {
+                HttpResponseUtil.EncodeStreamAndAppendResponseHeaders(request, response);
 
                 using (var stream = asset.OpenStream())
                 {

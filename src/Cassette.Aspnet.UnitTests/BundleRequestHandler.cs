@@ -57,7 +57,7 @@ namespace Cassette.Aspnet
             );
         }
 
-		internal AssetRequestHandler CreateAssetRequestHandler()
+        internal AssetRequestHandler CreateAssetRequestHandler()
         {
             return new AssetRequestHandler(
                 requestContext,
@@ -65,14 +65,14 @@ namespace Cassette.Aspnet
             );
         }
 
-		internal CachedFileRequestHandler CreateCachedFileRequestHandler()
-		{
-			return new CachedFileRequestHandler(
-				request.Object,
-				response.Object,
-				new FakeFileSystem()
-			);
-		}
+        internal CachedFileRequestHandler CreateCachedFileRequestHandler()
+        {
+            return new CachedFileRequestHandler(
+                request.Object,
+                response.Object,
+                new FakeFileSystem()
+            );
+        }
 
         protected void SetupTestBundle()
         {

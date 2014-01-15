@@ -58,7 +58,7 @@ namespace Cassette.Aspnet
 
         void SendNotModified(string actualETag)
         {
-			HttpResponseUtil.CacheLongTime(response, actualETag); // Some browsers seem to require a reminder to keep caching?!
+            HttpResponseUtil.CacheLongTime(response, actualETag); // Some browsers seem to require a reminder to keep caching?!
             response.StatusCode = 304; // Not Modified
             response.SuppressContent = true;
         }
@@ -68,14 +68,14 @@ namespace Cassette.Aspnet
             response.ContentType = bundle.ContentType;
             if(request.RawUrl.Contains(bundle.Hash.ToHexString()))
             {
-				HttpResponseUtil.CacheLongTime(response, actualETag);
+                HttpResponseUtil.CacheLongTime(response, actualETag);
             }
             else
             {
-				HttpResponseUtil.NoCache(response);
+                HttpResponseUtil.NoCache(response);
             }
 
-			HttpResponseUtil.EncodeStreamAndAppendResponseHeaders(request, response);
+            HttpResponseUtil.EncodeStreamAndAppendResponseHeaders(request, response);
 
             using (var assetStream = bundle.OpenStream())
             {

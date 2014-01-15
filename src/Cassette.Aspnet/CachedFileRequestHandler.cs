@@ -10,15 +10,15 @@ namespace Cassette.Aspnet
 {
     public class CachedFileRequestHandler : ICassetteRequestHandler
     {
-		readonly IDirectory cacheDirectory;
-		readonly HttpResponseBase response;
-		readonly HttpRequestBase request;
+        readonly IDirectory cacheDirectory;
+        readonly HttpResponseBase response;
+        readonly HttpRequestBase request;
 
         public CachedFileRequestHandler(HttpRequestBase request, HttpResponseBase response, IDirectory cacheDirectory)
         {
-			this.cacheDirectory = cacheDirectory;
-			this.response = response;
-			this.request = request;
+            this.cacheDirectory = cacheDirectory;
+            this.response = response;
+            this.request = request;
         }
 
         public void ProcessRequest(string path)
@@ -45,7 +45,7 @@ namespace Cassette.Aspnet
 
         void SendFile(IFile file)
         {
-			HttpResponseUtil.EncodeStreamAndAppendResponseHeaders(request, response);
+            HttpResponseUtil.EncodeStreamAndAppendResponseHeaders(request, response);
             response.Cache.SetCacheability(HttpCacheability.Public);
             response.Cache.SetExpires(DateTime.UtcNow.AddYears(1));
             response.Cache.SetMaxAge(new TimeSpan(365, 0, 0, 0));
