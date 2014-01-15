@@ -31,5 +31,12 @@ namespace Cassette
             get { return (string)this["cacheDirectory"]; }
             set { this["cacheDirectory"] = value; }
         }
+
+        [ConfigurationProperty("isolatedStoragePerDomain", DefaultValue = false)]
+        public bool IsolatedStoragePerDomain
+        {
+            get { return (bool)this["isolatedStoragePerDomain"]; }
+            set { this["isolatedStoragePerDomain"] = value; }
+        }
     }
 }
