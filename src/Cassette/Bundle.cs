@@ -113,7 +113,8 @@ namespace Cassette
         {
             { "text/javascript", "js" },
             { "text/css", "css" },
-            { "text/html", "htm" }
+            { "text/html", "htm" },
+            { "text/ng-template", "htm" }
         };
 
         public IEnumerable<string> References
