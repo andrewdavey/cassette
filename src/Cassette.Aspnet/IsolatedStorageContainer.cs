@@ -7,32 +7,50 @@ namespace Cassette.Aspnet
     /// Provides the isolated storage used by Cassette.
     /// Storage is only created on demand.
     /// </summary>
-    class IsolatedStorageContainer
+    static class IsolatedStorageContainer
     {
-        readonly DisposableLazy<IsolatedStorageFile> LazyStorage;
-
-        public IsolatedStorageContainer(bool perDomain)
+        public static class ForDomain
         {
             // ReSharper disable ConvertClosureToMethodGroup because would cause this problem: http://stackoverflow.com/q/9113791/7011
-            LazyStorage = new DisposableLazy<IsolatedStorageFile>(() => CreateIsolatedStorage(perDomain));
+            static readonly DisposableLazy<IsolatedStorageFile> LazyStorage = new DisposableLazy<IsolatedStorageFile>(() => CreateIsolatedStorage());
             // ReSharper restore ConvertClosureToMethodGroup
+
+            static IsolatedStorageFile CreateIsolatedStorage()
+            {
+                return IsolatedStorageFile.GetMachineStoreForDomain();
+            }
+
+            public static IsolatedStorageFile IsolatedStorageFile
+            {
+                get { return LazyStorage.Value; }
+            }
+
+            public static void Dispose()
+            {
+                LazyStorage.Dispose();
+            }
         }
 
-        static IsolatedStorageFile CreateIsolatedStorage(bool perDomain)
+        public static class ForAssembly
         {
-            return perDomain 
-                ? IsolatedStorageFile.GetMachineStoreForDomain() 
-                : IsolatedStorageFile.GetMachineStoreForAssembly();
-        }
+            // ReSharper disable ConvertClosureToMethodGroup because would cause this problem: http://stackoverflow.com/q/9113791/7011
+            static readonly DisposableLazy<IsolatedStorageFile> LazyStorage = new DisposableLazy<IsolatedStorageFile>(() => CreateIsolatedStorage());
+            // ReSharper restore ConvertClosureToMethodGroup
 
-        public IsolatedStorageFile IsolatedStorageFile
-        {
-            get { return LazyStorage.Value; }
-        }
+            static IsolatedStorageFile CreateIsolatedStorage()
+            {
+                return IsolatedStorageFile.GetMachineStoreForAssembly();
+            }
 
-        public void Dispose()
-        {
-            LazyStorage.Dispose();
+            public static IsolatedStorageFile IsolatedStorageFile
+            {
+                get { return LazyStorage.Value; }
+            }
+
+            public static void Dispose()
+            {
+                LazyStorage.Dispose();
+            }
         }
     }
 }
