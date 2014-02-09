@@ -7,6 +7,8 @@ using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.Utilities;
+using Cassette.BundleProcessing;
 
 namespace Cassette
 {
@@ -183,6 +185,27 @@ namespace Cassette
                 It.IsAny<IEnumerable<IFile>>(),
                 It.Is<BundleDescriptor>(d => d.AssetFilenames.SequenceEqual(new[] { "~/b.js", "~/a.js" }))
             ));
+        }
+
+        [Fact]
+        public void GivenDirectoryWithExternalBundleDescriptorReferencingOutsideDirectory_WhenAdd_ThenCreateWorks()
+        {
+            bundleFactoryProvider
+                .Setup(f => f.GetBundleFactory<ScriptBundle>())
+                .Returns(new ScriptBundleFactory(() => Mock.Of<IBundlePipeline<ScriptBundle>>()));
+
+            CreateDirectory("test");
+            File.WriteAllText(
+                PathUtilities.Combine(tempDirectory, "test", "bundle.txt"),
+                "[external]" + Environment.NewLine + "url=http://example.org/test.js" + Environment.NewLine + "[assets]" + Environment.NewLine + "~/test.js"
+                );
+            File.WriteAllText(Path.Combine(tempDirectory, "test.js"), "");
+
+            bundles.Add<ScriptBundle>("test");
+            bundles.Count().ShouldEqual(1);
+            ScriptBundle bundle = bundles.Get<ScriptBundle>("test");
+            bundle.Assets.Count().ShouldEqual(1);
+            bundle.Assets[0].Path.ShouldEqual("~/test.js");
         }
     }
 }
