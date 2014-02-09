@@ -312,36 +312,44 @@ namespace Cassette
 
                 descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
 
-                if (descriptorFile.Exists && descriptor.AssetFilenames.Count > 0)
+                if (descriptorFile.Exists)
                 {
-                    List<IFile> filesList = null;
-
-                    var filesByPath = allFiles.ToDictionary(f => f.FullPath, StringComparer.OrdinalIgnoreCase);
-
-                    var source = settings.SourceDirectory;
-
-                    foreach (var filename in descriptor.AssetFilenames)
-                    {
-                        if (filename.IndexOf('*') == -1 && !filesByPath.ContainsKey(filename))
-                        {
-                            var file = source.GetFile(filename);
-
-                            if (file.Exists)
-                            {
-                                if (filesList == null)
-                                    filesList = new List<IFile>(allFiles);
-
-                                filesList.Add(file);
-                            }
-                        }
-                    }
-
-                    if (filesList != null)
-                        allFiles = filesList;
+                    AddRelativePathReferencedFiles(descriptor, ref allFiles);
                 }
             }
 
             return bundleFactory.CreateBundle(applicationRelativePath, allFiles, descriptor);
+        }
+
+        void AddRelativePathReferencedFiles(BundleDescriptor descriptor, ref IEnumerable<IFile> allFiles)
+        {
+            if (descriptor.AssetFilenames.Count > 0)
+            {
+                List<IFile> filesList = null;
+
+                var filesByPath = allFiles.ToDictionary(f => f.FullPath, StringComparer.OrdinalIgnoreCase);
+
+                var source = settings.SourceDirectory;
+
+                foreach (var filename in descriptor.AssetFilenames)
+                {
+                    if (filename.IndexOf('*') == -1 && !filesByPath.ContainsKey(filename))
+                    {
+                        var file = source.GetFile(filename);
+
+                        if (file.Exists)
+                        {
+                            if (filesList == null)
+                                filesList = new List<IFile>(allFiles);
+
+                            filesList.Add(file);
+                        }
+                    }
+                }
+
+                if (filesList != null)
+                    allFiles = filesList;
+            }
         }
 
         BundleDescriptor ReadOrCreateBundleDescriptor(IFile descriptorFile)
@@ -435,10 +443,15 @@ namespace Cassette
             foreach (var directory in directories)
             {
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
-                var allFiles = fileSearch.FindFiles(directory).ToArray();
+                var allFiles = fileSearch.FindFiles(directory);
 
                 var descriptorFile = TryGetDescriptorFile<T>(directory);
                 var descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
+
+                if (descriptorFile.Exists)
+                {
+                    AddRelativePathReferencedFiles(descriptor, ref allFiles);
+                }
 
                 if (!allFiles.Any() && descriptor.ExternalUrl == null) continue;
 
