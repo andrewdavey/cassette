@@ -7,6 +7,7 @@ using Cassette.Scripts;
 using Moq;
 using Should;
 using Xunit;
+using Cassette.BundleProcessing;
 
 namespace Cassette
 {
@@ -124,6 +125,26 @@ namespace Cassette
             ));
         }
 
+        [Fact]
+        public void GivenBundleDescriptorFileWithLocation_WhenAdd_ThenDescriptorPassedToFactoryAndLocationSet()
+        {
+            bundleFactoryProvider
+                 .Setup(f => f.GetBundleFactory<ScriptBundle>())
+                 .Returns(new ScriptBundleFactory(() => Mock.Of<IBundlePipeline<ScriptBundle>>()));
+
+            File.WriteAllText(Path.Combine(tempDirectory, "bundle.txt"), "b.js\na.js\n[bundle]\npageLocation = head");
+
+            var fileA = StubFile("~/a.js");
+            var fileB = StubFile("~/b.js");
+            fileSearch
+                .Setup(s => s.FindFiles(It.IsAny<IDirectory>()))
+                .Returns(new[] { fileA, fileB });
+
+            bundles.Add<ScriptBundle>("~");
+            
+            bundles.First().PageLocation.ShouldEqual("head");
+        }
+        
         [Fact]
         public void GivenScriptBundleDescriptor_WhenAdd_ThenScriptDescriptorPassedToFactory()
         {

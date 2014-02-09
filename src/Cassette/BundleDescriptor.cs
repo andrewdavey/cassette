@@ -15,6 +15,7 @@ namespace Cassette
         public List<string> References { get; private set; }
         public string ExternalUrl { get; set; }
         public string FallbackCondition { get; set; }
+        public string PageLocation { get; set; }
         public IFile File { get; set; }
 
         public bool IsFromFile

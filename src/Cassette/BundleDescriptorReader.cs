@@ -20,7 +20,8 @@ namespace Cassette
             {
                 { "assets", ParseAsset },
                 { "references", ParseReference },
-                { "external", ParseExternal }
+                { "external", ParseExternal },
+                { "bundle", ParseBundle }
             };
         }
             
@@ -31,6 +32,7 @@ namespace Cassette
         string currentSection = "assets";
         string externalUrl;
         string fallbackCondition;
+        string pageLocation;
 
         public BundleDescriptor Read()
         {
@@ -47,7 +49,8 @@ namespace Cassette
             {
                 ExternalUrl = externalUrl,
                 FallbackCondition = fallbackCondition,
-                File = sourceFile
+                File = sourceFile,
+                PageLocation = pageLocation
             };
             descriptor.AssetFilenames.AddRange(assetFilenames);
             descriptor.References.AddRange(references);
@@ -104,12 +107,13 @@ namespace Cassette
             references.Add(line);
         }
 
+        static readonly Regex keyValueRegex = new Regex(
+            @"^\s* (?<key>[a-z]+) \s* = \s* (?<value>.*)$",
+            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled
+        );
+
         void ParseExternal(string line)
         {
-            var keyValueRegex = new Regex(
-                @"^\s* (?<key>[a-z]+) \s* = \s* (?<value>.*)$",
-                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
-            );
             var match = keyValueRegex.Match(line);
             if (!match.Success)
             {
@@ -142,6 +146,30 @@ namespace Cassette
 
                 default:
                     throw new Exception("Unexpected property in bundle descriptor [external] section: " + line);
+            }
+        }
+
+        void ParseBundle(string line)
+        {
+            var match = keyValueRegex.Match(line);
+            if (!match.Success)
+            {
+                throw new Exception("The [bundle] section of bundle descriptor must contain key value pairs.");
+            }
+
+            var key = match.Groups["key"].Value;
+            var value = match.Groups["value"].Value;
+            switch (key)
+            {
+                case "pageLocation":
+                    if (pageLocation != null)
+                        throw new Exception(
+                            "The [bundle] section of bundle descriptor can only contain one \"pageLocation\".");
+                    pageLocation = value;
+                    break;
+
+                default:
+                    throw new Exception("Unexpected property in bundle descriptor [bundle] section: " + line);
             }
         }
 

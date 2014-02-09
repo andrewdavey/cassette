@@ -22,7 +22,7 @@ knockout.js</code></pre>
 file1.js
 *</code></pre>
 
-<h2>bundle references</h2>
+<h2>Bundle references</h2>
 <p>If your bundle depends on other bundles, then add a references section.</p>
 <pre><code>file1.js
 file2.js
@@ -30,6 +30,13 @@ file2.js
 [references]
 ~/scripts/lib
 ~/scripts/widgets</code></pre>
+
+<h2>Page location</h2>
+<p>You can set a page location for the bundle (for example if it is a script that needs to be rendered in &lt;head&gt; rather than &lt;body&gt;) by setting the pageLocation in the bundle section.</p>
+<pre><code>file1.js
+
+[bundle]
+pageLocation = head</code></pre>
 
 <h2>External bundles</h2>
 <p>
