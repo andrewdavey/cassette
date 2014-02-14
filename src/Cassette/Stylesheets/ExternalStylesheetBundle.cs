@@ -7,7 +7,7 @@ using System.Xml.Linq;
 namespace Cassette.Stylesheets
 {
 #pragma warning disable 659
-    class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle
+    public class ExternalStylesheetBundle : StylesheetBundle, IExternalBundle
     {
         readonly string url;
 
@@ -49,8 +49,15 @@ namespace Cassette.Stylesheets
 
         public string ExternalUrl
         {
-            get { return url; }
+            get
+            {
+                return !String.IsNullOrEmpty(CassetteCdnRoot) ?
+                    String.Join("/", new[] { CassetteCdnRoot.TrimEnd('/'), CacheFilename }) :
+                    url;
+            }
         }
+
+        public string CassetteCdnRoot { get; set; }
 
         public IBundleHtmlRenderer<StylesheetBundle> FallbackRenderer { get; set; }
 
@@ -97,7 +104,7 @@ namespace Cassette.Stylesheets
             {
                 html.AppendFormat(
                     HtmlConstants.LinkHtml,
-                    bundle.url,
+                    bundle.ExternalUrl,
                     bundle.HtmlAttributes.CombinedAttributes
                 );
             }

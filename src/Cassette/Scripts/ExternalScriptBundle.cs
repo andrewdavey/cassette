@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Cassette.Reflection;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -65,8 +66,15 @@ namespace Cassette.Scripts
 
         public string ExternalUrl
         {
-            get { return url; }
+            get
+            {
+                return !String.IsNullOrEmpty(CassetteCdnRoot) ?
+                    String.Join("/", new [] {CassetteCdnRoot.TrimEnd('/'), CacheFilename}) :
+                    url;
+            }
         }
+
+        public string CassetteCdnRoot { get; set; }
 
         public IBundleHtmlRenderer<ScriptBundle> FallbackRenderer { get; set; }
 
@@ -123,7 +131,7 @@ namespace Cassette.Scripts
             {
                 html.AppendFormat(
                     HtmlConstants.ScriptHtml,
-                    bundle.url,
+                    bundle.ExternalUrl,
                     bundle.HtmlAttributes.CombinedAttributes
                 );
             }
@@ -132,7 +140,7 @@ namespace Cassette.Scripts
             {
                 html.AppendFormat(
                     HtmlConstants.ScriptHtmlWithFallback,
-                    bundle.url,
+                    bundle.ExternalUrl,
                     bundle.HtmlAttributes.CombinedAttributes,
                     bundle.FallbackCondition,
                     CreateFallbackScripts(bundle),
