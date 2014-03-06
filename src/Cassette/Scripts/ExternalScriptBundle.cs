@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Cassette.Reflection;
 using Cassette.Utilities;
 
 namespace Cassette.Scripts
@@ -64,17 +63,10 @@ namespace Cassette.Scripts
             }
         }
 
-        public string ExternalUrl
+        public virtual string ExternalUrl
         {
-            get
-            {
-                return !String.IsNullOrEmpty(CassetteCdnRoot) ?
-                    String.Join("/", new [] {CassetteCdnRoot.TrimEnd('/'), CacheFilename}) :
-                    url;
-            }
+            get {return url;}
         }
-
-        public string CassetteCdnRoot { get; set; }
 
         public IBundleHtmlRenderer<ScriptBundle> FallbackRenderer { get; set; }
 

@@ -107,6 +107,11 @@
     <Compile Include="Caching\IBundleCollectionCache.cs" />
     <Compile Include="Caching\Manifest.cs" />
     <Compile Include="Caching\ResourceAssetCacheValidator.cs" />
+    <Compile Include="CDN\CdnScriptBundle.cs" />
+    <Compile Include="CDN\CdnStylesheetBundle.cs" />
+    <Compile Include="CDN\CdnScriptBundleFactory.cs" />
+    <Compile Include="CDN\CdnStylesheetBundleFactory.cs" />
+    <Compile Include="CDN\ICdnBundle.cs" />
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />

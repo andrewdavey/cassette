@@ -47,17 +47,10 @@ namespace Cassette.Stylesheets
             }
         }
 
-        public string ExternalUrl
+        public virtual string ExternalUrl
         {
-            get
-            {
-                return !String.IsNullOrEmpty(CassetteCdnRoot) ?
-                    String.Join("/", new[] { CassetteCdnRoot.TrimEnd('/'), CacheFilename }) :
-                    url;
-            }
+            get { return url; }
         }
-
-        public string CassetteCdnRoot { get; set; }
 
         public IBundleHtmlRenderer<StylesheetBundle> FallbackRenderer { get; set; }
 
