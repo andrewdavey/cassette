@@ -1,9 +1,10 @@
 ﻿using System;
+using Cassette.BundleProcessing;
 using Cassette.Stylesheets;
 
 namespace Cassette.CDN
 {
-    public class CdnStylesheetBundle : ExternalStylesheetBundle, ICdnBundle
+    public sealed class CdnStylesheetBundle : ExternalStylesheetBundle, ICdnBundle
     {                
         public CdnStylesheetBundle(string url) : base(url)
         {
@@ -23,6 +24,15 @@ namespace Cassette.CDN
                     String.Join("/", new[] { CdnRoot.TrimEnd('/'), CacheFilename }) :
                     base.ExternalUrl;
             }
+        }
+
+        public new IBundlePipeline<CdnStylesheetBundle> Pipeline { get; set; }
+
+        protected override void ProcessCore(CassetteSettings settings)
+        {
+            Pipeline.Process(this);
+            FallbackRenderer = Renderer;
+            Renderer = new ExternalStylesheetBundleRenderer(settings);            
         }
     }
 }

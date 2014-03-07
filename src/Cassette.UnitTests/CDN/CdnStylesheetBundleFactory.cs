@@ -11,11 +11,11 @@ namespace Cassette.CDN
     public class CdnStylesheetBundleFactory_Tests
     {
         readonly CdnStylesheetBundleFactory factory;
-        readonly IBundlePipeline<StylesheetBundle> pipeline;
+        readonly IBundlePipeline<CdnStylesheetBundle> pipeline;
 
         public CdnStylesheetBundleFactory_Tests()
         {
-            pipeline = Mock.Of<IBundlePipeline<StylesheetBundle>>();
+            pipeline = Mock.Of<IBundlePipeline<CdnStylesheetBundle>>();
             factory = new CdnStylesheetBundleFactory(() => pipeline);
         }
 

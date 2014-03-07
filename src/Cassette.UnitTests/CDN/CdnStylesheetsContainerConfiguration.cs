@@ -13,6 +13,8 @@ namespace Cassette.CDN
 {
     public class CdnStylesheetsContainerConfiguration_Tests
     {
+        const string TestUrl = "http://test.com";
+        
         readonly TinyIoCContainer container;
         readonly CdnStylesheetsContainerConfiguration configuration;
         readonly FileSearch fileSearch;
@@ -51,15 +53,15 @@ namespace Cassette.CDN
         [Fact]
         public void BundlePipelineIsStylesheetPipeline()
         {
-            container.Resolve<IBundlePipeline<StylesheetBundle>>().ShouldBeType<StylesheetPipeline>();
+            container.Resolve<IBundlePipeline<CdnStylesheetBundle>>().ShouldBeType<CdnStylesheetPipeline>();
         }
 
         [Fact]
         public void CreatedBundlesMustHaveTheirOwnPipelines()
         {
             var factory = container.Resolve<IBundleFactory<CdnStylesheetBundle>>();
-            var a = factory.CreateBundle("~/1", Enumerable.Empty<IFile>(), new BundleDescriptor());
-            var b = factory.CreateBundle("~/2", Enumerable.Empty<IFile>(), new BundleDescriptor());
+            var a = factory.CreateBundle("~/1", Enumerable.Empty<IFile>(), new BundleDescriptor { ExternalUrl = TestUrl });
+            var b = factory.CreateBundle("~/2", Enumerable.Empty<IFile>(), new BundleDescriptor { ExternalUrl = TestUrl });
             a.Pipeline.ShouldNotBeSameAs(b.Pipeline);
         }
     }

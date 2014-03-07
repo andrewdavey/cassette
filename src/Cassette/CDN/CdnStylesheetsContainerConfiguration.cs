@@ -6,7 +6,7 @@ using Cassette.TinyIoC;
 namespace Cassette.CDN
 {
     [ConfigurationOrder(10)]
-    class CdnStylesheetsContainerConfiguration : ContainerConfiguration<StylesheetBundle>
+    class CdnStylesheetsContainerConfiguration : ContainerConfiguration<CdnStylesheetBundle>
     {
         public CdnStylesheetsContainerConfiguration(Func<Type, IEnumerable<Type>> getImplementationTypes)
             : base(getImplementationTypes)
@@ -31,7 +31,7 @@ namespace Cassette.CDN
 
         protected override Type BundlePipelineType
         {
-            get { return typeof(StylesheetPipeline); }
+            get { return typeof(CdnStylesheetPipeline); }
         }
     }
 }

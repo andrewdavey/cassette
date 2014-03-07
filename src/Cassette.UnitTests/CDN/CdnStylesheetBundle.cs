@@ -33,7 +33,7 @@ namespace Cassette.CDN
         public void ProcessCallsProcessor()
         {
             var bundle = new CdnStylesheetBundle("http://test.com/asset.css");
-            var pipeline = new Mock<IBundlePipeline<StylesheetBundle>>();
+            var pipeline = new Mock<IBundlePipeline<CdnStylesheetBundle>>();
             bundle.Pipeline = pipeline.Object;
 
             bundle.Process(new CassetteSettings());

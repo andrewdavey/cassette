@@ -115,6 +115,7 @@
     <Compile Include="CDN\CdnScriptContainerConfiguration.cs" />
     <Compile Include="CDN\CdnStylesheetsContainerConfiguration.cs" />
     <Compile Include="CDN\CdnScriptPipeline.cs" />
+    <Compile Include="CDN\CdnStylesheetPipeline.cs" />
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />

@@ -25,7 +25,7 @@ namespace Cassette
 
             bundleFactoryProvider
                 .Setup(f => f.GetBundleFactory<CdnStylesheetBundle>())
-                .Returns(new CdnStylesheetBundleFactory(() => Mock.Of<IBundlePipeline<StylesheetBundle>>()));
+                .Returns(new CdnStylesheetBundleFactory(() => Mock.Of<IBundlePipeline<CdnStylesheetBundle>>()));
         }
 
         [Fact]
