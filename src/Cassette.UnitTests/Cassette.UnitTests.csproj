@@ -136,6 +136,11 @@
     <Compile Include="Caching\BundleCollectionCache.Write.cs" />
     <Compile Include="Caching\BundleCollectionCache.Clear.cs" />
     <Compile Include="Caching\BundleCollectionCache.Read.cs" />
+    <Compile Include="BundleCollection.AddCdnUrl.cs" />
+    <Compile Include="CDN\CdnStylesheetBundleFactory.cs" />
+    <Compile Include="CDN\CdnScriptBundleFactory.cs" />
+    <Compile Include="CDN\CdnScriptBundle.cs" />
+    <Compile Include="CDN\CdnStylesheetBundle.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="BundleCollection.Add.cs" />
     <Compile Include="BundleCollection.AddPerSubDirectory.cs" />

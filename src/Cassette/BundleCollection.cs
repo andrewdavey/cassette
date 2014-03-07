@@ -482,7 +482,7 @@ namespace Cassette
             Add(bundle);
         }
 
-        public void AddCdnUrlWithLocalAssets<T>(string url, string cdnRoot, LocalAssetSettings localAssetSettings, Action<Bundle> customizeBundle = null)
+        public void AddCdnUrlWithLocalAssets<T>(string alias, string cdnRoot, LocalAssetSettings localAssetSettings, Action<Bundle> customizeBundle = null)
             where T : Bundle, IExternalBundle, ICdnBundle
         {
             var existingBundle = bundles.FirstOrDefault(
@@ -522,8 +522,8 @@ namespace Cassette
             }
 
             bundleDescriptor.FallbackCondition = localAssetSettings.FallbackCondition;
-            bundleDescriptor.ExternalUrl = url;
-            var bundle = bundleFactory.CreateBundle(localAssetSettings.Path, files, bundleDescriptor);
+            bundleDescriptor.ExternalUrl = alias;
+            var bundle = bundleFactory.CreateBundle(alias, files, bundleDescriptor);
             bundle.CdnRoot = cdnRoot;
             if (customizeBundle != null) customizeBundle(bundle);
             Add(bundle);
