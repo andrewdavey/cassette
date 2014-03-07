@@ -59,7 +59,7 @@ namespace Cassette.CDN
         public void ProcessCallsProcessor()
         {
             var bundle = new CdnScriptBundle(Url);
-            var pipeline = new Mock<IBundlePipeline<ScriptBundle>>();
+            var pipeline = new Mock<IBundlePipeline<CdnScriptBundle>>();
             var settings = new CassetteSettings();
 
             bundle.Pipeline = pipeline.Object;
@@ -110,7 +110,7 @@ namespace Cassette.CDN
             var bundle = new CdnScriptBundle(Url, "~/test", "condition")
             {
                 Renderer = new ScriptBundleHtmlRenderer(urlGenerator.Object),
-                Pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>()
+                Pipeline = Mock.Of<IBundlePipeline<CdnScriptBundle>>()
             };
             var asset = new Mock<IAsset>();
             asset.SetupGet(a => a.Path).Returns("~/test/asset.js");

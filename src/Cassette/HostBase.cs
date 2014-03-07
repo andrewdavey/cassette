@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Cassette.Caching;
+using Cassette.CDN;
 using Cassette.HtmlTemplates;
-using Cassette.IO;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
 using Cassette.TinyIoC;
-using Cassette.Utilities;
 using Trace = Cassette.Diagnostics.Trace;
 
 #if NET35
@@ -69,6 +68,8 @@ namespace Cassette
 
             var internalTypes = new[]
             {
+                typeof(CdnScriptContainerConfiguration),                
+                typeof(CdnStylesheetsContainerConfiguration),
                 typeof(ScriptContainerConfiguration),
                 typeof(StylesheetsContainerConfiguration),
                 typeof(HtmlTemplatesContainerConfiguration),
@@ -141,6 +142,7 @@ namespace Cassette
             { typeof(StylesheetBundle).Name, typeof(StylesheetBundleDeserializer) },
             { typeof(HtmlTemplateBundle).Name, typeof(HtmlTemplateBundleDeserializer) },
             { typeof(ExternalScriptBundle).Name, typeof(ExternalScriptBundleDeserializer) },
+            { typeof(CdnScriptBundle).Name, typeof(ExternalScriptBundleDeserializer) },
             { typeof(ExternalStylesheetBundle).Name, typeof(ExternalStylesheetBundleDeserializer) }
         };
 

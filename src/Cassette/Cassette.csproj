@@ -112,6 +112,9 @@
     <Compile Include="CDN\CdnScriptBundleFactory.cs" />
     <Compile Include="CDN\CdnStylesheetBundleFactory.cs" />
     <Compile Include="CDN\ICdnBundle.cs" />
+    <Compile Include="CDN\CdnScriptContainerConfiguration.cs" />
+    <Compile Include="CDN\CdnStylesheetsContainerConfiguration.cs" />
+    <Compile Include="CDN\CdnScriptPipeline.cs" />
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />

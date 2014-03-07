@@ -6,9 +6,9 @@ namespace Cassette.CDN
 {
     class CdnScriptBundleFactory : BundleFactoryBase<CdnScriptBundle>
     {
-        readonly Func<IBundlePipeline<ScriptBundle>> scriptPipeline;
+        readonly Func<IBundlePipeline<CdnScriptBundle>> scriptPipeline;
 
-        public CdnScriptBundleFactory(Func<IBundlePipeline<ScriptBundle>> scriptPipeline)
+        public CdnScriptBundleFactory(Func<IBundlePipeline<CdnScriptBundle>> scriptPipeline)
         {
             this.scriptPipeline = scriptPipeline;
         }

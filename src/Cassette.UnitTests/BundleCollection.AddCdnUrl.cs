@@ -21,7 +21,7 @@ namespace Cassette
         {
             bundleFactoryProvider
                 .Setup(f => f.GetBundleFactory<CdnScriptBundle>())
-                .Returns(new CdnScriptBundleFactory(() => Mock.Of<IBundlePipeline<ScriptBundle>>()));
+                .Returns(new CdnScriptBundleFactory(() => Mock.Of<IBundlePipeline<CdnScriptBundle>>()));
 
             bundleFactoryProvider
                 .Setup(f => f.GetBundleFactory<CdnStylesheetBundle>())

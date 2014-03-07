@@ -11,8 +11,8 @@ namespace Cassette.CDN
     public class CdnScriptBundleFactory_Tests
     {
         const string CDN_TEST_URL = "http://cdn.test.com";
-        
-        readonly IBundlePipeline<ScriptBundle> pipeline = Mock.Of<IBundlePipeline<ScriptBundle>>();
+
+        readonly IBundlePipeline<CdnScriptBundle> pipeline = Mock.Of<IBundlePipeline<CdnScriptBundle>>();
         readonly BundleDescriptor testBundleDescriptor;
 
         public CdnScriptBundleFactory_Tests()

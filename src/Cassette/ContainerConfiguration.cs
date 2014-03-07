@@ -20,6 +20,7 @@ namespace Cassette
 
         public virtual void Configure(TinyIoCContainer container)
         {
+            //System.Diagnostics.Debugger.Break();
             RegisterFileSearchServices(container);
             RegisterBundleFactory(container);
             RegisterBundlePipelineServices(container);

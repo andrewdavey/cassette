@@ -141,6 +141,8 @@
     <Compile Include="CDN\CdnScriptBundleFactory.cs" />
     <Compile Include="CDN\CdnScriptBundle.cs" />
     <Compile Include="CDN\CdnStylesheetBundle.cs" />
+    <Compile Include="CDN\CdnScriptsContainerConfiguration.cs" />
+    <Compile Include="CDN\CdnStylesheetsContainerConfiguration.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="BundleCollection.Add.cs" />
     <Compile Include="BundleCollection.AddPerSubDirectory.cs" />

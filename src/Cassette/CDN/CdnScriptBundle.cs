@@ -1,9 +1,10 @@
 ﻿using System;
+using Cassette.BundleProcessing;
 using Cassette.Scripts;
 
 namespace Cassette.CDN
 {
-    public class CdnScriptBundle : ExternalScriptBundle, ICdnBundle
+    public sealed class CdnScriptBundle : ExternalScriptBundle, ICdnBundle
     {
         public CdnScriptBundle(string url)
             : base(url)
@@ -25,6 +26,15 @@ namespace Cassette.CDN
                     ? String.Join("/", new[] { CdnRoot.TrimEnd('/'), CacheFilename }) 
                     : base.ExternalUrl;
             }
+        }
+
+        public new IBundlePipeline<CdnScriptBundle> Pipeline { get; set; }
+
+        protected override void ProcessCore(CassetteSettings settings)
+        {
+            Pipeline.Process(this);
+            FallbackRenderer = Renderer;
+            Renderer = new ExternalScriptBundleRenderer(settings);
         }
     }
 }
