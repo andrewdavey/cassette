@@ -19,7 +19,8 @@ namespace Cassette.CDN
                 new AssignHash()
             });
 
-            if (settings.IsDebuggingEnabled) return;
+            if (settings.IsDebuggingEnabled) 
+                return;
 
             Add(new ConcatenateAssets { Separator = Environment.NewLine + ";" + Environment.NewLine });
             var minifier = container.Resolve<IJavaScriptMinifier>();

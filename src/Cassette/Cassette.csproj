@@ -111,11 +111,16 @@
     <Compile Include="CDN\CdnStylesheetBundle.cs" />
     <Compile Include="CDN\CdnScriptBundleFactory.cs" />
     <Compile Include="CDN\CdnStylesheetBundleFactory.cs" />
+    <Compile Include="CDN\CdnUrlGenerator.cs" />
+    <Compile Include="CDN\CdnExpandCssUrls.cs" />
+    <Compile Include="CDN\GzipAssetProcessor.cs" />
+    <Compile Include="CDN\GzipAssetTransformer.cs" />
     <Compile Include="CDN\ICdnBundle.cs" />
     <Compile Include="CDN\CdnScriptContainerConfiguration.cs" />
     <Compile Include="CDN\CdnStylesheetsContainerConfiguration.cs" />
     <Compile Include="CDN\CdnScriptPipeline.cs" />
     <Compile Include="CDN\CdnStylesheetPipeline.cs" />
+    <Compile Include="CDN\CdnBundleExtensions.cs" />
     <Compile Include="ConfigurationEnumerableExtensions.cs" />
     <Compile Include="ConfigurationOrderAttribute.cs" />
     <Compile Include="ContainerConfiguration.cs" />

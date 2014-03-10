@@ -17,6 +17,7 @@ namespace Cassette.CDN
         {
             base.Configure(container);
             container.Register(typeof(IStylesheetMinifier), typeof(MicrosoftStylesheetMinifier));
+            RegisterCdnCssUrlGenerator(container);
         }
 
         protected override string FilePattern
@@ -32,6 +33,12 @@ namespace Cassette.CDN
         protected override Type BundlePipelineType
         {
             get { return typeof(CdnStylesheetPipeline); }
+        }
+
+        void RegisterCdnCssUrlGenerator(TinyIoCContainer container)
+        {
+            container.Register((c, n) => new CdnUrlGenerator<CdnStylesheetBundle>(c.Resolve<IUrlModifier>(),
+                c.Resolve<CassetteSettings>().SourceDirectory, (CdnStylesheetBundle)n["bundle"]));
         }
     }
 }
