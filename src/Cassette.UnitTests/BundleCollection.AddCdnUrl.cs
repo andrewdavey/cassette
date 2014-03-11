@@ -14,6 +14,7 @@ namespace Cassette
     public class BundleCollection_AddCdnUrl_Tests : BundleCollectionTestsBase
     {
         const string CdnUrl = "//cdn.test.com";
+        const string CacheRoot = "test-cache";
         const string BundleAlias = "testAlias";
         byte[] TestHash = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
@@ -37,7 +38,7 @@ namespace Cassette
                 "~/path/file1.js"
             };
 
-            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl , new LocalAssetSettings { Path = "path" });
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, CacheRoot, new LocalAssetSettings { Path = "path" });
 
             bundles[BundleAlias].Assets[0].Path.ShouldEqual("~/path/file.js");
             bundles[BundleAlias].Assets[1].Path.ShouldEqual("~/path/file1.js");
@@ -51,7 +52,7 @@ namespace Cassette
                 "~/path/file.js"
             };
 
-            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, new LocalAssetSettings { Path = "path" });
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, CacheRoot, new LocalAssetSettings { Path = "path" });
             //bundles[BundleAlias].Hash = TestHash;
             bundles[BundleAlias].ShouldBeType<CdnScriptBundle>();
         }
@@ -64,7 +65,7 @@ namespace Cassette
                 "~/path/file.js"
             };
 
-            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias,  CdnUrl, new LocalAssetSettings
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, CacheRoot, new LocalAssetSettings
             {
                 Path = "path", 
                 FileSearch = fileSearch.Object
@@ -81,7 +82,7 @@ namespace Cassette
                 "~/jquery.js"
             };
 
-            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, new LocalAssetSettings
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, CacheRoot, new LocalAssetSettings
             {
                 Path = "~/jquery.js"
             });
@@ -98,7 +99,7 @@ namespace Cassette
                 "~/path/file.js"
             };
 
-            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, new LocalAssetSettings
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, CacheRoot, new LocalAssetSettings
             {
                 Path = "path",
                 FallbackCondition = "condition"
@@ -118,7 +119,7 @@ namespace Cassette
                 "~/path/file.js"
             };
 
-            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, new LocalAssetSettings
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, CacheRoot, new LocalAssetSettings
             {
                 Path = "path"
             });
@@ -128,7 +129,7 @@ namespace Cassette
         }
 
         [Fact]
-        public void WhenAddCdnUrlWithLocalAssets_ThenCdnUrlIsParsedCorrectly()
+        public void WhenAddCdnUrlWithLocalAssets_ThenCdnUrlIsParsedCorrectlyWithCacheRoot()
         {
             settings.SourceDirectory = new FakeFileSystem
             {
@@ -136,11 +137,28 @@ namespace Cassette
                 "~/path/file1.js"
             };
 
-            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, new LocalAssetSettings { Path = "path" });
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, CacheRoot, new LocalAssetSettings { Path = "path" });
 
             var bundle = (CdnScriptBundle)bundles[BundleAlias];
             bundle.Hash = TestHash;
-            bundle.ExternalUrl.ShouldEqual(String.Format("{0}/script/{1}/{2}.js", 
+            bundle.ExternalUrl.ShouldEqual(String.Format("{0}/test-cache/script/{1}/{2}.js", 
+                CdnUrl, BundleAlias, TestHash.ToHexString()));
+        }
+
+        [Fact]
+        public void WhenAddCdnUrlWithLocalAssets_ThenCdnUrlIsParsedCorrectlyWithOutCacheRoot()
+        {
+            settings.SourceDirectory = new FakeFileSystem
+            {
+                "~/path/file.js",
+                "~/path/file1.js"
+            };
+
+            bundles.AddCdnUrlWithLocalAssets<CdnScriptBundle>(BundleAlias, CdnUrl, String.Empty, new LocalAssetSettings { Path = "path" });
+
+            var bundle = (CdnScriptBundle)bundles[BundleAlias];
+            bundle.Hash = TestHash;
+            bundle.ExternalUrl.ShouldEqual(String.Format("{0}/script/{1}/{2}.js",
                 CdnUrl, BundleAlias, TestHash.ToHexString()));
         }
     }
