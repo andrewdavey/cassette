@@ -31,7 +31,7 @@ namespace Cassette.CDN
             throw new NotImplementedException();
         }
 
-        public string CreateRawFileUrl(string filename, string hash)
+        string IUrlGenerator.CreateRawFileUrl(string filename, string hash)
         {
             if (filename.StartsWith("~") == false)
             {

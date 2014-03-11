@@ -1,5 +1,6 @@
 ﻿using System;
 using Cassette.BundleProcessing;
+using Cassette.IO;
 using Cassette.Scripts;
 
 namespace Cassette.CDN
@@ -17,13 +18,16 @@ namespace Cassette.CDN
         }
 
         public string CdnRoot { get; set; }
+        public string CdnCacheRoot { get; set; }
 
         public override string ExternalUrl
         {
             get
             {
-                return !String.IsNullOrEmpty(CdnRoot) 
-                    ? String.Join("/", new[] { CdnRoot.TrimEnd('/'), CacheFilename }) 
+                return !String.IsNullOrEmpty(CdnRoot)
+                    ? !String.IsNullOrEmpty(CdnCacheRoot)
+                        ? String.Join("/", new[] { CdnRoot.TrimEnd('/'), CdnCacheRoot, CacheFilename })
+                        : String.Join("/", new[] { CdnRoot.TrimEnd('/'), CacheFilename })
                     : base.ExternalUrl;
             }
         }
