@@ -18,8 +18,8 @@ namespace Cassette.CDN
 
         public void Process(CdnStylesheetBundle bundle)
         {
-            var parameters = new NamedParameterOverloads(new Dictionary<string, object> { { "bundle", bundle } });
-            var cdnUrlGenerator = container.Resolve<CdnUrlGenerator<CdnStylesheetBundle>>(parameters);
+            var parameters = new NamedParameterOverloads(new Dictionary<string, object> { { "cdnRoot", bundle.CdnRoot } });
+            var cdnUrlGenerator = container.Resolve<CdnUrlGenerator>(parameters);
             
             foreach (var asset in bundle.Assets)
             {                

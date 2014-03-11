@@ -15,10 +15,15 @@ namespace Cassette.Utilities
             return paths.Aggregate(Path.Combine);
 #endif
         }
-    
+
         public static string CombineWithForwardSlashes(params string[] paths)
         {
             return paths.Aggregate(Path.Combine).Replace('\\', '/');
+        }
+
+        public static string ConvertToForwardSlashes(string path)
+        {
+            return CombineWithForwardSlashes(new[] { path });
         }
 
         public static string NormalizePath(string path)
@@ -80,6 +85,17 @@ namespace Cassette.Utilities
                 path = (path.StartsWith("/") ? "~" : "~/") + path;
             }
             return NormalizePath(path);
+        }
+
+        /// <summary>
+        /// Escape each part of the URL between the slashes.
+        /// </summary>
+        public static string UriEscapePathSegments(string path)
+        {
+            return string.Join(
+                "/",
+                path.Split('/').Select(Uri.EscapeDataString).ToArray()
+            );
         }
     }
 }

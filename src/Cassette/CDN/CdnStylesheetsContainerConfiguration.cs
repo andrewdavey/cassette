@@ -37,8 +37,8 @@ namespace Cassette.CDN
 
         void RegisterCdnCssUrlGenerator(TinyIoCContainer container)
         {
-            container.Register((c, n) => new CdnUrlGenerator<CdnStylesheetBundle>(c.Resolve<IUrlModifier>(),
-                c.Resolve<CassetteSettings>().SourceDirectory, (CdnStylesheetBundle)n["bundle"]));
+            container.Register((c, n) => new CdnUrlGenerator(c.Resolve<IUrlModifier>(),
+                c.Resolve<CassetteSettings>().SourceDirectory, (string)n["cdnRoot"]));
         }
     }
 }

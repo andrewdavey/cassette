@@ -143,6 +143,9 @@
     <Compile Include="CDN\CdnStylesheetBundle.cs" />
     <Compile Include="CDN\CdnScriptsContainerConfiguration.cs" />
     <Compile Include="CDN\CdnStylesheetsContainerConfiguration.cs" />
+    <Compile Include="CDN\CdnUrlGeneratorTestsBase.cs" />
+    <Compile Include="CDN\CdnUrlGenerator_CreateRawFileUrl_Tests.cs" />
+    <Compile Include="CDN\CdnUrlGenerator_CreateAbsolutePathUrl_Tests.cs" />
     <Compile Include="ConditionalRenderer.cs" />
     <Compile Include="BundleCollection.Add.cs" />
     <Compile Include="BundleCollection.AddPerSubDirectory.cs" />
