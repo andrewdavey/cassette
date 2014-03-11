@@ -1,6 +1,5 @@
 ﻿using System;
 using Cassette.BundleProcessing;
-using Cassette.Scripts;
 
 namespace Cassette.CDN
 {

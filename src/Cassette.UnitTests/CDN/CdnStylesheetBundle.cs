@@ -1,5 +1,4 @@
 ﻿using Cassette.BundleProcessing;
-using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Cassette.BundleProcessing;
 using Cassette.Scripts;
 using Cassette.TinyIoC;

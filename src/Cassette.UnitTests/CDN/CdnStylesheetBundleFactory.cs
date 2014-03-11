@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Cassette.BundleProcessing;
 using Cassette.IO;
-using Cassette.Stylesheets;
 using Moq;
 using Should;
 using Xunit;

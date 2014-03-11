@@ -1,6 +1,4 @@
-﻿using Cassette.IO;
-
-namespace Cassette.CDN
+﻿namespace Cassette.CDN
 {
     public interface ICdnBundle
     {

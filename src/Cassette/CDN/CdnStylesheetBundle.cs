@@ -1,6 +1,5 @@
 ﻿using System;
 using Cassette.BundleProcessing;
-using Cassette.IO;
 using Cassette.Stylesheets;
 
 namespace Cassette.CDN

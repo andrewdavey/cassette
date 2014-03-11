@@ -1,5 +1,3 @@
-using Cassette.Stylesheets;
-
 namespace Cassette.CDN
 {
     public static class CdnBundleExtensions
