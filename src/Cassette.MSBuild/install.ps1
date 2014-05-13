@@ -33,5 +33,5 @@ $buildProject = Get-MSBuildProject
 $target = $buildProject.Xml.AddTarget("Bundle")
 $target.AfterTargets = "Build"
 $task = $target.AddTask("Exec")
-$task.SetParameter("Command", '$(msbuildtoolspath)\msbuild.exe $(ProjectDirectory)cassette.targets /p:OutputPath=$(OutputPath) /t:Bundle /nr:false')
+$task.SetParameter("Command", '"$(msbuildtoolspath)\msbuild.exe" $(ProjectDirectory)cassette.targets /p:OutputPath=$(OutputPath) /t:Bundle /nr:false')
 $project.Save()
