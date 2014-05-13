@@ -21,7 +21,7 @@ namespace Cassette.Stylesheets
         }
 
         static readonly Regex CssUrlRegex = new Regex(
-            @"\b url \s* \( \s* (?<quote>['""]?) (?<url>.*?) \<quote> \s* \)",
+            @"\b url \s* \( \s* (?<quote>['""]?) (?<url>.*?) \k<quote> \s* \)",
             RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
         );
         static readonly Regex AbsoluteUrlRegex = new Regex(
