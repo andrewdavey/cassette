@@ -29,7 +29,16 @@ namespace Cassette.MSBuild
         {
             using (var host = new MSBuildHost(source, bin, output, appVirtualPath, includeRawFiles, taskLoggingHelper))
             {
-                host.Initialize();
+                try
+                {
+                    host.Initialize();
+                }
+                catch (Exception exception)
+                {
+                    taskLoggingHelper.LogError(exception.ToString());
+                    throw;
+                }
+                
                 host.Execute();
             }
         }
