@@ -2,7 +2,6 @@
     ViewBag.Title = "Cassette | Donate";
     ViewBag.Section = "donate";
     ViewBag.Description = "Cassette has an awesome community of contributors. If you like Cassette, we'd love you to get involved!";
-    Bundles.Reference("http://gitforked.com/api/1.1/button.js");
 }
 
 <div class="main">
@@ -45,7 +44,6 @@
                     <td class="time-area">
                         <h2>Give Time</h2>
                         <p>Want to work on a feature, fix a bug, tweak the docs or improve the code? <a target="_blank" href="http://github.com/andrewdavey/cassette">Grab the source code</a>.</p>
-                        <p class="fork"><a href="https://github.com/andrewdavey/cassette" class="gitforked-button gitforked-forks gitforked-watchers">Fork</a></p>
                         <p><strong>Awesome GitHub contributors:</strong></p>
                         <ul class="contributors">
                             @foreach (var contributor in ViewBag.Contributors)
