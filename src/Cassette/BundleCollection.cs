@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Cassette.CDN;
 using Cassette.IO;
 using Cassette.Utilities;
 using Trace = Cassette.Diagnostics.Trace;
@@ -477,6 +478,55 @@ namespace Cassette
             bundleDescriptor.FallbackCondition = localAssetSettings.FallbackCondition;
             bundleDescriptor.ExternalUrl = url;
             var bundle = bundleFactory.CreateBundle(localAssetSettings.Path, files, bundleDescriptor);
+            if (customizeBundle != null) customizeBundle(bundle);
+            Add(bundle);
+        }
+
+        public void AddCdnUrlWithLocalAssets<T>(string alias, string cdnRoot, string cacheRoot, LocalAssetSettings localAssetSettings, Action<Bundle> customizeBundle = null)
+            where T : Bundle, IExternalBundle, ICdnBundle
+        {
+            var existingBundle = bundles.FirstOrDefault(
+                b => b.ContainsPath(PathUtilities.AppRelative(localAssetSettings.Path))
+            );
+            if (existingBundle != null)
+            {
+                Remove(existingBundle);
+            }
+
+            var bundleFactory = bundleFactoryProvider.GetBundleFactory<T>();
+            var sourceDirectory = settings.SourceDirectory;
+            IEnumerable<IFile> files;
+            BundleDescriptor bundleDescriptor;
+
+            if (sourceDirectory.DirectoryExists(localAssetSettings.Path))
+            {
+                var fileSearch = localAssetSettings.FileSearch ?? fileSearchProvider.GetFileSearch(typeof(T));
+                var directory = sourceDirectory.GetDirectory(localAssetSettings.Path);
+                files = fileSearch.FindFiles(directory);
+
+                var descriptorFile = TryGetDescriptorFile<T>(directory);
+                bundleDescriptor = ReadOrCreateBundleDescriptor(descriptorFile);
+            }
+            else
+            {
+                var singleFile = sourceDirectory.GetFile(localAssetSettings.Path);
+                if (singleFile.Exists)
+                {
+                    files = new[] { singleFile };
+                    bundleDescriptor = new BundleDescriptor { AssetFilenames = { "*" } };
+                }
+                else
+                {
+                    throw new DirectoryNotFoundException(string.Format("File or directory not found: \"{0}\"", localAssetSettings.Path));
+                }
+            }
+
+            bundleDescriptor.FallbackCondition = localAssetSettings.FallbackCondition;
+            bundleDescriptor.ExternalUrl = alias;
+            var bundle = bundleFactory.CreateBundle(alias, files, bundleDescriptor);
+            bundle.CdnRoot = cdnRoot;
+            bundle.CdnCacheRoot = cacheRoot;
+
             if (customizeBundle != null) customizeBundle(bundle);
             Add(bundle);
         }

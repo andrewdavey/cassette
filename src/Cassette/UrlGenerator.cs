@@ -65,8 +65,8 @@ namespace Cassette
             }
 
             // "~\example\image.png" --> "/example/image-hash.png"
-            var path = ConvertToForwardSlashes(filename).Substring(1);
-            path = UriEscapePathSegments(path);
+            var path = PathUtilities.ConvertToForwardSlashes(filename).Substring(1);
+            path = PathUtilities.UriEscapePathSegments(path);
             
             var index = path.LastIndexOf('.');
             if (index >= 0)
@@ -89,7 +89,7 @@ namespace Cassette
                 throw new ArgumentException("Filename must be application relative (starting with '~'). Filename: "+filename, "filename");
             }
 
-            var path = ConvertToForwardSlashes(filename).Substring(1);
+            var path = PathUtilities.ConvertToForwardSlashes(filename).Substring(1);
             var url = cassetteHandlerPrefix + "cached" + path;
             return urlModifier.Modify(url);
         }
@@ -98,22 +98,6 @@ namespace Cassette
         {
             var url = applicationRelativePath.TrimStart('~', '/');
             return urlModifier.Modify(url);
-        }
-
-        string ConvertToForwardSlashes(string path)
-        {
-            return path.Replace('\\', '/');
-        }
-
-        /// <summary>
-        /// Escape each part of the URL between the slashes.
-        /// </summary>
-        string UriEscapePathSegments(string path)
-        {
-            return string.Join(
-                "/", 
-                path.Split('/').Select(Uri.EscapeDataString).ToArray()
-            );
         }
     }
 }

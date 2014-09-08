@@ -63,9 +63,9 @@ namespace Cassette.Scripts
             }
         }
 
-        public string ExternalUrl
+        public virtual string ExternalUrl
         {
-            get { return url; }
+            get {return url;}
         }
 
         public IBundleHtmlRenderer<ScriptBundle> FallbackRenderer { get; set; }
@@ -123,7 +123,7 @@ namespace Cassette.Scripts
             {
                 html.AppendFormat(
                     HtmlConstants.ScriptHtml,
-                    bundle.url,
+                    bundle.ExternalUrl,
                     bundle.HtmlAttributes.CombinedAttributes
                 );
             }
@@ -132,7 +132,7 @@ namespace Cassette.Scripts
             {
                 html.AppendFormat(
                     HtmlConstants.ScriptHtmlWithFallback,
-                    bundle.url,
+                    bundle.ExternalUrl,
                     bundle.HtmlAttributes.CombinedAttributes,
                     bundle.FallbackCondition,
                     CreateFallbackScripts(bundle),
