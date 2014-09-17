@@ -18,8 +18,7 @@ namespace Cassette
         public virtual T CreateBundle(string path, IEnumerable<IFile> allFiles, BundleDescriptor bundleDescriptor)
         {
             var bundle = CreateBundleCore(path, bundleDescriptor);
-            var filesArray = allFiles.ToArray();
-            AddAssets(bundle, filesArray, bundleDescriptor.AssetFilenames);
+            AddAssets(bundle, allFiles, bundleDescriptor.AssetFilenames);
             AddReferences(bundle, bundleDescriptor.References);
             SetIsSortedIfExplicitFilenames(bundle, bundleDescriptor.AssetFilenames);
             if (bundleDescriptor.IsFromFile)
@@ -31,7 +30,7 @@ namespace Cassette
 
         protected abstract T CreateBundleCore(string path, BundleDescriptor bundleDescriptor);
 
-        void AddAssets(Bundle bundle, IFile[] allFiles, IEnumerable<string> descriptorFilenames)
+        void AddAssets(Bundle bundle, IEnumerable<IFile> allFiles, IEnumerable<string> descriptorFilenames)
         {
             var remainingFiles = new HashedSet<IFile>(allFiles);
             var filesByPath = allFiles.ToDictionary(f => f.FullPath, StringComparer.OrdinalIgnoreCase);

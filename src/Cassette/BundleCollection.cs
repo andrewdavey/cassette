@@ -1,3 +1,5 @@
+using Cassette.IO;
+using Cassette.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,8 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Cassette.IO;
-using Cassette.Utilities;
 using Trace = Cassette.Diagnostics.Trace;
 
 #if NET35
@@ -22,12 +22,12 @@ namespace Cassette
         readonly List<Bundle> bundles = new List<Bundle>();
         readonly CassetteSettings settings;
         readonly IFileSearchProvider fileSearchProvider;
-        readonly IBundleFactoryProvider bundleFactoryProvider; 
+        readonly IBundleFactoryProvider bundleFactoryProvider;
         readonly IBundleCollectionInitializer bundleCollectionInitializer;
         readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
         Exception initializationException;
-       
+
 
         public BundleCollection(CassetteSettings settings, IFileSearchProvider fileSearchProvider, IBundleFactoryProvider bundleFactoryProvider, IBundleCollectionInitializer bundleCollectionInitializer)
         {
@@ -73,7 +73,7 @@ namespace Cassette
                     bundleCollectionInitializer.Initialize(this);
                 }
 
-                if(InitializationException != null)
+                if (InitializationException != null)
                     throw new Exception("Bundle collection rebuild failed. See inner exception for details.", InitializationException);
 
                 // if we fixed the build error we need that lock back!
@@ -309,9 +309,47 @@ namespace Cassette
             if (descriptor == null)
             {
                 var descriptorFile = TryGetDescriptorFile<T>(directory);
+
                 descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
+
+                if (descriptorFile.Exists)
+                {
+                    AddRelativePathReferencedFiles(descriptor, ref allFiles);
+                }
             }
+
             return bundleFactory.CreateBundle(applicationRelativePath, allFiles, descriptor);
+        }
+
+        void AddRelativePathReferencedFiles(BundleDescriptor descriptor, ref IEnumerable<IFile> allFiles)
+        {
+            if (descriptor.AssetFilenames.Count > 0)
+            {
+                List<IFile> filesList = null;
+
+                var filesByPath = allFiles.ToDictionary(f => f.FullPath, StringComparer.OrdinalIgnoreCase);
+
+                var source = settings.SourceDirectory;
+
+                foreach (var filename in descriptor.AssetFilenames)
+                {
+                    if (filename.IndexOf('*') == -1 && !filesByPath.ContainsKey(filename))
+                    {
+                        var file = source.GetFile(filename);
+
+                        if (file.Exists)
+                        {
+                            if (filesList == null)
+                                filesList = new List<IFile>(allFiles);
+
+                            filesList.Add(file);
+                        }
+                    }
+                }
+
+                if (filesList != null)
+                    allFiles = filesList;
+            }
         }
 
         BundleDescriptor ReadOrCreateBundleDescriptor(IFile descriptorFile)
@@ -405,10 +443,15 @@ namespace Cassette
             foreach (var directory in directories)
             {
                 Trace.Source.TraceInformation(string.Format("Creating {0} for {1}", typeof(T).Name, directory.FullPath));
-                var allFiles = fileSearch.FindFiles(directory).ToArray();
+                var allFiles = fileSearch.FindFiles(directory);
 
                 var descriptorFile = TryGetDescriptorFile<T>(directory);
                 var descriptor = ReadOrCreateBundleDescriptor(descriptorFile);
+
+                if (descriptorFile.Exists)
+                {
+                    AddRelativePathReferencedFiles(descriptor, ref allFiles);
+                }
 
                 if (!allFiles.Any() && descriptor.ExternalUrl == null) continue;
 
@@ -913,7 +956,7 @@ namespace Cassette
         static IEnumerable<Bundle> OrderForEqualityComparison(IEnumerable<Bundle> bundlesToOrder)
         {
             return bundlesToOrder.OrderBy(b => b.GetType().FullName).ThenBy(b => b.Path);
-        } 
+        }
 
         public IEnumerator<Bundle> GetEnumerator()
         {
