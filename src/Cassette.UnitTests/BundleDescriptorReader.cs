@@ -158,6 +158,14 @@ namespace Cassette
         }
 
         [Fact]
+        public void GivenPageLocationSection_WhenRead_ThenResultHasPageLocation()
+        {
+            var reader = GetReader("[bundle]\npageLocation = head");
+            var result = reader.Read();
+            result.PageLocation.ShouldEqual("head");
+        }
+
+        [Fact]
         public void GivenExternalSectionWithMoreThanOneFallbackConditionLine_WhenRead_ThenThrowException()
         {
             var reader = GetReader("[external]\nurl = http://test.com/api1.js\nfallbackCondition = !window.API\nfallbackCondition = !window.API");
