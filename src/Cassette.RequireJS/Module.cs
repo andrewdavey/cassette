@@ -14,7 +14,6 @@ namespace Cassette.RequireJS
             Asset = asset;
             Bundle = bundle;
             ModulePath = ConvertAssetPathToModulePath(asset.Path);
-            Alias = ConvertAssetPathToAlias(asset.Path);
         }
 
         public IAsset Asset { get; private set; }
