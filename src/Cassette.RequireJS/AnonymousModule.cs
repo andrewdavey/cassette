@@ -18,7 +18,7 @@ namespace Cassette.RequireJS
             return () =>
             {
                 var source = openSourceStream().ReadToEnd();
-                var output = ModulePathInserter.InsertModulePathIntoDefineCall(source, ModulePath);
+                var output = ModulePathInserter.InsertModulePathIntoDefineCall(source, ModuleName);
                 return output.AsStream();
             };
         }

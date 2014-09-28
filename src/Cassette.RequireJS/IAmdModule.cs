@@ -14,6 +14,11 @@
         /// Gets a JavaScript identifier used as a function parameter by modules that import this module.
         /// </summary>
         string Alias { get; set; }
+
+        /// <summary>
+        /// The AMD module name. Used 'Alias' if it's specified, otherwise 'ModulePath' is used.
+        /// </summary>
+        string ModuleName { get; }
         
         /// <summary>
         /// Gets the asset that defines this module.

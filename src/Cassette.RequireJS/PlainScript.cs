@@ -69,6 +69,17 @@ namespace Cassette.RequireJS
             }
         }
 
+        IEnumerable<string> DependencyNames
+        {
+            get
+            {
+                return Asset.References
+                    .Select(r => r.ToPath)
+                    .Where(p => modules.RequireJsScriptPath != p)
+                    .Select(p => modules[p].ModuleName);                
+            }
+        } 
+
         class TopLevelVariableFinder : TreeVisitor
         {
             public static bool JavaScriptContainsTopLevelVariable(string javaScriptSource, string variableName)
@@ -103,8 +114,8 @@ namespace Cassette.RequireJS
         {
             return string.Format(
                 "define({0},{1},function({2}){{{3}\r\n}});",
-                jsonSerializer.Serialize(ModulePath),
-                jsonSerializer.Serialize(DependencyPaths),
+                jsonSerializer.Serialize(ModuleName),
+                jsonSerializer.Serialize(DependencyNames),
                 string.Join(",", DependencyAliases),
                 source
             );
@@ -114,8 +125,8 @@ namespace Cassette.RequireJS
         {
             return string.Format(
                 "define({0},{1},function({2}){{{3}\r\nreturn {4};}});",
-                jsonSerializer.Serialize(ModulePath),
-                jsonSerializer.Serialize(DependencyPaths),
+                jsonSerializer.Serialize(ModuleName),
+                jsonSerializer.Serialize(DependencyNames),
                 string.Join(",", DependencyAliases),
                 source,
                 export

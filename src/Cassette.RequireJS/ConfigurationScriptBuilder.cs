@@ -25,7 +25,7 @@ namespace Cassette.RequireJS
 
         object ConfigurationObject(IEnumerable<IAmdModule> modules)
         {
-            var paths = modules.ToDictionary(m => m.ModulePath, CreateUrl);
+            var paths = modules.ToDictionary(m => m.ModuleName, CreateUrl);
             return new { paths };
         }
 
