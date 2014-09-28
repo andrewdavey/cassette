@@ -21,6 +21,13 @@ namespace Cassette.RequireJS
         public Bundle Bundle { get; private set; }
         public string ModulePath { get; set; }
         public string Alias { get; set; }
+        public string ModuleName
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(Alias) ? ModulePath : Alias;
+            }
+        }
 
         static string ConvertAssetPathToModulePath(string assetPath)
         {
