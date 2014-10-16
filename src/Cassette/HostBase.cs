@@ -107,7 +107,7 @@ namespace Cassette
 
         void RegisterUrlGenerator()
         {
-            container.Register<IUrlGenerator>((c, n) => new UrlGenerator(c.Resolve<IUrlModifier>(), c.Resolve<CassetteSettings>().SourceDirectory, "cassette.axd/"));
+            container.Register<IUrlGenerator>((c, n) => new UrlGenerator(c.Resolve<IUrlModifier>(), c.Resolve<CassetteSettings>().SourceDirectory, "cassette.axd/", c.Resolve<CassetteSettings>().IsFileNameWithHashDisabled));
         }
 
         void RegisterCache()

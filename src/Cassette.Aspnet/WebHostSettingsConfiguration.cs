@@ -30,6 +30,9 @@ namespace Cassette.Aspnet
             settings.CacheDirectory = GetCacheDirectory(configurationSection);
             settings.IsFileSystemWatchingEnabled = TrustLevel.IsFullTrust() && !IsStaticCacheManifest(settings);
 
+            // only allow this setting to be specified from the config settings when in debug mode
+            settings.IsFileNameWithHashDisabled = settings.IsDebuggingEnabled && configurationSection.DisableHash;
+
             IsStaticCacheManifest(settings);
 
             // Include the virtual directory so that if the application is moved to 

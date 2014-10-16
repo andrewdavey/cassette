@@ -10,20 +10,22 @@ namespace Cassette.Aspnet
         readonly HttpContextBase context;
         readonly IFileAccessAuthorization fileAccessAuthorization;
         readonly IFileContentHasher fileContentHasher;
+        readonly CassetteSettings cassetteSettings;
         readonly HttpRequestBase request;
         readonly MimeMappingWrapper mimeMapping;
         readonly Action<string> rewritePath;
 
-        public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization, IFileContentHasher fileContentHasher)
-            : this(context, fileAccessAuthorization, fileContentHasher, HttpRuntime.UsingIntegratedPipeline)
+        public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization, IFileContentHasher fileContentHasher, CassetteSettings cassetteSettings)
+            : this(context, fileAccessAuthorization, fileContentHasher, cassetteSettings, HttpRuntime.UsingIntegratedPipeline)
         {
         }
 
-        public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization, IFileContentHasher fileContentHasher, bool usingIntegratedPipeline)
+        public RawFileRequestRewriter(HttpContextBase context, IFileAccessAuthorization fileAccessAuthorization, IFileContentHasher fileContentHasher, CassetteSettings cassetteSettings, bool usingIntegratedPipeline)
         {
             this.context = context;
             this.fileAccessAuthorization = fileAccessAuthorization;
             this.fileContentHasher = fileContentHasher;
+            this.cassetteSettings = cassetteSettings;
             request = context.Request;
 
             // RewritePath doesn't work as expected in IIS 6 or IIS 7 Classic pipeline
@@ -113,6 +115,9 @@ namespace Cassette.Aspnet
 
         string RemoveHashFromPath(string path)
         {
+            if (cassetteSettings.IsFileNameWithHashDisabled)
+                return path;
+
             // "example/image-hash.png" -> "example/image.png"
             // "example/image-hash.png-foo" -> "example/image.png-foo"
             // "example/image-hash" -> "example/image"
