@@ -366,6 +366,23 @@ namespace Cassette
             builder.GetBundles("b").Single().ShouldBeSameAs(b);
         }
 
+        [Fact]
+        public void GivenBundleReferencedAtMultipleLevelsOfDependencyHierarchy_ThenGetBundlesReturnsItBeforeAllDependents()
+        {
+            var a = new TestableBundle("~/a");
+            var b = new TestableBundle("~/b");
+            var c = new TestableBundle("~/c");
+            c.AddReference("~/b");
+            c.AddReference("~/a");
+            b.AddReference("~/a");
+
+            AddBundles(a, b, c);
+
+            builder.Reference("~/c");
+
+            builder.GetBundles(null).ShouldEqual(new[] { a, b, c });
+        }
+
         IBundlePipeline<T> StubPipeline<T>() where T : Bundle
         {
             return Mock.Of<IBundlePipeline<T>>();

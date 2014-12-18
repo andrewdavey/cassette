@@ -133,6 +133,8 @@
     <Compile Include="IBundleDeserializer.cs" />
     <Compile Include="IFileContentHasher.cs" />
     <Compile Include="IJsonSerializer.cs" />
+    <Compile Include="IOrderedDependencyReceiver.cs" />
+    <Compile Include="OrderedDependencySet.cs" />
     <Compile Include="RawFileReferenceFinder.cs" />
     <Compile Include="ResourceAsset.cs" />
     <Compile Include="RuntimeBundleCollectionInitializer.cs" />
