@@ -790,7 +790,7 @@ namespace Cassette
             ).ToDictionary(x => x.bundle, x => x.references);
         }
 
-        IEnumerable<AssetReference> GetNonSameBundleAssetReferences(Bundle bundle)
+        static IEnumerable<AssetReference> GetNonSameBundleAssetReferences(Bundle bundle)
         {
             var collector = new BundleReferenceCollector(AssetReferenceType.DifferentBundle, AssetReferenceType.Url);
             bundle.Accept(collector);
@@ -815,69 +815,26 @@ namespace Cassette
             }
         }
 
-        internal IEnumerable<Bundle> FindAllReferences(Bundle bundle)
+        internal void CollectAllReferences<T>(Bundle bundle, Func<Bundle, T> map, IOrderedDependencyReceiver<T> set)
         {
             if (bundleImmediateReferences == null)
             {
-                throw new InvalidOperationException("BuildReferences must be called once before FindAllReferences can be called.");
+                throw new InvalidOperationException("BuildReferences must be called once before CollectAllReferences can be called.");
             }
-
-            var set = new HashedSet<Bundle>();
-            AddReferencedBundlesToSet(bundle, set);
-            return set;
+            AddReferencedBundlesToSet(bundle, map, set);
         }
 
-        internal IEnumerable<Bundle> SortBundles(IEnumerable<Bundle> bundles)
-        {
-            var partitioned = PartitionByBaseType(bundles).SelectMany(b => b).ToArray();
-            var graph = BuildBundleGraph(partitioned);
-            return graph.TopologicalSort();
-        }
-
-        IEnumerable<IEnumerable<Bundle>> PartitionByBaseType(IEnumerable<Bundle> bundlesToSort)
-        {
-#if NET35
-            return bundlesToSort.GroupBy(GetBundleBaseType).Select(x=>x.AsEnumerable());
-#else
-            return bundlesToSort.GroupBy(GetBundleBaseType);
-#endif
-        }
-
-        Type GetBundleBaseType(Bundle bundle)
-        {
-            var type = bundle.GetType();
-            while (type.BaseType != typeof(Bundle))
-            {
-                type = type.BaseType;
-            }
-            return type;
-        }
-
-        Graph<Bundle> BuildBundleGraph(IEnumerable<Bundle> all)
-        {
-            var bundles = new HashedSet<Bundle>(all.ToArray());
-            return new Graph<Bundle>(
-                bundles,
-                bundle =>
-                {
-                    HashedSet<Bundle> references;
-                    if (bundleImmediateReferences.TryGetValue(bundle, out references))
-                    {
-                        return references.Intersect(bundles);
-                    }
-                    return Enumerable.Empty<Bundle>();
-                }
-            );
-        }
-
-        void AddReferencedBundlesToSet(Bundle referencer, HashedSet<Bundle> all)
+        void AddReferencedBundlesToSet<T>(Bundle referencer, Func<Bundle, T> map, IOrderedDependencyReceiver<T> set)
         {
             HashedSet<Bundle> referencedBundles;
             if (!bundleImmediateReferences.TryGetValue(referencer, out referencedBundles)) return;
             foreach (var referencedBundle in referencedBundles)
             {
-                all.Add(referencedBundle);
-                AddReferencedBundlesToSet(referencedBundle, all);
+                var item = map(referencedBundle);
+
+                IOrderedDependencyReceiver<T> receiver;
+                if (!set.Add(item, out receiver)) continue;
+                AddReferencedBundlesToSet(referencedBundle, map, receiver);
             }
         }
 
@@ -904,10 +861,7 @@ namespace Cassette
 
         public bool Equals(IEnumerable<Bundle> otherBundles)
         {
-            return Enumerable.SequenceEqual(
-                OrderForEqualityComparison(bundles),
-                OrderForEqualityComparison(otherBundles)
-            );
+            return OrderForEqualityComparison(bundles).SequenceEqual(OrderForEqualityComparison(otherBundles));
         }
 
         static IEnumerable<Bundle> OrderForEqualityComparison(IEnumerable<Bundle> bundlesToOrder)
