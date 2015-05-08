@@ -58,8 +58,8 @@ namespace Cassette.Aspnet
 
         bool IsHtmlResponse(HttpContextBase httpContext)
         {
-            return httpContext.Response.ContentType == "text/html" ||
-                   httpContext.Response.ContentType == "application/xhtml+xml";
+            return httpContext.Response.ContentType.StartsWith("text/html") ||
+                   httpContext.Response.ContentType.StartsWith("application/xhtml+xml");
         }
     }
 }
