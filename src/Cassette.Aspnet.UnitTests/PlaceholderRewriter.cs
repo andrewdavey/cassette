@@ -50,10 +50,34 @@ namespace Cassette.Aspnet
         }
 
         [Fact]
+        public void GivenWithCharsetCanRewriteOutput_WhenRewriteOutput_ThenPlaceholderReplacingResponseFilterSetForResponse()
+        {
+            settings.IsHtmlRewritingEnabled = true;
+            ContentType("text/html; charset=utf-8");
+            StatusCode(200);
+
+            rewriter.RewriteOutput();
+
+            response.VerifySet(r => r.Filter = It.IsAny<PlaceholderReplacingResponseFilter>());
+        }
+
+        [Fact]
         public void GivenXhtmlContentType_WhenRewriteOutput_ThenPlaceholderReplacingResponseFilterSetForResponse()
         {
             settings.IsHtmlRewritingEnabled = true;
             ContentType("application/xhtml+xml");
+            StatusCode(200);
+
+            rewriter.RewriteOutput();
+
+            response.VerifySet(r => r.Filter = It.IsAny<PlaceholderReplacingResponseFilter>());
+        }
+
+        [Fact]
+        public void GivenXhtmlContentTypeWithCharset_WhenRewriteOutput_ThenPlaceholderReplacingResponseFilterSetForResponse()
+        {
+            settings.IsHtmlRewritingEnabled = true;
+            ContentType("application/xhtml+xml; charset=utf-8");
             StatusCode(200);
 
             rewriter.RewriteOutput();
