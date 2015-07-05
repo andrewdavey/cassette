@@ -1,0 +1,170 @@
+﻿/* @reference "page.css"; */
+
+#documentationheader {
+    color: #fff;
+    font-size: 2em;
+    text-shadow: 0 1px 0 #323231;
+    margin: .75em 0;
+    font-weight: bold;   
+}
+
+.documentation h1 {
+    color: #03517e;
+    font-size: 1.4em;
+    margin: 0px 0px .75em 0px;
+    text-shadow: none;
+}
+
+.documentation h2 {
+    font-size: 1em;
+    margin: 0px 0px .75em 0px;
+    color: #171717;
+}
+
+.main .documentation {
+    display: table;
+    width: 100%;
+    padding: 0;
+}
+
+.documentation .tree {
+    display: table-cell;
+    padding: 2.5em 1.7em;
+    width: 210px;
+    border-right: 1px solid #ccc;
+    vertical-align: top;
+    background-color: #f0f0f0;
+    border-radius: 10px 0 0 10px;
+    font-size: 11pt;
+}
+
+.tree ul {
+    padding: 0;
+    margin: 0;
+}
+
+.tree li {
+    margin: 0;
+    display: block;
+    list-style-type: none;
+    background-image: url(images/page.png);
+    background-repeat: no-repeat;
+    background-position: left 0;
+    padding: 0 0 20px 20px;
+    line-height: 16px;
+}
+
+.tree ul ul {
+    margin-top: 14px;
+}
+
+.tree ul ul li {
+    padding: 0 0 12px 20px;
+}
+
+.tree ul ul li.last-child {
+    padding: 0 0 2px 20px;
+}
+
+.tree a {
+    color: #000000;
+}
+
+.tree a.activedoc {
+    font-weight: bold;
+    text-decoration: none;
+    opacity: 1;
+}
+
+.documentation .item {
+    display: table-cell;
+    padding: 1.8em 2.3em;
+    vertical-align: top;
+}
+
+.main pre + h2 {
+    margin-top: 1.8em;
+}
+
+.main table + h2 {
+    margin-top: 1.8em;
+}
+
+.main pre + p {
+    margin-top: 1.4em;
+}
+
+.documentation .minor {
+    margin-top: 0px;
+    font-style: italic;
+}
+
+.documentation pre {
+    border: 1px solid #ccc;
+    margin-bottom: .5em;
+    padding: 15px 20px;
+}
+
+.documentation table {
+    margin-bottom: 1em;
+}
+
+.documentation td, .documentation th {
+    font-size: .9em;
+    padding: .2em .4em;
+    border: solid 1px #eee;
+}
+
+.documentation th {
+    text-align: left;
+}
+
+#disqus_thread {
+    margin-top: 1.8em;
+}
+
+.documentation p + h2, .main ul + h2 {
+    margin-top: 1.5em; 
+}
+
+.documentation p + h3, .ul + h3 {
+    margin: 1.5em 0 .75em 0;
+}
+
+/* TUTORIALS */
+
+ul.tutorials {
+    padding-left: 0;
+}
+
+ul.tutorials li {
+    list-style-type: none;
+    font-size: 1em;
+    padding: 0;
+}
+
+ul.tutorials img {
+    float: left;
+    border: 1px solid #D0D0D0;
+    padding: 1px;
+    vertical-align: middle;
+    background-color: white;
+    margin: 1px 5px 0 0;
+}
+
+h2.title {
+    font-size: 1.1em;
+    margin-bottom: 0.3em;
+}
+
+p.author {
+    margin: 0;
+    padding: 0;
+    font-size: 0.8em;
+}
+
+p.author a {    
+    padding-right: .1em; /* Stops last letter being partially hidden because of opacity settings */
+    color: #000;
+    text-decoration: none;
+}

@@ -1,0 +1,115 @@
+﻿/* COPYRIGHT & CREDIT */
+
+.footer {
+    width: 880px;
+    margin: 30px auto;
+    position: relative;
+}
+
+.footer p {
+    font-size: 0.9em;
+    color: #7f7f7f;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+p.credits {
+    font-size: 0.8em;
+}
+
+.footer a {
+    color: #222222;
+    text-decoration: none;
+}
+
+/* FOOTER NAVIGATION */
+
+p.footer-navigation {
+    margin-bottom: 1.9em;
+    font-size: 1em;
+}
+
+p.footer-navigation a {
+    text-decoration: underline;
+    padding: 0 .8em;
+}
+
+/* OSI LOGO */
+
+.osi {
+    position: absolute;
+    top: 32px;
+    right: 0;
+    display: block;
+    height: 64px;
+    width: 68px;
+    background-image: url(images/osi-logo-small.png);
+    background-repeat: no-repeat;
+    background-position: right top;
+    opacity: 0.8;
+    filter: alpha(opacity=80); /* IE 7, IE8 */
+    -moz-transition: opacity .5s; /* Firefox */
+    -webkit-transition: opacity .5s; /* Chrome, Safari */
+}
+
+.osi:hover {
+    -moz-transition: opacity 1s; /* Firefox */
+    -webkit-transition: opacity .5s; /* Chrome, Safari */
+}
+
+/* SOCIAL MEDIA ICONS */
+
+.connect {
+    position: absolute;
+    top: 39px;
+    left: 0;
+    width: 200px;
+}
+
+.footer .connect p {
+    font-size: 0.8em;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+}
+
+.footer ul {
+    list-style-type: none;
+    padding: 0;
+    margin: .4em 0 0 0;
+}
+
+.footer li {
+    padding: 0;
+    margin: 0;
+}
+.connectlink {
+    display: block;
+    height: 32px;
+    width: 32px;
+    float: left;
+    margin-right: 6px;
+    opacity: 0.8;
+    filter: alpha(opacity=80); /* IE 7, IE8 */
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+    background-repeat: no-repeat;
+}
+
+.connect-link:hover {
+    opacity: 1;
+    -moz-transition: opacity .5s;
+    -webkit-transition: opacity .5s;
+}
+
+.connectlink.googlegroups {
+    background-image: url(images/googlegroups.png);
+    width: 32px;
+    background-repeat: no-repeat;
+}
+
+.connectlink.twitter {
+    background-image: url(images/twitter.png);
+    width: 32px;
+    background-repeat: no-repeat;
+}

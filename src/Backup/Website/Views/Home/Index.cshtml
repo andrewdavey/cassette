@@ -1,0 +1,218 @@
+﻿@{
+    ViewBag.Description = "Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS, Sass and HTML templates to help you manage your client-side code.";
+    ViewBag.Title = "Cassette | Asset bundling for .NET web apps";
+    ViewBag.Section = "home";
+    Bundles.Reference("assets/scripts/home");
+}
+<div class="banner">
+
+        <h1>Asset bundling for .NET web apps</h1>
+        <div class="intro">
+            <p>Dumping your scripts into a folder is no way to manage your client-side code!</p>
+            <p>Cassette automatically sorts, concatenates, minifies, caches and versions all your JavaScript, CoffeeScript, CSS, LESS, Sass and HTML templates.</p>
+            <p>It's flexible, extensible and optimized for developer happiness.</p>
+            <p><a class="action" href="@Url.RouteUrl("Download")"><span class="download-button">Download</span></a></p>
+        </div>
+
+        @Html.Partial("_Share")
+        
+        <div class="favtweets">
+        
+            <div class="tweets">
+                <p class="tweet">&#8220;Yeah! Getting some time to experiment with <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> to improve the performance of our websites even more!&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/jaspio" target="_blank">&#64;jaspio</a></p>                
+                <p class="tweet">&#8220;Thanks for making my life as dev so easy!! getcassette.net via <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a>&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/peitor" target="_blank">&#64;peitor</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;I'm in love with Cassette&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/schummbo" target="_blank">&#64;schummbo</a></p>                
+                <p class="tweet">&#8220;<a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> is a fantastic &#35;asp.net-mvc asset manager. Great features, great docs, and a beautiful website too. Thanks getcassette.net&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/mmurch" target="_blank">&#64;mmurch</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;Excellent! Automagic asset (scripts, CSS, Less, CoffeeScript) management for .NET web apps getcassette.net via <a href="http://twitter.com/#!/getcassette" target="_blank">&#64;getcassette</a>&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/shanselman" target="_blank">&#64;shanselman</a></p>                
+                <p class="tweet">&#8220;man, <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a>, please don't be too good to be true, you look so wonderful&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/mmurch" target="_blank">&#64;mmurch</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;Loving Cassette, every <a href="http://www.asp.net" target="_blank">asp.net</a> project should use it. It's so easy, there's no excuse not to getcassette.net</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/tommysqueak" target="_blank">&#64;tommysqueak</a></p>
+                <p class="tweet">&#8220;My master layout has never been so clean. getcassette.net via <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a>&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/quentinstarin" target="_blank">&#64;quentinstarin</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;<a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> goes v1.0 and totally MIT license. Now you have no excuse not to use it in every project. &#35;dotnet &#35;nuget &#35;ballin &#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/kamranayub" target="_blank">&#64;kamranayub</a></p>
+                <p class="tweet">&#8220; <a href="http://www.twitter.com/derickbailey" target="_blank">&#64;derickbailey</a> <a href="http://www.twitter.com/JustinEtheredge" target="_blank">&#64;JustinEtheredge</a> we use <a href="http://www.twitter.com/getcassette" target="_blank">&#64;getcassette</a> in every one of our projects now. Great development story. &#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/dotnetchris" target="_blank">&#64;dotnetchris</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;IMO if you're using <a href="http://www.asp.net/" target="_blank">ASP.NET</a> MVC without <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> then you're doing it wrong.&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/stucampbell" target="_blank">&#64;stucampbell</a></p>
+                <p class="tweet">&#8220;Tested <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> and very impressed so far. Get the docs finished and it's nearly perfect. Should be bundled with ASP.NET!&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/kfuglsang" target="_blank">&#64;kfuglsang</a></p>
+            </div>
+
+            <div class="tweets" style="display: none;">
+                <p class="tweet">&#8220;After a little configuration and with help from its owner <a href="http://twitter.com/#!/andrewdavey" target="_blank">&#64;andrewdavey</a> Cassette is working extremely well! &#35;minification &#35;css &#35;javascript&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/fransstridh" target="_blank">&#64;fransstridh</a></p>
+                <p class="tweet">&#8220;Nice naming of <a href="http://twitter.com/getcassette" target="_blank">&#64;getcassette</a> with "asset" --> "cASSETte" &#35;clever&#8221;</p>
+                <p class="tweeter">via <a href="http://www.twitter.com/jeffhandley" target="_blank">&#64;JeffHandley</a></p>
+            </div>
+
+        </div>
+
+</div>
+
+<div class="home-main">
+    
+    <div class="section">
+        <div class="file-details">
+            <h2>Simple install via nuget</h2>
+            <p>Also choose from a wide selection of plug-ins that enhance Cassette.</p>
+        </div>
+        <div class="file">
+            <pre style="font-size: 1.5em; margin-bottom: 1em"><code>Install-Package Cassette.Aspnet</code></pre>
+            <pre><code>Install-Package Cassette.Less
+Install-Package Cassette.Sass
+Install-Package Cassette.CoffeeScript</code></pre>
+            <p><a href="@Url.RouteUrl("Documentation", new{version="v2",path="plugins"})">View all plug-ins</a></p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="file-details">
+            <h2>Elegant configuration API</h2>
+            <p>Tell Cassette how to bundle your assets with just a few lines of code.</p>
+            <p>Cassette does the hard work of finding the files, sorting, compiling and minifying.</p>
+        </div>
+        <div class="file">
+            <pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">IConfiguration</span>&lt;<span class="code-type">BundleCollection</span>&gt;
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles)
+    {
+        bundles.Add&lt;<code class="code-type">StylesheetBundle</code>&gt;(<span class="string">"Content"</span>, bundle => bundle.EmbedImages());
+        bundles.AddPerSubDirectory&lt;<code class="code-type">ScriptBundle</code>&gt;(<span class="string">"Scripts"</span>);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        
+        <div class="file-details">
+            <h2>Reference and Render</h2>
+            <p>Cassette's <code>Bundles</code> helper works in view pages, layouts and partials.</p>
+            <p>Reference the assets or bundles you directly require.</p>
+            <p>Tell Cassette where to render the HTML.</p>
+        </div>
+
+        <div class="file">
+            <pre><code><span class="code-tag">@@{</span>
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"content"</span>);
+  <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/app/page.js"</span>);
+<span class="code-tag">}</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+  <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderStylesheets()</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+  ...
+  <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderScripts()</span>
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <div class="file-details">
+            <h2>Debug runtime output</h2>
+            <p>When <strong><code>debug="true"</code></strong> in Web.config:</p>
+            <ul>
+                <li>Cassette detects <a href="@Url.DocumentationUrl("scripts", "v2")">file references</a>.</li>
+                <li>All the required scripts are included in the correct order.</li>
+                <li>The hash of each file is appended to each URL as a "cache-breaker".</li>
+            </ul>
+            <p class="minor">The base-64 encoded SHA-1 hash is used.</p>
+        </div>
+
+        <div class="file">
+            <pre><code><span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">link</span> <span class="attribute">href</span><span class="attribute-value">="/cassette.axd/asset/content/reset.css?3W7p4f6HTcITLRa0Cxw2tJxQQAM="</span> <span class="attribute">rel</span><span class="attribute-value">="stylesheet"</span> <span class="attribute">type</span><span class="attribute-value">="text/css"</span><span class="close-tag">/&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">link</span> <span class="attribute">href</span><span class="attribute-value">="/cassette.axd/asset/content/site.css?X4W1S2W16tuRbadn-SKWmE_nJT0="</span> <span class="attribute">rel</span><span class="attribute-value">="stylesheet"</span> <span class="attribute">type</span><span class="attribute-value">="text/css"</span><span class="close-tag">/&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+  ...
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/lib/jquery.js?JD8viSwogmMYMx55J-RsipVxTjo="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/lib/jquery-ui.js?PlxtfG4Jll0234wePZ3KZGLEHsE="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/app/tools.js?hxLaF5kjfuSZPND55dxgnv8BVos="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/app/widgets.js?vDM6NPLt8F_cyE-4QxtJE-Jj9RY="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/scripts/app/page.js?idIQWW6yfM-kcZLxL4w8sJbmMYA="</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <div class="file-details">
+            <h2>Production runtime output</h2>
+            <p>With a single change to Web.config, <strong><code>debug="false"</code></strong>, Cassette switches into high performance mode.</p>
+            <ul>
+                <li>Cassette <em>concatenates</em> and <em>minifies</em> the scripts into "bundles".</li>
+                <li>HTTP output is <em>compressed</em>.</li>
+                <li>Aggressive cache headers are sent. So browsers download each bundle only once.</li>
+                <li>Hash included in the URL. So new versions have different URLs.</li>
+            </ul>
+        </div>
+
+        <div class="file">
+            <pre><code><span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">link</span> <span class="attribute">href</span><span class="attribute-value">="/cassette.axd/style/1mN6dL9x3GVgFSN2kzWWoPiWukg=/content"</span> <span class="attribute">rel</span><span class="attribute-value">="stylesheet"</span> <span class="attribute">type</span><span class="attribute-value">="text/css"</span><span class="close-tag">/&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+  ...
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/LNWSFkY-CptfRoJ5Tr7AWA3obwY=/scripts/lib"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+  <span class="open-tag">&lt;</span><span class="tag">script</span> <span class="attribute">src</span><span class="attribute-value">="/cassette.axd/script/rAcu6xcghTyKVFDzaXr8obTTJ6Y=/scripts/app"</span> <span class="attribute">type</span><span class="attribute-value">="text/javascript"</span><span class="close-tag">&gt;</span><span class="open-tag">&lt;/</span><span class="tag">script</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <div class="more">
+            <h2>So much more...</h2>
+            <p>This introduction has only scratched the surface of what Cassette can do.</p>
+            <ul>
+                <li>Treat your client-side HTML templates as bundles.</li>
+                <li>Add CoffeeScript support by installing the <code>Cassette.CoffeeScript</code> nuget package.</li>
+                <li>Add <a href="http://www.dotlesscss.org/" target="_blank">Less</a> and <a href="http://sass-lang.com/">Sass</a> support by installing <code>Cassette.Less</code> and <code>Cassette.Sass</code>.</li>
+                <li>Cassette provides extensible bundle "pipelines" that allow full control over how bundles are processed.</li>
+            </ul>
+            <p><strong>Get Cassette!</strong> It's free, open source software, distributed under the <a href="@Url.RouteUrl("Licensing")">MIT License</a>.
+            </p>
+            <p class="last"><a class="action" href="@Url.RouteUrl("Download")"><span class="download-button">Download</span></a></p>
+        </div>
+
+    </div>
+</div>

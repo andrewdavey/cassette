@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Cassette | Using Cassette in MVC";
+    ViewBag.Description = "How to get started with using Cassette in MVC.";
+}
+
+<h1>Using Cassette in MVC</h1>
+<p>
+The Cassette <code>Bundles</code> helper class is in the <code>Cassette.Views</code> namespace.
+The nuget package updates the <code>~\Views\Web.config</code> to make this namespace available in view pages.
+</p>
+<p>Note: If you are using MVC Areas, then you need to edit the <code>Web.config</code> for each area in a similar manner.</p>
+<pre><code><span class="open-tag">&lt;</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
+    ...
+    <span class="open-tag">&lt;</span><span class="tag">system.web.webPages.razor</span><span class="close-tag">&gt;</span>
+        <span class="open-tag">&lt;</span><span class="tag">pages</span><span class="close-tag">&gt;</span>
+            <span class="open-tag">&lt;</span><span class="tag">namespaces</span><span class="close-tag">&gt;</span>
+                ...
+                <strong><span class="open-tag">&lt;</span><span class="tag">add</span> <span class="attribute">namespace</span><span class="attribute-value">="Cassette.Views"</span><span class="close-tag">/&gt;</span></strong>
+            <span class="open-tag">&lt;/</span><span class="tag">namespaces</span><span class="close-tag">&gt;</span>
+        <span class="open-tag">&lt;/</span><span class="tag">pages</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;/</span><span class="tag">system.web.webPages.razor</span><span class="close-tag">&gt;</span>
+    ...
+<span class="open-tag">&lt;/</span><span class="tag">configuration</span><span class="close-tag">&gt;</span>
+</code></pre>
+
+<h2>Cassette in Razor views</h2>
+<p>Use code blocks to define references. Use inline expressions for the render calls.</p>
+<pre><code><span class="code-tag">@@{</span>
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/lib/jquery.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/app/home.js"</span>);
+<span class="code-tag">}</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderStylesheets()</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+    ...
+    <span class="code-tag">@@</span><span class="razor-expression"><span class="code-type">Bundles</span>.RenderScripts()</span>
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span></code></pre>
+
+<h2>Cassette in ASPX views</h2>
+<p>Use aspx code blocks to defined references. Use aspx expressions for the render calls.</p>
+<pre><code><span class="code-tag">&lt;%@@</span> <span class="tag">Page</span> <span class="attribute">Language</span><span class="attribute-value">="C#"</span> <span class="code-tag">%&gt;</span>
+<span class="code-tag">&lt;%</span>
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/lib/jquery.js"</span>);
+    <span class="code-type">Bundles</span>.Reference(<span class="string">"scripts/app/home.js"</span>);
+<span class="code-tag">%&gt;</span>
+<span class="open-tag">&lt;!</span><span class="tag">DOCTYPE</span> <span class="attribute">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+    <span class="open-tag">&lt;</span><span class="tag">title</span><span class="close-tag">&gt;</span>Web App<span class="open-tag">&lt;/</span><span class="tag">title</span><span class="close-tag">&gt;</span>
+    <span class="code-tag">&lt;%</span>: <span class="code-type">Bundles</span>.RenderStylesheets() <span class="code-tag">%&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">head</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+    ...
+    <span class="code-tag">&lt;%</span>: <span class="code-type">Bundles</span>.RenderScripts() <span class="code-tag">%&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">body</span><span class="close-tag">&gt;</span>
+<span class="open-tag">&lt;/</span><span class="tag">html</span><span class="close-tag">&gt;</span>
+</code></pre>

@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Page data scripts";
+}
+
+<h1>Page data scripts</h1>
+<p>
+    Cassette's <code>AddPageData</code> allows a page to make server-side data available to the client-side JavaScript.
+</p>
+
+<pre><code>@@{
+    Bundles.AddPageData("pageData", new { message = "Hello" });
+}</code></pre>
+<p>This will add a <code>&lt;script&gt;</code> block to the page that defines a global object
+    containing the data you provided. For example:
+</p>
+
+<pre><code>&lt;script type="text/javascript"&gt;
+    (function (w) {
+        var d = w['pageData'] || (w['pageData'] = {});
+        d.message = "Hello";
+    } (window));
+&lt;/script&gt;</code></pre>

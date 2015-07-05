@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Cassette | CoffeeScript";
+}
+
+<h1>CoffeeScript</h1>
+<p>Cassette provides built-in support for the excellent <a href="http://coffeescript.org/">CoffeeScript</a> language.
+Add <code>.coffee</code> files to your project and Cassette will compile them into JavaScript and bundle them with the rest of your scripts.
+</p>
+<p>
+<strong>Important:</strong> All <code>.coffee</code> files must have their Build Action set to <code>Content</code> so they will get deployed with the web application.
+</p>
+<ol>
+    <li>Select the files in the Visual Studio Solution Explorer</li>
+    <li>Right-click &gt; Properties</li>
+    <li>In the Properties window, set Build Action to <code>Content</code></li>
+</ol>
+
+<h2>References</h2>
+<p>Reference the other assets a coffee file depends on using following special comment syntax:</p>
+<pre><code><span class="comment"># @@reference ../jquery.js</span></code></pre>
+<p>or</p>
+<pre><code><span class="comment">###
+@@reference ../jquery.js
+@@reference other.coffee another.js example.coffee
+###</span></code></pre>
+<p>Reference paths are relative to the current coffee file.</p>
+
+<h2>Improving Performance</h2>
+<p>Cassette's default CoffeeScript compiler can be slow for large files. To improve performance try using the Internet Explorer based compiler.
+In <code>CassetteConfiguration</code> change the compiler:</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        bundles.AddPerSubDirectory&lt;<code class="code-type">ScriptBundle</code>&gt;(
+            <span class="string">"Scripts"</span>,
+            b => b.Processor = <span class="keyword">new</span> <span class="code-type">ScriptPipeline</span>
+            {
+                CoffeeScriptCompiler = <span class="keyword">new</span> <span class="code-type">IECoffeeScriptCompiler</span>()
+            }
+        );
+    }
+}</code></pre>
+<p>Please note: The <code>IECoffeeScriptCompiler</code> requires Full Trust because it uses COM Interop to access Internet Explorer's JavaScript engine.
+You should also have Internet Explorer 9 or better installed to see a significant performance boost.</p>

@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Inline scripts";
+}
+
+<h1>Inline Scripts</h1>
+<p>Ad-hoc inline page scripts can be managed by using the <code>AddInlineScript</code> method.</p>
+<pre><code>@@{
+    Bundles.AddInlineScript("alert('Hello');");
+}</code></pre>
+<p>When <code>@@Bundles.RenderScripts()</code> is called, the following <code>&lt;script&gt;</code> will be generated:</p>
+<pre><code>&lt;script type="text/javascript"&gt;
+alert('Hello');
+&lt;/script&gt;</code></pre>
+
+<h2>Multi-line scripts</h2>
+<p>A razor <code>&lt;text&gt;</code> tag can also be used to generate including multi-line scripts with data inserted.</p>
+<pre><code>@@{
+    var message = "Hello World!";
+    Bundles.AddInlineScript(
+      @@&lt;text&gt;
+        if (someTest) {
+            alert('@@message');
+        }
+      &lt;/text&gt;);
+}</code></pre>
+
+<p>
+    Alternatively, you can use an actual &lt;script&gt; tag.
+    This has the advantage of displaying Visual Studio intellisense and syntax highlighting.
+</p>
+<pre><code>@@{
+    var message = "Hello World!";
+    Bundles.AddInlineScript(
+      @@&lt;script&gt;
+        if (someTest) {
+            alert('@@message');
+        }
+      &lt;/script&gt;);
+}</code></pre>

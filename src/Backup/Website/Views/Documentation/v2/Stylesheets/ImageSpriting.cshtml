@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "CSS Image Spriting";
+    ViewBag.Description = "Automatically sprite CSS images when using this Cassette plug-in.";
+}
+
+<h1>CSS Image Spriting</h1>
+<p><strong>Please note: This feature is still experimental.</strong></p>
+<p>
+    The <code>Cassette.Spriting</code> plug-in reduces the number of image
+    requests made by a stylesheet. PNG images are 
+    <a href="http://www.alistapart.com/articles/sprites/" target="_blank">sprited</a> together
+    and the CSS is rewritten to reference the sprite image.
+</p>
+<p>To add spriting to your web application, which is already using Cassette:</p>
+<ol>
+    <li>
+        Update to the latest pre-release version of Cassette:
+        <pre>Update-Package -Pre Cassette.Aspnet</pre>
+    </li>
+    <li>
+        Install the spriting package (also pre-release):
+        <pre>Install-Package -pre Cassette.Spriting</pre>
+    </li>
+    <li>
+        Modify your <code>CassetteConfiguration</code> class to sprite bundles:
+        <pre><code>using Cassette.Spriting;
+...        
+public void Configure(BundleCollection bundles)
+{
+    bundles.Add&lt;StylesheetBundle&gt;("Content", bundle => bundle.SpriteImages();
+}</code></pre>
+    </li>
+</ol>
+<p>
+    Note that spriting is only applied when the application is <strong>not in debug mode</strong>.
+</p>
+
+<h2>CSS Limitations</h2>
+<p>Any CSS rules with <code>background-image</code> to be sprited must have:</p>
+<ul>
+    <li>Local PNG image file path</li>
+    <li><code>background-repeat: no-repeat</code><br/>(repeated images cannot be sprited)</li>
+    <li><code>width: {somevalue}</code><br/>(the sprite will be padded when the image is smaller than the element)</li>
+</ul>
+<p>For example:</p>
+<pre><code>.widget {
+    background-image: url(widget.png);
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+}</code></pre>
+<p>
+    Automatic spriting is hard! Cassette is using code from <a href="http://requestreduce.org/" target="_blank">Request Reduce</a>, 
+    so please read the discussion about spriting there:
+    <a href="https://github.com/mwrock/RequestReduce/wiki/Can-I-make-changes-to-my-CSS-classes-to-optimize-RequestReduce-spriting%3F" target="_blank">Optimizing Spriting</a>
+</p>

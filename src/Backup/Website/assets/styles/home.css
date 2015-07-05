@@ -1,0 +1,140 @@
+﻿/* BANNER */
+
+.banner {
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.banner h1 {
+    padding: 0.6em 0 0 0;
+}
+
+.banner p {
+    color: #fff;
+    font-size: 1.1em;
+    text-shadow: 0 1px 0 #01456D;
+    line-height: 1.8em;
+}
+
+.intro {
+    margin-right: 280px;
+}
+
+.banner .share-links  {
+    top: 24px;
+}
+
+.banner .share-links p {
+    font-size: 1.1em;
+}
+
+.banner .tweet, .banner .g1 {
+    padding-top: 0.4em;
+}
+
+/* FAV TWEETS */
+
+.favtweets {
+    width: 246px;
+    height: 350px;
+    position: absolute;
+    top: 75px;
+    right: 0;
+}
+
+.tweets {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.favtweets p {
+    font-size: 0.8em;
+    line-height: 1.8em;
+    text-shadow: none;
+    margin: 0 0 0.3em 0;
+}
+
+p.tweeter {
+    margin-bottom: 1.5em;
+    text-align: right;
+}
+
+.favtweets a {
+    color: #fff;
+}
+
+/* SECONDARY CONTENT */
+
+.home-main {
+    max-width: 960px;
+    margin: 85px auto 0 auto;
+}
+
+.section {
+    clear: left;
+    margin-bottom: 1.8em;
+    display: table;
+    border: 1px solid #ccc;
+    width: 100%;
+    background-color: #fafafa;
+    border-radius: 10px;
+}
+
+.file-details {
+    width: 275px;
+    padding: 25px 25px 20px 25px;
+    display: table-cell;
+    vertical-align: top;
+}
+
+.file-details p {
+    margin-bottom: 0.6em;
+}
+
+.file {
+    background-color: #fff;
+    border-left: 1px solid #ccc;
+    display: table-cell;
+    vertical-align: top;
+    padding: 30px 10px 20px 20px;
+    border-radius: 0px 10px 10px 0;
+    max-width: 600px;
+    overflow-x: auto;
+}
+
+.file pre {
+    clear: left;
+    float: left;
+    white-space: pre;
+}
+
+.file p {
+    clear: left;
+}
+
+.section ul {
+    padding-left: 1.5em;
+}
+
+.section li {
+    margin-bottom: .3em;
+}
+
+p.minor {
+    font-size: .8em;
+    color: #888;
+}
+
+p.minor a {
+    color: #4d688d;
+}
+
+.more {
+    padding: 25px 25px 30px 25px;
+}
+
+.last .download-button {
+    font-size: 1.3em;
+}

@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Cassette | Add Directory";
+    ViewBag.Description = "How to add bundles using the contents of directory.";
+}
+
+<h1>Add Directory</h1>
+
+<p>A bundle can be added using the contents of directory.</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        bundles.Add&lt;<span class="code-type">StylesheetBundle</span>&gt;(<span class="string">"Content"</span>);
+    }
+}</code></pre>
+
+<p>Cassette uses the generic type to determine which files to include. In the above example only .css and .less files are included.</p>
+
+<h2>FileSearch</h2>
+<p>To control which assets are included in the bundle, use an overload of the Add method.</p>
+
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        bundles.Add&lt;<span class="code-type">StylesheetBundle</span>&gt;("Content", <span class="keyword">new</span> <span class="code-type">FileSearch</span>
+        {
+            Pattern = <span class="string">"*.css;*.less"</span>,
+            SearchOption = <span class="code-type">SearchOption</span>.AllDirectories, <span class="comment">// The default</span>
+            Exclude = <span class="keyword">new</span> <span class="code-type">Regex</span>(<span class="string">"ignore\\.css"</span>) <span class="comment">// Optional</span>
+        });
+    }
+}</code></pre>
+
+<h2>Customizing bundles</h2>
+<p>The <code>Bundle</code> object created by Cassette can be customized by providing an action delegate.</p>
+<p>This is useful for changing the pipeline used to process the bundle.</p>
+
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="code-type">CassetteConfiguration</span> : <span class="code-type">ICassetteConfiguration</span>
+{
+    <span class="keyword">public</span> <span class="keyword">void</span> Configure(<span class="code-type">BundleCollection</span> bundles, <span class="code-type">CassetteSettings</span> settings)
+    {
+        bundles.Add&lt;<span class="code-type">StylesheetBundle</span>&gt;(
+            <span class="string">"Content"</span>,
+            bundle => bundle.Processor = <span class="keyword">new</span> <span class="code-type">StylesheetPipeline</span>
+            {
+                ConvertImageUrlsToDataUris = <span class="keyword">true</span>
+            }
+        );
+    }
+}</code></pre>
+

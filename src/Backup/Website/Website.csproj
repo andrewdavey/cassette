@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FAB26B89-C01A-4DAA-B415-B1A5115C50C2}</ProjectGuid>
+    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Website</RootNamespace>
+    <AssemblyName>Website</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SolutionDir)packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NotFoundMvc">
+      <HintPath>$(SolutionDir)packages\NotFoundMvc.1.0.0\lib\net40\NotFoundMvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CassetteConfiguration.cs" />
+    <Compile Include="Controllers\DocumentationController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\Helpers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\iestyles\iestyles.css" />
+    <Content Include="assets\scripts\disqus\disqus.js" />
+    <Content Include="assets\scripts\jquery\jquery.js" />
+    <Content Include="assets\scripts\home\tweets.js" />
+    <Content Include="assets\styles\buttons.css" />
+    <Content Include="assets\styles\code.css" />
+    <Content Include="assets\styles\documentation.css" />
+    <Content Include="assets\styles\contribute.css" />
+    <Content Include="assets\styles\download.css" />
+    <Content Include="assets\styles\home.css" />
+    <Content Include="assets\styles\images\activemarker2.png" />
+    <Content Include="assets\styles\images\andrew-davey.jpg" />
+    <Content Include="assets\styles\images\background.jpg" />
+    <Content Include="assets\styles\images\bullet_toggle_minus.png" />
+    <Content Include="assets\styles\images\bullet_toggle_plus.png" />
+    <Content Include="assets\styles\footer.css" />
+    <Content Include="assets\styles\images\cassette-logo.png" />
+    <Content Include="assets\styles\images\contentnoise.png" />
+    <Content Include="assets\styles\images\docs-icon.png" />
+    <Content Include="assets\styles\images\contribute-icon.png" />
+    <Content Include="assets\styles\images\donate-count.png" />
+    <Content Include="assets\styles\images\donate-icon.png" />
+    <Content Include="assets\styles\images\download-background.png" />
+    <Content Include="assets\styles\images\download-button-icon.png" />
+    <Content Include="assets\styles\images\download-icon.png" />
+    <Content Include="assets\styles\images\benefits-icon.png" />
+    <Content Include="assets\styles\images\getting-started-icon.png" />
+    <Content Include="assets\styles\images\github-logo.png" />
+    <Content Include="assets\styles\images\googlegroups.png" />
+    <Content Include="assets\styles\images\heart-icon.png" />
+    <Content Include="assets\styles\images\nuget-logo.png" />
+    <Content Include="assets\styles\images\osi-logo-small.png" />
+    <Content Include="assets\styles\images\page.png" />
+    <Content Include="assets\styles\images\support-icon.png" />
+    <Content Include="assets\styles\images\topnoise.png" />
+    <Content Include="assets\styles\images\twitter.png" />
+    <Content Include="assets\styles\images\whitetwittericon.png" />
+    <Content Include="assets\styles\licensing.css" />
+    <Content Include="assets\styles\bundle.txt" />
+    <Content Include="assets\styles\normalize.css" />
+    <Content Include="assets\styles\page.css" />
+    <Content Include="assets\styles\top.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="nuget-icon.png" />
+    <Content Include="robots.txt" />
+    <Content Include="sitemap.xml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Contact.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cassette.Aspnet\Cassette.Aspnet.csproj">
+      <Project>{733F8032-D649-4E4C-A23E-4A048C33FCAE}</Project>
+      <Name>Cassette.Aspnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette.Spriting\Cassette.Spriting.csproj">
+      <Project>{b775612c-baf8-4947-b83b-dd43f802e999}</Project>
+      <Name>Cassette.Spriting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette.Views\Cassette.Views.csproj">
+      <Project>{3A021487-A395-4FE6-9B41-336D0F1E6AD0}</Project>
+      <Name>Cassette.Views</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassette\Cassette.csproj">
+      <Project>{A5CCF9D3-5D49-4BFC-B9A6-9EC9E0E29C50}</Project>
+      <Name>Cassette</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Download.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\_Documentation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\GettingStarted.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Scripts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Scripts\CoffeeScript.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Stylesheets.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Stylesheets\Less.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Stylesheets\DataUris.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\HtmlTemplates.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\HtmlTemplates\JQueryTmpl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\HtmlTemplates\KnockoutJSJQueryTmpl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Configuration.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Scripts\External.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\GettingStarted\AssetsAndBundles.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\GettingStarted\WebForms.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\GettingStarted\Mvc.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Configuration\BundleDescriptorFile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Licensing.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Configuration\AddDirectory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Configuration\AddPerSubDirectory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\AssetReferences.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\BundlesHelper.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Support.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\NotFound.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Donate.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Benefits.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Resources.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Share.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Tutorials.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Configuration\AddFile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\HtmlTemplates\MustacheHoganJS.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\Tutorials\TwitterBootstrap.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\GettingStarted\Fx35.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v1\_Tree.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\_Tree.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration\AddPerSubDirectory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration\FileSearch.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\Scripts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundlePipelines.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\Scripts\Minification.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration\Add.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration\CustomizeBundles.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration\AddPerIndividualFile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration\AddUrls.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundlesHelper.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundlesHelper\PageLocations.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundlesHelper\Reference.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundlesHelper\Render.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\AssetReferences.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\Plugins.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\WebConfig.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundlesHelper\InlineScript.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundlesHelper\PageData.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\UpgradingFromV1ToV2.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\Stylesheets\DataUris.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\HtmlTemplates.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\HtmlTemplates\JQueryTmpl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\HtmlTemplates\MustacheHoganJS.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\Stylesheets.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\MSBuild.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\Stylesheets\ImageSpriting.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Documentation\v2\BundleConfiguration\AddEmbeddedResources.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49964</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:49965/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+</Project>

@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Cassette | KnockoutJS";
+}
+
+<h1>KnockoutJS jQuery-tmpl Template Compilation</h1>
+<p>This feature works the same as the <a href="@Url.DocumentationUrl("html-templates/jquery-tmpl")">jQuery-tmpl templates</a> compilation.
+However, the templates are also rewritten to work with the <a href="http://knockoutjs.com">KnockoutJS</a> data-binding system.
+</p>
+<p>To enable this feature, use the following configuration:</p>
+<pre><code>bundles.Add&lt;<span class="code-type">HtmlTemplate</span>&gt;(
+    <span class="string">"HtmlTemplates"</span>
+    <span class="comment">// Assign the jQuery-tmpl processor to the HTML template bundles</span>
+    bundle => bundle.Processor = <span class="keyword">new</span> <span class="code-type">KnockoutJQueryTmplPipeline</span>()
+);</code></pre>
+
+<h2>Example compilation output</h2>
+<p>Given this template:</p>
+<pre><code>&lt;li&gt;
+    &lt;span class="color-box" data-bind="style: { backgroundColor: color }"&gt;&lt;/span&gt;
+    &lt;span data-bind="text: color"&gt;&lt;/span&gt;
+    &lt;a href="#" data-bind="click: deleteColor"&gt;Delete&lt;/a&gt;
+&lt;/li&gt;</code></pre>
+<p>Cassette will generate this JavaScript:</p>
+<pre><code>$.template('ColorListItem', function(jQuery, $item) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('&lt;li&gt;      ');__.push(((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                     return (function() { return { style: { backgroundColor: color } } })()                 }) })()) || '');__.push('&lt;span class="color-box" &gt;&lt;/span&gt;      ');__.push(((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                     return (function() { return { text: color, '_ko_property_writers' : { text : function(__ko_value) { color = __ko_value; } }  } })()                 }) })()) || '');__.push('&lt;span &gt;&lt;/span&gt;      ');__.push(((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                     return (function() { return { click: deleteColor, '_ko_property_writers' : { click : function(__ko_value) { deleteColor = __ko_value; } }  } })()                 }) })()) || '');__.push('&lt;a href="#" &gt;Delete&lt;/a&gt;  &lt;/li&gt;');}return __;});</code></pre>
+<p>Crazy looking? Yes, but better than making the web browser produce it every time!</p>

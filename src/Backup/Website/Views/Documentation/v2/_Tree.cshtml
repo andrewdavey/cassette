@@ -1,0 +1,65 @@
+﻿<div class="tree">
+    <p>Documentation version: <a href="@Url.RouteUrl("Documentation", new { version = "v1", path = "" })">v1</a> &bull; <strong>v2</strong></p>
+    <ul>
+        <li>@DocLink("", "Introduction")</li>
+        <li>@DocLink("upgrading-from-v1-to-v2", "Upgrading from Cassette v1")</li>
+        <li>
+            @DocLink("bundle-configuration", "Bundle configuration")
+            <ul>
+                <li>@DocLink("bundle-configuration/add", "Add")</li>
+                <li>@DocLink("bundle-configuration/add-per-sub-directory", "AddPerSubDirectory")</li>
+                <li>@DocLink("bundle-configuration/add-per-individual-file", "AddPerIndividualFile")</li>
+                <li>@DocLink("bundle-configuration/add-urls", "Adding external URLs")</li>
+                <li>@DocLink("bundle-configuration/add-embedded-resources", "Embedded resources")</li>
+                <li>@DocLink("bundle-configuration/file-search", "File search")</li>
+                <li>@DocLink("bundle-configuration/customize-bundles", "Customize bundles")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("bundles-helper", "Bundles helper")
+            <ul>
+                <li>@DocLink("bundles-helper/reference", "Reference")</li>
+                <li>@DocLink("bundles-helper/render", "Render")</li>
+                <li>@DocLink("bundles-helper/page-locations", "Page locations")</li>
+                <li>@DocLink("bundles-helper/inline-script", "Inline scripts")</li>
+                <li>@DocLink("bundles-helper/page-data", "Page data scripts")</li>
+            </ul>
+        </li>
+        <li>@DocLink("asset-references", "Asset References")</li>
+        <li>
+            @DocLink("scripts", "Scripts")
+            <ul>
+                <li>@DocLink("scripts/minification", "Minification")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("stylesheets", "Stylesheets")
+            <ul>
+                <li>@DocLink("stylesheets/data-uris", "Data URIs")</li>
+                <li>@DocLink("stylesheets/image-spriting", "Image Spriting")</li>
+            </ul>
+        </li>
+        <li>
+            @DocLink("html-templates", "HTML Templates")
+            <ul>
+                <li>@DocLink("html-templates/mustache-hogan-js", "Mustache (hogan.js)")</li>
+                <li>@DocLink("html-templates/jquery-tmpl", "jQuery-tmpl")</li>
+            </ul>
+        </li>
+        <li>@DocLink("plugins", "Plugins")</li>
+        <li>@DocLink("msbuild", "MSBuild")</li>
+        <li>@DocLink("bundle-pipelines", "Bundle Pipelines")</li>
+        <li>@DocLink("web-config", "Web.config")</li>
+    </ul>
+</div>
+@helper DocLink(string path, string text)
+{
+    if (Request.Url.AbsolutePath.EndsWith("documentation/v2/" + path))
+    {
+    <a class="activedoc" href="@Url.DocumentationUrl(path)">@text</a>
+    }
+    else
+    {
+    <a href="@Url.DocumentationUrl(path)">@text</a>
+    }
+}
