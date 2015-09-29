@@ -17,6 +17,28 @@ using Iesi.Collections.Generic;
 
 namespace Cassette
 {
+    public class ErrorCollectingException : Exception
+    {
+        public IList<Exception> Exceptions { get; set; }
+
+        public ErrorCollectingException()
+        {
+            Exceptions = new List<Exception>();
+        }
+
+        public override string Message
+        {
+            get { return GenerateMessage(); }
+        }
+
+        string GenerateMessage()
+        {
+            return String.Format("{0} exceptions collected:\n\n----- Collected exceptions start:\n{1}\n\n----- Collected exceptions end\n",
+                Exceptions.Count,
+                string.Join("\n- next -\n", Exceptions.Select(x => x.ToString()).ToArray()));
+        }
+    }
+
     public class BundleCollection : IEnumerable<Bundle>, IDisposable
     {
         readonly List<Bundle> bundles = new List<Bundle>();
@@ -27,7 +49,7 @@ namespace Cassette
         readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         Dictionary<Bundle, HashedSet<Bundle>> bundleImmediateReferences;
         Exception initializationException;
-       
+        ErrorCollectingException errorCollectingException;
 
         public BundleCollection(CassetteSettings settings, IFileSearchProvider fileSearchProvider, IBundleFactoryProvider bundleFactoryProvider, IBundleCollectionInitializer bundleCollectionInitializer)
         {
@@ -54,6 +76,23 @@ namespace Cassette
                 using (GetWriteLock())
                 {
                     initializationException = value;
+
+                    if (value == null)
+                    {
+                        // reset our collected exceptions
+                        errorCollectingException = null;
+                        return;
+                    }
+
+                    if (errorCollectingException == null) errorCollectingException = new ErrorCollectingException();
+
+                    errorCollectingException.Exceptions.Add(value);
+                    if (errorCollectingException.Exceptions.Count > 32 || value is ThreadAbortException)
+                    {
+                        throw errorCollectingException;
+                    }
+
+                    Thread.Sleep(50); // HACK to give background thingy time to release resources (file handles or similar - not sure)
                 }
             }
         }
